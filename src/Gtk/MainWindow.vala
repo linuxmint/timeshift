@@ -202,16 +202,6 @@ class MainWindow : Gtk.Window{
 		separator.set_expand (true);
 		toolbar.add (separator);
 
-		// donate
-		img = new Gtk.Image.from_icon_name("donate", Gtk.IconSize.LARGE_TOOLBAR);
-		btn_donate = new Gtk.ToolButton (img, null);
-		btn_donate.is_important = true;
-		btn_donate.label = _("Donate");
-		btn_donate.set_tooltip_text (_("Donate"));
-        toolbar.add(btn_donate);
-
-        btn_donate.clicked.connect(btn_donate_clicked);
-
 		//btn_hamburger
         img = new Gtk.Image.from_icon_name("open-menu-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		var button = new Gtk.ToolButton (img, null);
@@ -381,6 +371,11 @@ class MainWindow : Gtk.Window{
 			menu_extra.append(menu_item);
 			menu_item.activate.connect(btn_view_app_logs_clicked);
 		}
+
+		// donate
+		menu_item = create_menu_item(_("Donate"), "", "", 16);
+		menu_extra.append(menu_item);
+		menu_item.activate.connect(btn_donate_clicked);
 
 		// about
 		menu_item = create_menu_item(_("About"), "", "", 16);
