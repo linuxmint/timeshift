@@ -1,3 +1,24 @@
+timeshift (20.11.1.1) ulyssa; urgency=medium
+
+  [ Tony George ]
+  * Packaging: Prefer btrfs-progs over btrfs-tools
+  * Fix some compiler warnings
+  * #676: Fix: Build fails with xapp 2.0.0
+  * #676 Update references to GLib.Object
+
+  [ Clement Lefebvre ]
+  * Build-dep on libxapp
+  * Move donate button to burger menu
+  * Desktop file: Use pkexec directly
+
+  [ Michael Webster ]
+  * Main.vala: allow post-restore scripts to be called prior to reboot. (#4)
+
+  [ Clement Lefebvre ]
+  * Polkit: Use generic app name in policy file
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 04 Dec 2020 15:27:51 +0000
+
 timeshift (20.11.1) focal; urgency=medium
 
   * Fix #631: Escape single quote in LUKS password when unlocking device
