@@ -38,9 +38,9 @@ class RestoreFinishBox : Gtk.Box{
 	private Gtk.Window parent_window;
 
 	public RestoreFinishBox (Gtk.Window _parent_window) {
-		
+
 		log_debug("RestoreFinishBox: RestoreFinishBox()");
-		
+
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
@@ -56,7 +56,7 @@ class RestoreFinishBox : Gtk.Box{
 	public void update_message(bool success, string message_header, string message_body){
 
 		// header -----------------------------------------
-		
+
 		var txt = "";
 
 		if (message_header.length > 0){
@@ -70,7 +70,7 @@ class RestoreFinishBox : Gtk.Box{
 			else{
 				txt = _("Restore");
 			}
-			
+
 			if (success){
 				txt += " " + _("Completed");
 			}
@@ -84,12 +84,12 @@ class RestoreFinishBox : Gtk.Box{
 		// body ------------------------------------------------------
 
 		var msg = "";
-		
+
 		if (message_body.length > 0){
 			msg = message_body;
 		}
 		else {
-			
+
 			string bullet = "• ";
 
 			if (App.btrfs_mode && App.restore_current_system){
@@ -105,7 +105,7 @@ class RestoreFinishBox : Gtk.Box{
 			msg += "\n";
 			msg += "<b>" + _("Close window to exit") + "</b>\n\n";
 		}
-		
+
 		lbl_message.label = msg;
 	}
 

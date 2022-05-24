@@ -41,10 +41,10 @@ public class DonationWindow : Gtk.Window {
 	public DonationWindow(Gtk.Window window) {
 
 		set_title(_("Donate"));
-		
+
 		set_transient_for(window);
 		set_destroy_with_parent(true);
-		
+
 		window_position = WindowPosition.CENTER_ON_PARENT;
 
 		set_modal(true);
@@ -56,7 +56,7 @@ public class DonationWindow : Gtk.Window {
 		vbox_main.margin = 12;
 
 		this.add(vbox_main);
-		
+
 		if (get_user_id_effective() == 0){
 			username = get_username();
 		}
@@ -70,16 +70,16 @@ public class DonationWindow : Gtk.Window {
 		msg = _("This software is updated once a year due to lack of time, developers, and funds. You can support this project by making a donation with PayPal.");
 
 		add_label(msg);
-		
+
 		var hbox = add_hbox();
-		
+
 		add_button(hbox, _("Donate"),
 			"https://www.paypal.com/cgi-bin/webscr?business=teejeetech@gmail.com&cmd=_xclick&currency_code=USD&item_name=%s+Donation".printf(appname));
 
 		// -----------------------------
-		
+
 		msg = _("Use the GitHub issue tracker for reporting issues, or post your questions on the Linux Mint forums. Please avoid reporting issues by email.");
-		
+
 		add_label(msg);
 
 		hbox = add_vbox();
@@ -89,21 +89,21 @@ public class DonationWindow : Gtk.Window {
 		if (has_wiki){
 			add_button(hbox, _("Wiki"), "https://github.com/teejee2008/%s/wiki".printf(appname.down()));
 		}
-		
+
 		// close window ---------------------------------------------------------
 
 		var lbl_dummy = add_label("");
 		lbl_dummy.margin = 20;
-		
+
 		hbox = add_hbox();
 
 		add_button(hbox, _("Visit Website"), "https://teejeetech.com/");
 
 		add_button(hbox, _("More Apps"), "https://teejeetech.com/shop/");
-		
+
 		var button = new Gtk.Button.with_label(_("Close"));
 		hbox.add(button);
-		
+
 		button.clicked.connect(() => {
 			this.destroy();
 		});
@@ -112,20 +112,20 @@ public class DonationWindow : Gtk.Window {
 	}
 
 	private void add_heading(string msg){
-		
+
 		var label = new Gtk.Label("<span weight=\"bold\" size=\"large\" style=\"italic\">%s</span>".printf(msg));
 
 		label.set_use_markup(true);
-		
+
 		label.wrap = true;
 		label.wrap_mode = Pango.WrapMode.WORD;
 		label.max_width_chars = 80;
-		
+
 		label.xalign = 0.0f;
 		label.margin_top = 12;
 		vbox_main.add(label);
 	}
-	
+
 	private string format_heading(string msg){
 
 		return "<span size=\"large\" style=\"italic\">%s</span>".printf(msg);
@@ -134,17 +134,17 @@ public class DonationWindow : Gtk.Window {
 	private Gtk.Label add_label(string msg){
 
 		var label = new Gtk.Label(msg);
-		
+
 		label.set_use_markup(true);
-		
+
 		label.wrap = true;
 		label.wrap_mode = Pango.WrapMode.WORD;
 		label.max_width_chars = 50;
-		
+
 		label.xalign = 0.0f;
 
 		vbox_main.add(label);
-		
+
 		return label;
 	}
 
@@ -156,7 +156,7 @@ public class DonationWindow : Gtk.Window {
 		vbox_main.add(hbox);
 		return hbox;
 	}
-	
+
 	private Gtk.ButtonBox add_vbox(){
 
 		var vbox = new Gtk.ButtonBox(Orientation.VERTICAL);
@@ -173,7 +173,7 @@ public class DonationWindow : Gtk.Window {
 		box.add(button);
 
 		//button.set_size_request(200,-1);
-		
+
 		button.clicked.connect(() => {
 			xdg_open(url, username);
 		});
@@ -184,7 +184,7 @@ public class DonationWindow : Gtk.Window {
 		var button = new Gtk.LinkButton.with_label("", text);
 		button.set_tooltip_text(url);
 		box.add(button);
-		
+
 		button.clicked.connect(() => {
 			xdg_open(url, username);
 		});

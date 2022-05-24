@@ -34,7 +34,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public class CustomMessageDialog : Gtk.Dialog {
-	
+
 	private Gtk.Box vbox_main;
 	private Gtk.Label lbl_msg;
 	private Gtk.ScrolledWindow sw_msg;
@@ -47,9 +47,9 @@ public class CustomMessageDialog : Gtk.Dialog {
 	private string msg_body;
 	private Gtk.MessageType msg_type;
 	private Gtk.ButtonsType buttons_type;
-	
+
 	public CustomMessageDialog(string _msg_title, string _msg_body, Gtk.MessageType _msg_type, Window? parent, Gtk.ButtonsType _buttons_type) {
-			
+
 		set_transient_for(parent);
 		set_modal(true);
 
@@ -57,7 +57,7 @@ public class CustomMessageDialog : Gtk.Dialog {
 		msg_body = _msg_body;
 		msg_type = _msg_type;
 		buttons_type = _buttons_type;
-		
+
 		init_window();
 
 		lbl_msg.expand = true;
@@ -75,7 +75,7 @@ public class CustomMessageDialog : Gtk.Dialog {
 	}
 
 	public void init_window () {
-		
+
 		this.title = "";
 		this.window_position = WindowPosition.CENTER_ON_PARENT;
 		this.icon = IconManager.lookup("timeshift", 16);
@@ -83,7 +83,7 @@ public class CustomMessageDialog : Gtk.Dialog {
 		this.deletable = false;
 		this.skip_taskbar_hint = true;
 		this.skip_pager_hint = true;
-		
+
 		//vbox_main
 		vbox_main = get_content_area () as Gtk.Box;
 		vbox_main.margin = 6;
@@ -94,7 +94,7 @@ public class CustomMessageDialog : Gtk.Dialog {
 		vbox_main.add (hbox_contents);
 
 		string icon_name = "dialog-info";
-		
+
 		switch(msg_type){
 		case Gtk.MessageType.INFO:
 			icon_name = "dialog-info";
@@ -111,10 +111,10 @@ public class CustomMessageDialog : Gtk.Dialog {
 		}
 
 		// image ----------------
-		
+
 		var img = new Image.from_icon_name(icon_name, Gtk.IconSize.DIALOG);
 		hbox_contents.add(img);
-		
+
 		// label -------------------
 
 		var text = "<span weight=\"bold\" size=\"x-large\">%s</span>\n\n%s".printf(
@@ -138,7 +138,7 @@ public class CustomMessageDialog : Gtk.Dialog {
 		hbox_contents.add(sw_msg);
 
 		// actions -------------------------
-		
+
 		switch(buttons_type){
 		case Gtk.ButtonsType.OK:
 			btn_ok = (Gtk.Button) add_button (_("OK"), Gtk.ResponseType.OK);
@@ -154,7 +154,7 @@ public class CustomMessageDialog : Gtk.Dialog {
 			btn_no = (Gtk.Button) add_button (_("No"), Gtk.ResponseType.NO);
 			btn_yes.grab_focus();
 			break;
-			
+
 		}
 	}
 }

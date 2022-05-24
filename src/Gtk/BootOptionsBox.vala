@@ -33,7 +33,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class BootOptionsBox : Gtk.Box{
-	
+
 	private Gtk.Box option_box;
 	private Gtk.ComboBox cmb_grub_dev;
 
@@ -45,7 +45,7 @@ class BootOptionsBox : Gtk.Box{
 	public BootOptionsBox (Gtk.Window _parent_window) {
 
 		log_debug("BootOptionsBox: BootOptionsBox()");
-		
+
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
@@ -68,7 +68,7 @@ class BootOptionsBox : Gtk.Box{
 		//var label = add_label_header(this, _("Select Bootloader Options"), true);
 
 		add_chk_reinstall_grub();
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		hbox.margin_left = 12;
         add (hbox);
@@ -77,7 +77,7 @@ class BootOptionsBox : Gtk.Box{
 		cmb_grub_dev = new ComboBox ();
 		cmb_grub_dev.hexpand = true;
 		hbox.add(cmb_grub_dev);
-		
+
 		var cell_text = new CellRendererText ();
 		cell_text.text = "";
 		cmb_grub_dev.pack_start(cell_text, false);
@@ -107,14 +107,14 @@ class BootOptionsBox : Gtk.Box{
 
 		hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
         add (hbox);
-        
+
 		add_chk_update_initramfs(hbox);
 
 		add_chk_update_grub(hbox);
 	}
 
 	private void add_chk_reinstall_grub(){
-		
+
 		var chk = new CheckButton.with_label(_("(Re)install GRUB2 on:"));
 		chk.active = false;
 		chk.set_tooltip_markup(_("Re-installs the GRUB2 bootloader on the selected device."));
@@ -130,7 +130,7 @@ class BootOptionsBox : Gtk.Box{
 	}
 
 	private void add_chk_update_initramfs(Gtk.Box hbox){
-		
+
 		//chk_update_initramfs
 		var chk = new CheckButton.with_label(_("Update initramfs"));
 		chk.active = false;
@@ -145,7 +145,7 @@ class BootOptionsBox : Gtk.Box{
 	}
 
 	private void add_chk_update_grub(Gtk.Box hbox){
-		
+
 		//chk_update_grub
 		var chk = new CheckButton.with_label(_("Update GRUB menu"));
 		chk.active = false;
@@ -160,9 +160,9 @@ class BootOptionsBox : Gtk.Box{
 	}
 
 	private void save_grub_device_selection(){
-		
+
 		App.grub_device = "";
-		
+
 		if (App.reinstall_grub2){
 			Device entry;
 			TreeIter iter;
@@ -177,16 +177,16 @@ class BootOptionsBox : Gtk.Box{
 	private void refresh_options(){
 
 		refresh_cmb_grub_dev();
-		
+
 		chk_reinstall_grub.active = App.reinstall_grub2;
 		cmb_grub_dev.sensitive = chk_reinstall_grub.active;
 		chk_update_initramfs.active = App.update_initramfs;
 		chk_update_grub.active = App.update_grub;
-		
+
 		chk_reinstall_grub.sensitive = true;
 		chk_update_initramfs.sensitive = true;
 		chk_update_grub.sensitive = true;
-				
+
 		if (App.mirror_system){
 			// bootloader must be re-installed
 			chk_reinstall_grub.sensitive = false;
@@ -200,14 +200,14 @@ class BootOptionsBox : Gtk.Box{
 			}
 		}
 	}
-	
+
 	private void refresh_cmb_grub_dev(){
-		
+
 		var store = new Gtk.ListStore(2, typeof(Device), typeof(string));
 
 		TreeIter iter;
 		foreach(Device dev in Device.get_block_devices_using_lsblk()) {
-			
+
 			// select disk and normal partitions, skip others (loop crypt rom lvm)
 			if ((dev.type != "disk") && (dev.type != "part")){
 				continue;
@@ -238,9 +238,9 @@ class BootOptionsBox : Gtk.Box{
 		if ((cmb_grub_dev == null) || (cmb_grub_dev.model == null)){
 			return;
 		}
-		
+
 		log_debug("BootOptionsBox: cmb_grub_dev_select_default()");
-		
+
 		if (App.grub_device.length == 0){
 			cmb_grub_dev.active = -1;
 			return;
@@ -250,14 +250,14 @@ class BootOptionsBox : Gtk.Box{
 		var store = (Gtk.ListStore) cmb_grub_dev.model;
 		int index = -1;
 		int active = -1;
-		
+
 		for (bool next = store.get_iter_first (out iter); next; next = store.iter_next (ref iter)) {
-			
+
 			Device dev_iter;
 			store.get(iter, 0, out dev_iter);
-			
+
 			index++;
-			
+
 			if (dev_iter.device == App.grub_device){
 				active = index;
 				break;

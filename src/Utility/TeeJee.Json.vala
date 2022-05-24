@@ -21,7 +21,7 @@
  *
  *
  */
- 
+
 using Json;
 
 namespace TeeJee.JsonHelper{
@@ -70,7 +70,7 @@ namespace TeeJee.JsonHelper{
 			return def_value;
 		}
 	}
-	
+
 	public uint64 json_get_uint64(Json.Object jobj, string member, uint64 def_value){
 		if (jobj.has_member(member)){
 			return uint64.parse(jobj.get_string_member(member));
@@ -85,7 +85,7 @@ namespace TeeJee.JsonHelper{
 		Json.Object jobj,
 		string member,
 		Gee.ArrayList<string> def_value){
-			
+
 		if (jobj.has_member(member)){
 			var jarray = jobj.get_array_member(member);
 			var list = new Gee.ArrayList<string>();

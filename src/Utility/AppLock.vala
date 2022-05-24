@@ -20,22 +20,22 @@
  *
  *
  */
- 
+
 using TeeJee.Logging;
 using TeeJee.FileSystem;
 using TeeJee.ProcessHelper;
 using TeeJee.Misc;
- 
+
 public class AppLock : GLib.Object {
 	public string lock_file = "";
 	public string lock_message = "";
-	
+
 	public bool create(string app_name, string message){
 
 		var lock_dir = "/var/run/lock/%s".printf(app_name);
 		dir_create(lock_dir);
 		lock_file = path_combine(lock_dir, "lock");
-		
+
 		try{
 			var file = File.new_for_path(lock_file);
 			if (file.query_exists()) {
@@ -72,7 +72,7 @@ public class AppLock : GLib.Object {
 		string current_pid = ((long) Posix.getpid()).to_string();
 		file_write(lock_file, "%s;%s".printf(current_pid, message));
 	}
-	
+
 	public void remove(){
 		try{
 			var file = File.new_for_path (lock_file);

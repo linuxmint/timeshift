@@ -33,7 +33,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class SnapshotListBox : Gtk.Box{
-	
+
 	public Gtk.TreeView treeview;
     private Gtk.TreeViewColumn col_date;
     private Gtk.TreeViewColumn col_tags;
@@ -50,7 +50,7 @@ class SnapshotListBox : Gtk.Box{
 	private Gtk.ImageMenuItem mi_mark;
 	private Gtk.ImageMenuItem mi_view_log_create;
 	private Gtk.ImageMenuItem mi_view_log_restore;
-	
+
 	private Gtk.Window parent_window;
 
 	public signal void delete_selected();
@@ -61,21 +61,21 @@ class SnapshotListBox : Gtk.Box{
 	public SnapshotListBox (Gtk.Window _parent_window) {
 
 		log_debug("SnapshotListBox: SnapshotListBox()");
-		
+
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
 		margin = 6;
 
 		init_treeview();
-		
+
 		init_list_view_context_menu();
 
 		log_debug("SnapshotListBox: SnapshotListBox(): exit");
     }
 
     private void init_treeview(){
-		
+
 		//treeview
 		treeview = new TreeView();
 		treeview.get_selection().mode = SelectionMode.MULTIPLE;
@@ -182,7 +182,7 @@ class SnapshotListBox : Gtk.Box{
 		col.set_cell_data_func (cell_size, cell_size_render);
 		col_size = col;
 		treeview.append_column(col_size);
-		
+
 		col_size.clicked.connect(() => {
 			if(treeview_sort_column_index == 2){
 				treeview_sort_column_desc = !treeview_sort_column_desc;
@@ -207,7 +207,7 @@ class SnapshotListBox : Gtk.Box{
 		col.set_cell_data_func (cell_unshared, cell_unshared_render);
 		col_unshared = col;
 		treeview.append_column(col_unshared);
-		
+
 		col_unshared.clicked.connect(() => {
 			if(treeview_sort_column_index == 2){
 				treeview_sort_column_desc = !treeview_sort_column_desc;
@@ -230,7 +230,7 @@ class SnapshotListBox : Gtk.Box{
 		col_desc.pack_start (cell_desc, false);
 		col_desc.set_cell_data_func (cell_desc, cell_desc_render);
 		treeview.append_column(col_desc);
-		
+
 		cell_desc.editable = true;
 		cell_desc.edited.connect ((path, new_text)=>{
 			Snapshot bak;
@@ -247,22 +247,22 @@ class SnapshotListBox : Gtk.Box{
 		cell_text.width = 20;
 		col_buffer.pack_start (cell_text, false);
 		treeview.append_column(col_buffer);
-		
+
 		//tooltips
 		treeview.query_tooltip.connect ((x, y, keyboard_tooltip, tooltip) => {
-			
+
 			TreeModel model;
 			TreePath path;
 			TreeIter iter;
 			TreeViewColumn column;
-			
+
 			if (treeview.get_tooltip_context (ref x, ref y, keyboard_tooltip, out model, out path, out iter)){
-				
+
 				int bx, by;
 				treeview.convert_widget_to_bin_window_coords(x, y, out bx, out by);
-				
+
 				if (treeview.get_path_at_pos (bx, by, null, out column, null, null)){
-					
+
 					if ((column == col_date) || (column == col_system)){
 
 						Snapshot bak;
@@ -273,7 +273,7 @@ class SnapshotListBox : Gtk.Box{
 						if (App.btrfs_mode){
 
 							txt += "<b>%s: %d</b>\n".printf(_("Subvolumes"), bak.subvolumes.values.size);
-							
+
 							foreach(var subvol in bak.subvolumes_sorted){
 								if (txt.length > 0) { txt += "\n"; }
 								txt += "%s".printf(subvol.path);
@@ -282,7 +282,7 @@ class SnapshotListBox : Gtk.Box{
 						else{
 							txt = bak.path;
 						}
-						
+
 						tooltip.set_markup(txt);
 						return true;
 					}
@@ -311,7 +311,7 @@ class SnapshotListBox : Gtk.Box{
 	}
 
 	private void init_list_view_context_menu(){
-		
+
 		Gdk.RGBA gray = Gdk.RGBA();
 		gray.parse ("rgba(200,200,200,1)");
 
@@ -324,68 +324,68 @@ class SnapshotListBox : Gtk.Box{
 		item.activate.connect(()=> { delete_selected(); });
 		menu_snapshots.append(item);
 		mi_remove = item;
-		
+
 		// mi_mark
 		item = new ImageMenuItem.with_label(_("Mark/Unmark for Deletion"));
 		item.image = IconManager.lookup_image("edit-delete", 16);
 		item.activate.connect(()=> { mark_selected(); });
 		menu_snapshots.append(item);
 		mi_mark = item;
-		
+
 		// mi_browse
 		item = new ImageMenuItem.with_label(_("Browse Files"));
         item.image = IconManager.lookup_image(IconManager.GENERIC_ICON_DIRECTORY, 16);
 		item.activate.connect(()=> { browse_selected(); });
 		menu_snapshots.append(item);
 		mi_browse = item;
-		
+
 		// mi_view_log_create
 		item = new ImageMenuItem.with_label(_("View Rsync Log for Create"));
         item.image = IconManager.lookup_image(IconManager.GENERIC_ICON_FILE, 16);
 		item.activate.connect(()=> { view_snapshot_log(false); });
 		menu_snapshots.append(item);
 		mi_view_log_create = item;
-		
+
 		// mi_view_log_restore
 		item = new ImageMenuItem.with_label(_("View Rsync Log for Restore"));
         item.image = IconManager.lookup_image(IconManager.GENERIC_ICON_FILE, 16);
 		item.activate.connect(()=> { view_snapshot_log(true); });
 		menu_snapshots.append(item);
 		mi_view_log_restore = item;
-		
+
 		menu_snapshots.show_all();
 
 		// connect signal for shift+F10
         treeview.popup_menu.connect(treeview_popup_menu);
-        
+
         // connect signal for right-click
 		treeview.button_press_event.connect(treeview_button_press_event);
 	}
 
 	// signals
-	
+
 	private bool treeview_popup_menu(){
-		
+
 		return menu_snapshots_popup (menu_snapshots, null);
 	}
 
 	private bool treeview_button_press_event(Gdk.EventButton event){
-		
+
 		if (event.button == 3) {
 			return menu_snapshots_popup (menu_snapshots, event);
 		}
 
 		return false;
 	}
-	
+
 	// renderers
-	
+
     private void cell_date_render(
 		CellLayout cell_layout, CellRenderer cell, TreeModel model, TreeIter iter){
-			
+
 		Snapshot bak;
 		model.get (iter, 0, out bak, -1);
-		
+
 		var ctxt = (cell as Gtk.CellRendererText);
 		ctxt.text = bak.date_formatted;
 		ctxt.sensitive = !bak.marked_for_deletion;
@@ -396,16 +396,16 @@ class SnapshotListBox : Gtk.Box{
 		else{
 			ctxt.markup = ctxt.text;
 		}
-		
+
 		// Note: Avoid AM/PM as it may be hidden due to locale settings
 	}
 
 	private void cell_tags_render(
 		CellLayout cell_layout, CellRenderer cell, TreeModel model, TreeIter iter){
-			
+
 		Snapshot bak;
 		model.get (iter, 0, out bak, -1);
-		
+
 		var ctxt = (cell as Gtk.CellRendererText);
 		ctxt.text = bak.taglist_short;
 		ctxt.sensitive = !bak.marked_for_deletion;
@@ -420,30 +420,30 @@ class SnapshotListBox : Gtk.Box{
 
 	private void cell_size_render(
 		CellLayout cell_layout, CellRenderer cell, TreeModel model, TreeIter iter){
-			
+
 		Snapshot bak;
 		model.get (iter, 0, out bak, -1);
-		
+
 		var ctxt = (cell as Gtk.CellRendererText);
 
 		if (bak.btrfs_mode){
-			
+
 			int64 size = 0;
-			
+
 			if (bak.subvolumes.has_key("@")){
 				size += bak.subvolumes["@"].total_bytes;
 			}
-			
+
 			if (bak.subvolumes.has_key("@home")){
 				size += bak.subvolumes["@home"].total_bytes;
 			}
-			
+
 			ctxt.text = format_file_size(size);
 		}
 		else{
 			ctxt.text = "";
 		}
-		
+
 		ctxt.sensitive = !bak.marked_for_deletion;
 
 		if (bak.live){
@@ -456,29 +456,29 @@ class SnapshotListBox : Gtk.Box{
 
 	private void cell_unshared_render(
 		CellLayout cell_layout, CellRenderer cell, TreeModel model, TreeIter iter){
-			
+
 		Snapshot bak;
 		model.get (iter, 0, out bak, -1);
-		
+
 		var ctxt = (cell as Gtk.CellRendererText);
 
 		if (bak.btrfs_mode){
-			
+
 			int64 size = 0;
-			
+
 			if (bak.subvolumes.has_key("@")){
 				size += bak.subvolumes["@"].unshared_bytes;
 			}
 			if (bak.subvolumes.has_key("@home")){
 				size += bak.subvolumes["@home"].unshared_bytes;
 			}
-			
+
 			ctxt.text = format_file_size(size);
 		}
 		else{
 			ctxt.text = "";
 		}
-		
+
 		ctxt.sensitive = !bak.marked_for_deletion;
 
 		if (bak.live){
@@ -491,10 +491,10 @@ class SnapshotListBox : Gtk.Box{
 
 	private void cell_system_render(
 		CellLayout cell_layout, CellRenderer cell, TreeModel model, TreeIter iter){
-			
+
 		Snapshot bak;
 		model.get (iter, 0, out bak, -1);
-		
+
 		var ctxt = (cell as Gtk.CellRendererText);
 		ctxt.text = bak.sys_distro;
 		ctxt.sensitive = !bak.marked_for_deletion;
@@ -528,9 +528,9 @@ class SnapshotListBox : Gtk.Box{
 	}
 
 	private bool menu_snapshots_popup (Gtk.Menu popup, Gdk.EventButton? event) {
-		
+
 		var selected = selected_snapshots();
-		
+
 		mi_remove.sensitive = (selected.size > 0);
 		mi_mark.sensitive = (selected.size > 0);
 		mi_view_log_create.sensitive = !App.btrfs_mode;
@@ -539,7 +539,7 @@ class SnapshotListBox : Gtk.Box{
 		if (!App.btrfs_mode){
 
 			if (selected.size > 0){
-				
+
 				mi_view_log_restore.sensitive = file_exists(selected[0].rsync_restore_log_file)
 					|| file_exists(selected[0].rsync_restore_changes_log_file);
 			}
@@ -550,12 +550,12 @@ class SnapshotListBox : Gtk.Box{
 		} else {
 			menu_snapshots.popup (null, null, null, 0, Gtk.get_current_event_time());
 		}
-		
+
 		return true;
 	}
 
 	// actions
-	
+
 	public void refresh(){
 
 		var model = new Gtk.ListStore(1, typeof(Snapshot));
@@ -566,7 +566,7 @@ class SnapshotListBox : Gtk.Box{
 		}
 
 		App.repo.load_snapshots();
-		
+
 		var list = App.repo.snapshots;
 
 		if (treeview_sort_column_index == 0){
@@ -616,23 +616,23 @@ class SnapshotListBox : Gtk.Box{
 		}
 
 		col_size.visible = App.btrfs_mode;
-		col_unshared.visible = App.btrfs_mode; 
+		col_unshared.visible = App.btrfs_mode;
 
 		treeview.set_model (model);
 		treeview.columns_autosize ();
 	}
 
 	public void hide_context_menu(){
-		
+
 		// disconnect signal for shift+F10
         treeview.popup_menu.disconnect(treeview_popup_menu);
-        
+
         // disconnect signal for right-click
 		treeview.button_press_event.disconnect(treeview_button_press_event);
 	}
 
 	public Gee.ArrayList<Snapshot> selected_snapshots(){
-		
+
 		var list = new Gee.ArrayList<Snapshot>();
 
 		TreeIter iter;

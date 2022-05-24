@@ -33,22 +33,22 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class SettingsWindow : Gtk.Window{
-	
+
 	private Gtk.Box vbox_main;
 	private Gtk.StackSwitcher switcher;
 	private Gtk.Stack stack;
-	
+
 	private SnapshotBackendBox backend_box;
 	private BackupDeviceBox backup_dev_box;
 	private ScheduleBox schedule_box;
 	private ExcludeBox exclude_box;
 	private UsersBox users_box;
 	private MiscBox misc_box;
-	
+
 	private uint tmr_init;
 	private int def_width = 500;
 	private int def_height = 500;
-	
+
 	public SettingsWindow() {
 
 		log_debug("SettingsWindow: SettingsWindow()");
@@ -71,7 +71,7 @@ class SettingsWindow : Gtk.Window{
 		hbox.set_layout (Gtk.ButtonBoxStyle.CENTER);
 		hbox.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
         vbox_main.add(hbox);
-        
+
 		switcher = new Gtk.StackSwitcher();
 		switcher.margin = 6;
 		hbox.add (switcher);
@@ -82,10 +82,10 @@ class SettingsWindow : Gtk.Window{
 		vbox_main.add(stack);
 
 		switcher.set_stack(stack);
-		
+
 		backend_box = new SnapshotBackendBox(this);
 		stack.add_titled (backend_box, "type", _("Type"));
-		
+
 		backup_dev_box = new BackupDeviceBox(this);
 		stack.add_titled (backup_dev_box, "location", _("Location"));
 
@@ -97,7 +97,7 @@ class SettingsWindow : Gtk.Window{
 		exclude_box.set_users_box(users_box);
 
 		misc_box = new MiscBox(this, false);
-		
+
 		stack.add_titled (users_box, "users", _("Users"));
 
 		stack.add_titled (exclude_box, "filters", _("Filters"));
@@ -115,16 +115,16 @@ class SettingsWindow : Gtk.Window{
 		//var hbox = new Gtk.ButtonBox(Gtk.Orientation.HORIZONTAL);
 		var bbox = new Gtk.ButtonBox(Gtk.Orientation.HORIZONTAL);
 		vbox_main.add(bbox);
-		
+
 		#if GTK3_18
 		bbox.set_layout (Gtk.ButtonBoxStyle.CENTER);
 		#endif
-		
+
 		var btn_ok = new Button.with_label(_("OK"));
 		btn_ok.margin = 12;
 		btn_ok.set_size_request(100, -1);
         bbox.add(btn_ok);
-        
+
         btn_ok.clicked.connect(()=>{
 			save_changes();
 			this.destroy();
@@ -146,25 +146,25 @@ class SettingsWindow : Gtk.Window{
 
 		backend_box.refresh();
 		stack.set_visible_child_name("type");
-		
+
 		this.resize(def_width, def_height);
-		
+
 		//backup_dev_box.refresh(); //will be triggerred indirectly
-		
+
 		return false;
 	}
-	
+
 	private bool on_delete_event(Gdk.EventAny event){
-		
+
 		save_changes();
 
 		return false; // close window
 	}
-	
+
 	private void save_changes(){
-		
+
 		exclude_box.save_changes();
-		
+
 		App.cron_job_update();
 
 		//App.check_encrypted_home(this);

@@ -33,25 +33,25 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class RestoreExcludeBox : Gtk.Box{
-	
+
 	//private Gtk.CheckButton chk_web;
 	private Gtk.CheckButton chk_other;
 	private Gtk.CheckButton chk_web;
 	private Gtk.CheckButton chk_torrent;
-	
+
 	private Gtk.Window parent_window;
 
 	public RestoreExcludeBox (Gtk.Window _parent_window) {
 
 		log_debug("RestoreExcludeBox: RestoreExcludeBox()");
-		
+
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
 		margin = 12;
 
 		// app settings header --------------------------------
-		
+
 		var label = add_label_header(this, _("Exclude Application Settings"), true);
 
 		add_label(this, _("Select applications to exclude from restore"));
@@ -63,7 +63,7 @@ class RestoreExcludeBox : Gtk.Box{
 		chk.margin_top = 12;
 		chk.margin_bottom = 0;
 		chk_web = chk;
-		
+
 		chk.toggled.connect(()=>{
 			foreach(var name in new string[]{
 				"chromium", "google-chrome", "mozilla", "midori", "epiphany",
@@ -73,7 +73,7 @@ class RestoreExcludeBox : Gtk.Box{
 				}
 			}
 		});
-		
+
 		label = add_label(
 			this, _("Firefox, Chromium, Chrome, Opera, Epiphany, Midori"), false, true);
 		label.margin_top = 0;
@@ -87,12 +87,12 @@ class RestoreExcludeBox : Gtk.Box{
 		label.set_tooltip_text(tt);
 
 		// torrent clients ----------------------------
-		
+
 		chk = add_checkbox(this, _("Bittorrent Clients") + " (%s)".printf(_("Recommended")));
 		chk.active = true;
 		chk.margin_bottom = 0;
 		chk_torrent = chk;
-		
+
 		chk.toggled.connect(()=>{
 			foreach(var name in new string[]{
 				"deluge", "transmission" }){
@@ -101,7 +101,7 @@ class RestoreExcludeBox : Gtk.Box{
 				}
 			}
 		});
-		
+
 		label = add_label(this, _("Deluge, Transmission"), false, true);
 		label.margin_top = 0;
 		label.margin_bottom = 6;
@@ -114,7 +114,7 @@ class RestoreExcludeBox : Gtk.Box{
 		label.set_tooltip_text(tt);
 
 		// all apps ----------------------------
-		
+
 		chk = add_checkbox(this, _("Other applications (next page)"));
 		chk_other = chk;
 
@@ -127,13 +127,13 @@ class RestoreExcludeBox : Gtk.Box{
     }
 
     public void refresh(){
-		
+
 		chk_web.toggled();
 		chk_torrent.toggled();
 	}
 
 	public bool show_all_apps(){
-		
+
 		return chk_other.active;
-	}	
+	}
 }

@@ -33,7 +33,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public class ExcludeMessageWindow : Gtk.Dialog{
-	
+
 	private Gtk.Box vbox_main;
 	private Gtk.Box hbox_action;
 
@@ -52,7 +52,7 @@ public class ExcludeMessageWindow : Gtk.Dialog{
 	public ExcludeMessageWindow () {
 
 		log_debug("ExcludeMessageWindow: ExcludeMessageWindow()");
-		
+
 		this.title = _("Excluded Directories");
         this.window_position = WindowPosition.CENTER_ON_PARENT;
         this.set_destroy_with_parent (true);
@@ -153,14 +153,14 @@ public class ExcludeMessageWindow : Gtk.Dialog{
 	}
 
 	private void cell_exclude_text_render (CellLayout cell_layout, CellRenderer cell, TreeModel model, TreeIter iter){
-		
+
 		string pattern;
 		model.get (iter, 0, out pattern, -1);
 		(cell as Gtk.CellRendererText).text = pattern.has_prefix("+ ") ? pattern[2:pattern.length] : pattern;
 	}
 
 	private void tv_exclude_add_item(string path){
-		
+
 		string icon_name = null;
 
 		TreeIter iter;
@@ -181,7 +181,7 @@ public class ExcludeMessageWindow : Gtk.Dialog{
 	}
 
 	private void btn_ok_clicked(){
-		
+
 		this.response(Gtk.ResponseType.OK);
 		return;
 	}

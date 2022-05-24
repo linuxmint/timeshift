@@ -33,23 +33,23 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class FinishBox : Gtk.Box{
-	
+
 	private Gtk.Label lbl_header;
 	private Gtk.Label lbl_message;
-	
+
 	private Gtk.Window parent_window;
 	private bool show_notes = true;
 
 	public FinishBox (Gtk.Window _parent_window, bool _show_notes) {
 
 		log_debug("FinishBox: FinishBox()");
-		
+
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
 		margin = 12;
 		show_notes = _show_notes;
-		
+
 		// header
 		if (show_notes){
 			lbl_header = add_label_header(this, _("Notes"), true);
@@ -69,7 +69,7 @@ class FinishBox : Gtk.Box{
 
 		var msg = "";
 		string bullet = "• ";
-		
+
 		if (!show_notes){
 			if (App.scheduled){
 				msg += bullet + _("Scheduled snapshots are enabled. Snapshots will be created automatically for selected levels.") + "\n\n";
@@ -87,7 +87,7 @@ class FinishBox : Gtk.Box{
 		else{
 			msg += bullet + _("Restoring snapshots only replaces system files and settings. Non-hidden files and directories in user home directories will not be touched. This behaviour can be changed by adding a filter to include these files. Included files will be backed up when snapshot is created, and replaced when snapshot is restored.") + "\n\n";
 		}
-		
+
 		if (App.btrfs_mode){
 			msg += bullet + _("BTRFS snapshots are saved on the same disk from which it is created. If the system disk fails, snapshots will be lost along with the system. Save snapshots to an external non-system disk in RSYNC mode to guard against disk failures.") + "\n\n";
 		}
@@ -96,7 +96,7 @@ class FinishBox : Gtk.Box{
 
 			msg += bullet + _("Saving snapshots to a non-system disk allows you to format and re-install the OS on the system disk without losing snapshots stored on it. You can even install another Linux distribution and later roll-back the previous distribution by restoring a snapshot.") + "\n\n";
 		}
-		
+
 		msg += "\n";
 		msg += "<b>" + _("Close window to exit") + "</b>\n\n";
 

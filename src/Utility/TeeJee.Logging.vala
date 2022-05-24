@@ -21,7 +21,7 @@
  *
  *
  */
- 
+
 namespace TeeJee.Logging{
 
 	/* Functions for logging messages to console and log files */
@@ -73,7 +73,7 @@ namespace TeeJee.Logging{
 
 	public void log_error (string message, bool highlight = false,
 		bool is_warning = false){
-			
+
 		if (!LOG_ENABLE) { return; }
 
 		string msg = "";
@@ -98,10 +98,10 @@ namespace TeeJee.Logging{
 
 		stdout.printf (msg);
 		stdout.flush();
-		
+
 		try {
 			string str = "[%s] %s: %s\n".printf(timestamp(), prefix, message);
-			
+
 			if (dos_log != null){
 				dos_log.put_string (str);
 			}

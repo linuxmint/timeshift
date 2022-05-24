@@ -45,7 +45,7 @@ public class RsyncLogWindow : Window {
 	public RsyncLogWindow(string _rsync_log_file) {
 
 		log_debug("RsyncLogWindow: RsyncLogWindow()");
-		
+
 		this.title = _("Rsync Log Viewer");
 		this.window_position = Gtk.WindowPosition.CENTER_ON_PARENT;
 		this.set_default_size(def_width, def_height);
@@ -56,10 +56,10 @@ public class RsyncLogWindow : Window {
 		this.delete_event.connect(on_delete_event);
 
 		rsync_log_file = _rsync_log_file;
-		
+
 		logbox = new RsyncLogBox(this);
 		this.add(logbox);
-		
+
 		show_all();
 
 		logbox.open_log(rsync_log_file);
@@ -68,7 +68,7 @@ public class RsyncLogWindow : Window {
 	}
 
 	private bool on_delete_event(Gdk.EventAny event){
-		
+
 		if (logbox.is_running){
 			return true; // keep window open
 		}

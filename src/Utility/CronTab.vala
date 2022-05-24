@@ -20,7 +20,7 @@
  *
  *
  */
- 
+
 using TeeJee.Logging;
 using TeeJee.FileSystem;
 using TeeJee.ProcessHelper;
@@ -33,7 +33,7 @@ public class CronTab : GLib.Object {
 	public static void clear_cached_text(){
 		crontab_text = null;
 	}
-	
+
 	public static string crontab_read_all(string user_name = ""){
 		string std_out, std_err;
 
@@ -43,9 +43,9 @@ public class CronTab : GLib.Object {
 		}
 
 		log_debug(cmd);
-		
+
 		int ret_val = exec_sync(cmd, out std_out, out std_err);
-		
+
 		if (ret_val != 0){
 			log_debug(_("Failed to read cron tab"));
 			return "";
@@ -56,7 +56,7 @@ public class CronTab : GLib.Object {
 	}
 
 	public static bool has_job(string entry, bool partial_match, bool use_cached_text){
-		
+
 		// read crontab file
 		string tab = "";
 		if (use_cached_text && (crontab_text != null)){
@@ -84,9 +84,9 @@ public class CronTab : GLib.Object {
 
 		return false;
 	}
-	
+
 	public static bool add_job(string entry, bool use_cached_text){
-		
+
 		// read crontab file
 		string tab = "";
 		if (use_cached_text && (crontab_text != null)){
@@ -96,7 +96,7 @@ public class CronTab : GLib.Object {
 			crontab_text = crontab_read_all();
 			tab = crontab_text;
 		}
-		
+
 		var lines = new Gee.ArrayList<string>();
 		foreach(string line in tab.split("\n")){
 			lines.add(line);
@@ -139,7 +139,7 @@ public class CronTab : GLib.Object {
 	}
 
 	public static bool remove_job(string entry, bool use_regex, bool use_cached_text){
-		
+
 		// read crontab file
 		string tab = "";
 		if (use_cached_text && (crontab_text != null)){
@@ -149,12 +149,12 @@ public class CronTab : GLib.Object {
 			crontab_text = crontab_read_all();
 			tab = crontab_text;
 		}
-		
+
 		var lines = new Gee.ArrayList<string>();
 		foreach(string line in tab.split("\n")){
 			lines.add(line);
 		}
-		
+
 		Regex regex = null;
 
 		if (use_regex){
@@ -175,7 +175,7 @@ public class CronTab : GLib.Object {
 			}
 
 			if (use_regex && (regex != null)){
-				
+
 				MatchInfo match;
 				if (regex.match(line, 0, out match)) {
 					lines.remove(line);
@@ -225,7 +225,7 @@ public class CronTab : GLib.Object {
 			log_error(_("File not found") + ": %s".printf(file_path));
 			return false;
 		}
-		
+
 		var cmd = "crontab";
 		if (user_name.length > 0){
 			cmd += " -u %s".printf(user_name);
@@ -245,12 +245,12 @@ public class CronTab : GLib.Object {
 			return true;
 		}
 	}
-	
+
 	public static bool export(string file_path, string user_name = ""){
 		if (file_exists(file_path)){
 			file_delete(file_path);
 		}
-		
+
 		bool ok = file_write(file_path, crontab_read_all(user_name));
 
 		if (!ok){
@@ -268,11 +268,11 @@ public class CronTab : GLib.Object {
 	}
 
 	public static bool add_script_file(string file_name, string cron_dir_type, string text, bool stop_cron_emails){
-		
+
 		/* Note:
 		 * cron.d and cron.hourly are managed by cron so it expects entries in crontab format
 		 * minute hour day_of_month month day_of_week user command
-		 * 
+		 *
 		 * cron.{daily|weekly|monthly} are read by anacron. scripts placed here should have commands only.
 		 * */
 
@@ -310,7 +310,7 @@ public class CronTab : GLib.Object {
 		chmod(file_path, "644");
 
 		log_msg(_("Added cron task") + ": %s".printf(file_path));
-		
+
 		return true;
 	}
 
@@ -334,11 +334,11 @@ public class CronTab : GLib.Object {
 		if (!file_exists(file_path)){
 			return true;
 		}
-		
+
 		file_delete(file_path);
 
 		log_msg(_("Removed cron task") + ": %s".printf(file_path));
-		
+
 		return true;
 	}
 }

@@ -42,9 +42,9 @@ public class Subvolume : GLib.Object{
 
 	//parent
 	public SnapshotRepo? repo;
-	
+
 	public Subvolume(string name, string path, string parent_dev_uuid, SnapshotRepo? parent_repo){
-		
+
 		this.name = name;
 		this.path = path;
 		this.device_uuid = parent_dev_uuid;
@@ -68,10 +68,10 @@ public class Subvolume : GLib.Object{
 	}
 
 	public Device? get_device(){
-		
+
 		return Device.get_device_by_uuid(device_uuid);
 	}
-	
+
 	public bool exists_on_disk{
 		get {
 			return dir_exists(path);
@@ -83,29 +83,29 @@ public class Subvolume : GLib.Object{
 			return (repo == null);
 		}
 	}
-	
+
 	public static Gee.HashMap<string, Subvolume> detect_subvolumes_for_system_by_path(
 		string system_path, SnapshotRepo? repo, Gtk.Window? parent_window){
 
 		var map = new Gee.HashMap<string, Subvolume>();
-		
+
 		log_debug("Searching subvolume for system at path: %s".printf(system_path));
-		
+
 		var fstab = FsTabEntry.read_file(path_combine(system_path, "/etc/fstab"));
 		var crypttab = CryptTabEntry.read_file(path_combine(system_path, "/etc/crypttab"));
-		
+
 		foreach(var item in fstab){
-			
+
 			if (!item.is_for_system_directory()){ continue; }
-			
+
 			if (item.subvolume_name().length > 0){
-				
+
 				var dev = item.resolve_device(crypttab, parent_window);
 				var dev_name = (dev == null) ? "" : dev.device;
 				var dev_uuid = (dev == null) ? "" : dev.uuid;
-				
+
 				log_debug("Found subvolume: %s, on device: %s".printf(item.subvolume_name(), dev_name));
-				
+
 				var subvol = new Subvolume(item.subvolume_name(), item.mount_point, dev_uuid, repo);
 				map.set(subvol.name, subvol);
 			}
@@ -115,12 +115,12 @@ public class Subvolume : GLib.Object{
 	}
 
 	public void print_info(){
-		
+
 		log_debug("name=%s, uuid=%s, id=%ld, path=%s".printf(name, device_uuid, id, path));
 	}
 
 	// actions ----------------------------------
-	
+
 	public bool remove(){
 
 		if (is_system_subvolume){
@@ -131,7 +131,7 @@ public class Subvolume : GLib.Object{
 				path = path_combine("/run/timeshift/backup-home", "@home");
 			}
 		}
-		
+
 		string cmd = "";
 		string std_out, std_err, subpath;
 		int ret_val;
@@ -141,7 +141,7 @@ public class Subvolume : GLib.Object{
 		log_msg("%s: %s (Id:%ld)".printf(_("Deleting subvolume"), name, id));
 
 		string options = App.use_option_raw ? "--commit-after" : "";
-		
+
 		subpath = path_combine(path, name);
 		if (dir_exists(subpath)) { // there is a nested subvol to remove first
 			cmd = "btrfs subvolume delete %s '%s'".printf(options, subpath);
@@ -154,7 +154,7 @@ public class Subvolume : GLib.Object{
 				return false;
 			}
 		}
-		
+
 		cmd = "btrfs subvolume delete %s '%s'".printf(options, path);
 		log_debug(cmd);
 		ret_val = exec_sync(cmd, out std_out, out std_err);
@@ -165,11 +165,11 @@ public class Subvolume : GLib.Object{
 		}
 
 		log_msg("%s: %s (Id:%ld)\n".printf(_("Deleted subvolume"), name, id));
-		
+
 		if ((id > 0) && (repo != null)){
 
 			log_msg("%s: 0/%ld".printf(_("Destroying qgroup"), id));
-			
+
 			cmd = "btrfs qgroup destroy 0/%ld '%s'".printf(id, repo.mount_paths[name]);
 			log_debug(cmd);
 			ret_val = exec_sync(cmd, out std_out, out std_err);
@@ -189,7 +189,7 @@ public class Subvolume : GLib.Object{
 		if (is_system_subvolume) { return false; }
 
 		// restore snapshot subvolume by creating new subvolume snapshots ----------------------
-		
+
 		string src_path = path;
 		string dst_path = path_combine(mount_path, name);
 
@@ -202,13 +202,13 @@ public class Subvolume : GLib.Object{
 			log_error("%s: %s".printf(_("Subvolume exists at destination"), dst_path));
 			return false;
 		}
-		
+
 		string cmd = "btrfs subvolume snapshot '%s' '%s'".printf(src_path, dst_path);
 		log_debug(cmd);
 
 		string std_out, std_err;
 		int status = exec_sync(cmd, out std_out, out std_err);
-		
+
 		if (status != 0){
 			log_error(std_err);
 			log_error(_("btrfs returned an error") + ": %d".printf(status));
@@ -217,7 +217,7 @@ public class Subvolume : GLib.Object{
 		}
 
 		log_msg(_("Restored system subvolume") + ": %s".printf(name));
-		
+
 		return true;
 	}
 }

@@ -37,31 +37,31 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class EstimateBox : Gtk.Box{
-	
+
 	private Gtk.ProgressBar progressbar;
 	private Gtk.Window parent_window;
-	
+
 	private bool thread_is_running = false;
 
 	public EstimateBox (Gtk.Window _parent_window) {
 
 		log_debug("EstimateBox: EstimateBox()");
-		
+
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
 		margin = 12;
-		
+
 		// header
 		add_label_header(this, _("Estimating System Size..."), true);
 
 		var hbox_status = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		add (hbox_status);
-		
+
 		var spinner = new Gtk.Spinner();
 		spinner.active = true;
 		hbox_status.add(spinner);
-		
+
 		//lbl_msg
 		var lbl_msg = add_label(hbox_status, _("Please wait..."));
 		lbl_msg.halign = Align.START;
@@ -83,14 +83,14 @@ class EstimateBox : Gtk.Box{
 			log_debug("EstimateBox: size > 0");
 			return;
 		}
-		
+
 		progressbar.fraction = 0.0;
 
 		// start the estimation if not already running
 		if (!App.thread_estimate_running){
 
 			log_debug("EstimateBox: thread started");
-			
+
 			try {
 				thread_is_running = true;
 				Thread.create<void> (estimate_system_size_thread, true);
@@ -103,16 +103,16 @@ class EstimateBox : Gtk.Box{
 
 		// wait for completion and increment progressbar
 		while (thread_is_running){
-			
+
 			if (progressbar.fraction < 98.0){
-				
+
 				progressbar.fraction += 0.005;
 
 				#if XAPP
 				XApp.set_window_progress(parent_window, (int)(progressbar.fraction * 100.0));
 				#endif
 			}
-			
+
 			gtk_do_events();
 			sleep(100);
 		}
@@ -123,7 +123,7 @@ class EstimateBox : Gtk.Box{
 	}
 
 	private void estimate_system_size_thread(){
-		
+
 		App.estimate_system_size();
 		log_debug("EstimateBox: thread finished");
 		thread_is_running = false;

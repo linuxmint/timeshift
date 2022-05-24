@@ -33,7 +33,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class DeleteWindow : Gtk.Window{
-	
+
 	private Gtk.Box vbox_main;
 	private Gtk.Notebook notebook;
 	private Gtk.ButtonBox bbox_action;
@@ -54,11 +54,11 @@ class DeleteWindow : Gtk.Window{
 	private int def_width = 500;
 	private int def_height = 500;
 	private bool success = false;
-	
+
 	public DeleteWindow() {
 
 		log_debug("DeleteWindow: DeleteWindow()");
-		
+
 		this.title = _("Delete Snapshots");
         this.window_position = WindowPosition.CENTER;
         this.modal = true;
@@ -68,7 +68,7 @@ class DeleteWindow : Gtk.Window{
 		this.delete_event.connect(on_delete_event);
 
 		this.resize(def_width, def_height);
-		
+
 	    // vbox_main
         vbox_main = new Gtk.Box(Orientation.VERTICAL, 6);
         vbox_main.margin = 0;
@@ -78,23 +78,23 @@ class DeleteWindow : Gtk.Window{
 		notebook = add_notebook(vbox_main, false, false);
 
 		// create tab
-		
+
 		var vbox_tab = new Gtk.Box(Orientation.VERTICAL, 6);
         vbox_tab.margin = 12;
-		
+
 		add_label_header(vbox_tab, _("Select Snapshots"), true);
 
 		add_label(vbox_tab, _("Select the snapshots to be deleted"));
-		
+
 		var label = new Gtk.Label(_("Snapshots"));
-		
+
 		snapshot_list_box = new SnapshotListBox(this);
 		snapshot_list_box.hide_context_menu();
 		snapshot_list_box.margin = 0;
 		vbox_tab.add(snapshot_list_box);
-		
+
 		notebook.append_page (vbox_tab, label);
-		
+
 		label = new Gtk.Label(_("Delete"));
 		delete_box = new DeleteBox(this);
 		delete_box.margin = 12;
@@ -115,7 +115,7 @@ class DeleteWindow : Gtk.Window{
 
 		log_debug("DeleteWindow: DeleteWindow(): exit");
     }
-    
+
 	private bool init_delayed(){
 
 		if (tmr_init > 0){
@@ -132,36 +132,36 @@ class DeleteWindow : Gtk.Window{
 
 		return false; // close window
 	}
-	
+
 	private void create_actions(){
-		
+
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		 
+
 		var bbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
 		bbox.margin = 12;
 		bbox.spacing = 6;
 		bbox.hexpand = true;
         hbox.add(bbox);
-        
+
         bbox_action = bbox;
 
 		#if GTK3_18
-			bbox.set_layout (Gtk.ButtonBoxStyle.CENTER);	
+			bbox.set_layout (Gtk.ButtonBoxStyle.CENTER);
 		#endif
-		
+
 		Gtk.SizeGroup size_group = null; //new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		
+
 		// previous
-		
+
 		btn_prev = add_button(bbox, _("Previous"), "", size_group, null);
-		
+
         btn_prev.clicked.connect(()=>{
 			go_prev();
 		});
 
 		// next
-		
+
 		btn_next = add_button(bbox, _("Next"), "", size_group, null);
 
         btn_next.clicked.connect(()=>{
@@ -169,7 +169,7 @@ class DeleteWindow : Gtk.Window{
 		});
 
 		// close
-		
+
 		btn_close = add_button(bbox, _("Close"), "", size_group, null);
 
         btn_close.clicked.connect(()=>{
@@ -177,16 +177,16 @@ class DeleteWindow : Gtk.Window{
 		});
 
 		// hide
-		
+
 		btn_hide = add_button(bbox, _("Hide"), "", size_group, null);
 		btn_hide.set_tooltip_text(_("Hide this window (files will be deleted in background)"));
-		
+
         btn_hide.clicked.connect(()=>{
 			this.destroy();
 		});
-	
+
 		// cancel
-		
+
 		btn_cancel = add_button(bbox, _("Cancel"), "", size_group, null);
 
         btn_cancel.clicked.connect(()=>{
@@ -196,7 +196,7 @@ class DeleteWindow : Gtk.Window{
 			if (App.delete_file_task != null){
 				App.delete_file_task.stop(AppStatus.CANCELLED);
 			}
-			
+
 			this.destroy(); // TODO: Show error page
 		});
 
@@ -206,20 +206,20 @@ class DeleteWindow : Gtk.Window{
 	}
 
 	private void action_buttons_set_no_show_all(bool val){
-		
+
 		btn_prev.no_show_all = val;
 		btn_next.no_show_all = val;
 		btn_hide.no_show_all = val;
 		btn_close.no_show_all = val;
 		btn_cancel.no_show_all = val;
 	}
-	
+
 	// navigation
 
 	private void go_first(){
-		
+
 		// set initial tab
-		
+
 		if ((App.delete_list.size == 0) && !App.thread_delete_running){
 			notebook.page = Tabs.SNAPSHOT_LIST;
 		}
@@ -229,40 +229,40 @@ class DeleteWindow : Gtk.Window{
 
 		initialize_tab();
 	}
-	
+
 	private void go_prev(){
-		
+
 		switch(notebook.page){
 		case Tabs.SNAPSHOT_LIST:
 		case Tabs.DELETE:
 			// btn_previous is disabled for this page
 			break;
 		}
-		
+
 		initialize_tab();
 	}
-	
+
 	private void go_next(){
-		
+
 		if (!validate_current_tab()){
 			return;
 		}
-		
+
 		switch(notebook.page){
 		case Tabs.SNAPSHOT_LIST:
 			App.delete_list = snapshot_list_box.selected_snapshots();
 			notebook.page = Tabs.DELETE;
 			break;
-			
+
 		case Tabs.DELETE:
 			notebook.page = Tabs.DELETE_FINISH;
 			break;
-			
+
 		case Tabs.DELETE_FINISH:
 			destroy();
 			break;
 		}
-		
+
 		initialize_tab();
 	}
 
@@ -278,7 +278,7 @@ class DeleteWindow : Gtk.Window{
 		// show/hide actions -----------------------------------
 
 		action_buttons_set_no_show_all(false);
-		
+
 		switch(notebook.page){
 		case Tabs.DELETE:
 			btn_prev.hide();
@@ -287,7 +287,7 @@ class DeleteWindow : Gtk.Window{
 			btn_hide.show();
 			btn_cancel.show();
 			break;
-			
+
 		case Tabs.SNAPSHOT_LIST:
 			btn_prev.show();
 			btn_next.show();
@@ -298,7 +298,7 @@ class DeleteWindow : Gtk.Window{
 			btn_next.sensitive = true;
 			btn_close.sensitive = true;
 			break;
-			
+
 		case Tabs.DELETE_FINISH:
 			btn_prev.hide();
 			btn_next.hide();
@@ -326,7 +326,7 @@ class DeleteWindow : Gtk.Window{
 	}
 
 	private bool validate_current_tab(){
-		
+
 		switch(notebook.page){
 		case Tabs.SNAPSHOT_LIST:
 			var sel = snapshot_list_box.treeview.get_selection ();
@@ -340,7 +340,7 @@ class DeleteWindow : Gtk.Window{
 			else{
 				return true;
 			}
-			
+
 		default:
 			return true;
 		}

@@ -39,7 +39,7 @@ using TeeJee.Misc;
 class RestoreBox : Gtk.Box{
 
 	public Gtk.Label lbl_header;
-	
+
 	private Gtk.Spinner spinner;
 	public Gtk.Label lbl_msg;
 	public Gtk.Label lbl_status;
@@ -63,7 +63,7 @@ class RestoreBox : Gtk.Box{
 	public RestoreBox(Gtk.Window _parent_window) {
 
 		log_debug("RestoreBox: RestoreBox()");
-		
+
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
@@ -79,11 +79,11 @@ class RestoreBox : Gtk.Box{
 
 		var hbox_status = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		add (hbox_status);
-		
+
 		spinner = new Gtk.Spinner();
 		spinner.active = true;
 		hbox_status.add(spinner);
-		
+
 		//lbl_msg
 		lbl_msg = add_label(hbox_status, _("Preparing..."));
 		lbl_msg.hexpand = true;
@@ -110,15 +110,15 @@ class RestoreBox : Gtk.Box{
 
 		var label = add_label(this, "");
 		label.vexpand = true;
-		
+
 		// add count labels ---------------------------------
-		
+
 		Gtk.SizeGroup sg_label = null;
 		Gtk.SizeGroup sg_value = null;
 
 		label = add_label(this, _("Files and directory counts:"), true);
 		label.margin_bottom = 6;
-		
+
 		lbl_unchanged = add_count_label(this, _("No Change"), ref sg_label, ref sg_value);
 		lbl_created = add_count_label(this, _("Created"), ref sg_label, ref sg_value);
 		lbl_deleted = add_count_label(this, _("Deleted"), ref sg_label, ref sg_value);
@@ -126,7 +126,7 @@ class RestoreBox : Gtk.Box{
 
 		label = add_label(this, _("Changed items:"), true);
 		label.margin_bottom = 6;
-		
+
 		lbl_checksum = add_count_label(this, _("Checksum"), ref sg_label, ref sg_value);
 		lbl_size = add_count_label(this, _("Size"), ref sg_label, ref sg_value);
 		lbl_timestamp = add_count_label(this, _("Timestamp"), ref sg_label, ref sg_value);
@@ -140,7 +140,7 @@ class RestoreBox : Gtk.Box{
 	private Gtk.Label add_count_label(Gtk.Box box, string text,
 		ref Gtk.SizeGroup? sg_label, ref Gtk.SizeGroup? sg_value,
 		int add_margin_bottom = 0){
-			
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		box.add (hbox);
 
@@ -178,7 +178,7 @@ class RestoreBox : Gtk.Box{
 	public bool restore(){
 
 		log_debug("RestoreBox: restore()");
-		
+
 		if (App.restore_current_system && !App.dry_run){
 			parent_window.hide();
 		}
@@ -189,7 +189,7 @@ class RestoreBox : Gtk.Box{
 		else{
 			lbl_header.label = format_text(_("Restoring Snapshot..."), true, false, true);
 		}
-		
+
 		try {
 			thread_is_running = true;
 			Thread.create<void> (restore_thread, true);
@@ -205,20 +205,20 @@ class RestoreBox : Gtk.Box{
 		string status_line = "";
 		string last_status_line = "";
 		int remaining_counter = 10;
-		
+
 		while (thread_is_running){
 
 			status_line = escape_html(App.task.status_line);
-			
+
 			if (status_line != last_status_line){
-				
+
 				lbl_status.label = status_line;
 				last_status_line = status_line;
 				status_line_counter = status_line_counter_default;
 			}
 			else{
 				status_line_counter--;
-				
+
 				if (status_line_counter < 0){
 					status_line_counter = status_line_counter_default;
 					lbl_status.label = "";
@@ -231,16 +231,16 @@ class RestoreBox : Gtk.Box{
 
 			// time remaining
 			remaining_counter--;
-			
+
 			if (remaining_counter == 0){
-				
+
 				lbl_remaining.label = App.task.stat_time_remaining + " " + _("remaining");
 
 				remaining_counter = 10;
-			}	
-			
+			}
+
 			if (fraction < 0.99){
-				
+
 				progressbar.fraction = fraction;
 
 				#if XAPP
@@ -270,7 +270,7 @@ class RestoreBox : Gtk.Box{
 		#if XAPP
 		XApp.set_window_progress(parent_window, 0);
 		#endif
-		
+
 		if (App.restore_current_system && !App.dry_run){
 			parent_window.show();
 		}
@@ -279,9 +279,9 @@ class RestoreBox : Gtk.Box{
 
 		return (App.task.exit_code == 0);
 	}
-	
+
 	private void restore_thread(){
-		
+
 		log_debug("RestoreBox: restore_thread()");
 		App.restore_snapshot(parent_window);
 		thread_is_running = false;

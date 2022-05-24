@@ -22,7 +22,7 @@ MSG_INFO() {
 	if [ "$2" == 0 ]; then
 		add_newline='-n'
 	fi
-	
+
 	if [ $COLORS_SUPPORTED -eq 0 ]; then
         echo -e ${add_newline} "[${Yellow}*${Reset}] ${Green}$1${Reset}"
     else

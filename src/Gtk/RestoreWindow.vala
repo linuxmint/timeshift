@@ -33,7 +33,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class RestoreWindow : Gtk.Window{
-	
+
 	private Gtk.Box vbox_main;
 	private Gtk.Notebook notebook;
 	private Gtk.ButtonBox bbox_action;
@@ -60,12 +60,12 @@ class RestoreWindow : Gtk.Window{
 	private int def_height = 500;
 	private bool success = false;
 
-	public bool check_before_restore = true; 
-	
+	public bool check_before_restore = true;
+
 	public RestoreWindow() {
 
 		log_debug("RestoreWindow: RestoreWindow()");
-		
+
 		this.title = App.mirror_system ? _("Clone System") : _("Restore Snapshot");
         this.window_position = WindowPosition.CENTER;
         this.modal = true;
@@ -85,7 +85,7 @@ class RestoreWindow : Gtk.Window{
 		notebook = add_notebook(vbox_main, false, false);
 
 		Gtk.Label label;
-		
+
 		label = new Gtk.Label(_("Restore Device"));
 		restore_device_box = new RestoreDeviceBox(this);
 		restore_device_box.margin = 12;
@@ -95,7 +95,7 @@ class RestoreWindow : Gtk.Window{
 		restore_exclude_box = new RestoreExcludeBox(this);
 		restore_exclude_box.margin = 12;
 		notebook.append_page (restore_exclude_box, label);
-		
+
 		label = new Gtk.Label(_("Exclude Apps"));
 		exclude_apps_box = new ExcludeAppsBox(this);
 		exclude_apps_box.margin = 12;
@@ -142,7 +142,7 @@ class RestoreWindow : Gtk.Window{
 
 		log_debug("RestoreWindow: RestoreWindow(): exit");
     }
-    
+
 	private bool init_delayed(){
 
 		if (tmr_init > 0){
@@ -160,44 +160,44 @@ class RestoreWindow : Gtk.Window{
 	private bool on_delete_event(Gdk.EventAny event){
 
 		save_changes();
-		
+
 		return false; // close window
 	}
-	
+
 	private void save_changes(){
-		
+
 		App.cron_job_update();
 	}
-	
+
 	private void create_actions(){
-		
+
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		 
+
 		var bbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
 		bbox.margin = 12;
 		bbox.spacing = 6;
 		bbox.hexpand = true;
         hbox.add(bbox);
-        
+
         bbox_action = bbox;
 
         #if GTK3_18
-			bbox.set_layout (Gtk.ButtonBoxStyle.CENTER);	
+			bbox.set_layout (Gtk.ButtonBoxStyle.CENTER);
 		#endif
 
 		Gtk.SizeGroup size_group = null; //new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		
+
 		// previous
-		
+
 		btn_prev = add_button(bbox, _("Previous"), "", size_group, null);
-		
+
         btn_prev.clicked.connect(()=>{
 			go_prev();
 		});
 
 		// next
-		
+
 		btn_next = add_button(bbox, _("Next"), "", size_group, null);
 
         btn_next.clicked.connect(()=>{
@@ -205,7 +205,7 @@ class RestoreWindow : Gtk.Window{
 		});
 
 		// close
-		
+
 		btn_close = add_button(bbox, _("Cancel"), "", size_group, null);
 
         btn_close.clicked.connect(()=>{
@@ -214,33 +214,33 @@ class RestoreWindow : Gtk.Window{
 		});
 
 		// cancel
-		
+
 		btn_cancel = add_button(bbox, _("Cancel"), "", size_group, null);
 
         btn_cancel.clicked.connect(()=>{
 
 			if (!App.dry_run){
-				
+
 				var title = _("Cancel restore?");
-					
+
 				var msg = _("Cancelling the restore process will leave the target system in an inconsistent state. The system may fail to boot or you may run into various issues. After cancelling, you need to restore another snapshot, to bring the system to a consistent state. Click Yes to confirm.");
-				
+
 				var type = Gtk.MessageType.ERROR;
 				var buttons_type = Gtk.ButtonsType.YES_NO;
-				
+
 				var dlg = new CustomMessageDialog(title, msg, type, this, buttons_type);
 				var response = dlg.run();
 				dlg.destroy();
-				
+
 				if (response != Gtk.ResponseType.YES){
 					return;
 				}
 			}
-			
+
 			if (App.task != null){
 				App.task.stop(AppStatus.CANCELLED);
 			}
-			
+
 			this.destroy(); // TODO: low: Show error page
 		});
 
@@ -250,23 +250,23 @@ class RestoreWindow : Gtk.Window{
 	}
 
 	private void action_buttons_set_no_show_all(bool val){
-		
+
 		btn_prev.no_show_all = val;
 		btn_next.no_show_all = val;
 		btn_close.no_show_all = val;
 		btn_cancel.no_show_all = val;
 	}
-	
+
 	// navigation ----------------------------------------------------
 
 	private void go_first(){
-		
+
 		// set initial tab
 
 		if (App.btrfs_mode){
-			
+
 			if (App.snapshot_to_restore.subvolumes.has_key("@home")){
-				
+
 				notebook.page = Tabs.USERS;
 			}
 			else {
@@ -276,42 +276,42 @@ class RestoreWindow : Gtk.Window{
 		else{
 			notebook.page = Tabs.TARGET_DEVICE;
 		}
-			
+
 		initialize_tab();
 	}
-	
+
 	private void go_prev(){
-		
+
 		switch(notebook.page){
 		case Tabs.RESTORE_EXCLUDE:
 			notebook.page = Tabs.TARGET_DEVICE;
 			break;
-			
+
 		case Tabs.EXCLUDE_APPS:
 			notebook.page = Tabs.RESTORE_EXCLUDE;
 			//notebook.page = Tabs.TARGET_DEVICE;
 			break;
-			
+
 		case Tabs.SUMMARY:
 			notebook.page = Tabs.RESTORE_EXCLUDE; // go to parent (RESTORE_EXCLUDE)
 			break;
-			
+
 		case Tabs.TARGET_DEVICE:
 		case Tabs.RESTORE:
 		case Tabs.FINISH:
 			// btn_previous is disabled for this page
 			break;
 		}
-		
+
 		initialize_tab();
 	}
-	
+
 	private void go_next(){
-		
+
 		if (!validate_current_tab()){
 			return;
 		}
-		
+
 		switch(notebook.page){
 		case Tabs.TARGET_DEVICE:
 			if (!App.btrfs_mode && check_before_restore){
@@ -321,20 +321,20 @@ class RestoreWindow : Gtk.Window{
 				notebook.page = Tabs.SUMMARY;
 			}
 			break;
-			
+
 		/*case Tabs.RESTORE_EXCLUDE:
 			if (restore_exclude_box.show_all_apps()){
 				notebook.page = Tabs.EXCLUDE_APPS;
 			}
 			else{
 				notebook.page = Tabs.SUMMARY;
-			}	
+			}
 			break;
-			
+
 		case Tabs.EXCLUDE_APPS:
 			notebook.page = Tabs.SUMMARY;
 			break;*/
-			
+
 		case Tabs.CHECK:
 			notebook.page = Tabs.SHOW_LOG;
 			break;
@@ -350,18 +350,18 @@ class RestoreWindow : Gtk.Window{
 		case Tabs.SUMMARY:
 			notebook.page = Tabs.RESTORE;
 			break;
-			
+
 		case Tabs.RESTORE:
 			notebook.page = Tabs.FINISH;
 			break;
-			
+
 		case Tabs.FINISH:
 			destroy();
 			break;
 		}
 
 		gtk_do_events();
-		
+
 		initialize_tab();
 	}
 
@@ -374,29 +374,29 @@ class RestoreWindow : Gtk.Window{
 		// show/hide actions -----------------------------------
 
 		action_buttons_set_no_show_all(false);
-		
+
 		switch(notebook.page){
 		case Tabs.RESTORE:
-		
+
 			btn_prev.hide();
 			btn_next.hide();
 			btn_close.hide();
-			
+
 			btn_cancel.show();
-			
+
 			break;
-			
+
 		case Tabs.CHECK:
-		
+
 			btn_prev.hide();
 			btn_next.hide();
 			btn_close.hide();
-			
+
 			btn_cancel.show();
 			btn_cancel.sensitive = true;
-			
+
 			break;
-			
+
 		case Tabs.TARGET_DEVICE:
 		case Tabs.RESTORE_EXCLUDE:
 		case Tabs.EXCLUDE_APPS:
@@ -408,7 +408,7 @@ class RestoreWindow : Gtk.Window{
 			btn_next.show();
 			btn_close.show();
 			btn_cancel.hide();
-			
+
 			btn_prev.sensitive = false;
 			btn_next.sensitive = true;
 			btn_close.sensitive = true;
@@ -416,25 +416,25 @@ class RestoreWindow : Gtk.Window{
 			break;
 
 		case Tabs.SHOW_LOG:
-		
+
 			btn_prev.show();
 			btn_next.show();
 			btn_close.show();
 			btn_cancel.hide();
-			
+
 			btn_prev.sensitive = false;
 			btn_next.sensitive = true;
 			btn_close.sensitive = true;
-			
+
 			break;
-			
+
 		case Tabs.FINISH:
-		
+
 			btn_prev.show();
 			btn_next.show();
 			btn_close.show();
 			btn_cancel.hide();
-			
+
 			btn_prev.sensitive = false;
 			btn_next.sensitive = false;
 			btn_close.sensitive = true;
@@ -443,28 +443,28 @@ class RestoreWindow : Gtk.Window{
 		}
 
 		gtk_do_events();
-		
+
 		// actions ---------------------------------------------------
-		
+
 		switch(notebook.page){
 		case Tabs.TARGET_DEVICE:
 			restore_device_box.refresh(false); // false: App.init_mount_list() will be called before this window is shown
 			break;
-			
+
 		case Tabs.RESTORE_EXCLUDE:
 			restore_exclude_box.refresh();
 			break;
-			
+
 		case Tabs.EXCLUDE_APPS:
 			exclude_apps_box.refresh();
 			break;
-		
+
 		case Tabs.CHECK:
 			App.dry_run = true;
 			success = check_box.restore();
 			go_next();
 			break;
-			
+
 		case Tabs.SHOW_LOG:
 			if (file_exists(App.snapshot_to_restore.rsync_restore_log_file)){
 				log_box.open_log(App.snapshot_to_restore.rsync_restore_log_file);
@@ -483,13 +483,13 @@ class RestoreWindow : Gtk.Window{
 		case Tabs.SUMMARY:
 			summary_box.refresh();
 			break;
-			
+
 		case Tabs.RESTORE:
 			App.dry_run = false;
 			success = restore_box.restore();
 			go_next();
 			break;
-			
+
 		case Tabs.FINISH:
 			restore_finish_box.update_message(success,"","");
 			btn_close.label = _("Close");
@@ -501,7 +501,7 @@ class RestoreWindow : Gtk.Window{
 	}
 
 	private bool validate_current_tab(){
-		
+
 		if (notebook.page == Tabs.TARGET_DEVICE){
 
 			bool ok = restore_device_box.check_and_mount_devices();

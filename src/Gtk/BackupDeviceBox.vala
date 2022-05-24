@@ -38,13 +38,13 @@ class BackupDeviceBox : Gtk.Box{
 	private Gtk.InfoBar infobar_location;
 	private Gtk.Label lbl_infobar_location;
 	private Gtk.Label lbl_common;
-	
+
 	private Gtk.Window parent_window;
 
 	public BackupDeviceBox (Gtk.Window _parent_window) {
 
 		log_debug("BackupDeviceBox: BackupDeviceBox()");
-		
+
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
@@ -58,9 +58,9 @@ class BackupDeviceBox : Gtk.Box{
 		// buffer
 		var label = add_label(hbox, "");
         label.hexpand = true;
-       
+
 		// refresh device button
-		
+
 		var size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 		var btn_refresh = add_button(hbox, _("Refresh"), "", size_group, null);
         btn_refresh.clicked.connect(()=>{
@@ -69,7 +69,7 @@ class BackupDeviceBox : Gtk.Box{
 		});
 
 		// TODO: show this message somewhere
-		
+
 		//var msg = _("Only Linux partitions are supported.");
 		//msg += "\n" + _("Snapshots will be saved in folder /timeshift");
 
@@ -86,13 +86,13 @@ class BackupDeviceBox : Gtk.Box{
     }
 
     public void refresh(){
-		
+
 		tv_devices_refresh();
-		
+
 		check_backup_location();
 
 		if (App.btrfs_mode){
-			
+
 			lbl_common.label = "<i>• %s\n• %s\n• %s</i>".printf(
 				_("Devices displayed above have BTRFS file systems."),
 				_("BTRFS snapshots are saved on system partition. Other partitions are not supported."),
@@ -110,16 +110,16 @@ class BackupDeviceBox : Gtk.Box{
 	}
 
 	private void init_tv_devices(){
-		
+
 		tv_devices = add_treeview(this);
 		tv_devices.vexpand = true;
 		tv_devices.headers_clickable = true;
 		//tv_devices.rules_hint = true;
 		tv_devices.activate_on_single_click = true;
 		//tv_devices.headers_clickable  = true;
-		
+
 		// device name
-		
+
 		Gtk.CellRendererPixbuf cell_pix;
 		Gtk.CellRendererToggle cell_radio;
 		Gtk.CellRendererText cell_text;
@@ -128,13 +128,13 @@ class BackupDeviceBox : Gtk.Box{
 			out cell_pix, out cell_radio, out cell_text);
 
 		col.resizable = true;
-		
+
 		col.set_cell_data_func(cell_pix, (cell_layout, cell, model, iter)=>{
 			Device dev;
 			model.get (iter, 0, out dev, -1);
 
 			(cell as Gtk.CellRendererPixbuf).visible = (dev.type == "disk");
-			
+
 		});
 
         col.add_attribute(cell_pix, "icon-name", 2);
@@ -184,9 +184,9 @@ class BackupDeviceBox : Gtk.Box{
 			//(cell as Gtk.CellRendererText).sensitive = (dev.type != "disk");
 		});
 
-		
+
 		// type
-		
+
 		col = add_column_text(tv_devices, _("Type"), out cell_text);
 
 		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
@@ -198,10 +198,10 @@ class BackupDeviceBox : Gtk.Box{
 		});
 
 		// size
-		
+
 		col = add_column_text(tv_devices, _("Size"), out cell_text);
 		cell_text.xalign = (float) 1.0;
-		
+
 		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
 			Device dev;
 			model.get (iter, 0, out dev, -1);
@@ -211,10 +211,10 @@ class BackupDeviceBox : Gtk.Box{
 		});
 
 		// free
-		
+
 		col = add_column_text(tv_devices, _("Free"), out cell_text);
 		cell_text.xalign = (float) 1.0;
-		
+
 		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
 			Device dev;
 			model.get (iter, 0, out dev, -1);
@@ -231,10 +231,10 @@ class BackupDeviceBox : Gtk.Box{
 		});
 
 		// name
-		
+
 		col = add_column_text(tv_devices, _("Name"), out cell_text);
 		cell_text.xalign = 0.0f;
-		
+
 		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
 			Device dev;
 			model.get (iter, 0, out dev, -1);
@@ -250,10 +250,10 @@ class BackupDeviceBox : Gtk.Box{
 		});
 
 		// label
-		
+
 		col = add_column_text(tv_devices, _("Label"), out cell_text);
 		cell_text.xalign = 0.0f;
-		
+
 		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
 			Device dev;
 			model.get (iter, 0, out dev, -1);
@@ -267,14 +267,14 @@ class BackupDeviceBox : Gtk.Box{
 
 			(cell as Gtk.CellRendererText).sensitive = (dev.type != "disk");
 		});
-		
+
 		// buffer
 
 		col = add_column_text(tv_devices, "", out cell_text);
 		col.expand = true;
-		
+
 		/*// label
-		
+
 		col = add_column_text(tv_devices, _("Label"), out cell_text);
 
 		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
@@ -285,8 +285,8 @@ class BackupDeviceBox : Gtk.Box{
 			(cell as Gtk.CellRendererText).sensitive = (dev.type != "disk");
 		});*/
 
-		
-		
+
+
 		// events
 
 		tv_devices.row_activated.connect((path, column) => {
@@ -308,7 +308,7 @@ class BackupDeviceBox : Gtk.Box{
 			store.foreach((model, path, iter) => {
 				Device dev;
 				store.get (iter, 0, out dev);
-				
+
 				if ((App.repo.device != null) && (App.repo.device.uuid == dev.uuid)){
 					store.set (iter, 3, true);
 					//tv_devices.get_selection().select_iter(iter);
@@ -323,12 +323,12 @@ class BackupDeviceBox : Gtk.Box{
 	}
 
 	private void init_infobar_location(){
-		
+
 		var infobar = new Gtk.InfoBar();
 		infobar.no_show_all = true;
 		add(infobar);
 		infobar_location = infobar;
-		
+
 		var content = (Gtk.Box) infobar.get_content_area();
 		var label = add_label(content, "");
 		lbl_infobar_location = label;
@@ -340,7 +340,7 @@ class BackupDeviceBox : Gtk.Box{
 		scrolled.vscrollbar_policy = Gtk.PolicyType.NEVER;
 		scrolled.set_size_request(-1, 100);
 		this.add(scrolled);
-		
+
 		label = new Gtk.Label("");
 		label.set_use_markup(true);
 		label.xalign = (float) 0.0;
@@ -354,13 +354,13 @@ class BackupDeviceBox : Gtk.Box{
 	private void try_change_device(Device dev){
 
 		log_debug("try_change_device: %s".printf(dev.device));
-		
+
 		if (dev.type == "disk"){
 
 			bool found_child = false;
 
 			if ((App.btrfs_mode && (dev.fstype == "btrfs")) || (!App.btrfs_mode && dev.has_linux_filesystem())){
-				
+
 				change_backup_device(dev);
 				found_child = true;
 			}
@@ -368,26 +368,26 @@ class BackupDeviceBox : Gtk.Box{
 			if (!found_child){
 
 				// find first valid partition
-				
+
 				foreach (var child in dev.children){
-					
+
 					if ((App.btrfs_mode && (child.fstype == "btrfs")) || (!App.btrfs_mode && child.has_linux_filesystem())){
-						
+
 						change_backup_device(child);
 						found_child = true;
 						break;
 					}
 				}
 			}
-			
+
 			if (!found_child){
-				
+
 				string msg = _("Selected device does not have Linux partition");
-				
+
 				if (App.btrfs_mode){
 					msg = _("Selected device does not have BTRFS partition");
 				}
-				
+
 				lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(msg);
 				infobar_location.message_type = Gtk.MessageType.ERROR;
 				infobar_location.no_show_all = false;
@@ -395,17 +395,17 @@ class BackupDeviceBox : Gtk.Box{
 			}
 		}
 		else if (dev.has_children()){
-			
+
 			// select the child instead of parent
 			change_backup_device(dev.children[0]);
 		}
 		else if (!dev.has_children()){
-			
+
 			// select the device
 			change_backup_device(dev);
 		}
 		else {
-			
+
 			// ask user to select
 			lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(_("Select a partition on this disk"));
 			infobar_location.message_type = Gtk.MessageType.ERROR;
@@ -415,7 +415,7 @@ class BackupDeviceBox : Gtk.Box{
 	}
 
 	private void change_backup_device(Device pi){
-		
+
 		// return if device has not changed
 		if ((App.repo.device != null) && (pi.uuid == App.repo.device.uuid)){ return; }
 
@@ -428,20 +428,20 @@ class BackupDeviceBox : Gtk.Box{
 		App.repo = new SnapshotRepo.from_device(pi, parent_window, App.btrfs_mode);
 
 		if (pi.fstype == "luks"){
-			
+
 			App.update_partitions();
 
 			var dev = Device.find_device_in_list(App.partitions, pi.uuid);
-			
+
 			if (dev.has_children()){
-				
+
 				log_debug("has children");
-				
+
 				if (dev.children[0].has_linux_filesystem()){
-					
+
 					log_debug("has linux filesystem: %s".printf(dev.children[0].fstype));
 					log_msg("selecting child device: %s".printf(dev.children[0].device));
-						
+
 					App.repo = new SnapshotRepo.from_device(dev.children[0], parent_window, App.btrfs_mode);
 					tv_devices_refresh();
 				}
@@ -457,21 +457,21 @@ class BackupDeviceBox : Gtk.Box{
 	}
 
 	private bool check_backup_location(){
-		
+
 		bool ok = true;
 
 		App.repo.check_status();
 		string message = App.repo.status_message;
 		string details = App.repo.status_details;
 		int status_code = App.repo.status_code;
-		
+
 		// TODO: call check on repo directly
-		
+
 		message = escape_html(message);
 		details = escape_html(details);
-		
+
 		if (App.live_system()){
-			
+
 			switch (status_code){
 			case SnapshotLocationStatus.NOT_SELECTED:
 				lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(details);
@@ -480,7 +480,7 @@ class BackupDeviceBox : Gtk.Box{
 				infobar_location.show_all();
 				ok = false;
 				break;
-				
+
 			case SnapshotLocationStatus.NOT_AVAILABLE:
 				lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(message);
 				infobar_location.message_type = Gtk.MessageType.ERROR;
@@ -531,7 +531,7 @@ class BackupDeviceBox : Gtk.Box{
 					infobar_location.show_all();
 					ok = false;
 					break;
-					
+
 				case SnapshotLocationStatus.NOT_AVAILABLE:
 				case SnapshotLocationStatus.HAS_SNAPSHOTS_NO_SPACE:
 				case SnapshotLocationStatus.NO_SNAPSHOTS_NO_SPACE:
@@ -568,12 +568,12 @@ class BackupDeviceBox : Gtk.Box{
 			}
 
 		}
-		
+
 		return ok;
 	}
 
 	private void tv_devices_refresh(){
-		
+
 		App.update_partitions();
 
 		var model = new Gtk.TreeStore(4,
@@ -581,13 +581,13 @@ class BackupDeviceBox : Gtk.Box{
 			typeof(string),
 			typeof(string),
 			typeof(bool));
-		
+
 		tv_devices.set_model (model);
 
 		TreeIter iter0;
 
 		foreach(var disk in App.partitions) {
-			
+
 			if (disk.type != "disk") { continue; }
 
 			model.append(out iter0, null);
@@ -624,15 +624,15 @@ class BackupDeviceBox : Gtk.Box{
 					continue;
 				}
 			}
-			
+
 			if (part.pkname == parent.kname) {
-				
+
 				TreeIter iter1;
 				model.append(out iter1, iter0);
 				model.set(iter1, 0, part, -1);
 				model.set(iter1, 1, part.tooltip_text(), -1);
 				model.set(iter1, 2, (part.fstype == "luks") ? "locked" : IconManager.ICON_HARDDRIVE, -1);
-				
+
 				if (parent.fstype == "luks"){
 					// change parent's icon to unlocked
 					model.set(iter0, 2, "unlocked", -1);
@@ -649,7 +649,7 @@ class BackupDeviceBox : Gtk.Box{
 			}
 			else if ((part.kname == parent.kname) && (part.type == "disk")
 				&& part.has_linux_filesystem() && !part.has_children()){
-				
+
 				// partition-less disk with linux filesystem
 
 				// create a dummy partition
@@ -664,7 +664,7 @@ class BackupDeviceBox : Gtk.Box{
 				model.set(iter1, 0, part2, -1);
 				model.set(iter1, 1, part2.tooltip_text(), -1);
 				model.set(iter1, 2, (part2.fstype == "luks") ? "locked" : IconManager.ICON_HARDDRIVE, -1);
-				
+
 				if ((App.repo.device != null) && (part2.uuid == App.repo.device.uuid)){
 					model.set(iter1, 3, true, -1);
 				}

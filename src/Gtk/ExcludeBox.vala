@@ -33,16 +33,16 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class ExcludeBox : Gtk.Box{
-	
+
 	private Gtk.TreeView treeview;
 	private Gtk.Window parent_window;
 	private UsersBox users_box;
 	private Gtk.Label lbl_message;
-	
+
 	public ExcludeBox (Gtk.Window _parent_window) {
 
 		log_debug("ExcludeBox: ExcludeBox()");
-		
+
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
@@ -50,7 +50,7 @@ class ExcludeBox : Gtk.Box{
 
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		add(box);
-		
+
 		add_label_header(box, _("Include / Exclude Patterns"), true);
 
 		var buffer = add_label(box, "");
@@ -62,19 +62,19 @@ class ExcludeBox : Gtk.Box{
 		init_treeview();
 
 		init_actions();
-		
+
 		refresh_treeview();
 
 		log_debug("ExcludeBox: ExcludeBox(): exit");
     }
 
     public void set_users_box(UsersBox _users_box){
-		
+
 		users_box = _users_box;
 	}
 
     private void init_treeview(){
-		
+
 		// treeview
 		treeview = new TreeView();
 		treeview.get_selection().mode = SelectionMode.MULTIPLE;
@@ -95,7 +95,7 @@ class ExcludeBox : Gtk.Box{
 		var col = new TreeViewColumn();
 		col.title = "+";
 		treeview.append_column(col);
-		
+
 		// radio_include
 		var cell_radio = new Gtk.CellRendererToggle();
 		cell_radio.xpad = 2;
@@ -104,24 +104,24 @@ class ExcludeBox : Gtk.Box{
 		col.pack_start (cell_radio, false);
 
 		col.set_attributes(cell_radio, "active", 2);
-		
+
 		cell_radio.toggled.connect((cell, path)=>{
 
 			log_debug("cell_include.toggled()");
-			
+
 			var model = (Gtk.ListStore) treeview.model;
 			string pattern;
 			TreeIter iter;
 
 			model.get_iter_from_string (out iter, path);
 			model.get (iter, 0, out pattern);
-			
+
 			if (!pattern.has_prefix("+ ")){
 				pattern = "+ %s".printf(pattern);
 			}
 
 			treeview_update_item(ref iter, pattern);
-			
+
 			save_changes();
 		});
 
@@ -136,17 +136,17 @@ class ExcludeBox : Gtk.Box{
 		cell_radio.radio = true;
 		cell_radio.activatable = true;
 		col.pack_start (cell_radio, false);
-		
+
 		col.set_attributes(cell_radio, "active", 3);
 
 		cell_radio.toggled.connect((cell, path)=>{
 
 			log_debug("cell_exclude.toggled()");
-			
+
 			var model = (Gtk.ListStore) treeview.model;
 			string pattern;
 			TreeIter iter;
-		
+
 			model.get_iter_from_string (out iter, path);
 			model.get (iter, 0, out pattern);
 
@@ -157,15 +157,15 @@ class ExcludeBox : Gtk.Box{
 			}
 
 			treeview_update_item(ref iter, pattern);
-			
+
 			save_changes();
 		});
-		
+
 		// column
 		col = new TreeViewColumn();
 		col.title = _("Pattern");
 		treeview.append_column(col);
-		
+
 		// margin
 		var cell_text = new CellRendererText ();
 		cell_text.text = "";
@@ -179,7 +179,7 @@ class ExcludeBox : Gtk.Box{
 		// pattern
 		cell_text = new CellRendererText ();
 		col.pack_start (cell_text, false);
-		
+
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter)=>{
 			string pattern;
 			model.get (iter, 0, out pattern, -1);
@@ -208,9 +208,9 @@ class ExcludeBox : Gtk.Box{
 					pattern = pattern[2:pattern.length];
 				}
 			}
-			
+
 			model.set (iter, 0, pattern, -1);
-			
+
 			save_changes();
 		});
 	}
@@ -223,7 +223,7 @@ class ExcludeBox : Gtk.Box{
 
 		var size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 		var button = add_button(hbox, _("Add"), _("Add custom pattern"), size_group, null);
-		
+
         button.clicked.connect(()=>{
 
 			string pattern = gtk_inputbox(
@@ -235,18 +235,18 @@ class ExcludeBox : Gtk.Box{
 				treeview_add_item(treeview, pattern); // don't strip
 				Main.first_snapshot_size = 0; //re-calculate
 			}
-			
+
 			save_changes();
 		});
-		
+
 		button = add_button(hbox, _("Add Files"), _("Add files"), size_group, null);
-		
+
         button.clicked.connect(()=>{
 			add_files_clicked();
 		});
 
 		button = add_button(hbox, _("Add Folders"), _("Add directories"), size_group, null);
-		
+
         button.clicked.connect(()=>{
 			add_folder_clicked();
 		});
@@ -270,11 +270,11 @@ class ExcludeBox : Gtk.Box{
 			new ExcludeListSummaryWindow(false);
 		});
 	}
-	
+
 	// actions
-	
+
     private void remove_clicked(){
-		
+
 		var sel = treeview.get_selection();
 		var store = (Gtk.ListStore) treeview.model;
 
@@ -284,25 +284,25 @@ class ExcludeBox : Gtk.Box{
 			gtk_messagebox(title, message, parent_window, true);
 			return;
 		}
-		
+
 		TreeIter iter;
 		var iter_list = new Gee.ArrayList<TreeIter?>();
-		
+
 		bool iterExists = store.get_iter_first (out iter);
 		while (iterExists) {
 			if (sel.iter_is_selected (iter)){
 				string pattern;
 				store.get (iter, 0, out pattern);
-				
+
 				App.exclude_list_user.remove(pattern);
 				iter_list.add(iter);
-				
+
 				log_debug("removed item: %s".printf(pattern));
 				Main.first_snapshot_size = 0; //re-calculate
 			}
 			iterExists = store.iter_next (ref iter);
 		}
-		
+
 		refresh_treeview();
 
 		save_changes();
@@ -344,17 +344,17 @@ class ExcludeBox : Gtk.Box{
 				if (!pattern.has_suffix("/***")){
 					pattern = "%s/***".printf(pattern);
 				}
-				
+
 				/*
 				NOTE:
-				
+
 				+ <dir>/*** will include the directory along with the contents
 				+ <dir>/ will include only the directory without the contents
-				
+
 				<dir>/*** will exclude the directory along with the contents
 				<dir>/ is same as exclude <dir>/***
 				*/
-				
+
 				if (!App.exclude_list_user.contains(pattern)){
 					App.exclude_list_user.add(pattern);
 					treeview_add_item(treeview, pattern);
@@ -378,21 +378,21 @@ class ExcludeBox : Gtk.Box{
 			foreach(string item in list){
 
 				string pattern = item;
-				
+
 				if (!pattern.has_suffix("/**")){
 					pattern = "%s/**".printf(pattern);
 				}
 
 				/*
 				NOTE:
-				
+
 				+ <dir>/** will include the directory along with the contents
 				+ <dir>/ will include only the directory without the contents
-				
+
 				<dir>/** will exclude the directory contents but include the empty directory
 				<dir>/ will exclude the directory along with the contents
 				*/
-				
+
 				if (!App.exclude_list_user.contains(pattern)){
 					App.exclude_list_user.add(pattern);
 					treeview_add_item(treeview, pattern);
@@ -407,17 +407,17 @@ class ExcludeBox : Gtk.Box{
 
 		save_changes();
 	}
-	
+
 	private SList<string> browse_files(){
 
 		var list = new SList<string>();
-		
+
 		var dialog = new Gtk.FileChooserDialog(
 			_("Select file(s)"), parent_window,
 			Gtk.FileChooserAction.OPEN,
 			"gtk-cancel", Gtk.ResponseType.CANCEL,
 			"gtk-open", Gtk.ResponseType.ACCEPT);
-			
+
 		dialog.action = FileChooserAction.OPEN;
 		dialog.set_transient_for(parent_window);
 		dialog.local_only = true;
@@ -429,7 +429,7 @@ class ExcludeBox : Gtk.Box{
 		if (resp != Gtk.ResponseType.CANCEL){
 			list = dialog.get_filenames();
 		}
-		
+
 		dialog.destroy();
 
 	 	return list;
@@ -438,13 +438,13 @@ class ExcludeBox : Gtk.Box{
 	private SList<string> browse_folder(){
 
 		var list = new SList<string>();
-		
+
 		var dialog = new Gtk.FileChooserDialog(
 			_("Select directory"), parent_window,
 			Gtk.FileChooserAction.SELECT_FOLDER,
 			"gtk-cancel", Gtk.ResponseType.CANCEL,
 			"gtk-open", Gtk.ResponseType.ACCEPT);
-			
+
 		dialog.action = FileChooserAction.SELECT_FOLDER;
 		dialog.local_only = true;
 		dialog.set_transient_for(parent_window);
@@ -456,7 +456,7 @@ class ExcludeBox : Gtk.Box{
 		if (resp != Gtk.ResponseType.CANCEL){
 			list = dialog.get_filenames();
 		}
-		
+
 		dialog.destroy();
 
 	 	return list;
@@ -465,7 +465,7 @@ class ExcludeBox : Gtk.Box{
 	// helpers
 
 	public void refresh_treeview(){
-		
+
 		var model = new Gtk.ListStore(4, typeof(string), typeof(string), typeof(bool), typeof(bool));
 		treeview.model = model;
 
@@ -475,7 +475,7 @@ class ExcludeBox : Gtk.Box{
 	}
 
 	private void treeview_add_item(Gtk.TreeView treeview, string pattern){
-		
+
 		log_debug("treeview_add_item(): %s".printf(pattern));
 
 		TreeIter iter;
@@ -494,7 +494,7 @@ class ExcludeBox : Gtk.Box{
 	}
 
 	private void treeview_update_item(ref TreeIter iter, string pattern){
-		
+
 		log_debug("treeview_update_item(): %s".printf(pattern));
 
 	    bool include = pattern.has_prefix("+ ");
@@ -507,7 +507,7 @@ class ExcludeBox : Gtk.Box{
 	}
 
 	private void cell_exclude_text_edited(string path, string new_text) {
-			
+
 		string old_pattern;
 		string new_pattern;
 
@@ -540,10 +540,10 @@ class ExcludeBox : Gtk.Box{
 			if (!App.exclude_list_user.contains(pattern)
 				&& !App.exclude_list_default.contains(pattern)
 				&& !App.exclude_list_home.contains(pattern)){
-				
+
 				App.exclude_list_user.add(pattern);
 			}
-			
+
 			iterExists = store.iter_next(ref iter);
 		}
 
