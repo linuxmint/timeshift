@@ -45,7 +45,7 @@ endif
 
 symbols=$(shell echo "${vte_symbol} ${gtk3_symbol} ${xapp_symbol}")
 
-all: app-gtk app-console pot
+all: app-gtk app-console
 
 app-gtk:
 
@@ -72,24 +72,7 @@ app-console:
 manpage:
 	./${app_name} --help > ../man/${app_name}.1
 	gzip -f ../man/${app_name}.1
-	
-pot:
 
-	# update translation template
-	find . -iname "*.vala" | xargs xgettext \
-		--from-code=UTF-8 --language=C --keyword=_ \
-		--copyright-holder='Tony George (teejeetech@gmail.com)' \
-		--package-name="${app_name}" \
-		--package-version='18.2' \
-		--msgid-bugs-address='teejeetech@gmail.com' \
-		--escape --sort-output \
-		-o ../${app_name}.pot
-
-	# translations
-	for lang in am ar az bg ca cs da de el en_GB es et eu fi fr he hi hr hu ia id is it ja ko lt nb ne nl pl pt pt_BR ro ru sk sr sv tr uk vi zh_CN zh_TW; do \
-		msgmerge --update -v ../po/${app_name}-$$lang.po ../${app_name}.pot ; \
-	done
-	
 clean:
 	rm -rfv ../release/{source,i386,amd64,armel,armhf}
 	rm -rfv ../release/*.{run,deb}

@@ -7,9 +7,6 @@ app-gtk:
 app-console:
 	cd src; make app-console
 
-pot:
-	cd src; make pot
-
 manpage:
 	cd src; make manpage
 	
