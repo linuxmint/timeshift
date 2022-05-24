@@ -10,6 +10,14 @@ Timeshift is similar to applications like [rsnapshot](http://www.rsnapshot.org/)
 
 ![](images/main_window.png)
 
+# History
+
+Timeshift was originally developed and maintained by [Tony George](https://teejeetech.com/).
+
+His original repository is still available on [Github](https://github.com/teejee2008/timeshift).
+
+Nowadays Timeshift is part of the Xapp project which is a collection of cross-DE and cross-distributions applications which are maintained by [Linux Mint](https://www.linuxmint.com).
+
 ## Features
 
 ### Minimal Setup
@@ -107,26 +115,20 @@ You can selectively include items for backup from the ***Settings*** window. Sel
 
 ## Installation
 
-#### Ubuntu-based Distributions
+#### Debian-based Distributions
 
-Ubuntu, Linux Mint, Elementary OS, etc.
+Debian, Ubuntu, Linux Mint, Elementary OS, etc.
 
-Packages are available in the Launchpad PPA for supported Ubuntu releases.
-Run the following commands in a terminal window:  
+Install Timeshift from the repositories:  
 
 ```sh
-sudo add-apt-repository -y ppa:teejee2008/timeshift
 sudo apt-get update
 sudo apt-get install timeshift
 ```
 
-DEB packages are available on [Releases](https://github.com/teejee2008/Timeshift/releases) page for older Ubuntu releases which have reached end-of-life.
-
 #### Fedora
 
 Fedora is not fully supported. BTRFS snapshots only support Ubuntu-specific layouts. 
-
-Take a look at the [issue tracker](https://github.com/teejee2008/timeshift/issues) for open issues and use it with caution. 
 
 ```sh
 sudo dnf update
@@ -138,7 +140,7 @@ Installer can be used on the following distribution types:
 - **Debian** based - Debian, Ubuntu, Linux Mint, Elementary OS, etc (supports **apt**)
 - **Arch** based - Arch Linux, Manjaro, etc (supports **pacman**)
 
-## UnInstall
+## Removal
 
 Run the following command in a terminal window:  
 
@@ -177,37 +179,10 @@ If the backup device is running out of space, try the following steps:
 * EFI systems are fully supported. Ensure that the ***/boot/efi*** partition is mapped while restoring a snapshot. It will be mapped automatically if detected.
 * If you are restoring from Live CD/USB, and your installed system uses EFI mode, then you must boot from Live CD/USB in EFI mode.
 
-## Support
-
-This is a free application that is provided "as-is" without support or warranty.
-
-If you use Linux Mint and need support for an issue please use the [Linux Mint support forums](https://forums.linuxmint.com)
-
-Issues reported on the Issue Tracker will be fixed during the next update. Updates are done once a year due to lack of time and developers.
-
-## Disclaimer
-
-This program is free for personal and commercial use and comes with absolutely no warranty. You use this program entirely at your own risk. The author will not be liable for any damages arising from the use of this program. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
 ## Contribute
 
 You can contribute to this project in various ways:
 
-- Submitting ideas, and reporting issues in the [tracker](https://github.com/teejee2008/timeshift/issues)
-- Translating this application to other languages
-- Contributing code changes by fixing issues and submitting a pull request
-- Making a donation via PayPal or bitcoin
-
-## Donate
-
-*Timeshift* is a non-commercial application. I work on it during my free time based on my requirements and interest. If you wish to support this project, you can make a donation via PayPal.
-
-**PayPal**
-
-[![](images/PayPal.png)](https://www.paypal.com/cgi-bin/webscr?business=teejeetech@gmail.com&cmd=_xclick&currency_code=USD&amount=10&item_name=Timeshift%20Donation)
-
-**Bitcoin** ~ You can send bitcoins at this address or by scanning the QR code below:
-
-```1KdEyJjkuEW8aZWjenf4x5uEeHo9VTYqio```
-
-![](images/bitcoin_qr_code_timeshift.png)
+- Submitting ideas, and reporting issues in the [tracker](https://github.com/linuxmint/timeshift/issues)
+- Translating this application to other languages in [Launchpad](https://translations.launchpad.net/linuxmint/latest/+translations)
+- Contributing code changes by fixing issues and submitting a pull request (do not modify translations, this is done in Launchpad)
