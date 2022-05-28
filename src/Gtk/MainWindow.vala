@@ -485,6 +485,8 @@ class MainWindow : Gtk.Window{
 				}
 			}
 		}
+		
+		App.exit_app(0);
 
 		return false;
 	}
