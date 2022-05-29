@@ -373,7 +373,7 @@ public class SnapshotRepo : GLib.Object{
 		var list = new Gee.ArrayList<Snapshot?>();
 
 		foreach(Snapshot bak in snapshots){
-			if (bak.valid && (tag.length == 0) || bak.has_tag(tag)){
+			if (bak.valid &&(tag.length == 0) || (bak.has_tag(tag)&& App.sys_root.uuid == bak.sys_uuid)){
 				list.add(bak);
 			}
 		}
@@ -935,18 +935,20 @@ public class SnapshotRepo : GLib.Object{
 		string path;
 
 		foreach(var bak in snapshots){
-			foreach(string tag in bak.tags){
+			if (App.sys_root.uuid == bak.sys_uuid){
+				foreach(string tag in bak.tags){
 				
-				path = "%s-%s".printf(snapshots_path, tag);
-				cmd = "ln --symbolic \"../snapshots/%s\" -t \"%s\"".printf(bak.name, path);
+					path = "%s-%s".printf(snapshots_path, tag);
+					cmd = "ln --symbolic \"../snapshots/%s\" -t \"%s\"".printf(bak.name, path);
 
-				if (LOG_COMMANDS) { log_debug(cmd); }
+					if (LOG_COMMANDS) { log_debug(cmd); }
 
-				ret_val = exec_sync(cmd, out std_out, out std_err);
-				if (ret_val != 0){
-					log_error (std_err);
-					log_error(_("Failed to create symlinks") + ": snapshots-%s".printf(tag));
-					return;
+					ret_val = exec_sync(cmd, out std_out, out std_err);
+					if (ret_val != 0){
+						log_error (std_err);
+						log_error(_("Failed to create symlinks") + ": snapshots-%s".printf(tag));
+						return;
+					}
 				}
 			}
 		}
