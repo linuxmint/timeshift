@@ -1437,7 +1437,9 @@ public class Main : GLib.Object{
 		//task.parse_log(log_file);
 
 		int64 fcount = file_line_count(log_file);
-
+		if (tag!="ondemand"){
+			cmd_comments += current_distro.full_name();
+		}
 		// write control file (final - with file count after parsing log)
 		var snapshot = Snapshot.write_control_file(
 			snapshot_path, dt_created, sys_uuid, current_distro.full_name(),
@@ -1521,7 +1523,9 @@ public class Main : GLib.Object{
 		snapshot_path = path_combine(repo.mount_paths["@"], "timeshift-btrfs/snapshots/%s".printf(snapshot_name));
 
 		string initial_tags = (tag == "ondemand") ? "" : tag;
-		
+		if (tag!="ondemand"){
+			cmd_comments += current_distro.full_name();
+		}
 		// write control file
 		var snapshot = Snapshot.write_control_file(
 			snapshot_path, dt_created, sys_uuid, current_distro.full_name(),
@@ -3956,7 +3960,7 @@ public class Main : GLib.Object{
 			
 			//boot
 			if (schedule_boot){
-				CronTab.add_script_file("timeshift-boot", "d", "@reboot root sleep 10m && timeshift --create --scripted --tags B", stop_cron_emails);
+				CronTab.add_script_file("timeshift-boot", "d", "@reboot root sleep 10m &&var=$(echo $(grep '^NAME=' /etc/os-release) |awk -F= '{print $2}') && timeshift --create --scripted --tags B --comments $var", stop_cron_emails);
 			}
 			else{
 				CronTab.remove_script_file("timeshift-boot", "d");
