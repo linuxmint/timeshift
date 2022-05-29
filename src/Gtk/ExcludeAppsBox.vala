@@ -39,7 +39,7 @@ class ExcludeAppsBox : Gtk.Box{
 	public ExcludeAppsBox (Gtk.Window _parent_window) {
 
 		log_debug("ExcludeAppsBox: ExcludeAppsBox()");
-
+		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
@@ -47,7 +47,7 @@ class ExcludeAppsBox : Gtk.Box{
 
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		add(box);
-
+		
 		add_label_header(box, _("Exclude Application Settings"), true);
 
 		//add_label(this, _("Selected items will be excluded"));
@@ -86,7 +86,7 @@ class ExcludeAppsBox : Gtk.Box{
 		var col = new TreeViewColumn();
 		col.expand = true;
 		treeview.append_column(col);
-
+		
 		// margin
 		var cell_text = new CellRendererText();
 		cell_text.text = "";
@@ -109,20 +109,20 @@ class ExcludeAppsBox : Gtk.Box{
 			Gtk.TreeIter iter;
 			var store = (Gtk.ListStore) treeview.model;
 			store.get_iter(out iter, tree_path);
-
+			
 			AppExcludeEntry entry;
 			store.get(iter, 0, out entry);
 			entry.enabled = !cell_toggle.active;
-
+			
 			store.set(iter, 1, !cell_toggle.active);
 		});
 
 		// pattern
 		cell_text = new CellRendererText ();
 		col.pack_start (cell_text, false);
-
+		
 		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
-
+			
 			AppExcludeEntry entry;
 			model.get (iter, 0, out entry, -1);
 			(cell as Gtk.CellRendererText).text = entry.name;
@@ -130,23 +130,23 @@ class ExcludeAppsBox : Gtk.Box{
 	}
 
 	private void init_exclude_summary_link(Gtk.Box box){
-
+		
 		var size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 		var button = add_button(box, _("Summary"), "", size_group, null);
         button.clicked.connect(()=>{
 			new ExcludeListSummaryWindow(true);
 		});
 	}
-
+	
 	// helpers
 
 	public void refresh(){
-
+		
 		refresh_treeview();
 	}
-
+	
 	public void refresh_treeview(){
-
+		
 		var model = new Gtk.ListStore(3, typeof(AppExcludeEntry), typeof(bool), typeof(string));
 		treeview.model = model;
 

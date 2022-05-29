@@ -32,7 +32,7 @@ using TeeJee.Misc;
 using Json;
 
 public class Snapshot : GLib.Object{
-
+	
 	public string path = "";
 	public string name = "";
 	public DateTime date;
@@ -51,13 +51,13 @@ public class Snapshot : GLib.Object{
 	public bool marked_for_deletion = false;
 	public LinuxDistro distro;
 	public SnapshotRepo repo;
-
+	
 	//btrfs
 	public bool btrfs_mode = false;
 	public Gee.HashMap<string,string> paths; // for btrfs snapshots only
 	public string mount_path_root = "";
 	public string mount_path_home = "";
-
+	
 	public DeleteFileTask delete_file_task;
 
 	public Snapshot(string dir_path, bool btrfs_snapshot, SnapshotRepo _repo){
@@ -71,7 +71,7 @@ public class Snapshot : GLib.Object{
 			description = "";
 			btrfs_mode = btrfs_snapshot;
 			repo = _repo;
-
+			
 			date = new DateTime.from_unix_utc(0);
 			tags = new Gee.ArrayList<string>();
 			exclude_list = new Gee.ArrayList<string>();
@@ -79,7 +79,7 @@ public class Snapshot : GLib.Object{
 			delete_file_task = new DeleteFileTask();
 			subvolumes = new Gee.HashMap<string,Subvolume>();
 			paths = new Gee.HashMap<string,string>();
-
+			
 			read_control_file();
 			read_exclude_list();
 			read_fstab_file();
@@ -91,7 +91,7 @@ public class Snapshot : GLib.Object{
 	}
 
 	// properties
-
+	
 	public string date_formatted{
 		owned get{
 			return date.format(App.date_format);//.format("%Y-%m-%d %H:%M:%S");
@@ -101,41 +101,41 @@ public class Snapshot : GLib.Object{
 	public string rsync_log_file{
 		owned get {
 			return path_combine(path, "rsync-log");
-		}
+		}	
 	}
 
 	public string rsync_changes_log_file{
 		owned get {
 			return path_combine(path, "rsync-log-changes");
-		}
+		}	
 	}
 
 	public string rsync_restore_log_file{
 		owned get {
 			return path_combine(path, "rsync-log-restore");
-		}
+		}	
 	}
 
 	public string rsync_restore_changes_log_file{
 		owned get {
 			return path_combine(path, "rsync-log-restore-changes");
-		}
+		}	
 	}
-
+	
 	public string exclude_file_for_backup {
 		owned get {
 			return path_combine(path, "exclude.list");
-		}
+		}	
 	}
 
 	public string exclude_file_for_restore {
 		owned get {
 			return path_combine(path, "exclude-restore.list");
-		}
+		}	
 	}
-
+	
 	// manage tags
-
+	
 	public string taglist{
 		owned get{
 			string str = "";
@@ -165,7 +165,7 @@ public class Snapshot : GLib.Object{
 	}
 
 	public void add_tag(string tag){
-
+		
 		if (!tags.contains(tag.strip())){
 			tags.add(tag.strip());
 			update_control_file();
@@ -173,7 +173,7 @@ public class Snapshot : GLib.Object{
 	}
 
 	public void remove_tag(string tag){
-
+		
 		if (tags.contains(tag.strip())){
 			tags.remove(tag.strip());
 			update_control_file();
@@ -181,30 +181,30 @@ public class Snapshot : GLib.Object{
 	}
 
 	public bool has_tag(string tag){
-
+		
 		return tags.contains(tag.strip());
 	}
 
 	// control files
-
+	
 	public void read_control_file(){
-
+		
 		//log_debug("read_control_file()");
-
+		
 		string ctl_file = path + "/info.json";
 
 		var f = File.new_for_path(ctl_file);
-
+		
 		if (f.query_exists()) {
-
+			
 			var parser = new Json.Parser();
-
+			
 			try{
 				parser.load_from_file(ctl_file);
 			} catch (Error e) {
 				log_error (e.message);
 			}
-
+			
 			var node = parser.get_root();
 			var config = node.get_object();
 
@@ -236,24 +236,24 @@ public class Snapshot : GLib.Object{
 				var subvols = (Json.Object) config.get_object_member("subvolumes");
 
 				foreach(string subvol_name in subvols.get_members()){
-
+					
 					if ((subvol_name != "@")&&(subvol_name != "@home")){ continue; }
-
+					
 					paths[subvol_name] = path.replace(repo.mount_path, repo.mount_paths[subvol_name]);
-
+					
 					var subvol_path = path_combine(paths[subvol_name], subvol_name);
-
+					
 					if (!dir_exists(subvol_path)){ continue; }
 
 					//log_debug("subvol_path: %s".printf(subvol_path));
-
+					
 					var subvolume = new Subvolume(subvol_name, subvol_path, "", repo); //subvolumes.get(subvol_name);
 					subvolumes.set(subvol_name, subvolume);
-
+					
 					int index = -1;
-
+					
 					foreach(Json.Node jnode in subvols.get_array_member(subvol_name).get_elements()) {
-
+						
 						string item = jnode.get_string();
 						switch (++index){
 							case 0:
@@ -275,7 +275,7 @@ public class Snapshot : GLib.Object{
 					}
 				}
 			}
-
+			
 			string delete_trigger_file = path + "/delete";
 			if (file_exists(delete_trigger_file)){
 				marked_for_deletion = true;
@@ -284,24 +284,24 @@ public class Snapshot : GLib.Object{
 		else{
 			valid = false;
 		}
-
+		
 		//log_debug("read_control_file(): exit");
 	}
 
 	public void read_exclude_list(){
-
+		
 		string list_file = path + "/exclude.list";
 
 		exclude_list.clear();
 
 		var f = File.new_for_path(list_file);
-
+		
 		if (f.query_exists()) {
-
+			
 			foreach(string path in file_read(list_file).split("\n")){
-
+				
 				path = path.strip();
-
+				
 				if (!exclude_list.contains(path) && path.length > 0){
 					exclude_list.add(path);
 				}
@@ -315,30 +315,30 @@ public class Snapshot : GLib.Object{
 	}
 
 	public void read_fstab_file(){
-
+		
 		string fstab_path = path_combine(path, "/localhost/etc/fstab");
-
+		
 		if (btrfs_mode){
 			fstab_path = path_combine(path, "/@/etc/fstab");
 		}
-
+		
 		fstab_list = FsTabEntry.read_file(fstab_path);
 	}
 
 	public void read_crypttab_file(){
-
+		
 		string crypttab_path = path_combine(path, "/localhost/etc/crypttab");
-
+		
 		if (btrfs_mode){
 			crypttab_path = path_combine(path, "/@/etc/crypttab");
 		}
-
+		
 		cryttab_list = CryptTabEntry.read_file(crypttab_path);
 	}
 
 	public void update_control_file(){
 		/* Updates tag and comments */
-
+		
 		try{
 			string ctl_file = path + "/info.json";
 			var f = File.new_for_path(ctl_file);
@@ -371,7 +371,7 @@ public class Snapshot : GLib.Object{
 						subvols.set_array_member(subvol.name,arr);
 					}
 				}
-
+				
 				var json = new Json.Generator();
 				json.pretty = true;
 				json.indent = 2;
@@ -386,15 +386,15 @@ public class Snapshot : GLib.Object{
 	}
 
 	public void remove_control_file(){
-
+		
 		string ctl_file = path + "/info.json";
 		file_delete(ctl_file);
 	}
-
+	
 	public static Snapshot write_control_file(
-		string snapshot_path, DateTime dt_created, string root_uuid, string distro_full_name,
+		string snapshot_path, DateTime dt_created, string root_uuid, string distro_full_name, 
 		string tag, string comments, int64 item_count, bool is_btrfs, bool is_live, SnapshotRepo repo, bool silent = false){
-
+			
 		var ctl_path = snapshot_path + "/info.json";
 		var config = new Json.Object();
 
@@ -434,7 +434,7 @@ public class Snapshot : GLib.Object{
 	}
 
 	// check
-
+	
 	public bool has_subvolumes(){
 		foreach(FsTabEntry en in fstab_list){
 			if (en.options.contains("subvol=@")){
@@ -456,7 +456,7 @@ public class Snapshot : GLib.Object{
 			return list;
 		}
 	}
-
+	
 	// actions
 
 	public bool remove(bool wait){
@@ -466,7 +466,7 @@ public class Snapshot : GLib.Object{
 		}
 
 		bool status = true;
-
+		
 		if (btrfs_mode){
 			status = remove_btrfs();
 		}
@@ -476,21 +476,21 @@ public class Snapshot : GLib.Object{
 
 		return status;
 	}
-
+	
 	public bool remove_rsync(bool wait){
 
 		log_msg(string.nfill(78, '-'));
-
+		
 		var message = _("Removing") + " '%s'...".printf(name);
 		log_msg(message);
-
+		
 		delete_file_task.dest_path = "%s/".printf(path);
 		delete_file_task.status_message = message;
 		delete_file_task.prg_count_total = Main.first_snapshot_count;
 		delete_file_task.execute();
 
 		if (wait){
-
+			
 			while (delete_file_task.status == AppStatus.RUNNING){
 
 				sleep(1000);
@@ -499,14 +499,14 @@ public class Snapshot : GLib.Object{
 				stdout.printf("%6.2f%% %s (%s %s)\r".printf(
 					delete_file_task.progress * 100.0, _("complete"),
 					delete_file_task.stat_time_remaining, _("remaining")));
-
+				
 				stdout.flush();
 			}
 
 			stdout.printf(string.nfill(80, ' ') + "\r");
 			stdout.flush();
 
-			message = "%s '%s'".printf(_("Removed"), name);
+			message = "%s '%s'".printf(_("Removed"), name);	
 			log_msg(message);
 			log_msg(string.nfill(78, '-'));
 		}
@@ -517,14 +517,14 @@ public class Snapshot : GLib.Object{
 	public bool remove_btrfs(){
 
 		log_msg(string.nfill(78, '-'));
-
+		
 		var message = _("Removing snapshot") + ": %s".printf(name);
 		log_msg(message);
-
+		
 		// delete subvolumes
-
+		
 		foreach(var subvol in subvolumes.values){
-
+			
 			bool ok = subvol.remove();
 			if (!ok) {
 				log_error(_("Failed to remove snapshot") + ": %s".printf(name));
@@ -536,7 +536,7 @@ public class Snapshot : GLib.Object{
 		// delete directories after **all** subvolumes have been deleted
 
 		foreach(var subvol in subvolumes.values){
-
+			
 			bool ok = dir_delete(paths[subvol.name], true);
 			if (!ok) {
 				log_error(_("Failed to remove snapshot") + ": %s".printf(name));
@@ -546,7 +546,7 @@ public class Snapshot : GLib.Object{
 		}
 
 		if (!dir_delete(path, true)){
-
+			
 			log_error(_("Failed to remove snapshot") + ": %s".printf(name));
 			log_msg(string.nfill(78, '-'));
 			return false;
@@ -554,14 +554,14 @@ public class Snapshot : GLib.Object{
 
 		log_msg(_("Removed snapshot") + ": %s".printf(name));
 		log_msg(string.nfill(78, '-'));
-
+		
 		return true;
 	}
-
+	
 	public void mark_for_deletion(){
-
+		
 		string delete_trigger_file = path + "/delete";
-
+		
 		if (!file_exists(delete_trigger_file)){
 			file_write(delete_trigger_file, "");
 			marked_for_deletion = true;

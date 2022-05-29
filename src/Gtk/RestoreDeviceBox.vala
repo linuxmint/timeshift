@@ -39,7 +39,7 @@ class RestoreDeviceBox : Gtk.Box{
 	private Gtk.Box option_box;
 	private Gtk.Label lbl_header_subvol;
 	private bool show_volume_name = false;
-
+	
 	private Gtk.SizeGroup sg_mount_point = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 	private Gtk.SizeGroup sg_device = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 	private Gtk.SizeGroup sg_mount_options = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
@@ -49,7 +49,7 @@ class RestoreDeviceBox : Gtk.Box{
 	public RestoreDeviceBox (Gtk.Window _parent_window) {
 
 		log_debug("RestoreDeviceBox: RestoreDeviceBox()");
-
+		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
@@ -63,9 +63,9 @@ class RestoreDeviceBox : Gtk.Box{
 		// buffer
 		var label = add_label(hbox, "");
         label.hexpand = true;
-
+       
 		// refresh device button
-
+		
 		Gtk.SizeGroup size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 		var btn_refresh = add_button(hbox, _("Refresh"), "", size_group, null);
         btn_refresh.clicked.connect(()=>{
@@ -85,7 +85,7 @@ class RestoreDeviceBox : Gtk.Box{
 		}
 
 		// headings
-
+		
 		hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		hbox.margin_top = 12;
 		add(hbox);
@@ -93,7 +93,7 @@ class RestoreDeviceBox : Gtk.Box{
 		label = add_label(hbox, _("Path") + "  ", true, true);
 		label.xalign = (float) 0.0;
 		sg_mount_point.add_widget(label);
-
+		
 		label = add_label(hbox, _("Device") + "  ", true, true);
 		label.xalign = (float) 0.0;
 		sg_device.add_widget(label);
@@ -104,23 +104,23 @@ class RestoreDeviceBox : Gtk.Box{
 		lbl_header_subvol = label;
 
 		// options
-
+		
 		option_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
 		add(option_box);
 
 		// bootloader
-
+		
 		add_boot_options();
 
 		// infobar
-
+		
 		create_infobar_location();
 
 		log_debug("RestoreDeviceBox: RestoreDeviceBox(): exit");
     }
 
     public void refresh(bool reset_device_selections = true){
-
+		
 		log_debug("RestoreDeviceBox: refresh()");
 		App.update_partitions();
 		create_device_selection_options(reset_device_selections);
@@ -129,7 +129,7 @@ class RestoreDeviceBox : Gtk.Box{
 	}
 
 	private void create_device_selection_options(bool reset_device_selections){
-
+		
 		if (reset_device_selections){
 			App.init_mount_list();
 		}
@@ -166,7 +166,7 @@ class RestoreDeviceBox : Gtk.Box{
 
 		var label = add_label(box, entry.mount_point, true);
 		sg_mount_point.add_widget(label);
-
+		
 		var combo = add_device_combo(box, entry);
 		sg_device.add_widget(combo);
 
@@ -202,7 +202,7 @@ class RestoreDeviceBox : Gtk.Box{
 				if (dev.type == "disk"){
 					(cell as Gtk.CellRendererPixbuf).icon_name = IconManager.ICON_HARDDRIVE;
 				}
-
+			
 				(cell as Gtk.CellRendererPixbuf).sensitive = (dev.type != "disk");
 				(cell as Gtk.CellRendererPixbuf).visible = (dev.type == "disk");
 			}
@@ -219,16 +219,16 @@ class RestoreDeviceBox : Gtk.Box{
 			bool selected = combo.get_active_iter (out iter);
 			if (!selected) { return true; }
 			combo.model.get (iter, 0, out dev, -1);
-
+			
 			tooltip.set_icon_from_icon_name(IconManager.ICON_HARDDRIVE, tooltip_size);
-
+			
 			if (dev != null){
 				tooltip.set_markup(dev.tooltip_text());
 			}
 			else{
 				tooltip.set_markup(_("Keep this mount path on the root filesystem"));
 			}
-
+			
 			return true;
 		});
 
@@ -244,11 +244,11 @@ class RestoreDeviceBox : Gtk.Box{
 				(cell as Gtk.CellRendererText).markup = _("Keep on Root Device");
 			}
 		});
-
+		
 		// populate combo
 		var model = new Gtk.ListStore(2, typeof(Device), typeof(MountEntry));
 		combo.model = model;
-
+		
 		var active = -1;
 		var index = -1;
 		TreeIter iter;
@@ -259,7 +259,7 @@ class RestoreDeviceBox : Gtk.Box{
 			model.set (iter, 0, null);
 			model.set (iter, 1, entry);
 		}
-
+		
 		foreach(var dev in App.partitions){
 			// skip disk and loop devices
 			//if ((dev.type == "disk")||(dev.type == "loop")){
@@ -283,12 +283,12 @@ class RestoreDeviceBox : Gtk.Box{
 					continue; // skip parent partitions of unlocked volumes (luks)
 				}
 			}
-
+			
 			index++;
 			model.append(out iter);
 			model.set (iter, 0, dev);
 			model.set (iter, 1, entry);
-
+		
 			if (entry.device != null){
 				if (dev.uuid == entry.device.uuid){
 					active = index;
@@ -308,12 +308,12 @@ class RestoreDeviceBox : Gtk.Box{
 		}
 
 		combo.active = active;
-
+		
 		combo.changed.connect((path) => {
 
 			Device current_dev;
 			MountEntry current_entry;
-
+			
 			TreeIter iter_active;
 			bool selected = combo.get_active_iter (out iter_active);
 			if (!selected){
@@ -328,7 +328,7 @@ class RestoreDeviceBox : Gtk.Box{
 			if (current_dev.is_encrypted_partition()){
 
 				log_debug("add_device_combo().changed: unlocking encrypted device..");
-
+				
 				string msg_out, msg_err;
 				var luks_unlocked = Device.luks_unlock(
 					current_dev, "", "", parent_window, out msg_out, out msg_err);
@@ -336,13 +336,13 @@ class RestoreDeviceBox : Gtk.Box{
 				if (luks_unlocked == null){
 
 					log_debug("add_device_combo().changed: failed to unlock");
-
+					
 					// reset the selection
-
+					
 					if (current_entry.mount_point == "/"){
 
 						// reset to default device
-
+						
 						index = -1;
 						for (bool next = store.get_iter_first (out iter_combo); next;
 							next = store.iter_next (ref iter_combo)) {
@@ -350,7 +350,7 @@ class RestoreDeviceBox : Gtk.Box{
 							Device dev_iter;
 							store.get(iter_combo, 0, out dev_iter, -1);
 							index++;
-
+							
 							if ((dev_iter != null) && (dev_iter.device == current_entry.device.device)){
 								combo.active = index;
 							}
@@ -359,15 +359,15 @@ class RestoreDeviceBox : Gtk.Box{
 					else{
 						combo.active = 0; // keep on root device
 					}
-
+					
 					return;
 				}
 				else{
 
 					log_debug("add_device_combo().changed: unlocked");
-
+					
 					// update current entry
-
+					
 					if (current_entry.mount_point == "/"){
 						App.dst_root = luks_unlocked;
 						App.init_boot_options();
@@ -383,7 +383,7 @@ class RestoreDeviceBox : Gtk.Box{
 			}
 
 			current_entry.device = current_dev;
-
+			
 			if (current_entry.mount_point == "/"){
 				App.init_boot_options();
 			}
@@ -398,38 +398,38 @@ class RestoreDeviceBox : Gtk.Box{
 		var label = new Gtk.Label("");
 		label.vexpand = true;
 		add(label);
-
+		
 		var hbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
 		hbox.margin_bottom = 24;
         add(hbox);
 
 		var size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-
+		
 		// close
-
+		
 		//var img = new Image.from_stock("gtk-dialog-warning", Gtk.IconSize.BUTTON);
 		var button = add_button(hbox, _("Bootloader Options (Advanced)"), "", size_group, null);
 		button.set_size_request(300, 40);
 		button.set_tooltip_text(_("[Advanced Users Only] Change these settings only if the restored system fails to boot."));
 		var btn_boot_options = button;
 		//hbox.set_child_packing(btn_boot_options, false, true, 6, Gtk.PackType.END);
-
+		
         btn_boot_options.clicked.connect(()=>{
 			var win = new BootOptionsWindow();
 			win.set_transient_for(parent_window);
 			//win.destroy.connect(()=>{
-
+				
 			//});;
 		});
 	}
 
 	private void create_infobar_location(){
-
+		
 		var infobar = new Gtk.InfoBar();
 		infobar.no_show_all = true;
 		add(infobar);
 		infobar_location = infobar;
-
+		
 		var content = (Gtk.Box) infobar.get_content_area ();
 		var label = add_label(content, "");
 		lbl_infobar_location = label;
@@ -438,27 +438,27 @@ class RestoreDeviceBox : Gtk.Box{
 	public bool check_and_mount_devices(){
 
 		// check if we are restoring the current system
-
+		
 		if (App.dst_root == App.sys_root){
 			return true; // all required devices are already mounted
 		}
-
+		
 		// check if target device is selected for /
-
+		
 		foreach(var entry in App.mount_list){
 			if ((entry.mount_point == "/") && (entry.device == null)){
-
+				
 				gtk_messagebox(
 					_("Root device not selected"),
 					_("Select the device for root file system (/)"),
 					parent_window, true);
-
+				
 				return false;
 			}
 		}
 
 		// verify that target device for / is not same as system in clone mode
-
+		
 		if (App.mirror_system){
 
 			foreach(var entry in App.mount_list){
@@ -473,14 +473,14 @@ class RestoreDeviceBox : Gtk.Box{
 						same = true;
 					}
 				}
-
+				
 				if (same){
-
+					
 					gtk_messagebox(
 						_("Target device is same as system device"),
 						_("Select another device for root file system (/)"),
 						parent_window, true);
-
+						
 					return false;
 				}
 
@@ -489,7 +489,7 @@ class RestoreDeviceBox : Gtk.Box{
 		}
 
 		// check if /boot device is selected for luks partitions
-
+		
 		foreach(var entry in App.mount_list){
 			if ((entry.mount_point == "/boot") && (entry.device == null)){
 
@@ -517,7 +517,7 @@ class RestoreDeviceBox : Gtk.Box{
 		// check BTRFS subvolume layout --------------
 
 		bool supported = App.check_btrfs_layout(App.dst_root, App.dst_home, false);
-
+		
 		if (!supported){
 			var title = _("Unsupported Subvolume Layout")
 				+ " (%s)".printf(App.dst_root.device);

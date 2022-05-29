@@ -36,7 +36,7 @@ public class LinuxDistro : GLib.Object{
 	public string codename = "";
 
 	public LinuxDistro(){
-
+		
 		dist_id = "";
 		description = "";
 		release = "";
@@ -44,7 +44,7 @@ public class LinuxDistro : GLib.Object{
 	}
 
 	public string full_name(){
-
+		
 		if (dist_id == ""){
 			return "";
 		}
@@ -197,9 +197,9 @@ public class LinuxDistro : GLib.Object{
 	}
 
 	public string dist_type {
-
+		
 		owned get{
-
+			
 			if (dist_id in "fedora rhel rocky centos almalinux"){
 				return "redhat";
 			}

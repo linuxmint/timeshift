@@ -33,7 +33,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class RestoreSummaryBox : Gtk.Box{
-
+	
 	public Gtk.Label lbl_devices;
 	public Gtk.Label lbl_reboot;
 	public Gtk.Label lbl_disclaimer;
@@ -42,14 +42,14 @@ class RestoreSummaryBox : Gtk.Box{
 	public RestoreSummaryBox (Gtk.Window _parent_window) {
 
 		log_debug("RestoreSummaryBox: RestoreSummaryBox()");
-
+		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
 		margin = 12;
 
 		// devices
-
+		
 		add_label_header(this, _("Warning"), true);
 
 		lbl_devices = add_label(this, "", false, false, false);
@@ -58,11 +58,11 @@ class RestoreSummaryBox : Gtk.Box{
 
 		lbl_reboot = add_label(this, "", true, false, false);
 		lbl_reboot.margin_bottom = 6;
-
+		
 		// disclaimer
-
+		
 		add_label_header(this, _("Disclaimer"), true);
-
+		
 		lbl_disclaimer = add_label(this, "", false, false, false);
 
 
@@ -70,7 +70,7 @@ class RestoreSummaryBox : Gtk.Box{
     }
 
     public void refresh(){
-
+		
 		string msg_devices = "";
 		string msg_reboot = "";
 		string msg_disclaimer = "";

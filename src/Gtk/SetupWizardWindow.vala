@@ -33,7 +33,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class SetupWizardWindow : Gtk.Window{
-
+	
 	private Gtk.Box vbox_main;
 	private Gtk.Notebook notebook;
 
@@ -56,11 +56,11 @@ class SetupWizardWindow : Gtk.Window{
 	private uint tmr_init;
 	private int def_width = 600;
 	private int def_height = 500;
-
+	
 	public SetupWizardWindow() {
 
 		log_debug("SetupWizardWindow: SetupWizardWindow()");
-
+		
 		this.title = _("Setup Wizard");
         this.window_position = WindowPosition.CENTER;
         this.modal = true;
@@ -68,7 +68,7 @@ class SetupWizardWindow : Gtk.Window{
 		this.icon = IconManager.lookup("timeshift",16);
 
 		this.delete_event.connect(on_delete_event);
-
+		
 	    // vbox_main
         vbox_main = new Gtk.Box(Orientation.VERTICAL, 6);
         vbox_main.margin = 0;
@@ -95,7 +95,7 @@ class SetupWizardWindow : Gtk.Window{
 		backend_box = new SnapshotBackendBox(this);
 		backend_box.margin = 12;
 		notebook.append_page (backend_box, label);
-
+		
 		label = new Gtk.Label(_("Estimate"));
 		estimate_box = new EstimateBox(this);
 		estimate_box.margin = 12;
@@ -123,7 +123,7 @@ class SetupWizardWindow : Gtk.Window{
 		notebook.append_page (finish_box, label);
 
 		// TODO: Add a tab for excluding browser cache and other items
-
+		
 		create_actions();
 
 		show_all();
@@ -132,7 +132,7 @@ class SetupWizardWindow : Gtk.Window{
 
 		log_debug("SetupWizardWindow: SetupWizardWindow(): exit");
     }
-
+    
 	private bool init_delayed(){
 
 		if (tmr_init > 0){
@@ -158,40 +158,40 @@ class SetupWizardWindow : Gtk.Window{
 		}
 
 		save_changes();
-
+		
 		return false; // close window
 	}
-
+	
 	private void save_changes(){
-
+		
 		App.cron_job_update();
 
 		App.first_run = false;
-
+		
 		//App.check_encrypted_home(this);
 
 		//App.check_encrypted_private_dirs(this);
 	}
-
+	
 	private void create_actions(){
 
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-
+		 
 		var bbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
 		bbox.margin = 12;
 		bbox.spacing = 6;
 		bbox.hexpand = true;
         hbox.add(bbox);
-
+        
         #if GTK3_18
 			bbox.set_layout (Gtk.ButtonBoxStyle.CENTER);
 		#endif
-
+		
 		Gtk.SizeGroup size_group = null; //new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-
+		
 		// previous
-
+		
 		btn_prev = add_button(bbox, _("Previous"), "", size_group, null);
 
         btn_prev.clicked.connect(()=>{
@@ -199,7 +199,7 @@ class SetupWizardWindow : Gtk.Window{
 		});
 
 		// next
-
+		
 		btn_next = add_button(bbox, _("Next"), "", size_group, null);
 
         btn_next.clicked.connect(()=>{
@@ -207,7 +207,7 @@ class SetupWizardWindow : Gtk.Window{
 		});
 
 		// close
-
+		
 		btn_close = add_button(bbox, _("Finish"), "", size_group, null);
 
         btn_close.clicked.connect(()=>{
@@ -216,40 +216,40 @@ class SetupWizardWindow : Gtk.Window{
 		});
 
 		// cancel
-
+		
 		btn_cancel = add_button(bbox, _("Cancel"), "", size_group, null);
 
         btn_cancel.clicked.connect(()=>{
 			if (App.task != null){
 				App.task.stop(AppStatus.CANCELLED);
 			}
-
+			
 			this.destroy(); // TODO: Show error page
 		});
 
 		btn_prev.hexpand = btn_next.hexpand = btn_close.hexpand = true;
 		btn_cancel.hexpand = true;
-
+		
 		action_buttons_set_no_show_all(true);
 	}
 
 	private void action_buttons_set_no_show_all(bool val){
-
+		
 		btn_prev.no_show_all = val;
 		btn_next.no_show_all = val;
 		btn_close.no_show_all = val;
 		btn_cancel.no_show_all = val;
 	}
-
+	
 
 	// navigation
 
 	private void go_first(){
-
+		
 		// set initial tab
 
 		notebook.page = Tabs.SNAPSHOT_BACKEND;
-
+		
 		/*if (App.live_system()){
 			// skip estimate_box and go to backup_dev_box
 			notebook.page = Tabs.SNAPSHOT_BACKEND;
@@ -265,9 +265,9 @@ class SetupWizardWindow : Gtk.Window{
 
 		initialize_tab();
 	}
-
+	
 	private void go_prev(){
-
+		
 		switch(notebook.page){
 		case Tabs.SNAPSHOT_BACKEND:
 		case Tabs.ESTIMATE:
@@ -286,12 +286,12 @@ class SetupWizardWindow : Gtk.Window{
 			notebook.page = Tabs.USERS;
 			break;
 		}
-
+		
 		initialize_tab();
 	}
-
+	
 	private void go_next(){
-
+		
 		if (!validate_current_tab()){
 			return;
 		}
@@ -305,11 +305,11 @@ class SetupWizardWindow : Gtk.Window{
 				notebook.page = Tabs.ESTIMATE; // rsync mode only
 			}
 			break;
-
+			
 		case Tabs.ESTIMATE:
 			notebook.page = Tabs.BACKUP_DEVICE;
 			break;
-
+			
 		case Tabs.BACKUP_DEVICE:
 			if (App.live_system()){
 				destroy();
@@ -318,7 +318,7 @@ class SetupWizardWindow : Gtk.Window{
 				notebook.page = Tabs.SCHEDULE;
 			}
 			break;
-
+			
 		case Tabs.SCHEDULE:
 			notebook.page = Tabs.USERS;
 			schedule_accepted = true;
@@ -327,12 +327,12 @@ class SetupWizardWindow : Gtk.Window{
 		case Tabs.USERS:
 			notebook.page = Tabs.FINISH;
 			break;
-
+			
 		case Tabs.FINISH:
 			// btn_next is disabled for this page
 			break;
 		}
-
+	
 		initialize_tab();
 	}
 
@@ -348,13 +348,13 @@ class SetupWizardWindow : Gtk.Window{
 		// show/hide actions -----------------------------------
 
 		action_buttons_set_no_show_all(false);
-
+		
 		btn_cancel.hide(); // TODO: remove this
 
 		btn_prev.show();
 		btn_next.show();
 		btn_close.show();
-
+			
 		switch(notebook.page){
 		case Tabs.SNAPSHOT_BACKEND:
 			btn_prev.sensitive = false;
@@ -421,10 +421,10 @@ class SetupWizardWindow : Gtk.Window{
 		}
 		else if (notebook.page == Tabs.BACKUP_DEVICE){
 			if (!App.repo.available() || !App.repo.has_space()){
-
+				
 				gtk_messagebox(App.repo.status_message,
 					App.repo.status_details, this, true);
-
+					
 				return false;
 			}
 		}

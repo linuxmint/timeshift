@@ -30,10 +30,10 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public class FsTabEntry : GLib.Object{
-
+	
 	public bool is_comment = false;
 	public bool is_empty_line = false;
-
+	
 	public string device_string = "";
 	public string mount_point = "";
 	public string type = "";
@@ -57,17 +57,17 @@ public class FsTabEntry : GLib.Object{
 	}
 
 	public static Gee.ArrayList<FsTabEntry> read_file(string file_path){
-
+		
 		var list = new Gee.ArrayList<FsTabEntry>();
 
 		if (!file_exists(file_path)){ return list; }
 
 		string text = file_read(file_path);
-
+		
 		string[] lines = text.split("\n");
-
+		
 		foreach(string line in lines){
-
+			
 			var entry = new FsTabEntry();
 			list.add(entry);
 
@@ -75,24 +75,24 @@ public class FsTabEntry : GLib.Object{
 			entry.is_empty_line = (line.strip().length == 0);
 
 			if (entry.is_comment){
-
+				
 				entry.line = line;
 			}
 			else if (entry.is_empty_line){
-
+				
 				entry.line = "";
 			}
 			else{
 				entry.line = line;
 
 				string[] parts = line.replace("\t"," ").split(" ");
-
+				
 				int part_num = -1;
-
+				
 				foreach(string part in parts){
-
+					
 					if (part.strip().length == 0) { continue; }
-
+					
 					switch (++part_num){
 						case 0:
 							entry.device_string = part.strip();
@@ -123,13 +123,13 @@ public class FsTabEntry : GLib.Object{
 	public static string write_file(
 		Gee.ArrayList<FsTabEntry> entries, string file_path,
 		bool keep_comments_and_empty_lines = false){
-
+			
 		string text = "";
 
 		if (!keep_comments_and_empty_lines){
 			text += "# <file system> <mount point> <type> <options> <dump> <pass>\n\n";
 		}
-
+		
 		foreach(var entry in entries){
 			if (entry.is_comment || entry.is_empty_line){
 				if (keep_comments_and_empty_lines){
@@ -149,18 +149,18 @@ public class FsTabEntry : GLib.Object{
 		entries.sort((a, b)=>{
 			return strcmp(a.mount_point, b.mount_point);
 		});
-
+		
 		if (file_exists(file_path)){
 			file_delete(file_path);
 		}
-
+		
 		file_write(file_path, text);
-
+		
 		return text;
 	}
 
 	public string subvolume_name(){
-
+		
 		if (options.down().contains("subvol=")){
 			string txt = options.split("subvol=")[1].split(",")[0].strip();
 			if (txt.has_prefix("/") && (txt.split("/").length == 2)){
@@ -183,7 +183,7 @@ public class FsTabEntry : GLib.Object{
 			|| (mount_point == "none")
 			|| !mount_point.has_prefix("/")
 			|| (!device_string.has_prefix("/dev/") && !device_string.down().has_prefix("uuid="))){
-
+			
 			return false;
 		}
 		else{
@@ -192,7 +192,7 @@ public class FsTabEntry : GLib.Object{
 	}
 
 	public static FsTabEntry? find_entry_by_mount_point(Gee.ArrayList<FsTabEntry> entries, string mount_path){
-
+			
 		foreach(var entry in entries){
 			if (entry.mount_point == mount_path){
 				return entry;
@@ -202,7 +202,7 @@ public class FsTabEntry : GLib.Object{
 	}
 
 	public Device? resolve_device(Gee.ArrayList<CryptTabEntry> crypttab, Gtk.Window? parent_window){
-
+		
 		Device dev_fstab = null;
 		if (device_uuid.length > 0){
 			dev_fstab = Device.get_device_by_uuid(device_uuid);
@@ -217,30 +217,30 @@ public class FsTabEntry : GLib.Object{
 			Check if the device mentioned in fstab entry is a mapped device.
 			If it is, then try finding the parent device which may be available on the current system.
 			Prompt user to unlock it if found.
-
+			
 			Note:
 			Mapped name may be different on running system, or it may be same.
 			Since it is not reliable, we will try to identify the parent intead of the mapped device.
 			*/
-
+			
 			if (device_string.has_prefix("/dev/mapper/")){
-
+				
 				string mapped_name = device_string.replace("/dev/mapper/","");
-
+				
 				foreach(var item in crypttab){
-
+					
 					if (item.mapped_name == mapped_name){
 
 						// we found the entry for the mapped device
 						device_string = item.device_string;
 
 						if (device_uuid.length > 0){
-
+							
 							// we have the parent's uuid. get the luks device and prompt user to unlock it.
 							var dev_luks = Device.get_device_by_uuid(device_uuid);
-
+							
 							if (dev_luks != null){
-
+								
 								string msg_out, msg_err;
 								var dev_unlocked = Device.luks_unlock(
 									dev_luks, "", "", parent_window, out msg_out, out msg_err);
@@ -268,22 +268,22 @@ public class FsTabEntry : GLib.Object{
 
 
 	public void append_option(string option){
-
+		
 		if (!options.contains(option)){
 			options += ",%s".printf(option);
 		}
-
+		
 		if(options.has_prefix(",")){
 			options = options[1:options.length];
 		}
-
+		
 		options = options.strip();
 	}
 
 	public void remove_option(string option){
-
+		
 		options = options.replace(option,"").strip();
-
+					
 		if(options.has_prefix(",")){
 			options = options[1:options.length];
 		}

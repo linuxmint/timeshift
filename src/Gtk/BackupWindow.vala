@@ -33,11 +33,11 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class BackupWindow : Gtk.Window{
-
+	
 	private Gtk.Box vbox_main;
 	private Gtk.Notebook notebook;
 	private Gtk.ButtonBox bbox_action;
-
+	
 	// tabs
 	private EstimateBox estimate_box;
 	private BackupDeviceBox backup_dev_box;
@@ -58,7 +58,7 @@ class BackupWindow : Gtk.Window{
 	public BackupWindow() {
 
 		log_debug("BackupWindow: BackupWindow()");
-
+		
 		this.title = _("Create Snapshot");
         this.window_position = WindowPosition.CENTER;
         this.modal = true;
@@ -78,7 +78,7 @@ class BackupWindow : Gtk.Window{
 		notebook = add_notebook(vbox_main, false, false);
 
 		Gtk.Label label;
-
+		
 		label = new Gtk.Label(_("Estimate"));
 		estimate_box = new EstimateBox(this);
 		estimate_box.margin = 12;
@@ -107,7 +107,7 @@ class BackupWindow : Gtk.Window{
 
 		log_debug("BackupWindow: BackupWindow(): exit");
     }
-
+    
 	private bool init_delayed(){
 
 		if (tmr_init > 0){
@@ -119,48 +119,48 @@ class BackupWindow : Gtk.Window{
 
 		return false;
 	}
-
+	
 	private bool on_delete_event(Gdk.EventAny event){
 
 		save_changes();
-
+		
 		return false; // close window
 	}
-
+	
 	private void save_changes(){
-
+		
 		App.cron_job_update();
 	}
-
+	
 	private void create_actions(){
-
+		
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-
+		 
 		var bbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
 		bbox.margin = 12;
 		bbox.spacing = 6;
 		bbox.hexpand = true;
         hbox.add(bbox);
-
+        
         bbox_action = bbox;
 
 		#if GTK3_18
-			bbox.set_layout (Gtk.ButtonBoxStyle.CENTER);
+			bbox.set_layout (Gtk.ButtonBoxStyle.CENTER);	
 		#endif
-
+		
 		Gtk.SizeGroup size_group = null; //new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-
+		
 		// previous
-
+		
 		btn_prev = add_button(bbox, _("Previous"), "", size_group, null);
-
+		
         btn_prev.clicked.connect(()=>{
 			go_prev();
 		});
 
 		// next
-
+		
 		btn_next = add_button(bbox, _("Next"), "", size_group, null);
 
         btn_next.clicked.connect(()=>{
@@ -168,7 +168,7 @@ class BackupWindow : Gtk.Window{
 		});
 
 		// close
-
+		
 		btn_close = add_button(bbox, _("Close"), "", size_group, null);
 
         btn_close.clicked.connect(()=>{
@@ -177,14 +177,14 @@ class BackupWindow : Gtk.Window{
 		});
 
 		// cancel
-
+		
 		btn_cancel = add_button(bbox, _("Cancel"), "", size_group, null);
 
         btn_cancel.clicked.connect(()=>{
 			if (App.task != null){
 				App.task.stop(AppStatus.CANCELLED);
 			}
-
+			
 			this.destroy(); // TODO: Show error page
 		});
 
@@ -192,18 +192,18 @@ class BackupWindow : Gtk.Window{
 	}
 
 	private void action_buttons_set_no_show_all(bool val){
-
+		
 		btn_prev.no_show_all = val;
 		btn_next.no_show_all = val;
 		btn_close.no_show_all = val;
 		btn_cancel.no_show_all = val;
 	}
-
+	
 
 	// navigation
 
 	private void go_first(){
-
+		
 		// set initial tab
 
 		if (App.btrfs_mode){
@@ -223,9 +223,9 @@ class BackupWindow : Gtk.Window{
 
 		initialize_tab();
 	}
-
+	
 	private void go_prev(){
-
+		
 		switch(notebook.page){
 		case Tabs.ESTIMATE:
 		case Tabs.BACKUP_DEVICE:
@@ -233,16 +233,16 @@ class BackupWindow : Gtk.Window{
 			// btn_previous is disabled for this page
 			break;
 		}
-
+		
 		initialize_tab();
 	}
-
+	
 	private void go_next(){
-
+		
 		if (!validate_current_tab()){
 			return;
 		}
-
+		
 		switch(notebook.page){
 		case Tabs.ESTIMATE:
 			notebook.page = Tabs.BACKUP_DEVICE;
@@ -257,7 +257,7 @@ class BackupWindow : Gtk.Window{
 			destroy();
 			break;
 		}
-
+		
 		initialize_tab();
 	}
 
@@ -271,7 +271,7 @@ class BackupWindow : Gtk.Window{
 		// show/hide actions -----------------------------------
 
 		action_buttons_set_no_show_all(false);
-
+		
 		switch(notebook.page){
 		case Tabs.ESTIMATE:
 		case Tabs.BACKUP:
@@ -320,16 +320,16 @@ class BackupWindow : Gtk.Window{
 		}
 	}
 
-
+	
 
 	private bool validate_current_tab(){
-
+		
 		if (notebook.page == Tabs.BACKUP_DEVICE){
 			if (!App.repo.available() || !App.repo.has_space()){
-
+				
 				gtk_messagebox(App.repo.status_message,
 					App.repo.status_details, this, true);
-
+					
 				return false;
 			}
 		}

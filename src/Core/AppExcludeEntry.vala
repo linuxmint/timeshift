@@ -30,7 +30,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public class AppExcludeEntry : GLib.Object{
-
+	
 	public string name = "";
 	public bool is_include = false;
 	public bool is_file = false;
@@ -42,7 +42,7 @@ public class AppExcludeEntry : GLib.Object{
 	public static Gee.HashMap<string, AppExcludeEntry> app_map;
 
 	public AppExcludeEntry(string _name, bool _is_include = false){
-
+		
 		name = _name;
 		is_include = _is_include;
 
@@ -51,7 +51,7 @@ public class AppExcludeEntry : GLib.Object{
 	}
 
 	public string tooltip_text(){
-
+		
 		string txt = "";
 		foreach(var item in items){
 			txt += "%s\n".printf(item);
@@ -60,14 +60,14 @@ public class AppExcludeEntry : GLib.Object{
 			txt = txt[0:txt.length - 1];
 		}
 		return txt;
-	}
-
+	}	
+	
 	// static
-
+	
 	public static void clear(){
 
 		log_debug("AppExcludeEntry: clear()");
-
+		
 		if (app_map == null){
 			app_map = new Gee.HashMap<string, AppExcludeEntry>();
 		}
@@ -80,14 +80,14 @@ public class AppExcludeEntry : GLib.Object{
 
 		log_debug("AppExcludeEntry: add_app_exclude_entries_from_home()");
 		log_debug("path=%s".printf(home));
-
+		
 		try
 		{
 			File f_home = File.new_for_path (home);
 			if (!f_home.query_exists()){
 				return;
 			}
-
+			
 	        FileEnumerator enumerator = f_home.enumerate_children ("standard::*", 0);
 	        FileInfo file;
 	        while ((file = enumerator.next_file ()) != null) {
@@ -97,7 +97,7 @@ public class AppExcludeEntry : GLib.Object{
 				if (name.has_suffix(".log")){ continue; }
 				if (name.has_suffix(".old")){ continue; }
 				if (name.has_suffix("~")){ continue; }
-
+				
 				add_app_exclude_entries_from_path(item);
 	        }
         }
@@ -105,19 +105,19 @@ public class AppExcludeEntry : GLib.Object{
 	        log_error (e.message);
 	    }
 	}
-
+	
 	public static void add_app_exclude_entries_from_path(string user_home){
 
 		log_debug("AppExcludeEntry: add_app_exclude_entries_from_path()");
 		log_debug("path=%s".printf(user_home));
-
+		
 		try
 		{
 			File f_home = File.new_for_path (user_home);
 			if (!f_home.query_exists()){
 				return;
 			}
-
+			
 	        FileEnumerator enumerator = f_home.enumerate_children ("standard::*", 0);
 	        FileInfo file;
 	        while ((file = enumerator.next_file ()) != null) {
@@ -136,7 +136,7 @@ public class AppExcludeEntry : GLib.Object{
 				if (name.has_suffix(".log")){ continue; }
 				if (name.has_suffix(".old")){ continue; }
 				if (name.has_suffix("~")){ continue; }
-
+				
 				var relpath = "~/%s".printf(name);
 				add_item(relpath, !dir_exists(item), false);
 	        }
@@ -151,7 +151,7 @@ public class AppExcludeEntry : GLib.Object{
 					if (name.has_suffix(".log")){ continue; }
 					if (name.has_suffix(".old")){ continue; }
 					if (name.has_suffix("~")){ continue; }
-
+					
 					var relpath = "~/.config/%s".printf(name);
 					add_item(relpath, !dir_exists(item), false);
 				}
@@ -169,7 +169,7 @@ public class AppExcludeEntry : GLib.Object{
 					if (name.has_suffix("~")){ continue; }
 					if (name == "applications"){ continue; }
 					if (name == "Trash"){ continue; }
-
+					
 					var relpath = "~/.local/share/%s".printf(name);
 					add_item(relpath, !dir_exists(item), false);
 				}
@@ -187,7 +187,7 @@ public class AppExcludeEntry : GLib.Object{
 		}
 
 		var name = file_basename(item_path);
-
+		
 		if (name.has_suffix(".ini")){
 			name = name[0:name.length - ".ini".length];
 		}
@@ -275,7 +275,7 @@ public class AppExcludeEntry : GLib.Object{
 		if (app_map == null){
 			app_map = new Gee.HashMap<string, AppExcludeEntry>();
 		}
-
+		
 		foreach(var selected_name in selected_app_names){
 			if (app_map.has_key(selected_name)){
 				app_map[selected_name].enabled = true;
@@ -284,7 +284,7 @@ public class AppExcludeEntry : GLib.Object{
 				app_map[selected_name].enabled = false;
 			}
 		}
-
+			
 		var list = new Gee.ArrayList<AppExcludeEntry>();
 		foreach(var key in app_map.keys){
 			list.add(app_map[key]);
@@ -294,11 +294,11 @@ public class AppExcludeEntry : GLib.Object{
 		GLib.CompareDataFunc<AppExcludeEntry> entry_compare = (a, b) => {
 			return strcmp(a.name.down(),b.name.down());
 		};
-
+		
 		list.sort((owned) entry_compare);
 
 		log_debug("apps: %d".printf(list.size));
-
+		
 		return list;
 	}
 }

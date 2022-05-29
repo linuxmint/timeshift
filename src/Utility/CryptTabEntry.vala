@@ -31,7 +31,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public class CryptTabEntry : GLib.Object{
-
+	
 	public bool is_comment = false;
 	public bool is_empty_line = false;
 
@@ -57,7 +57,7 @@ public class CryptTabEntry : GLib.Object{
 	}
 
 	public static Gee.ArrayList<CryptTabEntry> read_file(string file_path){
-
+		
 		var list = new Gee.ArrayList<CryptTabEntry>();
 
 		if (!file_exists(file_path)){ return list; }
@@ -106,7 +106,7 @@ public class CryptTabEntry : GLib.Object{
 	}
 
 	public static string write_file(Gee.ArrayList<CryptTabEntry> entries, string file_path, bool keep_comments_and_empty_lines = true){
-
+			
 		string text = "";
 		foreach(var entry in entries){
 			if (entry.is_comment || entry.is_empty_line){
@@ -124,29 +124,29 @@ public class CryptTabEntry : GLib.Object{
 		if (file_exists(file_path)){
 			file_delete(file_path);
 		}
-
+		
 		file_write(file_path, text);
-
+		
 		return text;
 	}
 
 	public void append_option(string option){
-
+		
 		if (!options.contains(option)){
 			options += ",%s".printf(option);
 		}
-
+		
 		if(options.has_prefix(",")){
 			options = options[1:options.length];
 		}
-
+		
 		options = options.strip();
 	}
 
 	public void remove_option(string option){
-
+		
 		options = options.replace(option,"").strip();
-
+					
 		if(options.has_prefix(",")){
 			options = options[1:options.length];
 		}
@@ -160,13 +160,13 @@ public class CryptTabEntry : GLib.Object{
 
 	public static CryptTabEntry? find_entry_by_uuid(
 		Gee.ArrayList<CryptTabEntry> entries, string uuid){
-
+			
 		foreach(var entry in entries){
 			if (entry.device_uuid == uuid){
 				return entry;
 			}
 		}
-
+		
 		return null;
 	}
 }

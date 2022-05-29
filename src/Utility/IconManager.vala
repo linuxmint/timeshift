@@ -61,7 +61,7 @@ public class IconManager : GLib.Object {
 	public static void init(string[] args, string app_name){
 
 		log_debug("IconManager: init()");
-
+		
 		search_paths = new Gee.ArrayList<string>();
 
 		string binpath = file_resolve_executable_path(args[0]);
@@ -91,7 +91,7 @@ public class IconManager : GLib.Object {
 	public static void refresh_icon_theme(){
 
 		if (!GTK_INITIALIZED) { return; }
-
+		
 		theme = Gtk.IconTheme.get_default();
 		foreach(string path in search_paths){
 			theme.append_search_path(path);
@@ -99,7 +99,7 @@ public class IconManager : GLib.Object {
 	}
 
 	public static Gdk.Pixbuf? lookup(string icon_name, int icon_size, bool symbolic = false, bool use_hardcoded = false, int scale = 1){
-
+		
 		Gdk.Pixbuf? pixbuf = null;
 
 		if (icon_name.length == 0){ return null; }
@@ -130,7 +130,7 @@ public class IconManager : GLib.Object {
 
 		return pixbuf;
 	}
-
+	
 	public static Gtk.Image? lookup_image(string icon_name, int icon_size, bool symbolic = false, bool use_hardcoded = false){
 
 		if (icon_name.length == 0){ return null; }
@@ -138,7 +138,7 @@ public class IconManager : GLib.Object {
         Gtk.Image image = new Gtk.Image();
 
 		Gdk.Pixbuf? pix = lookup(icon_name, icon_size, symbolic, use_hardcoded, image.scale_factor);
-
+		
 		if (pix == null){
 			pix = lookup(GENERIC_ICON_IMAGE_MISSING, icon_size, symbolic, use_hardcoded, image.scale_factor);
 		}
@@ -152,9 +152,9 @@ public class IconManager : GLib.Object {
 
     public static Cairo.Surface? lookup_surface(string icon_name, int icon_size, int scale = 1, bool symbolic = false, bool use_hardcoded = false){
         if (icon_name.length == 0){ return null; }
-
+        
         Gdk.Pixbuf? pix = lookup(icon_name, icon_size, symbolic, use_hardcoded, scale);
-
+        
         if (pix == null){
             pix = lookup(GENERIC_ICON_IMAGE_MISSING, icon_size, symbolic, use_hardcoded, scale);
         }
@@ -167,7 +167,7 @@ public class IconManager : GLib.Object {
 		Gdk.Pixbuf? pixbuf = null;
 
 		if (gicon == null){ return null; }
-
+		
 		try {
 			var icon_info = theme.lookup_by_gicon(gicon, icon_size, Gtk.IconLookupFlags.FORCE_SIZE);
 			if (icon_info != null){
@@ -184,7 +184,7 @@ public class IconManager : GLib.Object {
 	public static Gtk.Image? lookup_animation(string gif_name){
 
 		if (gif_name.length == 0){ return null; }
-
+		
 		foreach(string search_path in search_paths){
 
 			foreach(string ext in new string[] { ".gif" }){
@@ -242,17 +242,17 @@ public class IconManager : GLib.Object {
 		}
 
         var emblemed = pixbuf.copy();
-
-        emblem.composite(emblemed,
-			offset_x, offset_y,
+        
+        emblem.composite(emblemed, 
+			offset_x, offset_y, 
 			emblem_size, emblem_size,
-			offset_x, offset_y,
-			1.0, 1.0,
+			offset_x, offset_y, 
+			1.0, 1.0, 
 			Gdk.InterpType.BILINEAR, 255);
 
         return emblemed;
     }
-
+    
     public static Gdk.Pixbuf? add_overlay(Gdk.Pixbuf pixbuf_base, Gdk.Pixbuf pixbuf_overlay) {
 
         int offset_x = (pixbuf_base.width - pixbuf_overlay.width) / 2 ;
@@ -260,35 +260,35 @@ public class IconManager : GLib.Object {
 		var offset_y = (pixbuf_base.height - pixbuf_overlay.height) / 2 ;
 
         var emblemed = pixbuf_base.copy();
-
-        pixbuf_overlay.composite(emblemed,
-			offset_x, offset_y,
+        
+        pixbuf_overlay.composite(emblemed, 
+			offset_x, offset_y, 
 			pixbuf_overlay.width, pixbuf_overlay.height,
-			offset_x, offset_y,
-			1.0, 1.0,
+			offset_x, offset_y, 
+			1.0, 1.0, 
 			Gdk.InterpType.BILINEAR, 255);
 
         return emblemed;
     }
-
+    
     public static Gdk.Pixbuf? resize_icon(Gdk.Pixbuf pixbuf_image, int icon_size) {
-
+		
 		//log_debug("resize_icon()");
-
+		
 		var pixbuf_empty = new Gdk.Pixbuf(Gdk.Colorspace.RGB, true, 8, icon_size, icon_size);
 		pixbuf_empty.fill(0x00000000);
 
 		//log_debug("pixbuf_empty: %d, %d".printf(pixbuf_empty.width, pixbuf_empty.height));
-
+		
 		var pixbuf_resized = add_overlay(pixbuf_empty, pixbuf_image);
-
+		
 		//log_debug("pixbuf_resized: %d, %d".printf(pixbuf_resized.width, pixbuf_resized.height));
 
 		//copy_pixbuf_options(pixbuf_image, pixbuf_resized);
-
+		
         return pixbuf_resized;
     }
-
+    
     public static Gdk.Pixbuf? add_transparency (Gdk.Pixbuf pixbuf, int opacity = 130) {
 
 		var trans = pixbuf.copy();
@@ -302,14 +302,14 @@ public class IconManager : GLib.Object {
 
         return trans;
     }
-
+    
     public static Gdk.Pixbuf? load_pixbuf_from_file(string file_path, int icon_size){
-
+		
 		Gdk.Pixbuf? pixbuf = null;
-
+		
 		int width, height;
 		Gdk.Pixbuf.get_file_info(file_path, out width, out height);
-
+		
 		if ((width <= icon_size) && (height <= icon_size)){
 			try{
 				// load without scaling
@@ -336,7 +336,7 @@ public class IconManager : GLib.Object {
 				// ignore
 			}
 		}
-
+		
 		return null;
 	}
 }

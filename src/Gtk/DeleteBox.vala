@@ -48,22 +48,22 @@ class DeleteBox : Gtk.Box{
 	public DeleteBox (Gtk.Window _parent_window) {
 
 		log_debug("DeleteBox: DeleteBox()");
-
+		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
 		margin = 12;
-
+		
 		// header
 		add_label_header(this, _("Deleting Snapshots..."), true);
 
 		var hbox_status = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		add (hbox_status);
-
+		
 		spinner = new Gtk.Spinner();
 		spinner.active = true;
 		hbox_status.add(spinner);
-
+		
 		//lbl_msg
 		lbl_msg = add_label(hbox_status, _("Preparing..."));
 		lbl_msg.hexpand = true;
@@ -97,9 +97,9 @@ class DeleteBox : Gtk.Box{
 		}
 
 		if (App.btrfs_mode){
-
+			
 			while (App.thread_delete_running){
-
+				
 				lbl_msg.label = App.progress_text;
 				gtk_do_events();
 				sleep(200);
@@ -114,14 +114,14 @@ class DeleteBox : Gtk.Box{
 			#endif
 		}
 		else{
-
+			
 			int wait_interval_millis = 100;
 			int status_line_counter = 0;
 			int status_line_counter_default = 1000 / wait_interval_millis;
 			string status_line = "";
 			string last_status_line = "";
 			int remaining_counter = 10;
-
+			
 			while (App.thread_delete_running){
 
 				status_line = escape_html(App.delete_file_task.status_line);
@@ -143,14 +143,14 @@ class DeleteBox : Gtk.Box{
 
 				// time remaining
 				remaining_counter--;
-
+				
 				if (remaining_counter == 0){
-
+					
 					lbl_remaining.label = App.delete_file_task.stat_time_remaining + " " + _("remaining");
 
 					remaining_counter = 10;
 				}
-
+					
 				if (fraction < 0.99){
 					progressbar.fraction = fraction;
 
@@ -170,7 +170,7 @@ class DeleteBox : Gtk.Box{
 			XApp.set_window_progress(parent_window, 0);
 			#endif
 		}
-
+		
 		//parent_window.destroy();
 
 		return App.thread_delete_success;

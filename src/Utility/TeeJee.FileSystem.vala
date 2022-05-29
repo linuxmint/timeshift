@@ -21,7 +21,7 @@
  *
  *
  */
-
+ 
 namespace TeeJee.FileSystem{
 
 	/* Convenience functions for handling files and directories */
@@ -39,9 +39,9 @@ namespace TeeJee.FileSystem{
 	public const int64 MiB = 1024 * KiB;
 	public const int64 GiB = 1024 * MiB;
 	public const int64 TiB = 1024 * GiB;
-
+	
 	// path helpers ----------------------------
-
+	
 	public string file_parent(string file_path){
 		return File.new_for_path(file_path).get_parent().get_path();
 	}
@@ -62,17 +62,17 @@ namespace TeeJee.FileSystem{
 			return path;
 		}
 	}
-
+	
 	// file helpers -----------------------------
 
 	public bool file_or_dir_exists(string item_path){
-
+		
 		/* check if item exists on disk*/
 
 		var item = File.parse_name(item_path);
 		return item.query_exists();
 	}
-
+	
 	public bool file_exists (string file_path){
 		/* Check if file exists */
 		return (FileUtils.test(file_path, GLib.FileTest.EXISTS)
@@ -136,12 +136,12 @@ namespace TeeJee.FileSystem{
 		try{
 
 			dir_create(file_parent(file_path));
-
+			
 			var file = File.new_for_path (file_path);
 			if (file.query_exists ()) {
 				file.delete ();
 			}
-
+			
 			var file_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
 			var data_stream = new DataOutputStream (file_stream);
 			data_stream.put_string (contents);
@@ -193,7 +193,7 @@ namespace TeeJee.FileSystem{
 
 		try {
 			var file = File.new_for_path (file_path);
-
+			
 			if (file.query_exists()) {
 
 				var info = file.query_info("%s".printf(FileAttribute.STANDARD_TYPE), FileQueryInfoFlags.NOFOLLOW_SYMLINKS); // don't follow symlinks
@@ -206,31 +206,31 @@ namespace TeeJee.FileSystem{
 		catch (Error e) {
 	        log_error (e.message);
 	    }
-
+	    
 		return false;
 	}
 
 	public bool file_gzip (string src_file){
-
+		
 		string dst_file = src_file + ".gz";
 		file_delete(dst_file);
-
+		
 		string cmd = "gzip '%s'".printf(escape_single_quote(src_file));
 		string std_out, std_err;
 		exec_sync(cmd, out std_out, out std_err);
-
+		
 		return file_exists(dst_file);
 	}
 
 	public bool file_gunzip (string src_file){
-
+		
 		string dst_file = src_file;
 		file_delete(dst_file);
-
+		
 		string cmd = "gunzip '%s'".printf(escape_single_quote(src_file));
 		string std_out, std_err;
 		exec_sync(cmd, out std_out, out std_err);
-
+		
 		return file_exists(dst_file);
 	}
 
@@ -252,20 +252,20 @@ namespace TeeJee.FileSystem{
 			return path_combine(GLib.Environment.get_current_dir(), file_path);
 		}
 	}
-
+	
 	// file info -----------------
 
 	public int64 file_get_size(string file_path){
-
+		
 		try{
-
+			
 			File file = File.parse_name (file_path);
-
+			
 			if (FileUtils.test(file_path, GLib.FileTest.EXISTS)){
-
+				
 				if (FileUtils.test(file_path, GLib.FileTest.IS_REGULAR)
 					&& !FileUtils.test(file_path, GLib.FileTest.IS_SYMLINK)){
-
+						
 					return file.query_info("standard::size",0).get_size();
 				}
 			}
@@ -289,10 +289,10 @@ namespace TeeJee.FileSystem{
 		catch (Error e) {
 			log_error (e.message);
 		}
-
+		
 		return (new DateTime.from_unix_utc(0)); //1970
 	}
-
+	
 	public string file_get_symlink_target(string file_path){
 		try{
 			FileInfo info;
@@ -305,28 +305,28 @@ namespace TeeJee.FileSystem{
 		catch (Error e) {
 			log_error (e.message);
 		}
-
+		
 		return "";
 	}
 
 	// directory helpers ----------------------
-
+	
 	public bool dir_exists (string dir_path){
 		/* Check if directory exists */
 		return ( FileUtils.test(dir_path, GLib.FileTest.EXISTS) && FileUtils.test(dir_path, GLib.FileTest.IS_DIR));
 	}
-
+	
 	public bool dir_create (string dir_path, bool show_message = false){
 
 		/* Creates a directory along with parents */
 
 		try{
 			var dir = File.parse_name (dir_path);
-
+			
 			if (dir.query_exists () == false) {
-
+				
 				bool ok = dir.make_directory_with_parents (null);
-
+				
 				if (show_message){
 					if (ok){
 						log_msg(_("Created directory") + ": %s".printf(dir_path));
@@ -336,7 +336,7 @@ namespace TeeJee.FileSystem{
 					}
 				}
 			}
-
+			
 			return true;
 		}
 		catch (Error e) {
@@ -347,20 +347,20 @@ namespace TeeJee.FileSystem{
 	}
 
 	public bool dir_delete (string dir_path, bool show_message = false){
-
+		
 		/* Recursively deletes directory along with contents */
-
+		
 		if (!dir_exists(dir_path)){
 			return true;
 		}
-
+		
 		string cmd = "rm -rf '%s'".printf(escape_single_quote(dir_path));
-
+		
 		log_debug(cmd);
-
+		
 		string std_out, std_err;
 		int status = exec_sync(cmd, out std_out, out std_err);
-
+		
 		if (show_message){
 			if (status == 0){
 				log_msg(_("Deleted directory") + ": %s".printf(dir_path));
@@ -371,7 +371,7 @@ namespace TeeJee.FileSystem{
 				log_error(std_err);
 			}
 		}
-
+		
 		return (status == 0);
 	}
 
@@ -399,20 +399,20 @@ namespace TeeJee.FileSystem{
 	}
 
 	public bool filesystem_supports_hardlinks(string path, out bool is_readonly){
-
+		
 		bool supports_hardlinks = false;
 		is_readonly = false;
-
+		
 		var test_file = path_combine(path, random_string() + "~");
-
+		
 		if (file_write(test_file,"")){
-
+			
 			var test_file2 = path_combine(path, random_string() + "~");
 
 			var cmd = "ln '%s' '%s'".printf(
 				escape_single_quote(test_file),
 				escape_single_quote(test_file2));
-
+				
 			log_debug(cmd);
 
 			int status = exec_sync(cmd);
@@ -421,18 +421,18 @@ namespace TeeJee.FileSystem{
 				escape_single_quote(test_file));
 
 			log_debug(cmd);
-
+			
 			string std_out, std_err;
 			status = exec_sync(cmd, out std_out, out std_err);
 			log_debug("stdout: %s".printf(std_out));
-
+			
 			int64 count = 0;
 			if (int64.try_parse(std_out, out count)){
 				if (count > 1){
 					supports_hardlinks = true;
 				}
 			}
-
+			
 			file_delete(test_file2); // delete if exists
 			file_delete(test_file);
 		}
@@ -444,9 +444,9 @@ namespace TeeJee.FileSystem{
 	}
 
 	public Gee.ArrayList<string> dir_list_names(string path){
-
+		
 		var list = new Gee.ArrayList<string>();
-
+		
 		try
 		{
 			File f_home = File.new_for_path (path);
@@ -469,15 +469,15 @@ namespace TeeJee.FileSystem{
 
 		return list;
 	}
-
+	
 	public bool chown(string dir_path, string user, string group = user){
 		string cmd = "chown %s:%s -R '%s'".printf(user, group, escape_single_quote(dir_path));
 		int status = exec_sync(cmd, null, null);
 		return (status == 0);
 	}
-
+	
 	// dir info -------------------
-
+	
 	// dep: find wc    TODO: rewrite
 	public long dir_count(string path){
 
@@ -517,7 +517,7 @@ namespace TeeJee.FileSystem{
 	public string format_file_size (
 		uint64 size, bool binary_units = false,
 		string unit = "", bool show_units = true, int decimals = 1){
-
+			
 		uint64 unit_k = binary_units ? 1024 : 1000;
 		uint64 unit_m = binary_units ? 1024 * unit_k : 1000 * unit_k;
 		uint64 unit_g = binary_units ? 1024 * unit_m : 1000 * unit_m;
@@ -526,7 +526,7 @@ namespace TeeJee.FileSystem{
 		//log_debug("size: %'lld".printf(size));
 
 		string txt = "";
-
+		
 		if ((size > unit_t) && ((unit.length == 0) || (unit == "t"))){
 			txt += ("%%'0.%df".printf(decimals)).printf(size / (1.0 * unit_t));
 			if (show_units){
@@ -564,17 +564,17 @@ namespace TeeJee.FileSystem{
 	}
 
 	public string escape_single_quote(string file_path){
-
+		
 		return file_path.replace("'","'\\''");
 	}
-
+	
 	// dep: chmod
 	public int chmod (string file, string permission){
 
 		string cmd = "chmod %s '%s'".printf(permission, escape_single_quote(file));
 		return exec_sync (cmd, null, null);
 	}
-
+	
 	public int rsync(string sourceDirectory, string destDirectory, bool updateExisting, bool deleteExtra){
 
 		/* Sync files with rsync */

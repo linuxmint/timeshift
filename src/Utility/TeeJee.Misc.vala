@@ -21,7 +21,7 @@
  *
  *
  */
-
+ 
 namespace TeeJee.Misc {
 
 	/* Various utility functions */
@@ -38,9 +38,9 @@ namespace TeeJee.Misc {
 	    Intl.setlocale(GLib.LocaleCategory.COLLATE, type);
 	    Intl.setlocale(GLib.LocaleCategory.TIME, type);
 	}
-
+	
 	// timestamp ----------------
-
+	
 	public string timestamp (bool show_millis = false){
 
 		/* Returns a formatted timestamp string */
@@ -48,7 +48,7 @@ namespace TeeJee.Misc {
 		// NOTE: format() does not support milliseconds
 
 		DateTime now = new GLib.DateTime.now_local();
-
+		
 		if (show_millis){
 			var msec = now.get_microsecond () / 1000;
 			return "%s.%03d".printf(now.format("%H:%M:%S"), msec);
@@ -78,11 +78,11 @@ namespace TeeJee.Misc {
 	public string format_date(DateTime date){
 		return date.format ("%Y-%m-%d %H:%M");
 	}
-
+	
 	public string format_date_12_hour(DateTime date){
 		return date.format ("%Y-%m-%d %I:%M %p");
 	}
-
+	
 	public string format_duration (long millis){
 
 		/* Converts time in milliseconds to format '00:00:00.0' */
@@ -108,7 +108,7 @@ namespace TeeJee.Misc {
 		txt += "%.0fs".printf(secs);
 		return txt;
 	}
-
+	
 	public double parse_time (string time){
 
 		/* Converts time in format '00:00:00.0' to milliseconds */
@@ -127,7 +127,7 @@ namespace TeeJee.Misc {
 		string[] arr = str.split(search);
 		string new_txt = "";
 		bool first = true;
-
+		
 		foreach(string part in arr){
 			if (first){
 				new_txt += part;
@@ -148,20 +148,20 @@ namespace TeeJee.Misc {
 
 		return new_txt;
 	}
-
+	
 	public string escape_html(string html, bool pango_markup = true){
 		string txt = html;
 
 		if (pango_markup){
 			txt = txt
 				.replace("\\u00", "")
-				.replace("\\x"  , "");
+				.replace("\\x"  , ""); 
 		}
 		else{
 			txt = txt
 				.replace(" ", "&nbsp;");  //pango markup throws an error with &nbsp;
 		}
-
+		
 		txt = txt
 				.replace("&" , "&amp;")
 				.replace("\"", "&quot;")
@@ -197,7 +197,7 @@ namespace TeeJee.Misc {
 	public DateTime datetime_from_string (string date_time_string){
 
 		/* Converts date time string to DateTime
-		 *
+		 * 
 		 * Supported inputs:
 		 * 'yyyy-MM-dd'
 		 * 'yyyy-MM-dd HH'
@@ -257,7 +257,7 @@ namespace TeeJee.Misc {
 
 	private string pad_numbers_in_string(
 		string input, int max_length = 3, char pad_char = '0'){
-
+			
 		string sequence = "";
 		string output = "";
 		bool seq_started = false;
@@ -293,7 +293,7 @@ namespace TeeJee.Misc {
 			output += sequence;
 			sequence = "";
 		}
-
+					
 		return output;
 	}
 

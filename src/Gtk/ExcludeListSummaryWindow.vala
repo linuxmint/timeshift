@@ -33,19 +33,19 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class ExcludeListSummaryWindow : Gtk.Window{
-
+	
 	private Gtk.Box vbox_main;
 	private Gtk.Label lbl_list;
 	private Gtk.Button btn_close;
 	private bool for_restore = false;
-
+	
 	private int def_width = 500;
 	private int def_height = 450;
 
 	public ExcludeListSummaryWindow(bool _for_restore) {
 
 		log_debug("ExcludeListSummaryWindow: ExcludeListSummaryWindow()");
-
+		
 		this.title = _("Exclude List Summary");
         this.window_position = WindowPosition.CENTER;
         this.modal = true;
@@ -53,7 +53,7 @@ class ExcludeListSummaryWindow : Gtk.Window{
 		this.icon = IconManager.lookup("timeshift",16);
 
 		for_restore = _for_restore;
-
+		
 	    // vbox_main
         vbox_main = new Gtk.Box(Orientation.VERTICAL, 6);
         vbox_main.margin = 12;
@@ -66,20 +66,20 @@ class ExcludeListSummaryWindow : Gtk.Window{
 		create_actions();
 
 		refresh();
-
+		
 		show_all();
 
 		log_debug("ExcludeListSummaryWindow: ExcludeListSummaryWindow(): exit");
     }
-
+    
 	private void create_actions(){
-
+		
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
         vbox_main.add(hbox);
 		var size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-
+		
 		// close
-
+		
 		var img = new Image.from_stock("gtk-ok", Gtk.IconSize.BUTTON);
 		btn_close = add_button(hbox, _("OK"), "", size_group, img);
 
@@ -91,21 +91,21 @@ class ExcludeListSummaryWindow : Gtk.Window{
 	public void refresh(){
 
 		Gee.ArrayList<string> list;
-
+		
 		if (for_restore){
 			list = App.create_exclude_list_for_restore();
 		}
 		else{
 			list = App.create_exclude_list_for_backup();
 		}
-
+		
 		var txt = "";
 		foreach(var pattern in list){
 			if (pattern.strip().length > 0){
 				txt += "%s\n".printf(pattern);
 			}
 		}
-
+		
 		lbl_list.label = txt;
 	}
 }

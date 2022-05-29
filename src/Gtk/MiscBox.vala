@@ -33,34 +33,34 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class MiscBox : Gtk.Box{
-
+	
 	private Gtk.Window parent_window;
 	private bool restore_mode = false;
-
+	
 	//private Gtk.CheckButton chk_include_btrfs_home;
 	//private Gtk.CheckButton chk_enable_qgroups;
-
-
+	
+	
 	public MiscBox (Gtk.Window _parent_window, bool _restore_mode) {
 
 		log_debug("MiscBox: MiscBox()");
-
+		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
 		margin = 12;
 
 		restore_mode = _restore_mode;
-
+		
 		var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
 		this.add(vbox);
 
 		// ------------------------
-
+		
 		init_date_format_option(vbox);
 
 		refresh();
-
+		
 		log_debug("MiscBox: MiscBox(): exit");
     }
 
@@ -80,7 +80,7 @@ class MiscBox : Gtk.Box{
 		var entry = new Gtk.Entry();
 		entry.hexpand = true;
 		hbox.add(entry);
-
+		
 		var cell_pix = new Gtk.CellRendererPixbuf();
 		combo.pack_start (cell_pix, false);
 
@@ -91,13 +91,13 @@ class MiscBox : Gtk.Box{
 		var now = new DateTime.local(2019, 8, 11, 20, 25, 43);
 
 		combo.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
-
+			
 			string txt;
 			model.get (iter, 0, out txt, -1);
 
 			(cell as Gtk.CellRendererText).text = (txt.length == 0) ? _("Custom") : now.format(txt);
 		});
-
+		
 		// populate combo
 		var model = new Gtk.ListStore(1, typeof(string));
 		combo.model = model;
@@ -113,7 +113,7 @@ class MiscBox : Gtk.Box{
 			"%Y %b %d, %I:%M %p", // 2019 Aug 11, 08:00 PM
 			"%c"                 // Sunday, 11 August 2019 08:00:00 PM IST
 			}){
-
+			
 			index++;
 			model.append(out iter);
 			model.set(iter, 0, fmt);
@@ -122,11 +122,11 @@ class MiscBox : Gtk.Box{
 				active = index;
 			}
 		}
-
+		
 		if (active < 0){
-			active = 0;
+			active = 0; 
 		}
-
+		
 		combo.active = active;
 
 		combo.changed.connect((path) => {
@@ -134,7 +134,7 @@ class MiscBox : Gtk.Box{
 			TreeIter iter_active;
 			bool selected = combo.get_active_iter(out iter_active);
 			if (!selected){ return; }
-
+			
 			TreeIter iter_combo;
 			var store = (Gtk.ListStore) combo.model;
 
@@ -145,9 +145,9 @@ class MiscBox : Gtk.Box{
 			if (txt.length > 0){
 				fmt = txt;
 			}
-
+			
 			entry.text = fmt;
-
+			
 			entry.sensitive = (txt.length == 0);
 
 			App.date_format = fmt;
@@ -162,7 +162,7 @@ class MiscBox : Gtk.Box{
 			log_debug("saved date_format: %s".printf(App.date_format));
 			return false;
 		});
-
+		
 		show_all();
 
 		log_debug("MiscBox: init_date_format_option(): exit");

@@ -27,7 +27,7 @@ using TeeJee.FileSystem;
 using TeeJee.ProcessHelper;
 
 public class SystemUser : GLib.Object {
-
+	
 	public string name = "";
 	public string password = "";
 	public int uid = -1;
@@ -57,7 +57,7 @@ public class SystemUser : GLib.Object {
 	public bool has_encrypted_private_dirs = false;
 	public Gee.ArrayList<string> encrypted_dirs = new Gee.ArrayList<string>();
 	public Gee.ArrayList<string> encrypted_private_dirs = new Gee.ArrayList<string>();
-
+	
 	public bool is_selected = false;
 
 	public static Gee.HashMap<string,SystemUser> all_users;
@@ -67,7 +67,7 @@ public class SystemUser : GLib.Object {
 	}
 
 	public static void query_users(bool no_passwords = true){
-
+		
 		if (no_passwords){
 			all_users = read_users_from_file("/etc/passwd","","");
 		}
@@ -94,13 +94,13 @@ public class SystemUser : GLib.Object {
 	}
 
 	public static Gee.HashMap<string,SystemUser> read_users_from_file(
-
+	
 		string passwd_file, string shadow_file, string password){
-
+		
 		var list = new Gee.HashMap<string,SystemUser>();
 
 		// read 'passwd' file ---------------------------------
-
+		
 		string txt = file_read(passwd_file);
 
 		if (txt.length == 0){
@@ -122,7 +122,7 @@ public class SystemUser : GLib.Object {
 		}
 
 		// read 'shadow' file ---------------------------------
-
+		
 		txt = file_read(shadow_file);
 
 		if (txt.length == 0){
@@ -140,11 +140,11 @@ public class SystemUser : GLib.Object {
 	}
 
 	private static SystemUser? parse_line_passwd(string line){
-
+		
 		if ((line == null) || (line.length == 0)){
 			return null;
 		}
-
+		
 		SystemUser user = null;
 
 		//teejee:x:504:504:Tony George:/home/teejee:/bin/bash
@@ -182,16 +182,16 @@ public class SystemUser : GLib.Object {
 			log_error("'passwd' file contains a record with non-standard fields" + ": %d".printf(fields.length));
 			return null;
 		}
-
+		
 		return user;
 	}
 
 	private static SystemUser? parse_line_shadow(string line, Gee.HashMap<string,SystemUser> list){
-
+		
 		if ((line == null) || (line.length == 0)){
 			return null;
 		}
-
+		
 		SystemUser user = null;
 
 		//root:$1$Etg2ExUZ$F9NTP7omafhKIlqaBMqng1:15651:0:99999:7:::
@@ -228,9 +228,9 @@ public class SystemUser : GLib.Object {
 	public void check_encrypted_dirs() {
 
 		// check encrypted home ------------------------------
-
+		
 		string ecryptfs_mount_file = "/home/.ecryptfs/%s/.ecryptfs/Private.mnt".printf(name);
-
+		
 		if (file_exists(ecryptfs_mount_file)){
 
 			string txt = file_read(ecryptfs_mount_file);
@@ -240,7 +240,7 @@ public class SystemUser : GLib.Object {
 				string path = line.strip();
 
 				if (path.length == 0){ continue; }
-
+				
 				if (path == home_path){
 					has_encrypted_home = true;
 				}
@@ -252,7 +252,7 @@ public class SystemUser : GLib.Object {
 		// check encrypted Private dirs --------------------------
 
 		ecryptfs_mount_file = "%s/.ecryptfs/Private.mnt".printf(home_path);
-
+		
 		if (file_exists(ecryptfs_mount_file)){
 
 			string txt = file_read(ecryptfs_mount_file);
@@ -262,7 +262,7 @@ public class SystemUser : GLib.Object {
 				string path = line.strip();
 
 				if (path.length == 0){ continue; }
-
+				
 				if (path != home_path){
 					has_encrypted_private_dirs = true;
 					encrypted_private_dirs.add(path);
@@ -272,7 +272,7 @@ public class SystemUser : GLib.Object {
 			}
 		}
 	}
-
+	
 	public bool is_system{
 		get {
 			return ((uid != 0) && (uid < 1000)) || (uid == 65534) || (name == "PinguyBuilder"); // 65534 - nobody

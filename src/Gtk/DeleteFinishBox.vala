@@ -38,9 +38,9 @@ class DeleteFinishBox : Gtk.Box{
 	private Gtk.Window parent_window;
 
 	public DeleteFinishBox (Gtk.Window _parent_window) {
-
+		
 		log_debug("DeleteFinishBox: DeleteFinishBox()");
-
+		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
@@ -56,7 +56,7 @@ class DeleteFinishBox : Gtk.Box{
 	public void update_message(bool success){
 
 		var txt = "";
-
+		 
 		txt = _("Snapshot(s) Deleted");
 
 		if (!success){
@@ -64,12 +64,12 @@ class DeleteFinishBox : Gtk.Box{
 		}
 
 		lbl_header.label = format_text(txt, true, false, true);
-
+		
 		var msg = "";
 
 		msg += "\n";
 		msg += "<b>" + _("Close window to exit") + "</b>\n\n";
-
+		
 		lbl_message.label = msg;
 	}
 

@@ -32,7 +32,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public class AboutWindow : Gtk.Window {
-
+	
 	private Gtk.Box vbox_main;
 	private Gtk.Box vbox_logo;
 	private Gtk.Box vbox_credits;
@@ -81,7 +81,7 @@ public class AboutWindow : Gtk.Window {
 			_contributors = value;
 		}
 	}
-
+	
 	private string _comments = "";
 	public string comments{
 		get{
@@ -161,7 +161,7 @@ public class AboutWindow : Gtk.Window {
 			_translators = value;
 		}
 	}
-
+	
 	private string[] _third_party;
 	public string[] third_party{
 		get{
@@ -203,11 +203,11 @@ public class AboutWindow : Gtk.Window {
 	}
 
 	private string username = "";
-
+	
 	public AboutWindow(Gtk.Window _window) {
 
 		window = _window;
-
+		
         window_position = WindowPosition.CENTER_ON_PARENT;
 		set_destroy_with_parent (true);
 		set_modal (true);
@@ -218,17 +218,17 @@ public class AboutWindow : Gtk.Window {
 			username = get_username();
 			log_debug("username: %s".printf(username));
 		}
-
+		
 		vbox_main = new Gtk.Box(Orientation.VERTICAL,0);
 		vbox_main.margin = 12;
 		vbox_main.spacing = 6;
 		this.add(vbox_main);
-
+		
 		vbox_logo = new Gtk.Box(Orientation.VERTICAL,0);
 		vbox_main.add(vbox_logo);
 
 		// license -------------------------------------
-
+		
 		vbox_license = new Gtk.Box(Orientation.VERTICAL,0);
 		vbox_license.no_show_all = true;
 		vbox_main.add(vbox_license);
@@ -237,7 +237,7 @@ public class AboutWindow : Gtk.Window {
 		sw_license.set_shadow_type(ShadowType.ETCHED_IN);
 		sw_license.expand = true;
 		vbox_license.add(sw_license);
-
+		
 		var label = new Gtk.Label("");
 		label.set_use_markup(true);
 		label.margin_top = 5;
@@ -250,9 +250,9 @@ public class AboutWindow : Gtk.Window {
 		label.margin = 6;
 		sw_license.add(label);
 		lbl_license = label;
-
+		
 		// credits --------------------------------
-
+		
 		vbox_credits = new Gtk.Box(Orientation.VERTICAL,0);
 		vbox_credits.no_show_all = true;
 		vbox_main.add(vbox_credits);
@@ -261,11 +261,11 @@ public class AboutWindow : Gtk.Window {
 		sw_credits.set_shadow_type(ShadowType.ETCHED_IN);
 		sw_credits.expand = true;
 		vbox_credits.add(sw_credits);
-
+		
 		vbox_lines = new Gtk.Box(Orientation.VERTICAL,0);
 		vbox_lines.margin_top = 10;
 		sw_credits.add(vbox_lines);
-
+		
 		//logo
 		img_logo = new Gtk.Image();
 		img_logo.margin_top = 6;
@@ -295,7 +295,7 @@ public class AboutWindow : Gtk.Window {
 		vbox_logo.add(lbtn_website);
 
 		lbtn_website.activate_link.connect(()=>{
-			return xdg_open(lbtn_website.uri, username);
+			return xdg_open(lbtn_website.uri, username); 
 		});
 
 		//copyright
@@ -332,13 +332,13 @@ public class AboutWindow : Gtk.Window {
 		hbox_action.add(btn_close);
 
 		// handlers
-
+		
         btn_license.clicked.connect(()=>{
-
+			
 			vbox_logo.visible = !vbox_logo.visible;
 
 			vbox_license.visible = !vbox_license.visible;
-
+			
 			if (vbox_license.visible){
 				vbox_license.set_no_show_all(false);
 				vbox_license.show_all();
@@ -366,7 +366,7 @@ public class AboutWindow : Gtk.Window {
 		});
 
         btn_credits.clicked.connect(()=>{
-
+			
 			vbox_logo.visible = !vbox_logo.visible;
 
 			vbox_credits.visible = !vbox_credits.visible;
@@ -400,7 +400,7 @@ public class AboutWindow : Gtk.Window {
 	}
 
 	public void initialize() {
-
+		
 		title = program_name;
 		img_logo.pixbuf = logo.scale_simple(128,128,Gdk.InterpType.HYPER);
 		lbl_program_name.label = "<span size='larger'>%s</span>".printf(program_name);
@@ -479,7 +479,7 @@ public class AboutWindow : Gtk.Window {
 	}
 
 	private void add_line(string text, bool escape_html_chars = true){
-
+		
 		if (text.split(":").length >= 2){
 			var link = new LinkButton(escape_html(text.split(":")[0]));
 			vbox_lines.add(link);
@@ -496,7 +496,7 @@ public class AboutWindow : Gtk.Window {
 			}
 
 			link.activate_link.connect(()=>{
-				return xdg_open(link.uri, username);
+				return xdg_open(link.uri, username); 
 			});
 		}
 		else{

@@ -78,7 +78,7 @@ clean:
 	rm -rfv ../release/*.{run,deb}
 	rm -rfv *.c *.o *.mo
 	rm -fv ${app_name} ${app_name}-gtk
-
+	
 install:
 	mkdir -p "$(DESTDIR)$(bindir)"
 	mkdir -p "$(DESTDIR)$(sharedir)"
@@ -90,7 +90,7 @@ install:
 	mkdir -p "$(DESTDIR)$(appconfdir)"
 	mkdir -p "$(DESTDIR)$(sharedir)/${app_name}"
 	mkdir -p "$(DESTDIR)$(sharedir)/icons"
-	mkdir -p "$(DESTDIR)$(sharedir)/appdata"
+	mkdir -p "$(DESTDIR)$(sharedir)/appdata" 
 	mkdir -p "$(DESTDIR)$(sharedir)/metainfo"
 
 	# binary
@@ -98,7 +98,7 @@ install:
 	install -m 0755 ${app_name}-gtk "$(DESTDIR)$(bindir)"
 	#install -m 0755 ${app_name}-uninstall "$(DESTDIR)$(bindir)"
 	install -m 0755 ${app_name}-launcher "$(DESTDIR)$(bindir)"
-
+	
 	# shared files
 	cp -dpr --no-preserve=ownership -t "$(DESTDIR)$(sharedir)/${app_name}" ./share/${app_name}/*
 	find $(DESTDIR)$(sharedir)/${app_name} -type d -exec chmod 755 {} \+
@@ -121,7 +121,7 @@ install:
 	chmod --recursive 0644 $(DESTDIR)$(sharedir)/icons/hicolor/*/apps/${app_name}.png
 
 	# appdata
-	#install -m 0644 ../debian/${app_name}.appdata.xml "$(DESTDIR)$(sharedir)/appdata"
+	#install -m 0644 ../debian/${app_name}.appdata.xml "$(DESTDIR)$(sharedir)/appdata" 
 	install -m 0644 ../debian/${app_name}.appdata.xml "$(DESTDIR)$(sharedir)/metainfo"
 
 	# translations
@@ -149,7 +149,7 @@ uninstall:
 
 	# man page
 	rm -f "$(DESTDIR)$(man1dir)/${app_name}.1.gz"
-
+	
 	# app icon
 	rm -f $(DESTDIR)$(sharedir)/icons/hicolor/*/apps/${app_name}.png
 
@@ -157,5 +157,5 @@ uninstall:
 	rm -f $(DESTDIR)$(localedir)/*/LC_MESSAGES/${app_name}.mo
 
 	# appdata
-	rm -f "$(DESTDIR)$(sharedir)/appdata/${app_name}.appdata.xml"
+	rm -f "$(DESTDIR)$(sharedir)/appdata/${app_name}.appdata.xml" 
 	rm -f "$(DESTDIR)$(sharedir)/metainfo/${app_name}.appdata.xml"

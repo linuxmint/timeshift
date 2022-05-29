@@ -33,7 +33,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class BootOptionsWindow : Gtk.Window{
-
+	
 	private Gtk.Box vbox_main;
 	private Gtk.ButtonBox bbox_action;
 	private BootOptionsBox boot_options_box;
@@ -45,7 +45,7 @@ class BootOptionsWindow : Gtk.Window{
 	public BootOptionsWindow() {
 
 		log_debug("BootOptionsWindow: BootOptionsWindow()");
-
+		
 		this.title = _("Bootloader Options");
         this.window_position = WindowPosition.CENTER;
         this.modal = true;
@@ -62,7 +62,7 @@ class BootOptionsWindow : Gtk.Window{
 		boot_options_box = new BootOptionsBox(this);
 		boot_options_box.margin = 0;
 		vbox_main.add(boot_options_box);
-
+		
 		create_actions();
 
 		show_all();
@@ -81,31 +81,31 @@ class BootOptionsWindow : Gtk.Window{
 
 		return false;
 	}
-
+	
 	private bool on_delete_event(Gdk.EventAny event){
 
 		//save_changes();
-
+		
 		return false; // close window
 	}
-
+	
 	private void save_changes(){
 		//App.cron_job_update();
 	}
-
+	
 	private void create_actions(){
-
+		
 		var hbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
 		hbox.margin = 0;
 		hbox.margin_top = 24;
         vbox_main.add(hbox);
 
 		var size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-
+		
 		// close
 		var btn_close = add_button(hbox, _("Close"), "", size_group, null);
 		//hbox.set_child_packing(btn_close, false, true, 6, Gtk.PackType.END);
-
+		
         btn_close.clicked.connect(()=>{
 			save_changes();
 			this.destroy();

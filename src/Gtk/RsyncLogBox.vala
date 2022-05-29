@@ -46,7 +46,7 @@ public class RsyncLogBox : Gtk.Box {
 
 	private Gtk.TreeViewColumn col_name;
 	private Gtk.TreeViewColumn col_status;
-
+	
 	private string name_filter = "";
 	private string status_filter = "";
 
@@ -57,7 +57,7 @@ public class RsyncLogBox : Gtk.Box {
 	public Gtk.Label lbl_status;
 	public Gtk.Label lbl_remaining;
 	public Gtk.ProgressBar progressbar;
-
+	
 	//private uint tmr_task = 0;
 	private uint tmr_init = 0;
 	private bool thread_is_running = false;
@@ -68,11 +68,11 @@ public class RsyncLogBox : Gtk.Box {
 	private Gtk.Window window;
 
 	public RsyncLogBox(Gtk.Window _window) {
-
+		
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 
 		this.margin = 6;
-
+		
 		log_debug("RsyncLogBox: RsyncLogBox()");
 
 		window	= _window;
@@ -91,11 +91,11 @@ public class RsyncLogBox : Gtk.Box {
 		create_progressbar();
 
 		create_filters();
-
+		
 		create_treeview();
 
 		cmb_filter.changed.connect(() => {
-
+			
 			status_filter = gtk_combobox_get_value(cmb_filter, 0, "");
 			log_debug("combo_changed(): filter=%s".printf(status_filter));
 
@@ -103,7 +103,7 @@ public class RsyncLogBox : Gtk.Box {
 
 				hbox_filter.sensitive = false;
 				treeview.sensitive = false;
-
+				
 				log_debug("refilter(): start");
 				treefilter.refilter();
 				log_debug("refilter(): end");
@@ -138,7 +138,7 @@ public class RsyncLogBox : Gtk.Box {
 	public bool init_delayed(){
 
 		log_debug("init_delayed()");
-
+		
 		if (tmr_init > 0){
 			Source.remove(tmr_init);
 			tmr_init = 0;
@@ -156,7 +156,7 @@ public class RsyncLogBox : Gtk.Box {
 		//gtk_set_busy(false, window);
 
 		log_debug("init_delayed(): finish");
-
+		
 		return false;
 	}
 
@@ -171,20 +171,20 @@ public class RsyncLogBox : Gtk.Box {
 		}
 
 		while (thread_is_running){
-
+			
 			double fraction = (App.task.prg_count * 1.0) / App.task.prg_count_total;
-
+			
 			if (fraction < 0.99){
 				progressbar.fraction = fraction;
 			}
-
+			
 			lbl_msg.label = _("Read %'d of %'d lines...").printf(
 				App.task.prg_count, App.task.prg_count_total);
-
+				
 			sleep(500);
 			gtk_do_events();
 		}
-
+		
 		lbl_msg.label = _("Populating list...");
 		gtk_do_events();
 		treeview_refresh();
@@ -198,9 +198,9 @@ public class RsyncLogBox : Gtk.Box {
 		hbox_filter.no_show_all = false;
 		hbox_filter.show_all();
 	}
-
+	
 	private void parse_log_file_thread(){
-
+		
 		App.task = new RsyncTask();
 		loglist = App.task.parse_log(rsync_log_file);
 		thread_is_running = false;
@@ -211,23 +211,23 @@ public class RsyncLogBox : Gtk.Box {
 			return thread_is_running;
 		}
 	}
-
+	
 	// create ui -----------------------------------------
 
 	private void create_progressbar(){
-
+		
 		vbox_progress = new Gtk.Box(Orientation.VERTICAL, 6);
 		this.add(vbox_progress);
-
+		
 		lbl_header_progress = add_label_header(vbox_progress, _("Parsing log file..."), true);
-
+		
 		var hbox_status = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_progress.add(hbox_status);
-
+		
 		spinner = new Gtk.Spinner();
 		spinner.active = true;
 		hbox_status.add(spinner);
-
+		
 		//lbl_msg
 		lbl_msg = add_label(hbox_status, _("Preparing..."));
 		lbl_msg.hexpand = true;
@@ -244,14 +244,14 @@ public class RsyncLogBox : Gtk.Box {
 	// create filters -------------------------------------------
 
 	private void create_filters(){
-
+		
 		log_debug("create_filters()");
-
+		
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		hbox.no_show_all = true;
         this.add(hbox);
 		hbox_filter = hbox;
-
+		
 		//add_label(hbox, _("Filter:"));
 
 		add_search_entry(hbox);
@@ -262,10 +262,10 @@ public class RsyncLogBox : Gtk.Box {
 
 			var label = add_label(hbox, "");
 			label.hexpand = true;
-
+			
 			var button = new Gtk.Button.with_label(_("Close"));
 			hbox.add(button);
-
+			
 			button.clicked.connect(()=>{
 				window.destroy();
 			});
@@ -275,7 +275,7 @@ public class RsyncLogBox : Gtk.Box {
 			_("Exclude Selected"),
 			_("Exclude selected items from future snapshots (careful!)"),
 			ref size_group, null);
-
+			
         btn_exclude.clicked.connect(()=>{
 			if (flat_view){
 				gtk_messagebox(_("Cannot exclude files in flat view"),
@@ -286,7 +286,7 @@ public class RsyncLogBox : Gtk.Box {
 			else{
 				exclude_selected_items();
 			}
-
+			
 			treeview_refresh();
 		});*/
 	}
@@ -298,7 +298,7 @@ public class RsyncLogBox : Gtk.Box {
 		txt.hexpand = true;
 		txt.margin = 0;
 		hbox.add(txt);
-
+		
 		txt.placeholder_text = _("Filter by name or path");
 
 		txt_pattern = txt;
@@ -332,17 +332,17 @@ public class RsyncLogBox : Gtk.Box {
 			add_action_delayed();
 			return false;
 		});
-
+		
 		//txt.set_no_show_all(true);
 	}
 
 	private void add_combo(Gtk.Box hbox){
-
+		
 		// combo
 		var combo = new Gtk.ComboBox ();
 		hbox.add(combo);
 		cmb_filter = combo;
-
+		
 		var cell_text = new CellRendererText ();
 		cell_text.text = "";
 		combo.pack_start (cell_text, false);
@@ -358,10 +358,10 @@ public class RsyncLogBox : Gtk.Box {
 		cmb_filter.model = model;
 
 		TreeIter iter;
-
+		
 		model.append(out iter);
 		model.set (iter, 0, "", 1, _("All Files"));
-
+		
 		model.append(out iter);
 		model.set (iter, 0, "created", 1, "%s".printf(App.dry_run ? _("Create") : _("Created")));
 
@@ -369,7 +369,7 @@ public class RsyncLogBox : Gtk.Box {
 			model.append(out iter);
 			model.set (iter, 0, "deleted", 1, "%s".printf(App.dry_run ? _("Delete") : _("Deleted")));
 		}
-
+		
 		model.append(out iter);
 
 		string txt = "";
@@ -382,7 +382,7 @@ public class RsyncLogBox : Gtk.Box {
 		else{
 			txt = _("Changed");
 		}
-
+		
 		model.set (iter, 0, "changed", 1, "%s".printf(txt));
 
 		if (!App.dry_run){
@@ -399,20 +399,20 @@ public class RsyncLogBox : Gtk.Box {
 			model.append(out iter);
 			model.set (iter, 0, "group", 1, " └ %s".printf(_("Group")));
 		}
-
+		
 		cmb_filter.active = 0;
 	}
 
 	private uint tmr_action = 0;
-
+	
 	private void add_action_delayed(){
-
+		
 		clear_action_delayed();
 		tmr_action = Timeout.add(200, execute_action);
 	}
 
 	private void clear_action_delayed(){
-
+		
 		if (tmr_action > 0){
 			Source.remove(tmr_action);
 			tmr_action = 0;
@@ -424,9 +424,9 @@ public class RsyncLogBox : Gtk.Box {
 		clear_action_delayed();
 
 		name_filter = txt_pattern.text;
-
+		
 		treefilter.refilter();
-
+		
 		return false;
 	}
 
@@ -478,7 +478,7 @@ public class RsyncLogBox : Gtk.Box {
 		cell_pix.stock_size = Gtk.IconSize.MENU;
 		col.pack_start(cell_pix, false);
 		col.set_attributes(cell_pix, "pixbuf", 3);
-
+		
 		// cell text
 		var cell_text = new Gtk.CellRendererText ();
 		col.pack_start (cell_text, false);
@@ -495,13 +495,13 @@ public class RsyncLogBox : Gtk.Box {
 		col.expand = true;
 		treeview.append_column(col);
 		col_name = col;
-
+		
 		// cell icon
 		var cell_pix = new Gtk.CellRendererPixbuf();
 		cell_pix.stock_size = Gtk.IconSize.MENU;
 		col.pack_start(cell_pix, false);
 		col.set_attributes(cell_pix, "pixbuf", 1);
-
+		
 		// cell text
 		var cell_text = new Gtk.CellRendererText ();
 		cell_text.ellipsize = Pango.EllipsizeMode.END;
@@ -518,20 +518,20 @@ public class RsyncLogBox : Gtk.Box {
 		col.min_width = 20;
 		treeview.append_column(col);
 		//var col_spacer = col;
-
+		
 		// cell text
 		var cell_text = new Gtk.CellRendererText ();
 		col.pack_start (cell_text, false);
 	}
-
+	
 	private void treeview_refresh() {
-
+		
 		log_debug("treeview_refresh(): 0");
 
 		var tmr = timer_start();
 
 		hbox_filter.sensitive = false;
-
+		
 		gtk_set_busy(true, window);
 
 		var model = new Gtk.ListStore(5,
@@ -545,7 +545,7 @@ public class RsyncLogBox : Gtk.Box {
 		TreeIter iter0;
 
 		var spath = "%s/localhost".printf(file_parent(rsync_log_file));
-
+		
 		foreach(var item in loglist) {
 
 			if (App.dry_run){
@@ -554,7 +554,7 @@ public class RsyncLogBox : Gtk.Box {
 
 			string status = "";
 			Gdk.Pixbuf status_icon = null;
-
+			
 			if (is_restore_log){
 
 				switch(item.file_status){
@@ -604,7 +604,7 @@ public class RsyncLogBox : Gtk.Box {
 			if (!is_restore_log){
 				relpath = relpath[1:relpath.length]; // show relative path; remove / prefix
 			}
-
+			
 			// add row
 			model.append(out iter0);
 			model.set(iter0, 0, item);
@@ -613,11 +613,11 @@ public class RsyncLogBox : Gtk.Box {
 			model.set(iter0, 3, status_icon);
 			model.set(iter0, 4, status);
 		}
-
+		
 		treefilter = new Gtk.TreeModelFilter(model, null);
 		treefilter.set_visible_func(filter_packages_func);
 		treeview.set_model(treefilter);
-
+		
 		//treeview.set_model(model);
 		//treeview.columns_autosize();
 
@@ -628,7 +628,7 @@ public class RsyncLogBox : Gtk.Box {
 	}
 
 	private bool filter_packages_func (Gtk.TreeModel model, Gtk.TreeIter iter) {
-
+		
 		FileItem item;
 		model.get (iter, 0, out item, -1);
 
@@ -641,9 +641,9 @@ public class RsyncLogBox : Gtk.Box {
 
 			var spath = "%s/localhost".printf(file_parent(rsync_log_file));
 			var relpath = item.file_path[spath.length:item.file_path.length];
-
+			
 			if (!relpath.down().contains(name_filter)){
-
+				
 				return false;
 			}
 		}
@@ -677,7 +677,7 @@ public class RsyncLogBox : Gtk.Box {
 		App.exclude_list_user.clear();
 
 		// TODO: medium: exclude selected items: not working
-
+		
 		// add include list
 		TreeIter iter;
 		var store = (Gtk.ListStore) treeview.model;
@@ -694,14 +694,14 @@ public class RsyncLogBox : Gtk.Box {
 			else{
 				//pattern = "%s/***".printf(pattern);
 			}
-
+			
 			if (!App.exclude_list_user.contains(pattern)
 				&& !App.exclude_list_default.contains(pattern)
 				&& !App.exclude_list_home.contains(pattern)){
-
+				
 				list.add(pattern);
 			}
-
+			
 			iterExists = store.iter_next (ref iter);
 		}
 

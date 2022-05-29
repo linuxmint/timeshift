@@ -37,7 +37,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class BackupBox : Gtk.Box{
-
+	
 	private Gtk.Spinner spinner;
 	public Gtk.Label lbl_msg;
 	public Gtk.Label lbl_status;
@@ -62,25 +62,25 @@ class BackupBox : Gtk.Box{
 	public BackupBox (Gtk.Window _parent_window) {
 
 		log_debug("BackupBox: BackupBox()");
-
+		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		parent_window = _parent_window;
 		margin = 12;
-
+		
 		add_label_header(this, _("Creating Snapshot..."), true);
 
 		add_progress_area();
 
 		// add count labels ---------------------------------
-
+		
 		Gtk.SizeGroup sg_label = null;
 		Gtk.SizeGroup sg_value = null;
 
 		var label = add_label(this, _("File and directory counts:"), true);
 		label.margin_bottom = 6;
 		label.margin_top = 12;
-
+		
 		lbl_unchanged = add_count_label(this, _("No Change"), ref sg_label, ref sg_value);
 		lbl_created = add_count_label(this, _("Created"), ref sg_label, ref sg_value);
 		lbl_deleted = add_count_label(this, _("Deleted"), ref sg_label, ref sg_value);
@@ -88,7 +88,7 @@ class BackupBox : Gtk.Box{
 
 		label = add_label(this, _("Changed items:"), true);
 		label.margin_bottom = 6;
-
+		
 		lbl_checksum = add_count_label(this, _("Checksum"), ref sg_label, ref sg_value);
 		lbl_size = add_count_label(this, _("Size"), ref sg_label, ref sg_value);
 		lbl_timestamp = add_count_label(this, _("Timestamp"), ref sg_label, ref sg_value);
@@ -102,14 +102,14 @@ class BackupBox : Gtk.Box{
     }
 
 	private void add_progress_area(){
-
+		
 		var hbox_status = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		add (hbox_status);
-
+		
 		spinner = new Gtk.Spinner();
 		spinner.active = true;
 		hbox_status.add(spinner);
-
+		
 		//lbl_msg
 		lbl_msg = add_label(hbox_status, _("Preparing..."));
 		lbl_msg.hexpand = true;
@@ -128,11 +128,11 @@ class BackupBox : Gtk.Box{
 		lbl_status.max_width_chars = 45;
 		lbl_status.margin_bottom = 6;
 	}
-
+	
 	private Gtk.Label add_count_label(Gtk.Box box, string text,
 		ref Gtk.SizeGroup? sg_label, ref Gtk.SizeGroup? sg_value,
 		int add_margin_bottom = 0){
-
+			
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		box.add (hbox);
 
@@ -141,7 +141,7 @@ class BackupBox : Gtk.Box{
 		label.margin_left = 12;
 		label.margin_right = 6;
 		var text_label = label;
-
+		
 		if (add_margin_bottom > 0){
 			label.margin_bottom = add_margin_bottom;
 		}
@@ -184,9 +184,9 @@ class BackupBox : Gtk.Box{
 		}
 
 		if (App.btrfs_mode){
-
+			
 			while (thread_is_running){
-
+				
 				gtk_do_events();
 				sleep(200);
 
@@ -200,7 +200,7 @@ class BackupBox : Gtk.Box{
 			#endif
 		}
 		else{
-
+			
 			//string last_message = "";
 			int wait_interval_millis = 100;
 			int status_line_counter = 0;
@@ -208,7 +208,7 @@ class BackupBox : Gtk.Box{
 			string status_line = "";
 			string last_status_line = "";
 			int remaining_counter = 10;
-
+			
 			while (thread_is_running){
 
 				status_line = escape_html(App.task.status_line);
@@ -234,8 +234,8 @@ class BackupBox : Gtk.Box{
 						App.task.stat_time_remaining + " " + _("remaining");
 
 					remaining_counter = 10;
-				}
-
+				}	
+				
 				if (fraction < 0.99){
 					progressbar.fraction = fraction;
 					#if XAPP
@@ -271,9 +271,9 @@ class BackupBox : Gtk.Box{
 
 		//TODO: low: check if snapshot was created successfully.
 	}
-
+	
 	private void take_snapshot_thread(){
-
+		
 		thread_status_success = App.create_snapshot(true,parent_window);
 		thread_is_running = false;
 	}

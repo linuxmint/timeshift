@@ -48,7 +48,7 @@ class MainWindow : Gtk.Window{
 	private Gtk.Menu menu_extra;
 
 	private SnapshotListBox snapshot_list_box;
-
+	
 	//statusbar
 	private Gtk.ScrolledWindow statusbar;
 	private Gtk.Image img_shield;
@@ -60,7 +60,7 @@ class MainWindow : Gtk.Window{
 	private Gtk.Label lbl_free_space_subnote;
 	private Gtk.ScrolledWindow scrolled_snap_count;
 	private Gtk.ScrolledWindow scrolled_free_space;
-
+	
 	//timers
 	private uint tmr_init;
 	private int def_width = 800;
@@ -71,7 +71,7 @@ class MainWindow : Gtk.Window{
 	public MainWindow () {
 
 		log_debug("MainWindow: MainWindow()");
-
+		
 		this.title = AppName;
         this.window_position = WindowPosition.CENTER;
         this.modal = true;
@@ -101,7 +101,7 @@ class MainWindow : Gtk.Window{
     }
 
     private bool init_delayed(){
-
+		
 		if (tmr_init > 0){
 			Source.remove(tmr_init);
 			tmr_init = 0;
@@ -123,12 +123,12 @@ class MainWindow : Gtk.Window{
 		}
 
 		log_debug("MainWindow(): init_delayed(): exit");
-
+		
 		return false;
 	}
 
 	private void init_ui_toolbar(){
-
+		
 		//toolbar
 		toolbar = new Gtk.Toolbar ();
 		toolbar.toolbar_style = ToolbarStyle.BOTH;
@@ -163,7 +163,7 @@ class MainWindow : Gtk.Window{
         toolbar.add(btn_delete_snapshot);
 
         btn_delete_snapshot.clicked.connect (delete_selected);
-
+        
 	    //btn_browse_snapshot
         img = new Gtk.Image.from_icon_name("folder-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		btn_browse_snapshot = new Gtk.ToolButton (img, null);
@@ -195,7 +195,7 @@ class MainWindow : Gtk.Window{
         btn_wizard.clicked.connect (btn_wizard_clicked);
 
 		// TODO: replace gtk icon names with desktop-neutral names
-
+		
         //separator
 		var separator = new Gtk.SeparatorToolItem();
 		separator.set_draw (false);
@@ -216,13 +216,13 @@ class MainWindow : Gtk.Window{
 	}
 
 	private void init_ui_snapshot_list(){
-
+		
 		snapshot_list_box = new SnapshotListBox(this);
 		snapshot_list_box.vexpand = true;
 		vbox_main.add(snapshot_list_box);
 
 		snapshot_list_box.delete_selected.connect(delete_selected);
-
+		
 		snapshot_list_box.mark_selected.connect(mark_selected);
 
 		snapshot_list_box.browse_selected.connect(browse_selected);
@@ -237,7 +237,7 @@ class MainWindow : Gtk.Window{
 		hbox_status.margin = 6;
 		hbox_status.margin_top = 0;
 		vbox_main.add(hbox_status);
-
+		
 		// scrolled
 		var scrolled = new Gtk.ScrolledWindow(null, null);
 		//scrolled.set_shadow_type (ShadowType.ETCHED_IN);
@@ -247,7 +247,7 @@ class MainWindow : Gtk.Window{
 		scrolled.vscrollbar_policy = Gtk.PolicyType.NEVER;
 		hbox_status.add(scrolled);
 		statusbar = scrolled;
-
+		
 		// hbox_shield
 		var box = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		box.margin = 6;
@@ -264,13 +264,13 @@ class MainWindow : Gtk.Window{
 		var vbox = new Gtk.Box(Orientation.VERTICAL, 6);
 		//vbox.margin_right = 6;
         box.add (vbox);
-
+        
 		//lbl_shield
 		lbl_shield = add_label(vbox, "");
 		//lbl_shield.margin_top = 6;
         lbl_shield.yalign = 0.5f;
 		lbl_shield.hexpand = true;
-
+		
         //lbl_shield_subnote
 		lbl_shield_subnote = add_label(vbox, "");
 		lbl_shield_subnote.yalign = 0.5f;
@@ -293,7 +293,7 @@ class MainWindow : Gtk.Window{
 		scrolled.vscrollbar_policy = Gtk.PolicyType.NEVER;
 		scrolled.set_no_show_all(true);
 		hbox_status.add (scrolled);
-
+		
 		vbox = new Gtk.Box(Orientation.VERTICAL, 6);
 		vbox.margin = 6;
 		vbox.margin_left = 12;
@@ -306,7 +306,7 @@ class MainWindow : Gtk.Window{
 		label.justify = Gtk.Justification.CENTER;
 		vbox.pack_start(label, true, true, 0);
 		lbl_snap_count = label;
-
+		
 		label = new Gtk.Label(_("Snapshots"));
 		label.justify = Gtk.Justification.CENTER;
 		vbox.pack_start(label, false, false, 0);
@@ -316,7 +316,7 @@ class MainWindow : Gtk.Window{
 		label.justify = Gtk.Justification.CENTER;
 		vbox.pack_start(label, false, false, 0);
 		lbl_snap_count_subnote = label;
-
+		
 		// free space
 		//vbox = new Gtk.Box(Orientation.VERTICAL, 6);
 		//vbox.set_no_show_all(true);
@@ -329,7 +329,7 @@ class MainWindow : Gtk.Window{
 		scrolled.vscrollbar_policy = Gtk.PolicyType.NEVER;
 		scrolled.set_no_show_all(true);
 		hbox_status.add (scrolled);
-
+		
 		vbox = new Gtk.Box(Orientation.VERTICAL, 6);
 		vbox.margin = 6;
 		vbox.margin_left = 12;
@@ -342,7 +342,7 @@ class MainWindow : Gtk.Window{
 		label.justify = Gtk.Justification.CENTER;
 		vbox.pack_start(label, true, true, 0);
 		lbl_free_space = label;
-
+		
 		label = new Gtk.Label(_("Available"));
 		label.justify = Gtk.Justification.CENTER;
 		vbox.pack_start(label, false, false, 0);
@@ -352,12 +352,12 @@ class MainWindow : Gtk.Window{
 		label.justify = Gtk.Justification.CENTER;
 		vbox.pack_start(label, false, false, 0);
 		lbl_free_space_subnote = label;
-
+		
 		// TODO: medium: add a refresh button for device when device is offline
 
 		// TODO: low: refresh device list automatically when a device is plugged in
 	}
-
+	
     private bool menu_extra_popup(Gdk.EventButton? event){
 
 		menu_extra = new Gtk.Menu();
@@ -381,9 +381,9 @@ class MainWindow : Gtk.Window{
 		menu_item = create_menu_item(_("About"), "", "", 16);
 		menu_extra.append(menu_item);
 		menu_item.activate.connect(btn_about_clicked);
-
+		
 		menu_extra.show_all();
-
+		
 		if (event != null) {
 			menu_extra.popup (null, null, null, event.button, event.time);
 		}
@@ -397,9 +397,9 @@ class MainWindow : Gtk.Window{
 	private Gtk.MenuItem create_menu_item(
 		string label_text, string icon_name_stock, string icon_name_custom,
 		int icon_size, string tooltip_text = ""){
-
+			
 		var menu_item = new Gtk.MenuItem();
-
+	
 		var box = new Gtk.Box(Orientation.HORIZONTAL, 3);
 		menu_item.add(box);
 
@@ -411,17 +411,17 @@ class MainWindow : Gtk.Window{
 
 		return menu_item;
 	}
-
+	
 	private Gtk.MenuItem create_menu_item_separator(){
-
+			
 		var menu_item = new Gtk.MenuItem();
 		menu_item.sensitive = false;
-
+		
 		var box = new Gtk.Box(Orientation.HORIZONTAL, 3);
 		menu_item.add(box);
 
 		box.add(new Gtk.Separator(Gtk.Orientation.HORIZONTAL));
-
+				
 		return menu_item;
 	}
 
@@ -433,7 +433,7 @@ class MainWindow : Gtk.Window{
 
 		snapshot_list_box.refresh();
 		update_statusbar();
-
+		
 		ui_sensitive(true);
 
 		return false;
@@ -461,20 +461,20 @@ class MainWindow : Gtk.Window{
 		// check backup device -------------------------------
 
 		if (!App.live_system()){
-
+			
 			if (!App.repo.available() || !App.repo.has_space()){
 
 				var title = App.repo.status_message;
-
+				
 				var msg = _("Select another device?");
-
+				
 				var type = Gtk.MessageType.ERROR;
 				var buttons_type = Gtk.ButtonsType.YES_NO;
-
+				
 				var dlg = new CustomMessageDialog(title, msg, type, this, buttons_type);
 				var response = dlg.run();
 				dlg.destroy();
-
+				
 				if (response == Gtk.ResponseType.YES){
 					this.delete_event.connect(on_delete_event); // reconnect this handler
 					btn_wizard_clicked(); // open wizard
@@ -490,15 +490,15 @@ class MainWindow : Gtk.Window{
 	}
 
 	// context menu
-
+	
 	public void create_snapshot(){
 
 		if (check_if_deletion_running()){
 			return;
 		}
-
+		
 		ui_sensitive(false);
-
+		
 		// check root device --------------
 
 		if (App.btrfs_mode && (App.check_btrfs_layout_system(this) == false)){
@@ -526,7 +526,7 @@ class MainWindow : Gtk.Window{
 	public void delete_selected(){
 
 		log_debug("main window: delete_selected()");
-
+		
 		// check snapshot device -----------
 
 		if (!App.repo.available()){
@@ -554,7 +554,7 @@ class MainWindow : Gtk.Window{
 				return;
 			}
 		}
-
+		
 		// get selected snapshots
 
 		if (!App.thread_delete_running){
@@ -579,7 +579,7 @@ class MainWindow : Gtk.Window{
 		// run wizard window ------------------
 
 		ui_sensitive(false);
-
+		
 		var win = new DeleteWindow();
 		win.set_transient_for(this);
 		win.destroy.connect(()=>{
@@ -589,21 +589,21 @@ class MainWindow : Gtk.Window{
 	}
 
 	public void mark_selected(){
-
+		
 		TreeIter iter;
 		bool is_success = true;
 
 		// check selected count ----------------
 
 		var sel = snapshot_list_box.treeview.get_selection();
-
+		
 		if (sel.count_selected_rows() == 0){
-
+			
 			gtk_messagebox(
 				_("No Snapshots Selected"),
 				_("Select the snapshots to mark for deletion"),
 				this, false);
-
+				
 			return;
 		}
 
@@ -612,11 +612,11 @@ class MainWindow : Gtk.Window{
 		var store = (Gtk.ListStore) snapshot_list_box.treeview.model;
 		bool iterExists = store.get_iter_first (out iter);
 		bool marked = false;
-
+		
 		while (iterExists && is_success) {
-
+			
 			if (sel.iter_is_selected (iter)){
-
+				
 				Snapshot bak;
 				store.get (iter, 0, out bak);
 				// mark for deletion
@@ -640,13 +640,13 @@ class MainWindow : Gtk.Window{
 	}
 
 	public void browse_selected(){
-
+		
 		var sel = snapshot_list_box.treeview.get_selection ();
-
+		
 		if (sel.count_selected_rows() == 0){
-
+			
 			var f = File.new_for_path(App.repo.snapshots_path);
-
+			
 			if (f.query_exists()){
 				exo_open_folder(App.repo.snapshots_path);
 			}
@@ -660,10 +660,10 @@ class MainWindow : Gtk.Window{
 		var store = (Gtk.ListStore) snapshot_list_box.treeview.model;
 
 		bool iterExists = store.get_iter_first (out iter);
-
+		
 		while (iterExists) {
 			if (sel.iter_is_selected (iter)){
-
+				
 				Snapshot bak;
 				store.get (iter, 0, out bak);
 
@@ -680,9 +680,9 @@ class MainWindow : Gtk.Window{
 	}
 
 	public void view_snapshot_log(bool view_restore_log){
-
+		
 		var sel = snapshot_list_box.treeview.get_selection ();
-
+		
 		if (sel.count_selected_rows() == 0){
 			gtk_messagebox(
 				_("Select Snapshot"),
@@ -695,11 +695,11 @@ class MainWindow : Gtk.Window{
 		var store = (Gtk.ListStore) snapshot_list_box.treeview.model;
 
 		bool iterExists = store.get_iter_first (out iter);
-
+		
 		while (iterExists) {
-
+			
 			if (sel.iter_is_selected (iter)){
-
+				
 				Snapshot bak;
 				store.get (iter, 0, out bak);
 
@@ -711,7 +711,7 @@ class MainWindow : Gtk.Window{
 				if (file_exists(log_file_name) || file_exists(log_file_name + "-changes")){
 
 					this.hide();
-
+					
 					var win = new RsyncLogWindow(log_file_name);
 					win.set_transient_for(this);
 					win.destroy.connect(()=>{
@@ -730,17 +730,17 @@ class MainWindow : Gtk.Window{
 		if (check_if_deletion_running()){
 			return;
 		}
-
+		
 		App.mirror_system = false;
 		restore();
 	}
 
 	private void btn_clone_clicked(){
-
+		
 		if (check_if_deletion_running()){
 			return;
 		}
-
+		
 		App.mirror_system = true;
 		restore();
 	}
@@ -750,20 +750,20 @@ class MainWindow : Gtk.Window{
 		if (App.thread_delete_running){
 
 			ui_sensitive(true);
-
+			
 			gtk_messagebox(
 				_("Snapshot deletion in progress..."),
 				_("Please wait for snapshots to be deleted."), this, true);
-
+			
 			ui_sensitive(false);
-
+		
 			var win = new DeleteWindow();
 			win.set_transient_for(this);
 			win.destroy.connect(()=>{
 				refresh_all();
 				ui_sensitive(true);
 			});
-
+			
 			return true;
 		}
 
@@ -772,7 +772,7 @@ class MainWindow : Gtk.Window{
 
 
 	private void restore(){
-
+		
 		TreeIter iter;
 		TreeSelection sel;
 
@@ -781,7 +781,7 @@ class MainWindow : Gtk.Window{
 			//check if single snapshot is selected -------------
 
 			sel = snapshot_list_box.treeview.get_selection();
-
+			
 			if (sel.count_selected_rows() == 0){
 				gtk_messagebox(
 					_("No snapshots selected"),
@@ -796,14 +796,14 @@ class MainWindow : Gtk.Window{
 					this, false);
 				return;
 			}
-
+			
 			//get selected snapshot ------------------
 
 			Snapshot snapshot_to_restore = null;
 
 			var store = (Gtk.ListStore) snapshot_list_box.treeview.model;
 			bool iterExists = store.get_iter_first (out iter);
-
+			
 			while (iterExists) {
 				if (sel.iter_is_selected (iter)){
 					store.get (iter, 0, out snapshot_to_restore);
@@ -813,7 +813,7 @@ class MainWindow : Gtk.Window{
 			}
 
 			if ((snapshot_to_restore != null) && (snapshot_to_restore.marked_for_deletion)){
-
+				
 				gtk_messagebox(
 					_("Invalid snapshot"),
 					_("Selected snapshot is marked for deletion and cannot be restored"),
@@ -828,7 +828,7 @@ class MainWindow : Gtk.Window{
 		}
 
 		App.init_mount_list();
-
+		
 		//show restore window -----------------
 
 		var window = new RestoreWindow();
@@ -845,14 +845,14 @@ class MainWindow : Gtk.Window{
 	private void btn_settings_clicked(){
 
 		log_debug("MainWindow: btn_settings_clicked()");
-
+		
 		btn_settings.sensitive = false;
 		btn_wizard.sensitive = false;
 
 		this.hide();
 
 		bool btrfs_mode_prev = App.btrfs_mode;
-
+		
 		var win = new SettingsWindow();
 		win.set_transient_for(this);
 		win.destroy.connect(()=>{
@@ -865,14 +865,14 @@ class MainWindow : Gtk.Window{
 	private void btn_wizard_clicked(){
 
 		log_debug("MainWindow: btn_wizard_clicked()");
-
+		
 		btn_settings.sensitive = false;
 		btn_wizard.sensitive = false;
 
 		this.hide();
-
+		
 		bool btrfs_mode_prev = App.btrfs_mode;
-
+		
 		var win = new SetupWizardWindow();
 		win.set_transient_for(this);
 		win.destroy.connect(()=>{
@@ -905,18 +905,18 @@ class MainWindow : Gtk.Window{
 	}
 
 	private void btn_view_app_logs_clicked(){
-
+		
 		exo_open_folder(App.log_dir);
 	}
 
 	public void btn_donate_clicked(){
-
+		
 		var dialog = new DonationWindow(this);
 		dialog.show_all();
 	}
 
 	private void btn_about_clicked (){
-
+		
 		var dialog = new AboutWindow(this);
 		dialog.set_transient_for (this);
 
@@ -947,25 +947,25 @@ class MainWindow : Gtk.Window{
 		//dialog.license = "";
 		dialog.website = "https://teejeetech.com/";
 		dialog.website_label = "https://teejeetech.com/";
-
+		
 		dialog.initialize();
 		dialog.show_all();
 	}
 
 	private void ui_sensitive(bool enable){
-
+		
 		toolbar.sensitive = enable;
 		snapshot_list_box.treeview.sensitive = enable;
 		gtk_set_busy(!enable, this);
 	}
 
 	private void update_statusbar(){
-
+		
 		App.repo.check_status();
 		string message = App.repo.status_message;
 		string details = App.repo.status_details;
 		int status_code = App.repo.status_code;
-
+		
 		DateTime? last_snapshot_date = null;
 		DateTime? oldest_snapshot_date = null;
 
@@ -991,7 +991,7 @@ class MainWindow : Gtk.Window{
 			case SnapshotLocationStatus.NO_BTRFS_SYSTEM:
 				set_shield_subnote(details);
 				break;
-
+			
 			case SnapshotLocationStatus.HAS_SNAPSHOTS_NO_SPACE:
 			case SnapshotLocationStatus.HAS_SNAPSHOTS_HAS_SPACE:
 				set_shield_subnote(_("Snapshots available for restore"));
@@ -1059,13 +1059,13 @@ class MainWindow : Gtk.Window{
 						set_shield_subnote(_("Create snapshots manually or enable scheduled snapshots to protect your system"));
 					}
 				}
-
+				
 				break;
 			}
 
 			scrolled_snap_count.hide();
 			scrolled_free_space.hide();
-
+			
 			switch (status_code){
 			case SnapshotLocationStatus.NO_SNAPSHOTS_NO_SPACE:
 			case SnapshotLocationStatus.NO_SNAPSHOTS_HAS_SPACE:
@@ -1073,14 +1073,14 @@ class MainWindow : Gtk.Window{
 			case SnapshotLocationStatus.HAS_SNAPSHOTS_HAS_SPACE:
 				scrolled_snap_count.no_show_all = false;
 				scrolled_snap_count.show_all();
-
+				
 				lbl_snap_count.label = format_text_large("%0d".printf(App.repo.snapshots.size));
 				string mode = App.btrfs_mode ? "btrfs" : "rsync";
 				lbl_snap_count_subnote.label = format_text(mode, false, true, false);
-
+				
 				scrolled_free_space.no_show_all = false;
 				scrolled_free_space.show_all();
-
+				
 				lbl_free_space.label = format_text_large("%s".printf(format_file_size(App.repo.device.free_bytes)));
 
 				string devname = "(??)";
@@ -1094,33 +1094,33 @@ class MainWindow : Gtk.Window{
 	}
 
 	// ui helpers --------
-
+	
 	private string format_text_large(string text){
-
+		
 		return "<span size='xx-large'><b>" + text + "</b></span>";
 	}
-
+	
 	private void set_shield_label(
 		string text, bool is_bold = true, bool is_italic = false, bool is_large = true){
-
+			
 		string msg = "<span%s%s%s>%s</span>".printf(
 			(is_bold ? " weight=\"bold\"" : ""),
 			(is_italic ? " style=\"italic\"" : ""),
 			(is_large ? " size=\"x-large\"" : ""),
 			escape_html(text));
-
+			
 		lbl_shield.label = msg;
 	}
 
 	private void set_shield_subnote(
 		string text, bool is_bold = false, bool is_italic = true, bool is_large = false){
-
+			
 		string msg = "<span%s%s%s>%s</span>".printf(
 			(is_bold ? " weight=\"bold\"" : ""),
 			(is_italic ? " style=\"italic\"" : ""),
 			(is_large ? " size=\"x-large\"" : ""),
 			escape_html(text));
-
+			
 		lbl_shield_subnote.label = msg;
 	}
 }

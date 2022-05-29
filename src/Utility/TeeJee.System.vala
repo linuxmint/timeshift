@@ -21,25 +21,25 @@
  *
  *
  */
-
+ 
 namespace TeeJee.System{
 
 	using TeeJee.ProcessHelper;
 	using TeeJee.Logging;
 	using TeeJee.Misc;
 	using TeeJee.FileSystem;
-
+	
 	// user ---------------------------------------------------
 
 	public bool user_is_admin(){
-
+		
 		return (get_user_id_effective() == 0);
 	}
-
+	
 	public int get_user_id(){
 
 		// returns actual user id of current user (even for applications executed with sudo and pkexec)
-
+		
 		string pkexec_uid = GLib.Environment.get_variable("PKEXEC_UID");
 
 		if (pkexec_uid != null){
@@ -56,7 +56,7 @@ namespace TeeJee.System{
 	}
 
 	public int get_user_id_effective(){
-
+		
 		// returns effective user id (0 for applications executed with sudo and pkexec)
 
 		int uid = -1;
@@ -69,37 +69,37 @@ namespace TeeJee.System{
 
 		return uid;
 	}
-
+	
 	public string get_username(){
 
 		// returns actual username of current user (even for applications executed with sudo and pkexec)
-
+		
 		return get_username_from_uid(get_user_id());
 	}
 
 	public string get_username_effective(){
 
 		// returns effective user id ('root' for applications executed with sudo and pkexec)
-
+		
 		return get_username_from_uid(get_user_id_effective());
 	}
 
 	public int get_user_id_from_username(string username){
-
+		
 		// check local user accounts in /etc/passwd -------------------
 
 		foreach(var line in file_read("/etc/passwd").split("\n")){
-
+			
 			var arr = line.split(":");
-
+			
 			if ((arr.length >= 3) && (arr[0] == username)){
-
+				
 				return int.parse(arr[2]);
 			}
 		}
 
 		// not found --------------------
-
+		
 		log_error("UserId not found for userName: %s".printf(username));
 
 		return -1;
@@ -108,19 +108,19 @@ namespace TeeJee.System{
 	public string get_username_from_uid(int user_id){
 
 		// check local user accounts in /etc/passwd -------------------
-
+		
 		foreach(var line in file_read("/etc/passwd").split("\n")){
-
+			
 			var arr = line.split(":");
-
+			
 			if ((arr.length >= 3) && (arr[2] == user_id.to_string())){
-
+				
 				return arr[0];
 			}
 		}
 
 		// not found --------------------
-
+		
 		log_error("Username not found for uid: %d".printf(user_id));
 
 		return "";
@@ -129,11 +129,11 @@ namespace TeeJee.System{
 	public string get_user_home(string username = get_username()){
 
 		// check local user accounts in /etc/passwd -------------------
-
+		
 		foreach(var line in file_read("/etc/passwd").split("\n")){
-
+			
 			var arr = line.split(":");
-
+			
 			if ((arr.length >= 6) && (arr[0] == username)){
 
 				return arr[5];
@@ -152,7 +152,7 @@ namespace TeeJee.System{
 	}
 
 	// application -----------------------------------------------
-
+	
 	public string get_app_path(){
 
 		/* Get path of current process */
@@ -250,7 +250,7 @@ namespace TeeJee.System{
 
 	public Gee.ArrayList<string> list_dir_names(string path){
 		var list = new Gee.ArrayList<string>();
-
+		
 		try
 		{
 			File f_home = File.new_for_path (path);
@@ -276,7 +276,7 @@ namespace TeeJee.System{
 	}
 
 	// internet helpers ----------------------
-
+	
 	public bool shutdown (){
 
 		/* Shutdown the system immediately */
@@ -297,7 +297,7 @@ namespace TeeJee.System{
 		string path = get_cmd_path(command);
 		return ((path != null) && (path.length > 0));
 	}
-
+	
 	// open -----------------------------
 
 	public bool xdg_open (string file, string user = ""){
@@ -327,7 +327,7 @@ namespace TeeJee.System{
 
 		string path;
 		int status;
-
+		
 		if (xdg_open_try_first){
 			//try using xdg-open
 			path = get_cmd_path ("xdg-open");
@@ -340,7 +340,7 @@ namespace TeeJee.System{
 
 		foreach(string app_name in
 			new string[]{ "nemo", "nautilus", "thunar", "io.elementary.files", "pantheon-files", "marlin", "dolphin" }){
-
+				
 			path = get_cmd_path (app_name);
 			if ((path != null)&&(path != "")){
 				string cmd = "%s '%s'".printf(app_name, escape_single_quote(dir_path));
@@ -369,7 +369,7 @@ namespace TeeJee.System{
 		string path;
 		int status;
 		string cmd;
-
+		
 		path = get_cmd_path ("exo-open");
 		if ((path != null)&&(path != "")){
 			cmd = "exo-open '%s'".printf(escape_single_quote(txt_file));
@@ -394,7 +394,7 @@ namespace TeeJee.System{
 		string path;
 		int status;
 		//string cmd;
-
+		
 		path = get_cmd_path ("exo-open");
 		if ((path != null)&&(path != "")){
 			status = exec_script_async ("exo-open \"" + url + "\"");
@@ -417,15 +417,15 @@ namespace TeeJee.System{
 	}
 
 	public bool using_efi_boot(){
-
+		
 		/* Returns true if the system was booted in EFI mode
 		 * and false for BIOS mode */
-
+		 
 		return dir_exists("/sys/firmware/efi");
 	}
 
 	// timers --------------------------------------------------
-
+	
 	public GLib.Timer timer_start(){
 		var timer = new GLib.Timer();
 		timer.start();
@@ -464,7 +464,7 @@ namespace TeeJee.System{
 			timer.stop();
 		}
 		log_msg("%s %lu\n".printf(seconds.to_string(), microseconds));
-	}
+	}	
 
 	public void set_numeric_locale(string type){
 		Intl.setlocale(GLib.LocaleCategory.NUMERIC, type);

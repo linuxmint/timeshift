@@ -37,17 +37,17 @@ public class DeleteFileTask : AsyncTask{
 	public bool use_rsync = false;
 
 	//private
-	private string source_path = "";
-
+	private string source_path = ""; 
+		
 	// regex
 	private Gee.HashMap<string, Regex> regex_list;
-
+	
 	// status
 	public int64 status_line_count = 0;
 	public int64 total_size = 0;
 	public string status_message = "";
 	public string time_remaining = "";
-
+	
 	public DeleteFileTask(){
 		init_regular_expressions();
 	}
@@ -56,9 +56,9 @@ public class DeleteFileTask : AsyncTask{
 		if (regex_list != null){
 			return; // already initialized
 		}
-
+		
 		regex_list = new Gee.HashMap<string,Regex>();
-
+		
 		try {
 
 			regex_list["rsync-deleted"] = new Regex(
@@ -69,7 +69,7 @@ public class DeleteFileTask : AsyncTask{
 			log_error (e.message);
 		}
 	}
-
+	
 	public void prepare() {
 		string script_text = build_script();
 		log_debug(script_text);
@@ -108,7 +108,7 @@ public class DeleteFileTask : AsyncTask{
 
 			source_path = remove_trailing_slash(source_path);
 			dest_path = remove_trailing_slash(dest_path);
-
+			
 			cmd += " '%s/'".printf(escape_single_quote(source_path));
 			cmd += " '%s/'".printf(escape_single_quote(dest_path));
 		}
@@ -133,16 +133,16 @@ public class DeleteFileTask : AsyncTask{
 	public void execute() {
 
 		status = AppStatus.RUNNING;
-
+		
 		log_debug("RsyncTask:execute()");
-
+		
 		prepare();
 
 		begin();
 
 		if (status == AppStatus.RUNNING){
-
-
+			
+			
 		}
 	}
 
@@ -150,15 +150,15 @@ public class DeleteFileTask : AsyncTask{
 		if (is_terminated) {
 			return;
 		}
-
+		
 		update_progress_parse_console_output(out_line);
 	}
-
+	
 	public override void parse_stderr_line(string err_line){
 		if (is_terminated) {
 			return;
 		}
-
+		
 		update_progress_parse_console_output(err_line);
 	}
 
@@ -173,16 +173,16 @@ public class DeleteFileTask : AsyncTask{
 			prg_count = status_line_count;
 			progress = (prg_count * 1.0) / prg_count_total;
 		}
-
+		
 		MatchInfo match;
 		if (regex_list["rsync-deleted"].match(line, 0, out match)) {
-
+			
 			//log_debug("matched: rsync-deleted:%s".printf(line));
 
 			status_line = match.fetch(1).split(" -> ")[0].strip();
 		}
 		else {
-
+			
 			//log_debug("matched: else:%s".printf(line));
 
 			status_line = line.strip();
