@@ -145,7 +145,7 @@ namespace TeeJee.GtkHelper{
 	
 	public bool gtk_combobox_set_value (ComboBox combo, int index, string val){
 
-		/* Conveniance function to set combobox value */
+		/* Convenience function to set combobox value */
 
 		TreeIter iter;
 		string comboVal;
@@ -166,7 +166,7 @@ namespace TeeJee.GtkHelper{
 
 	public string gtk_combobox_get_value (ComboBox combo, int index, string default_value){
 
-		/* Conveniance function to get combobox value */
+		/* Convenience function to get combobox value */
 
 		if ((combo.model == null) || (combo.active < 0)) { return default_value; }
 
@@ -181,7 +181,7 @@ namespace TeeJee.GtkHelper{
 
 	public GLib.Object gtk_combobox_get_selected_object (ComboBox combo, int index, GLib.Object default_value){
 
-		/* Conveniance function to get combobox value */
+		/* Convenience function to get combobox value */
 
 		if ((combo.model == null) || (combo.active < 0)) { return default_value; }
 
@@ -196,7 +196,7 @@ namespace TeeJee.GtkHelper{
 	
 	public int gtk_combobox_get_value_enum (ComboBox combo, int index, int default_value){
 
-		/* Conveniance function to get combobox value */
+		/* Convenience function to get combobox value */
 
 		if ((combo.model == null) || (combo.active < 0)) { return default_value; }
 

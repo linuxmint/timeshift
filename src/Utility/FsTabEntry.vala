@@ -220,7 +220,7 @@ public class FsTabEntry : GLib.Object{
 			
 			Note:
 			Mapped name may be different on running system, or it may be same.
-			Since it is not reliable, we will try to identify the parent intead of the mapped device.
+			Since it is not reliable, we will try to identify the parent instead of the mapped device.
 			*/
 			
 			if (device_string.has_prefix("/dev/mapper/")){

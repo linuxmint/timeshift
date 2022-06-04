@@ -275,7 +275,7 @@ public class Main : GLib.Object{
 		this.app_conf_path = "/etc/timeshift/timeshift.json";
 		this.app_conf_path_old = "/etc/timeshift.json";
 		this.app_conf_path_default = "/etc/timeshift/default.json";
-		//sys_root and sys_home will be initalized by update_partition_list()
+		//sys_root and sys_home will be initialized by update_partition_list()
 		
 		// check if running locally ------------------------
 
@@ -1374,7 +1374,7 @@ public class Main : GLib.Object{
 		
 		// rsync file system -------------------
 		
-		progress_text = _("Synching files with rsync...");
+		progress_text = _("Syncing files with rsync...");
 		log_msg(progress_text);
 
 		var log_file = snapshot_path + "/rsync-log";
@@ -1850,7 +1850,7 @@ public class Main : GLib.Object{
 				
 				Note:
 				Mapped name may be different on running system, or it may be same.
-				Since it is not reliable, we will try to identify the parent intead of the mapped device.
+				Since it is not reliable, we will try to identify the parent instead of the mapped device.
 				*/
 				
 				if (fs_entry.device_string.has_prefix("/dev/mapper/")){
@@ -2395,7 +2395,7 @@ public class Main : GLib.Object{
 		}
 		
 		// sync file systems
-		sh += "echo '" + _("Synching file systems...") + "' \n";
+		sh += "echo '" + _("Syncing file systems...") + "' \n";
 		sh += "sync ; sleep 10s; \n";
 		sh += "echo '' \n";
 		
@@ -2565,7 +2565,7 @@ public class Main : GLib.Object{
 					progress_text = _("Comparing files with rsync...");
 				}
 				else{
-					progress_text = _("Synching files with rsync...");
+					progress_text = _("Syncing files with rsync...");
 				}
 			}
 			
@@ -2806,7 +2806,7 @@ public class Main : GLib.Object{
 				log_msg(_("Cloning system..."));
 			}
 
-			progress_text = _("Synching files with rsync...");
+			progress_text = _("Syncing files with rsync...");
 			log_msg(progress_text);
 
 			bool ok = true;
@@ -3796,7 +3796,7 @@ public class Main : GLib.Object{
 
 	public void query_subvolume_info(SnapshotRepo parent_repo){
 
-		// SnapshotRepo contructor calls this code in load_snapshots()
+		// SnapshotRepo constructor calls this code in load_snapshots()
 		// save the new object reference to repo since repo still holds previous object
 		repo = parent_repo;
 

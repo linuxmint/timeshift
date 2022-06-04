@@ -58,7 +58,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 
 	public GLib.Icon icon;
 
-	// contructors -------------------------------
+	// constructors -------------------------------
 	
 	public FileItem(string name) {
 		file_name = name;
