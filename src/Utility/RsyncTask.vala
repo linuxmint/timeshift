@@ -101,7 +101,7 @@ public class RsyncTask : AsyncTask{
 		s size of a regular file is different and is being updated
 		t modification time is different and is being updated
 		p permissions are different and is being updated
-		o owner is differen and is being updated
+		o owner is different and is being updated
 		g group is different and is being updated
 		u reserved for future use.
 		a ACL information changed.

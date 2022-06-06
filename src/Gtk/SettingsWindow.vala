@@ -149,7 +149,7 @@ class SettingsWindow : Gtk.Window{
 		
 		this.resize(def_width, def_height);
 		
-		//backup_dev_box.refresh(); //will be triggerred indirectly
+		//backup_dev_box.refresh(); //will be triggered indirectly
 		
 		return false;
 	}
