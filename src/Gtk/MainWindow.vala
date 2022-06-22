@@ -44,7 +44,6 @@ class MainWindow : Gtk.Window{
 	private Gtk.ToolButton btn_browse_snapshot;
 	private Gtk.ToolButton btn_settings;
 	private Gtk.ToolButton btn_wizard;
-	private Gtk.ToolButton btn_donate;
 	private Gtk.Menu menu_extra;
 
 	private SnapshotListBox snapshot_list_box;
@@ -371,11 +370,6 @@ class MainWindow : Gtk.Window{
 			menu_extra.append(menu_item);
 			menu_item.activate.connect(btn_view_app_logs_clicked);
 		}
-
-		// donate
-		menu_item = create_menu_item(_("Donate"), "", "", 16);
-		menu_extra.append(menu_item);
-		menu_item.activate.connect(btn_donate_clicked);
 
 		// about
 		menu_item = create_menu_item(_("About"), "", "", 16);
@@ -909,12 +903,6 @@ class MainWindow : Gtk.Window{
 	private void btn_view_app_logs_clicked(){
 		
 		exo_open_folder(App.log_dir);
-	}
-
-	public void btn_donate_clicked(){
-		
-		var dialog = new DonationWindow(this);
-		dialog.show_all();
 	}
 
 	private void btn_about_clicked (){
