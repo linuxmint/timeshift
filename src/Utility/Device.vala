@@ -963,7 +963,7 @@ public class Device : GLib.Object{
 		filesystemtype - the type of filesystem mounted.
 		options - the mount options for the filesystem
 		dump - used by dump to decide if the filesystem needs dumping.
-		fsckorder - used by fsck to detrmine the fsck pass to use.
+		fsckorder - used by fsck to determine the fsck pass to use.
 		*/
 
 		/* Note:

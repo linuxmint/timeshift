@@ -44,7 +44,6 @@ class MainWindow : Gtk.Window{
 	private Gtk.ToolButton btn_browse_snapshot;
 	private Gtk.ToolButton btn_settings;
 	private Gtk.ToolButton btn_wizard;
-	private Gtk.ToolButton btn_donate;
 	private Gtk.Menu menu_extra;
 
 	private SnapshotListBox snapshot_list_box;
@@ -371,11 +370,6 @@ class MainWindow : Gtk.Window{
 			menu_extra.append(menu_item);
 			menu_item.activate.connect(btn_view_app_logs_clicked);
 		}
-
-		// donate
-		menu_item = create_menu_item(_("Donate"), "", "", 16);
-		menu_extra.append(menu_item);
-		menu_item.activate.connect(btn_donate_clicked);
 
 		// about
 		menu_item = create_menu_item(_("About"), "", "", 16);
@@ -911,47 +905,19 @@ class MainWindow : Gtk.Window{
 		exo_open_folder(App.log_dir);
 	}
 
-	public void btn_donate_clicked(){
-		
-		var dialog = new DonationWindow(this);
-		dialog.show_all();
-	}
-
 	private void btn_about_clicked (){
-		
-		var dialog = new AboutWindow(this);
-		dialog.set_transient_for (this);
-
-		dialog.authors = {
-			"Tony George:teejeetech@gmail.com"
-		};
-
-		dialog.translators = null;
-
-		dialog.contributors = {
-			"View on GitHub:https://github.com/teejee2008/timeshift/graphs/contributors"
-		};
-
-		dialog.third_party = {
-			"rsync by Andrew Tridgell, Wayne Davison, and others:http://rsync.samba.org/"
-		};
-
-		dialog.documenters = null;
-		dialog.artists = null;
-		dialog.donations = null;
-
-		dialog.program_name = AppName;
-		dialog.comments = _("System Restore Utility");
-		dialog.copyright = "Copyright © 2012-21 Tony George (%s)".printf(AppAuthorEmail);
-		dialog.version = AppVersion;
-		dialog.logo = IconManager.lookup("timeshift", 256);
-
-		//dialog.license = "";
-		dialog.website = "https://teejeetech.com/";
-		dialog.website_label = "https://teejeetech.com/";
-		
-		dialog.initialize();
-		dialog.show_all();
+		var dialog = new Gtk.AboutDialog();
+		dialog.set_transient_for(this);
+		dialog.set_program_name(AppName);
+		dialog.set_comments(_("System Restore Utility"));
+		dialog.set_copyright("Copyright © 2012-21 Tony George (%s)".printf(AppAuthorEmail));
+		dialog.set_version(AppVersion);
+		dialog.set_logo_icon_name("timeshift");
+		dialog.set_license_type(Gtk.License.GPL_2_0);
+		dialog.set_website_label("https://github.com/linuxmint/timeshift");
+		dialog.set_website("https://github.com/linuxmint/timeshift");
+		dialog.run();
+		dialog.destroy();
 	}
 
 	private void ui_sensitive(bool enable){
