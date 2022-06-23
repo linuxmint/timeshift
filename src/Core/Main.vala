@@ -537,33 +537,6 @@ public class Main : GLib.Object{
 
 		// default exclude entries -------------------
 
-		exclude_list_default.add("/dev/*");
-		exclude_list_default.add("/proc/*");
-		exclude_list_default.add("/sys/*");
-		exclude_list_default.add("/media/*");
-		exclude_list_default.add("/mnt/*");
-		exclude_list_default.add("/tmp/*");
-		exclude_list_default.add("/run/*");
-		exclude_list_default.add("/var/run/*");
-		exclude_list_default.add("/var/lock/*");
-		//exclude_list_default.add("/var/spool/*");
-		exclude_list_default.add("/var/lib/dhcpcd/*");
-		exclude_list_default.add("/var/lib/docker/*");
-		exclude_list_default.add("/var/lib/schroot/*");
-		exclude_list_default.add("/lost+found");
-		exclude_list_default.add("/timeshift/*");
-		exclude_list_default.add("/timeshift-btrfs/*");
-		exclude_list_default.add("/data/*");
-		exclude_list_default.add("/DATA/*");
-		exclude_list_default.add("/cdrom/*");
-		exclude_list_default.add("/sdcard/*");
-		exclude_list_default.add("/system/*");
-		exclude_list_default.add("/etc/timeshift.json");
-		exclude_list_default.add("/var/log/timeshift/*");
-		exclude_list_default.add("/var/log/timeshift-btrfs/*");
-		exclude_list_default.add("/swapfile");
-		exclude_list_default.add("/snap/*");
-
 		foreach(var entry in FsTabEntry.read_file("/etc/fstab")){
 
 			if (!entry.mount_point.has_prefix("/")){ continue; }
@@ -598,41 +571,6 @@ public class Main : GLib.Object{
 			exclude_list_default_extra.add(entry.mount_point + "/*");
 		}
 
-		exclude_list_default.add("/root/.thumbnails");
-		exclude_list_default.add("/root/.cache");
-		exclude_list_default.add("/root/.dbus");
-		exclude_list_default.add("/root/.gvfs");
-		exclude_list_default.add("/root/.local/share/[Tt]rash");
-
-		exclude_list_default.add("/home/*/.thumbnails");
-		exclude_list_default.add("/home/*/.cache");
-		exclude_list_default.add("/home/*/.dbus");
-		exclude_list_default.add("/home/*/.gvfs");
-		exclude_list_default.add("/home/*/.local/share/[Tt]rash");
-
-		// default extra ------------------
-
-		exclude_list_default_extra.add("/root/.mozilla/firefox/*.default/Cache");
-		exclude_list_default_extra.add("/root/.mozilla/firefox/*.default/OfflineCache");
-		exclude_list_default_extra.add("/root/.opera/cache");
-		exclude_list_default_extra.add("/root/.kde/share/apps/kio_http/cache");
-		exclude_list_default_extra.add("/root/.kde/share/cache/http");
-
-		exclude_list_default_extra.add("/home/*/.mozilla/firefox/*.default/Cache");
-		exclude_list_default_extra.add("/home/*/.mozilla/firefox/*.default/OfflineCache");
-		exclude_list_default_extra.add("/home/*/.opera/cache");
-		exclude_list_default_extra.add("/home/*/.kde/share/apps/kio_http/cache");
-		exclude_list_default_extra.add("/home/*/.kde/share/cache/http");
-
-		exclude_list_default_extra.add("/var/cache/apt/archives/*");
-		exclude_list_default_extra.add("/var/cache/pacman/pkg/*");
-		exclude_list_default_extra.add("/var/cache/yum/*");
-		exclude_list_default_extra.add("/var/cache/dnf/*");
-		exclude_list_default_extra.add("/var/cache/eopkg/*");
-		exclude_list_default_extra.add("/var/cache/xbps/*");
-		exclude_list_default_extra.add("/var/cache/zypp/*");
-		exclude_list_default_extra.add("/var/cache/edb/*");
-		
 		// default home ----------------
 
 		//exclude_list_home.add("+ /root/.**");
