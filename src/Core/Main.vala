@@ -1390,7 +1390,7 @@ public class Main : GLib.Object{
 			return 0;
 		}
 
-		progress_text = _("Calculating disk space required...");
+		progress_text = _("Calculating required disk space...");
 		log_msg(progress_text);
 
 		space_check_task = new RsyncSpaceCheckTask();
