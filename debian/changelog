@@ -1,3 +1,31 @@
+timeshift (22.06.3) vanessa; urgency=medium
+
+  [ Michael Webster ]
+  * settings: Clear the initial snapshot size and file count when all snapshots are deleted.
+  * rsync: Calculate required space before attempting to perform an (#19)
+
+  [ Clement Lefebvre ]
+  * l10n: Update POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 30 Jun 2022 15:18:13 +0200
+
+timeshift (22.06.2) vanessa; urgency=medium
+
+  [ luz paz ]
+  * Fix various typos in the source
+
+  [ icarter09 ]
+  * Removes lines about paypal account.
+
+  [ Clement Lefebvre ]
+  * Remove donation window
+  * About: Update info and use a Gtk.AboutDialog
+  * SnapshotListBox: Fix distro name LinuxMint -> Linux Mint
+  * l10n: Update POT
+  * l10n: Update translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 27 Jun 2022 11:31:04 +0200
+
 timeshift (22.06.1) focal; urgency=medium
 
   * Fix #895, #809, #689, #653, #10: Unmount devices that were mounted by Timeshift before exit
