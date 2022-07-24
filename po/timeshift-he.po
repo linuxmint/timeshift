@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2022-06-22 13:32+0200\n"
-"PO-Revision-Date: 2022-06-25 06:06+0000\n"
+"POT-Creation-Date: 2022-06-30 15:17+0200\n"
+"PO-Revision-Date: 2022-07-22 17:04+0000\n"
 "Last-Translator: Avi Markovitz <avi.markovitz@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-06-26 11:29+0000\n"
-"X-Generator: Launchpad (build 51a2e4fa2e9b8e45f00904ad7f53546f45ac48a5)\n"
+"X-Launchpad-Export-Date: 2022-07-24 09:42+0000\n"
+"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
 
 #: src/Console/AppConsole.vala:615
 #, c-format
@@ -24,17 +24,17 @@ msgid ""
 "Press ENTER to continue..."
 msgstr ""
 "\n"
-"יש ללחוץ על ENTER כדי להמשיך..."
+"להמשך, נא ללחוץ על 'אנטר'..."
 
-#: src/Core/SnapshotRepo.vala:550
+#: src/Core/SnapshotRepo.vala:556
 #, c-format
 msgid "%d snapshots, %s free"
-msgstr "%d תמונות מערכת, %s פנויים"
+msgstr "%d תמונות־חטף מערכת, %s פנויים"
 
 #: src/Console/AppConsole.vala:916
 #, c-format
 msgid "'%s' will be on '%s'"
-msgstr "‏‚%s’ יימצא בתוך ‚%s’"
+msgstr "‏'%s’ יימצא על '%s’"
 
 #: src/Console/AppConsole.vala:913
 #, c-format
@@ -45,23 +45,23 @@ msgstr "'%s' יימצא בהתקן שורש"
 msgid "(Re)install GRUB2 on:"
 msgstr "נא להתקין (מחדש) את GRUB2 ב:"
 
-#: src/Core/Main.vala:368
+#: src/Core/Main.vala:367
 msgid "** Uninstalled Timeshift BTRFS **"
-msgstr "** BTRFS טיימשיפט הוסר **"
+msgstr "**התקנת BTRFS טיימשיפט הוסרה **"
 
-#: src/Core/Main.vala:3374
+#: src/Core/Main.vala:3515
 msgid "/ is mapped to device"
 msgstr "/ ממופה להתקן"
 
-#: src/Core/Main.vala:3396
+#: src/Core/Main.vala:3537
 msgid "/boot is mapped to device"
 msgstr "/boot ממופה להתקן"
 
-#: src/Core/Main.vala:3407
+#: src/Core/Main.vala:3548
 msgid "/boot/efi is mapped to device"
 msgstr "/boot/efi ממופה להתקן"
 
-#: src/Core/Main.vala:3385
+#: src/Core/Main.vala:3526
 msgid "/home is mapped to device"
 msgstr "/home ממופה להתקן"
 
@@ -107,7 +107,7 @@ msgstr "הוספת דפוס מותאם אישית"
 
 #: src/Gtk/ExcludeBox.vala:248
 msgid "Add directories"
-msgstr "הוספת תיקיות"
+msgstr "הוספת מחיצות"
 
 #: src/Gtk/ExcludeBox.vala:242
 msgid "Add files"
@@ -156,44 +156,44 @@ msgid ""
 "Either select a non-encrypted device for boot directory or select a non-"
 "encrypted device for root filesystem."
 msgstr ""
-"עבור מערכת קבצי השורש (/) נבחר התקן מוצפן. כדי שהמערכת תאתחל בהצלחה, יש "
-"לעגון את מחיצת האתחול (/boot) בהתקן לא מוצפן."
+"נבחר התקן מוצפן למערכת קבצי השורש (/) . כדי שהמערכת תאתחל בהצלחה, יש לעגון "
+"את מחיצת האתחול (/boot) בהתקן לא מוצפן."
 
-#: src/Core/Main.vala:254
+#: src/Core/Main.vala:253
 msgid "Another instance of Timeshift is creating a snapshot."
-msgstr "מופע אחר של Timeshift יוצר תמונת מערכת בזה הרגע."
+msgstr "אדגם טיימשיפט נוסף יוצר תמונת־חטף מערכת."
 
 #: src/Utility/AppLock.vala:49
 msgid "Another instance of this application is running"
-msgstr "מופע אחר של היישום כבר פועל"
+msgstr "אדגם נוסף של יישומון זה מופעל כעת"
 
-#: src/Core/Main.vala:258
+#: src/Core/Main.vala:257
 msgid "Another instance of timeshift is currently running!"
-msgstr "כבר מופעל מופע אחר של טיימשיפט!"
+msgstr "אדגם טיימשיפט נוסף מופעל כעת!"
 
 #: src/Console/AppConsole.vala:377
 msgid "Answer YES to all confirmation prompts"
-msgstr "נא לענות 'כן' על כל הנחיות לאישור"
+msgstr "נא לענות 'כן' על כל ההנחיות לאישור"
 
-#: src/Core/Main.vala:3211
+#: src/Core/Main.vala:3352
 msgid "App config loaded"
-msgstr "App config loaded"
+msgstr "תצור (config) יישומון נטען"
 
-#: src/Core/Main.vala:3099
+#: src/Core/Main.vala:3240
 msgid "App config saved"
-msgstr "App config saved"
+msgstr "תצור (config) יישומון נשמר"
 
 #: src/Console/AppConsole.vala:102
 msgid "Application needs admin access."
 msgstr "נדרשות ליישומון הרשאת גישת מנהלן."
 
-#: src/Core/Main.vala:3551
+#: src/Core/Main.vala:3692
 msgid "Application will exit"
 msgstr "יישומון ייסגר"
 
-#: src/Core/Main.vala:384
+#: src/Core/Main.vala:383
 msgid "Application will exit."
-msgstr "תתבצע יציאה מהיישום."
+msgstr "היישומון יבצע יציאה."
 
 #: src/Gtk/MainWindow.vala:345
 msgid "Available"
@@ -211,7 +211,7 @@ msgstr "תמונות־חטף BTRFS"
 msgid "BTRFS Tools Not Found"
 msgstr "לא נמצאו כלי BTRFS"
 
-#: src/Core/Main.vala:2057 src/Core/Main.vala:2061
+#: src/Core/Main.vala:2190 src/Core/Main.vala:2194
 msgid "BTRFS device is not mounted"
 msgstr "לא נמצא התקן BTRFS"
 
@@ -234,17 +234,17 @@ msgstr ""
 
 #: src/Gtk/SetupWizardWindow.vala:94
 msgid "Backend"
-msgstr "מנגנון"
+msgstr "קצה־אחורי"
 
 #: src/Console/AppConsole.vala:357 src/Gtk/BackupWindow.vala:92
 msgid "Backup"
 msgstr "גיבוי"
 
-#: src/Core/Main.vala:2033
+#: src/Core/Main.vala:2166
 msgid "Backup Device"
 msgstr "התקן גיבוי"
 
-#: src/Core/Main.vala:2028
+#: src/Core/Main.vala:2161
 msgid "Backup device not specified!"
 msgstr "לא צוין התקן גיבוי!"
 
@@ -260,7 +260,7 @@ msgstr "אתחול  (boot)"
 msgid "Boot device not selected"
 msgstr "לא נבחר התקן אתחול  (boot)"
 
-#: src/Core/Main.vala:1034
+#: src/Core/Main.vala:1033
 msgid "Boot snapshot failed!"
 msgstr "תמונת־חטף אתחול (boot) כשלה!"
 
@@ -269,7 +269,7 @@ msgid ""
 "Boot snapshots are created with a delay of 10 minutes after system startup."
 msgstr "תמונות־חטף 'אתחול' נוצרות בהשהשיה בת 10 דקות מאתחול המערכת."
 
-#: src/Core/Main.vala:1015
+#: src/Core/Main.vala:1014
 msgid "Boot snapshots are enabled"
 msgstr "תמונות־חטף אתחול (boot) מאופשרות"
 
@@ -293,9 +293,13 @@ msgstr "עיון בקבצים"
 msgid "Browse selected snapshot"
 msgstr "דפדוף בתמונות־חטף שנבחרו"
 
-#: src/Core/Main.vala:2523
+#: src/Core/Main.vala:2656
 msgid "Building file list..."
 msgstr "בניית רשימת קבצים..."
+
+#: src/Core/Main.vala:1393
+msgid "Calculating required disk space..."
+msgstr "מתבצע חישוב זמינות נפח כונן..."
 
 #: src/Utility/Gtk/CustomMessageDialog.vala:152 src/Utility/GtkHelper.vala:109
 #: src/Gtk/RestoreWindow.vala:215 src/Gtk/RestoreWindow.vala:224
@@ -315,18 +319,21 @@ msgid ""
 "issues. After cancelling, you need to restore another snapshot, to bring the "
 "system to a consistent state. Click Yes to confirm."
 msgstr ""
+"ביטול תהליך השחזור ישאיר את מערכת היעד במצב לא יציב. ייתכן שהמערכת תיכשל "
+"באתחול או עלולה להיתקל בבעיות שונות. לאחר הביטול, יש לשחזר תמונת־חטף נוספת, "
+"כדי להביא את המערכת למצב ימיב. נא להקיש על 'כן' כדי לאשר."
 
 #: src/Gtk/MainWindow.vala:547
 msgid "Cannot Delete Live Snapshot"
 msgstr "לא ניתן למחוק תמונת־חטף 'חיות'"
 
-#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:125
+#: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
 #: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
 #: src/Gtk/RsyncLogBox.vala:567 src/Gtk/RsyncLogBox.vala:588
 msgid "Changed"
 msgstr "שינויים"
 
-#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:127
+#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:127
 msgid "Changed items:"
 msgstr "פריטים שהשתנו:"
 
@@ -334,17 +341,17 @@ msgstr "פריטים שהשתנו:"
 msgid "Checking Restore Actions (Dry Run)"
 msgstr "בדיקת פעולות שחזור (ריצה 'יבשה')"
 
-#: src/Core/Main.vala:2756
+#: src/Core/Main.vala:2889
 msgid "Checking file systems for errors..."
 msgstr "מתבצעת בדיקה אחר שגיאות במערכת הקבצים..."
 
-#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:130
+#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:130
 #: src/Gtk/RsyncLogBox.vala:390
 #, c-format
 msgid "Checksum"
 msgstr "סיכום"
 
-#: src/Core/Main.vala:2404
+#: src/Core/Main.vala:2537
 msgid "Cleaning up..."
 msgstr "מתבצע ניקוי…"
 
@@ -364,7 +371,7 @@ msgstr "שיבוט מערכת"
 msgid "Cloning"
 msgstr "מתבצע שיבוט"
 
-#: src/Core/Main.vala:2806
+#: src/Core/Main.vala:2939
 msgid "Cloning system..."
 msgstr "מתבצע שיבוט..."
 
@@ -379,7 +386,7 @@ msgstr "סגירה"
 msgid "Close window to exit"
 msgstr "יש לסגור את החלון כדי לצאת"
 
-#: src/Core/Main.vala:353
+#: src/Core/Main.vala:352
 msgid "Commands listed below are not available on this system"
 msgstr "הפקודות המוצגות מטה אינן זמינות במערכת זו"
 
@@ -387,12 +394,12 @@ msgstr "הפקודות המוצגות מטה אינן זמינות במערכת 
 msgid "Comments (click to edit)"
 msgstr "הערות (הקשה לעריכה‎)"
 
-#: src/Core/Main.vala:2799 src/Gtk/RestoreBox.vala:74
+#: src/Core/Main.vala:2932 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
 msgid "Comparing Files (Dry Run)..."
 msgstr "השוואת קבצים (ריצה 'יבשה')"
 
-#: src/Core/Main.vala:2565
+#: src/Core/Main.vala:2698
 msgid "Comparing files with rsync..."
 msgstr "השוואת קבצים באמצעות rsync..."
 
@@ -425,13 +432,13 @@ msgstr "לא ניתן למצוא קובץ"
 
 #: src/Console/AppConsole.vala:733
 msgid "Could not find snapshot"
-msgstr "תמונת המערכת לא נמצאה"
+msgstr "לא ניתן למצוא תמונת_חטף מערכת"
 
-#: src/Core/Main.vala:2968
+#: src/Core/Main.vala:3101
 msgid "Could not find system subvolume"
 msgstr "לא ניתן למצוא תת־כרך מערכת"
 
-#: src/Core/Main.vala:2996
+#: src/Core/Main.vala:3129
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr "לא ניתן למצוא תתי־כרך מערכת לייצירת תמונת־חטף קדם שחזור"
 
@@ -443,7 +450,7 @@ msgstr "יצירה"
 
 #: src/Gtk/BackupWindow.vala:62
 msgid "Create Snapshot"
-msgstr "יצירת תמונת מערכת"
+msgstr "יצירת תמונת־חטף"
 
 #: src/Gtk/ScheduleBox.vala:136
 msgid "Create one per boot"
@@ -471,7 +478,7 @@ msgstr "יצירת תמונת־חטף (גם אם לא תוזמנה)"
 
 #: src/Console/AppConsole.vala:358
 msgid "Create snapshot if scheduled"
-msgstr "יצירת תמונת־חטף אם תוזמנה"
+msgstr "יצירת תמונת־חטף ככל שתוזמנה"
 
 #: src/Gtk/MainWindow.vala:141
 msgid "Create snapshot of current system"
@@ -492,7 +499,7 @@ msgstr "יצירת תמונת־חטף תוך שימוש ב־BTRFS"
 msgid "Create snapshots using RSYNC tool and hard-links"
 msgstr "יצירת תמונת־חטף תוך שימוש בכלי RSYNC וקישורים קשיחים"
 
-#: src/Gtk/BackupBox.vala:85 src/Gtk/RestoreBox.vala:123
+#: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
 #: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:571
 #: src/Gtk/RsyncLogBox.vala:592
 #, c-format
@@ -507,11 +514,11 @@ msgstr "קובץ בקרה נוצר"
 msgid "Created directory"
 msgstr "מחיצה נוצרה"
 
-#: src/Core/Main.vala:3018
+#: src/Core/Main.vala:3151
 msgid "Created pre-restore snapshot"
 msgstr "תמונת־חטף קדם שחזור נוצרה"
 
-#: src/Core/Main.vala:1515
+#: src/Core/Main.vala:1648
 msgid "Created subvolume snapshot"
 msgstr "תמונת־חטף תת־כרך נוצרה"
 
@@ -519,19 +526,19 @@ msgstr "תמונת־חטף תת־כרך נוצרה"
 msgid "Creating Snapshot..."
 msgstr "יצירת תמונת־חטף..."
 
-#: src/Core/Main.vala:1453
+#: src/Core/Main.vala:1586
 msgid "Creating new backup..."
 msgstr "יצירת גיבוי חדש..."
 
-#: src/Core/Main.vala:1299
+#: src/Core/Main.vala:1432
 msgid "Creating new snapshot..."
 msgstr "יצירת תמונת־חטף חדשה..."
 
-#: src/Core/Main.vala:2946
+#: src/Core/Main.vala:3079
 msgid "Creating pre-restore snapshot from system subvolumes..."
-msgstr "יצירת תמונת־חטף קדם שחזורמתתי־כרך מערכת"
+msgstr "יצירת תמונת־חטף קדם שחזור מתתי־כרך מערכת..."
 
-#: src/Core/Main.vala:3550
+#: src/Core/Main.vala:3691
 msgid "Critical Error"
 msgstr "שגיאה מהותית"
 
@@ -555,15 +562,15 @@ msgstr "מותאם אישית"
 msgid "Daily"
 msgstr "יומי"
 
-#: src/Core/Main.vala:1096
+#: src/Core/Main.vala:1095
 msgid "Daily snapshot failed!"
 msgstr "תמונת־חטף יומית כשלה!"
 
-#: src/Core/Main.vala:1077
+#: src/Core/Main.vala:1076
 msgid "Daily snapshots are enabled"
 msgstr "אופשרו תמונות־חטף יומיות"
 
-#: src/Core/Main.vala:2127
+#: src/Core/Main.vala:2260
 msgid "Data will be modified on following devices:"
 msgstr "יוסגלו נתונים בהתקנים הבאים:"
 
@@ -594,7 +601,7 @@ msgstr "מחיקת תמונות־חטף שנבחרו"
 msgid "Delete snapshot"
 msgstr "מחיקת תמונת־חטף"
 
-#: src/Gtk/BackupBox.vala:86 src/Gtk/RestoreBox.vala:124
+#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:575
 #: src/Gtk/RsyncLogBox.vala:596
 #, c-format
@@ -605,7 +612,7 @@ msgstr "נמחקה"
 msgid "Deleted directory"
 msgstr "מחיצה נמחקה"
 
-#: src/Core/Main.vala:2925 src/Core/Main.vala:2929 src/Core/Subvolume.vala:167
+#: src/Core/Main.vala:3058 src/Core/Main.vala:3062 src/Core/Subvolume.vala:167
 #, c-format
 msgid "Deleted subvolume"
 msgstr "תת־כרך נמחק"
@@ -627,9 +634,9 @@ msgstr "דלוג', טרנסמישן"
 msgid "Description"
 msgstr "תיאור"
 
-#: src/Core/Main.vala:2130 src/Core/Main.vala:2162
-#: src/Core/SnapshotRepo.vala:73 src/Core/SnapshotRepo.vala:592
-#: src/Core/SnapshotRepo.vala:595 src/Utility/Device.vala:1932
+#: src/Core/Main.vala:2263 src/Core/Main.vala:2295
+#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
 #: src/Utility/Device.vala:1942 src/Console/AppConsole.vala:456
 #: src/Console/AppConsole.vala:495 src/Console/AppConsole.vala:543
 #: src/Gtk/RestoreDeviceBox.vala:97
@@ -645,7 +652,7 @@ msgstr "התקן לא נעול"
 msgid "Device name is empty!"
 msgstr "שם התקן ריק!"
 
-#: src/Core/Main.vala:3264 src/Core/SnapshotRepo.vala:471
+#: src/Core/Main.vala:3405 src/Core/SnapshotRepo.vala:479
 #: src/Console/AppConsole.vala:665
 msgid "Device not found"
 msgstr "התקן לא נמצא"
@@ -666,18 +673,18 @@ msgstr "התקנים מהם נוצרו תמונות־החטף נבחרו מרא�
 
 #: src/Console/AppConsole.vala:327
 msgid "Devices with Linux file systems"
-msgstr "התקנים עם מערכת קבצים לינוקס."
+msgstr "התקנים בעלי מערכות קובצים לינוקס"
 
 #: src/Gtk/BackupDeviceBox.vala:105
 msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
 msgstr ""
 "התקנים עליהם מותקנת מערכת קבצים וינדוס (NTFS, FAT ודומיהם) לא נתמכים."
 
-#: src/Core/SnapshotRepo.vala:907
+#: src/Core/SnapshotRepo.vala:914
 msgid "Directory not found"
 msgstr "מחיצה לא נמצאה"
 
-#: src/Core/Main.vala:2222 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Core/Main.vala:2355 src/Gtk/RestoreSummaryBox.vala:64
 msgid "Disclaimer"
 msgstr "הַצְהָרַת אִי-אַחְרָיוּת"
 
@@ -685,7 +692,7 @@ msgstr "הַצְהָרַת אִי-אַחְרָיוּת"
 msgid "Disk"
 msgstr "כונן"
 
-#: src/Core/Main.vala:231
+#: src/Core/Main.vala:230
 msgid "Distribution"
 msgstr "הפצה"
 
@@ -739,11 +746,11 @@ msgstr "אומדן"
 
 #: src/Gtk/EstimateBox.vala:56
 msgid "Estimating System Size..."
-msgstr "אומדן דוגל מערכץ..."
+msgstr "אומדן גודל מערכת..."
 
-#: src/Core/Main.vala:1295
+#: src/Core/Main.vala:1428
 msgid "Estimating system size..."
-msgstr "אמידת גוד מערכת..."
+msgstr "אומדן גודל מערכת..."
 
 #: src/Console/AppConsole.vala:387
 msgid "Examples"
@@ -777,7 +784,7 @@ msgstr "דפוס החרגה"
 msgid "Excluded Directories"
 msgstr "מחיצות מוחרגות"
 
-#: src/Core/Main.vala:1583
+#: src/Core/Main.vala:1716
 msgid "Expected values: O, B, H, D, W, M"
 msgstr "ערכים מוחרגים: O, B, H, D, W, M"
 
@@ -794,19 +801,19 @@ msgstr "העתקת קובץ כשלה"
 msgid "Failed to create directory"
 msgstr "יצירת מחיצה כשלה"
 
-#: src/Core/Main.vala:1421
+#: src/Core/Main.vala:1554
 msgid "Failed to create new snapshot"
 msgstr "יצירת תמונת־חטף חדשה כשלה"
 
-#: src/Core/Main.vala:1276
+#: src/Core/Main.vala:1308
 msgid "Failed to create snapshot"
 msgstr "יצירת תמונת־חטף כשלה"
 
-#: src/Core/Main.vala:1511
+#: src/Core/Main.vala:1644
 msgid "Failed to create subvolume snapshot"
 msgstr "יצירת תמונת־חטף תת־כרך כשלה"
 
-#: src/Core/SnapshotRepo.vala:948
+#: src/Core/SnapshotRepo.vala:955
 msgid "Failed to create symlinks"
 msgstr "יצירת תמונת־חטף כשלה"
 
@@ -826,11 +833,11 @@ msgstr "מחיקת תמונת־חטף תת־כרך מקנן,  כשלה"
 msgid "Failed to delete snapshot subvolume"
 msgstr "מחיקת תמונת־חטף תת־כרך כשלה"
 
-#: src/Core/SnapshotRepo.vala:974
+#: src/Core/SnapshotRepo.vala:981
 msgid "Failed to delete symlinks"
 msgstr "מחיקת קישורים־סימליים כשלה"
 
-#: src/Core/Main.vala:3765 src/Core/Main.vala:3771
+#: src/Core/Main.vala:3906 src/Core/Main.vala:3912
 msgid "Failed to estimate system size"
 msgstr "אמדן גודל מערכת כשל"
 
@@ -848,7 +855,7 @@ msgstr "3 נסיונות לקבלת קלט משתמש, כשלו"
 msgid "Failed to get partition list"
 msgstr "יצירת רשימת מחיצות (partition) כשלה"
 
-#: src/Core/Main.vala:3347
+#: src/Core/Main.vala:3488
 msgid "Failed to get partition list."
 msgstr "יצירת רשימת מחיצות (partition) כשלה."
 
@@ -858,17 +865,17 @@ msgstr "התקנת קובץ crontab כשלה"
 
 #: src/Gtk/RestoreDeviceBox.vala:521
 msgid "Failed to mount devices"
-msgstr "עיגון התקנים כשל"
+msgstr "עגינת התקנים כשלה"
 
 #: src/Utility/TeeJee.FileSystem.vala:188
 msgid "Failed to move file"
 msgstr "העברת קובץ כשלה"
 
-#: src/Core/Main.vala:2983
+#: src/Core/Main.vala:3116
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr "העברת תת־כרך מערכת למחיצת תמונות־חטף כשלה"
 
-#: src/Core/Main.vala:3870
+#: src/Core/Main.vala:4011
 msgid "Failed to query subvolume list"
 msgstr "שאילתת רשימת תתי־כרך, כשלה"
 
@@ -880,7 +887,7 @@ msgstr "קריאת crontab כשלה"
 msgid "Failed to read file"
 msgstr "קריאת קובץ כשלה"
 
-#: src/Core/SnapshotRepo.vala:894
+#: src/Core/SnapshotRepo.vala:901
 msgid "Failed to remove"
 msgstr "הסרה כשלה"
 
@@ -897,7 +904,7 @@ msgstr "הסרת תמונת־חטף כשלה"
 msgid "Failed to restore system subvolume"
 msgstr "שחזור תת־כרך מערכת כשל"
 
-#: src/Core/Main.vala:1371
+#: src/Core/Main.vala:1504
 msgid "Failed to save exclude list"
 msgstr "שמירת רשימת החרגות כשלה"
 
@@ -905,15 +912,15 @@ msgstr "שמירת רשימת החרגות כשלה"
 #: src/Utility/Device.vala:1460 src/Utility/Device.vala:1481
 #: src/Utility/Device.vala:1501
 msgid "Failed to unlock device"
-msgstr "שחרור נעילת התקן כשל"
+msgstr "שחרור נעילת התקן כשלה"
 
 #: src/Utility/Device.vala:1733
 msgid "Failed to unmount"
-msgstr "ביטול עיגון כשל"
+msgstr "ביטול עגינה כשל"
 
-#: src/Core/Main.vala:3551
+#: src/Core/Main.vala:3692
 msgid "Failed to unmount device!"
-msgstr "ביטול עיגון התקן כשל!"
+msgstr "ביטול עגינת התקן כשל!"
 
 #: src/Utility/TeeJee.FileSystem.vala:153
 msgid "Failed to write file"
@@ -931,7 +938,7 @@ msgstr "קובץ (מערכת)"
 msgid "File Pattern"
 msgstr "דפוס קובץ"
 
-#: src/Gtk/BackupBox.vala:80
+#: src/Gtk/BackupBox.vala:83
 msgid "File and directory counts:"
 msgstr "סך־כל קבצים ומחיצות:"
 
@@ -980,17 +987,17 @@ msgstr "סיום"
 
 #: src/Gtk/RestoreWindow.vala:130 src/Gtk/SetupWizardWindow.vala:120
 msgid "Finished"
-msgstr ""
+msgstr "הפעולה הסתיימה"
 
 #: src/Gtk/RestoreExcludeBox.vala:78
 msgid "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 msgstr "פיירפוקס, כרומיום, כרום, אופרה, אפיפני, מידורי"
 
-#: src/Core/SnapshotRepo.vala:576
+#: src/Core/SnapshotRepo.vala:583
 msgid "First snapshot requires:"
-msgstr "לתמונת־חטף ראשונה נדרשים:"
+msgstr "דרישות לתמונת־חטף ראשונה:"
 
-#: src/Core/Main.vala:2916
+#: src/Core/Main.vala:3049
 msgid "Found existing pre-restore snapshot"
 msgstr "נמצאו תמונות־חטף קדם שחזור קיימות"
 
@@ -998,7 +1005,7 @@ msgstr "נמצאו תמונות־חטף קדם שחזור קיימות"
 msgid "Free"
 msgstr "פנוי"
 
-#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:144
+#: src/Core/SnapshotRepo.vala:75 src/Core/SnapshotRepo.vala:145
 msgid "Free space"
 msgstr "מקום פנוי"
 
@@ -1014,7 +1021,7 @@ msgstr "לא נבחר התקן GRUB"
 msgid "GRUB will NOT be reinstalled"
 msgstr "GRUB לא יותקן מחדש"
 
-#: src/Core/Main.vala:2364
+#: src/Core/Main.vala:2497
 msgid "Generating initramfs..."
 msgstr "חלול initramfs..."
 
@@ -1022,7 +1029,7 @@ msgstr "חלול initramfs..."
 msgid "Global"
 msgstr "כללי"
 
-#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:135
+#: src/Gtk/BackupBox.vala:100 src/Gtk/RestoreBox.vala:135
 #: src/Gtk/RsyncLogBox.vala:400
 #, c-format
 msgid "Group"
@@ -1064,11 +1071,11 @@ msgstr "מחיצת בית"
 msgid "Hourly"
 msgstr "שעתי"
 
-#: src/Core/Main.vala:1065
+#: src/Core/Main.vala:1064
 msgid "Hourly snapshot failed!"
 msgstr "תמונת־חטף שעתית כשלה!"
 
-#: src/Core/Main.vala:1046
+#: src/Core/Main.vala:1045
 msgid "Hourly snapshots are enabled"
 msgstr "תמונת־חטף שעתית מאופשרת"
 
@@ -1077,8 +1084,10 @@ msgid ""
 "If the restored system fails to boot, then boot from the Live CD/USB, "
 "install Timeshift, and try restoring another snapshot."
 msgstr ""
+"אם אתחול המערכת ששוחזרה כושל, נא לאתחל מ־'CD/USB חי', להתקין טיימשיפט ולנסות "
+"לשחזר תמונת־חטף אחרת."
 
-#: src/Core/Main.vala:2228
+#: src/Core/Main.vala:2361
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
@@ -1100,7 +1109,7 @@ msgstr "הכללת כל הקבצים"
 msgid "Include Only Hidden Files"
 msgstr "הכללת קבצים מוסתרים בלבד"
 
-#: src/Core/Main.vala:2042
+#: src/Core/Main.vala:2175
 msgid "Invalid Snapshot"
 msgstr "תמונת־חטף לא תקינה"
 
@@ -1127,12 +1136,16 @@ msgid ""
 "etc. If un-checked, previous configuration files will be restored from "
 "snapshot."
 msgstr ""
+"לשמר קבצי תצורה של לקוחות ביטורנט, כמו: דלוג', טרנסמישן ועוד. אם תיבת הסימון "
+"לא מסומנת, קבצי תצורה קודמים ישוחזרו מתמונת־החטף."
 
 #: src/Gtk/RestoreExcludeBox.vala:85
 msgid ""
 "Keep configuration files for web browsers like Firefox and Chrome. If un-"
 "checked, previous configuration files will be restored from snapshot"
 msgstr ""
+"לשמר קבצי תצורת דפדפנים כמו: פיירפוקס וכרום. אם תיבת הסימון לא מסומנת, קבצי "
+"תצורה קודמים ישוחזרו מתמונת־החטף"
 
 #: src/Gtk/RestoreDeviceBox.vala:244
 msgid "Keep on Root Device"
@@ -1152,77 +1165,77 @@ msgstr "'חי'"
 msgid "Label"
 msgstr "תוית"
 
-#: src/Core/Main.vala:1027
+#: src/Core/Main.vala:1026
 #, c-format
 msgid "Last boot snapshot is %d hours old"
 msgstr "תמונת־חטף שורש אחרונה היא בת %d שעות"
 
-#: src/Core/Main.vala:1022
+#: src/Core/Main.vala:1021
 msgid "Last boot snapshot is older than system start time"
 msgstr "תמונת־חטף שורש אחרונה קודמת למועד אתחול מערכת אחרון"
 
-#: src/Core/Main.vala:1018
+#: src/Core/Main.vala:1017
 msgid "Last boot snapshot not found"
-msgstr "לא נמצאה תמונת־חטף אתחול"
+msgstr "תמונת־חטף אתחול אחרונה לא נמצאה"
 
-#: src/Core/Main.vala:1089
+#: src/Core/Main.vala:1088
 #, c-format
 msgid "Last daily snapshot is %d hours old"
 msgstr "תמונת־חטף יומית אחרונה היא בת %d שעות"
 
-#: src/Core/Main.vala:1084
+#: src/Core/Main.vala:1083
 msgid "Last daily snapshot is more than 1 day old"
 msgstr "תמונת־חטף יומית אחרונה היא בת יותר מיום אחד"
 
-#: src/Core/Main.vala:1080
+#: src/Core/Main.vala:1079
 msgid "Last daily snapshot not found"
 msgstr "תמונת־חטף יומית אחרונה לא נמצאה"
 
-#: src/Core/Main.vala:1058
+#: src/Core/Main.vala:1057
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
 msgstr "תמונת־חטף שעתית אחרונה היא בת %d דקות"
 
-#: src/Core/Main.vala:1053
+#: src/Core/Main.vala:1052
 msgid "Last hourly snapshot is more than 1 hour old"
 msgstr "תמונת־חטף שעתית אחרונה היא בת יותר משעה אחת"
 
-#: src/Core/Main.vala:1049
+#: src/Core/Main.vala:1048
 msgid "Last hourly snapshot not found"
 msgstr "תמונת־חטף שעתית אחרונה לא נמצאה"
 
-#: src/Core/Main.vala:1151
+#: src/Core/Main.vala:1150
 #, c-format
 msgid "Last monthly snapshot is %d days old"
 msgstr "תמונת־חטף חודשית אחרונה היא בת %d ימים"
 
-#: src/Core/Main.vala:1146
+#: src/Core/Main.vala:1145
 msgid "Last monthly snapshot is more than 1 month old"
 msgstr "תמונת־חטף חודשית אחרונה היא בת יותר מחודש ימים"
 
-#: src/Core/Main.vala:1142
+#: src/Core/Main.vala:1141
 msgid "Last monthly snapshot not found"
-msgstr "לא נמצאה תמונת־חטף חודשית אחרונה"
+msgstr "תמונת־חטף חודשית אחרונה לא נמצאה"
 
-#: src/Core/Main.vala:1120
+#: src/Core/Main.vala:1119
 #, c-format
 msgid "Last weekly snapshot is %d days old"
 msgstr "תמונת־חטף שבועית אחרונה היא בת %d ימים"
 
-#: src/Core/Main.vala:1115
+#: src/Core/Main.vala:1114
 msgid "Last weekly snapshot is more than 1 week old"
 msgstr "תמונת־חטף שבועית אחרונה היא בת יותר משבוע ימים"
 
-#: src/Core/Main.vala:1111
+#: src/Core/Main.vala:1110
 msgid "Last weekly snapshot not found"
-msgstr "לא נמצאה תמונת־חטף שבועית אחרונה"
+msgstr "תמונת־חטף שבועית אחרונה לא נמצאה"
 
 #: src/Gtk/MainWindow.vala:1002
 #, c-format
 msgid "Latest snapshot"
 msgstr "תמונת־חטף אחרונה"
 
-#: src/Core/Main.vala:1360
+#: src/Core/Main.vala:1493
 #, c-format
 msgid "Linking from snapshot"
 msgstr "קישור מתמונת־החטף"
@@ -1256,7 +1269,7 @@ msgstr "חלון ראשי נסגר על־ידי משתמש"
 msgid "Mark/Unmark for Deletion"
 msgstr "סימון/הסרת סימון למחיקה"
 
-#: src/Core/SnapshotRepo.vala:621 src/Core/SnapshotRepo.vala:664
+#: src/Core/SnapshotRepo.vala:628 src/Core/SnapshotRepo.vala:671
 msgid "Maximum backups exceeded for backup level"
 msgstr "מספר גיבויים מירבי חרג מרמת הגיבוי"
 
@@ -1268,11 +1281,11 @@ msgstr "תפריט"
 msgid "Misc"
 msgstr "שונות"
 
-#: src/Core/Main.vala:240
+#: src/Core/Main.vala:239
 msgid "Missing Dependencies"
 msgstr "תלויות חסרות"
 
-#: src/Core/SnapshotRepo.vala:598
+#: src/Core/SnapshotRepo.vala:605
 #, c-format
 msgid "Mode"
 msgstr "מצב"
@@ -1286,19 +1299,19 @@ msgstr "דגם"
 msgid "Monthly"
 msgstr "חודשי"
 
-#: src/Core/Main.vala:1139
+#: src/Core/Main.vala:1138
 msgid "Monthly snapshot are enabled"
 msgstr "תמונת־חטף חודשית מאופשרת"
 
-#: src/Core/Main.vala:1158
+#: src/Core/Main.vala:1157
 msgid "Monthly snapshot failed!"
 msgstr "תמונת־חטף חודשית כשלה!"
 
-#: src/Core/Main.vala:2129 src/Core/Main.vala:2162
+#: src/Core/Main.vala:2262 src/Core/Main.vala:2295
 msgid "Mount"
-msgstr "עיגון"
+msgstr "עגינה"
 
-#: src/Core/Main.vala:2990
+#: src/Core/Main.vala:3123
 msgid "Moved system subvolume to snapshot directory"
 msgstr "העברת תת־כרך מערכת למחיצת תמונות־חטף"
 
@@ -1320,7 +1333,7 @@ msgstr "הבא"
 msgid "No"
 msgstr "לא"
 
-#: src/Gtk/BackupBox.vala:84 src/Gtk/RestoreBox.vala:122
+#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:122
 msgid "No Change"
 msgstr "ללא שינוי"
 
@@ -1332,7 +1345,7 @@ msgstr "לא נבחרה תמונת־חטף"
 msgid "No snapshots available"
 msgstr "אין תמונת־חטף זמינות"
 
-#: src/Core/SnapshotRepo.vala:823 src/Console/AppConsole.vala:321
+#: src/Core/SnapshotRepo.vala:830 src/Console/AppConsole.vala:321
 #: src/Gtk/MainWindow.vala:970
 msgid "No snapshots found"
 msgstr "לא נמצאו תמונות־חטף"
@@ -1345,7 +1358,7 @@ msgstr "לא נמצאו תמונות־חטף בהתקן"
 msgid "No snapshots on device"
 msgstr "אין תמונות־חטף בהתקן"
 
-#: src/Core/SnapshotRepo.vala:574
+#: src/Core/SnapshotRepo.vala:581
 msgid "No snapshots on this device"
 msgstr "אין תמונות־חטף בהתקן זה"
 
@@ -1362,15 +1375,15 @@ msgstr "ללא"
 msgid "Not Found"
 msgstr "לא נמצא"
 
-#: src/Core/SnapshotRepo.vala:592
+#: src/Core/SnapshotRepo.vala:599
 msgid "Not Selected"
 msgstr "לא נבחר"
 
-#: src/Core/Main.vala:385
+#: src/Core/Main.vala:384
 msgid "Not Supported"
 msgstr "‏לא נתמך"
 
-#: src/Core/SnapshotRepo.vala:538 src/Core/SnapshotRepo.vala:565
+#: src/Core/SnapshotRepo.vala:543 src/Core/SnapshotRepo.vala:572
 msgid "Not enough disk space"
 msgstr "אין די מקום בכונן"
 
@@ -1378,7 +1391,7 @@ msgstr "אין די מקום בכונן"
 msgid "Notes"
 msgstr "הערות"
 
-#: src/Core/Main.vala:1169
+#: src/Core/Main.vala:1168
 msgid "Nothing to do!"
 msgstr "אין מה לעשות!"
 
@@ -1393,9 +1406,9 @@ msgid ""
 "Older snapshots will be removed once this limit is exceeded."
 msgstr ""
 "מספר תמונות־החטף שישמרו.\n"
-"בעת חריגה ממגבלה זו, תנונות־חטף ישנות יותר יוסרו."
+"עם חריגה ממגבלה זו, תמונות־חטף ישנות יותר יוסרו."
 
-#: src/Core/SnapshotRepo.vala:548 src/Utility/Gtk/CustomMessageDialog.vala:147
+#: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:147
 #: src/Utility/Gtk/CustomMessageDialog.vala:151 src/Utility/GtkHelper.vala:108
 #: src/Gtk/SettingsWindow.vala:123 src/Gtk/ExcludeListSummaryWindow.vala:84
 msgid "OK"
@@ -1406,8 +1419,10 @@ msgid ""
 "OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout "
 "(@ and @home subvolumes). Other layouts are not supported."
 msgstr ""
+"מערכת ההפעלה חייבת להיות מותקנת על מחיצת BTRFS עם פריסת תת־כרך מסוג אובונטו "
+"(@ ותתי־כרך home@). פריסות אחרות לא נתמכות."
 
-#: src/Core/Main.vala:4016
+#: src/Core/Main.vala:4157
 msgid "Older log files removed"
 msgstr "קובצי יומן ישנים יותר, הוסרו"
 
@@ -1419,21 +1434,21 @@ msgstr "תמונות־חטף ישנות יותר"
 msgid "On demand (manual)"
 msgstr "על־פי דרישה (ידני)"
 
-#: src/Core/Main.vala:383 src/Core/Main.vala:3464
+#: src/Core/Main.vala:382 src/Core/Main.vala:3605
 #: src/Gtk/RestoreDeviceBox.vala:511
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
-msgstr ""
+msgstr "כרגע נתמכות רק פריסות מסוג אובונטו עם תתי־כרך @ ו־@home."
 
 #: src/Gtk/MainWindow.vala:208
 msgid "Open Menu"
 msgstr "פתיחת תפריט"
 
-#: src/Core/Main.vala:3246
+#: src/Core/Main.vala:3387
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
-msgstr ""
+msgstr "אין לציין אפשרות --snapshot-device ליצירת תמונות במצב BTRFS"
 
 #: src/Console/AppConsole.vala:351 src/Gtk/AppGtk.vala:115
 msgid "Options"
@@ -1443,7 +1458,7 @@ msgstr "אפשרויות"
 msgid "Other applications (next page)"
 msgstr "יישומונים אחרים (העמוד הבא)"
 
-#: src/Gtk/BackupBox.vala:96 src/Gtk/RestoreBox.vala:134
+#: src/Gtk/BackupBox.vala:99 src/Gtk/RestoreBox.vala:134
 #: src/Gtk/RsyncLogBox.vala:398
 #, c-format
 msgid "Owner"
@@ -1454,7 +1469,7 @@ msgstr "בעלים"
 msgid "Parent Device"
 msgstr "התקן הורה"
 
-#: src/Core/Main.vala:2493 src/Core/Main.vala:2584 src/Gtk/RsyncLogBox.vala:222
+#: src/Core/Main.vala:2626 src/Core/Main.vala:2717 src/Gtk/RsyncLogBox.vala:222
 msgid "Parsing log file..."
 msgstr "ניתוח קובץ יומן..."
 
@@ -1462,7 +1477,7 @@ msgstr "ניתוח קובץ יומן..."
 msgid "Partition has an unsupported subvolume layout."
 msgstr "קיים במחיצה (Partition) תסדיר תת־כרך שאינו נתמך."
 
-#: src/Core/SnapshotRepo.vala:597 src/Gtk/RestoreDeviceBox.vala:93
+#: src/Core/SnapshotRepo.vala:604 src/Gtk/RestoreDeviceBox.vala:93
 #, c-format
 msgid "Path"
 msgstr "נתיב"
@@ -1471,23 +1486,23 @@ msgstr "נתיב"
 msgid "Pattern"
 msgstr "דפוס"
 
-#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:133
+#: src/Gtk/BackupBox.vala:98 src/Gtk/RestoreBox.vala:133
 #: src/Gtk/RsyncLogBox.vala:396
 #, c-format
 msgid "Permissions"
 msgstr "הרשאות"
 
-#: src/Core/Main.vala:259
+#: src/Core/Main.vala:258
 msgid "Please check if you have multiple windows open."
 msgstr "נא לבדוק האם נפתחו חלונות מרובים."
 
-#: src/Core/Main.vala:2260
+#: src/Core/Main.vala:2393
 msgid "Please do not interrupt the restore process!"
 msgstr "נא לא להפסיק את תהליף השיחזור!"
 
-#: src/Core/Main.vala:354
+#: src/Core/Main.vala:353
 msgid "Please install required packages and try running TimeShift again"
-msgstr "נא להתקן חבילות נדרשות ולנסות להפעיל את טיימשיפט שוב"
+msgstr "נא להתקין חבילות נדרשות ולנסות להפעיל את טיימשיפט שוב"
 
 #: src/Gtk/AppGtk.vala:129
 msgid "Please re-run the application as admin (using 'sudo' or 'su')"
@@ -1497,7 +1512,7 @@ msgstr "נא להפעיל את היישומון מחדש כמנהלן (שימו�
 msgid "Please run the application as admin (using 'sudo' or 'su')"
 msgstr "נא להפעיל את היישומון כמנהלן (שימוש בפקודה'sudo' או 'su')"
 
-#: src/Core/Main.vala:2210
+#: src/Core/Main.vala:2343
 msgid "Please save your work and close all applications."
 msgstr "נא לשמור את העבודה שבוצעה ולסגור את כל היישומונים."
 
@@ -1509,7 +1524,7 @@ msgstr "להצגת היומן, נא לבחור תמונת־חטף!"
 msgid "Please select the GRUB device"
 msgstr "נא לבחור בהתקן GRUB"
 
-#: src/Core/Main.vala:255
+#: src/Core/Main.vala:254
 msgid "Please wait a few minutes and try again."
 msgstr "נא להמתין מספר דקות ולנסות שוב."
 
@@ -1525,7 +1540,7 @@ msgstr "נא להמתין…"
 msgid "Populating list..."
 msgstr "אכלוס רשימה מתבצע..."
 
-#: src/Core/Main.vala:1595 src/Gtk/BackupBox.vala:114
+#: src/Core/Main.vala:1728 src/Gtk/BackupBox.vala:117
 #: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
 #: src/Gtk/RsyncLogBox.vala:232
 msgid "Preparing..."
@@ -1540,13 +1555,13 @@ msgstr "הקודם"
 msgid "Print debug information"
 msgstr "הדפסת מידע ניפוי תקלים"
 
-#: src/Core/Main.vala:3826
+#: src/Core/Main.vala:3967
 msgid "Query completed"
 msgstr "שאילתה הושלמה"
 
-#: src/Core/Main.vala:3809
+#: src/Core/Main.vala:3950
 msgid "Querying subvolume info..."
-msgstr "ביצוע שאילתת מידע תת־כרך"
+msgstr "מתבצעת שאילתת מידע תת־כרך..."
 
 #: src/Gtk/SnapshotBackendBox.vala:77
 msgid "RSYNC"
@@ -1561,13 +1576,15 @@ msgid ""
 "Re-generates initramfs for all installed kernels. This is generally not "
 "needed. Select this only if the restored system fails to boot."
 msgstr ""
+"יצירת initramfs מחדש בכול הליבות המותקנות. זה בדרך כלל לא נחוץ. נא לבחור "
+"באפשרות זו רק אם המערכת ששוחזרה כושלת לאתחל."
 
 #: src/Console/AppConsole.vala:984
 #, c-format
 msgid "Re-install GRUB2 bootloader?"
 msgstr "להתקין מנהל אתחול GRUB2 מחדש?"
 
-#: src/Core/Main.vala:2323
+#: src/Core/Main.vala:2456
 msgid "Re-installing GRUB2 bootloader..."
 msgstr "התקנת מנהל אתחול GRUB2 מחדש..."
 
@@ -1580,7 +1597,7 @@ msgstr "התקנת מנהל אתחול GRUB2 מחדש, על גבי ההתקן ש
 msgid "Read %'d of %'d lines..."
 msgstr "קריאת %'d מתוך %'d שורות..."
 
-#: src/Core/Main.vala:2423
+#: src/Core/Main.vala:2556
 msgid "Rebooting system..."
 msgstr "ביצוע אתחול מערכת..."
 
@@ -1601,17 +1618,17 @@ msgstr "אתרים מרוחקים ומיקומי רשת לא נתמכים."
 msgid "Remove"
 msgstr "הסרה"
 
-#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1633 src/Core/Main.vala:1644
-#: src/Core/Main.vala:4012 src/Core/SnapshotRepo.vala:900
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1766 src/Core/Main.vala:1777
+#: src/Core/Main.vala:4153 src/Core/SnapshotRepo.vala:907
 #, c-format
 msgid "Removed"
-msgstr ""
+msgstr "תמונת־חטף הוסרה"
 
 #: src/Utility/CronTab.vala:340
 msgid "Removed cron task"
 msgstr "משימת cron הוסרה"
 
-#: src/Core/Main.vala:3614
+#: src/Core/Main.vala:3755
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr "הוסרה מחיצה מעוגנת: '%s'"
@@ -1628,8 +1645,8 @@ msgstr "מתבצעת הסרה"
 msgid "Removing snapshot"
 msgstr "מתבצעת הסרת תמונת־חטף"
 
-#: src/Core/SnapshotRepo.vala:756 src/Core/SnapshotRepo.vala:775
-#: src/Core/SnapshotRepo.vala:793 src/Core/SnapshotRepo.vala:807
+#: src/Core/SnapshotRepo.vala:763 src/Core/SnapshotRepo.vala:782
+#: src/Core/SnapshotRepo.vala:800 src/Core/SnapshotRepo.vala:814
 #, c-format
 msgid "Removing snapshots"
 msgstr "מתבצעת הסרת תמונות־חטף"
@@ -1656,7 +1673,7 @@ msgstr "שחזור החרגות"
 msgid "Restore Snapshot"
 msgstr "שחזור תמונת־חטף"
 
-#: src/Core/Main.vala:2833 src/Core/Main.vala:2875
+#: src/Core/Main.vala:2966 src/Core/Main.vala:3008
 msgid "Restore completed"
 msgstr "שחזור הסתיים"
 
@@ -1686,8 +1703,11 @@ msgid ""
 "currently in use will be preserved as a new snapshot. If required, this "
 "snapshot can be restored later to 'undo' the restore."
 msgstr ""
+"שחזור תמונת־חטף תחליף תתי-כרך במערכת, ותתי-כרך מערכת שכעת בשימוש  יישמרו "
+"כתמונת־חטף חדשה. במידת הצורך, ניתן יהיה לשחזר תמונת־חטף זו מאוחר יותר כדי "
+"'לבטל' את השחזור."
 
-#: src/Core/Main.vala:2802
+#: src/Core/Main.vala:2935
 msgid "Restoring snapshot..."
 msgstr "שחזור תמונת־חטף מתבצע..."
 
@@ -1699,6 +1719,10 @@ msgid ""
 "files will be backed up when snapshot is created, and replaced when snapshot "
 "is restored."
 msgstr ""
+"שחזור תמונות־חטף יחליפו רק קבצי מערכת והגדרות. קבצים ומחיצות במחיצות ה'בית' "
+"של המשתמש, שאינם מוסתרים, לא יושפעו. ניתן לשנות התנהגות זו על ידי הוספת מסנן "
+"שיכלול קבצים אלה. הקבצים השיכללו, יגובו כאשר תמונת־החטף נוצרת, ויוחלפו בעת "
+"שחזור תמונת־מצב."
 
 #: src/Utility/Device.vala:1936
 #, c-format
@@ -1716,13 +1740,13 @@ msgstr "משקף יומן Rsync"
 #: src/Gtk/AppGtk.vala:120
 #, c-format
 msgid "Run 'timeshift' for the command-line version of this tool"
-msgstr ""
+msgstr "נא להריץ פקודת 'timeshift' לקבלת גרסת שורת־פקודה לכלי זה"
 
 #: src/Console/AppConsole.vala:383
 msgid "Run in non-interactive mode"
-msgstr ""
+msgstr "הפעלה באופן לא הידודי"
 
-#: src/Core/Main.vala:191
+#: src/Core/Main.vala:190
 msgid "Running"
 msgstr "בפעולה"
 
@@ -1731,6 +1755,7 @@ msgid ""
 "Save snapshots to an external disk instead of the system disk to guard "
 "against drive failures."
 msgstr ""
+"שמירת תמונות־חטף לכונן חיצוני במקום לכונן המערכת, להתגוננות מפני כשלי כונן."
 
 #: src/Gtk/FinishBox.vala:97
 msgid ""
@@ -1739,8 +1764,11 @@ msgid ""
 "even install another Linux distribution and later roll-back the previous "
 "distribution by restoring a snapshot."
 msgstr ""
+"שמירת תמונות־חטף בכונן שאינו כונן מערכת מאפשרת לתבנת ולהתקין מחדש את מערכת "
+"ההפעלה בכונן המערכת מבלי לאבד תמונות־חטף שמאוחסנות בו. נתין גם להתקין הפצת "
+"לינוקס אחרת ובהמשך להסיג את ההפצה הקודמת על ידי שחזור תמונת־חטף."
 
-#: src/Core/Main.vala:1301 src/Core/Main.vala:1455 src/Core/Main.vala:1457
+#: src/Core/Main.vala:1434 src/Core/Main.vala:1588 src/Core/Main.vala:1590
 msgid "Saving to device"
 msgstr "שמירה להתקן"
 
@@ -1748,11 +1776,11 @@ msgstr "שמירה להתקן"
 msgid "Schedule"
 msgstr "זמנן"
 
-#: src/Core/Main.vala:262
+#: src/Core/Main.vala:261
 msgid "Scheduled snapshot in progress..."
 msgstr "תמונת־חטף מתוזמנת ביצירה..."
 
-#: src/Core/Main.vala:1169 src/Gtk/MainWindow.vala:1020
+#: src/Core/Main.vala:1168 src/Gtk/MainWindow.vala:1020
 #: src/Gtk/ScheduleBox.vala:312
 msgid "Scheduled snapshots are disabled"
 msgstr "תמונות־חטף מתוזמנות מושבתות"
@@ -1770,15 +1798,16 @@ msgid ""
 "Scheduled snapshots are enabled. Snapshots will be created automatically for "
 "selected levels."
 msgstr ""
+"תמונות־חטף מתוזמנות מאופשרות. תמונות־חטף יווצרו באופן אוטומטי לרמות שנבחרו."
 
 #: src/Console/AppConsole.vala:872
 #, c-format
 msgid "Select '%s' device (default = %s)"
-msgstr ""
+msgstr "נא לבחור התקן '%s' (בררת מחדל = %s)"
 
-#: src/Core/SnapshotRepo.vala:502 src/Console/AppConsole.vala:691
+#: src/Core/SnapshotRepo.vala:510 src/Console/AppConsole.vala:691
 msgid "Select BTRFS system disk with root subvolume (@)"
-msgstr ""
+msgstr "נא לבחור מערכת קבצים BTRFS עם תת־כרך שורש  (@)"
 
 #: src/Console/AppConsole.vala:1000
 msgid "Select GRUB device"
@@ -1819,19 +1848,19 @@ msgstr "בחירת תמונת־חטף בודדת לשיחזור"
 
 #: src/Gtk/RestoreDeviceBox.vala:467
 msgid "Select another device for root file system (/)"
-msgstr ""
+msgstr "נא לבחור התקן אחר למערכת קובצי שורש  (/)"
 
-#: src/Core/SnapshotRepo.vala:541 src/Core/SnapshotRepo.vala:568
+#: src/Core/SnapshotRepo.vala:546 src/Core/SnapshotRepo.vala:575
 msgid "Select another device or free up some space"
-msgstr ""
+msgstr "נא לבחור בהתקן אחר או לפנות מקום נוסף בכונן"
 
 #: src/Gtk/MainWindow.vala:531 src/Gtk/MainWindow.vala:538
 msgid "Select another device to delete snasphots"
-msgstr ""
+msgstr "נא לבחור בהתקן אחר למחיקת תמונות־חטף"
 
 #: src/Gtk/MainWindow.vala:463
 msgid "Select another device?"
-msgstr ""
+msgstr "לבחור בהתקן אחר?"
 
 #: src/Gtk/RestoreExcludeBox.vala:57
 msgid "Select applications to exclude from restore"
@@ -1839,7 +1868,7 @@ msgstr "בחירת יישומונים להחרגה משחזור"
 
 #: src/Console/AppConsole.vala:674
 msgid "Select backup device"
-msgstr ""
+msgstr "נא לבחור בהתקן גיבוי"
 
 #: src/Gtk/ExcludeBox.vala:443
 msgid "Select directory"
@@ -1847,59 +1876,59 @@ msgstr "בחירת מחיצה"
 
 #: src/Gtk/ExcludeBox.vala:416
 msgid "Select file(s)"
-msgstr ""
+msgstr "נא לבחור קובץ(ים)"
 
 #: src/Console/AppConsole.vala:748
 msgid "Select snapshot"
-msgstr ""
+msgstr "נא לבחור תמונות־חטף"
 
 #: src/Gtk/DeleteWindow.vala:336
 msgid "Select snapshots to delete"
-msgstr ""
+msgstr "נא לבחור תמונות־חטף למחיקה"
 
 #: src/Gtk/RestoreDeviceBox.vala:439
 msgid "Select the device for root file system (/)"
-msgstr ""
+msgstr "נא לבחור כונן עבור מערכת קבצים שורש (/)"
 
 #: src/Gtk/RestoreDeviceBox.vala:83
 msgid "Select the devices where files will be restored."
-msgstr ""
+msgstr "נא לבחור כונן ממנו ישוחזרו קבצים."
 
 #: src/Gtk/ScheduleBox.vala:313
 msgid "Select the intervals for creating snapshots"
-msgstr ""
+msgstr "בחירת מרווח זמן ליצירת תמונות־חטף"
 
 #: src/Gtk/ExcludeBox.vala:283
 msgid "Select the items to be removed from the list"
-msgstr ""
+msgstr "נא לבחור את הפריטים שיוסרו מהרשימה"
 
-#: src/Core/SnapshotRepo.vala:464
+#: src/Core/SnapshotRepo.vala:472
 msgid "Select the snapshot device"
-msgstr ""
+msgstr "נא לבחור את התקן תמונת־החטף"
 
 #: src/Gtk/MainWindow.vala:784
 msgid "Select the snapshot to restore"
-msgstr ""
+msgstr "נא לבחור את תמונת־החטף לשחזור"
 
 #: src/Gtk/DeleteWindow.vala:87
 msgid "Select the snapshots to be deleted"
-msgstr ""
+msgstr "נא לבחור את תמונות־החטף למחיקה"
 
 #: src/Gtk/MainWindow.vala:600
 msgid "Select the snapshots to mark for deletion"
-msgstr ""
+msgstr "נא לבחור את תמונות־החטף לסימון למחיקה"
 
 #: src/Gtk/RestoreDeviceBox.vala:79
 msgid "Select the target devices where system will be cloned."
-msgstr ""
+msgstr "בחירת התקן יעד עליו תשוחזר המערכת."
 
-#: src/Core/Main.vala:3274
+#: src/Core/Main.vala:3415
 msgid "Selected default snapshot device"
-msgstr ""
+msgstr "נא לבחור התקן תמונת־החטף ברירת מחדל"
 
-#: src/Core/Main.vala:3225 src/Core/Main.vala:3229
+#: src/Core/Main.vala:3366 src/Core/Main.vala:3370
 msgid "Selected default snapshot type"
-msgstr ""
+msgstr "נא לבחור סוג תמונת־החטף ברירת מחדל"
 
 #: src/Gtk/BackupDeviceBox.vala:388
 msgid "Selected device does not have BTRFS partition"
@@ -1909,21 +1938,21 @@ msgstr "אין מחיצת BTRFS בהתקן שנבחר"
 msgid "Selected device does not have Linux partition"
 msgstr "אין מחיצת לינוקס בהתקן שנבחר"
 
-#: src/Core/SnapshotRepo.vala:143
+#: src/Core/SnapshotRepo.vala:144
 msgid "Selected snapshot device"
-msgstr ""
+msgstr "נא לבחור התקן תמונת־חטף"
 
-#: src/Core/SnapshotRepo.vala:501 src/Console/AppConsole.vala:690
+#: src/Core/SnapshotRepo.vala:509 src/Console/AppConsole.vala:690
 msgid "Selected snapshot device is not a system disk"
-msgstr ""
+msgstr "התקן תמונת־חטף שנבחר אינו כונן מערכת"
 
-#: src/Core/Main.vala:2043
+#: src/Core/Main.vala:2176
 msgid "Selected snapshot is marked for deletion"
 msgstr "תמונת־חטף שנבחרה, מסומנת למחיקה"
 
 #: src/Gtk/MainWindow.vala:815
 msgid "Selected snapshot is marked for deletion and cannot be restored"
-msgstr ""
+msgstr "תמונת־החטף שנבחרה מסומנת למחיקה ולא ניתנת לשחזור"
 
 #: src/Gtk/UsersBox.vala:235
 msgid ""
@@ -1935,40 +1964,40 @@ msgstr ""
 #: src/Utility/Device.vala:1935
 #, c-format
 msgid "Serial"
-msgstr ""
+msgstr "טורי"
 
-#: src/Core/Main.vala:219
+#: src/Core/Main.vala:218
 msgid "Session log file"
-msgstr ""
+msgstr "קובץ יומן שיח"
 
 #: src/Console/AppConsole.vala:360
 msgid "Set snapshot description"
-msgstr ""
+msgstr "הוספת תיאור לתמונת־חטף"
 
 #: src/Gtk/MainWindow.vala:180 src/Gtk/MainWindow.vala:181
 #: src/Gtk/SettingsWindow.vala:56
 msgid "Settings"
-msgstr ""
+msgstr "הגדרות"
 
 #: src/Gtk/MainWindow.vala:191
 msgid "Settings wizard"
-msgstr ""
+msgstr "אשף הגדרות"
 
 #: src/Gtk/FinishBox.vala:58
 msgid "Setup Complete"
-msgstr ""
+msgstr "הגדרה הושלמה"
 
 #: src/Gtk/SetupWizardWindow.vala:64
 msgid "Setup Wizard"
-msgstr ""
+msgstr "אשף הגדרות"
 
 #: src/Console/AppConsole.vala:380
 msgid "Show additional debug messages"
-msgstr ""
+msgstr "הצגת הודעות ניפוי־תקלים נוספות"
 
 #: src/Console/AppConsole.vala:384 src/Gtk/AppGtk.vala:118
 msgid "Show all options"
-msgstr ""
+msgstr "הצגת כל האפשרויות"
 
 #: src/Gtk/RestoreExcludeBox.vala:121
 msgid "Show more applications to exclude on the next page"
@@ -1976,15 +2005,15 @@ msgstr "הצגת יישומונים נוספים להחרגה, בעמוד הבא
 
 #: src/Console/AppConsole.vala:381
 msgid "Show rsync output (default)"
-msgstr ""
+msgstr "הצגת פלט rsync (בררת מחדל)"
 
 #: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
 #: src/Console/AppConsole.vala:458 src/Console/AppConsole.vala:497
-#: src/Gtk/BackupBox.vala:93 src/Gtk/BackupDeviceBox.vala:202
+#: src/Gtk/BackupBox.vala:96 src/Gtk/BackupDeviceBox.vala:202
 #: src/Gtk/RestoreBox.vala:131 src/Gtk/RsyncLogBox.vala:392
 #, c-format
 msgid "Size"
-msgstr ""
+msgstr "גודל"
 
 #: src/Gtk/SnapshotBackendBox.vala:178
 msgid ""
@@ -1993,16 +2022,19 @@ msgid ""
 "(copy-on-write). Files in the snapshot continue to point to original data "
 "blocks."
 msgstr ""
+"תחילה, גודל תמונות־חטף BTRFS הוא אפס. ככול שקובצי מערכת משתנים בהדרגה עם "
+"הזמן, הנתונים נכתבים לגושי נתונים חדשים שתופסים מקום בכונן "
+"(העתקה־בעת־כתיבה). קבצים בתמונת־חטף ימשיכו להצביע על גושי נתונים מקוריים."
 
 #: src/Console/AppConsole.vala:369
 msgid "Skip GRUB2 reinstall"
-msgstr ""
+msgstr "דלוג על התקנה חוזרת של GRUB2"
 
-#: src/Core/Main.vala:2048 src/Core/SnapshotRepo.vala:624
-#: src/Core/SnapshotRepo.vala:677 src/Gtk/SnapshotListBox.vala:93
+#: src/Core/Main.vala:2181 src/Core/SnapshotRepo.vala:631
+#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:93
 #, c-format
 msgid "Snapshot"
-msgstr ""
+msgstr "תמונת־חטף"
 
 #: src/Gtk/MainWindow.vala:548
 #, c-format
@@ -2010,85 +2042,92 @@ msgid ""
 "Snapshot '%s' is being used by the system and cannot be deleted. Restart the "
 "system to activate the restored snapshot."
 msgstr ""
+"תמונת־חטף '%s' נמצאת בשימוש על ידי המערכת ולא ניתן למחוק אותה. נא לאתחל את "
+"המערכת כדי להפעיל את תמונת־חטף ששוחזרה."
 
 #: src/Gtk/BackupFinishBox.vala:60
 msgid "Snapshot Created"
-msgstr ""
+msgstr "תמונת־חטף נוצרה"
 
 #: src/Gtk/SnapshotListBox.vala:244
 #, c-format
 msgid "Snapshot Levels"
-msgstr ""
+msgstr "רמות תמונת־חטף"
 
 #: src/Gtk/MainWindow.vala:751
 msgid "Snapshot deletion in progress..."
-msgstr ""
+msgstr "מחיקת תמונת־חטף מתבצעת..."
 
-#: src/Core/SnapshotRepo.vala:435
+#: src/Core/SnapshotRepo.vala:442
 #, c-format
 msgid "Snapshot device"
-msgstr ""
+msgstr "התקן תמונת־חטף"
 
-#: src/Core/SnapshotRepo.vala:470 src/Console/AppConsole.vala:664
+#: src/Core/SnapshotRepo.vala:478 src/Console/AppConsole.vala:664
 msgid "Snapshot device not available"
-msgstr ""
+msgstr "התקן תמונת־חטף לא זמין"
 
-#: src/Core/SnapshotRepo.vala:463 src/Console/AppConsole.vala:660
+#: src/Core/SnapshotRepo.vala:471 src/Console/AppConsole.vala:660
 msgid "Snapshot device not selected"
-msgstr ""
+msgstr "לא נבחר התקן תמונת־חטף"
 
-#: src/Core/SnapshotRepo.vala:439
+#: src/Core/SnapshotRepo.vala:446
 #, c-format
 msgid "Snapshot location"
-msgstr ""
+msgstr "מיקום תמונת־חטף"
 
-#: src/Core/Main.vala:1273
+#: src/Core/Main.vala:1305
 msgid "Snapshot saved successfully"
-msgstr ""
+msgstr "תמונת־חטף נשמרה בהצלחה"
 
-#: src/Core/Main.vala:2038
+#: src/Core/Main.vala:2171
 msgid "Snapshot to restore not specified!"
-msgstr ""
+msgstr "לא צוינה תמונת־חטף לשחזור!"
 
-#: src/Core/Main.vala:2879
+#: src/Core/Main.vala:3012
 msgid "Snapshot will become active after system is rebooted."
-msgstr ""
+msgstr "תמונת־חטף תהפוך לפעילה לאחר אתחול מערכת מחדש."
 
 #: src/Gtk/DeleteFinishBox.vala:60
 msgid "Snapshot(s) Deleted"
-msgstr ""
+msgstr "תמונות־חטף נמחקו"
 
 #: src/Gtk/MainWindow.vala:309 src/Gtk/DeleteWindow.vala:89
 msgid "Snapshots"
-msgstr ""
+msgstr "תמונות־חטף"
 
 #: src/Gtk/SnapshotBackendBox.vala:170
 msgid ""
 "Snapshots are created and restored instantly. Snapshot creation is an atomic "
 "transaction at the file system level."
 msgstr ""
+"תמונות־חטף מצב נוצרות ומשוחזרות באופן מיידי. יצירת תמונת־חטף היא פעולה עקבית "
+"(אטומית) ברמת מערכת הקבצים."
 
 #: src/Gtk/SnapshotBackendBox.vala:187
 msgid ""
 "Snapshots are created by creating copies of system files using rsync, and "
 "hard-linking unchanged files from previous snapshot."
 msgstr ""
+"אופן יצירת תמונות־חטף היא על ידי יצירת עותקים של קבצי מערכת באמצעות rsync, "
+"וקישור קשיח של קבצים ללא שינוי מאז תמונות־חטף קודמת."
 
 #: src/Gtk/SnapshotBackendBox.vala:168
 msgid ""
 "Snapshots are created using the built-in features of the BTRFS file system."
-msgstr ""
+msgstr "תמונות־חטף נוצרות באמצעות התכונות המובנות של מערכת הקבצים BTRFS."
 
 #: src/Gtk/ScheduleBox.vala:167
 #, c-format
 msgid "Snapshots are not scheduled at fixed times."
-msgstr ""
+msgstr "תמונות־חטף לא תוזמנו בזמנים קבועים."
 
 #: src/Gtk/SnapshotBackendBox.vala:174
 msgid ""
 "Snapshots are perfect, byte-for-byte copies of the system. Nothing is "
 "excluded."
 msgstr ""
+"תמונות־חטף הן עותקים מושלמים, בתים-עבור-בתים של המערכת. כלום לא מוחרג."
 
 #: src/Gtk/SnapshotBackendBox.vala:172
 msgid ""
@@ -2096,6 +2135,9 @@ msgid ""
 "copied, deleted or overwritten, there is no risk of data loss. The existing "
 "system is preserved as a new snapshot after restore."
 msgstr ""
+"תמונות־חטף משוחזרות על ידי החלפת תתי־כרך במערכת. מכיוון שקבצים לעולם אינם "
+"מועתקים, נמחקים או נרמסים, אין סיכון לאובדן נתונים. המערכת הקיימת משתמרת "
+"כתמונות־חטף חדשה לאחר השחזור."
 
 #: src/Gtk/SnapshotBackendBox.vala:176
 msgid ""
@@ -2103,6 +2145,9 @@ msgid ""
 "disk). Storage on other disks is not supported. If system disk fails then "
 "snapshots stored on it will be lost along with the system."
 msgstr ""
+"תמונות־חטף נשמרות על גבי אותו כונן ממנו הן נוצרות (כונן מערכת). אחסון "
+"בכוננים אחרים לא נתמך. במידה שכונן המערכת כושל, תמונות־החטף שאוכסנו בו, "
+"יאבדו יחד עם המערכת."
 
 #: src/Gtk/BackupDeviceBox.vala:107
 msgid ""
@@ -2119,7 +2164,7 @@ msgstr "תמונות־חטף נשמרות ל־timeshift-btrfs/. מקומים א�
 
 #: src/Gtk/MainWindow.vala:965
 msgid "Snapshots available for restore"
-msgstr ""
+msgstr "תמונות־חטף זמינות לשיחזור"
 
 #: src/Gtk/SnapshotBackendBox.vala:191
 msgid ""
@@ -2127,140 +2172,147 @@ msgid ""
 "Saving snapshots to non-system or external disk allows the system to be "
 "restored even if system disk is damaged or re-formatted."
 msgstr ""
+"ניתן לשמור תמונות־חטף בכל כונן שתובנת עם מערכת קובצי לינוקס. שמירת "
+"תמונות־חטף בכונן שאינו כונן מערכת, או, כונן חיצוני, יאפשרו לשחזר את המערכת "
+"גם אם כונן המערכת פגום או תובנת מחדש."
 
 #: src/Console/AppConsole.vala:284
 msgid "Snapshots cannot be created in Live CD mode"
-msgstr ""
+msgstr "לא ניתן לייצר תמונות־חטף במצב תקליטור 'חי' (Live CD)"
 
 #: src/Gtk/MainWindow.vala:1012
 msgid "Snapshots will be created at selected intervals"
-msgstr ""
+msgstr "תמונות־חטף יווצרו במרווחי־זמן שנבחרו"
 
 #: src/Gtk/ScheduleBox.vala:306
 msgid ""
 "Snapshots will be created at selected intervals if snapshot disk has enough "
 "space (> 1 GB)"
 msgstr ""
+"תמונות־חטף יווצרו במרווחי־זמן שנבחרו ככל שהמקום הפנוי בכונן תמונת־החטף מספק "
+"(> 1 ג'\"ב)"
 
 #: src/Console/AppConsole.vala:376
 msgid "Specify backup device (default: config)"
-msgstr ""
+msgstr "נא לציין התקן גיבוי  (בררת־מחדל: config)"
 
 #: src/Console/AppConsole.vala:368
 msgid "Specify device for installing GRUB2 bootloader"
-msgstr ""
+msgstr "נא לציין התקן להתקנת מנהל אתחול GRUB2"
 
 #: src/Console/AppConsole.vala:366
 msgid "Specify snapshot to restore"
-msgstr ""
+msgstr "נא לציין תמונת־חטף לשחזור"
 
 #: src/Console/AppConsole.vala:367
 msgid "Specify target device"
-msgstr ""
+msgstr "נא לציין התקן יעד"
 
-#: src/Core/SnapshotRepo.vala:445 src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:452 src/Core/SnapshotRepo.vala:606
 #: src/Gtk/RsyncLogBox.vala:472
 #, c-format
 msgid "Status"
-msgstr ""
+msgstr "מצב"
 
 #: src/Gtk/ScheduleBox.vala:154
 msgid "Stop cron emails for scheduled tasks"
-msgstr ""
+msgstr "עצירת הודעות דוא\"ל מ־cron למשימות מתוזמנות"
 
 #: src/Utility/TeeJee.Process.vala:487
 msgid "Stopped"
-msgstr ""
+msgstr "הפעולה נעצרה"
 
 #: src/Gtk/RestoreDeviceBox.vala:101
 msgid "Subvolume"
-msgstr ""
+msgstr "תת־כרך"
 
 #: src/Core/Subvolume.vala:187
 #, c-format
 msgid "Subvolume exists at destination"
-msgstr ""
+msgstr "קיים תת־כרך ביעד"
 
 #: src/Gtk/SnapshotListBox.vala:223
 #, c-format
 msgid "Subvolumes"
-msgstr ""
+msgstr "תתי־כרך"
 
 #: src/Gtk/ExcludeBox.vala:267 src/Gtk/RestoreWindow.vala:120
 #: src/Gtk/ExcludeAppsBox.vala:135
 msgid "Summary"
-msgstr ""
+msgstr "תקציר"
 
 #: src/Console/AppConsole.vala:378
 msgid "Switch to BTRFS mode (default: config)"
-msgstr ""
+msgstr "החלפה למצב BTRFS (בררת־מחדל: config)"
 
 #: src/Console/AppConsole.vala:379
 msgid "Switch to RSYNC mode (default: config)"
-msgstr ""
+msgstr "החלפה למצב RSYNC (בררת־מחדל: config)"
 
-#: src/Core/SnapshotRepo.vala:954
+#: src/Core/SnapshotRepo.vala:961
 msgid "Symlinks updated"
-msgstr ""
+msgstr "קישורים סמלים עודכנו"
 
-#: src/Core/Main.vala:2398
+#: src/Core/Main.vala:2531
 msgid "Syncing file systems..."
-msgstr ""
+msgstr "מתבצע סינכרון מערכת קבצים..."
 
-#: src/Core/Main.vala:1377 src/Core/Main.vala:2568 src/Core/Main.vala:2809
+#: src/Core/Main.vala:1510 src/Core/Main.vala:2701 src/Core/Main.vala:2942
 msgid "Syncing files with rsync..."
-msgstr ""
+msgstr "מתבצע סינכרון באמצעות rsync..."
 
 #: src/Gtk/AppGtk.vala:113
 msgid "Syntax"
-msgstr ""
+msgstr "תחביר"
 
 #: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:125
 #, c-format
 msgid "System"
-msgstr ""
+msgstr "מערכת"
 
 #: src/Gtk/MainWindow.vala:912
 msgid "System Restore Utility"
-msgstr ""
+msgstr "עזר שחזור מערכת"
 
 #: src/Gtk/FinishBox.vala:82
 msgid "System can be rolled-back to a previous date by restoring a snapshot."
-msgstr ""
+msgstr "ניתן לגלול את המערכת לתאריך קודם על ידי שחזור תמונת־חטף."
 
-#: src/Core/Main.vala:2261
+#: src/Core/Main.vala:2394
 msgid "System will reboot after files are restored"
-msgstr ""
+msgstr "לאחר שחזור קבצים, המערכת תאתחל"
 
-#: src/Core/Main.vala:2211
+#: src/Core/Main.vala:2344
 msgid "System will reboot after files are restored."
-msgstr ""
+msgstr "לאחר שחזור קבצים, המערכת תאתחל."
 
-#: src/Core/Main.vala:1242 src/Core/Main.vala:1283
+#: src/Core/Main.vala:1241 src/Core/Main.vala:1315
 msgid "Tagged snapshot"
-msgstr ""
+msgstr "תמונת־חטף מתוייגת"
 
 #: src/Console/AppConsole.vala:427 src/Gtk/SnapshotListBox.vala:149
 msgid "Tags"
-msgstr ""
+msgstr "תגים"
 
-#: src/Core/Main.vala:2073
+#: src/Core/Main.vala:2206
 msgid "Target device is not mounted"
-msgstr ""
+msgstr "התקן יעד לא מעוגן"
 
 #: src/Gtk/RestoreDeviceBox.vala:466
 msgid "Target device is same as system device"
-msgstr ""
+msgstr "התקן יעד והתקן מערכת, זהים"
 
-#: src/Core/Main.vala:2067
+#: src/Core/Main.vala:2200
 msgid "Target device not specified!"
-msgstr ""
+msgstr "לא צוין התקן יעד!"
 
 #: src/Gtk/SnapshotBackendBox.vala:119
 msgid ""
 "The 'btrfs' command is not available on your system. Install the 'btrfs-"
 "tools' package and try again."
 msgstr ""
+"פקודת־שורה  'btrfs' אינה זמינה במערכת. נא להתקין את חבילת 'btrfs-tools' "
+"ולנסות שוב."
 
 #: src/Gtk/ScheduleBox.vala:156
 msgid ""
@@ -2268,68 +2320,72 @@ msgid ""
 "current user. Select this option to suppress the emails for cron tasks "
 "created by Timeshift."
 msgstr ""
+"שירות cron שולח את פלט המשימות המתוזמנות כדוא\"ל למשתמש הנוכחי. נא לבחור "
+"באפשרות לדכאוי דוא\"ל בגין משימות cron שנוצרו על ידי טיימשיפט."
 
-#: src/Core/Main.vala:382
+#: src/Core/Main.vala:381
 msgid "The system partition has an unsupported subvolume layout."
 msgstr "במחיצת המערכת קיים תת־כרך שאינו נתמך."
 
-#: src/Core/Main.vala:3463
+#: src/Core/Main.vala:3604
 msgid "The target partition has an unsupported subvolume layout."
 msgstr "במחיצת היעד קיים תת־כרך שאינו נתמך."
 
 #: src/Gtk/BackupDeviceBox.vala:512
 #, c-format
 msgid "There are no snapshots on this device"
-msgstr ""
+msgstr "אין תמונות־חטף בהתקן זה"
 
 #: src/Utility/Device.vala:1380
 msgid "This device is not encrypted"
-msgstr ""
+msgstr "ההתקן לא מוצפן"
 
-#: src/Core/Main.vala:2227
+#: src/Core/Main.vala:2360
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
 msgstr ""
+"תוכנה זו מגיעה ללא כל אחריות והמחבר לא לוקח אחריות על כל נזק הנובע מהשימוש "
+"בתוכנית זו."
 
 #: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1011
 msgid "Timeshift is active"
-msgstr ""
+msgstr "טיימשיפט פעיל"
 
-#: src/Gtk/BackupBox.vala:94 src/Gtk/RestoreBox.vala:132
+#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:132
 #: src/Gtk/RsyncLogBox.vala:394
 #, c-format
 msgid "Timestamp"
-msgstr ""
+msgstr "חותמת זמן"
 
 #: src/Console/AppConsole.vala:613
 #, c-format
 msgid "To restore with default options, press the ENTER key for all prompts!"
-msgstr ""
+msgstr "לשחזור עם אפשרויות בררת מחדל, נא לללחוץ על מקש 'אנטר' לכול ההנחיות!"
 
 #: src/Utility/Device.vala:1949 src/Console/AppConsole.vala:459
 #: src/Console/AppConsole.vala:498 src/Gtk/BackupDeviceBox.vala:190
 #: src/Gtk/SettingsWindow.vala:87
 #, c-format
 msgid "Type"
-msgstr ""
+msgstr "סוג"
 
 #: src/Utility/Device.vala:1948
 #, c-format
 msgid "UUID"
-msgstr ""
+msgstr "UUID"
 
 #: src/Gtk/AppGtk.vala:99
 msgid "Unknown option"
-msgstr ""
+msgstr "אפשרות לא ידועה"
 
-#: src/Core/Main.vala:1224
+#: src/Core/Main.vala:1223
 msgid "Unknown snapshot type"
-msgstr ""
+msgstr "סוג תמונת־חטף לא ידועה"
 
-#: src/Core/Main.vala:1582
+#: src/Core/Main.vala:1715
 msgid "Unknown value specified for option --tags"
-msgstr ""
+msgstr "ערך שצוין עבור אפשרות  --tags, לא ידוע"
 
 #: src/Utility/Device.vala:1391 src/Utility/Device.vala:1507
 #, c-format
@@ -2338,128 +2394,130 @@ msgstr "התקן לא נעול ממופה ל־'%s'"
 
 #: src/Utility/Device.vala:1506
 msgid "Unlocked successfully"
-msgstr ""
+msgstr "שחרור נעילה צלח"
 
 #: src/Utility/Device.vala:1722
 msgid "Unmounting from"
-msgstr ""
+msgstr "ביטול עגינת"
 
-#: src/Core/Main.vala:3467 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Core/Main.vala:3608 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
-msgstr ""
+msgstr "פריסת תת־כרך לא נתמכת"
 
 #: src/Gtk/BootOptionsBox.vala:150
 msgid "Update GRUB menu"
-msgstr ""
+msgstr "עדכון תפריט GRUB"
 
 #: src/Gtk/BootOptionsBox.vala:135
 msgid "Update initramfs"
-msgstr ""
+msgstr "עדכון initramfs"
 
-#: src/Core/Main.vala:2748
+#: src/Core/Main.vala:2881
 msgid "Updated /etc/crypttab on target device"
-msgstr ""
+msgstr "עדכון etc/crypttab בהתקן היעד"
 
-#: src/Core/Main.vala:2668
+#: src/Core/Main.vala:2801
 msgid "Updated /etc/fstab on target device"
-msgstr ""
+msgstr "עדכון etc/fstab  בהתקן היעד"
 
 #: src/Gtk/BootOptionsBox.vala:152
 msgid ""
 "Updates the GRUB menu entries (recommended). This is safe to run and should "
 "be left selected."
 msgstr ""
+"עדכון רשומות תפריט  GRUB (מומלץ). בטוח להפעיל זאת ורצוי להשאיר את סימון "
+"הבחירה."
 
-#: src/Core/Main.vala:2381
+#: src/Core/Main.vala:2514
 msgid "Updating GRUB menu..."
-msgstr ""
+msgstr "מתבצע  עדכון תפריט GRUB..."
 
-#: src/Core/Main.vala:2592
+#: src/Core/Main.vala:2725
 msgid "Updating bootloader configuration..."
-msgstr ""
+msgstr "מתבצע  עדכון תצור מנהל אתחול..."
 
 #: src/Utility/Device.vala:1956
 #, c-format
 msgid "Used"
-msgstr ""
+msgstr "בשימוש"
 
 #: src/Gtk/SetupWizardWindow.vala:114 src/Gtk/UsersBox.vala:102
 msgid "User"
-msgstr ""
+msgstr "משתמש"
 
 #: src/Gtk/UsersBox.vala:62
 msgid "User Home Directories"
-msgstr ""
+msgstr "מחיצות 'בית' משתמש"
 
 #: src/Utility/Device.vala:1461
 msgid "User cancelled the password prompt"
-msgstr ""
+msgstr "הנחית ססמה בוטלה על ידי משתמש"
 
 #: src/Gtk/UsersBox.vala:66
 msgid ""
 "User home directories are excluded by default unless you enable them here"
-msgstr ""
+msgstr "מחיצות 'בית' של משתמש, מוחרגות כבררת־מחדל אלה עם הם אופשראו כאן"
 
 #: src/Gtk/SettingsWindow.vala:101
 msgid "Users"
-msgstr ""
+msgstr "משתמשים"
 
 #: src/Gtk/RestoreWindow.vala:114
 msgid "Users Home"
-msgstr ""
+msgstr "בית המשתמש"
 
 #: src/Utility/Device.vala:1933
 #, c-format
 msgid "Vendor"
-msgstr ""
+msgstr "ספק"
 
 #: src/Gtk/SnapshotListBox.vala:291
 msgid "View Rsync Log for Create"
-msgstr ""
+msgstr "הצגת יומן Rsync של 'יצירה'"
 
 #: src/Gtk/SnapshotListBox.vala:298
 msgid "View Rsync Log for Restore"
-msgstr ""
+msgstr "הצגת יומן Rsync של 'שחזור'"
 
 #: src/Gtk/MainWindow.vala:369
 msgid "View TimeShift Logs"
-msgstr ""
+msgstr "הצגת יומני טיימשיפט"
 
-#: src/Core/Main.vala:2122 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Core/Main.vala:2255 src/Gtk/RestoreSummaryBox.vala:53
 msgid "Warning"
-msgstr ""
+msgstr "אזהרה"
 
 #: src/Gtk/RestoreExcludeBox.vala:61
 msgid "Web Browsers"
-msgstr ""
+msgstr "דפדפני מרשתת"
 
 #: src/Gtk/SnapshotListBox.vala:249 src/Gtk/ScheduleBox.vala:82
 msgid "Weekly"
-msgstr ""
+msgstr "שבועי"
 
-#: src/Core/Main.vala:1127
+#: src/Core/Main.vala:1126
 msgid "Weekly snapshot failed!"
-msgstr ""
+msgstr "תמונת־חטף שבועית כשלה!"
 
-#: src/Core/Main.vala:1108
+#: src/Core/Main.vala:1107
 msgid "Weekly snapshots are enabled"
-msgstr ""
+msgstr "תמונות־חטף שבועיות אופשרו"
 
 #: src/Gtk/DeleteFinishBox.vala:63 src/Gtk/BackupFinishBox.vala:63
 msgid "With Errors"
-msgstr ""
+msgstr "כולל שגיאות"
 
 #: src/Gtk/MainWindow.vala:190
 msgid "Wizard"
-msgstr ""
+msgstr "אשף"
 
 #: src/Utility/Device.vala:1434 src/Utility/Device.vala:1480
 msgid "Wrong password"
-msgstr ""
+msgstr "ססמה שגויה"
 
 #: src/Utility/Gtk/CustomMessageDialog.vala:156
 msgid "Yes"
-msgstr ""
+msgstr "כן"
 
 #: src/Gtk/RestoreFinishBox.vala:98
 msgid ""
@@ -2467,83 +2525,87 @@ msgid ""
 "system will be visible as a new snapshot. This snapshot can be restored "
 "later if required, to 'undo' the restore."
 msgstr ""
+"ניתן להמשיך לעבוד עם המערכת הנוכחית. לאחר אתחול, המערכת הנוכחית תהיה גלויה "
+"כתמונת־חטף חדשה. לביטוף השחזור במידת הצורך, ניתן יהיה מאוחר יותר לשחזר "
+"תמונת־חטף זו."
 
 #: src/Console/AppConsole.vala:1012
 #, c-format
 msgid "[ENTER = Default (%s), a = Abort]"
-msgstr ""
+msgstr "[ENTER = בררת מחדל (%s), a = נטישה]"
 
 #: src/Console/AppConsole.vala:883
 #, c-format
 msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
-msgstr ""
+msgstr "[ENTER = בררת מחדל (%s), r = התקן שורש, a = נטישה]"
 
 #: src/Gtk/RestoreDeviceBox.vala:401
 msgid ""
 "[For Experienced Users] Change these settings if the restored system fails "
 "to boot."
 msgstr ""
+"[למשתמשים מנוסים] ניתן לשנות הגדרות אלה אם המערכת המשוחזרת לא מצליחה לאתחל."
 
 #: src/Utility/AppLock.vala:54
 msgid "[Warning] Deleted invalid lock"
-msgstr ""
+msgstr "[אזהרה] נעילה לא תקינה נמחקה"
 
-#: src/Core/SnapshotRepo.vala:807
+#: src/Core/SnapshotRepo.vala:814
 msgid "all"
-msgstr ""
+msgstr "הכול"
 
-#: src/Core/Main.vala:1510 src/Core/Main.vala:3869 src/Core/Subvolume.vala:199
+#: src/Core/Main.vala:1643 src/Core/Main.vala:4010 src/Core/Subvolume.vala:199
 msgid "btrfs returned an error"
-msgstr ""
+msgstr "btrfs החזיר שגיאה"
 
-#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1409
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1542
 msgid "complete"
-msgstr ""
+msgstr "הפעולה הושלמה"
 
 #: src/Utility/CronTab.vala:261
 msgid "crontab file exported"
-msgstr ""
+msgstr "קובץ crontab יוצא"
 
 #: src/Utility/CronTab.vala:244
 msgid "crontab file installed"
-msgstr ""
+msgstr "הותקנו קובצי crontab"
 
-#: src/Core/SnapshotRepo.vala:793
+#: src/Core/SnapshotRepo.vala:800
 msgid "incomplete"
-msgstr ""
+msgstr "הפעולה לא הושלמה"
 
-#: src/Core/SnapshotRepo.vala:775
+#: src/Core/SnapshotRepo.vala:782
 msgid "marked for deletion"
-msgstr ""
+msgstr "סימון למחיקה"
 
-#: src/Core/Main.vala:1301 src/Core/Main.vala:1455 src/Core/Main.vala:1457
+#: src/Core/Main.vala:1434 src/Core/Main.vala:1588 src/Core/Main.vala:1590
 msgid "mounted at path"
-msgstr ""
+msgstr "נתיב עגינה"
 
-#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1409
-#: src/Gtk/BackupBox.vala:234 src/Gtk/RestoreBox.vala:237
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1542
+#: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
 #: src/Gtk/DeleteBox.vala:149
 msgid "remaining"
-msgstr ""
+msgstr "יתרה"
 
-#: src/Core/Main.vala:1420
+#: src/Core/Main.vala:1553
 msgid "rsync returned an error"
-msgstr ""
+msgstr "rsync החזיר שגיאה"
 
-#: src/Core/SnapshotRepo.vala:624 src/Core/SnapshotRepo.vala:677
-#: src/Core/SnapshotRepo.vala:756
+#: src/Core/SnapshotRepo.vala:631 src/Core/SnapshotRepo.vala:684
+#: src/Core/SnapshotRepo.vala:763
 msgid "un-tagged"
-msgstr ""
+msgstr "לא מתוייג"
 
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:9
 msgid "Timeshift"
-msgstr ""
+msgstr "טיימשיפט"
 
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:10
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:22
 msgid "Run Timeshift as Administrator"
-msgstr ""
+msgstr "הפעלת טיימשיפט כמנהלן"
 
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:21
 msgid "Authentication is required to run Timeshift as Administrator"
-msgstr ""
+msgstr "נדרשות הרשאות להפעלת טיימשיפט כמנהלן"
