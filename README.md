@@ -127,7 +127,7 @@ sudo apt-get install timeshift
 ```
 Or build and install timeshift from the source code:
 ```sh
-sudo apt install gettext valac libvte-2.91-dev libgee-0.8-dev libjson-glib-dev
+sudo apt install make gettext valac libvte-2.91-dev libgee-0.8-dev libjson-glib-dev
 make
 sudo make install
 ```
