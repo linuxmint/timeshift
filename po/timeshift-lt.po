@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2022-06-22 13:32+0200\n"
+"POT-Creation-Date: 2022-06-30 15:17+0200\n"
 "PO-Revision-Date: 2017-11-16 18:40+0000\n"
 "Last-Translator: Moo <hazap@hotmail.com>\n"
 "Language-Team: Lithuanian <lt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-06-26 11:29+0000\n"
-"X-Generator: Launchpad (build 51a2e4fa2e9b8e45f00904ad7f53546f45ac48a5)\n"
+"X-Launchpad-Export-Date: 2022-07-24 09:43+0000\n"
+"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
 
 #: src/Console/AppConsole.vala:615
 #, c-format
@@ -26,7 +26,7 @@ msgstr ""
 "\n"
 "Norėdami tęsti, paspauskite ENTER..."
 
-#: src/Core/SnapshotRepo.vala:550
+#: src/Core/SnapshotRepo.vala:556
 #, c-format
 msgid "%d snapshots, %s free"
 msgstr "%d momentinių kopijų, %s laisva"
@@ -45,23 +45,23 @@ msgstr "\"%s\" bus šaknies įrenginyje"
 msgid "(Re)install GRUB2 on:"
 msgstr "(Iš naujo) įdiegti GRUB2 ties:"
 
-#: src/Core/Main.vala:368
+#: src/Core/Main.vala:367
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr "** Timeshift BTRFS pašalinta **"
 
-#: src/Core/Main.vala:3374
+#: src/Core/Main.vala:3515
 msgid "/ is mapped to device"
 msgstr "/ yra susieta su įrenginiu"
 
-#: src/Core/Main.vala:3396
+#: src/Core/Main.vala:3537
 msgid "/boot is mapped to device"
 msgstr "/boot yra susieta su įrenginiu"
 
-#: src/Core/Main.vala:3407
+#: src/Core/Main.vala:3548
 msgid "/boot/efi is mapped to device"
 msgstr "/boot/efi yra susieta su įrenginiu"
 
-#: src/Core/Main.vala:3385
+#: src/Core/Main.vala:3526
 msgid "/home is mapped to device"
 msgstr "/home yra susieta su įrenginiu"
 
@@ -165,7 +165,7 @@ msgstr ""
 "Arba pasirinkite paleidimo katalogui nešifruotą įrenginį, arba pasirinkite "
 "nešifruotą įrenginį šaknies failų sistemai."
 
-#: src/Core/Main.vala:254
+#: src/Core/Main.vala:253
 msgid "Another instance of Timeshift is creating a snapshot."
 msgstr "Kitas Timeshift egzempliorius kuria momentinę kopiją."
 
@@ -173,7 +173,7 @@ msgstr "Kitas Timeshift egzempliorius kuria momentinę kopiją."
 msgid "Another instance of this application is running"
 msgstr "Yra paleistas kitas šios programos egzempliorius"
 
-#: src/Core/Main.vala:258
+#: src/Core/Main.vala:257
 msgid "Another instance of timeshift is currently running!"
 msgstr "Šiuo metu yra paleistas kitas timeshift egzempliorius!"
 
@@ -181,11 +181,11 @@ msgstr "Šiuo metu yra paleistas kitas timeshift egzempliorius!"
 msgid "Answer YES to all confirmation prompts"
 msgstr "Atsakyti TAIP į visas patvirtinimo užklausas"
 
-#: src/Core/Main.vala:3211
+#: src/Core/Main.vala:3352
 msgid "App config loaded"
 msgstr "Programos konfigūracija įkelta"
 
-#: src/Core/Main.vala:3099
+#: src/Core/Main.vala:3240
 msgid "App config saved"
 msgstr "Programos konfigūracija įrašyta"
 
@@ -193,11 +193,11 @@ msgstr "Programos konfigūracija įrašyta"
 msgid "Application needs admin access."
 msgstr "Programai reikia administratoriaus prieigos."
 
-#: src/Core/Main.vala:3551
+#: src/Core/Main.vala:3692
 msgid "Application will exit"
 msgstr "Programa užbaigs darbą"
 
-#: src/Core/Main.vala:384
+#: src/Core/Main.vala:383
 msgid "Application will exit."
 msgstr "Programa užbaigs darbą."
 
@@ -217,7 +217,7 @@ msgstr "BTRFS momentinės kopijos"
 msgid "BTRFS Tools Not Found"
 msgstr "Nerasti BTRFS įrankiai"
 
-#: src/Core/Main.vala:2057 src/Core/Main.vala:2061
+#: src/Core/Main.vala:2190 src/Core/Main.vala:2194
 msgid "BTRFS device is not mounted"
 msgstr "BTRFS įrenginys nėra prijungtas"
 
@@ -247,11 +247,11 @@ msgstr "Vidinė pusė"
 msgid "Backup"
 msgstr "Atsarginė kopija"
 
-#: src/Core/Main.vala:2033
+#: src/Core/Main.vala:2166
 msgid "Backup Device"
 msgstr "Atsarginės kopijos įrenginys"
 
-#: src/Core/Main.vala:2028
+#: src/Core/Main.vala:2161
 msgid "Backup device not specified!"
 msgstr "Nenurodytas atsarginės kopijos įrenginys!"
 
@@ -267,7 +267,7 @@ msgstr "Paleidimo metu"
 msgid "Boot device not selected"
 msgstr "Nepasirinktas paleidimo įrenginys"
 
-#: src/Core/Main.vala:1034
+#: src/Core/Main.vala:1033
 msgid "Boot snapshot failed!"
 msgstr "Paleidimo meto momentinė kopija patyrė nesėkmę!"
 
@@ -276,7 +276,7 @@ msgid ""
 "Boot snapshots are created with a delay of 10 minutes after system startup."
 msgstr ""
 
-#: src/Core/Main.vala:1015
+#: src/Core/Main.vala:1014
 msgid "Boot snapshots are enabled"
 msgstr "Momentinės kopijos paleidimo metu yra įjungtos"
 
@@ -300,9 +300,13 @@ msgstr "Naršyti failus"
 msgid "Browse selected snapshot"
 msgstr "Naršyti pasirinktą momentinę kopiją"
 
-#: src/Core/Main.vala:2523
+#: src/Core/Main.vala:2656
 msgid "Building file list..."
 msgstr "Kuriamas failų sąrašas..."
+
+#: src/Core/Main.vala:1393
+msgid "Calculating required disk space..."
+msgstr ""
 
 #: src/Utility/Gtk/CustomMessageDialog.vala:152 src/Utility/GtkHelper.vala:109
 #: src/Gtk/RestoreWindow.vala:215 src/Gtk/RestoreWindow.vala:224
@@ -332,13 +336,13 @@ msgstr ""
 msgid "Cannot Delete Live Snapshot"
 msgstr "Nepavyksta ištrinti tiesioginės (naudojamos) momentinės kopijos"
 
-#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:125
+#: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
 #: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
 #: src/Gtk/RsyncLogBox.vala:567 src/Gtk/RsyncLogBox.vala:588
 msgid "Changed"
 msgstr "Pakeista"
 
-#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:127
+#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:127
 msgid "Changed items:"
 msgstr "Pakeisti elementai:"
 
@@ -346,17 +350,17 @@ msgstr "Pakeisti elementai:"
 msgid "Checking Restore Actions (Dry Run)"
 msgstr ""
 
-#: src/Core/Main.vala:2756
+#: src/Core/Main.vala:2889
 msgid "Checking file systems for errors..."
 msgstr "Tikrinama ar failų sistemoje nėra klaidų..."
 
-#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:130
+#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:130
 #: src/Gtk/RsyncLogBox.vala:390
 #, c-format
 msgid "Checksum"
 msgstr "Kontrolinė suma"
 
-#: src/Core/Main.vala:2404
+#: src/Core/Main.vala:2537
 msgid "Cleaning up..."
 msgstr "Išvaloma..."
 
@@ -376,7 +380,7 @@ msgstr "Klonuoti sistemą"
 msgid "Cloning"
 msgstr "Klonuojama"
 
-#: src/Core/Main.vala:2806
+#: src/Core/Main.vala:2939
 msgid "Cloning system..."
 msgstr "Klonuojama sistema..."
 
@@ -391,7 +395,7 @@ msgstr "Užverti"
 msgid "Close window to exit"
 msgstr "Norėdami išeiti, užverkite langą"
 
-#: src/Core/Main.vala:353
+#: src/Core/Main.vala:352
 msgid "Commands listed below are not available on this system"
 msgstr "Žemiau išvardytos komandos nėra prieinamos šioje sistemoje"
 
@@ -399,12 +403,12 @@ msgstr "Žemiau išvardytos komandos nėra prieinamos šioje sistemoje"
 msgid "Comments (click to edit)"
 msgstr ""
 
-#: src/Core/Main.vala:2799 src/Gtk/RestoreBox.vala:74
+#: src/Core/Main.vala:2932 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
 msgid "Comparing Files (Dry Run)..."
 msgstr ""
 
-#: src/Core/Main.vala:2565
+#: src/Core/Main.vala:2698
 msgid "Comparing files with rsync..."
 msgstr ""
 
@@ -439,11 +443,11 @@ msgstr "Nepavyko rasti failo"
 msgid "Could not find snapshot"
 msgstr "Nepavyko rasti momentinės kopijos"
 
-#: src/Core/Main.vala:2968
+#: src/Core/Main.vala:3101
 msgid "Could not find system subvolume"
 msgstr "Nepavyko rasti sistemos patomio"
 
-#: src/Core/Main.vala:2996
+#: src/Core/Main.vala:3129
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr ""
 "Nepavyko rasti sistemos patomių, skirtų išankstinio atkūrimo momentinės "
@@ -508,7 +512,7 @@ msgid "Create snapshots using RSYNC tool and hard-links"
 msgstr ""
 "Sukurti momentines kopijas, naudojant RSYNC įrankį ir pastoviuosius saitus"
 
-#: src/Gtk/BackupBox.vala:85 src/Gtk/RestoreBox.vala:123
+#: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
 #: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:571
 #: src/Gtk/RsyncLogBox.vala:592
 #, c-format
@@ -523,11 +527,11 @@ msgstr "Sukurtas valdymo failas"
 msgid "Created directory"
 msgstr "Sukurtas katalogas"
 
-#: src/Core/Main.vala:3018
+#: src/Core/Main.vala:3151
 msgid "Created pre-restore snapshot"
 msgstr "Sukurta išankstinio atkūrimo momentinė kopija"
 
-#: src/Core/Main.vala:1515
+#: src/Core/Main.vala:1648
 msgid "Created subvolume snapshot"
 msgstr "Sukurta patomio momentinė kopija"
 
@@ -535,19 +539,19 @@ msgstr "Sukurta patomio momentinė kopija"
 msgid "Creating Snapshot..."
 msgstr "Kuriama momentinė kopija..."
 
-#: src/Core/Main.vala:1453
+#: src/Core/Main.vala:1586
 msgid "Creating new backup..."
 msgstr "Kuriama nauja atsarginė kopija..."
 
-#: src/Core/Main.vala:1299
+#: src/Core/Main.vala:1432
 msgid "Creating new snapshot..."
 msgstr "Kuriama nauja momentinė kopija..."
 
-#: src/Core/Main.vala:2946
+#: src/Core/Main.vala:3079
 msgid "Creating pre-restore snapshot from system subvolumes..."
 msgstr "Iš sistemos patomių kuriama išankstinio atkūrimo momentinė kopija..."
 
-#: src/Core/Main.vala:3550
+#: src/Core/Main.vala:3691
 msgid "Critical Error"
 msgstr "Kritinė klaida"
 
@@ -571,15 +575,15 @@ msgstr ""
 msgid "Daily"
 msgstr "Kas dieną"
 
-#: src/Core/Main.vala:1096
+#: src/Core/Main.vala:1095
 msgid "Daily snapshot failed!"
 msgstr "Kasdienė momentinė kopija patyrė nesėkmę!"
 
-#: src/Core/Main.vala:1077
+#: src/Core/Main.vala:1076
 msgid "Daily snapshots are enabled"
 msgstr "Kasdienės momentinės kopijos yra įjungtos"
 
-#: src/Core/Main.vala:2127
+#: src/Core/Main.vala:2260
 msgid "Data will be modified on following devices:"
 msgstr "Duomenys bus modifikuoti šiuose įrenginiuose:"
 
@@ -610,7 +614,7 @@ msgstr "Ištrinti pasirinktą momentinę kopiją"
 msgid "Delete snapshot"
 msgstr "Ištrinti momentinę kopiją"
 
-#: src/Gtk/BackupBox.vala:86 src/Gtk/RestoreBox.vala:124
+#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:575
 #: src/Gtk/RsyncLogBox.vala:596
 #, c-format
@@ -621,7 +625,7 @@ msgstr "Ištrinta"
 msgid "Deleted directory"
 msgstr "Ištrintas katalogas"
 
-#: src/Core/Main.vala:2925 src/Core/Main.vala:2929 src/Core/Subvolume.vala:167
+#: src/Core/Main.vala:3058 src/Core/Main.vala:3062 src/Core/Subvolume.vala:167
 #, c-format
 msgid "Deleted subvolume"
 msgstr "Ištrintas patomis"
@@ -643,9 +647,9 @@ msgstr "Deluge, Transmission"
 msgid "Description"
 msgstr "Aprašas"
 
-#: src/Core/Main.vala:2130 src/Core/Main.vala:2162
-#: src/Core/SnapshotRepo.vala:73 src/Core/SnapshotRepo.vala:592
-#: src/Core/SnapshotRepo.vala:595 src/Utility/Device.vala:1932
+#: src/Core/Main.vala:2263 src/Core/Main.vala:2295
+#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
 #: src/Utility/Device.vala:1942 src/Console/AppConsole.vala:456
 #: src/Console/AppConsole.vala:495 src/Console/AppConsole.vala:543
 #: src/Gtk/RestoreDeviceBox.vala:97
@@ -661,7 +665,7 @@ msgstr "Įrenginys atrakintas"
 msgid "Device name is empty!"
 msgstr "Įrenginio pavadinimas yra tuščias!"
 
-#: src/Core/Main.vala:3264 src/Core/SnapshotRepo.vala:471
+#: src/Core/Main.vala:3405 src/Core/SnapshotRepo.vala:479
 #: src/Console/AppConsole.vala:665
 msgid "Device not found"
 msgstr "Įrenginys nerastas"
@@ -689,11 +693,11 @@ msgstr "Įrenginiai su Linux failų sistemomis"
 msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
 msgstr ""
 
-#: src/Core/SnapshotRepo.vala:907
+#: src/Core/SnapshotRepo.vala:914
 msgid "Directory not found"
 msgstr "Katalogas nerastas"
 
-#: src/Core/Main.vala:2222 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Core/Main.vala:2355 src/Gtk/RestoreSummaryBox.vala:64
 msgid "Disclaimer"
 msgstr "Atsakomybės ribojimas"
 
@@ -701,7 +705,7 @@ msgstr "Atsakomybės ribojimas"
 msgid "Disk"
 msgstr "Diskas"
 
-#: src/Core/Main.vala:231
+#: src/Core/Main.vala:230
 msgid "Distribution"
 msgstr "Distribucija"
 
@@ -759,7 +763,7 @@ msgstr "Apskaičiuoti"
 msgid "Estimating System Size..."
 msgstr "Apskaičiuojamas sistemos dydis..."
 
-#: src/Core/Main.vala:1295
+#: src/Core/Main.vala:1428
 msgid "Estimating system size..."
 msgstr "Apskaičiuojamas sistemos dydis..."
 
@@ -795,7 +799,7 @@ msgstr "Išskirti šabloną"
 msgid "Excluded Directories"
 msgstr "Išskirti katalogai"
 
-#: src/Core/Main.vala:1583
+#: src/Core/Main.vala:1716
 msgid "Expected values: O, B, H, D, W, M"
 msgstr "Tikėtinos reikšmės: O, B, H, D, W, M"
 
@@ -812,19 +816,19 @@ msgstr "Nepavyko nukopijuoti failo"
 msgid "Failed to create directory"
 msgstr "Nepavyko sukurti katalogo"
 
-#: src/Core/Main.vala:1421
+#: src/Core/Main.vala:1554
 msgid "Failed to create new snapshot"
 msgstr "Nepavyko sukurti naujos momentinės kopijos"
 
-#: src/Core/Main.vala:1276
+#: src/Core/Main.vala:1308
 msgid "Failed to create snapshot"
 msgstr "Nepavyko sukurti momentinės kopijos"
 
-#: src/Core/Main.vala:1511
+#: src/Core/Main.vala:1644
 msgid "Failed to create subvolume snapshot"
 msgstr "Nepavyko sukurti patomio momentinės kopijos"
 
-#: src/Core/SnapshotRepo.vala:948
+#: src/Core/SnapshotRepo.vala:955
 msgid "Failed to create symlinks"
 msgstr "Nepavyko sukurti simbolinių nuorodų"
 
@@ -844,11 +848,11 @@ msgstr ""
 msgid "Failed to delete snapshot subvolume"
 msgstr "Nepavyko ištrinti momentinės kopijos patomio"
 
-#: src/Core/SnapshotRepo.vala:974
+#: src/Core/SnapshotRepo.vala:981
 msgid "Failed to delete symlinks"
 msgstr "Nepavyko ištrinti simbolinių nuorodų"
 
-#: src/Core/Main.vala:3765 src/Core/Main.vala:3771
+#: src/Core/Main.vala:3906 src/Core/Main.vala:3912
 msgid "Failed to estimate system size"
 msgstr "Nepavyko apskaičiuoti sistemos dydžio"
 
@@ -866,7 +870,7 @@ msgstr "Nepavyko per 3 bandymus gauti įvesti iš naudotojo"
 msgid "Failed to get partition list"
 msgstr "Nepavyko gauti skaidinių sąrašo"
 
-#: src/Core/Main.vala:3347
+#: src/Core/Main.vala:3488
 msgid "Failed to get partition list."
 msgstr "Nepavyko gauti skaidinių sąrašo."
 
@@ -882,11 +886,11 @@ msgstr "Nepavyko prijungti įrenginius"
 msgid "Failed to move file"
 msgstr "Nepavyko perkelti failą"
 
-#: src/Core/Main.vala:2983
+#: src/Core/Main.vala:3116
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr "Nepavyko perkelti sistemos patomį į momentinės kopijos katalogą"
 
-#: src/Core/Main.vala:3870
+#: src/Core/Main.vala:4011
 msgid "Failed to query subvolume list"
 msgstr "Nepavyko užklausti patomių sąrašo"
 
@@ -898,7 +902,7 @@ msgstr "Nepavyko perskaityti cron tab"
 msgid "Failed to read file"
 msgstr "Nepavyko perskaityti failą"
 
-#: src/Core/SnapshotRepo.vala:894
+#: src/Core/SnapshotRepo.vala:901
 msgid "Failed to remove"
 msgstr "Nepavyko pašalinti"
 
@@ -915,7 +919,7 @@ msgstr "Nepavyko pašalinti momentinę kopiją"
 msgid "Failed to restore system subvolume"
 msgstr "Nepavyko atkurti sistemos patomį"
 
-#: src/Core/Main.vala:1371
+#: src/Core/Main.vala:1504
 msgid "Failed to save exclude list"
 msgstr "Nepavyko įrašyti išskyrimų sąrašo"
 
@@ -929,7 +933,7 @@ msgstr "Nepavyko atrakinti įrenginį"
 msgid "Failed to unmount"
 msgstr "Nepavyko atjungti"
 
-#: src/Core/Main.vala:3551
+#: src/Core/Main.vala:3692
 msgid "Failed to unmount device!"
 msgstr "Nepavyko atjungti įrenginį!"
 
@@ -949,7 +953,7 @@ msgstr ""
 msgid "File Pattern"
 msgstr "Failo šablonas"
 
-#: src/Gtk/BackupBox.vala:80
+#: src/Gtk/BackupBox.vala:83
 msgid "File and directory counts:"
 msgstr "Failų ir katalogų skaičius:"
 
@@ -1006,11 +1010,11 @@ msgstr "Užbaigta"
 msgid "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 msgstr "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 
-#: src/Core/SnapshotRepo.vala:576
+#: src/Core/SnapshotRepo.vala:583
 msgid "First snapshot requires:"
 msgstr "Pirmoji momentinė kopija reikalauja:"
 
-#: src/Core/Main.vala:2916
+#: src/Core/Main.vala:3049
 msgid "Found existing pre-restore snapshot"
 msgstr "Rasta esama išankstinio atkūrimo momentinė kopija"
 
@@ -1018,7 +1022,7 @@ msgstr "Rasta esama išankstinio atkūrimo momentinė kopija"
 msgid "Free"
 msgstr "Laisva"
 
-#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:144
+#: src/Core/SnapshotRepo.vala:75 src/Core/SnapshotRepo.vala:145
 msgid "Free space"
 msgstr "Laisva vieta"
 
@@ -1034,7 +1038,7 @@ msgstr "Nepasirinktas GRUB įrenginys"
 msgid "GRUB will NOT be reinstalled"
 msgstr "GRUB NEBUS įdiegta iš naujo"
 
-#: src/Core/Main.vala:2364
+#: src/Core/Main.vala:2497
 msgid "Generating initramfs..."
 msgstr "Kuriama initramfs..."
 
@@ -1042,7 +1046,7 @@ msgstr "Kuriama initramfs..."
 msgid "Global"
 msgstr "Visuotiniai"
 
-#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:135
+#: src/Gtk/BackupBox.vala:100 src/Gtk/RestoreBox.vala:135
 #: src/Gtk/RsyncLogBox.vala:400
 #, c-format
 msgid "Group"
@@ -1084,11 +1088,11 @@ msgstr "Namų katalogas"
 msgid "Hourly"
 msgstr "Kas valandą"
 
-#: src/Core/Main.vala:1065
+#: src/Core/Main.vala:1064
 msgid "Hourly snapshot failed!"
 msgstr "Kasvalandinė momentinė kopija patyrė nesėkmę!"
 
-#: src/Core/Main.vala:1046
+#: src/Core/Main.vala:1045
 msgid "Hourly snapshots are enabled"
 msgstr "Kasvalandinės momentinės kopijos yra įjungtos"
 
@@ -1100,7 +1104,7 @@ msgstr ""
 "Jeigu atkurta sistema nepasileis, tuomet paleiskite Tiesioginį (angl. Live) "
 "CD/USB, įdiekite Timeshift ir pabandykite atkurti kitą momentinę kopiją."
 
-#: src/Core/Main.vala:2228
+#: src/Core/Main.vala:2361
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
@@ -1122,7 +1126,7 @@ msgstr ""
 msgid "Include Only Hidden Files"
 msgstr ""
 
-#: src/Core/Main.vala:2042
+#: src/Core/Main.vala:2175
 msgid "Invalid Snapshot"
 msgstr "Neteisinga momentinė kopija"
 
@@ -1180,73 +1184,73 @@ msgstr "NAUDOJAMA"
 msgid "Label"
 msgstr "Etiketė"
 
-#: src/Core/Main.vala:1027
+#: src/Core/Main.vala:1026
 #, c-format
 msgid "Last boot snapshot is %d hours old"
 msgstr "Paskutinė paleidimo momentinė kopija yra %d valandų senumo"
 
-#: src/Core/Main.vala:1022
+#: src/Core/Main.vala:1021
 msgid "Last boot snapshot is older than system start time"
 msgstr ""
 "Paskutinė paleidimo momentinė kopija yra senesnė nei sistemos paleidimo "
 "laikas"
 
-#: src/Core/Main.vala:1018
+#: src/Core/Main.vala:1017
 msgid "Last boot snapshot not found"
 msgstr "Paskutinė paleidimo momentinė kopija nerasta"
 
-#: src/Core/Main.vala:1089
+#: src/Core/Main.vala:1088
 #, c-format
 msgid "Last daily snapshot is %d hours old"
 msgstr "Paskutinė kasdienė momentinė kopija yra %d valandų senumo"
 
-#: src/Core/Main.vala:1084
+#: src/Core/Main.vala:1083
 msgid "Last daily snapshot is more than 1 day old"
 msgstr "Paskutinė kasdienė momentinė kopija yra daugiau nei 1 dienos senumo"
 
-#: src/Core/Main.vala:1080
+#: src/Core/Main.vala:1079
 msgid "Last daily snapshot not found"
 msgstr "Paskutinė kasdienė momentinė kopija nerasta"
 
-#: src/Core/Main.vala:1058
+#: src/Core/Main.vala:1057
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
 msgstr "Paskutinė kasvalandinė momentinė kopija yra %d minučių senumo"
 
-#: src/Core/Main.vala:1053
+#: src/Core/Main.vala:1052
 msgid "Last hourly snapshot is more than 1 hour old"
 msgstr ""
 "Paskutinė kasvalandinė momentinė kopija yra daugiau nei 1 valandos senumo"
 
-#: src/Core/Main.vala:1049
+#: src/Core/Main.vala:1048
 msgid "Last hourly snapshot not found"
 msgstr "Paskutinė kasvalandinė momentinė kopija nerasta"
 
-#: src/Core/Main.vala:1151
+#: src/Core/Main.vala:1150
 #, c-format
 msgid "Last monthly snapshot is %d days old"
 msgstr "Paskutinė kasmėnesinė momentinė kopija yra %d dienų senumo"
 
-#: src/Core/Main.vala:1146
+#: src/Core/Main.vala:1145
 msgid "Last monthly snapshot is more than 1 month old"
 msgstr ""
 "Paskutinė kasmėnesinė momentinė kopija yra daugiau nei 1 mėnesio senumo"
 
-#: src/Core/Main.vala:1142
+#: src/Core/Main.vala:1141
 msgid "Last monthly snapshot not found"
 msgstr "Paskutinė kasmėnesinė momentinė kopija nerasta"
 
-#: src/Core/Main.vala:1120
+#: src/Core/Main.vala:1119
 #, c-format
 msgid "Last weekly snapshot is %d days old"
 msgstr "Paskutinė savaitinė momentinė kopija yra %d dienų senumo"
 
-#: src/Core/Main.vala:1115
+#: src/Core/Main.vala:1114
 msgid "Last weekly snapshot is more than 1 week old"
 msgstr ""
 "Paskutinė savaitinė momentinė kopija yra daugiau nei 1 savaitės senumo"
 
-#: src/Core/Main.vala:1111
+#: src/Core/Main.vala:1110
 msgid "Last weekly snapshot not found"
 msgstr "Paskutinė savaitinė momentinė kopija nerasta"
 
@@ -1255,7 +1259,7 @@ msgstr "Paskutinė savaitinė momentinė kopija nerasta"
 msgid "Latest snapshot"
 msgstr "Paskiausia momentinė kopija"
 
-#: src/Core/Main.vala:1360
+#: src/Core/Main.vala:1493
 #, c-format
 msgid "Linking from snapshot"
 msgstr "Susiejimas iš momentinės kopijos"
@@ -1289,7 +1293,7 @@ msgstr "Pagrindinis langas užvertas naudotojo"
 msgid "Mark/Unmark for Deletion"
 msgstr ""
 
-#: src/Core/SnapshotRepo.vala:621 src/Core/SnapshotRepo.vala:664
+#: src/Core/SnapshotRepo.vala:628 src/Core/SnapshotRepo.vala:671
 msgid "Maximum backups exceeded for backup level"
 msgstr ""
 "Atsarginės kopijos lygmeniui viršytas didžiausias atsarginių kopijų skaičius"
@@ -1302,11 +1306,11 @@ msgstr "Meniu"
 msgid "Misc"
 msgstr ""
 
-#: src/Core/Main.vala:240
+#: src/Core/Main.vala:239
 msgid "Missing Dependencies"
 msgstr "Trūkstamos priklausomybės"
 
-#: src/Core/SnapshotRepo.vala:598
+#: src/Core/SnapshotRepo.vala:605
 #, c-format
 msgid "Mode"
 msgstr "Veiksena"
@@ -1320,19 +1324,19 @@ msgstr "Modelis"
 msgid "Monthly"
 msgstr "Kas mėnesį"
 
-#: src/Core/Main.vala:1139
+#: src/Core/Main.vala:1138
 msgid "Monthly snapshot are enabled"
 msgstr "Kasmėnesinės momentinės kopijos yra įjungtos"
 
-#: src/Core/Main.vala:1158
+#: src/Core/Main.vala:1157
 msgid "Monthly snapshot failed!"
 msgstr "Kasmėnesinė momentinė kopija patyrė nesėkmę!"
 
-#: src/Core/Main.vala:2129 src/Core/Main.vala:2162
+#: src/Core/Main.vala:2262 src/Core/Main.vala:2295
 msgid "Mount"
 msgstr "Prijungti"
 
-#: src/Core/Main.vala:2990
+#: src/Core/Main.vala:3123
 msgid "Moved system subvolume to snapshot directory"
 msgstr "Sistemos patomis perkeltas į momentinės kopijos katalogą"
 
@@ -1354,7 +1358,7 @@ msgstr "Kitas"
 msgid "No"
 msgstr "Ne"
 
-#: src/Gtk/BackupBox.vala:84 src/Gtk/RestoreBox.vala:122
+#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:122
 msgid "No Change"
 msgstr "Be pakeitimų"
 
@@ -1366,7 +1370,7 @@ msgstr "Nepasirinktos jokios momentinės kopijos"
 msgid "No snapshots available"
 msgstr "Nėra prieinamų momentinių kopijų"
 
-#: src/Core/SnapshotRepo.vala:823 src/Console/AppConsole.vala:321
+#: src/Core/SnapshotRepo.vala:830 src/Console/AppConsole.vala:321
 #: src/Gtk/MainWindow.vala:970
 msgid "No snapshots found"
 msgstr "Nerasta jokių momentinių kopijų"
@@ -1379,7 +1383,7 @@ msgstr "Įrenginyje nerasta jokių momentinių kopijų"
 msgid "No snapshots on device"
 msgstr "Įrenginyje nėra momentinių kopijų"
 
-#: src/Core/SnapshotRepo.vala:574
+#: src/Core/SnapshotRepo.vala:581
 msgid "No snapshots on this device"
 msgstr "Šiame įrenginyje nėra momentinių kopijų"
 
@@ -1396,15 +1400,15 @@ msgstr "Nėra"
 msgid "Not Found"
 msgstr ""
 
-#: src/Core/SnapshotRepo.vala:592
+#: src/Core/SnapshotRepo.vala:599
 msgid "Not Selected"
 msgstr "Nepasirinkta"
 
-#: src/Core/Main.vala:385
+#: src/Core/Main.vala:384
 msgid "Not Supported"
 msgstr "Nepalaikoma"
 
-#: src/Core/SnapshotRepo.vala:538 src/Core/SnapshotRepo.vala:565
+#: src/Core/SnapshotRepo.vala:543 src/Core/SnapshotRepo.vala:572
 msgid "Not enough disk space"
 msgstr "Trūksta vietos diske"
 
@@ -1412,7 +1416,7 @@ msgstr "Trūksta vietos diske"
 msgid "Notes"
 msgstr "Pastabos"
 
-#: src/Core/Main.vala:1169
+#: src/Core/Main.vala:1168
 msgid "Nothing to do!"
 msgstr "Nėra ką atlikti!"
 
@@ -1429,7 +1433,7 @@ msgstr ""
 "Saugomų momentinių kopijų skaičius.\n"
 "Viršijus šią ribą, senesnės momentinės kopijos bus pašalintos."
 
-#: src/Core/SnapshotRepo.vala:548 src/Utility/Gtk/CustomMessageDialog.vala:147
+#: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:147
 #: src/Utility/Gtk/CustomMessageDialog.vala:151 src/Utility/GtkHelper.vala:108
 #: src/Gtk/SettingsWindow.vala:123 src/Gtk/ExcludeListSummaryWindow.vala:84
 msgid "OK"
@@ -1443,7 +1447,7 @@ msgstr ""
 "Operacinė sistema privalo būti įdiegta BTRFS skaidinyje su Ubuntu tipo "
 "patomių išdėstymu (@ ir @home patomiai). Kiti išdėstymai yra nepalaikomi."
 
-#: src/Core/Main.vala:4016
+#: src/Core/Main.vala:4157
 msgid "Older log files removed"
 msgstr "Senesni žurnalų failai pašalinti"
 
@@ -1455,7 +1459,7 @@ msgstr "Seniausia momentinė kopija"
 msgid "On demand (manual)"
 msgstr ""
 
-#: src/Core/Main.vala:383 src/Core/Main.vala:3464
+#: src/Core/Main.vala:382 src/Core/Main.vala:3605
 #: src/Gtk/RestoreDeviceBox.vala:511
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
@@ -1466,7 +1470,7 @@ msgstr ""
 msgid "Open Menu"
 msgstr "Atverti meniu"
 
-#: src/Core/Main.vala:3246
+#: src/Core/Main.vala:3387
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
@@ -1482,7 +1486,7 @@ msgstr "Parametrai"
 msgid "Other applications (next page)"
 msgstr "Kitos programos (kitas puslapis)"
 
-#: src/Gtk/BackupBox.vala:96 src/Gtk/RestoreBox.vala:134
+#: src/Gtk/BackupBox.vala:99 src/Gtk/RestoreBox.vala:134
 #: src/Gtk/RsyncLogBox.vala:398
 #, c-format
 msgid "Owner"
@@ -1493,7 +1497,7 @@ msgstr "Savininkas"
 msgid "Parent Device"
 msgstr "Pirminis įrenginys"
 
-#: src/Core/Main.vala:2493 src/Core/Main.vala:2584 src/Gtk/RsyncLogBox.vala:222
+#: src/Core/Main.vala:2626 src/Core/Main.vala:2717 src/Gtk/RsyncLogBox.vala:222
 msgid "Parsing log file..."
 msgstr "Nagrinėjamas žurnalo failas..."
 
@@ -1501,7 +1505,7 @@ msgstr "Nagrinėjamas žurnalo failas..."
 msgid "Partition has an unsupported subvolume layout."
 msgstr "Skaidinyje yra nepalaikomas patomių išdėstymas."
 
-#: src/Core/SnapshotRepo.vala:597 src/Gtk/RestoreDeviceBox.vala:93
+#: src/Core/SnapshotRepo.vala:604 src/Gtk/RestoreDeviceBox.vala:93
 #, c-format
 msgid "Path"
 msgstr "Kelias"
@@ -1510,21 +1514,21 @@ msgstr "Kelias"
 msgid "Pattern"
 msgstr "Šablonas"
 
-#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:133
+#: src/Gtk/BackupBox.vala:98 src/Gtk/RestoreBox.vala:133
 #: src/Gtk/RsyncLogBox.vala:396
 #, c-format
 msgid "Permissions"
 msgstr "Leidimai"
 
-#: src/Core/Main.vala:259
+#: src/Core/Main.vala:258
 msgid "Please check if you have multiple windows open."
 msgstr "Patikrinkite ar nesatę atvėrę kelių langų."
 
-#: src/Core/Main.vala:2260
+#: src/Core/Main.vala:2393
 msgid "Please do not interrupt the restore process!"
 msgstr "Prašome nepertraukti atkūrimo proceso!"
 
-#: src/Core/Main.vala:354
+#: src/Core/Main.vala:353
 msgid "Please install required packages and try running TimeShift again"
 msgstr "Įdiekite reikiamus paketus ir pabandykite vėl paleisti TimeShift"
 
@@ -1540,7 +1544,7 @@ msgstr ""
 "Prašome paleisti programą administratoriaus teisėmis (naudojant \"sudo\" ar "
 "\"su\")"
 
-#: src/Core/Main.vala:2210
+#: src/Core/Main.vala:2343
 msgid "Please save your work and close all applications."
 msgstr "Įrašykite visą savo darbą ir užverkite visas programas."
 
@@ -1552,7 +1556,7 @@ msgstr "Norėdami peržiūrėti žurnalą, pasirinkite momentinę kopiją!"
 msgid "Please select the GRUB device"
 msgstr "Pasirinkite GRUB įrenginį"
 
-#: src/Core/Main.vala:255
+#: src/Core/Main.vala:254
 msgid "Please wait a few minutes and try again."
 msgstr "Palaukite kelias minutes ir bandykite dar kartą."
 
@@ -1568,7 +1572,7 @@ msgstr ""
 msgid "Populating list..."
 msgstr "Užpildomas sąrašas..."
 
-#: src/Core/Main.vala:1595 src/Gtk/BackupBox.vala:114
+#: src/Core/Main.vala:1728 src/Gtk/BackupBox.vala:117
 #: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
 #: src/Gtk/RsyncLogBox.vala:232
 msgid "Preparing..."
@@ -1583,11 +1587,11 @@ msgstr "Ankstesnis"
 msgid "Print debug information"
 msgstr "Išvesti derinimo informaciją"
 
-#: src/Core/Main.vala:3826
+#: src/Core/Main.vala:3967
 msgid "Query completed"
 msgstr "Užklausa užbaigta"
 
-#: src/Core/Main.vala:3809
+#: src/Core/Main.vala:3950
 msgid "Querying subvolume info..."
 msgstr "Užklausiama patomio informacija..."
 
@@ -1612,7 +1616,7 @@ msgstr ""
 msgid "Re-install GRUB2 bootloader?"
 msgstr "Įdiegti iš naujo GRUB2 paleidyklę?"
 
-#: src/Core/Main.vala:2323
+#: src/Core/Main.vala:2456
 msgid "Re-installing GRUB2 bootloader..."
 msgstr "Iš naujo įdiegiama GRUB2 paleidyklė..."
 
@@ -1625,7 +1629,7 @@ msgstr "Iš naujo įdiegia GRUB2 paleidyklę pasirinktame įrenginyje."
 msgid "Read %'d of %'d lines..."
 msgstr "Perskaityta %'d iš %'d eilučių..."
 
-#: src/Core/Main.vala:2423
+#: src/Core/Main.vala:2556
 msgid "Rebooting system..."
 msgstr "Iš naujo paleidžiama sistema..."
 
@@ -1646,8 +1650,8 @@ msgstr ""
 msgid "Remove"
 msgstr "Šalinti"
 
-#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1633 src/Core/Main.vala:1644
-#: src/Core/Main.vala:4012 src/Core/SnapshotRepo.vala:900
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1766 src/Core/Main.vala:1777
+#: src/Core/Main.vala:4153 src/Core/SnapshotRepo.vala:907
 #, c-format
 msgid "Removed"
 msgstr "Pašalinta"
@@ -1656,7 +1660,7 @@ msgstr "Pašalinta"
 msgid "Removed cron task"
 msgstr "Pašalinta cron užduotis"
 
-#: src/Core/Main.vala:3614
+#: src/Core/Main.vala:3755
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr "Pašalintas prijungimo katalogas: \"%s\""
@@ -1673,8 +1677,8 @@ msgstr "Šalinama"
 msgid "Removing snapshot"
 msgstr "Šalinama momentinė kopija"
 
-#: src/Core/SnapshotRepo.vala:756 src/Core/SnapshotRepo.vala:775
-#: src/Core/SnapshotRepo.vala:793 src/Core/SnapshotRepo.vala:807
+#: src/Core/SnapshotRepo.vala:763 src/Core/SnapshotRepo.vala:782
+#: src/Core/SnapshotRepo.vala:800 src/Core/SnapshotRepo.vala:814
 #, c-format
 msgid "Removing snapshots"
 msgstr "Šalinamos momentinės kopijos"
@@ -1701,7 +1705,7 @@ msgstr "Atkurti išskyrimus"
 msgid "Restore Snapshot"
 msgstr "Atkurti momentinę kopiją"
 
-#: src/Core/Main.vala:2833 src/Core/Main.vala:2875
+#: src/Core/Main.vala:2966 src/Core/Main.vala:3008
 msgid "Restore completed"
 msgstr "Atkūrimas užbaigtas"
 
@@ -1733,7 +1737,7 @@ msgid ""
 "snapshot can be restored later to 'undo' the restore."
 msgstr "Momentinės kopijos atkūrimas pakeis sistemos patomius"
 
-#: src/Core/Main.vala:2802
+#: src/Core/Main.vala:2935
 msgid "Restoring snapshot..."
 msgstr "Atkuriama momentinė kopija..."
 
@@ -1776,7 +1780,7 @@ msgstr ""
 msgid "Run in non-interactive mode"
 msgstr "Paleisti neinteraktyvioje veiksenoje"
 
-#: src/Core/Main.vala:191
+#: src/Core/Main.vala:190
 msgid "Running"
 msgstr "Vykdoma"
 
@@ -1800,7 +1804,7 @@ msgstr ""
 "momentinių kopijų. Jūs netgi galite įdiegti kitą Linux distribuciją, o "
 "vėliau, atkūrus momentinę kopiją, sugrąžinti ankstesnę distribuciją."
 
-#: src/Core/Main.vala:1301 src/Core/Main.vala:1455 src/Core/Main.vala:1457
+#: src/Core/Main.vala:1434 src/Core/Main.vala:1588 src/Core/Main.vala:1590
 msgid "Saving to device"
 msgstr "Įrašoma į įrenginį"
 
@@ -1808,11 +1812,11 @@ msgstr "Įrašoma į įrenginį"
 msgid "Schedule"
 msgstr "Tvarkaraštis"
 
-#: src/Core/Main.vala:262
+#: src/Core/Main.vala:261
 msgid "Scheduled snapshot in progress..."
 msgstr "Vykdoma suplanuota momentinė kopija..."
 
-#: src/Core/Main.vala:1169 src/Gtk/MainWindow.vala:1020
+#: src/Core/Main.vala:1168 src/Gtk/MainWindow.vala:1020
 #: src/Gtk/ScheduleBox.vala:312
 msgid "Scheduled snapshots are disabled"
 msgstr "Planinės momentinės kopijos yra išjungtos"
@@ -1839,7 +1843,7 @@ msgstr ""
 msgid "Select '%s' device (default = %s)"
 msgstr "Pasirinkite \"%s\" įrenginį (pagal numatymą = %s)"
 
-#: src/Core/SnapshotRepo.vala:502 src/Console/AppConsole.vala:691
+#: src/Core/SnapshotRepo.vala:510 src/Console/AppConsole.vala:691
 msgid "Select BTRFS system disk with root subvolume (@)"
 msgstr "Pasirinkite BTRFS sistemos diską su šaknies patomiu (@)"
 
@@ -1884,7 +1888,7 @@ msgstr "Pasirinkite vieną momentinę kopiją, kurią atkurti"
 msgid "Select another device for root file system (/)"
 msgstr "Pasirinkite šaknies failų sistemai (/) kitą įrenginį"
 
-#: src/Core/SnapshotRepo.vala:541 src/Core/SnapshotRepo.vala:568
+#: src/Core/SnapshotRepo.vala:546 src/Core/SnapshotRepo.vala:575
 msgid "Select another device or free up some space"
 msgstr "Pasirinkite kitą įrenginį arba atlaisvinkite šiek tiek vietos"
 
@@ -1936,7 +1940,7 @@ msgstr "Pasirinkite momentinių kopijų kūrimo intervalus"
 msgid "Select the items to be removed from the list"
 msgstr "Pažymėkite elementus, kuriuos šalinti iš sąrašo"
 
-#: src/Core/SnapshotRepo.vala:464
+#: src/Core/SnapshotRepo.vala:472
 msgid "Select the snapshot device"
 msgstr "Pasirinkite momentinės kopijos įrenginį"
 
@@ -1956,11 +1960,11 @@ msgstr "Pasirinkite momentines kopijas, kurias pažymėti ištrynimui"
 msgid "Select the target devices where system will be cloned."
 msgstr "Pasirinkite paskirties įrenginius, kur bus klonuota sistema."
 
-#: src/Core/Main.vala:3274
+#: src/Core/Main.vala:3415
 msgid "Selected default snapshot device"
 msgstr "Pasirinktas numatytasis momentinės kopijos įrenginys"
 
-#: src/Core/Main.vala:3225 src/Core/Main.vala:3229
+#: src/Core/Main.vala:3366 src/Core/Main.vala:3370
 msgid "Selected default snapshot type"
 msgstr "Pasirinktas numatytasis momentinės kopijos tipas"
 
@@ -1972,15 +1976,15 @@ msgstr "Pasirinktame įrenginyje nėra BTRFS skaidinio"
 msgid "Selected device does not have Linux partition"
 msgstr "Pasirinktame įrenginyje nėra Linux skaidinio"
 
-#: src/Core/SnapshotRepo.vala:143
+#: src/Core/SnapshotRepo.vala:144
 msgid "Selected snapshot device"
 msgstr "Pasirinktas momentinės kopijos įrenginys"
 
-#: src/Core/SnapshotRepo.vala:501 src/Console/AppConsole.vala:690
+#: src/Core/SnapshotRepo.vala:509 src/Console/AppConsole.vala:690
 msgid "Selected snapshot device is not a system disk"
 msgstr "Pasirinktas momentinės kopijos įrenginys nėra sistemos diskas"
 
-#: src/Core/Main.vala:2043
+#: src/Core/Main.vala:2176
 msgid "Selected snapshot is marked for deletion"
 msgstr "Pasirinkta momentinė kopija yra pažymėta ištrynimui"
 
@@ -2002,7 +2006,7 @@ msgstr ""
 msgid "Serial"
 msgstr "Serijinis"
 
-#: src/Core/Main.vala:219
+#: src/Core/Main.vala:218
 msgid "Session log file"
 msgstr "Seanso žurnalo failas"
 
@@ -2045,7 +2049,7 @@ msgstr "Rodyti rsync išvestį (pagal numatymą)"
 
 #: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
 #: src/Console/AppConsole.vala:458 src/Console/AppConsole.vala:497
-#: src/Gtk/BackupBox.vala:93 src/Gtk/BackupDeviceBox.vala:202
+#: src/Gtk/BackupBox.vala:96 src/Gtk/BackupDeviceBox.vala:202
 #: src/Gtk/RestoreBox.vala:131 src/Gtk/RsyncLogBox.vala:392
 #, c-format
 msgid "Size"
@@ -2067,8 +2071,8 @@ msgstr ""
 msgid "Skip GRUB2 reinstall"
 msgstr "Praleisti GRUB2 įdiegimą iš naujo"
 
-#: src/Core/Main.vala:2048 src/Core/SnapshotRepo.vala:624
-#: src/Core/SnapshotRepo.vala:677 src/Gtk/SnapshotListBox.vala:93
+#: src/Core/Main.vala:2181 src/Core/SnapshotRepo.vala:631
+#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:93
 #, c-format
 msgid "Snapshot"
 msgstr "Momentinė kopija"
@@ -2095,33 +2099,33 @@ msgstr ""
 msgid "Snapshot deletion in progress..."
 msgstr "Momentinės kopijos ištrynimas eigoje..."
 
-#: src/Core/SnapshotRepo.vala:435
+#: src/Core/SnapshotRepo.vala:442
 #, c-format
 msgid "Snapshot device"
 msgstr "Momentinės kopijos įrenginys"
 
-#: src/Core/SnapshotRepo.vala:470 src/Console/AppConsole.vala:664
+#: src/Core/SnapshotRepo.vala:478 src/Console/AppConsole.vala:664
 msgid "Snapshot device not available"
 msgstr "Momentinės kopijos įrenginys yra neprieinamas"
 
-#: src/Core/SnapshotRepo.vala:463 src/Console/AppConsole.vala:660
+#: src/Core/SnapshotRepo.vala:471 src/Console/AppConsole.vala:660
 msgid "Snapshot device not selected"
 msgstr "Nepasirinktas momentinės kopijos įrenginys"
 
-#: src/Core/SnapshotRepo.vala:439
+#: src/Core/SnapshotRepo.vala:446
 #, c-format
 msgid "Snapshot location"
 msgstr "Momentinės kopijos vieta"
 
-#: src/Core/Main.vala:1273
+#: src/Core/Main.vala:1305
 msgid "Snapshot saved successfully"
 msgstr "Momentinė kopija sėkmingai įrašyta"
 
-#: src/Core/Main.vala:2038
+#: src/Core/Main.vala:2171
 msgid "Snapshot to restore not specified!"
 msgstr "Nenurodyta momentinė kopiją, kurią atkurti!"
 
-#: src/Core/Main.vala:2879
+#: src/Core/Main.vala:3012
 msgid "Snapshot will become active after system is rebooted."
 msgstr ""
 "Momentinė kopija taps aktyvi po to, kai sistema bus paleista iš naujo."
@@ -2252,7 +2256,7 @@ msgstr "Nurodyti momentinę kopiją, kurią atkurti"
 msgid "Specify target device"
 msgstr "Nurodyti paskirties įrenginį"
 
-#: src/Core/SnapshotRepo.vala:445 src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:452 src/Core/SnapshotRepo.vala:606
 #: src/Gtk/RsyncLogBox.vala:472
 #, c-format
 msgid "Status"
@@ -2293,15 +2297,15 @@ msgstr "Perjungti į BTRFS veikseną (pagal numatymą: config)"
 msgid "Switch to RSYNC mode (default: config)"
 msgstr "Perjungti į RSYNC veikseną (pagal numatymą: config)"
 
-#: src/Core/SnapshotRepo.vala:954
+#: src/Core/SnapshotRepo.vala:961
 msgid "Symlinks updated"
 msgstr "Simbolinės nuorodos atnaujintos"
 
-#: src/Core/Main.vala:2398
+#: src/Core/Main.vala:2531
 msgid "Syncing file systems..."
 msgstr ""
 
-#: src/Core/Main.vala:1377 src/Core/Main.vala:2568 src/Core/Main.vala:2809
+#: src/Core/Main.vala:1510 src/Core/Main.vala:2701 src/Core/Main.vala:2942
 msgid "Syncing files with rsync..."
 msgstr ""
 
@@ -2323,15 +2327,15 @@ msgid "System can be rolled-back to a previous date by restoring a snapshot."
 msgstr ""
 "Sistema gali būti sugrąžinta į ankstesnę datą, atkūrus momentinę kopiją."
 
-#: src/Core/Main.vala:2261
+#: src/Core/Main.vala:2394
 msgid "System will reboot after files are restored"
 msgstr "Atkūrus failus, sistema bus paleista iš naujo"
 
-#: src/Core/Main.vala:2211
+#: src/Core/Main.vala:2344
 msgid "System will reboot after files are restored."
 msgstr "Atkūrus failus, sistema bus paleista iš naujo."
 
-#: src/Core/Main.vala:1242 src/Core/Main.vala:1283
+#: src/Core/Main.vala:1241 src/Core/Main.vala:1315
 msgid "Tagged snapshot"
 msgstr "Momentine kopija su žyme"
 
@@ -2339,7 +2343,7 @@ msgstr "Momentine kopija su žyme"
 msgid "Tags"
 msgstr "Žymės"
 
-#: src/Core/Main.vala:2073
+#: src/Core/Main.vala:2206
 msgid "Target device is not mounted"
 msgstr "Paskirties įrenginys nėra prijungtas"
 
@@ -2347,7 +2351,7 @@ msgstr "Paskirties įrenginys nėra prijungtas"
 msgid "Target device is same as system device"
 msgstr "Paskirties įrenginys yra toks pats kaip ir sistemos įrenginys"
 
-#: src/Core/Main.vala:2067
+#: src/Core/Main.vala:2200
 msgid "Target device not specified!"
 msgstr "Nenurodytas paskirties įrenginys!"
 
@@ -2369,11 +2373,11 @@ msgstr ""
 "paštą. Pažymėkite šį parametrą, norėdami nesiųsti Timeshift sukurtų cron "
 "užduočių el. laiškais."
 
-#: src/Core/Main.vala:382
+#: src/Core/Main.vala:381
 msgid "The system partition has an unsupported subvolume layout."
 msgstr "Sistemos skaidinyje yra nepalaikomas patomių išdėstymas."
 
-#: src/Core/Main.vala:3463
+#: src/Core/Main.vala:3604
 msgid "The target partition has an unsupported subvolume layout."
 msgstr "Paskirties skaidinyje yra nepalaikomas patomių išdėstymas."
 
@@ -2386,7 +2390,7 @@ msgstr "Šiame įrenginyje nėra jokių momentinių kopijų"
 msgid "This device is not encrypted"
 msgstr "Šis įrenginys nėra šifruotas"
 
-#: src/Core/Main.vala:2227
+#: src/Core/Main.vala:2360
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
@@ -2399,7 +2403,7 @@ msgstr ""
 msgid "Timeshift is active"
 msgstr "Timeshift yra aktyvi"
 
-#: src/Gtk/BackupBox.vala:94 src/Gtk/RestoreBox.vala:132
+#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:132
 #: src/Gtk/RsyncLogBox.vala:394
 #, c-format
 msgid "Timestamp"
@@ -2428,11 +2432,11 @@ msgstr "UUID"
 msgid "Unknown option"
 msgstr "Nežinomas parametras"
 
-#: src/Core/Main.vala:1224
+#: src/Core/Main.vala:1223
 msgid "Unknown snapshot type"
 msgstr "Nežinomas momentinės kopijos tipas"
 
-#: src/Core/Main.vala:1582
+#: src/Core/Main.vala:1715
 msgid "Unknown value specified for option --tags"
 msgstr "Parametrui --tags nurodyta nežinoma reikšmė"
 
@@ -2449,7 +2453,7 @@ msgstr "Sėkmingai atrakinta"
 msgid "Unmounting from"
 msgstr "Atjungiama nuo"
 
-#: src/Core/Main.vala:3467 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Core/Main.vala:3608 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
 msgstr "Nepalaikomas patomių išdėstymas"
 
@@ -2461,11 +2465,11 @@ msgstr "Atnaujinti GRUB meniu"
 msgid "Update initramfs"
 msgstr "Atnaujinti initramfs"
 
-#: src/Core/Main.vala:2748
+#: src/Core/Main.vala:2881
 msgid "Updated /etc/crypttab on target device"
 msgstr "Atnaujinta /etc/crypttab paskirties įrenginyje"
 
-#: src/Core/Main.vala:2668
+#: src/Core/Main.vala:2801
 msgid "Updated /etc/fstab on target device"
 msgstr "Atnaujinta /etc/fstab paskirties įrenginyje"
 
@@ -2477,11 +2481,11 @@ msgstr ""
 "Atnaujina GRUB meniu įrašus (rekomenduojama). Tai yra saugu vykdyti ir tai "
 "turėtų likti pažymėta."
 
-#: src/Core/Main.vala:2381
+#: src/Core/Main.vala:2514
 msgid "Updating GRUB menu..."
 msgstr "Atnaujinamas GRUB meniu..."
 
-#: src/Core/Main.vala:2592
+#: src/Core/Main.vala:2725
 msgid "Updating bootloader configuration..."
 msgstr "Atnaujinama paleidyklės konfigūracija..."
 
@@ -2534,7 +2538,7 @@ msgstr ""
 msgid "View TimeShift Logs"
 msgstr "Rodyti TimeShift žurnalus"
 
-#: src/Core/Main.vala:2122 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Core/Main.vala:2255 src/Gtk/RestoreSummaryBox.vala:53
 msgid "Warning"
 msgstr "Įspėjimas"
 
@@ -2546,11 +2550,11 @@ msgstr "Saityno naršyklės"
 msgid "Weekly"
 msgstr "Kas savaitę"
 
-#: src/Core/Main.vala:1127
+#: src/Core/Main.vala:1126
 msgid "Weekly snapshot failed!"
 msgstr "Savaitinė momentinė kopija patyrė nesėkmę!"
 
-#: src/Core/Main.vala:1108
+#: src/Core/Main.vala:1107
 msgid "Weekly snapshots are enabled"
 msgstr "Savaitinės momentinės kopijos yra įjungtos"
 
@@ -2600,15 +2604,15 @@ msgstr ""
 msgid "[Warning] Deleted invalid lock"
 msgstr "[Įspėjimas] Ištrintas neteisingas užraktas"
 
-#: src/Core/SnapshotRepo.vala:807
+#: src/Core/SnapshotRepo.vala:814
 msgid "all"
 msgstr "visos"
 
-#: src/Core/Main.vala:1510 src/Core/Main.vala:3869 src/Core/Subvolume.vala:199
+#: src/Core/Main.vala:1643 src/Core/Main.vala:4010 src/Core/Subvolume.vala:199
 msgid "btrfs returned an error"
 msgstr "btrfs grąžino klaidą"
 
-#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1409
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1542
 msgid "complete"
 msgstr "užbaigta"
 
@@ -2620,30 +2624,30 @@ msgstr "crontab failas eksportuotas"
 msgid "crontab file installed"
 msgstr "crontab failas įdiegtas"
 
-#: src/Core/SnapshotRepo.vala:793
+#: src/Core/SnapshotRepo.vala:800
 msgid "incomplete"
 msgstr "nepilna"
 
-#: src/Core/SnapshotRepo.vala:775
+#: src/Core/SnapshotRepo.vala:782
 msgid "marked for deletion"
 msgstr "pažymėta ištrynimui"
 
-#: src/Core/Main.vala:1301 src/Core/Main.vala:1455 src/Core/Main.vala:1457
+#: src/Core/Main.vala:1434 src/Core/Main.vala:1588 src/Core/Main.vala:1590
 msgid "mounted at path"
 msgstr "prijungta ties keliu"
 
-#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1409
-#: src/Gtk/BackupBox.vala:234 src/Gtk/RestoreBox.vala:237
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1542
+#: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
 #: src/Gtk/DeleteBox.vala:149
 msgid "remaining"
 msgstr "liko"
 
-#: src/Core/Main.vala:1420
+#: src/Core/Main.vala:1553
 msgid "rsync returned an error"
 msgstr "rsync grąžino klaidą"
 
-#: src/Core/SnapshotRepo.vala:624 src/Core/SnapshotRepo.vala:677
-#: src/Core/SnapshotRepo.vala:756
+#: src/Core/SnapshotRepo.vala:631 src/Core/SnapshotRepo.vala:684
+#: src/Core/SnapshotRepo.vala:763
 msgid "un-tagged"
 msgstr "be žymių"
 

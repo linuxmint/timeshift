@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2022-06-22 13:32+0200\n"
-"PO-Revision-Date: 2022-06-12 22:58+0000\n"
+"POT-Creation-Date: 2022-06-30 15:17+0200\n"
+"PO-Revision-Date: 2022-07-19 07:57+0000\n"
 "Last-Translator: Kimmo Kujansuu <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-06-26 11:29+0000\n"
-"X-Generator: Launchpad (build 51a2e4fa2e9b8e45f00904ad7f53546f45ac48a5)\n"
+"X-Launchpad-Export-Date: 2022-07-24 09:43+0000\n"
+"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
 "Language: fi\n"
 
 #: src/Console/AppConsole.vala:615
@@ -28,7 +28,7 @@ msgstr ""
 "\n"
 "Paina ENTER jatkaaksesi..."
 
-#: src/Core/SnapshotRepo.vala:550
+#: src/Core/SnapshotRepo.vala:556
 #, c-format
 msgid "%d snapshots, %s free"
 msgstr "%d palautuspistettä, %s vapaana"
@@ -47,23 +47,23 @@ msgstr "'%s' tulee olemaan juuriasemalla"
 msgid "(Re)install GRUB2 on:"
 msgstr "(Uudelleen)asenna GRUB2 sijaintiin:"
 
-#: src/Core/Main.vala:368
+#: src/Core/Main.vala:367
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr "** Poistettu Timeshift BTRFS **"
 
-#: src/Core/Main.vala:3374
+#: src/Core/Main.vala:3515
 msgid "/ is mapped to device"
 msgstr "/ on kartoitettu laitteelle"
 
-#: src/Core/Main.vala:3396
+#: src/Core/Main.vala:3537
 msgid "/boot is mapped to device"
 msgstr "/boot on kartoitettu laitteelle"
 
-#: src/Core/Main.vala:3407
+#: src/Core/Main.vala:3548
 msgid "/boot/efi is mapped to device"
 msgstr "/boot/efi on kartoitettu laitteelle"
 
-#: src/Core/Main.vala:3385
+#: src/Core/Main.vala:3526
 msgid "/home is mapped to device"
 msgstr "/home on kartoitettu laitteelle"
 
@@ -105,7 +105,7 @@ msgstr "Lisää kansioita"
 
 #: src/Gtk/ExcludeBox.vala:225
 msgid "Add custom pattern"
-msgstr "Lisää muokattu kaava"
+msgstr "Lisää mukautettu hakuehto"
 
 #: src/Gtk/ExcludeBox.vala:248
 msgid "Add directories"
@@ -167,7 +167,7 @@ msgstr ""
 "Valitse joko salaamaton laite käynnistyshakemistolle tai valitse salaamaton "
 "laite juuritiedostojärjestelmälle."
 
-#: src/Core/Main.vala:254
+#: src/Core/Main.vala:253
 msgid "Another instance of Timeshift is creating a snapshot."
 msgstr "Toinen Timeshift on luomassa palautuspistettä."
 
@@ -175,7 +175,7 @@ msgstr "Toinen Timeshift on luomassa palautuspistettä."
 msgid "Another instance of this application is running"
 msgstr "Toinen tämän sovelluksen instanssi on käynnissä"
 
-#: src/Core/Main.vala:258
+#: src/Core/Main.vala:257
 msgid "Another instance of timeshift is currently running!"
 msgstr "Toinen timeshift instanssi on tällä hetkellä käynnissä!"
 
@@ -183,11 +183,11 @@ msgstr "Toinen timeshift instanssi on tällä hetkellä käynnissä!"
 msgid "Answer YES to all confirmation prompts"
 msgstr "Vastaa KYLLÄ kaikkiin varmistuskyselyihin"
 
-#: src/Core/Main.vala:3211
+#: src/Core/Main.vala:3352
 msgid "App config loaded"
 msgstr "Sovelluksen asetukset ladattu"
 
-#: src/Core/Main.vala:3099
+#: src/Core/Main.vala:3240
 msgid "App config saved"
 msgstr "Sovelluksen asetukset tallennettu"
 
@@ -195,11 +195,11 @@ msgstr "Sovelluksen asetukset tallennettu"
 msgid "Application needs admin access."
 msgstr "Sovellus tarvitsee ylläpidon oikeudet."
 
-#: src/Core/Main.vala:3551
+#: src/Core/Main.vala:3692
 msgid "Application will exit"
 msgstr "Sovellus sulkeutuu"
 
-#: src/Core/Main.vala:384
+#: src/Core/Main.vala:383
 msgid "Application will exit."
 msgstr "Sovellus sulkeutuu."
 
@@ -219,7 +219,7 @@ msgstr "BTRFS palautuspisteet"
 msgid "BTRFS Tools Not Found"
 msgstr "BTRFS–työkaluja ei löytynyt"
 
-#: src/Core/Main.vala:2057 src/Core/Main.vala:2061
+#: src/Core/Main.vala:2190 src/Core/Main.vala:2194
 msgid "BTRFS device is not mounted"
 msgstr "BTRFS–laitetta ei ole liitetty"
 
@@ -250,11 +250,11 @@ msgstr "Taustajärjestelmä"
 msgid "Backup"
 msgstr "Varmuuskopio"
 
-#: src/Core/Main.vala:2033
+#: src/Core/Main.vala:2166
 msgid "Backup Device"
 msgstr "Varmuuskopiointilaite"
 
-#: src/Core/Main.vala:2028
+#: src/Core/Main.vala:2161
 msgid "Backup device not specified!"
 msgstr "Varmuuskopiointilaitetta ei ole määritetty!"
 
@@ -270,7 +270,7 @@ msgstr "Käynnistys"
 msgid "Boot device not selected"
 msgstr "Käynnistysasemaa ei ole valittu"
 
-#: src/Core/Main.vala:1034
+#: src/Core/Main.vala:1033
 msgid "Boot snapshot failed!"
 msgstr "Käynnistyksen palautuspiste epäonnistui!"
 
@@ -281,7 +281,7 @@ msgstr ""
 "Käynnistyksen palautuspiste luodaan 10 minuutin viiveellä järjestelmän "
 "käynnistyksen jälkeen."
 
-#: src/Core/Main.vala:1015
+#: src/Core/Main.vala:1014
 msgid "Boot snapshots are enabled"
 msgstr "Käynnistyksen palautuspisteet ovat käytössä"
 
@@ -305,9 +305,13 @@ msgstr "Selaa tiedostoja"
 msgid "Browse selected snapshot"
 msgstr "Selaa valittua palautuspistettä"
 
-#: src/Core/Main.vala:2523
+#: src/Core/Main.vala:2656
 msgid "Building file list..."
 msgstr "Rakennetaan tiedostolista..."
+
+#: src/Core/Main.vala:1393
+msgid "Calculating required disk space..."
+msgstr "Lasketaan tarvittavaa levytilaa..."
 
 #: src/Utility/Gtk/CustomMessageDialog.vala:152 src/Utility/GtkHelper.vala:109
 #: src/Gtk/RestoreWindow.vala:215 src/Gtk/RestoreWindow.vala:224
@@ -336,13 +340,13 @@ msgstr ""
 msgid "Cannot Delete Live Snapshot"
 msgstr "Live-palautuspistettä ei voi poistaa"
 
-#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:125
+#: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
 #: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
 #: src/Gtk/RsyncLogBox.vala:567 src/Gtk/RsyncLogBox.vala:588
 msgid "Changed"
 msgstr "Muutettu"
 
-#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:127
+#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:127
 msgid "Changed items:"
 msgstr "Muutetut kohteet:"
 
@@ -350,17 +354,17 @@ msgstr "Muutetut kohteet:"
 msgid "Checking Restore Actions (Dry Run)"
 msgstr "Palautuksen tarkistaminen (testiajo)"
 
-#: src/Core/Main.vala:2756
+#: src/Core/Main.vala:2889
 msgid "Checking file systems for errors..."
 msgstr "Tarkistetaan tiedostojärjestelmää virheiden varalta..."
 
-#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:130
+#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:130
 #: src/Gtk/RsyncLogBox.vala:390
 #, c-format
 msgid "Checksum"
 msgstr "Tarkastussumma"
 
-#: src/Core/Main.vala:2404
+#: src/Core/Main.vala:2537
 msgid "Cleaning up..."
 msgstr "Puhdistetaan..."
 
@@ -382,7 +386,7 @@ msgstr "Kloonaa järjestelmä"
 msgid "Cloning"
 msgstr "Kloonataan"
 
-#: src/Core/Main.vala:2806
+#: src/Core/Main.vala:2939
 msgid "Cloning system..."
 msgstr "Kloonataan järjestelmää..."
 
@@ -397,7 +401,7 @@ msgstr "Sulje"
 msgid "Close window to exit"
 msgstr "Sulje ikkuna poistuaksesi"
 
-#: src/Core/Main.vala:353
+#: src/Core/Main.vala:352
 msgid "Commands listed below are not available on this system"
 msgstr "Alla listatut komennot eivät ole saatavilla tässä järjestelmässä"
 
@@ -405,12 +409,12 @@ msgstr "Alla listatut komennot eivät ole saatavilla tässä järjestelmässä"
 msgid "Comments (click to edit)"
 msgstr "Kommentit (muokkaa napsauttamalla)"
 
-#: src/Core/Main.vala:2799 src/Gtk/RestoreBox.vala:74
+#: src/Core/Main.vala:2932 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
 msgid "Comparing Files (Dry Run)..."
 msgstr "Vertaa tiedostoja (testiajo)..."
 
-#: src/Core/Main.vala:2565
+#: src/Core/Main.vala:2698
 msgid "Comparing files with rsync..."
 msgstr "Verrataan tiedostoja rsyncin kanssa..."
 
@@ -445,15 +449,15 @@ msgstr "Tiedostoa ei löytynyt"
 msgid "Could not find snapshot"
 msgstr "Palautuspistettä ei löytynyt"
 
-#: src/Core/Main.vala:2968
+#: src/Core/Main.vala:3101
 msgid "Could not find system subvolume"
-msgstr "Ei löydetty järjestelmän alitaltiota"
+msgstr "Järjestelmän alitaltiota ei löytynyt"
 
-#: src/Core/Main.vala:2996
+#: src/Core/Main.vala:3129
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr ""
-"Järjestelmän alaosoiota ei löytynyt palautusta edeltävän palautuspisteen "
-"luomiseen"
+"Järjestelmän alitaltiota ei löytynyt palautusta edeltävän palautuspisteen "
+"luomista varten"
 
 #: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
 #: src/Gtk/RsyncLogBox.vala:571
@@ -513,7 +517,7 @@ msgstr "Luo palautuspisteet käyttäen BTRFS"
 msgid "Create snapshots using RSYNC tool and hard-links"
 msgstr "Luo palautuspisteet käyttäen RSYNC ja kiinteitä linkkejä"
 
-#: src/Gtk/BackupBox.vala:85 src/Gtk/RestoreBox.vala:123
+#: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
 #: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:571
 #: src/Gtk/RsyncLogBox.vala:592
 #, c-format
@@ -528,32 +532,32 @@ msgstr "Luotu hallintatiedosto"
 msgid "Created directory"
 msgstr "Luotu hakemisto"
 
-#: src/Core/Main.vala:3018
+#: src/Core/Main.vala:3151
 msgid "Created pre-restore snapshot"
 msgstr "Luotiin palautusta edeltävä palautuspiste"
 
-#: src/Core/Main.vala:1515
+#: src/Core/Main.vala:1648
 msgid "Created subvolume snapshot"
-msgstr "Luotiin alalevyn tilannekuva"
+msgstr "Luotiin alitaltion palautuspiste"
 
 #: src/Gtk/BackupBox.vala:71
 msgid "Creating Snapshot..."
 msgstr "Luodaan palautuspistettä..."
 
-#: src/Core/Main.vala:1453
+#: src/Core/Main.vala:1586
 msgid "Creating new backup..."
 msgstr "Luodaan uutta varmuuskopiota..."
 
-#: src/Core/Main.vala:1299
+#: src/Core/Main.vala:1432
 msgid "Creating new snapshot..."
 msgstr "Luodaan uutta palautuspistettä..."
 
-#: src/Core/Main.vala:2946
+#: src/Core/Main.vala:3079
 msgid "Creating pre-restore snapshot from system subvolumes..."
 msgstr ""
-"Luodaan palautusta edeltävää palautuspistettä järjestelmän alalevyistä..."
+"Luodaan palautusta edeltävää palautuspistettä järjestelmän alitaltiosta..."
 
-#: src/Core/Main.vala:3550
+#: src/Core/Main.vala:3691
 msgid "Critical Error"
 msgstr "Kriittinen virhe"
 
@@ -577,15 +581,15 @@ msgstr "Mukautettu"
 msgid "Daily"
 msgstr "Päivittäinen"
 
-#: src/Core/Main.vala:1096
+#: src/Core/Main.vala:1095
 msgid "Daily snapshot failed!"
 msgstr "Päivittäinen palautuspiste epäonnistui!"
 
-#: src/Core/Main.vala:1077
+#: src/Core/Main.vala:1076
 msgid "Daily snapshots are enabled"
 msgstr "Päivittäiset palautuspisteet ovat käytössä"
 
-#: src/Core/Main.vala:2127
+#: src/Core/Main.vala:2260
 msgid "Data will be modified on following devices:"
 msgstr "Dataa muokataan seuraavilla laitteilla:"
 
@@ -616,7 +620,7 @@ msgstr "Poista valittu palautuspiste"
 msgid "Delete snapshot"
 msgstr "Poista palautuspiste"
 
-#: src/Gtk/BackupBox.vala:86 src/Gtk/RestoreBox.vala:124
+#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:575
 #: src/Gtk/RsyncLogBox.vala:596
 #, c-format
@@ -627,7 +631,7 @@ msgstr "Poistettu"
 msgid "Deleted directory"
 msgstr "Poistettu hakemisto"
 
-#: src/Core/Main.vala:2925 src/Core/Main.vala:2929 src/Core/Subvolume.vala:167
+#: src/Core/Main.vala:3058 src/Core/Main.vala:3062 src/Core/Subvolume.vala:167
 #, c-format
 msgid "Deleted subvolume"
 msgstr "Poistettu alitaltio"
@@ -649,9 +653,9 @@ msgstr "Deluge, Transmission"
 msgid "Description"
 msgstr "Kuvaus"
 
-#: src/Core/Main.vala:2130 src/Core/Main.vala:2162
-#: src/Core/SnapshotRepo.vala:73 src/Core/SnapshotRepo.vala:592
-#: src/Core/SnapshotRepo.vala:595 src/Utility/Device.vala:1932
+#: src/Core/Main.vala:2263 src/Core/Main.vala:2295
+#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
 #: src/Utility/Device.vala:1942 src/Console/AppConsole.vala:456
 #: src/Console/AppConsole.vala:495 src/Console/AppConsole.vala:543
 #: src/Gtk/RestoreDeviceBox.vala:97
@@ -667,7 +671,7 @@ msgstr "Laite on lukitsematon"
 msgid "Device name is empty!"
 msgstr "Laitteen nimi on tyhjä!"
 
-#: src/Core/Main.vala:3264 src/Core/SnapshotRepo.vala:471
+#: src/Core/Main.vala:3405 src/Core/SnapshotRepo.vala:479
 #: src/Console/AppConsole.vala:665
 msgid "Device not found"
 msgstr "Laitetta ei löytynyt"
@@ -695,11 +699,11 @@ msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
 msgstr ""
 "Laitteita, joissa on Windows-tiedostojärjestelmä, ei tueta (NTFS, FAT jne.)."
 
-#: src/Core/SnapshotRepo.vala:907
+#: src/Core/SnapshotRepo.vala:914
 msgid "Directory not found"
 msgstr "Hakemistoa ei löydy"
 
-#: src/Core/Main.vala:2222 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Core/Main.vala:2355 src/Gtk/RestoreSummaryBox.vala:64
 msgid "Disclaimer"
 msgstr "Huomautus"
 
@@ -707,7 +711,7 @@ msgstr "Huomautus"
 msgid "Disk"
 msgstr "Levy"
 
-#: src/Core/Main.vala:231
+#: src/Core/Main.vala:230
 msgid "Distribution"
 msgstr "Jakeluversio"
 
@@ -745,7 +749,7 @@ msgstr "Anna palautuspisteen numero (a=Keskeytä, p=Edellinen, n=Seuraava)"
 
 #: src/Gtk/ExcludeBox.vala:231
 msgid "Enter the pattern to exclude (Ex: *.mp3, *.bak)"
-msgstr "Syötä hävitettävä kaava (Esim: *.mp3, *.bak)"
+msgstr "Kirjoita pois jätettävät (esim. *.mp3, *.bak)"
 
 #: src/Gtk/RestoreDeviceBox.vala:520
 msgid "Error"
@@ -763,7 +767,7 @@ msgstr "Arvio"
 msgid "Estimating System Size..."
 msgstr "Arvioidaan järjestelmän kokoa..."
 
-#: src/Core/Main.vala:1295
+#: src/Core/Main.vala:1428
 msgid "Estimating system size..."
 msgstr "Arvioidaan järjestelmän kokoa..."
 
@@ -781,7 +785,7 @@ msgstr "Älä sisällytä sovellusten asetuksia"
 
 #: src/Gtk/RestoreWindow.vala:99
 msgid "Exclude Apps"
-msgstr "Älä sisällytä sovelluksia"
+msgstr "Jätä pois sovelluksia"
 
 #: src/Gtk/ExcludeMessageWindow.vala:70
 msgid "Exclude List"
@@ -793,13 +797,13 @@ msgstr "Poista yhteenveto"
 
 #: src/Gtk/ExcludeBox.vala:230
 msgid "Exclude Pattern"
-msgstr "Sulje kaava"
+msgstr "Jätä pois"
 
 #: src/Gtk/ExcludeMessageWindow.vala:56
 msgid "Excluded Directories"
 msgstr "Poistetut hakemistot"
 
-#: src/Core/Main.vala:1583
+#: src/Core/Main.vala:1716
 msgid "Expected values: O, B, H, D, W, M"
 msgstr "Odotetut arvot: O, B, H, D, W, M"
 
@@ -816,19 +820,19 @@ msgstr "Tiedoston kopiointi epäonnistui"
 msgid "Failed to create directory"
 msgstr "Hakemistoa ei voitu luoda"
 
-#: src/Core/Main.vala:1421
+#: src/Core/Main.vala:1554
 msgid "Failed to create new snapshot"
 msgstr "Uuden palautuspisteen luominen epäonnistui"
 
-#: src/Core/Main.vala:1276
+#: src/Core/Main.vala:1308
 msgid "Failed to create snapshot"
 msgstr "Palautuspisteen luominen epäonnistui"
 
-#: src/Core/Main.vala:1511
+#: src/Core/Main.vala:1644
 msgid "Failed to create subvolume snapshot"
-msgstr "Alalevyn palautuspisteen luominen epäonnistui"
+msgstr "Alitaltion palautuspisteen luominen epäonnistui"
 
-#: src/Core/SnapshotRepo.vala:948
+#: src/Core/SnapshotRepo.vala:955
 msgid "Failed to create symlinks"
 msgstr "Ei onnistuttu luomaan symbolisia linkkejä"
 
@@ -842,17 +846,17 @@ msgstr "Tiedoston poistaminen epäonnistui"
 
 #: src/Core/Subvolume.vala:153
 msgid "Failed to delete snapshot nested subvolume"
-msgstr "Sisäkkäisen alalalevyn palautuspisteen poistaminen epäonnistui"
+msgstr "Sisäkkäisen alitaltion palautuspisteen poistaminen epäonnistui"
 
 #: src/Core/Subvolume.vala:163
 msgid "Failed to delete snapshot subvolume"
-msgstr "Alalevyn palautuspisteen poistaminen epäonnistui"
+msgstr "Alitaltion palautuspisteen poistaminen epäonnistui"
 
-#: src/Core/SnapshotRepo.vala:974
+#: src/Core/SnapshotRepo.vala:981
 msgid "Failed to delete symlinks"
 msgstr "Ei onnistuttu poistamaan symbolisia linkkejä"
 
-#: src/Core/Main.vala:3765 src/Core/Main.vala:3771
+#: src/Core/Main.vala:3906 src/Core/Main.vala:3912
 msgid "Failed to estimate system size"
 msgstr "Järjestelmän koon arviointi epäonnistui"
 
@@ -870,7 +874,7 @@ msgstr "Ei onnistuttu saamaan syötettä käyttäjältä 3:lla yrityksellä"
 msgid "Failed to get partition list"
 msgstr "Osiolistaa ei saatu"
 
-#: src/Core/Main.vala:3347
+#: src/Core/Main.vala:3488
 msgid "Failed to get partition list."
 msgstr "Osiolistaa ei saatu."
 
@@ -886,14 +890,14 @@ msgstr "Laitteiden liittäminen epäonnistui"
 msgid "Failed to move file"
 msgstr "Tiedoston siirto epäonnistui"
 
-#: src/Core/Main.vala:2983
+#: src/Core/Main.vala:3116
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr ""
-"Järjestelmän alilevyn siirtäminen palautuspisteen hakemistoon epäonnistui"
+"Järjestelmän alitaltion siirtäminen palautuspisteen hakemistoon epäonnistui"
 
-#: src/Core/Main.vala:3870
+#: src/Core/Main.vala:4011
 msgid "Failed to query subvolume list"
-msgstr "Ei onnistuttu tiedustelemaan alitaltioluetteloa"
+msgstr "Alitaltion luettelon kysely epäonnistui"
 
 #: src/Utility/CronTab.vala:50
 msgid "Failed to read cron tab"
@@ -903,7 +907,7 @@ msgstr "Crontab:n lukeminen epäonnistui"
 msgid "Failed to read file"
 msgstr "Tiedoston lukeminen epäonnistui"
 
-#: src/Core/SnapshotRepo.vala:894
+#: src/Core/SnapshotRepo.vala:901
 msgid "Failed to remove"
 msgstr "Poisto epäonnistui"
 
@@ -918,9 +922,9 @@ msgstr "Palautuspisteen poisto epäonnistui"
 
 #: src/Core/Subvolume.vala:200
 msgid "Failed to restore system subvolume"
-msgstr "Ei onnistuttu palauttamaan järjestelmän alitaltiota"
+msgstr "Järjestelmän alitaltion palauttaminen epäonnistui"
 
-#: src/Core/Main.vala:1371
+#: src/Core/Main.vala:1504
 msgid "Failed to save exclude list"
 msgstr "Poisjätettyjen listan tallentaminen epäonnistui"
 
@@ -934,7 +938,7 @@ msgstr "Laitteen avaaminen epäonnistui"
 msgid "Failed to unmount"
 msgstr "Irrottaminen epäonnistui"
 
-#: src/Core/Main.vala:3551
+#: src/Core/Main.vala:3692
 msgid "Failed to unmount device!"
 msgstr "Laitteen irrottaminen epäonnistui!"
 
@@ -952,9 +956,9 @@ msgstr "Tiedosto (järjestelmä)"
 
 #: src/Gtk/ExcludeMessageWindow.vala:98
 msgid "File Pattern"
-msgstr "Tiedostokaava"
+msgstr "Tiedosto hakuehto"
 
-#: src/Gtk/BackupBox.vala:80
+#: src/Gtk/BackupBox.vala:83
 msgid "File and directory counts:"
 msgstr "Tiedosto– ja hakemistomäärät:"
 
@@ -968,9 +972,8 @@ msgid ""
 "Files &amp; directories matching the patterns below will be excluded. "
 "Patterns starting with a + will include the item instead of excluding."
 msgstr ""
-"Tiedostoja &amp; hakemistoja jotka täsmäävät seuraaviin kaavoihin alla ei "
-"sisällytetä. Kaavat jotka alkavat + sisällyttävät kohteen pois jättämisen "
-"sijaan."
+"Tiedostot &amp; hakemistot jotka täsmäävät alla oleviin hakuehtoihin "
+"jätetään pois. Hakuehdot jotka alkavat + -merkillä sisältävät kohteen."
 
 #: src/Gtk/SnapshotBackendBox.vala:193
 msgid "Files and directories can be excluded to save disk space."
@@ -983,7 +986,7 @@ msgstr "Tiedostojen ja hakemistojen määrät:"
 
 #: src/Gtk/ExcludeMessageWindow.vala:76
 msgid "Files matching the following patterns will be excluded"
-msgstr "Seuraavaan kaavaan sopivat tiedostot jätetään pois"
+msgstr "Seuraavia hakuehtoja vastaavat tiedostot jätetään pois"
 
 #: src/Utility/Device.vala:1950
 #, c-format
@@ -1011,11 +1014,11 @@ msgstr "Valmistui"
 msgid "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 msgstr "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 
-#: src/Core/SnapshotRepo.vala:576
+#: src/Core/SnapshotRepo.vala:583
 msgid "First snapshot requires:"
 msgstr "Ensimmäinen palautuspiste vaatii:"
 
-#: src/Core/Main.vala:2916
+#: src/Core/Main.vala:3049
 msgid "Found existing pre-restore snapshot"
 msgstr "Löydettiin palautusta edeltävä tilannekuva"
 
@@ -1023,7 +1026,7 @@ msgstr "Löydettiin palautusta edeltävä tilannekuva"
 msgid "Free"
 msgstr "Vapaana"
 
-#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:144
+#: src/Core/SnapshotRepo.vala:75 src/Core/SnapshotRepo.vala:145
 msgid "Free space"
 msgstr "Vapaata tilaa"
 
@@ -1039,7 +1042,7 @@ msgstr "GRUB–laitetta ei ole valittu"
 msgid "GRUB will NOT be reinstalled"
 msgstr "GRUB:a EI asenneta uudelleen"
 
-#: src/Core/Main.vala:2364
+#: src/Core/Main.vala:2497
 msgid "Generating initramfs..."
 msgstr "Luodaan intramfs..."
 
@@ -1047,7 +1050,7 @@ msgstr "Luodaan intramfs..."
 msgid "Global"
 msgstr "Globaali"
 
-#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:135
+#: src/Gtk/BackupBox.vala:100 src/Gtk/RestoreBox.vala:135
 #: src/Gtk/RsyncLogBox.vala:400
 #, c-format
 msgid "Group"
@@ -1089,11 +1092,11 @@ msgstr "Kotihakemisto"
 msgid "Hourly"
 msgstr "Tunneittain"
 
-#: src/Core/Main.vala:1065
+#: src/Core/Main.vala:1064
 msgid "Hourly snapshot failed!"
 msgstr "Tunnin palautuspiste epäonnistui!"
 
-#: src/Core/Main.vala:1046
+#: src/Core/Main.vala:1045
 msgid "Hourly snapshots are enabled"
 msgstr "Palautuspisteet, joka tunti, käytössä"
 
@@ -1105,7 +1108,7 @@ msgstr ""
 "Jos palautettu järjestelmä ei käynnisty, käynnistä kone Live USB/CD:ltä, "
 "asenna heti Timeshift ja yritä palauttaa toinen palautuspiste."
 
-#: src/Core/Main.vala:2228
+#: src/Core/Main.vala:2361
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
@@ -1113,11 +1116,11 @@ msgstr "Jos et hyväksy ehtoja, älä jatka pidemmälle!"
 
 #: src/Gtk/ExcludeBox.vala:54
 msgid "Include / Exclude Patterns"
-msgstr "Sisällyksen / poisjätön kaavat"
+msgstr "Sisällytä / sulje pois"
 
 #: src/Gtk/UsersBox.vala:337
 msgid "Include @home subvolume in backups"
-msgstr "Sisällytä @home alitaltio varmuuskopioihin"
+msgstr "Sisällytä @home varmuuskopioihin"
 
 #: src/Gtk/UsersBox.vala:263
 msgid "Include All Files"
@@ -1127,7 +1130,7 @@ msgstr "Kaikki tiedostot"
 msgid "Include Only Hidden Files"
 msgstr "Kaikki piilotiedostot"
 
-#: src/Core/Main.vala:2042
+#: src/Core/Main.vala:2175
 msgid "Invalid Snapshot"
 msgstr "Virheellinen palautuspiste"
 
@@ -1163,8 +1166,8 @@ msgid ""
 "Keep configuration files for web browsers like Firefox and Chrome. If un-"
 "checked, previous configuration files will be restored from snapshot"
 msgstr ""
-"Säilytä selaimien, kuten Firefoxin ja Chromen, määritykset.  Jos valintaa ei "
-"ole valittu, aiemmat määritykset palautetaan palautuspisteestä."
+"Säilytä selaimien määritykset, kuten Firefox ja Chrome.  Jos valintaa ei ole "
+"valittu, aiemmat määritykset palautetaan palautuspisteestä."
 
 #: src/Gtk/RestoreDeviceBox.vala:244
 msgid "Keep on Root Device"
@@ -1184,70 +1187,70 @@ msgstr "LIVE"
 msgid "Label"
 msgstr "Tunniste"
 
-#: src/Core/Main.vala:1027
+#: src/Core/Main.vala:1026
 #, c-format
 msgid "Last boot snapshot is %d hours old"
 msgstr "Viimeisin käynnistyksen palautuspiste on %d tuntia vanha"
 
-#: src/Core/Main.vala:1022
+#: src/Core/Main.vala:1021
 msgid "Last boot snapshot is older than system start time"
 msgstr ""
 "Viimeisin käynnistyksen palautuspiste on vanhempi kuin järjestelmän "
 "käynnistysaika"
 
-#: src/Core/Main.vala:1018
+#: src/Core/Main.vala:1017
 msgid "Last boot snapshot not found"
 msgstr "Viimeisintä käynnistyksen palautuspistettä ei löytynyt"
 
-#: src/Core/Main.vala:1089
+#: src/Core/Main.vala:1088
 #, c-format
 msgid "Last daily snapshot is %d hours old"
 msgstr "Viimeisin päivittäinen palautuspsite on %d tuntia vanha"
 
-#: src/Core/Main.vala:1084
+#: src/Core/Main.vala:1083
 msgid "Last daily snapshot is more than 1 day old"
 msgstr "Viimeisin päivittäinen palautuspiste on yli 1 päivän vanha"
 
-#: src/Core/Main.vala:1080
+#: src/Core/Main.vala:1079
 msgid "Last daily snapshot not found"
 msgstr "Viimeisintä päivittäistä palautuspistettä ei löydy"
 
-#: src/Core/Main.vala:1058
+#: src/Core/Main.vala:1057
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
 msgstr "Viimeinen joka tunti palautuspiste on %d minuuttia vanha"
 
-#: src/Core/Main.vala:1053
+#: src/Core/Main.vala:1052
 msgid "Last hourly snapshot is more than 1 hour old"
 msgstr "Viimeinen joka tunti palautuspiste on yli 1 tuntia vanha"
 
-#: src/Core/Main.vala:1049
+#: src/Core/Main.vala:1048
 msgid "Last hourly snapshot not found"
 msgstr "Viimeistä tunnin palautuspistettä ei löydy"
 
-#: src/Core/Main.vala:1151
+#: src/Core/Main.vala:1150
 #, c-format
 msgid "Last monthly snapshot is %d days old"
 msgstr "Viimeisin kuukauden palautuspiste on %d päivää vanha"
 
-#: src/Core/Main.vala:1146
+#: src/Core/Main.vala:1145
 msgid "Last monthly snapshot is more than 1 month old"
 msgstr "Viimeisin kuukauden palautuspiste on yli 1 kuukautta vanha"
 
-#: src/Core/Main.vala:1142
+#: src/Core/Main.vala:1141
 msgid "Last monthly snapshot not found"
 msgstr "Viimeistä kuukauden palautuspistettä ei löytynyt"
 
-#: src/Core/Main.vala:1120
+#: src/Core/Main.vala:1119
 #, c-format
 msgid "Last weekly snapshot is %d days old"
 msgstr "Viimeisin viikoittainen palautuspsite on %d päivää vanha"
 
-#: src/Core/Main.vala:1115
+#: src/Core/Main.vala:1114
 msgid "Last weekly snapshot is more than 1 week old"
 msgstr "Viimeisin viikoittainen palautuspsite on yli 1 viikkoa vanha"
 
-#: src/Core/Main.vala:1111
+#: src/Core/Main.vala:1110
 msgid "Last weekly snapshot not found"
 msgstr "Viimeistä viikoittaista palautuspistettä ei löydy"
 
@@ -1256,7 +1259,7 @@ msgstr "Viimeistä viikoittaista palautuspistettä ei löydy"
 msgid "Latest snapshot"
 msgstr "Viimeisin palautuspiste"
 
-#: src/Core/Main.vala:1360
+#: src/Core/Main.vala:1493
 #, c-format
 msgid "Linking from snapshot"
 msgstr "Linkitetään palautuspisteestä"
@@ -1290,7 +1293,7 @@ msgstr "Pääikkuna suljettiin käyttäjän toimesta"
 msgid "Mark/Unmark for Deletion"
 msgstr "Merkitse/Poista poistomerkintä"
 
-#: src/Core/SnapshotRepo.vala:621 src/Core/SnapshotRepo.vala:664
+#: src/Core/SnapshotRepo.vala:628 src/Core/SnapshotRepo.vala:671
 msgid "Maximum backups exceeded for backup level"
 msgstr "Maksimi varmuuskopiot ylittävät varmuuskopiointitason"
 
@@ -1302,11 +1305,11 @@ msgstr "Valikko"
 msgid "Misc"
 msgstr "Muut"
 
-#: src/Core/Main.vala:240
+#: src/Core/Main.vala:239
 msgid "Missing Dependencies"
 msgstr "Puuttuvia riippuvuuksia"
 
-#: src/Core/SnapshotRepo.vala:598
+#: src/Core/SnapshotRepo.vala:605
 #, c-format
 msgid "Mode"
 msgstr "Tila"
@@ -1320,21 +1323,21 @@ msgstr "Malli"
 msgid "Monthly"
 msgstr "Kuukausittainen"
 
-#: src/Core/Main.vala:1139
+#: src/Core/Main.vala:1138
 msgid "Monthly snapshot are enabled"
 msgstr "Kuukausittainen palautuspiste on käytössä"
 
-#: src/Core/Main.vala:1158
+#: src/Core/Main.vala:1157
 msgid "Monthly snapshot failed!"
 msgstr "Kuukausittainen palautuspiste epäonnistui"
 
-#: src/Core/Main.vala:2129 src/Core/Main.vala:2162
+#: src/Core/Main.vala:2262 src/Core/Main.vala:2295
 msgid "Mount"
 msgstr "Liitä"
 
-#: src/Core/Main.vala:2990
+#: src/Core/Main.vala:3123
 msgid "Moved system subvolume to snapshot directory"
-msgstr "Siirrettiin järjestelmän alalevyn palautuspisteen hakemistoon"
+msgstr "Siirrettiin järjestelmän alitaltio palautuspisteen hakemistoon"
 
 #: src/Gtk/MainWindow.vala:790
 msgid "Multiple snapshots selected"
@@ -1354,7 +1357,7 @@ msgstr "Seuraava"
 msgid "No"
 msgstr "Ei"
 
-#: src/Gtk/BackupBox.vala:84 src/Gtk/RestoreBox.vala:122
+#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:122
 msgid "No Change"
 msgstr "Ei muutosta"
 
@@ -1366,7 +1369,7 @@ msgstr "Ei valittuja palautuspisteitä"
 msgid "No snapshots available"
 msgstr "Ei palautuspisteitä saatavilla"
 
-#: src/Core/SnapshotRepo.vala:823 src/Console/AppConsole.vala:321
+#: src/Core/SnapshotRepo.vala:830 src/Console/AppConsole.vala:321
 #: src/Gtk/MainWindow.vala:970
 msgid "No snapshots found"
 msgstr "Palautuspisteitä ei löydy"
@@ -1379,7 +1382,7 @@ msgstr "Laitteesta ei löytynyt palautuspisteitä"
 msgid "No snapshots on device"
 msgstr "Ei palautuspisteitä laitteessa"
 
-#: src/Core/SnapshotRepo.vala:574
+#: src/Core/SnapshotRepo.vala:581
 msgid "No snapshots on this device"
 msgstr "Ei palautuspisteitä tässä laitteessa"
 
@@ -1396,15 +1399,15 @@ msgstr "Ei yhtään"
 msgid "Not Found"
 msgstr "Ei löytynyt"
 
-#: src/Core/SnapshotRepo.vala:592
+#: src/Core/SnapshotRepo.vala:599
 msgid "Not Selected"
 msgstr "Ei valittuna"
 
-#: src/Core/Main.vala:385
+#: src/Core/Main.vala:384
 msgid "Not Supported"
 msgstr "Ei tuettu"
 
-#: src/Core/SnapshotRepo.vala:538 src/Core/SnapshotRepo.vala:565
+#: src/Core/SnapshotRepo.vala:543 src/Core/SnapshotRepo.vala:572
 msgid "Not enough disk space"
 msgstr "Ei tarpeeksi levytilaa"
 
@@ -1412,7 +1415,7 @@ msgstr "Ei tarpeeksi levytilaa"
 msgid "Notes"
 msgstr "Merkinnät"
 
-#: src/Core/Main.vala:1169
+#: src/Core/Main.vala:1168
 msgid "Nothing to do!"
 msgstr "Ei tehtävää!"
 
@@ -1429,7 +1432,7 @@ msgstr ""
 "Säilytettävien palautuspisteiden määrä.\n"
 "Vanhemmat poistetaan, kun tämä raja ylittyy."
 
-#: src/Core/SnapshotRepo.vala:548 src/Utility/Gtk/CustomMessageDialog.vala:147
+#: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:147
 #: src/Utility/Gtk/CustomMessageDialog.vala:151 src/Utility/GtkHelper.vala:108
 #: src/Gtk/SettingsWindow.vala:123 src/Gtk/ExcludeListSummaryWindow.vala:84
 msgid "OK"
@@ -1440,10 +1443,10 @@ msgid ""
 "OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout "
 "(@ and @home subvolumes). Other layouts are not supported."
 msgstr ""
-"Käyttöjärjestelmä tulee olla asennettuna BTRFS–osiolle Ubuntu–tyyppisellä "
-"alitaltioasettelulla (@ ja @home alitaltioilla). Muita asetteluja ei tueta."
+"Käyttöjärjestelmä on asennettava BTRFS-osioon, jossa on Ubuntu-tyyppinen "
+"levyasettelu (@- ja @home alitaltiot). Muita ei tueta."
 
-#: src/Core/Main.vala:4016
+#: src/Core/Main.vala:4157
 msgid "Older log files removed"
 msgstr "Vanhemmat lokitiedostot poistettu"
 
@@ -1455,19 +1458,19 @@ msgstr "Vanhin palautuspiste"
 msgid "On demand (manual)"
 msgstr "Pyynnöstä (manuaalinen)"
 
-#: src/Core/Main.vala:383 src/Core/Main.vala:3464
+#: src/Core/Main.vala:382 src/Core/Main.vala:3605
 #: src/Gtk/RestoreDeviceBox.vala:511
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
 msgstr ""
-"Vain ubuntu– tyyppisiä asetteluita @ ja @home alitaltioilla tuetaan tällä "
-"hetkellä."
+"Tällä hetkellä tuetaan vain ubuntu-tyyppistä asettelua, joissa on @- ja "
+"@home taltiot."
 
 #: src/Gtk/MainWindow.vala:208
 msgid "Open Menu"
 msgstr "Avaa valikko"
 
-#: src/Core/Main.vala:3246
+#: src/Core/Main.vala:3387
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
@@ -1483,7 +1486,7 @@ msgstr "Asetukset"
 msgid "Other applications (next page)"
 msgstr "Muut sovellukset (seuraava sivu)"
 
-#: src/Gtk/BackupBox.vala:96 src/Gtk/RestoreBox.vala:134
+#: src/Gtk/BackupBox.vala:99 src/Gtk/RestoreBox.vala:134
 #: src/Gtk/RsyncLogBox.vala:398
 #, c-format
 msgid "Owner"
@@ -1494,7 +1497,7 @@ msgstr "Omistaja"
 msgid "Parent Device"
 msgstr "Isäntälaite"
 
-#: src/Core/Main.vala:2493 src/Core/Main.vala:2584 src/Gtk/RsyncLogBox.vala:222
+#: src/Core/Main.vala:2626 src/Core/Main.vala:2717 src/Gtk/RsyncLogBox.vala:222
 msgid "Parsing log file..."
 msgstr "Kootaan lokitiedostoa..."
 
@@ -1502,30 +1505,30 @@ msgstr "Kootaan lokitiedostoa..."
 msgid "Partition has an unsupported subvolume layout."
 msgstr "Osiolla on tukematon alitaltio asettelu."
 
-#: src/Core/SnapshotRepo.vala:597 src/Gtk/RestoreDeviceBox.vala:93
+#: src/Core/SnapshotRepo.vala:604 src/Gtk/RestoreDeviceBox.vala:93
 #, c-format
 msgid "Path"
 msgstr "Polku"
 
 #: src/Gtk/ExcludeBox.vala:166
 msgid "Pattern"
-msgstr "Kaava"
+msgstr "Hakuehto"
 
-#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:133
+#: src/Gtk/BackupBox.vala:98 src/Gtk/RestoreBox.vala:133
 #: src/Gtk/RsyncLogBox.vala:396
 #, c-format
 msgid "Permissions"
 msgstr "Luvat"
 
-#: src/Core/Main.vala:259
+#: src/Core/Main.vala:258
 msgid "Please check if you have multiple windows open."
 msgstr "Tarkasta onko sinulla useita ikkunoita avoimena."
 
-#: src/Core/Main.vala:2260
+#: src/Core/Main.vala:2393
 msgid "Please do not interrupt the restore process!"
 msgstr "Älä keskeytä palautusprosessia!"
 
-#: src/Core/Main.vala:354
+#: src/Core/Main.vala:353
 msgid "Please install required packages and try running TimeShift again"
 msgstr "Asenna tarvittavat paketit ja yritä suorittaa Timeshift uudelleen"
 
@@ -1540,7 +1543,7 @@ msgid "Please run the application as admin (using 'sudo' or 'su')"
 msgstr ""
 "Suorita sovellus pääkäyttäjänä (käyttäen komentoja kuten 'sudo' tai 'su')"
 
-#: src/Core/Main.vala:2210
+#: src/Core/Main.vala:2343
 msgid "Please save your work and close all applications."
 msgstr "Tallenna työsi ja sulje kaikki sovellukset."
 
@@ -1552,7 +1555,7 @@ msgstr "Valitse palautuspiste, jos haluat tarkastella lokia!"
 msgid "Please select the GRUB device"
 msgstr "Valitse GRUB–laite"
 
-#: src/Core/Main.vala:255
+#: src/Core/Main.vala:254
 msgid "Please wait a few minutes and try again."
 msgstr "Odota muutama minuutti ja yritä uudelleen."
 
@@ -1568,7 +1571,7 @@ msgstr "Odota..."
 msgid "Populating list..."
 msgstr "Kootaan listaa..."
 
-#: src/Core/Main.vala:1595 src/Gtk/BackupBox.vala:114
+#: src/Core/Main.vala:1728 src/Gtk/BackupBox.vala:117
 #: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
 #: src/Gtk/RsyncLogBox.vala:232
 msgid "Preparing..."
@@ -1583,11 +1586,11 @@ msgstr "Edellinen"
 msgid "Print debug information"
 msgstr "Tulosta virheenkorjaustiedot"
 
-#: src/Core/Main.vala:3826
+#: src/Core/Main.vala:3967
 msgid "Query completed"
 msgstr "Tiedustelu valmistui"
 
-#: src/Core/Main.vala:3809
+#: src/Core/Main.vala:3950
 msgid "Querying subvolume info..."
 msgstr "Tiedustellaan alitaltion tietoja..."
 
@@ -1612,7 +1615,7 @@ msgstr ""
 msgid "Re-install GRUB2 bootloader?"
 msgstr "Asenna GRUB2–käynnistyslataaja uudelleen?"
 
-#: src/Core/Main.vala:2323
+#: src/Core/Main.vala:2456
 msgid "Re-installing GRUB2 bootloader..."
 msgstr "Asennetaan GRUB2–käynnistyslataaja uudelleen..."
 
@@ -1625,7 +1628,7 @@ msgstr "Asentaa GRUB2–käynnistyslataajan uudelleen"
 msgid "Read %'d of %'d lines..."
 msgstr "Luetaan '%d / %'d riviä..."
 
-#: src/Core/Main.vala:2423
+#: src/Core/Main.vala:2556
 msgid "Rebooting system..."
 msgstr "Käynnistetään järjestelmää uudelleen..."
 
@@ -1646,8 +1649,8 @@ msgstr "Etä ja internet sijaintia ei tueta."
 msgid "Remove"
 msgstr "Poista"
 
-#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1633 src/Core/Main.vala:1644
-#: src/Core/Main.vala:4012 src/Core/SnapshotRepo.vala:900
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1766 src/Core/Main.vala:1777
+#: src/Core/Main.vala:4153 src/Core/SnapshotRepo.vala:907
 #, c-format
 msgid "Removed"
 msgstr "Poistettu"
@@ -1656,7 +1659,7 @@ msgstr "Poistettu"
 msgid "Removed cron task"
 msgstr "Poistettu cron–tehtävä"
 
-#: src/Core/Main.vala:3614
+#: src/Core/Main.vala:3755
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr "Poistettu liitoshakemisto: '%s'"
@@ -1673,8 +1676,8 @@ msgstr "Poistetaan"
 msgid "Removing snapshot"
 msgstr "Poistetaan palautuspistettä"
 
-#: src/Core/SnapshotRepo.vala:756 src/Core/SnapshotRepo.vala:775
-#: src/Core/SnapshotRepo.vala:793 src/Core/SnapshotRepo.vala:807
+#: src/Core/SnapshotRepo.vala:763 src/Core/SnapshotRepo.vala:782
+#: src/Core/SnapshotRepo.vala:800 src/Core/SnapshotRepo.vala:814
 #, c-format
 msgid "Removing snapshots"
 msgstr "Poistetaan palautuspisteitä"
@@ -1701,7 +1704,7 @@ msgstr "Palauta poisjätetyt"
 msgid "Restore Snapshot"
 msgstr "Palauta palautuspiste"
 
-#: src/Core/Main.vala:2833 src/Core/Main.vala:2875
+#: src/Core/Main.vala:2966 src/Core/Main.vala:3008
 msgid "Restore completed"
 msgstr "Palautus valmis"
 
@@ -1732,11 +1735,11 @@ msgid ""
 "currently in use will be preserved as a new snapshot. If required, this "
 "snapshot can be restored later to 'undo' the restore."
 msgstr ""
-"Palautettu palautuspiste korvaa järjestelmän aliasemat  ja käytössä olevat "
-"järjestelmän aliasemat säilytetään uutena palautuspisteenä. Tarvittaessa "
-"voidaan palauttaa myöhemmin palautuksen kumoamiseksi."
+"Palautettu palautuspiste korvaa järjestelmän alitaltiot ja käytössä olevat "
+"järjestelmän alitaltiot säilytetään uutena palautuspisteenä. Tarvittaessa "
+"voidaan myöhemmin palauttaa,  palautuksen kumoamiseksi."
 
-#: src/Core/Main.vala:2802
+#: src/Core/Main.vala:2935
 msgid "Restoring snapshot..."
 msgstr "Palautetaan palautuspistettä..."
 
@@ -1777,7 +1780,7 @@ msgstr ""
 msgid "Run in non-interactive mode"
 msgstr "Suorita ei–interaktiivisessa tilassa"
 
-#: src/Core/Main.vala:191
+#: src/Core/Main.vala:190
 msgid "Running"
 msgstr "Käynnissä"
 
@@ -1801,7 +1804,7 @@ msgstr ""
 "tallennettuja palautuspisteitä. Voit jopa asentaa toisen Linux-jakelun ja "
 "myöhemmin palauttaa edellisen jakelun palautuspisteestä."
 
-#: src/Core/Main.vala:1301 src/Core/Main.vala:1455 src/Core/Main.vala:1457
+#: src/Core/Main.vala:1434 src/Core/Main.vala:1588 src/Core/Main.vala:1590
 msgid "Saving to device"
 msgstr "Tallennetaan laitteelle"
 
@@ -1809,11 +1812,11 @@ msgstr "Tallennetaan laitteelle"
 msgid "Schedule"
 msgstr "Ajastus"
 
-#: src/Core/Main.vala:262
+#: src/Core/Main.vala:261
 msgid "Scheduled snapshot in progress..."
 msgstr "Ajastettu palautuspiste käynnissä..."
 
-#: src/Core/Main.vala:1169 src/Gtk/MainWindow.vala:1020
+#: src/Core/Main.vala:1168 src/Gtk/MainWindow.vala:1020
 #: src/Gtk/ScheduleBox.vala:312
 msgid "Scheduled snapshots are disabled"
 msgstr "Ajastetut palautuspisteet eivät ole käytössä"
@@ -1841,7 +1844,7 @@ msgstr ""
 msgid "Select '%s' device (default = %s)"
 msgstr "Valitse '%s' laite (oletus = %s)"
 
-#: src/Core/SnapshotRepo.vala:502 src/Console/AppConsole.vala:691
+#: src/Core/SnapshotRepo.vala:510 src/Console/AppConsole.vala:691
 msgid "Select BTRFS system disk with root subvolume (@)"
 msgstr "Valitse BTRFS järjestelmälevy juurialitaltiolla (@)"
 
@@ -1886,7 +1889,7 @@ msgstr "Valitse yksittäinen palautettava palautuspiste"
 msgid "Select another device for root file system (/)"
 msgstr "Valitse toinen laite juuritiedostojärjestelmälle (/)"
 
-#: src/Core/SnapshotRepo.vala:541 src/Core/SnapshotRepo.vala:568
+#: src/Core/SnapshotRepo.vala:546 src/Core/SnapshotRepo.vala:575
 msgid "Select another device or free up some space"
 msgstr "Valitse toinen laite tai vapauta hieman tilaa"
 
@@ -1900,7 +1903,7 @@ msgstr "Valitse toinen laite?"
 
 #: src/Gtk/RestoreExcludeBox.vala:57
 msgid "Select applications to exclude from restore"
-msgstr "Valitse palautuksesta poisjätettävät sovellukset"
+msgstr "Valitse sovellukset, jotka jätetään pois palautuksesta"
 
 #: src/Console/AppConsole.vala:674
 msgid "Select backup device"
@@ -1938,7 +1941,7 @@ msgstr "Valitse palautuspisteiden luontivälit"
 msgid "Select the items to be removed from the list"
 msgstr "Valitse listasta poistettavat kohteet"
 
-#: src/Core/SnapshotRepo.vala:464
+#: src/Core/SnapshotRepo.vala:472
 msgid "Select the snapshot device"
 msgstr "Valitse palautuspisteen laite"
 
@@ -1958,11 +1961,11 @@ msgstr "Valitse poistettavaksi merkittävät palautuspisteet"
 msgid "Select the target devices where system will be cloned."
 msgstr "Valitse kohdelaite mihin järjestelmä kloonataan."
 
-#: src/Core/Main.vala:3274
+#: src/Core/Main.vala:3415
 msgid "Selected default snapshot device"
 msgstr "Valittu palautuspisteen oletus laite"
 
-#: src/Core/Main.vala:3225 src/Core/Main.vala:3229
+#: src/Core/Main.vala:3366 src/Core/Main.vala:3370
 msgid "Selected default snapshot type"
 msgstr "Valittu palautuspisteen oletus tyyppi"
 
@@ -1974,15 +1977,15 @@ msgstr "Valitulla laitteella ei ole BTRFS–osiota"
 msgid "Selected device does not have Linux partition"
 msgstr "Valitulla laitteella ei ole Linux–osiota"
 
-#: src/Core/SnapshotRepo.vala:143
+#: src/Core/SnapshotRepo.vala:144
 msgid "Selected snapshot device"
 msgstr "Valittu palautuspisteen laite"
 
-#: src/Core/SnapshotRepo.vala:501 src/Console/AppConsole.vala:690
+#: src/Core/SnapshotRepo.vala:509 src/Console/AppConsole.vala:690
 msgid "Selected snapshot device is not a system disk"
 msgstr "Valittu laite palautuspisteelle ei ole järjestelmälevy"
 
-#: src/Core/Main.vala:2043
+#: src/Core/Main.vala:2176
 msgid "Selected snapshot is marked for deletion"
 msgstr "Valittu palautuspiste merkitty poistettavaksi"
 
@@ -2004,7 +2007,7 @@ msgstr ""
 msgid "Serial"
 msgstr "Sarjanumero"
 
-#: src/Core/Main.vala:219
+#: src/Core/Main.vala:218
 msgid "Session log file"
 msgstr "Istunnon lokitiedosto"
 
@@ -2039,7 +2042,7 @@ msgstr "Näytä kaikki asetukset"
 
 #: src/Gtk/RestoreExcludeBox.vala:121
 msgid "Show more applications to exclude on the next page"
-msgstr "Näytä lisää poisjätettäviä sovelluksia seuraavalla sivulla"
+msgstr "Näytä seuraavalla sivulla lisää sovelluksia, jotka jätetään pois"
 
 #: src/Console/AppConsole.vala:381
 msgid "Show rsync output (default)"
@@ -2047,7 +2050,7 @@ msgstr "Näytä rsync–tuloste (oletus)"
 
 #: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
 #: src/Console/AppConsole.vala:458 src/Console/AppConsole.vala:497
-#: src/Gtk/BackupBox.vala:93 src/Gtk/BackupDeviceBox.vala:202
+#: src/Gtk/BackupBox.vala:96 src/Gtk/BackupDeviceBox.vala:202
 #: src/Gtk/RestoreBox.vala:131 src/Gtk/RsyncLogBox.vala:392
 #, c-format
 msgid "Size"
@@ -2069,8 +2072,8 @@ msgstr ""
 msgid "Skip GRUB2 reinstall"
 msgstr "Ohita GRUB2:n uudelleenasennus"
 
-#: src/Core/Main.vala:2048 src/Core/SnapshotRepo.vala:624
-#: src/Core/SnapshotRepo.vala:677 src/Gtk/SnapshotListBox.vala:93
+#: src/Core/Main.vala:2181 src/Core/SnapshotRepo.vala:631
+#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:93
 #, c-format
 msgid "Snapshot"
 msgstr "Palautuspiste"
@@ -2097,33 +2100,33 @@ msgstr "Palautuspisteen taso"
 msgid "Snapshot deletion in progress..."
 msgstr "Palautuspisteen poisto käynnissä..."
 
-#: src/Core/SnapshotRepo.vala:435
+#: src/Core/SnapshotRepo.vala:442
 #, c-format
 msgid "Snapshot device"
 msgstr "Palautuspisteen laite"
 
-#: src/Core/SnapshotRepo.vala:470 src/Console/AppConsole.vala:664
+#: src/Core/SnapshotRepo.vala:478 src/Console/AppConsole.vala:664
 msgid "Snapshot device not available"
 msgstr "Palautuspisteen laite ei ole saatavilla"
 
-#: src/Core/SnapshotRepo.vala:463 src/Console/AppConsole.vala:660
+#: src/Core/SnapshotRepo.vala:471 src/Console/AppConsole.vala:660
 msgid "Snapshot device not selected"
 msgstr "Palautuspisteen laitetta ei ole valittu"
 
-#: src/Core/SnapshotRepo.vala:439
+#: src/Core/SnapshotRepo.vala:446
 #, c-format
 msgid "Snapshot location"
 msgstr "Palautuspisteen sijainti"
 
-#: src/Core/Main.vala:1273
+#: src/Core/Main.vala:1305
 msgid "Snapshot saved successfully"
 msgstr "Palautuspiste tallennettu onnistuneesti"
 
-#: src/Core/Main.vala:2038
+#: src/Core/Main.vala:2171
 msgid "Snapshot to restore not specified!"
 msgstr "Palautettavaa palautuspistettä ei ole määritetty!"
 
-#: src/Core/Main.vala:2879
+#: src/Core/Main.vala:3012
 msgid "Snapshot will become active after system is rebooted."
 msgstr "Palautuspiste aktivoituu, kun järjestelmä on käynnistetty uudelleen."
 
@@ -2177,7 +2180,7 @@ msgid ""
 "copied, deleted or overwritten, there is no risk of data loss. The existing "
 "system is preserved as a new snapshot after restore."
 msgstr ""
-"Palautuspisteet palautetaan korvaamalla järjestelmän alalevyt. Koska "
+"Palautuspisteet palautetaan korvaamalla järjestelmän alitaltiot. Koska "
 "tiedostoja ei koskaan kopioida, poisteta tai korvata, tietojen menettämisen "
 "riskiä ei ole. Olemassa oleva järjestelmä säilytetään uutena "
 "palautuspisteenä palautuksen jälkeen."
@@ -2255,7 +2258,7 @@ msgstr "Määritä palautettava palautuspiste"
 msgid "Specify target device"
 msgstr "Määritä kohdeasema"
 
-#: src/Core/SnapshotRepo.vala:445 src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:452 src/Core/SnapshotRepo.vala:606
 #: src/Gtk/RsyncLogBox.vala:472
 #, c-format
 msgid "Status"
@@ -2271,17 +2274,17 @@ msgstr "Pysäytetty"
 
 #: src/Gtk/RestoreDeviceBox.vala:101
 msgid "Subvolume"
-msgstr ""
+msgstr "Alitaltio"
 
 #: src/Core/Subvolume.vala:187
 #, c-format
 msgid "Subvolume exists at destination"
-msgstr "Alalevy on kohteessa"
+msgstr "Alitaltio on kohteessa"
 
 #: src/Gtk/SnapshotListBox.vala:223
 #, c-format
 msgid "Subvolumes"
-msgstr "Alalevyt"
+msgstr "Alitaltiot"
 
 #: src/Gtk/ExcludeBox.vala:267 src/Gtk/RestoreWindow.vala:120
 #: src/Gtk/ExcludeAppsBox.vala:135
@@ -2296,17 +2299,17 @@ msgstr "Vaihda BTRFS–tilaan (oletus:config)"
 msgid "Switch to RSYNC mode (default: config)"
 msgstr "Vaihda RSYNC–tilaan (oletus: config)"
 
-#: src/Core/SnapshotRepo.vala:954
+#: src/Core/SnapshotRepo.vala:961
 msgid "Symlinks updated"
 msgstr "Symboliset linkit päivitetty"
 
-#: src/Core/Main.vala:2398
+#: src/Core/Main.vala:2531
 msgid "Syncing file systems..."
-msgstr ""
+msgstr "Synkronoidaan tiedostojärjestelmää..."
 
-#: src/Core/Main.vala:1377 src/Core/Main.vala:2568 src/Core/Main.vala:2809
+#: src/Core/Main.vala:1510 src/Core/Main.vala:2701 src/Core/Main.vala:2942
 msgid "Syncing files with rsync..."
-msgstr ""
+msgstr "Synkronoidaan tiedostot rsyncin kanssa..."
 
 #: src/Gtk/AppGtk.vala:113
 msgid "Syntax"
@@ -2327,23 +2330,23 @@ msgstr ""
 "Järjestelmä voidaan palauttaa edelliseen päivämäärään palauttamalla "
 "palautuspisteestä."
 
-#: src/Core/Main.vala:2261
+#: src/Core/Main.vala:2394
 msgid "System will reboot after files are restored"
 msgstr "Järjestelmä käynnistetään uudelleen, kun tiedostot on palautettu"
 
-#: src/Core/Main.vala:2211
+#: src/Core/Main.vala:2344
 msgid "System will reboot after files are restored."
 msgstr "Järjestelmä käynnistetään uudelleen, kun tiedostot on palautettu"
 
-#: src/Core/Main.vala:1242 src/Core/Main.vala:1283
+#: src/Core/Main.vala:1241 src/Core/Main.vala:1315
 msgid "Tagged snapshot"
 msgstr "Merkitty palautuspiste"
 
 #: src/Console/AppConsole.vala:427 src/Gtk/SnapshotListBox.vala:149
 msgid "Tags"
-msgstr "Tägit"
+msgstr "Merkit"
 
-#: src/Core/Main.vala:2073
+#: src/Core/Main.vala:2206
 msgid "Target device is not mounted"
 msgstr "Kohdelaitetta ei ole liitetty"
 
@@ -2351,7 +2354,7 @@ msgstr "Kohdelaitetta ei ole liitetty"
 msgid "Target device is same as system device"
 msgstr "Kohdelaite on sama kuin järjestelmälaite"
 
-#: src/Core/Main.vala:2067
+#: src/Core/Main.vala:2200
 msgid "Target device not specified!"
 msgstr "Kohdelaitetta ei ole määritelty!"
 
@@ -2373,11 +2376,11 @@ msgstr ""
 "nykyiselle käyttäjälle. Valitse tämä asetus lopettaaksesi sähköpostituksen "
 "Timeshift:n luomilta cron–tehtäviltä."
 
-#: src/Core/Main.vala:382
+#: src/Core/Main.vala:381
 msgid "The system partition has an unsupported subvolume layout."
 msgstr "Järjestelmäasemalla on tukematon alitaltioiden asettelu."
 
-#: src/Core/Main.vala:3463
+#: src/Core/Main.vala:3604
 msgid "The target partition has an unsupported subvolume layout."
 msgstr "Kohdeosiolla on tukematon alitaltio asettelu."
 
@@ -2390,7 +2393,7 @@ msgstr "Tässä laitteessa ei ole palautuspisteitä"
 msgid "This device is not encrypted"
 msgstr "Tätä laitetta ei ole salattu"
 
-#: src/Core/Main.vala:2227
+#: src/Core/Main.vala:2360
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
@@ -2402,7 +2405,7 @@ msgstr ""
 msgid "Timeshift is active"
 msgstr "Timeshift on aktiivinen"
 
-#: src/Gtk/BackupBox.vala:94 src/Gtk/RestoreBox.vala:132
+#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:132
 #: src/Gtk/RsyncLogBox.vala:394
 #, c-format
 msgid "Timestamp"
@@ -2430,11 +2433,11 @@ msgstr "UUID"
 msgid "Unknown option"
 msgstr "Tuntematon valinta"
 
-#: src/Core/Main.vala:1224
+#: src/Core/Main.vala:1223
 msgid "Unknown snapshot type"
 msgstr "Tuntematon palautuspisteen tyyppi"
 
-#: src/Core/Main.vala:1582
+#: src/Core/Main.vala:1715
 msgid "Unknown value specified for option --tags"
 msgstr "Tuntematon arvo määritelty valinnalle --tags"
 
@@ -2451,7 +2454,7 @@ msgstr "Avattu onnistuneesti"
 msgid "Unmounting from"
 msgstr "Irrotetaan sijainnista"
 
-#: src/Core/Main.vala:3467 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Core/Main.vala:3608 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
 msgstr "Tukematon alitaltioiden asettelu"
 
@@ -2463,11 +2466,11 @@ msgstr "Päivitä GRUB–valikko"
 msgid "Update initramfs"
 msgstr "Päivitä initramfs"
 
-#: src/Core/Main.vala:2748
+#: src/Core/Main.vala:2881
 msgid "Updated /etc/crypttab on target device"
 msgstr "Päivitetty /etc/crypttab kohdelaitteella"
 
-#: src/Core/Main.vala:2668
+#: src/Core/Main.vala:2801
 msgid "Updated /etc/fstab on target device"
 msgstr "Päivitetty /etc/fstab kohdelaitteella"
 
@@ -2479,11 +2482,11 @@ msgstr ""
 "Päivittää GRUB–valikon merkinnät (suositeltua). Tämä on turvallinen "
 "suorittaa ja tulisi jättää valituksi."
 
-#: src/Core/Main.vala:2381
+#: src/Core/Main.vala:2514
 msgid "Updating GRUB menu..."
 msgstr "Päivitetään GRUB–valikkoa..."
 
-#: src/Core/Main.vala:2592
+#: src/Core/Main.vala:2725
 msgid "Updating bootloader configuration..."
 msgstr "Päivitetään käynnistyslataajan asetuksia..."
 
@@ -2508,8 +2511,8 @@ msgstr "Käyttäjä peruutti salasanakyselyn"
 msgid ""
 "User home directories are excluded by default unless you enable them here"
 msgstr ""
-"Käyttäjien kotihakemistoja ei sisällytetä oletusarvoisesti ellet valitse "
-"niitä täältä"
+"Käyttäjien kotihakemistot on oletusarvoisesti suljettu pois, ellet ota niitä "
+"käyttöön tässä"
 
 #: src/Gtk/SettingsWindow.vala:101
 msgid "Users"
@@ -2534,9 +2537,9 @@ msgstr "Näytä Rsync-lokia palauttamiseen"
 
 #: src/Gtk/MainWindow.vala:369
 msgid "View TimeShift Logs"
-msgstr "Katso TimeShiftin lokeja"
+msgstr "Näytä TimeShift-lokit"
 
-#: src/Core/Main.vala:2122 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Core/Main.vala:2255 src/Gtk/RestoreSummaryBox.vala:53
 msgid "Warning"
 msgstr "Varoitus"
 
@@ -2548,11 +2551,11 @@ msgstr "Verkkoselaimet"
 msgid "Weekly"
 msgstr "Viikoittainen"
 
-#: src/Core/Main.vala:1127
+#: src/Core/Main.vala:1126
 msgid "Weekly snapshot failed!"
 msgstr "Viikoittainen palautuspiste epäonnistui!"
 
-#: src/Core/Main.vala:1108
+#: src/Core/Main.vala:1107
 msgid "Weekly snapshots are enabled"
 msgstr "Viikoittaiset palautuspisteet käytössä"
 
@@ -2597,20 +2600,22 @@ msgid ""
 "[For Experienced Users] Change these settings if the restored system fails "
 "to boot."
 msgstr ""
+"[Kokeneille käyttäjille] Muuta näitä asetuksia, jos palautettu järjestelmä "
+"ei käynnisty."
 
 #: src/Utility/AppLock.vala:54
 msgid "[Warning] Deleted invalid lock"
 msgstr "[Varoitu] Poistettu valittu lukko"
 
-#: src/Core/SnapshotRepo.vala:807
+#: src/Core/SnapshotRepo.vala:814
 msgid "all"
 msgstr "kaikki"
 
-#: src/Core/Main.vala:1510 src/Core/Main.vala:3869 src/Core/Subvolume.vala:199
+#: src/Core/Main.vala:1643 src/Core/Main.vala:4010 src/Core/Subvolume.vala:199
 msgid "btrfs returned an error"
 msgstr "btrfs palautti virheen"
 
-#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1409
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1542
 msgid "complete"
 msgstr "valmis"
 
@@ -2622,30 +2627,30 @@ msgstr "crontab–tiedosto viety"
 msgid "crontab file installed"
 msgstr "crontab–tiedosto asennettu"
 
-#: src/Core/SnapshotRepo.vala:793
+#: src/Core/SnapshotRepo.vala:800
 msgid "incomplete"
 msgstr "Keskeneräinen"
 
-#: src/Core/SnapshotRepo.vala:775
+#: src/Core/SnapshotRepo.vala:782
 msgid "marked for deletion"
 msgstr "merkitty poistettavaksi"
 
-#: src/Core/Main.vala:1301 src/Core/Main.vala:1455 src/Core/Main.vala:1457
+#: src/Core/Main.vala:1434 src/Core/Main.vala:1588 src/Core/Main.vala:1590
 msgid "mounted at path"
 msgstr "liitetty polkuun"
 
-#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1409
-#: src/Gtk/BackupBox.vala:234 src/Gtk/RestoreBox.vala:237
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1542
+#: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
 #: src/Gtk/DeleteBox.vala:149
 msgid "remaining"
 msgstr "jäljellä"
 
-#: src/Core/Main.vala:1420
+#: src/Core/Main.vala:1553
 msgid "rsync returned an error"
 msgstr "rsync palautti virheen"
 
-#: src/Core/SnapshotRepo.vala:624 src/Core/SnapshotRepo.vala:677
-#: src/Core/SnapshotRepo.vala:756
+#: src/Core/SnapshotRepo.vala:631 src/Core/SnapshotRepo.vala:684
+#: src/Core/SnapshotRepo.vala:763
 msgid "un-tagged"
 msgstr "Merkitsemätön"
 

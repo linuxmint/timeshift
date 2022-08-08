@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2022-06-22 13:32+0200\n"
-"PO-Revision-Date: 2022-06-25 22:44+0000\n"
+"POT-Creation-Date: 2022-06-30 15:17+0200\n"
+"PO-Revision-Date: 2022-07-04 21:42+0000\n"
 "Last-Translator: menom <Unknown>\n"
 "Language-Team: Slovak <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-06-26 11:29+0000\n"
-"X-Generator: Launchpad (build 51a2e4fa2e9b8e45f00904ad7f53546f45ac48a5)\n"
+"X-Launchpad-Export-Date: 2022-07-24 09:42+0000\n"
+"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
 
 #: src/Console/AppConsole.vala:615
 #, c-format
@@ -26,7 +26,7 @@ msgstr ""
 "\n"
 "Stlač klávesu ENTER pre pokračovanie..."
 
-#: src/Core/SnapshotRepo.vala:550
+#: src/Core/SnapshotRepo.vala:556
 #, c-format
 msgid "%d snapshots, %s free"
 msgstr "%d snapshotov, %s voľného miesta"
@@ -45,23 +45,23 @@ msgstr "'%s' bude na zariadení s koreňovým adresárom"
 msgid "(Re)install GRUB2 on:"
 msgstr "(Pre)inštalovať GRUB2 na:"
 
-#: src/Core/Main.vala:368
+#: src/Core/Main.vala:367
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr "** Odinštalovaný Timeshift BTRFS **"
 
-#: src/Core/Main.vala:3374
+#: src/Core/Main.vala:3515
 msgid "/ is mapped to device"
 msgstr "/ je namapované na zariadení"
 
-#: src/Core/Main.vala:3396
+#: src/Core/Main.vala:3537
 msgid "/boot is mapped to device"
 msgstr "/boot je namapované na zariadení"
 
-#: src/Core/Main.vala:3407
+#: src/Core/Main.vala:3548
 msgid "/boot/efi is mapped to device"
 msgstr "/boot/efi je namapované na zariadení"
 
-#: src/Core/Main.vala:3385
+#: src/Core/Main.vala:3526
 msgid "/home is mapped to device"
 msgstr "/home je namapované na zariadení"
 
@@ -73,6 +73,7 @@ msgstr "<b>Komentáre</b> (upravte dvojklikom)"
 msgid ""
 "A maintenance task runs once every hour and creates snapshots as needed."
 msgstr ""
+"Úloha údržby sa spúšťa raz za hodinu a vytvára snapshoty podľa potreby."
 
 #: src/Console/AppConsole.vala:700 src/Console/AppConsole.vala:764
 #: src/Console/AppConsole.vala:896 src/Console/AppConsole.vala:991
@@ -87,7 +88,7 @@ msgstr "O programe"
 
 #: src/Gtk/RsyncLogBox.vala:472
 msgid "Action"
-msgstr ""
+msgstr "Akcia"
 
 #: src/Gtk/ExcludeBox.vala:225
 msgid "Add"
@@ -132,7 +133,7 @@ msgstr ""
 
 #: src/Gtk/RsyncLogBox.vala:363
 msgid "All Files"
-msgstr ""
+msgstr "Všetky súbory"
 
 #: src/Gtk/SnapshotBackendBox.vala:189
 msgid ""
@@ -165,7 +166,7 @@ msgstr ""
 "Buď vyberte nešifrované zariadenie pre adresár (/boot), alebo vyberte "
 "nešifrované zariadenie pre koreňový adresár súborového systému (/)."
 
-#: src/Core/Main.vala:254
+#: src/Core/Main.vala:253
 msgid "Another instance of Timeshift is creating a snapshot."
 msgstr "Ďalšia inštancia Timeshift vytvára snapshot."
 
@@ -173,7 +174,7 @@ msgstr "Ďalšia inštancia Timeshift vytvára snapshot."
 msgid "Another instance of this application is running"
 msgstr "Ďalšia inštancia tohto programu už beží"
 
-#: src/Core/Main.vala:258
+#: src/Core/Main.vala:257
 msgid "Another instance of timeshift is currently running!"
 msgstr "Ďalšia inštancia Timeshift teraz beží!"
 
@@ -181,11 +182,11 @@ msgstr "Ďalšia inštancia Timeshift teraz beží!"
 msgid "Answer YES to all confirmation prompts"
 msgstr "Odpoveď ÁNO na potvrdenie všetkých požiadaviek"
 
-#: src/Core/Main.vala:3211
+#: src/Core/Main.vala:3352
 msgid "App config loaded"
 msgstr "Konfigurácia programu je načítaná"
 
-#: src/Core/Main.vala:3099
+#: src/Core/Main.vala:3240
 msgid "App config saved"
 msgstr "Konfigurácia programu je uložená"
 
@@ -193,17 +194,17 @@ msgstr "Konfigurácia programu je uložená"
 msgid "Application needs admin access."
 msgstr "Pre spustenie programu je potrebné heslo administrátora."
 
-#: src/Core/Main.vala:3551
+#: src/Core/Main.vala:3692
 msgid "Application will exit"
 msgstr "Program bude ukončený"
 
-#: src/Core/Main.vala:384
+#: src/Core/Main.vala:383
 msgid "Application will exit."
 msgstr "Program bude ukončený."
 
 #: src/Gtk/MainWindow.vala:345
 msgid "Available"
-msgstr ""
+msgstr "Dostupné"
 
 #: src/Gtk/SnapshotBackendBox.vala:95
 msgid "BTRFS"
@@ -217,7 +218,7 @@ msgstr "BTRFS Snapshoty"
 msgid "BTRFS Tools Not Found"
 msgstr "Nástroje BTRFS nenájdené"
 
-#: src/Core/Main.vala:2057 src/Core/Main.vala:2061
+#: src/Core/Main.vala:2190 src/Core/Main.vala:2194
 msgid "BTRFS device is not mounted"
 msgstr "BTRFS zariadenie nie je pripojené"
 
@@ -226,6 +227,8 @@ msgid ""
 "BTRFS snapshots are saved on system partition. Other partitions are not "
 "supported."
 msgstr ""
+"BTRFS snapshoty sú uložené na systémovom oddiele. Iné oddiely nie sú "
+"podporované."
 
 #: src/Gtk/FinishBox.vala:92
 msgid ""
@@ -241,17 +244,17 @@ msgstr ""
 
 #: src/Gtk/SetupWizardWindow.vala:94
 msgid "Backend"
-msgstr ""
+msgstr "Backend"
 
 #: src/Console/AppConsole.vala:357 src/Gtk/BackupWindow.vala:92
 msgid "Backup"
-msgstr ""
+msgstr "Záloha"
 
-#: src/Core/Main.vala:2033
+#: src/Core/Main.vala:2166
 msgid "Backup Device"
 msgstr "Zálohovacie zariadenie"
 
-#: src/Core/Main.vala:2028
+#: src/Core/Main.vala:2161
 msgid "Backup device not specified!"
 msgstr "Zálohovacie zariadenie nebolo určené!"
 
@@ -261,13 +264,13 @@ msgstr "Klienti bittorrent"
 
 #: src/Gtk/SnapshotListBox.vala:246 src/Gtk/ScheduleBox.vala:136
 msgid "Boot"
-msgstr ""
+msgstr "Zavedenie"
 
 #: src/Gtk/RestoreDeviceBox.vala:485
 msgid "Boot device not selected"
 msgstr "Nebolo vybrané zariadenie pre zavedenie systému"
 
-#: src/Core/Main.vala:1034
+#: src/Core/Main.vala:1033
 msgid "Boot snapshot failed!"
 msgstr "Zlyhanie snapshotu pre zavedenie systému!"
 
@@ -275,8 +278,10 @@ msgstr "Zlyhanie snapshotu pre zavedenie systému!"
 msgid ""
 "Boot snapshots are created with a delay of 10 minutes after system startup."
 msgstr ""
+"Snapshoty pre zavedenie systému sú vytvorené s oneskorením 10 minút po "
+"štarte systému."
 
-#: src/Core/Main.vala:1015
+#: src/Core/Main.vala:1014
 msgid "Boot snapshots are enabled"
 msgstr "Snapshoty pre zavedenie systému sú povolené"
 
@@ -290,30 +295,34 @@ msgstr "Možnosti zavádzača systému (Pokročilé)"
 
 #: src/Gtk/MainWindow.vala:170
 msgid "Browse"
-msgstr ""
+msgstr "Prehliadať"
 
 #: src/Gtk/SnapshotListBox.vala:284
 msgid "Browse Files"
-msgstr ""
+msgstr "Prehliadať súbory"
 
 #: src/Gtk/MainWindow.vala:171
 msgid "Browse selected snapshot"
-msgstr ""
+msgstr "Prehliadať vybraný snapshot"
 
-#: src/Core/Main.vala:2523
+#: src/Core/Main.vala:2656
 msgid "Building file list..."
-msgstr ""
+msgstr "Vytvorenie zoznamu súborov..."
+
+#: src/Core/Main.vala:1393
+msgid "Calculating required disk space..."
+msgstr "Výpočet potrebného miesta na disku..."
 
 #: src/Utility/Gtk/CustomMessageDialog.vala:152 src/Utility/GtkHelper.vala:109
 #: src/Gtk/RestoreWindow.vala:215 src/Gtk/RestoreWindow.vala:224
 #: src/Gtk/BackupWindow.vala:181 src/Gtk/SetupWizardWindow.vala:220
 #: src/Gtk/DeleteWindow.vala:190
 msgid "Cancel"
-msgstr ""
+msgstr "Zrušiť"
 
 #: src/Gtk/RestoreWindow.vala:230
 msgid "Cancel restore?"
-msgstr ""
+msgstr "Zrušiť obnovenie?"
 
 #: src/Gtk/RestoreWindow.vala:232
 msgid ""
@@ -322,805 +331,825 @@ msgid ""
 "issues. After cancelling, you need to restore another snapshot, to bring the "
 "system to a consistent state. Click Yes to confirm."
 msgstr ""
+"Zrušenie obnovovacieho procesu nechá cieľový systém v nekonzistentnom stave. "
+" Taký systém môže zlyhať pri zavedení alebo bežať s rôznymi chybami. Po "
+"zrušení budete musieť systém znova obnoviť, aby ste ho dostali do "
+"konzistentného stavu. Kliknite na Áno pre potvrdenie."
 
 #: src/Gtk/MainWindow.vala:547
 msgid "Cannot Delete Live Snapshot"
-msgstr ""
+msgstr "Nie je možné vymazať Live Snapshot"
 
-#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:125
+#: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
 #: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
 #: src/Gtk/RsyncLogBox.vala:567 src/Gtk/RsyncLogBox.vala:588
 msgid "Changed"
-msgstr ""
+msgstr "Zmenené"
 
-#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:127
+#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:127
 msgid "Changed items:"
-msgstr ""
+msgstr "Zmenené položky:"
 
 #: src/Gtk/RestoreWindow.vala:104
 msgid "Checking Restore Actions (Dry Run)"
-msgstr ""
+msgstr "Kontrola obnovovacích akcií (skúška nanečisto)"
 
-#: src/Core/Main.vala:2756
+#: src/Core/Main.vala:2889
 msgid "Checking file systems for errors..."
-msgstr ""
+msgstr "Kontrola súborových systémov na chyby..."
 
-#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:130
+#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:130
 #: src/Gtk/RsyncLogBox.vala:390
 #, c-format
 msgid "Checksum"
-msgstr ""
+msgstr "Kontrolný súčet"
 
-#: src/Core/Main.vala:2404
+#: src/Core/Main.vala:2537
 msgid "Cleaning up..."
-msgstr ""
+msgstr "Čistenie..."
 
 #: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:89
 msgid "Click to edit. Drag and drop to re-order."
-msgstr ""
+msgstr "Kliknite pre editáciu. Ťahajte a pustite pre zmenu usporiadania."
 
 #: src/Gtk/ExcludeBox.vala:59
 msgid "Click to edit. Drag-drop to re-order."
-msgstr ""
+msgstr "Kliknite pre editáciu. Ťahajte - pustite pre zmenu usporiadania."
 
 #: src/Gtk/RestoreWindow.vala:69
 msgid "Clone System"
-msgstr ""
+msgstr "Klon systému"
 
 #: src/Gtk/RestoreFinishBox.vala:68
 msgid "Cloning"
-msgstr ""
+msgstr "Klonovanie"
 
-#: src/Core/Main.vala:2806
+#: src/Core/Main.vala:2939
 msgid "Cloning system..."
-msgstr ""
+msgstr "Klonovanie systému..."
 
 #: src/Gtk/BootOptionsWindow.vala:106 src/Gtk/RestoreWindow.vala:501
 #: src/Gtk/BackupWindow.vala:172 src/Gtk/RsyncLogBox.vala:266
 #: src/Gtk/DeleteWindow.vala:173
 msgid "Close"
-msgstr ""
+msgstr "Zatvoriť"
 
 #: src/Gtk/FinishBox.vala:101 src/Gtk/DeleteFinishBox.vala:71
 #: src/Gtk/RestoreFinishBox.vala:106 src/Gtk/BackupFinishBox.vala:70
 msgid "Close window to exit"
-msgstr ""
+msgstr "Zatvoriť okno pre ukončenie"
 
-#: src/Core/Main.vala:353
+#: src/Core/Main.vala:352
 msgid "Commands listed below are not available on this system"
-msgstr ""
+msgstr "Príkazy uvedené dole v zozname nie sú dostupné na tomto systéme"
 
 #: src/Gtk/SnapshotListBox.vala:172
 msgid "Comments (click to edit)"
-msgstr ""
+msgstr "Komentáre (kliknite pre editáciu)"
 
-#: src/Core/Main.vala:2799 src/Gtk/RestoreBox.vala:74
+#: src/Core/Main.vala:2932 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
 msgid "Comparing Files (Dry Run)..."
-msgstr ""
+msgstr "Porovnanie súborov (skúška nanečisto)..."
 
-#: src/Core/Main.vala:2565
+#: src/Core/Main.vala:2698
 msgid "Comparing files with rsync..."
-msgstr ""
+msgstr "Porovnanie súborov s rsync..."
 
 #: src/Gtk/DeleteFinishBox.vala:50 src/Gtk/RestoreFinishBox.vala:50
 #: src/Gtk/RestoreFinishBox.vala:75 src/Gtk/BackupFinishBox.vala:50
 msgid "Completed"
-msgstr ""
+msgstr "Dokončené"
 
 #: src/Gtk/RestoreFinishBox.vala:78
 msgid "Completed With Errors"
-msgstr ""
+msgstr "Dokončené s chybami"
 
 #: src/Gtk/RestoreWindow.vala:109 src/Gtk/RsyncLogBox.vala:87
 msgid "Confirm Actions"
-msgstr ""
+msgstr "Potvrdiť akcie"
 
 #: src/Console/AppConsole.vala:1070
 #, c-format
 msgid "Continue with restore? (y/n): "
-msgstr ""
+msgstr "Pokračovať s obnovou? "
 
 #: src/Console/AppConsole.vala:836 src/Console/AppConsole.vala:967
 msgid "Could not find device"
-msgstr ""
+msgstr "Zariadenie nebolo nájdené"
 
 #: src/Utility/Device.vala:1308
 #, c-format
 msgid "Could not find file"
-msgstr ""
+msgstr "Súbor nebol nájdený"
 
 #: src/Console/AppConsole.vala:733
 msgid "Could not find snapshot"
-msgstr ""
+msgstr "Snapshot nebol nájdený"
 
-#: src/Core/Main.vala:2968
+#: src/Core/Main.vala:3101
 msgid "Could not find system subvolume"
-msgstr ""
+msgstr "Podriadený zväzok systému nebol nájdený"
 
-#: src/Core/Main.vala:2996
+#: src/Core/Main.vala:3129
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr ""
+"Neboli nájdené podriadené zväzky systému na vytvorenie predbežného snapshotu "
+"obnovy"
 
 #: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
 #: src/Gtk/RsyncLogBox.vala:571
 #, c-format
 msgid "Create"
-msgstr ""
+msgstr "Vytvoriť"
 
 #: src/Gtk/BackupWindow.vala:62
 msgid "Create Snapshot"
-msgstr ""
+msgstr "Vytvoriť snapshot"
 
 #: src/Gtk/ScheduleBox.vala:136
 msgid "Create one per boot"
-msgstr ""
+msgstr "Vytvoriť jeden za zavedenie systému"
 
 #: src/Gtk/ScheduleBox.vala:100
 msgid "Create one per day"
-msgstr ""
+msgstr "Vytvoriť jeden za deň"
 
 #: src/Gtk/ScheduleBox.vala:118
 msgid "Create one per hour"
-msgstr ""
+msgstr "Vytvoriť jeden za hodinu"
 
 #: src/Gtk/ScheduleBox.vala:64
 msgid "Create one per month"
-msgstr ""
+msgstr "Vytvoriť jeden za mesiac"
 
 #: src/Gtk/ScheduleBox.vala:82
 msgid "Create one per week"
-msgstr ""
+msgstr "Vytvoriť jeden za týždeň"
 
 #: src/Console/AppConsole.vala:359
 msgid "Create snapshot (even if not scheduled)"
-msgstr ""
+msgstr "Vytvoriť snapshot (aj ak nie je naplánovaný)"
 
 #: src/Console/AppConsole.vala:358
 msgid "Create snapshot if scheduled"
-msgstr ""
+msgstr "Vytvoriť snapshot ak je naplánovaný"
 
 #: src/Gtk/MainWindow.vala:141
 msgid "Create snapshot of current system"
-msgstr ""
+msgstr "Vytvoriť snapshot súčasného systému"
 
 #: src/Gtk/MainWindow.vala:1027
 msgid ""
 "Create snapshots manually or enable scheduled snapshots to protect your "
 "system"
 msgstr ""
+"Vytvoriť snapshot manuálne alebo povoliť plánované snapshoty pre ochranu "
+"vášho systému"
 
 #: src/Gtk/SnapshotBackendBox.vala:96
 msgid "Create snapshots using BTRFS"
-msgstr ""
+msgstr "Vytvoriť snapshoty použitím BTRFS"
 
 #: src/Gtk/SnapshotBackendBox.vala:78
 msgid "Create snapshots using RSYNC tool and hard-links"
 msgstr ""
+"Vytvoriť snapshoty použitím nástroja RSYNC a pevných odkazov (hard-links)"
 
-#: src/Gtk/BackupBox.vala:85 src/Gtk/RestoreBox.vala:123
+#: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
 #: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:571
 #: src/Gtk/RsyncLogBox.vala:592
 #, c-format
 msgid "Created"
-msgstr ""
+msgstr "Vytvorené"
 
 #: src/Core/Snapshot.vala:430
 msgid "Created control file"
-msgstr ""
+msgstr "Vytvorený kontrolný súbor"
 
 #: src/Utility/TeeJee.FileSystem.vala:294
 msgid "Created directory"
-msgstr ""
+msgstr "Vytvorený adresár"
 
-#: src/Core/Main.vala:3018
+#: src/Core/Main.vala:3151
 msgid "Created pre-restore snapshot"
-msgstr ""
+msgstr "Vytvorený snapshot na predbežnú obnovu"
 
-#: src/Core/Main.vala:1515
+#: src/Core/Main.vala:1648
 msgid "Created subvolume snapshot"
-msgstr ""
+msgstr "Vytvorený snapshot podriadeného zväzku"
 
 #: src/Gtk/BackupBox.vala:71
 msgid "Creating Snapshot..."
-msgstr ""
+msgstr "Vytváranie snapshotu..."
 
-#: src/Core/Main.vala:1453
+#: src/Core/Main.vala:1586
 msgid "Creating new backup..."
-msgstr ""
+msgstr "Vytváranie novej zálohy..."
 
-#: src/Core/Main.vala:1299
+#: src/Core/Main.vala:1432
 msgid "Creating new snapshot..."
-msgstr ""
+msgstr "Vytváranie nového snapshotu..."
 
-#: src/Core/Main.vala:2946
+#: src/Core/Main.vala:3079
 msgid "Creating pre-restore snapshot from system subvolumes..."
 msgstr ""
+"Vytváranie predbežného snapshotu obnovy z podriadených zväzkov systému..."
 
-#: src/Core/Main.vala:3550
+#: src/Core/Main.vala:3691
 msgid "Critical Error"
-msgstr ""
+msgstr "Kritická chyba"
 
 #: src/Utility/CronTab.vala:136
 msgid "Cron job added"
-msgstr ""
+msgstr "Pridaný cron job"
 
 #: src/Utility/CronTab.vala:217
 msgid "Cron job removed"
-msgstr ""
+msgstr "Odstránený cron job"
 
 #: src/Utility/CronTab.vala:304
 msgid "Cron task exists"
-msgstr ""
+msgstr "Úloha cron existuje"
 
 #: src/Gtk/MiscBox.vala:94
 msgid "Custom"
-msgstr ""
+msgstr "Vlastný"
 
 #: src/Gtk/SnapshotListBox.vala:248 src/Gtk/ScheduleBox.vala:100
 msgid "Daily"
-msgstr ""
+msgstr "Denne"
 
-#: src/Core/Main.vala:1096
+#: src/Core/Main.vala:1095
 msgid "Daily snapshot failed!"
-msgstr ""
+msgstr "Denný snapshot zlyhal!"
 
-#: src/Core/Main.vala:1077
+#: src/Core/Main.vala:1076
 msgid "Daily snapshots are enabled"
-msgstr ""
+msgstr "Denné snapshoty sú povolené"
 
-#: src/Core/Main.vala:2127
+#: src/Core/Main.vala:2260
 msgid "Data will be modified on following devices:"
-msgstr ""
+msgstr "Dáta budú upravené na nasledujúcich zariadeniach:"
 
 #: src/Gtk/MiscBox.vala:67
 msgid "Date Format"
-msgstr ""
+msgstr "Formát dátumu"
 
 #: src/Console/AppConsole.vala:371 src/Gtk/SnapshotListBox.vala:270
 #: src/Gtk/MainWindow.vala:160 src/Gtk/RsyncLogBox.vala:370
 #: src/Gtk/RsyncLogBox.vala:575 src/Gtk/DeleteWindow.vala:98
 #, c-format
 msgid "Delete"
-msgstr ""
+msgstr "Vymazať"
 
 #: src/Gtk/DeleteWindow.vala:62
 msgid "Delete Snapshots"
-msgstr ""
+msgstr "Vymazať snapshoty"
 
 #: src/Console/AppConsole.vala:373
 msgid "Delete all snapshots"
-msgstr ""
+msgstr "Vymazať všetky snapshoty"
 
 #: src/Gtk/MainWindow.vala:161
 msgid "Delete selected snapshot"
-msgstr ""
+msgstr "Vymazať vybrané snapshoty"
 
 #: src/Console/AppConsole.vala:372
 msgid "Delete snapshot"
-msgstr ""
+msgstr "Vymazať snapshot"
 
-#: src/Gtk/BackupBox.vala:86 src/Gtk/RestoreBox.vala:124
+#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:575
 #: src/Gtk/RsyncLogBox.vala:596
 #, c-format
 msgid "Deleted"
-msgstr ""
+msgstr "Vymazané"
 
 #: src/Utility/TeeJee.FileSystem.vala:328
 msgid "Deleted directory"
-msgstr ""
+msgstr "Adresár vymazaný"
 
-#: src/Core/Main.vala:2925 src/Core/Main.vala:2929 src/Core/Subvolume.vala:167
+#: src/Core/Main.vala:3058 src/Core/Main.vala:3062 src/Core/Subvolume.vala:167
 #, c-format
 msgid "Deleted subvolume"
-msgstr ""
+msgstr "Podriadený zväzok vymazaný"
 
 #: src/Gtk/DeleteBox.vala:58
 msgid "Deleting Snapshots..."
-msgstr ""
+msgstr "Vymazanie snapshotov..."
 
 #: src/Core/Subvolume.vala:141
 #, c-format
 msgid "Deleting subvolume"
-msgstr ""
+msgstr "Vymazanie podriadeného zväzku"
 
 #: src/Gtk/RestoreExcludeBox.vala:105
 msgid "Deluge, Transmission"
-msgstr ""
+msgstr "Deluge, Transmission"
 
 #: src/Console/AppConsole.vala:428 src/Console/AppConsole.vala:544
 msgid "Description"
-msgstr ""
+msgstr "Popis"
 
-#: src/Core/Main.vala:2130 src/Core/Main.vala:2162
-#: src/Core/SnapshotRepo.vala:73 src/Core/SnapshotRepo.vala:592
-#: src/Core/SnapshotRepo.vala:595 src/Utility/Device.vala:1932
+#: src/Core/Main.vala:2263 src/Core/Main.vala:2295
+#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
 #: src/Utility/Device.vala:1942 src/Console/AppConsole.vala:456
 #: src/Console/AppConsole.vala:495 src/Console/AppConsole.vala:543
 #: src/Gtk/RestoreDeviceBox.vala:97
 #, c-format
 msgid "Device"
-msgstr ""
+msgstr "Zariadenie"
 
 #: src/Utility/Device.vala:1390
 msgid "Device is unlocked"
-msgstr ""
+msgstr "Zariadenie je odomknuté"
 
 #: src/Utility/Device.vala:1285 src/Utility/Device.vala:1347
 msgid "Device name is empty!"
-msgstr ""
+msgstr "Názov zariadenia je prázdny!"
 
-#: src/Core/Main.vala:3264 src/Core/SnapshotRepo.vala:471
+#: src/Core/Main.vala:3405 src/Core/SnapshotRepo.vala:479
 #: src/Console/AppConsole.vala:665
 msgid "Device not found"
-msgstr ""
+msgstr "Zariadenie nenájdené"
 
 #: src/Gtk/BackupDeviceBox.vala:97
 #, c-format
 msgid "Devices displayed above have BTRFS file systems."
-msgstr ""
+msgstr "Zariadenia zobrazené vyššie majú súborový systém BTRFS."
 
 #: src/Gtk/BackupDeviceBox.vala:104
 #, c-format
 msgid "Devices displayed above have Linux file systems."
-msgstr ""
+msgstr "Zariadenia zobrazené vyššie majú súborový systém Linux."
 
 #: src/Gtk/RestoreDeviceBox.vala:84
 msgid "Devices from which snapshot was created are pre-selected."
-msgstr ""
+msgstr "Zariadenia z ktorých bol vytvorený snapshot sú predbežne vybrané."
 
 #: src/Console/AppConsole.vala:327
 msgid "Devices with Linux file systems"
-msgstr ""
+msgstr "Zariadenia so súborovým systémom Linux"
 
 #: src/Gtk/BackupDeviceBox.vala:105
 msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
 msgstr ""
+"Zariadenia so súborovým systémom Windows nie sú podporované (NTFS, FAT)."
 
-#: src/Core/SnapshotRepo.vala:907
+#: src/Core/SnapshotRepo.vala:914
 msgid "Directory not found"
-msgstr ""
+msgstr "Adresár nenájdený"
 
-#: src/Core/Main.vala:2222 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Core/Main.vala:2355 src/Gtk/RestoreSummaryBox.vala:64
 msgid "Disclaimer"
-msgstr ""
+msgstr "Odmietnutie zodpovednosti"
 
 #: src/Gtk/BackupDeviceBox.vala:127
 msgid "Disk"
-msgstr ""
+msgstr "Disk"
 
-#: src/Core/Main.vala:231
+#: src/Core/Main.vala:230
 msgid "Distribution"
-msgstr ""
+msgstr "Distribúcia"
 
 #: src/Gtk/MainWindow.vala:1021
 msgid "Enable scheduled snapshots to protect your system"
-msgstr ""
+msgstr "Povoliť plánované snapshoty pre ochranu vášho systému"
 
 #: src/Utility/Device.vala:1454
 msgid "Encrypted Device"
-msgstr ""
+msgstr "Šifrované zariadenie"
 
 #: src/Gtk/UsersBox.vala:233
 msgid "Encrypted Home Directory"
-msgstr ""
+msgstr "Šifrovaný domáci adresár"
 
 #: src/Console/AppConsole.vala:886
 #, c-format
 msgid "Enter device name or number"
-msgstr ""
+msgstr "Zadajte názov alebo číslo zariadenia"
 
 #: src/Console/AppConsole.vala:684 src/Console/AppConsole.vala:1015
 #, c-format
 msgid "Enter device name or number (a=Abort)"
-msgstr ""
+msgstr "Zadajte názov alebo číslo zariadenia (a=prerušiť)"
 
 #: src/Utility/Device.vala:1455
 #, c-format
 msgid "Enter passphrase to unlock '%s'"
-msgstr ""
+msgstr "Zadajte heslo na odomknutie '%s'"
 
 #: src/Console/AppConsole.vala:756
 #, c-format
 msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
 msgstr ""
+"Zadajte číslo snapshotu (a=prerušiť, p=predchádzajúci, n=nasledujúci)"
 
 #: src/Gtk/ExcludeBox.vala:231
 msgid "Enter the pattern to exclude (Ex: *.mp3, *.bak)"
-msgstr ""
+msgstr "Zadajte vzor pre vynechanie (napríklad: *.mp3, *.bak)"
 
 #: src/Gtk/RestoreDeviceBox.vala:520
 msgid "Error"
-msgstr ""
+msgstr "Chyba"
 
 #: src/Gtk/RestoreWindow.vala:481
 msgid "Error running Rsync"
-msgstr ""
+msgstr "Chyba pri behu Rsync"
 
 #: src/Gtk/BackupWindow.vala:82 src/Gtk/SetupWizardWindow.vala:99
 msgid "Estimate"
-msgstr ""
+msgstr "Odhad"
 
 #: src/Gtk/EstimateBox.vala:56
 msgid "Estimating System Size..."
-msgstr ""
+msgstr "Odhadovanie veľkosti systému..."
 
-#: src/Core/Main.vala:1295
+#: src/Core/Main.vala:1428
 msgid "Estimating system size..."
-msgstr ""
+msgstr "Odhadovanie veľkosti systému..."
 
 #: src/Console/AppConsole.vala:387
 msgid "Examples"
-msgstr ""
+msgstr "Príklady"
 
 #: src/Gtk/UsersBox.vala:133
 msgid "Exclude All Files"
-msgstr ""
+msgstr "Vynechať všetky súbory"
 
 #: src/Gtk/RestoreExcludeBox.vala:55 src/Gtk/ExcludeAppsBox.vala:51
 msgid "Exclude Application Settings"
-msgstr ""
+msgstr "Vynechať nastavenia programov"
 
 #: src/Gtk/RestoreWindow.vala:99
 msgid "Exclude Apps"
-msgstr ""
+msgstr "Vynechať aplikácie"
 
 #: src/Gtk/ExcludeMessageWindow.vala:70
 msgid "Exclude List"
-msgstr ""
+msgstr "Zoznam vynechaných"
 
 #: src/Gtk/ExcludeListSummaryWindow.vala:49
 msgid "Exclude List Summary"
-msgstr ""
+msgstr "Zhrnutie zoznamu vynechaných"
 
 #: src/Gtk/ExcludeBox.vala:230
 msgid "Exclude Pattern"
-msgstr ""
+msgstr "Vynechať vzor"
 
 #: src/Gtk/ExcludeMessageWindow.vala:56
 msgid "Excluded Directories"
-msgstr ""
+msgstr "Vynechané adresáre"
 
-#: src/Core/Main.vala:1583
+#: src/Core/Main.vala:1716
 msgid "Expected values: O, B, H, D, W, M"
-msgstr ""
+msgstr "Očakávané hodnoty: O, B, H, D, W, M"
 
 #: src/Utility/CronTab.vala:132
 msgid "Failed to add cron job"
-msgstr ""
+msgstr "Zlyhalo pridanie cron job"
 
 #: src/Utility/TeeJee.FileSystem.vala:169
 msgid "Failed to copy file"
-msgstr ""
+msgstr "Zlyhalo kopírovanie súboru"
 
 #: src/Utility/TeeJee.FileSystem.vala:297
 #: src/Utility/TeeJee.FileSystem.vala:306
 msgid "Failed to create directory"
-msgstr ""
+msgstr "Zlyhalo vytvorenie adresára"
 
-#: src/Core/Main.vala:1421
+#: src/Core/Main.vala:1554
 msgid "Failed to create new snapshot"
-msgstr ""
+msgstr "Zlyhalo vytvorenie nového snapshotu"
 
-#: src/Core/Main.vala:1276
+#: src/Core/Main.vala:1308
 msgid "Failed to create snapshot"
-msgstr ""
+msgstr "Zlyhalo vytvorenie snapshotu"
 
-#: src/Core/Main.vala:1511
+#: src/Core/Main.vala:1644
 msgid "Failed to create subvolume snapshot"
-msgstr ""
+msgstr "Zlyhalo vytvorenie snapshotu podriadeného zväzku"
 
-#: src/Core/SnapshotRepo.vala:948
+#: src/Core/SnapshotRepo.vala:955
 msgid "Failed to create symlinks"
-msgstr ""
+msgstr "Zlyhalo vytvorenie symbolických odkazov"
 
 #: src/Utility/TeeJee.FileSystem.vala:331
 msgid "Failed to delete directory"
-msgstr ""
+msgstr "Zlyhalo vymazanie adresára"
 
 #: src/Utility/TeeJee.FileSystem.vala:100
 msgid "Failed to delete file"
-msgstr ""
+msgstr "Zlyhalo vymazanie súboru"
 
 #: src/Core/Subvolume.vala:153
 msgid "Failed to delete snapshot nested subvolume"
-msgstr ""
+msgstr "Zlyhalo vymazanie snapshotu včleneného podriadeného zväzku"
 
 #: src/Core/Subvolume.vala:163
 msgid "Failed to delete snapshot subvolume"
-msgstr ""
+msgstr "Zlyhalo vymazanie snapshotu podriadeného zväzku"
 
-#: src/Core/SnapshotRepo.vala:974
+#: src/Core/SnapshotRepo.vala:981
 msgid "Failed to delete symlinks"
-msgstr ""
+msgstr "Zlyhalo vymazanie symbolických odkazov"
 
-#: src/Core/Main.vala:3765 src/Core/Main.vala:3771
+#: src/Core/Main.vala:3906 src/Core/Main.vala:3912
 msgid "Failed to estimate system size"
-msgstr ""
+msgstr "Zlyhalo odhadnutie veľkosti systému"
 
 #: src/Utility/CronTab.vala:257
 msgid "Failed to export crontab file"
-msgstr ""
+msgstr "Zlyhalo exportovanie súboru crontab"
 
 #: src/Console/AppConsole.vala:699 src/Console/AppConsole.vala:763
 #: src/Console/AppConsole.vala:895 src/Console/AppConsole.vala:990
 #: src/Console/AppConsole.vala:1035 src/Console/AppConsole.vala:1076
 msgid "Failed to get input from user in 3 attempts"
-msgstr ""
+msgstr "Zlyhalo získanie vstupnej informácie od užívateľa po 3 pokusoch"
 
 #: src/Utility/Device.vala:724
 msgid "Failed to get partition list"
-msgstr ""
+msgstr "Zlyhalo získanie zoznamu oddielov"
 
-#: src/Core/Main.vala:3347
+#: src/Core/Main.vala:3488
 msgid "Failed to get partition list."
-msgstr ""
+msgstr "Zlyhalo získanie zoznamu oddielov."
 
 #: src/Utility/CronTab.vala:240
 msgid "Failed to install crontab file"
-msgstr ""
+msgstr "Zlyhalo inštalovanie súboru crontab"
 
 #: src/Gtk/RestoreDeviceBox.vala:521
 msgid "Failed to mount devices"
-msgstr ""
+msgstr "Zlyhalo pripojenie zariadení"
 
 #: src/Utility/TeeJee.FileSystem.vala:188
 msgid "Failed to move file"
-msgstr ""
+msgstr "Zlyhalo presunutie súboru"
 
-#: src/Core/Main.vala:2983
+#: src/Core/Main.vala:3116
 msgid "Failed to move system subvolume to snapshot directory"
-msgstr ""
+msgstr "Zlyhalo presunutie podriadeného zväzku systému do adresáru snapshotu"
 
-#: src/Core/Main.vala:3870
+#: src/Core/Main.vala:4011
 msgid "Failed to query subvolume list"
-msgstr ""
+msgstr "Zlyhalo opýtanie sa na zoznam podriadeného zväzku"
 
 #: src/Utility/CronTab.vala:50
 msgid "Failed to read cron tab"
-msgstr ""
+msgstr "Zlyhalo čítanie cron tab"
 
 #: src/Utility/TeeJee.FileSystem.vala:126
 msgid "Failed to read file"
-msgstr ""
+msgstr "Zlyhalo čítanie súboru"
 
-#: src/Core/SnapshotRepo.vala:894
+#: src/Core/SnapshotRepo.vala:901
 msgid "Failed to remove"
-msgstr ""
+msgstr "Zlyhalo odstránenie"
 
 #: src/Utility/CronTab.vala:213
 msgid "Failed to remove cron job"
-msgstr ""
+msgstr "Zlyhalo odstránenie cron job"
 
 #: src/Core/Snapshot.vala:530 src/Core/Snapshot.vala:542
 #: src/Core/Snapshot.vala:550
 msgid "Failed to remove snapshot"
-msgstr ""
+msgstr "Zlyhalo odstránenie snapshotu"
 
 #: src/Core/Subvolume.vala:200
 msgid "Failed to restore system subvolume"
-msgstr ""
+msgstr "Zlyhalo obnovenie podriadeného zväzku systému"
 
-#: src/Core/Main.vala:1371
+#: src/Core/Main.vala:1504
 msgid "Failed to save exclude list"
-msgstr ""
+msgstr "Zlyhalo uloženie zoznamu vylúčených"
 
 #: src/Utility/Device.vala:1381 src/Utility/Device.vala:1435
 #: src/Utility/Device.vala:1460 src/Utility/Device.vala:1481
 #: src/Utility/Device.vala:1501
 msgid "Failed to unlock device"
-msgstr ""
+msgstr "Zlyhalo odomknutie zariadenia"
 
 #: src/Utility/Device.vala:1733
 msgid "Failed to unmount"
-msgstr ""
+msgstr "Zlyhalo odpojenie"
 
-#: src/Core/Main.vala:3551
+#: src/Core/Main.vala:3692
 msgid "Failed to unmount device!"
-msgstr ""
+msgstr "Zlyhalo odpojenie zariadenia!"
 
 #: src/Utility/TeeJee.FileSystem.vala:153
 msgid "Failed to write file"
-msgstr ""
+msgstr "Zlyhalo zapísanie súboru"
 
 #: src/Gtk/RsyncLogBox.vala:122
 msgid "File (snapshot)"
-msgstr ""
+msgstr "Súbor (snapshot)"
 
 #: src/Gtk/RsyncLogBox.vala:119
 msgid "File (system)"
-msgstr ""
+msgstr "Súbor (systém)"
 
 #: src/Gtk/ExcludeMessageWindow.vala:98
 msgid "File Pattern"
-msgstr ""
+msgstr "Súbor predloha"
 
-#: src/Gtk/BackupBox.vala:80
+#: src/Gtk/BackupBox.vala:83
 msgid "File and directory counts:"
-msgstr ""
+msgstr "Počty súborov a adresárov:"
 
 #: src/Utility/CronTab.vala:225 src/Utility/RsyncTask.vala:298
 #: src/Utility/TeeJee.FileSystem.vala:183
 msgid "File not found"
-msgstr ""
+msgstr "Súbor nenájdený"
 
 #: src/Gtk/ExcludeListSummaryWindow.vala:62
 msgid ""
 "Files &amp; directories matching the patterns below will be excluded. "
 "Patterns starting with a + will include the item instead of excluding."
 msgstr ""
+"Súbory a adresáre zodpovedajúce nižšie uvedeným vzorom budú vynechané. Vzory "
+"začínajúce na + (plus) znamenajú opak a to zahrnutie položky namiesto jej "
+"vynechania."
 
 #: src/Gtk/SnapshotBackendBox.vala:193
 msgid "Files and directories can be excluded to save disk space."
-msgstr ""
+msgstr "Súbory a adresáre môžu byť vynechané pre šetrenie miesta na disku."
 
 #: src/Gtk/RestoreBox.vala:119
 msgid "Files and directory counts:"
-msgstr ""
+msgstr "Počty súborov a adresárov:"
 
 #: src/Gtk/ExcludeMessageWindow.vala:76
 msgid "Files matching the following patterns will be excluded"
-msgstr ""
+msgstr "Súbory zodpovedajúce nasledovným vzorom budú vynechané"
 
 #: src/Utility/Device.vala:1950
 #, c-format
 msgid "Filesystem"
-msgstr ""
+msgstr "Súborový systém"
 
 #: src/Gtk/RsyncLogBox.vala:302
 msgid "Filter by name or path"
-msgstr ""
+msgstr "Filtrovať podľa názvu alebo cesty"
 
 #: src/Gtk/SettingsWindow.vala:103
 msgid "Filters"
-msgstr ""
+msgstr "Filtre"
 
 #: src/Gtk/BackupWindow.vala:97 src/Gtk/SetupWizardWindow.vala:211
 #: src/Gtk/DeleteWindow.vala:103
 msgid "Finish"
-msgstr ""
+msgstr "Koniec"
 
 #: src/Gtk/RestoreWindow.vala:130 src/Gtk/SetupWizardWindow.vala:120
 msgid "Finished"
-msgstr ""
+msgstr "Dokončené"
 
 #: src/Gtk/RestoreExcludeBox.vala:78
 msgid "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
-msgstr ""
+msgstr "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 
-#: src/Core/SnapshotRepo.vala:576
+#: src/Core/SnapshotRepo.vala:583
 msgid "First snapshot requires:"
-msgstr ""
+msgstr "Prvý snapshot vyžaduje:"
 
-#: src/Core/Main.vala:2916
+#: src/Core/Main.vala:3049
 msgid "Found existing pre-restore snapshot"
-msgstr ""
+msgstr "Nájdený existujúci snapshot pre obnovu"
 
 #: src/Gtk/BackupDeviceBox.vala:215
 msgid "Free"
-msgstr ""
+msgstr "Voľné"
 
-#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:144
+#: src/Core/SnapshotRepo.vala:75 src/Core/SnapshotRepo.vala:145
 msgid "Free space"
-msgstr ""
+msgstr "Voľné miesto"
 
 #: src/Console/AppConsole.vala:1044
 msgid "GRUB Device"
-msgstr ""
+msgstr "Zariadenie GRUB"
 
 #: src/Gtk/RestoreDeviceBox.vala:497
 msgid "GRUB device not selected"
-msgstr ""
+msgstr "Zariadenie GRUB nie je vybrané"
 
 #: src/Console/AppConsole.vala:1049
 msgid "GRUB will NOT be reinstalled"
-msgstr ""
+msgstr "GRUB nebude znovu nainštalovaný"
 
-#: src/Core/Main.vala:2364
+#: src/Core/Main.vala:2497
 msgid "Generating initramfs..."
-msgstr ""
+msgstr "Vytváranie initramfs..."
 
 #: src/Console/AppConsole.vala:375
 msgid "Global"
-msgstr ""
+msgstr "Globálny"
 
-#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:135
+#: src/Gtk/BackupBox.vala:100 src/Gtk/RestoreBox.vala:135
 #: src/Gtk/RsyncLogBox.vala:400
 #, c-format
 msgid "Group"
-msgstr ""
+msgstr "Skupina"
 
 #: src/Gtk/SnapshotBackendBox.vala:133
 msgid "Help"
-msgstr ""
+msgstr "Pomoc"
 
 #: src/Gtk/ExcludeMessageWindow.vala:129
 msgid ""
 "Hidden files and folders are included by default since they contain user-"
 "specific configuration files."
 msgstr ""
+"Skryté súbory a zložky sú štandardne zahrnuté, pretože obsahujú nastavenia "
+"pre konkrétnych užívateľov."
 
 #: src/Gtk/DeleteWindow.vala:181
 msgid "Hide"
-msgstr ""
+msgstr "Skryť"
 
 #: src/Console/AppConsole.vala:382
 msgid "Hide rsync output"
-msgstr ""
+msgstr "Skryť výstup rsync"
 
 #: src/Gtk/DeleteWindow.vala:182
 msgid "Hide this window (files will be deleted in background)"
-msgstr ""
+msgstr "Skryť toto okno (súbory budú vymazané na pozadí)"
 
 #: src/Gtk/UsersBox.vala:117
 msgid "Home"
-msgstr ""
+msgstr "Domov"
 
 #: src/Gtk/ExcludeMessageWindow.vala:116
 msgid "Home Directory"
-msgstr ""
+msgstr "Domovský adresár"
 
 #: src/Gtk/SnapshotListBox.vala:247 src/Gtk/ScheduleBox.vala:118
 msgid "Hourly"
-msgstr ""
+msgstr "Hodinový"
 
-#: src/Core/Main.vala:1065
+#: src/Core/Main.vala:1064
 msgid "Hourly snapshot failed!"
-msgstr ""
+msgstr "Hodinový snapshot zlyhal!"
 
-#: src/Core/Main.vala:1046
+#: src/Core/Main.vala:1045
 msgid "Hourly snapshots are enabled"
-msgstr ""
+msgstr "Hodinové snapshoty sú povolené"
 
 #: src/Gtk/RestoreFinishBox.vala:102
 msgid ""
 "If the restored system fails to boot, then boot from the Live CD/USB, "
 "install Timeshift, and try restoring another snapshot."
 msgstr ""
+"Ak obnovený systém zlyhá pri zavádzaní, potom zaveďte Live CD/USB, spustite "
+"Timeshift a skúste obnovu z iného snapshotu."
 
-#: src/Core/Main.vala:2228
+#: src/Core/Main.vala:2361
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
 msgstr ""
+"Ak sú tieto podmienky pre vás neprijateľné, prosím nepokračujte ďalej!"
 
 #: src/Gtk/ExcludeBox.vala:54
 msgid "Include / Exclude Patterns"
-msgstr ""
+msgstr "Vzory pre zahrnutie / vynechanie"
 
 #: src/Gtk/UsersBox.vala:337
 msgid "Include @home subvolume in backups"
-msgstr ""
+msgstr "Zahrnúť podriadený zväzok @home do zálohy"
 
 #: src/Gtk/UsersBox.vala:263
 msgid "Include All Files"
-msgstr ""
+msgstr "Zahrnúť všetky súbory"
 
 #: src/Gtk/UsersBox.vala:191
 msgid "Include Only Hidden Files"
-msgstr ""
+msgstr "Zahrnúť iba skryté súbory"
 
-#: src/Core/Main.vala:2042
+#: src/Core/Main.vala:2175
 msgid "Invalid Snapshot"
-msgstr ""
+msgstr "Neplatný snapshot"
 
 #: src/Console/AppConsole.vala:252
 #, c-format
 msgid "Invalid command line arguments"
-msgstr ""
+msgstr "Neplatné argumenty príkazového riadku"
 
 #: src/Gtk/MainWindow.vala:814
 msgid "Invalid snapshot"
-msgstr ""
+msgstr "Neplatný snapshot"
 
 #: src/Gtk/ExcludeBox.vala:282
 msgid "Items Not Selected"
-msgstr ""
+msgstr "Nevybrané položky"
 
 #: src/Gtk/ScheduleBox.vala:283
 msgid "Keep"
-msgstr ""
+msgstr "Zachovať"
 
 #: src/Gtk/RestoreExcludeBox.vala:112
 msgid ""
@@ -1128,556 +1157,573 @@ msgid ""
 "etc. If un-checked, previous configuration files will be restored from "
 "snapshot."
 msgstr ""
+"Zachovať súbory s nastavením pre bittorrent klientov ako sú Deluge, "
+"Transmission, atď. Ak nie je zaškrtnuté, budú obnovené súbory s nastaveniami "
+"zo snapshotu."
 
 #: src/Gtk/RestoreExcludeBox.vala:85
 msgid ""
 "Keep configuration files for web browsers like Firefox and Chrome. If un-"
 "checked, previous configuration files will be restored from snapshot"
 msgstr ""
+"Zachovať súbory s nastavením pre webové prehliadače ako sú Firefox a Chrome. "
+"Ak nie je zaškrtnuté, budú obnovené súbory s nastaveniami zo snapshotu."
 
 #: src/Gtk/RestoreDeviceBox.vala:244
 msgid "Keep on Root Device"
-msgstr ""
+msgstr "Ponechať na zariadení s koreňovým adresárom"
 
 #: src/Gtk/RestoreDeviceBox.vala:229
 msgid "Keep this mount path on the root filesystem"
-msgstr ""
+msgstr "Ponechať túto cestu k pripojeniu na systém s koreňovým adresárom."
 
 #: src/Gtk/SnapshotListBox.vala:472
 msgid "LIVE"
-msgstr ""
+msgstr "LIVE"
 
 #: src/Utility/Device.vala:1951 src/Console/AppConsole.vala:460
 #: src/Console/AppConsole.vala:499 src/Gtk/BackupDeviceBox.vala:254
 #, c-format
 msgid "Label"
-msgstr ""
+msgstr "Menovka"
 
-#: src/Core/Main.vala:1027
+#: src/Core/Main.vala:1026
 #, c-format
 msgid "Last boot snapshot is %d hours old"
-msgstr ""
+msgstr "Posledný snapshot pre zavedenie je %d hodín starý"
 
-#: src/Core/Main.vala:1022
+#: src/Core/Main.vala:1021
 msgid "Last boot snapshot is older than system start time"
-msgstr ""
+msgstr "Posledný snapshot pre zavedenie je starší než systémový čas štartu"
 
-#: src/Core/Main.vala:1018
+#: src/Core/Main.vala:1017
 msgid "Last boot snapshot not found"
-msgstr ""
+msgstr "Posledný snapshot pre zavedenie nenájdený"
 
-#: src/Core/Main.vala:1089
+#: src/Core/Main.vala:1088
 #, c-format
 msgid "Last daily snapshot is %d hours old"
-msgstr ""
+msgstr "Posledný denný snapshot je %d hodín starý"
 
-#: src/Core/Main.vala:1084
+#: src/Core/Main.vala:1083
 msgid "Last daily snapshot is more than 1 day old"
-msgstr ""
+msgstr "Posledný denný snapshot je viac než 1 deň starý"
 
-#: src/Core/Main.vala:1080
+#: src/Core/Main.vala:1079
 msgid "Last daily snapshot not found"
-msgstr ""
+msgstr "Posledný denný snapshot nenájdený"
 
-#: src/Core/Main.vala:1058
+#: src/Core/Main.vala:1057
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
-msgstr ""
+msgstr "Posledný hodinový snapshot je %d minút starý"
 
-#: src/Core/Main.vala:1053
+#: src/Core/Main.vala:1052
 msgid "Last hourly snapshot is more than 1 hour old"
-msgstr ""
+msgstr "Posledný hodinový snapshot je viac než 1 hodinu starý"
 
-#: src/Core/Main.vala:1049
+#: src/Core/Main.vala:1048
 msgid "Last hourly snapshot not found"
-msgstr ""
+msgstr "Posledný hodinový snapshot nenájdený"
 
-#: src/Core/Main.vala:1151
+#: src/Core/Main.vala:1150
 #, c-format
 msgid "Last monthly snapshot is %d days old"
-msgstr ""
+msgstr "Posledný mesačný snapshot je %d dní starý"
 
-#: src/Core/Main.vala:1146
+#: src/Core/Main.vala:1145
 msgid "Last monthly snapshot is more than 1 month old"
-msgstr ""
+msgstr "Posledný mesačný snapshot je viac než 1 mesiac starý"
 
-#: src/Core/Main.vala:1142
+#: src/Core/Main.vala:1141
 msgid "Last monthly snapshot not found"
-msgstr ""
+msgstr "Posledný mesačný snapshot nenájdený"
 
-#: src/Core/Main.vala:1120
+#: src/Core/Main.vala:1119
 #, c-format
 msgid "Last weekly snapshot is %d days old"
-msgstr ""
+msgstr "Posledný týždenný snapshot je %d dní starý"
 
-#: src/Core/Main.vala:1115
+#: src/Core/Main.vala:1114
 msgid "Last weekly snapshot is more than 1 week old"
-msgstr ""
+msgstr "Posledný týždenný snapshot je viac než 1 týždeň starý"
 
-#: src/Core/Main.vala:1111
+#: src/Core/Main.vala:1110
 msgid "Last weekly snapshot not found"
-msgstr ""
+msgstr "Posledný týždenný snapshot nenájdený"
 
 #: src/Gtk/MainWindow.vala:1002
 #, c-format
 msgid "Latest snapshot"
-msgstr ""
+msgstr "Posledný snapshot"
 
-#: src/Core/Main.vala:1360
+#: src/Core/Main.vala:1493
 #, c-format
 msgid "Linking from snapshot"
-msgstr ""
+msgstr "Linkované zo snapshotu"
 
 #: src/Console/AppConsole.vala:353
 msgid "List"
-msgstr ""
+msgstr "Zoznam"
 
 #: src/Console/AppConsole.vala:355
 msgid "List devices"
-msgstr ""
+msgstr "Zoznam zariadení"
 
 #: src/Console/AppConsole.vala:354
 msgid "List snapshots"
-msgstr ""
+msgstr "Zoznam snapshotov"
 
 #: src/Gtk/MainWindow.vala:953
 msgid "Live USB Mode (Restore Only)"
-msgstr ""
+msgstr "Live USB Mode (iba pre obnovu)"
 
 #: src/Gtk/SettingsWindow.vala:90 src/Gtk/BackupWindow.vala:87
 #: src/Gtk/SetupWizardWindow.vala:104
 msgid "Location"
-msgstr ""
+msgstr "Miesto"
 
 #: src/Gtk/MainWindow.vala:441
 msgid "Main window closed by user"
-msgstr ""
+msgstr "Hlavné okno zavreté užívateľom"
 
 #: src/Gtk/SnapshotListBox.vala:277
 msgid "Mark/Unmark for Deletion"
-msgstr ""
+msgstr "Označiť/odznačiť pre vymazanie"
 
-#: src/Core/SnapshotRepo.vala:621 src/Core/SnapshotRepo.vala:664
+#: src/Core/SnapshotRepo.vala:628 src/Core/SnapshotRepo.vala:671
 msgid "Maximum backups exceeded for backup level"
-msgstr ""
+msgstr "Prekročený maximálny počet záloh pre túto úroveň"
 
 #: src/Gtk/MainWindow.vala:207
 msgid "Menu"
-msgstr ""
+msgstr "Ponuka"
 
 #: src/Gtk/SettingsWindow.vala:105
 msgid "Misc"
-msgstr ""
+msgstr "Misc"
 
-#: src/Core/Main.vala:240
+#: src/Core/Main.vala:239
 msgid "Missing Dependencies"
-msgstr ""
+msgstr "Chýbajúce závislosti"
 
-#: src/Core/SnapshotRepo.vala:598
+#: src/Core/SnapshotRepo.vala:605
 #, c-format
 msgid "Mode"
-msgstr ""
+msgstr "Režim"
 
 #: src/Utility/Device.vala:1934
 #, c-format
 msgid "Model"
-msgstr ""
+msgstr "Model"
 
 #: src/Gtk/SnapshotListBox.vala:250 src/Gtk/ScheduleBox.vala:64
 msgid "Monthly"
-msgstr ""
+msgstr "Mesačný"
 
-#: src/Core/Main.vala:1139
+#: src/Core/Main.vala:1138
 msgid "Monthly snapshot are enabled"
-msgstr ""
+msgstr "Mesačný snapshot je povolený"
 
-#: src/Core/Main.vala:1158
+#: src/Core/Main.vala:1157
 msgid "Monthly snapshot failed!"
-msgstr ""
+msgstr "Mesačný snapshot zlyhal!"
 
-#: src/Core/Main.vala:2129 src/Core/Main.vala:2162
+#: src/Core/Main.vala:2262 src/Core/Main.vala:2295
 msgid "Mount"
-msgstr ""
+msgstr "Pripojiť"
 
-#: src/Core/Main.vala:2990
+#: src/Core/Main.vala:3123
 msgid "Moved system subvolume to snapshot directory"
-msgstr ""
+msgstr "Presunutý podriadený zväzok systému do adresára snapshotu"
 
 #: src/Gtk/MainWindow.vala:790
 msgid "Multiple snapshots selected"
-msgstr ""
+msgstr "Viac snapshotov je vybraných"
 
 #: src/Console/AppConsole.vala:426 src/Gtk/BackupDeviceBox.vala:235
 #: src/Gtk/RsyncLogBox.vala:492
 msgid "Name"
-msgstr ""
+msgstr "Názov"
 
 #: src/Gtk/RestoreWindow.vala:201 src/Gtk/BackupWindow.vala:164
 #: src/Gtk/SetupWizardWindow.vala:203 src/Gtk/DeleteWindow.vala:165
 msgid "Next"
-msgstr ""
+msgstr "Ďalší"
 
 #: src/Utility/Gtk/CustomMessageDialog.vala:157
 msgid "No"
-msgstr ""
+msgstr "Nie"
 
-#: src/Gtk/BackupBox.vala:84 src/Gtk/RestoreBox.vala:122
+#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:122
 msgid "No Change"
-msgstr ""
+msgstr "Bez zmeny"
 
 #: src/Gtk/MainWindow.vala:599 src/Gtk/DeleteWindow.vala:335
 msgid "No Snapshots Selected"
-msgstr ""
+msgstr "Žiadny snapshot nie je vybraný"
 
 #: src/Gtk/MainWindow.vala:1026
 msgid "No snapshots available"
-msgstr ""
+msgstr "Žiadny snapshot nie je dostupný"
 
-#: src/Core/SnapshotRepo.vala:823 src/Console/AppConsole.vala:321
+#: src/Core/SnapshotRepo.vala:830 src/Console/AppConsole.vala:321
 #: src/Gtk/MainWindow.vala:970
 msgid "No snapshots found"
-msgstr ""
+msgstr "Nenašiel sa snapshot"
 
 #: src/Console/AppConsole.vala:742
 msgid "No snapshots found on device"
-msgstr ""
+msgstr "Na zariadení sa nenašiel snapshot"
 
 #: src/Gtk/MainWindow.vala:537
 msgid "No snapshots on device"
-msgstr ""
+msgstr "Žiadny snapshot nie je na zariadení"
 
-#: src/Core/SnapshotRepo.vala:574
+#: src/Core/SnapshotRepo.vala:581
 msgid "No snapshots on this device"
-msgstr ""
+msgstr "Žiadny snapshot nie je na tomto zariadení"
 
 #: src/Gtk/MainWindow.vala:783
 msgid "No snapshots selected"
-msgstr ""
+msgstr "Žiadny snapshot nie je vybraný"
 
 #: src/Gtk/MainWindow.vala:1003 src/Gtk/MainWindow.vala:1005
 msgid "None"
-msgstr ""
+msgstr "Žiadne"
 
 #: src/Core/Subvolume.vala:182
 #, c-format
 msgid "Not Found"
-msgstr ""
+msgstr "Nenájdené"
 
-#: src/Core/SnapshotRepo.vala:592
+#: src/Core/SnapshotRepo.vala:599
 msgid "Not Selected"
-msgstr ""
+msgstr "Nevybrané"
 
-#: src/Core/Main.vala:385
+#: src/Core/Main.vala:384
 msgid "Not Supported"
-msgstr ""
+msgstr "Nepodporované"
 
-#: src/Core/SnapshotRepo.vala:538 src/Core/SnapshotRepo.vala:565
+#: src/Core/SnapshotRepo.vala:543 src/Core/SnapshotRepo.vala:572
 msgid "Not enough disk space"
-msgstr ""
+msgstr "Nedostatok miesta na disku"
 
 #: src/Console/AppConsole.vala:398 src/Gtk/FinishBox.vala:55
 msgid "Notes"
-msgstr ""
+msgstr "Poznámky"
 
-#: src/Core/Main.vala:1169
+#: src/Core/Main.vala:1168
 msgid "Nothing to do!"
-msgstr ""
+msgstr "Nič na práci!"
 
 #: src/Console/AppConsole.vala:424 src/Console/AppConsole.vala:454
 #: src/Console/AppConsole.vala:493 src/Console/AppConsole.vala:541
 msgid "Num"
-msgstr ""
+msgstr "Num"
 
 #: src/Gtk/ScheduleBox.vala:282
 msgid ""
 "Number of snapshots to keep.\n"
 "Older snapshots will be removed once this limit is exceeded."
 msgstr ""
+"Počet uchovávaných snapshotov.\n"
+"Po dosiahnutí tejto hranice budú tie najstaršie vymazávané."
 
-#: src/Core/SnapshotRepo.vala:548 src/Utility/Gtk/CustomMessageDialog.vala:147
+#: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:147
 #: src/Utility/Gtk/CustomMessageDialog.vala:151 src/Utility/GtkHelper.vala:108
 #: src/Gtk/SettingsWindow.vala:123 src/Gtk/ExcludeListSummaryWindow.vala:84
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: src/Gtk/SnapshotBackendBox.vala:180
 msgid ""
 "OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout "
 "(@ and @home subvolumes). Other layouts are not supported."
 msgstr ""
+"Operačný systém musí byť inštalovaný na BTRFS oddiel, ktorý má rozdelenie "
+"podriadených zväzkov typu Ubuntu (@ and @home subvolumes). Iné rozdelenia "
+"nie sú podporované."
 
-#: src/Core/Main.vala:4016
+#: src/Core/Main.vala:4157
 msgid "Older log files removed"
-msgstr ""
+msgstr "Staršie logovacie súbory odstránené"
 
 #: src/Gtk/MainWindow.vala:1004
 msgid "Oldest snapshot"
-msgstr ""
+msgstr "Najstarší snapshot"
 
 #: src/Gtk/SnapshotListBox.vala:245
 msgid "On demand (manual)"
-msgstr ""
+msgstr "Na požiadanie (manuálne)"
 
-#: src/Core/Main.vala:383 src/Core/Main.vala:3464
+#: src/Core/Main.vala:382 src/Core/Main.vala:3605
 #: src/Gtk/RestoreDeviceBox.vala:511
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
 msgstr ""
+"Len rozdelenia podriadených zväzkov typu Ubuntu s @ a @home sú momentálne "
+"podporované."
 
 #: src/Gtk/MainWindow.vala:208
 msgid "Open Menu"
-msgstr ""
+msgstr "Otvoriť ponuku"
 
-#: src/Core/Main.vala:3246
+#: src/Core/Main.vala:3387
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
 msgstr ""
+"Pri vytváraní snapshotov v BTRFS móde by nemala byť použitá možnosť --"
+"snapshot-device"
 
 #: src/Console/AppConsole.vala:351 src/Gtk/AppGtk.vala:115
 msgid "Options"
-msgstr ""
+msgstr "Možnosti"
 
 #: src/Gtk/RestoreExcludeBox.vala:118
 msgid "Other applications (next page)"
-msgstr ""
+msgstr "Iné aplikácie (ďalšia stránka)"
 
-#: src/Gtk/BackupBox.vala:96 src/Gtk/RestoreBox.vala:134
+#: src/Gtk/BackupBox.vala:99 src/Gtk/RestoreBox.vala:134
 #: src/Gtk/RsyncLogBox.vala:398
 #, c-format
 msgid "Owner"
-msgstr ""
+msgstr "Vlastník"
 
 #: src/Utility/Device.vala:1946
 #, c-format
 msgid "Parent Device"
-msgstr ""
+msgstr "Nadriadené zariadenie"
 
-#: src/Core/Main.vala:2493 src/Core/Main.vala:2584 src/Gtk/RsyncLogBox.vala:222
+#: src/Core/Main.vala:2626 src/Core/Main.vala:2717 src/Gtk/RsyncLogBox.vala:222
 msgid "Parsing log file..."
-msgstr ""
+msgstr "Analýza logovacieho súboru..."
 
 #: src/Gtk/RestoreDeviceBox.vala:510
 msgid "Partition has an unsupported subvolume layout."
-msgstr ""
+msgstr "Oddiel má nepodporované rozdelenie podriadených zväzkov"
 
-#: src/Core/SnapshotRepo.vala:597 src/Gtk/RestoreDeviceBox.vala:93
+#: src/Core/SnapshotRepo.vala:604 src/Gtk/RestoreDeviceBox.vala:93
 #, c-format
 msgid "Path"
-msgstr ""
+msgstr "Cesta"
 
 #: src/Gtk/ExcludeBox.vala:166
 msgid "Pattern"
-msgstr ""
+msgstr "Vzor"
 
-#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:133
+#: src/Gtk/BackupBox.vala:98 src/Gtk/RestoreBox.vala:133
 #: src/Gtk/RsyncLogBox.vala:396
 #, c-format
 msgid "Permissions"
-msgstr ""
+msgstr "Oprávnenia"
 
-#: src/Core/Main.vala:259
+#: src/Core/Main.vala:258
 msgid "Please check if you have multiple windows open."
-msgstr ""
+msgstr "Prosím skontrolujte či máte otvorených viac okien."
 
-#: src/Core/Main.vala:2260
+#: src/Core/Main.vala:2393
 msgid "Please do not interrupt the restore process!"
-msgstr ""
+msgstr "Prosím neprerušte proces obnovy!"
 
-#: src/Core/Main.vala:354
+#: src/Core/Main.vala:353
 msgid "Please install required packages and try running TimeShift again"
 msgstr ""
+"Prosím nainštalujte požadované balíky a pokúste sa znova spustiť TimeShift"
 
 #: src/Gtk/AppGtk.vala:129
 msgid "Please re-run the application as admin (using 'sudo' or 'su')"
-msgstr ""
+msgstr "Prosím znova spustite aplikáciu ako admin (použitím sudo alebo su)"
 
 #: src/Console/AppConsole.vala:103
 msgid "Please run the application as admin (using 'sudo' or 'su')"
-msgstr ""
+msgstr "Prosím spustite aplikáciu ako admin (použitím sudo alebo su)"
 
-#: src/Core/Main.vala:2210
+#: src/Core/Main.vala:2343
 msgid "Please save your work and close all applications."
-msgstr ""
+msgstr "Prosím uložte vašu prácu a zavrite všetky aplikácie."
 
 #: src/Gtk/MainWindow.vala:685
 msgid "Please select a snapshot to view the log!"
-msgstr ""
+msgstr "Prosím vyberte snapshot na prezretie logu!"
 
 #: src/Gtk/RestoreDeviceBox.vala:498
 msgid "Please select the GRUB device"
-msgstr ""
+msgstr "Prosím vyberte zariadenie pre GRUB"
 
-#: src/Core/Main.vala:255
+#: src/Core/Main.vala:254
 msgid "Please wait a few minutes and try again."
-msgstr ""
+msgstr "Prosím počkajte niekoľko minút a skúste znova."
 
 #: src/Gtk/MainWindow.vala:752
 msgid "Please wait for snapshots to be deleted."
-msgstr ""
+msgstr "Prosím počkajte na vymazanie snapshotov."
 
 #: src/Gtk/EstimateBox.vala:66
 msgid "Please wait..."
-msgstr ""
+msgstr "Počkajte prosím..."
 
 #: src/Gtk/RsyncLogBox.vala:188
 msgid "Populating list..."
-msgstr ""
+msgstr "Vytváranie zoznamu..."
 
-#: src/Core/Main.vala:1595 src/Gtk/BackupBox.vala:114
+#: src/Core/Main.vala:1728 src/Gtk/BackupBox.vala:117
 #: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
 #: src/Gtk/RsyncLogBox.vala:232
 msgid "Preparing..."
-msgstr ""
+msgstr "Pripravuje sa..."
 
 #: src/Gtk/RestoreWindow.vala:193 src/Gtk/BackupWindow.vala:156
 #: src/Gtk/SetupWizardWindow.vala:195 src/Gtk/DeleteWindow.vala:157
 msgid "Previous"
-msgstr ""
+msgstr "Predchádzajúci"
 
 #: src/Gtk/AppGtk.vala:117
 msgid "Print debug information"
-msgstr ""
+msgstr "Vypísať informácie pre ladenie"
 
-#: src/Core/Main.vala:3826
+#: src/Core/Main.vala:3967
 msgid "Query completed"
-msgstr ""
+msgstr "Zisťovanie dokončené"
 
-#: src/Core/Main.vala:3809
+#: src/Core/Main.vala:3950
 msgid "Querying subvolume info..."
-msgstr ""
+msgstr "Zisťovanie informácií o podriadenom zväzku..."
 
 #: src/Gtk/SnapshotBackendBox.vala:77
 msgid "RSYNC"
-msgstr ""
+msgstr "RSYNC"
 
 #: src/Gtk/SnapshotBackendBox.vala:185
 msgid "RSYNC Snapshots"
-msgstr ""
+msgstr "RSYNC Snapshoty"
 
 #: src/Gtk/BootOptionsBox.vala:137
 msgid ""
 "Re-generates initramfs for all installed kernels. This is generally not "
 "needed. Select this only if the restored system fails to boot."
 msgstr ""
+"Vygenerovať initramfs pre všetky nainštalované jadrá. Toto nie je potrebné. "
+"Vyberte túto možnosť, ak zlyhá zavedenie obnoveného systému."
 
 #: src/Console/AppConsole.vala:984
 #, c-format
 msgid "Re-install GRUB2 bootloader?"
-msgstr ""
+msgstr "Preinštalovať zavádzač GRUB2?"
 
-#: src/Core/Main.vala:2323
+#: src/Core/Main.vala:2456
 msgid "Re-installing GRUB2 bootloader..."
-msgstr ""
+msgstr "Zavádzač GRUB2 sa preinštaluje..."
 
 #: src/Gtk/BootOptionsBox.vala:120
 msgid "Re-installs the GRUB2 bootloader on the selected device."
-msgstr ""
+msgstr "Preinštalácia zavádzača GRUB2 na vybrané zariadenie."
 
 #: src/Gtk/RsyncLogBox.vala:181
 #, c-format
 msgid "Read %'d of %'d lines..."
-msgstr ""
+msgstr "Načítanie %'d z %'d riadkov..."
 
-#: src/Core/Main.vala:2423
+#: src/Core/Main.vala:2556
 msgid "Rebooting system..."
-msgstr ""
+msgstr "Reštart systému..."
 
 #: src/Gtk/RestoreExcludeBox.vala:61 src/Gtk/RestoreExcludeBox.vala:91
 #, c-format
 msgid "Recommended"
-msgstr ""
+msgstr "Odporučený"
 
 #: src/Gtk/BackupDeviceBox.vala:65 src/Gtk/RestoreDeviceBox.vala:70
 msgid "Refresh"
-msgstr ""
+msgstr "Obnoviť"
 
 #: src/Gtk/BackupDeviceBox.vala:106
 msgid "Remote and network locations are not supported."
-msgstr ""
+msgstr "Vzdialené a sieťové umiestnenia nie sú podporované."
 
 #: src/Gtk/ExcludeBox.vala:262
 msgid "Remove"
-msgstr ""
+msgstr "Odstrániť"
 
-#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1633 src/Core/Main.vala:1644
-#: src/Core/Main.vala:4012 src/Core/SnapshotRepo.vala:900
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1766 src/Core/Main.vala:1777
+#: src/Core/Main.vala:4153 src/Core/SnapshotRepo.vala:907
 #, c-format
 msgid "Removed"
-msgstr ""
+msgstr "Odstránené"
 
 #: src/Utility/CronTab.vala:340
 msgid "Removed cron task"
-msgstr ""
+msgstr "Odstránená úloha cron"
 
-#: src/Core/Main.vala:3614
+#: src/Core/Main.vala:3755
 #, c-format
 msgid "Removed mount directory: '%s'"
-msgstr ""
+msgstr "Odstránený prípojný adresár: '%s'"
 
 #: src/Core/Snapshot.vala:555
 msgid "Removed snapshot"
-msgstr ""
+msgstr "Snapshot odstránený"
 
 #: src/Core/Snapshot.vala:484
 msgid "Removing"
-msgstr ""
+msgstr "Odstraňuje sa"
 
 #: src/Core/Snapshot.vala:521
 msgid "Removing snapshot"
-msgstr ""
+msgstr "Odstraňuje sa snapshot"
 
-#: src/Core/SnapshotRepo.vala:756 src/Core/SnapshotRepo.vala:775
-#: src/Core/SnapshotRepo.vala:793 src/Core/SnapshotRepo.vala:807
+#: src/Core/SnapshotRepo.vala:763 src/Core/SnapshotRepo.vala:782
+#: src/Core/SnapshotRepo.vala:800 src/Core/SnapshotRepo.vala:814
 #, c-format
 msgid "Removing snapshots"
-msgstr ""
+msgstr "Odstraňujú sa snapshoty"
 
 #: src/Console/AppConsole.vala:363 src/Gtk/MainWindow.vala:150
 #: src/Gtk/RestoreWindow.vala:125 src/Gtk/RsyncLogBox.vala:377
 #: src/Gtk/RsyncLogBox.vala:567 src/Gtk/RestoreFinishBox.vala:71
 msgid "Restore"
-msgstr ""
+msgstr "Obnova"
 
 #: src/Gtk/UsersBox.vala:326
 msgid "Restore @home subvolume"
-msgstr ""
+msgstr "Obnova podriadeného zväzku @home"
 
 #: src/Gtk/RestoreWindow.vala:89
 msgid "Restore Device"
-msgstr ""
+msgstr "Obnova zariadenia"
 
 #: src/Gtk/RestoreWindow.vala:94
 msgid "Restore Exclude"
-msgstr ""
+msgstr "Vynechať obnovu"
 
 #: src/Gtk/RestoreWindow.vala:69
 msgid "Restore Snapshot"
-msgstr ""
+msgstr "Obnova snapshotu"
 
-#: src/Core/Main.vala:2833 src/Core/Main.vala:2875
+#: src/Core/Main.vala:2966 src/Core/Main.vala:3008
 msgid "Restore completed"
-msgstr ""
+msgstr "Obnova dokončená"
 
 #: src/Gtk/MainWindow.vala:151
 msgid "Restore selected snapshot"
-msgstr ""
+msgstr "Obnova vybraného snapshotu"
 
 #: src/Console/AppConsole.vala:364
 msgid "Restore snapshot"
-msgstr ""
+msgstr "Obnova snapshotu"
 
 #: src/Gtk/RestoreFinishBox.vala:96
 msgid "Restored subvolumes will become active after system is restarted."
-msgstr ""
+msgstr "Obnovené podriadené zväzky budú aktívne po reštarte systému."
 
 #: src/Core/Subvolume.vala:204
 msgid "Restored system subvolume"
-msgstr ""
+msgstr "Systémový podriadený zväzok obnovený"
 
 #: src/Gtk/RestoreBox.vala:77 src/Gtk/RestoreBox.vala:190
 msgid "Restoring Snapshot..."
-msgstr ""
+msgstr "Obnovuje sa snapshot..."
 
 #: src/Gtk/FinishBox.vala:85
 msgid ""
@@ -1685,10 +1731,13 @@ msgid ""
 "currently in use will be preserved as a new snapshot. If required, this "
 "snapshot can be restored later to 'undo' the restore."
 msgstr ""
+"Obnovenie zo snapshotu nahradí podriadené zväzky systému, a tie ktoré sa "
+"teraz používajú budú zachované ako nový snapshot. Ak je potrebné, tento "
+"snapshot môže byť obnovený neskôr k vráteniu obnovy."
 
-#: src/Core/Main.vala:2802
+#: src/Core/Main.vala:2935
 msgid "Restoring snapshot..."
-msgstr ""
+msgstr "Obnovuje sa snapshot..."
 
 #: src/Gtk/FinishBox.vala:88
 msgid ""
@@ -1698,38 +1747,47 @@ msgid ""
 "files will be backed up when snapshot is created, and replaced when snapshot "
 "is restored."
 msgstr ""
+"Obnovenie zo snapshotu nahradí systémové súbory a nastavenia. Súbory a "
+"priečinky v domovskom adresári užívateľa, ktoré nie sú skryté, nebudú "
+"dotknuté. Toto správanie môže byť zmenené pridaním filtra k zahrnutiu týchto "
+"viditeľných súborov. Potom zahrnuté súbory budú zálohované pri vytvorení "
+"snapshotu a nahradené pri obnove."
 
 #: src/Utility/Device.vala:1936
 #, c-format
 msgid "Revision"
-msgstr ""
+msgstr "Revízia"
 
 #: src/Gtk/RestoreDeviceBox.vala:438
 msgid "Root device not selected"
-msgstr ""
+msgstr "Nie je vybrané zariadenie root"
 
 #: src/Gtk/RsyncLogWindow.vala:49
 msgid "Rsync Log Viewer"
-msgstr ""
+msgstr "Prehliadač logu rsync"
 
 #: src/Gtk/AppGtk.vala:120
 #, c-format
 msgid "Run 'timeshift' for the command-line version of this tool"
 msgstr ""
+"Zadaním príkazu 'timeshift' je možné spustiť terminálovú verziu tohto "
+"nástroja"
 
 #: src/Console/AppConsole.vala:383
 msgid "Run in non-interactive mode"
-msgstr ""
+msgstr "Spustiť v bezobslužnom režime"
 
-#: src/Core/Main.vala:191
+#: src/Core/Main.vala:190
 msgid "Running"
-msgstr ""
+msgstr "Spustené"
 
 #: src/Gtk/FinishBox.vala:95
 msgid ""
 "Save snapshots to an external disk instead of the system disk to guard "
 "against drive failures."
 msgstr ""
+"Uložiť snapshoty na externý disk namiesto systémového disku, na ochranu pred "
+"zlyhaním jednotky."
 
 #: src/Gtk/FinishBox.vala:97
 msgid ""
@@ -1738,251 +1796,259 @@ msgid ""
 "even install another Linux distribution and later roll-back the previous "
 "distribution by restoring a snapshot."
 msgstr ""
+"Uloženie snapshotov na nesystémový disk vám dovoľuje formátovať a pre-"
+"inštalovať OS bez straty uložených snapshotov. Dokonca môžete nainštalovať "
+"inú linuxovú distribúciu a neskôr vrátiť predchádzajúcu, obnovou zo "
+"snapshotu."
 
-#: src/Core/Main.vala:1301 src/Core/Main.vala:1455 src/Core/Main.vala:1457
+#: src/Core/Main.vala:1434 src/Core/Main.vala:1588 src/Core/Main.vala:1590
 msgid "Saving to device"
-msgstr ""
+msgstr "Ukladanie na zariadenie"
 
 #: src/Gtk/SettingsWindow.vala:93 src/Gtk/SetupWizardWindow.vala:109
 msgid "Schedule"
-msgstr ""
+msgstr "Plánovanie"
 
-#: src/Core/Main.vala:262
+#: src/Core/Main.vala:261
 msgid "Scheduled snapshot in progress..."
-msgstr ""
+msgstr "Vytváranie plánovaného snapshotu..."
 
-#: src/Core/Main.vala:1169 src/Gtk/MainWindow.vala:1020
+#: src/Core/Main.vala:1168 src/Gtk/MainWindow.vala:1020
 #: src/Gtk/ScheduleBox.vala:312
 msgid "Scheduled snapshots are disabled"
-msgstr ""
+msgstr "Plánované snapshoty sú vypnuté"
 
 #: src/Gtk/FinishBox.vala:78
 msgid "Scheduled snapshots are disabled. It's recommended to enable it."
-msgstr ""
+msgstr "Plánované snapshoty sú vypnuté. Je odporúčané ich zapnúť."
 
 #: src/Gtk/ScheduleBox.vala:305
 msgid "Scheduled snapshots are enabled"
-msgstr ""
+msgstr "Plánované snapshoty sú zapnuté"
 
 #: src/Gtk/FinishBox.vala:75
 msgid ""
 "Scheduled snapshots are enabled. Snapshots will be created automatically for "
 "selected levels."
 msgstr ""
+"Plánované snapshoty sú zapnuté. Snapshoty budú vytvorené automaticky pre "
+"vybrané úrovne."
 
 #: src/Console/AppConsole.vala:872
 #, c-format
 msgid "Select '%s' device (default = %s)"
-msgstr ""
+msgstr "Vybrať '%s' device (predvolené = %s)"
 
-#: src/Core/SnapshotRepo.vala:502 src/Console/AppConsole.vala:691
+#: src/Core/SnapshotRepo.vala:510 src/Console/AppConsole.vala:691
 msgid "Select BTRFS system disk with root subvolume (@)"
-msgstr ""
+msgstr "Vybrať BTRFS systémový disk s root podriadeným zväzkom (@)"
 
 #: src/Console/AppConsole.vala:1000
 msgid "Select GRUB device"
-msgstr ""
+msgstr "Vybrať zariadenie GRUB"
 
 #: src/Gtk/MainWindow.vala:684
 msgid "Select Snapshot"
-msgstr ""
+msgstr "Vybrať snapshot"
 
 #: src/Gtk/ScheduleBox.vala:57
 msgid "Select Snapshot Levels"
-msgstr ""
+msgstr "Vybrať úrovne pre snapshot"
 
 #: src/Gtk/BackupDeviceBox.vala:56
 msgid "Select Snapshot Location"
-msgstr ""
+msgstr "Vybrať umiestnenie pre snapshot"
 
 #: src/Gtk/SnapshotBackendBox.vala:62
 msgid "Select Snapshot Type"
-msgstr ""
+msgstr "Vybrať typ snapshotu"
 
 #: src/Gtk/DeleteWindow.vala:85
 msgid "Select Snapshots"
-msgstr ""
+msgstr "Vybrať snapshoty"
 
 #: src/Gtk/RestoreDeviceBox.vala:61
 msgid "Select Target Device"
-msgstr ""
+msgstr "Vybrať cieľové zariadenie"
 
 #: src/Gtk/BackupDeviceBox.vala:410
 #, c-format
 msgid "Select a partition on this disk"
-msgstr ""
+msgstr "Vybrať oddiel na tomto disku"
 
 #: src/Gtk/MainWindow.vala:791
 msgid "Select a single snapshot to restore"
-msgstr ""
+msgstr "Vybrať jeden snapshot pre obnovu"
 
 #: src/Gtk/RestoreDeviceBox.vala:467
 msgid "Select another device for root file system (/)"
-msgstr ""
+msgstr "Vybrať iné zariadenie pre koreňový adresár root (/)"
 
-#: src/Core/SnapshotRepo.vala:541 src/Core/SnapshotRepo.vala:568
+#: src/Core/SnapshotRepo.vala:546 src/Core/SnapshotRepo.vala:575
 msgid "Select another device or free up some space"
-msgstr ""
+msgstr "Vybrať iné zariadenie alebo uvoľniť nejaké miesto"
 
 #: src/Gtk/MainWindow.vala:531 src/Gtk/MainWindow.vala:538
 msgid "Select another device to delete snasphots"
-msgstr ""
+msgstr "Vybrať iné zariadenie na vymazanie snasphotov"
 
 #: src/Gtk/MainWindow.vala:463
 msgid "Select another device?"
-msgstr ""
+msgstr "Vybrať iné zariadenie?"
 
 #: src/Gtk/RestoreExcludeBox.vala:57
 msgid "Select applications to exclude from restore"
-msgstr ""
+msgstr "Vybrať aplikácie na vynechanie z obnovy"
 
 #: src/Console/AppConsole.vala:674
 msgid "Select backup device"
-msgstr ""
+msgstr "Vybrať zariadenie pre zálohu"
 
 #: src/Gtk/ExcludeBox.vala:443
 msgid "Select directory"
-msgstr ""
+msgstr "Vybrať adresár"
 
 #: src/Gtk/ExcludeBox.vala:416
 msgid "Select file(s)"
-msgstr ""
+msgstr "Vybrať súbor(y)"
 
 #: src/Console/AppConsole.vala:748
 msgid "Select snapshot"
-msgstr ""
+msgstr "Vybrať snapshot"
 
 #: src/Gtk/DeleteWindow.vala:336
 msgid "Select snapshots to delete"
-msgstr ""
+msgstr "Vybrať snapshoty na vymazanie"
 
 #: src/Gtk/RestoreDeviceBox.vala:439
 msgid "Select the device for root file system (/)"
-msgstr ""
+msgstr "Vybrať zariadenie pre koreňový adresár root (/)"
 
 #: src/Gtk/RestoreDeviceBox.vala:83
 msgid "Select the devices where files will be restored."
-msgstr ""
+msgstr "Vybrať zariadenia kam budú obnovené súbory."
 
 #: src/Gtk/ScheduleBox.vala:313
 msgid "Select the intervals for creating snapshots"
-msgstr ""
+msgstr "Vybrať intervaly pre vytváranie snapshotov"
 
 #: src/Gtk/ExcludeBox.vala:283
 msgid "Select the items to be removed from the list"
-msgstr ""
+msgstr "Vybrať položky pre odstránenie zo zoznamu"
 
-#: src/Core/SnapshotRepo.vala:464
+#: src/Core/SnapshotRepo.vala:472
 msgid "Select the snapshot device"
-msgstr ""
+msgstr "Vybrať zariadenie pre snapshot"
 
 #: src/Gtk/MainWindow.vala:784
 msgid "Select the snapshot to restore"
-msgstr ""
+msgstr "Vybrať snapshot pre obnovu"
 
 #: src/Gtk/DeleteWindow.vala:87
 msgid "Select the snapshots to be deleted"
-msgstr ""
+msgstr "Vybrať snapshoty na vymazanie"
 
 #: src/Gtk/MainWindow.vala:600
 msgid "Select the snapshots to mark for deletion"
-msgstr ""
+msgstr "Vybrať snapshoty na označenie pre výmaz"
 
 #: src/Gtk/RestoreDeviceBox.vala:79
 msgid "Select the target devices where system will be cloned."
-msgstr ""
+msgstr "Vybrať cieľové zariadenia kam bude systém klonovaný."
 
-#: src/Core/Main.vala:3274
+#: src/Core/Main.vala:3415
 msgid "Selected default snapshot device"
-msgstr ""
+msgstr "Vybrané predvolené zariadenie pre snapshot"
 
-#: src/Core/Main.vala:3225 src/Core/Main.vala:3229
+#: src/Core/Main.vala:3366 src/Core/Main.vala:3370
 msgid "Selected default snapshot type"
-msgstr ""
+msgstr "Vybraný predvolený typ snapshotu"
 
 #: src/Gtk/BackupDeviceBox.vala:388
 msgid "Selected device does not have BTRFS partition"
-msgstr ""
+msgstr "Vybrané zariadenie neobsahuje oddiel BTRFS"
 
 #: src/Gtk/BackupDeviceBox.vala:385
 msgid "Selected device does not have Linux partition"
-msgstr ""
+msgstr "Vybrané zariadenie neobsahuje oddiel Linux"
 
-#: src/Core/SnapshotRepo.vala:143
+#: src/Core/SnapshotRepo.vala:144
 msgid "Selected snapshot device"
-msgstr ""
+msgstr "Vybrané zariadenie pre snapshot"
 
-#: src/Core/SnapshotRepo.vala:501 src/Console/AppConsole.vala:690
+#: src/Core/SnapshotRepo.vala:509 src/Console/AppConsole.vala:690
 msgid "Selected snapshot device is not a system disk"
-msgstr ""
+msgstr "Vybrané zariadenie pre snapshot nie je systémový disk"
 
-#: src/Core/Main.vala:2043
+#: src/Core/Main.vala:2176
 msgid "Selected snapshot is marked for deletion"
-msgstr ""
+msgstr "Vybraný snapshot je označený pre vymazanie"
 
 #: src/Gtk/MainWindow.vala:815
 msgid "Selected snapshot is marked for deletion and cannot be restored"
-msgstr ""
+msgstr "Vybraný snapshot je označený pre vymazanie a nebude možné ho obnoviť"
 
 #: src/Gtk/UsersBox.vala:235
 msgid ""
 "Selected user has an encrypted home directory. It's not possible to include "
 "only hidden files."
 msgstr ""
+"Vybraný užívateľ má šifrovaný domovský adresár. Nie je možné zahrnúť len "
+"skryté súbory."
 
 #: src/Utility/Device.vala:1935
 #, c-format
 msgid "Serial"
-msgstr ""
+msgstr "Sériový"
 
-#: src/Core/Main.vala:219
+#: src/Core/Main.vala:218
 msgid "Session log file"
-msgstr ""
+msgstr "Logovací súbor sedenia"
 
 #: src/Console/AppConsole.vala:360
 msgid "Set snapshot description"
-msgstr ""
+msgstr "Nastaviť popis snapshotu"
 
 #: src/Gtk/MainWindow.vala:180 src/Gtk/MainWindow.vala:181
 #: src/Gtk/SettingsWindow.vala:56
 msgid "Settings"
-msgstr ""
+msgstr "Nastavenia"
 
 #: src/Gtk/MainWindow.vala:191
 msgid "Settings wizard"
-msgstr ""
+msgstr "Sprievodca nastaveniami"
 
 #: src/Gtk/FinishBox.vala:58
 msgid "Setup Complete"
-msgstr ""
+msgstr "Nastavenie je dokončené"
 
 #: src/Gtk/SetupWizardWindow.vala:64
 msgid "Setup Wizard"
-msgstr ""
+msgstr "Sprievodca nastavením"
 
 #: src/Console/AppConsole.vala:380
 msgid "Show additional debug messages"
-msgstr ""
+msgstr "Ukázať ďalšie správy pre ladenie"
 
 #: src/Console/AppConsole.vala:384 src/Gtk/AppGtk.vala:118
 msgid "Show all options"
-msgstr ""
+msgstr "Ukázať všetky možnosti"
 
 #: src/Gtk/RestoreExcludeBox.vala:121
 msgid "Show more applications to exclude on the next page"
-msgstr ""
+msgstr "Ukázať viac aplikácií, ktoré budú vynechané na ďalšej stránke"
 
 #: src/Console/AppConsole.vala:381
 msgid "Show rsync output (default)"
-msgstr ""
+msgstr "Ukázať výstup rsync (predvolené)"
 
 #: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
 #: src/Console/AppConsole.vala:458 src/Console/AppConsole.vala:497
-#: src/Gtk/BackupBox.vala:93 src/Gtk/BackupDeviceBox.vala:202
+#: src/Gtk/BackupBox.vala:96 src/Gtk/BackupDeviceBox.vala:202
 #: src/Gtk/RestoreBox.vala:131 src/Gtk/RsyncLogBox.vala:392
 #, c-format
 msgid "Size"
-msgstr ""
+msgstr "Veľkosť"
 
 #: src/Gtk/SnapshotBackendBox.vala:178
 msgid ""
@@ -1991,16 +2057,19 @@ msgid ""
 "(copy-on-write). Files in the snapshot continue to point to original data "
 "blocks."
 msgstr ""
+"Veľkosť BTRFS snapshotov je spočiatku nulová. Keď sa systémové súbory časom "
+"menia, dáta sú zapisované do nových blokov, čo zaberá priestor na disku. "
+"Súbory v snapshote stále odkazujú na pôvodné dátové bloky."
 
 #: src/Console/AppConsole.vala:369
 msgid "Skip GRUB2 reinstall"
-msgstr ""
+msgstr "Preskočiť preinštaláciu GRUB2"
 
-#: src/Core/Main.vala:2048 src/Core/SnapshotRepo.vala:624
-#: src/Core/SnapshotRepo.vala:677 src/Gtk/SnapshotListBox.vala:93
+#: src/Core/Main.vala:2181 src/Core/SnapshotRepo.vala:631
+#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:93
 #, c-format
 msgid "Snapshot"
-msgstr ""
+msgstr "Snapshot"
 
 #: src/Gtk/MainWindow.vala:548
 #, c-format
@@ -2008,85 +2077,94 @@ msgid ""
 "Snapshot '%s' is being used by the system and cannot be deleted. Restart the "
 "system to activate the restored snapshot."
 msgstr ""
+"Snapshot '%s' je práve používaný systémom a nemôže byť vymazaný. Pre "
+"aktiváciu obnoveného snapshotu reštartujte systém."
 
 #: src/Gtk/BackupFinishBox.vala:60
 msgid "Snapshot Created"
-msgstr ""
+msgstr "Snapshot vytvorený"
 
 #: src/Gtk/SnapshotListBox.vala:244
 #, c-format
 msgid "Snapshot Levels"
-msgstr ""
+msgstr "Úrovne snapshotu"
 
 #: src/Gtk/MainWindow.vala:751
 msgid "Snapshot deletion in progress..."
-msgstr ""
+msgstr "Vymazanie snapshotu prebieha..."
 
-#: src/Core/SnapshotRepo.vala:435
+#: src/Core/SnapshotRepo.vala:442
 #, c-format
 msgid "Snapshot device"
-msgstr ""
+msgstr "Zariadenie snapshotu"
 
-#: src/Core/SnapshotRepo.vala:470 src/Console/AppConsole.vala:664
+#: src/Core/SnapshotRepo.vala:478 src/Console/AppConsole.vala:664
 msgid "Snapshot device not available"
-msgstr ""
+msgstr "Zariadenie snapshotu je nedostupné"
 
-#: src/Core/SnapshotRepo.vala:463 src/Console/AppConsole.vala:660
+#: src/Core/SnapshotRepo.vala:471 src/Console/AppConsole.vala:660
 msgid "Snapshot device not selected"
-msgstr ""
+msgstr "Zariadenie snapshotu nie je vybrané"
 
-#: src/Core/SnapshotRepo.vala:439
+#: src/Core/SnapshotRepo.vala:446
 #, c-format
 msgid "Snapshot location"
-msgstr ""
+msgstr "Umiestnenie snapshotu"
 
-#: src/Core/Main.vala:1273
+#: src/Core/Main.vala:1305
 msgid "Snapshot saved successfully"
-msgstr ""
+msgstr "Snapshot úspešne uložený"
 
-#: src/Core/Main.vala:2038
+#: src/Core/Main.vala:2171
 msgid "Snapshot to restore not specified!"
-msgstr ""
+msgstr "Snapshot pre obnovu nie je určený!"
 
-#: src/Core/Main.vala:2879
+#: src/Core/Main.vala:3012
 msgid "Snapshot will become active after system is rebooted."
-msgstr ""
+msgstr "Snapshot sa stane aktívny po opätovnom zavedení systému."
 
 #: src/Gtk/DeleteFinishBox.vala:60
 msgid "Snapshot(s) Deleted"
-msgstr ""
+msgstr "Snapshot(y) vymazané"
 
 #: src/Gtk/MainWindow.vala:309 src/Gtk/DeleteWindow.vala:89
 msgid "Snapshots"
-msgstr ""
+msgstr "Snapshoty"
 
 #: src/Gtk/SnapshotBackendBox.vala:170
 msgid ""
 "Snapshots are created and restored instantly. Snapshot creation is an atomic "
 "transaction at the file system level."
 msgstr ""
+"Snapshoty sú vytvárané a obnovované okamžite. Vytvorenie snapshotu je "
+"atomická operácia, na úrovni súborového systému."
 
 #: src/Gtk/SnapshotBackendBox.vala:187
 msgid ""
 "Snapshots are created by creating copies of system files using rsync, and "
 "hard-linking unchanged files from previous snapshot."
 msgstr ""
+"Snapshoty sú vytvárané vytvorením kópií systému použitím RSYNC, a vytvorením "
+"pevných odkazov pre nezmenené súbory z predošlého snapshotu."
 
 #: src/Gtk/SnapshotBackendBox.vala:168
 msgid ""
 "Snapshots are created using the built-in features of the BTRFS file system."
 msgstr ""
+"Snapshoty sú vytvárané použitím zabudovaných funkcií BTRFS súborového "
+"systému."
 
 #: src/Gtk/ScheduleBox.vala:167
 #, c-format
 msgid "Snapshots are not scheduled at fixed times."
-msgstr ""
+msgstr "Snapshoty nie sú naplánované na pevný čas."
 
 #: src/Gtk/SnapshotBackendBox.vala:174
 msgid ""
 "Snapshots are perfect, byte-for-byte copies of the system. Nothing is "
 "excluded."
 msgstr ""
+"Snapshoty sú perfektné kópie systému, bajt za bajtom. Nič nie je vynechané."
 
 #: src/Gtk/SnapshotBackendBox.vala:172
 msgid ""
@@ -2094,6 +2172,9 @@ msgid ""
 "copied, deleted or overwritten, there is no risk of data loss. The existing "
 "system is preserved as a new snapshot after restore."
 msgstr ""
+"Snapshoty sú obnovované nahradením podriadených zväzkov systému. Pretože "
+"súbory nie sú kopírované, vymazané či prepísané, tak nehrozí strata dát. "
+"Existujúci systém je po obnove zachovaný ako nový snapshot."
 
 #: src/Gtk/SnapshotBackendBox.vala:176
 msgid ""
@@ -2101,22 +2182,29 @@ msgid ""
 "disk). Storage on other disks is not supported. If system disk fails then "
 "snapshots stored on it will be lost along with the system."
 msgstr ""
+"Snapshoty sú uložené na rovnakom disku z ktorého sú vytvorené (systémový "
+"disk). Úložisko na iných diskoch nie je podporované. Ak systémový disk "
+"zlyhá, snapshoty budú stratené spolu so systémom."
 
 #: src/Gtk/BackupDeviceBox.vala:107
 msgid ""
 "Snapshots are saved to /timeshift on selected partition. Other locations are "
 "not supported."
 msgstr ""
+"Snapshoty sú uložené do /timeshift na vybranom oddieli. Iné miesta nie sú "
+"podporované."
 
 #: src/Gtk/BackupDeviceBox.vala:99
 msgid ""
 "Snapshots are saved to /timeshift-btrfs on selected partition. Other "
 "locations are not supported."
 msgstr ""
+"Snapshoty sú uložené do /timeshift-btrfs na vybranom oddieli. Iné miesta nie "
+"sú podporované."
 
 #: src/Gtk/MainWindow.vala:965
 msgid "Snapshots available for restore"
-msgstr ""
+msgstr "Snapshoty sú dostupné pre obnovu"
 
 #: src/Gtk/SnapshotBackendBox.vala:191
 msgid ""
@@ -2124,140 +2212,149 @@ msgid ""
 "Saving snapshots to non-system or external disk allows the system to be "
 "restored even if system disk is damaged or re-formatted."
 msgstr ""
+"Snapshoty môžu byť uložené na každý disk formátovaný pre súborový systém "
+"Linux. Uloženie snapshotov na nesystémový alebo externý disk, umožňuje "
+"obnovu systému dokonca aj ak je systémový disk poškodený alebo znovu "
+"formátovaný."
 
 #: src/Console/AppConsole.vala:284
 msgid "Snapshots cannot be created in Live CD mode"
-msgstr ""
+msgstr "Snapshoty nemôžu byť vytvorené v Live CD móde"
 
 #: src/Gtk/MainWindow.vala:1012
 msgid "Snapshots will be created at selected intervals"
-msgstr ""
+msgstr "Snapshoty budú vytvorené vo vybraných intervaloch"
 
 #: src/Gtk/ScheduleBox.vala:306
 msgid ""
 "Snapshots will be created at selected intervals if snapshot disk has enough "
 "space (> 1 GB)"
 msgstr ""
+"Snapshoty budú vytvorené vo vybraných intervaloch, ak potom ostane dosť "
+"voľného miesta (> 1 GB)"
 
 #: src/Console/AppConsole.vala:376
 msgid "Specify backup device (default: config)"
-msgstr ""
+msgstr "Presne určite zariadenie pre zálohu (default: config)"
 
 #: src/Console/AppConsole.vala:368
 msgid "Specify device for installing GRUB2 bootloader"
-msgstr ""
+msgstr "Presne určite zariadenie pre inštalovanie zavádzača GRUB2"
 
 #: src/Console/AppConsole.vala:366
 msgid "Specify snapshot to restore"
-msgstr ""
+msgstr "Presne určite snapshot na obnovu"
 
 #: src/Console/AppConsole.vala:367
 msgid "Specify target device"
-msgstr ""
+msgstr "Presne určite cieľové zariadenie"
 
-#: src/Core/SnapshotRepo.vala:445 src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:452 src/Core/SnapshotRepo.vala:606
 #: src/Gtk/RsyncLogBox.vala:472
 #, c-format
 msgid "Status"
-msgstr ""
+msgstr "Stav"
 
 #: src/Gtk/ScheduleBox.vala:154
 msgid "Stop cron emails for scheduled tasks"
-msgstr ""
+msgstr "Zastaviť odosielanie e-mailov pre naplánované úlohy cronu"
 
 #: src/Utility/TeeJee.Process.vala:487
 msgid "Stopped"
-msgstr ""
+msgstr "Zastavené"
 
 #: src/Gtk/RestoreDeviceBox.vala:101
 msgid "Subvolume"
-msgstr ""
+msgstr "Podriadený zväzok"
 
 #: src/Core/Subvolume.vala:187
 #, c-format
 msgid "Subvolume exists at destination"
-msgstr ""
+msgstr "V cieli existuje podriadený zväzok"
 
 #: src/Gtk/SnapshotListBox.vala:223
 #, c-format
 msgid "Subvolumes"
-msgstr ""
+msgstr "Podriadené zväzky"
 
 #: src/Gtk/ExcludeBox.vala:267 src/Gtk/RestoreWindow.vala:120
 #: src/Gtk/ExcludeAppsBox.vala:135
 msgid "Summary"
-msgstr ""
+msgstr "Prehľad"
 
 #: src/Console/AppConsole.vala:378
 msgid "Switch to BTRFS mode (default: config)"
-msgstr ""
+msgstr "Prepnúť do BTRFS módu (default: config)"
 
 #: src/Console/AppConsole.vala:379
 msgid "Switch to RSYNC mode (default: config)"
-msgstr ""
+msgstr "Prepnúť do RSYNC módu (default: config)"
 
-#: src/Core/SnapshotRepo.vala:954
+#: src/Core/SnapshotRepo.vala:961
 msgid "Symlinks updated"
-msgstr ""
+msgstr "Symlinky aktualizované"
 
-#: src/Core/Main.vala:2398
+#: src/Core/Main.vala:2531
 msgid "Syncing file systems..."
-msgstr ""
+msgstr "Synchronizácia súborových systémov..."
 
-#: src/Core/Main.vala:1377 src/Core/Main.vala:2568 src/Core/Main.vala:2809
+#: src/Core/Main.vala:1510 src/Core/Main.vala:2701 src/Core/Main.vala:2942
 msgid "Syncing files with rsync..."
-msgstr ""
+msgstr "Synchronizácia súborov s rsync..."
 
 #: src/Gtk/AppGtk.vala:113
 msgid "Syntax"
-msgstr ""
+msgstr "Syntax"
 
 #: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:125
 #, c-format
 msgid "System"
-msgstr ""
+msgstr "Systém"
 
 #: src/Gtk/MainWindow.vala:912
 msgid "System Restore Utility"
-msgstr ""
+msgstr "Nástroj pre obnovu systému"
 
 #: src/Gtk/FinishBox.vala:82
 msgid "System can be rolled-back to a previous date by restoring a snapshot."
 msgstr ""
+"Systém je možné vrátiť do stavu k predošlému dátumu obnovením zo snapshotu."
 
-#: src/Core/Main.vala:2261
+#: src/Core/Main.vala:2394
 msgid "System will reboot after files are restored"
-msgstr ""
+msgstr "Po obnove súborov sa systém reštartuje"
 
-#: src/Core/Main.vala:2211
+#: src/Core/Main.vala:2344
 msgid "System will reboot after files are restored."
-msgstr ""
+msgstr "Po obnove súborov sa systém reštartuje."
 
-#: src/Core/Main.vala:1242 src/Core/Main.vala:1283
+#: src/Core/Main.vala:1241 src/Core/Main.vala:1315
 msgid "Tagged snapshot"
-msgstr ""
+msgstr "Snapshot označený"
 
 #: src/Console/AppConsole.vala:427 src/Gtk/SnapshotListBox.vala:149
 msgid "Tags"
-msgstr ""
+msgstr "Označenia"
 
-#: src/Core/Main.vala:2073
+#: src/Core/Main.vala:2206
 msgid "Target device is not mounted"
-msgstr ""
+msgstr "Cieľové zariadenie nie je pripojené"
 
 #: src/Gtk/RestoreDeviceBox.vala:466
 msgid "Target device is same as system device"
-msgstr ""
+msgstr "Cieľové zariadenie je rovnaké ako systémové zariadenie"
 
-#: src/Core/Main.vala:2067
+#: src/Core/Main.vala:2200
 msgid "Target device not specified!"
-msgstr ""
+msgstr "Cieľové zariadenie nie je presne určené!"
 
 #: src/Gtk/SnapshotBackendBox.vala:119
 msgid ""
 "The 'btrfs' command is not available on your system. Install the 'btrfs-"
 "tools' package and try again."
 msgstr ""
+"Príkaz 'btrfs' nie je dostupný na vašom systéme. Nainštalujte balík 'btrfs-"
+"tools' a skúste znova."
 
 #: src/Gtk/ScheduleBox.vala:156
 msgid ""
@@ -2265,198 +2362,208 @@ msgid ""
 "current user. Select this option to suppress the emails for cron tasks "
 "created by Timeshift."
 msgstr ""
+"Služba cron posiela výstup naplánovaných úloh ako e-mail užívateľovi. "
+"Vybraním tejto možnosti dôjde k zastaveniu posielania e-mailov pre úlohy "
+"cronu, vytvorené programom Timeshift."
 
-#: src/Core/Main.vala:382
+#: src/Core/Main.vala:381
 msgid "The system partition has an unsupported subvolume layout."
-msgstr ""
+msgstr "Systémový oddiel nemá podporované rozdelenie podriadeného zväzku."
 
-#: src/Core/Main.vala:3463
+#: src/Core/Main.vala:3604
 msgid "The target partition has an unsupported subvolume layout."
-msgstr ""
+msgstr "Cieľový oddiel nemá podporované rozdelenie podriadeného zväzku."
 
 #: src/Gtk/BackupDeviceBox.vala:512
 #, c-format
 msgid "There are no snapshots on this device"
-msgstr ""
+msgstr "Na tomto zariadení nie sú snapshoty"
 
 #: src/Utility/Device.vala:1380
 msgid "This device is not encrypted"
-msgstr ""
+msgstr "Zariadenie nie je šifrované"
 
-#: src/Core/Main.vala:2227
+#: src/Core/Main.vala:2360
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
 msgstr ""
+"Tento softvér je distribuovaný absolútne bez záruky a autor nenesie žiadnu "
+"zodpovednosť za prípadné škody, ktoré by vznikly použitím tohto programu."
 
 #: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1011
 msgid "Timeshift is active"
-msgstr ""
+msgstr "Timeshift je aktívny"
 
-#: src/Gtk/BackupBox.vala:94 src/Gtk/RestoreBox.vala:132
+#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:132
 #: src/Gtk/RsyncLogBox.vala:394
 #, c-format
 msgid "Timestamp"
-msgstr ""
+msgstr "Časová značka"
 
 #: src/Console/AppConsole.vala:613
 #, c-format
 msgid "To restore with default options, press the ENTER key for all prompts!"
 msgstr ""
+"Pre obnovenie so štandardnými možnosťami, stlačte ENTER pri všetkých výzvach!"
 
 #: src/Utility/Device.vala:1949 src/Console/AppConsole.vala:459
 #: src/Console/AppConsole.vala:498 src/Gtk/BackupDeviceBox.vala:190
 #: src/Gtk/SettingsWindow.vala:87
 #, c-format
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: src/Utility/Device.vala:1948
 #, c-format
 msgid "UUID"
-msgstr ""
+msgstr "UUID"
 
 #: src/Gtk/AppGtk.vala:99
 msgid "Unknown option"
-msgstr ""
+msgstr "Neznáma voľba"
 
-#: src/Core/Main.vala:1224
+#: src/Core/Main.vala:1223
 msgid "Unknown snapshot type"
-msgstr ""
+msgstr "Neznámy typ  snapshotu"
 
-#: src/Core/Main.vala:1582
+#: src/Core/Main.vala:1715
 msgid "Unknown value specified for option --tags"
-msgstr ""
+msgstr "Pre voľbu --tags je určená neznáma hodnota"
 
 #: src/Utility/Device.vala:1391 src/Utility/Device.vala:1507
 #, c-format
 msgid "Unlocked device is mapped to '%s'"
-msgstr ""
+msgstr "Odomknuté zariadenie je namapované na '%s'"
 
 #: src/Utility/Device.vala:1506
 msgid "Unlocked successfully"
-msgstr ""
+msgstr "Úspešne odomknuté"
 
 #: src/Utility/Device.vala:1722
 msgid "Unmounting from"
-msgstr ""
+msgstr "Odpojenie od"
 
-#: src/Core/Main.vala:3467 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Core/Main.vala:3608 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
-msgstr ""
+msgstr "Nepodporované rozdelenie podriadeného zväzku"
 
 #: src/Gtk/BootOptionsBox.vala:150
 msgid "Update GRUB menu"
-msgstr ""
+msgstr "Aktualizácia ponuky GRUB"
 
 #: src/Gtk/BootOptionsBox.vala:135
 msgid "Update initramfs"
-msgstr ""
+msgstr "Aktualizácia initramfs"
 
-#: src/Core/Main.vala:2748
+#: src/Core/Main.vala:2881
 msgid "Updated /etc/crypttab on target device"
-msgstr ""
+msgstr "Aktualizované /etc/crypttab na cieľovom zariadení"
 
-#: src/Core/Main.vala:2668
+#: src/Core/Main.vala:2801
 msgid "Updated /etc/fstab on target device"
-msgstr ""
+msgstr "Aktualizované /etc/fstab na cieľovom zariadení"
 
 #: src/Gtk/BootOptionsBox.vala:152
 msgid ""
 "Updates the GRUB menu entries (recommended). This is safe to run and should "
 "be left selected."
 msgstr ""
+"Aktualizovanie položiek v ponuke GRUB (odporúčané). Toto voľba je bezpečná a "
+"možno ju nechať zvolenú."
 
-#: src/Core/Main.vala:2381
+#: src/Core/Main.vala:2514
 msgid "Updating GRUB menu..."
-msgstr ""
+msgstr "Aktualizovanie ponuky GRUB..."
 
-#: src/Core/Main.vala:2592
+#: src/Core/Main.vala:2725
 msgid "Updating bootloader configuration..."
-msgstr ""
+msgstr "Aktualizovanie nastavenia zavádzača..."
 
 #: src/Utility/Device.vala:1956
 #, c-format
 msgid "Used"
-msgstr ""
+msgstr "Použité"
 
 #: src/Gtk/SetupWizardWindow.vala:114 src/Gtk/UsersBox.vala:102
 msgid "User"
-msgstr ""
+msgstr "Užívateľ"
 
 #: src/Gtk/UsersBox.vala:62
 msgid "User Home Directories"
-msgstr ""
+msgstr "Zložky užívateľa v domovskom adresári"
 
 #: src/Utility/Device.vala:1461
 msgid "User cancelled the password prompt"
-msgstr ""
+msgstr "Zadávanie hesla je zrušené užívateľom"
 
 #: src/Gtk/UsersBox.vala:66
 msgid ""
 "User home directories are excluded by default unless you enable them here"
 msgstr ""
+"Zložky užívateľa v domovskom adresári sú štandardne vynechané, iba ak by ste "
+"ich tu povolili"
 
 #: src/Gtk/SettingsWindow.vala:101
 msgid "Users"
-msgstr ""
+msgstr "Užívatelia"
 
 #: src/Gtk/RestoreWindow.vala:114
 msgid "Users Home"
-msgstr ""
+msgstr "Domovský adresár"
 
 #: src/Utility/Device.vala:1933
 #, c-format
 msgid "Vendor"
-msgstr ""
+msgstr "Dodávateľ"
 
 #: src/Gtk/SnapshotListBox.vala:291
 msgid "View Rsync Log for Create"
-msgstr ""
+msgstr "Prezrieť si log Rsync"
 
 #: src/Gtk/SnapshotListBox.vala:298
 msgid "View Rsync Log for Restore"
-msgstr ""
+msgstr "Prezrieť si log Rsync pre obnovu"
 
 #: src/Gtk/MainWindow.vala:369
 msgid "View TimeShift Logs"
-msgstr ""
+msgstr "Prezrieť si logy TimeShift"
 
-#: src/Core/Main.vala:2122 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Core/Main.vala:2255 src/Gtk/RestoreSummaryBox.vala:53
 msgid "Warning"
-msgstr ""
+msgstr "Upozornenie"
 
 #: src/Gtk/RestoreExcludeBox.vala:61
 msgid "Web Browsers"
-msgstr ""
+msgstr "Internetové prehliadače"
 
 #: src/Gtk/SnapshotListBox.vala:249 src/Gtk/ScheduleBox.vala:82
 msgid "Weekly"
-msgstr ""
+msgstr "Týždenne"
 
-#: src/Core/Main.vala:1127
+#: src/Core/Main.vala:1126
 msgid "Weekly snapshot failed!"
-msgstr ""
+msgstr "Týždenný snapshot zlyhal!"
 
-#: src/Core/Main.vala:1108
+#: src/Core/Main.vala:1107
 msgid "Weekly snapshots are enabled"
-msgstr ""
+msgstr "Týždenné snapshoty sú povolené"
 
 #: src/Gtk/DeleteFinishBox.vala:63 src/Gtk/BackupFinishBox.vala:63
 msgid "With Errors"
-msgstr ""
+msgstr "S chybami"
 
 #: src/Gtk/MainWindow.vala:190
 msgid "Wizard"
-msgstr ""
+msgstr "Sprievodca"
 
 #: src/Utility/Device.vala:1434 src/Utility/Device.vala:1480
 msgid "Wrong password"
-msgstr ""
+msgstr "Nesprávne heslo"
 
 #: src/Utility/Gtk/CustomMessageDialog.vala:156
 msgid "Yes"
-msgstr ""
+msgstr "Áno"
 
 #: src/Gtk/RestoreFinishBox.vala:98
 msgid ""
@@ -2464,83 +2571,89 @@ msgid ""
 "system will be visible as a new snapshot. This snapshot can be restored "
 "later if required, to 'undo' the restore."
 msgstr ""
+"Môžete pokračovať v práci na súčasnom systéme. Po reštarte bude súčasný "
+"systém viditeľný ako nový snapshot. Tento snapshot môže byť obnovený neskôr, "
+"ak treba vrátiť obnovu."
 
 #: src/Console/AppConsole.vala:1012
 #, c-format
 msgid "[ENTER = Default (%s), a = Abort]"
-msgstr ""
+msgstr "[ENTER = Štandard (%s), a = Prerušiť]"
 
 #: src/Console/AppConsole.vala:883
 #, c-format
 msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
-msgstr ""
+msgstr "[ENTER = Štandard (%s), r = Root zariadenie, a = Prerušiť]"
 
 #: src/Gtk/RestoreDeviceBox.vala:401
 msgid ""
 "[For Experienced Users] Change these settings if the restored system fails "
 "to boot."
 msgstr ""
+"[Pre skúsených užívateľov] Zmeniť tieto nastavenia, ak zlyhá zavedenie "
+"obnoveného systému."
 
 #: src/Utility/AppLock.vala:54
 msgid "[Warning] Deleted invalid lock"
-msgstr ""
+msgstr "[Upozornenie] Neplatný zámok je vymazaný"
 
-#: src/Core/SnapshotRepo.vala:807
+#: src/Core/SnapshotRepo.vala:814
 msgid "all"
-msgstr ""
+msgstr "všetko"
 
-#: src/Core/Main.vala:1510 src/Core/Main.vala:3869 src/Core/Subvolume.vala:199
+#: src/Core/Main.vala:1643 src/Core/Main.vala:4010 src/Core/Subvolume.vala:199
 msgid "btrfs returned an error"
-msgstr ""
+msgstr "btrfs vrátil chybu"
 
-#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1409
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1542
 msgid "complete"
-msgstr ""
+msgstr "dokončiť"
 
 #: src/Utility/CronTab.vala:261
 msgid "crontab file exported"
-msgstr ""
+msgstr "súbor crontab exportovaný"
 
 #: src/Utility/CronTab.vala:244
 msgid "crontab file installed"
-msgstr ""
+msgstr "súbor crontab je nainštalovaný"
 
-#: src/Core/SnapshotRepo.vala:793
+#: src/Core/SnapshotRepo.vala:800
 msgid "incomplete"
-msgstr ""
+msgstr "nekompletné"
 
-#: src/Core/SnapshotRepo.vala:775
+#: src/Core/SnapshotRepo.vala:782
 msgid "marked for deletion"
-msgstr ""
+msgstr "označené pre vymazanie"
 
-#: src/Core/Main.vala:1301 src/Core/Main.vala:1455 src/Core/Main.vala:1457
+#: src/Core/Main.vala:1434 src/Core/Main.vala:1588 src/Core/Main.vala:1590
 msgid "mounted at path"
-msgstr ""
+msgstr "pripojené v ceste"
 
-#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1409
-#: src/Gtk/BackupBox.vala:234 src/Gtk/RestoreBox.vala:237
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1542
+#: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
 #: src/Gtk/DeleteBox.vala:149
 msgid "remaining"
-msgstr ""
+msgstr "zostáva"
 
-#: src/Core/Main.vala:1420
+#: src/Core/Main.vala:1553
 msgid "rsync returned an error"
-msgstr ""
+msgstr "rsync vrátil chybu"
 
-#: src/Core/SnapshotRepo.vala:624 src/Core/SnapshotRepo.vala:677
-#: src/Core/SnapshotRepo.vala:756
+#: src/Core/SnapshotRepo.vala:631 src/Core/SnapshotRepo.vala:684
+#: src/Core/SnapshotRepo.vala:763
 msgid "un-tagged"
-msgstr ""
+msgstr "neoznačené"
 
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:9
 msgid "Timeshift"
-msgstr ""
+msgstr "Timeshift"
 
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:10
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:22
 msgid "Run Timeshift as Administrator"
-msgstr ""
+msgstr "Spustiť Timeshift ako administrátor"
 
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:21
 msgid "Authentication is required to run Timeshift as Administrator"
 msgstr ""
+"Je požadované overenie heslom pre spustenie Timeshiftu ako administrátor"
