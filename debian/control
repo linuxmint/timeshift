@@ -1,17 +1,13 @@
 Source: timeshift
 Section: utils
 Priority: extra
-Maintainer: Tony George <teejeetech@gmail.com>
+Maintainer: Linux Mint <root@linuxmint.com>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev, gzip, valac, libgtk-3-dev, libgee-0.8-dev, libjson-glib-dev, libvte-2.91-dev, libxapp-dev
 Standards-Version: 3.9.3
-Homepage: https://teejeetech.in/
-#Vcs-Git: git://git.debian.org/collab-maint/hello.git
-#Vcs-Browser: http://git.debian.org/?p=collab-maint/hello.git;a=summary
-
+Homepage: https://github.com/linuxmint/timeshift
 Package: timeshift
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, rsync, btrfs-progs | btrfs-tools
-#Recommends:
 Replaces: timeshift-btrfs
 Description: System restore utility
  Timeshift is a system restore utility which takes snapshots
