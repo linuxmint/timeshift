@@ -50,6 +50,7 @@ public class Main : GLib.Object{
 	public string backup_parent_uuid = "";
 
 	public bool btrfs_mode = true;
+	public bool btrfs_qgroups_enabled = false;
 	public bool include_btrfs_home_for_backup = false;
 	public bool include_btrfs_home_for_restore = false;
 	
@@ -3980,6 +3981,9 @@ public class Main : GLib.Object{
 			return;
 		}
 
+		//query quota
+		btrfs_qgroups_enabled = query_subvolume_quotas();
+
 		thread_subvol_info_success = true;
 		thread_subvol_info_running = false;
 		return;
@@ -4049,6 +4053,114 @@ public class Main : GLib.Object{
 			if (subvol != null){
 				subvol.id = long.parse(parts[1]);
 			}
+		}
+
+		return true;
+	}
+
+	public bool query_subvolume_quotas(){
+		bool ok = query_subvolume_quota("@");
+		if (repo.device.uuid != repo.device_home.uuid){
+			ok = ok && query_subvolume_quota("@home");
+		}
+		return ok;
+	}
+
+	public bool query_subvolume_quota(string subvol_name){
+		log_debug("query_subvolume_quota():%s".printf(subvol_name));
+
+		string cmd = "";
+		string std_out;
+		string std_err;
+		int ret_val;
+
+		string options = use_option_raw ? "--raw" : "";
+
+		cmd = "btrfs qgroup show %s '%s'".printf(options, repo.mount_paths[subvol_name]);
+		log_debug(cmd);
+		ret_val = exec_sync(cmd, out std_out, out std_err);
+
+		if (ret_val != 0){
+			if (use_option_raw){
+				use_option_raw = false;
+
+				// try again without --raw option
+				cmd = "btrfs qgroup show '%s'".printf(repo.mount_paths[subvol_name]);
+				log_debug(cmd);
+				ret_val = exec_sync(cmd, out std_out, out std_err);
+			}
+
+			if (ret_val != 0){
+				log_error (std_err);
+				log_error(_("btrfs returned an error") + ": %d".printf(ret_val));
+				log_error(_("Failed to query subvolume quota"));
+				return false;
+			}
+		}
+
+		/* Sample Output:
+		 *
+		qgroupid rfer       excl
+		-------- ----       ----
+		0/5      106496     106496
+		0/257    3825262592 557056
+		0/258    12689408   49152
+		 * */
+
+		foreach(string line in std_out.split("\n")){
+			if (line == null) { continue; }
+
+			string[] parts = line.split(" ");
+			if (parts.length < 3) { continue; }
+			if (parts[0].split("/").length < 2) { continue; }
+
+			int subvol_id = int.parse(parts[0].split("/")[1]);
+
+			Subvolume subvol = null;
+
+			if ((sys_subvolumes.size > 0) && (sys_subvolumes["@"].id == subvol_id)){
+
+				subvol = sys_subvolumes["@"];
+			}
+			else if ((sys_subvolumes.size > 0)
+				&& sys_subvolumes.has_key("@home")
+				&& (sys_subvolumes["@home"].id == subvol_id)){
+
+				subvol = sys_subvolumes["@home"];
+			}
+			else {
+				foreach(var bak in repo.snapshots){
+					foreach(var sub in bak.subvolumes.values){
+						if (sub.id == subvol_id){
+							subvol = sub;
+						}
+					}
+				}
+			}
+
+			if (subvol != null){
+				int part_num = -1;
+				foreach(string part in parts){
+					if (part.strip().length > 0){
+						part_num ++;
+						switch (part_num){
+							case 1:
+								subvol.total_bytes = int64.parse(part);
+								break;
+							case 2:
+								subvol.unshared_bytes = int64.parse(part);
+								break;
+							default:
+								//ignore
+								break;
+						}
+					}
+				}
+			}
+		}
+
+		foreach(var bak in repo.snapshots){
+			bak.update_control_file();
 		}
 
 		return true;
