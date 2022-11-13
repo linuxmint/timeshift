@@ -141,11 +141,6 @@ sudo dnf update
 sudo dnf install timeshift
 ```
 
-Installer can be used on the following distribution types:
-
-- **Debian** based - Debian, Ubuntu, Linux Mint, Elementary OS, etc (supports **apt**)
-- **Arch** based - Arch Linux, Manjaro, etc (supports **pacman**)
-
 ## Removal
 
 Run the following command in a terminal window:  
