@@ -50,7 +50,6 @@ public class Main : GLib.Object{
 	public string backup_parent_uuid = "";
 
 	public bool btrfs_mode = true;
-	public bool btrfs_qgroups_enabled = false;
 	public bool include_btrfs_home_for_backup = false;
 	public bool include_btrfs_home_for_restore = false;
 	
@@ -171,7 +170,19 @@ public class Main : GLib.Object{
 
 	public string encrypted_private_dirs = "";
 	public bool encrypted_private_warning_shown = false;
-	
+
+    protected enum QGroupStatus {
+        UNKNOWN = -1,
+        DISABLED = 0,
+        ENABLED = 1
+    }
+
+    private QGroupStatus _btrfs_qgroups_enabled_internal = QGroupStatus.UNKNOWN;
+    public bool btrfs_qgroups_enabled
+    {
+        get { return _btrfs_qgroups_enabled_internal == QGroupStatus.ENABLED; }
+    }
+
 	public Main(string[] args, bool gui_mode){
 		
 		this.mount_point_app = "/run/timeshift/%lld".printf(Posix.getpid());
@@ -3981,8 +3992,13 @@ public class Main : GLib.Object{
 			return;
 		}
 
-		//query quota
-		btrfs_qgroups_enabled = query_subvolume_quotas();
+        if (_btrfs_qgroups_enabled_internal != QGroupStatus.DISABLED) {
+            bool success = query_subvolume_quotas();
+
+            if (_btrfs_qgroups_enabled_internal == QGroupStatus.UNKNOWN) {
+                _btrfs_qgroups_enabled_internal = success ? QGroupStatus.ENABLED : QGroupStatus.DISABLED;
+            }
+        }
 
 		thread_subvol_info_success = true;
 		thread_subvol_info_running = false;
