@@ -1,3 +1,46 @@
+timeshift (22.11.1) vera; urgency=medium
+
+  [ Matin Lotfaliei ]
+  * Update README.md to include build dependencies and instructions (#45)
+
+  [ Isaac Carter ]
+  * Changes man page to GROFF format (#73)
+
+  [ Michael Webster ]
+  * Add github workflow.
+  * Clean up debian/control, appdata, build file.
+  * debian/control: Restore newline.
+
+  [ Tony George ]
+  * #939, #937: Fix crash on ArchLinux and Ubuntu 22.10 Kinetic
+  * Don't show message when unmounting temporary mount points
+  * Remove some unused code and functions
+  * Use -Os for compilation instead of -O3
+
+  [ JungHee Lee ]
+  * Update timeshift-gtk.desktop
+
+  [ Tony George ]
+  * Fix typo in timeshift-gtk.desktop
+
+  [ Michael Webster ]
+  * Fix some file permissions.
+
+  [ Tony George ]
+  * Delete the empty 'timeshift-wiki' folder
+  * Remove mention of installer in README; Remove config file for installer
+  * Remove config file for old GitHub pages site
+  * Remove empty NOTES file
+  * Remove BUILD_CONFIG
+
+  [ Thomas Praxl ]
+  * Restore btrfs qgroups size & unshared size columns
+
+  [ Michael Webster ]
+  * Main.vala: Don't continue to try to get btrfs quota info if it fails the first time.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 22 Nov 2022 10:07:06 +0000
+
 timeshift (22.06.5) vanessa; urgency=medium
 
   * l10n: Update translations
