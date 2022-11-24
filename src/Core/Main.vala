@@ -4107,6 +4107,10 @@ public class Main : GLib.Object{
 			}
 
 			if (ret_val != 0){
+				if (std_err.contains("not enabled")) {
+					log_msg("btrfs: Quotas are not enabled");
+					return false;
+				}
 				log_error (std_err);
 				log_error(_("btrfs returned an error") + ": %d".printf(ret_val));
 				log_error(_("Failed to query subvolume quota"));
