@@ -103,6 +103,25 @@ You can selectively include items for backup from the ***Settings*** window. Sel
   - **@** may be on BTRFS volume and **/home** may be mounted on non-BTRFS partition
   - If swap files are used they should not be located in **@** or **@home** and could instead be stored in their own subvolume, eg **@swap**
   - Other layouts are not supported
+  - Make sure, that you have selected subvolume *@* or */@* for root. You can check that executing script below, and if output is *OK*, then everything is alright.
+
+    ```shell
+    grep -E '^[^#].+/\s+btrfs' /etc/fstab | \
+    grep -oE 'subvol=[^,]+' | \
+    cut -d= -f2 | \
+    grep -qE '^/?@$' && \
+    echo 'OK' || \
+    echo 'Not OK'
+    ```
+
+  - Default BTRFS subvolume must be /. You can make it using script below.
+
+    ```shell
+    MP="$(mktemp -d)"
+    mount | awk '/on \/ type btrfs/{print $1}' | sudo xargs -I{} mount {} "$MP" && \
+    sudo btrfs subvolume set-default 5 "$MP"; \
+    sudo umount "$MP"
+    ```
 
 - **GRUB2** - Bootloader must be GRUB2. GRUB legacy and other bootloaders are not supported.
 
