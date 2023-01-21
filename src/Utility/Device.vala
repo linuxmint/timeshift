@@ -119,7 +119,7 @@ public class Device : GLib.Object{
 	
 	public uint64 free_bytes{
 		get{
-			return (used_bytes == 0) ? 0 : (size_bytes - used_bytes);
+			return (used_bytes == 0) ? 0 : (available_bytes);
 		}
 	}
 
