@@ -173,6 +173,21 @@ public class Device : GLib.Object{
 		return false;
 	}
 
+	public bool type_is_raid() {
+
+		switch (type){
+		  case "raid0":
+		  case "raid1":
+		  case "raid4":
+		  case "raid5":
+		  case "raid6":
+		  case "raid10":
+		    return true;
+		  default:
+		    return false;
+		}
+	}
+
 	public bool has_linux_filesystem(){
 		switch (fstype){
 			case "ext2":
@@ -370,6 +385,37 @@ public class Device : GLib.Object{
 		}
 	}
 
+
+	//
+	// Used recursively to navigate up the parent tree removing items where found and
+	// let the original caller know how many items were removed.
+	public static int remove_parents(Gee.ArrayList<Device> list, Device dev) {
+
+		int removed = 0;
+
+		if ( dev.pkname != "" ) {
+			for (int i = list.size - 1; i >= 0; --i) {
+				if (list[i].kname == dev.pkname) {
+			  		if (list[i].pkname != "") {
+						removed = remove_parents(list, list[i]);
+						i-=removed;
+			  		}
+					list.remove_at(i);
+					--i;
+			  		dev.pkname = "";
+			  		++removed;
+				}
+		  	}
+		  
+			// If the parent is still set then it didn't exist to remove - likely removed while handling a dupe
+		  	// Clean up but nothing removed
+		  	if ( dev.pkname != "" ) {
+				dev.pkname = "";
+		  	}    
+		}
+	  
+		return removed;
+	}
 
 	public static Gee.ArrayList<Device> get_block_devices_using_lsblk(string dev_name = ""){
 
@@ -583,21 +629,8 @@ public class Device : GLib.Object{
 
         // Cleanup for raid: remove member disks and double children
         for (int i = list.size - 1; i >= 0; --i) {
-            if (list[i].type == "raid5") {
-                // This is a raid5 device, lsblk shows one member disk and a partition
-                // as parents and we remove them
-
-                for (int j = i - 1; j >= 0; --j) {
-                    if (list[j].kname == list[i].pkname) {
-                        list.remove_at(j);
-                        list.remove_at(j-1);
-                        i-=2; // we are removing 2 elements before i
-                        break;
-                    }
-                }
-
-                // Does not have a parent anymore
-                list[i].pkname = "";
+			if (list[i].type_is_raid()) {
+				i-=remove_parents(list, list[i]);
 
                 // Its children have to be unique (e.g. when mirroring,
                 // lsblk shows each member partition twice)
@@ -606,6 +639,7 @@ public class Device : GLib.Object{
                         for (int k = j - 1; k >= 0; --k) {
                             if (list[k].kname == list[j].kname) {
                                 list.remove_at(k);
+								--i; // keep the outer counter in sync
                                 --j; // we are removing an element between i and j
                             }
                         }
@@ -616,14 +650,14 @@ public class Device : GLib.Object{
 
         // Some more cleanup: raid are to be seen as disks and need deduplication
         for (int i = list.size - 1; i >= 0; --i) {
-            if (list[i].type == "raid5") {
+			if (list[i].type_is_raid()) {
                 // It's now a disk
                 list[i].type  = "disk";
                 list[i].model = list[i].name;
 
                 // We remove other copies of the same raid device
                 for (int j = list.size - 1; j >= 0; --j) {
-                    if ((i != j) && (list[j].type == "raid5") && (list[j].kname == list[i].kname)) {
+                    if ((i != j) && (list[j].type == list[i].type) && (list[j].kname == list[i].kname)) {
                         list.remove_at(j);
                         if (j < i)
                             --i; // we are removing an element before i
@@ -637,19 +671,7 @@ public class Device : GLib.Object{
 		// Cleanup for dmraid: remove member disks and double children
 		for (int i = list.size - 1; i >= 0; --i) {
 			if (list[i].type == "dmraid") {
-				// This is a dmraid device, lsblk shows one member disk
-				// as parent and we remove it
-
-				for (int j = i - 1; j >= 0; --j) {
-					if (list[j].kname == list[i].pkname) {
-						list.remove_at(j);
-						--i; // we are removing an element before i
-						break;
-					}
-				}
-
-				// Does not have a parent anymore
-				list[i].pkname = "";
+				i-=remove_parents(list, list[i]);
 
 				// Its children have to be unique (e.g. when mirroring,
 				// lsblk shows each member partition twice)
