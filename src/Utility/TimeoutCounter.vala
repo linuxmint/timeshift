@@ -44,7 +44,7 @@ public class TimeoutCounter : GLib.Object {
 			
 		try {
 			active = true;
-			Thread.create<void> (start_counter_thread, true);
+			new Thread<void>.try ("timeout-counter",() => { start_counter_thread();});
 		}
 		catch (Error e) {
 			log_error (e.message);
@@ -58,7 +58,7 @@ public class TimeoutCounter : GLib.Object {
 			
 		try {
 			active = true;
-			Thread.create<void> (start_counter_thread, true);
+			new Thread<void>.try ("timeout-counter", () => {start_counter_thread();});
 		}
 		catch (Error e) {
 			log_error (e.message);
