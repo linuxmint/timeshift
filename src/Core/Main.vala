@@ -1742,7 +1742,7 @@ public class Main : GLib.Object{
 		try {
 			thread_delete_running = true;
 			thread_delete_success = false;
-			Thread.create<void> (delete_thread, true);
+			new Thread<void>.try ("delete", () => {delete_thread();});
 
 			//new Thread<bool> ("", delete_thread);
 
@@ -2226,13 +2226,13 @@ public class Main : GLib.Object{
 			thr_success = false;
 			
 			if (btrfs_mode){
-				Thread.create<bool> (restore_execute_btrfs, true);
+				new Thread<bool>.try ("restore-execute-btrfs", () => {restore_execute_btrfs(); return true;});
 			}
 			else{
-				Thread.create<bool> (restore_execute_rsync, true);
+				new Thread<bool>.try ("restore-execute-rsync", () => {restore_execute_rsync(); return true;});
 			}
 		}
-		catch (ThreadError e) {
+		catch (Error e) {
 			thread_restore_running = false;
 			thr_success = false;
 			log_error (e.message);
@@ -3842,8 +3842,8 @@ public class Main : GLib.Object{
 		try {
 			thread_estimate_running = true;
 			thr_success = false;
-			Thread.create<void> (estimate_system_size_thread, true);
-		} catch (ThreadError e) {
+			new Thread<void>.try ("estimate-system-size", () => {estimate_system_size_thread();});
+		} catch (Error e) {
 			thread_estimate_running = false;
 			thr_success = false;
 			log_error (e.message);
@@ -3964,8 +3964,8 @@ public class Main : GLib.Object{
 		try {
 			thread_subvol_info_running = true;
 			thread_subvol_info_success = false;
-			Thread.create<void> (query_subvolume_info_thread, true);
-		} catch (ThreadError e) {
+			new Thread<void>.try ("query-subvolume-info", () => {query_subvolume_info_thread();});
+		} catch (Error e) {
 			thread_subvol_info_running = false;
 			thread_subvol_info_success = false;
 			log_error (e.message);
