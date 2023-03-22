@@ -179,7 +179,7 @@ class BackupBox : Gtk.Box{
 
 		try {
 			thread_is_running = true;
-			Thread.create<void> (take_snapshot_thread, true);
+			new Thread<void>.try ("snapshot-taker", () => {take_snapshot_thread();});
 		}
 		catch (Error e) {
 			log_error (e.message);

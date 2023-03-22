@@ -192,7 +192,7 @@ class RestoreBox : Gtk.Box{
 		
 		try {
 			thread_is_running = true;
-			Thread.create<void> (restore_thread, true);
+			new Thread<void>.try ("restore", () => {restore_thread();});
 		}
 		catch (Error e) {
 			log_error (e.message);

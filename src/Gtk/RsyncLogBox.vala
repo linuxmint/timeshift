@@ -164,7 +164,7 @@ public class RsyncLogBox : Gtk.Box {
 
 		try {
 			thread_is_running = true;
-			Thread.create<void> (parse_log_file_thread, true);
+			new Thread<void>.try ("log-file-parser", () => {parse_log_file_thread();});
 		}
 		catch (Error e) {
 			log_error (e.message);

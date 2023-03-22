@@ -865,8 +865,8 @@ public class SnapshotRepo : GLib.Object{
 		try {
 			thr_running = true;
 			thr_success = false;
-			Thread.create<void> (delete_directory_thread, true);
-		} catch (ThreadError e) {
+			new Thread<void>.try ("delete-directory", () => {delete_directory_thread();});
+		} catch (Error e) {
 			thr_running = false;
 			thr_success = false;
 			log_error (e.message);

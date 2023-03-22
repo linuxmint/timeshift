@@ -93,9 +93,9 @@ class EstimateBox : Gtk.Box{
 			
 			try {
 				thread_is_running = true;
-				Thread.create<void> (estimate_system_size_thread, true);
+				new Thread<void>.try ("estimate-system-size", () => {estimate_system_size_thread();});
 			}
-			catch (ThreadError e) {
+			catch (Error e) {
 				thread_is_running = false;
 				log_error (e.message);
 			}
