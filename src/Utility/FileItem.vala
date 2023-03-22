@@ -182,7 +182,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 				}
 
 				// modified
-				this.modified = (new DateTime.from_timeval_utc(info.get_modification_time())).to_local();
+				this.modified = info.get_modification_date_time().to_local();
 
 				// owner_user
 				this.owner_user = info.get_attribute_string(FileAttribute.OWNER_USER);
