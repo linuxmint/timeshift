@@ -185,7 +185,7 @@ public class Main : GLib.Object{
 
 	public Main(string[] args, bool gui_mode){
 		
-		this.mount_point_app = "/run/timeshift/%lld".printf(Posix.getpid());
+		this.mount_point_app = "/run/timeshift/%d".printf(Posix.getpid());
 		dir_create(this.mount_point_app);
 		
 		parse_some_arguments(args);
