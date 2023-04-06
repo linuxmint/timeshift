@@ -407,7 +407,7 @@ namespace TeeJee.FileSystem{
 			}
 		}
 		else{
-			txt += "%'0lld".printf(size);
+			txt += "%'0lu".printf(size);
 			if (show_units){
 				txt += " B";
 			}
