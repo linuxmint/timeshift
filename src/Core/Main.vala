@@ -3433,10 +3433,10 @@ public class Main : GLib.Object{
 			// find devices from uuid
 			Device dev = null;
 			Device dev_parent = null;
-			if (backup_uuid.length > 0){
+			if (backup_uuid != null && backup_uuid.length > 0){
 				dev = Device.get_device_by_uuid(backup_uuid);
 			}
-			if (backup_parent_uuid.length > 0){
+			if (backup_parent_uuid != null && backup_parent_uuid.length > 0){
 				dev_parent = Device.get_device_by_uuid(backup_parent_uuid);
 			}
 
