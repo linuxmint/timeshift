@@ -466,7 +466,7 @@ public class SnapshotRepo : GLib.Object{
 		//log_debug("checking selected device");
 
 		if (device == null){
-			if (App.backup_uuid.length == 0){
+			if (App.backup_uuid == null || App.backup_uuid.length == 0){
 				log_debug("device is null");
 				status_message = _("Snapshot device not selected");
 				status_details = _("Select the snapshot device");
