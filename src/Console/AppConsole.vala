@@ -63,6 +63,11 @@ public class AppConsole : GLib.Object {
 				case "-h":
 					stdout.printf (help_message ());
 					return 0;
+
+				case "--version":
+					stdout.printf (version_message ());
+					return 0;
+
 			}
 		}
 		else if (args.length == 1){
@@ -332,6 +337,11 @@ public class AppConsole : GLib.Object {
 			default:
 				return true;
 		}
+	}
+
+	private static string version_message (){
+		string msg = "%s %s\n".printf( AppName, AppVersion);
+		return msg;
 	}
 
 	private static string help_message (){
