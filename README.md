@@ -36,6 +36,14 @@ Nowadays Timeshift is part of the Xapp project which is a collection of cross-DE
 
 *   Boot snapshots provide an additional level of backup and are created every time the system starts. Boot snapshots are created with a delay of 10 mins so that system startup is not affected.
 
+*   Snapshots are tagged to indicate their time interval:
+    - H: Hourly
+    - D: Daily
+    - W: Weekly
+    - M: Monthly
+    - B: Boot
+    - O: On-demand (Manually created)
+
 ![](images/settings_schedule.png)
 
 ### Rsync & BTRFS Snapshots
