@@ -97,7 +97,6 @@ install:
 	# binary
 	install -m 0755 ${app_name} "$(DESTDIR)$(bindir)"
 	install -m 0755 ${app_name}-gtk "$(DESTDIR)$(bindir)"
-	#install -m 0755 ${app_name}-uninstall "$(DESTDIR)$(bindir)"
 	install -m 0755 ${app_name}-launcher "$(DESTDIR)$(bindir)"
 	
 	# shared files
@@ -139,7 +138,6 @@ uninstall:
 	# binary
 	rm -f "$(DESTDIR)$(bindir)/${app_name}"
 	rm -f "$(DESTDIR)$(bindir)/${app_name}-gtk"
-	rm -f "$(DESTDIR)$(bindir)/${app_name}-uninstall"
 	rm -f "$(DESTDIR)$(bindir)/${app_name}-launcher"
 
 	# shared files
