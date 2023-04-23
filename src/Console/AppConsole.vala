@@ -392,6 +392,7 @@ public class AppConsole : GLib.Object {
 		msg += "  --quiet                    " + _("Hide rsync output") + "\n";
 		msg += "  --scripted                 " + _("Run in non-interactive mode") + "\n";
 		msg += "  --help                     " + _("Show all options") + "\n";
+		msg += "  --version                  " + _("Print version number") + "\n";
 		msg += "\n";
 
 		msg += _("Examples") + ":\n";
