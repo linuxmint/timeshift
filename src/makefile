@@ -17,17 +17,6 @@ man1dir=$(mandir)/man1
 app_name=timeshift
 app_fullname=Timeshift
 
-# vte -----------------------------
-
-vte_symbol = -D VTE_291
-vte_version=$(shell { (pkg-config --modversion vte-2.91 | cut -d. -f2); } )
-
-ifeq ($(shell { test ${vte_version} -lt 52 ; echo $$? ; } ), 0)
-vte_symbol=$(shell echo '-D VTE_291_OLD')
-else
-vte_symbol=$(shell echo '-D VTE_291')
-endif
-
 # xapp -----------------------------
 
 xapp_pkg=$(shell { ((pkg-config --exists 'xapp >= 1.0.4') >/dev/null && echo '--pkg xapp') || echo ''; } )
@@ -43,7 +32,7 @@ else
 gtk3_symbol=$(shell echo '')
 endif
 
-symbols=$(shell echo "${vte_symbol} ${gtk3_symbol} ${xapp_symbol}")
+symbols=$(shell echo "${gtk3_symbol} ${xapp_symbol}")
 
 all: app-gtk app-console
 
