@@ -174,15 +174,13 @@ Run the following command in a terminal window:
 
     sudo apt-get remove timeshift
 
-or  
+or
 
-    sudo timeshift-uninstall
+    sudo dnf remove timeshift
+
+depending in your package management system.
 
 Remember to delete all snapshots before un-installing. Otherwise the snapshots continue to occupy space on your system.  To delete all snapshots, run the application, select all snapshots from the list (CTRL+A) and click the _Delete_ button on the toolbar. This will delete all snapshots and remove the _/timeshift_ folder in the root directory.     
-
-If you used the installer to install Timeshift, you can remove the installed files with following command:  
-
-    sudo timeshift-uninstall
 
 ## Known Issues & Limitations
 
