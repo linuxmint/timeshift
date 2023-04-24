@@ -214,3 +214,4 @@ You can contribute to this project in various ways:
 - Submitting ideas, and reporting issues in the [tracker](https://github.com/linuxmint/timeshift/issues)
 - Translating this application to other languages in [Launchpad](https://translations.launchpad.net/linuxmint/latest/+translations)
 - Contributing code changes by fixing issues and submitting a pull request (do not modify translations, this is done in Launchpad)
+- To get started with coding, see the [development](/docs/development.md) docs
