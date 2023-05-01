@@ -121,6 +121,10 @@ install:
 		mkdir -p "$(DESTDIR)$(localedir)/$$lang/LC_MESSAGES"; \
 		msgfmt --check --verbose -o "$(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/${app_name}.mo" ../po/${app_name}-$$lang.po ; \
 	done
+	
+	# systemd timer and service file
+	install -m 0644 ../files/${app_name}.service "$(DESTDIR)/lib/systemd/system/"
+	install -m 0644 ../files/${app_name}.timer "$(DESTDIR)/lib/systemd/system/"
 
 uninstall:
 
@@ -150,3 +154,7 @@ uninstall:
 	# appdata
 	rm -f "$(DESTDIR)$(sharedir)/appdata/${app_name}.appdata.xml" 
 	rm -f "$(DESTDIR)$(sharedir)/metainfo/${app_name}.appdata.xml"
+	
+	# systemd timer and service file
+	rm -f "$(DESTDIR)/lib/systemd/system/${app_name}.service"
+	rm -f "$(DESTDIR)/lib/systemd/system/${app_name}.timer"
