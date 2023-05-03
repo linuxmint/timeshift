@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 CFLAGS=--std=c99
-EXECUTABLES = find msgmerge msgfmt install rm mkdir cp chmod valac
+EXECUTABLES = find msgmerge msgfmt install rm mkdir cp chmod valac help2man
 CHECKEXECS := $(foreach exec,$(EXECUTABLES), $(if $(shell which $(exec)),,$(error No $(exec) found, install it)))
 
 prefix=/usr
@@ -59,16 +59,16 @@ app-console:
 		--pkg gtk+-3.0 --pkg vte-2.91 $(xapp_pkg)
 
 manpage:
-	./${app_name} --help > ../man/${app_name}.1
-	gzip -f ../man/${app_name}.1
+	help2man -o ${app_name}.1 ./${app_name}
 
 clean:
 	rm -rfv ../release/{source,i386,amd64,armel,armhf}
 	rm -rfv ../release/*.{run,deb}
 	rm -rfv *.c *.o *.mo
 	rm -fv ${app_name} ${app_name}-gtk
+	rm -fv ${app_name}.1
 	
-install:
+install: manpage
 	mkdir -p "$(DESTDIR)$(bindir)"
 	mkdir -p "$(DESTDIR)$(sharedir)"
 	mkdir -p "$(DESTDIR)$(mandir)"
@@ -103,7 +103,7 @@ install:
 	install -m 0644 ../files/${app_name}.json "$(DESTDIR)$(appconfdir)/default.json"
 
 	# man page
-	install -m 0644 ../man/${app_name}.1.gz "$(DESTDIR)$(man1dir)/${app_name}.1.gz"
+	install -m 0644 ${app_name}.1 "$(DESTDIR)$(man1dir)/${app_name}.1"
 
 	# app icons
 	cp -dpr --no-preserve=ownership -t "$(DESTDIR)$(sharedir)/icons" ./share/icons/*
@@ -139,7 +139,7 @@ uninstall:
 	rm -f "$(DESTDIR)$(polkitdir)/in.teejeetech.pkexec.timeshift.policy"
 
 	# man page
-	rm -f "$(DESTDIR)$(man1dir)/${app_name}.1.gz"
+	rm -f "$(DESTDIR)$(man1dir)/${app_name}.1"
 	
 	# app icon
 	rm -f $(DESTDIR)$(sharedir)/icons/hicolor/*/apps/${app_name}.png
