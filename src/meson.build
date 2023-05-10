@@ -95,7 +95,7 @@ timeshift = executable('timeshift',
   install: true
 )
 
-executable('timeshift-gtk',
+timeshift_gtk = executable('timeshift-gtk',
   sources_app_gtk + sources_core + sources_utility + sources_gtk,
   config_header,
   dependencies: dependencies,
