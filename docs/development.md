@@ -4,22 +4,27 @@ This documentation provides instructions for developing Timeshift.
 
 ## Prerequisites 
 
-- make 
+- meson
+- help2man
 - gettext 
 - valac 
 - libvte-2.91-dev 
 - libgee-0.8-dev 
 - libjson-glib-dev 
+- libxapp-dev
 
-If you are using a Debian-based distribution, you can install these dependencies by running the following command in a terminal:
+If you are using a Debian-based distribution, you can install these
+dependencies by running the following command in a terminal:
 
 ```bash 
-sudo apt install make \
+sudo apt install meson \
+help2man \
 gettext \
 valac \
 libvte-2.91-dev \
 libgee-0.8-dev \
-libjson-glib-dev
+libjson-glib-dev \
+libxapp-dev
 ``` 
 
 ## Building and Installing 
@@ -39,11 +44,12 @@ cd timeshift
 ### Step 3. Build Timeshift
 
 ```bash
-make 
+meson setup -C build
+meson compile -C build 
 ``` 
 
 ### Step 4. Install Timeshift
 
 ```bash
-sudo make install
+sudo meson install -C build
 ```
