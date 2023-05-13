@@ -176,7 +176,7 @@ public class ExcludeMessageWindow : Gtk.Dialog{
 
 		model.set (iter, 0, path, 1, icon_name);
 
-		Adjustment adj = tv_exclude.get_hadjustment();
+		Adjustment adj = (tv_exclude as Gtk.Scrollable).get_hadjustment();
 		adj.value = adj.upper;
 	}
 

@@ -489,7 +489,7 @@ class ExcludeBox : Gtk.Box{
 		model.set (iter, 2, include);
 		model.set (iter, 3, !include);
 
-		var adj = treeview.get_hadjustment();
+		var adj = (treeview as Gtk.Scrollable).get_hadjustment();
 		adj.value = adj.upper;
 	}
 
