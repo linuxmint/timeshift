@@ -1,6 +1,7 @@
 project(
   'timeshift', 'vala', 'c',
   version: '22.11.2',
+  license : 'GPL-2.0-or-later',
   default_options: ['c_std=c99', 'build.c_std=c99'])
 
 dependencies = [
