@@ -295,8 +295,8 @@ class MainWindow : Gtk.Window{
 		
 		vbox = new Gtk.Box(Orientation.VERTICAL, 6);
 		vbox.margin = 6;
-		vbox.margin_left = 12;
-		vbox.margin_right = 12;
+		vbox.margin_start = 12;
+		vbox.margin_end = 12;
         scrolled.add(vbox);
         scrolled_snap_count = scrolled;
 
@@ -331,8 +331,8 @@ class MainWindow : Gtk.Window{
 		
 		vbox = new Gtk.Box(Orientation.VERTICAL, 6);
 		vbox.margin = 6;
-		vbox.margin_left = 12;
-		vbox.margin_right = 12;
+		vbox.margin_start = 12;
+		vbox.margin_end = 12;
         scrolled.add(vbox);
         scrolled_free_space = scrolled;
 
@@ -399,7 +399,7 @@ class MainWindow : Gtk.Window{
 
 		var label = new Gtk.Label(label_text);
 		label.xalign = (float) 0.0;
-		label.margin_right = 6;
+		label.margin_end = 6;
 		label.set_tooltip_text((tooltip_text.length > 0) ? tooltip_text : label_text);
 		box.add(label);
 

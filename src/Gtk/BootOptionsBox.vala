@@ -70,7 +70,7 @@ class BootOptionsBox : Gtk.Box{
 		add_chk_reinstall_grub();
 		
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		hbox.margin_left = 12;
+		hbox.margin_start = 12;
         add (hbox);
 
 		//cmb_grub_dev

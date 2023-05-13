@@ -141,8 +141,8 @@ class BackupBox : Gtk.Box{
 
 		var label = add_label(hbox, text + ":");
 		label.xalign = (float) 1.0;
-		label.margin_left = 12;
-		label.margin_right = 6;
+		label.margin_start = 12;
+		label.margin_end = 6;
 		var text_label = label;
 		
 		if (add_margin_bottom > 0){

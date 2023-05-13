@@ -78,7 +78,7 @@ class RestoreExcludeBox : Gtk.Box{
 			this, _("Firefox, Chromium, Chrome, Opera, Epiphany, Midori"), false, true);
 		label.margin_top = 0;
 		label.margin_bottom = 6;
-		label.margin_left = 24;
+		label.margin_start = 24;
 		label.wrap = true;
 		label.wrap_mode = Pango.WrapMode.WORD_CHAR;
 
@@ -105,7 +105,7 @@ class RestoreExcludeBox : Gtk.Box{
 		label = add_label(this, _("Deluge, Transmission"), false, true);
 		label.margin_top = 0;
 		label.margin_bottom = 6;
-		label.margin_left = 24;
+		label.margin_start = 24;
 		label.wrap = true;
 		label.wrap_mode = Pango.WrapMode.WORD_CHAR;
 
