@@ -108,7 +108,7 @@ class UsersBox : Gtk.Box{
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter)=>{
 			SystemUser user;
 			model.get(iter, 0, out user);
-			(cell as Gtk.CellRendererText).text = user.name;
+			((Gtk.CellRendererText)cell).text = user.name;
 		});
 
 		// column
@@ -123,7 +123,7 @@ class UsersBox : Gtk.Box{
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter)=>{
 			SystemUser user;
 			model.get(iter, 0, out user);
-			(cell as Gtk.CellRendererText).text = user.home_path;
+			((Gtk.CellRendererText)cell).text = user.home_path;
 		});
 
 		// column -------------------------------------------------

@@ -350,7 +350,7 @@ public class RsyncLogBox : Gtk.Box {
 		combo.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
 			string val;
 			model.get (iter, 1, out val, -1);
-			(cell as Gtk.CellRendererText).text = val;
+			((Gtk.CellRendererText)cell).text = val;
 		});
 
 		//populate combo

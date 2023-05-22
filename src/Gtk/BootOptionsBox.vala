@@ -91,11 +91,11 @@ class BootOptionsBox : Gtk.Box{
 
 			if (dev.type == "disk"){
 				//log_msg("desc:" + dev.description());
-				(cell as Gtk.CellRendererText).markup =
+				((Gtk.CellRendererText)cell).markup =
 					"<b>%s (MBR)</b>".printf(dev.description_formatted());
 			}
 			else{
-				(cell as Gtk.CellRendererText).text = dev.description();
+				((Gtk.CellRendererText)cell).text = dev.description();
 			}
 		});
 
