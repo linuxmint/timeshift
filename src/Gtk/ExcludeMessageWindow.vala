@@ -84,7 +84,6 @@ public class ExcludeMessageWindow : Gtk.Dialog{
 		tv_exclude = new TreeView();
 		tv_exclude.get_selection().mode = SelectionMode.MULTIPLE;
 		tv_exclude.headers_visible = false;
-		tv_exclude.set_rules_hint (true);
 
 		//sw_exclude
 		sw_exclude = new ScrolledWindow(null, null);

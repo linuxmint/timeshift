@@ -70,7 +70,6 @@ class ExcludeAppsBox : Gtk.Box{
 		treeview = new TreeView();
 		treeview.get_selection().mode = SelectionMode.MULTIPLE;
 		treeview.headers_visible = false;
-		treeview.rules_hint = true;
 		treeview.reorderable = true;
 		treeview.set_tooltip_column(2);
 		//treeview.row_activated.connect(treeview_row_activated);
