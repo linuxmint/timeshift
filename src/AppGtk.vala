@@ -35,7 +35,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public Main App;
-public const string AppName = "Timeshift";
+public const string AppName = "Timeshift-gtk";
 public const string AppShortName = "timeshift";
 public const string AppVersion = Constants.VERSION;
 public const string AppAuthor = "Tony George";
@@ -52,6 +52,20 @@ public class AppGtk : GLib.Object {
 		
 		set_locale();
 		
+		if (args.length > 1) {
+			switch (args[1].down()) {
+				case "--help":
+				case "--h":
+				case "-h":
+					stdout.printf (help_message ());
+					return 0;
+
+				case "--version":
+					stdout.printf (version_message ());
+					return 0;
+			}
+		}
+
 		Gtk.init(ref args);
 
 		GTK_INITIALIZED = true;
@@ -88,12 +102,6 @@ public class AppGtk : GLib.Object {
 			case "--debug":
 				LOG_DEBUG = true;
 				break;
-			case "--help":
-			case "--h":
-			case "-h":
-				log_msg(help_message());
-				exit(0);
-				return true;
 			default:
 				//unknown option - show help and exit
 				log_error(_("Unknown option") + ": %s".printf(args[k]));
@@ -106,6 +114,11 @@ public class AppGtk : GLib.Object {
 		return true;
 	}
 
+	private static string version_message (){
+		string msg = "%s %s\n".printf( AppName, AppVersion);
+		return msg;
+	}
+
 	public static string help_message() {
 		
 		string msg = "\n%s v%s by Tony George (%s)\n".printf(AppName, AppVersion, AppAuthorEmail);
@@ -116,6 +129,7 @@ public class AppGtk : GLib.Object {
 		msg += "\n";
 		msg += "  --debug      " + _("Print debug information") + "\n";
 		msg += "  --h[elp]     " + _("Show all options") + "\n";
+		msg += "  --version    " + _("Print version number") + "\n";
 		msg += "\n\n";
 		msg += "\n%s\n".printf(_("Run 'timeshift' for the command-line version of this tool"));
 		return msg;
