@@ -447,7 +447,6 @@ public class RsyncLogBox : Gtk.Box {
 		treeview.headers_clickable = true;
 		treeview.rubber_banding = true;
 		treeview.has_tooltip = true;
-		treeview.set_rules_hint(true);
 		treeview.show_expanders = false;
 
 		// scrolled

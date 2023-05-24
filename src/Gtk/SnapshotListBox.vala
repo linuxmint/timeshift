@@ -81,7 +81,6 @@ class SnapshotListBox : Gtk.Box{
 		treeview.get_selection().mode = SelectionMode.MULTIPLE;
 		treeview.headers_clickable = true;
 		treeview.has_tooltip = true;
-		treeview.set_rules_hint (true);
 
 		//sw_backups
 		var sw_backups = new ScrolledWindow(null, null);
