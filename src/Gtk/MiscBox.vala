@@ -91,7 +91,7 @@ class MiscBox : Gtk.Box{
 			string txt;
 			model.get (iter, 0, out txt, -1);
 
-			(cell as Gtk.CellRendererText).text = (txt.length == 0) ? _("Custom") : now.format(txt);
+			((Gtk.CellRendererText)cell).text = (txt.length == 0) ? _("Custom") : now.format(txt);
 		});
 		
 		// populate combo
