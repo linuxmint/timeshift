@@ -1,3 +1,58 @@
+timeshift (23.06.1) victoria; urgency=medium
+
+  [ GHelliot ]
+  * Update Device.vala
+
+  [ TotalCaesar659 ]
+  * Update URLs to HTTPS
+
+  [ Yegor Yefremov ]
+  * README.md: fix a typo
+
+  [ Vlasov Yuriy ]
+  * Added extra constraints to BTRFS mode in Supported System Configurations (#103)
+
+  [ Yegor Yefremov ]
+  * src/Utility: fix deprecated Thread.create usage (#151)
+
+  [ Michael Webster ]
+  * AsyncTask: Use a mutex to guard access to AsyncTask.status_line.
+
+  [ Yegor Yefremov ]
+  * Fix printf format warnings (#162)
+  * Don't use deprecated from_timeval_utc function
+  * Fix deprecated Thread.create usage
+  * Fix segmentation fault (#169)
+
+  [ Ivan Skodje ]
+  * Added missing documentation regarding tags abbrevation which was difficult to find (#168)
+
+  [ Yegor Yefremov ]
+  * Console: add --version option (#175)
+
+  [ Ivan Skodje ]
+  * Development documentation for easier accessibility (#170)
+
+  [ Yegor Yefremov ]
+  * Remove timeshift-uninstall binary (#176)
+  * Debian clean up (#180)
+  * Console: add --version option description to the help massages (#181)
+  * src/makefile: remove VTE_291_OLD and VTE_291 symbols (#183)
+  * Fix project's license (#189)
+  * Use help2man utility to create a man page. (#178)
+  * meson support (#173)
+  * Fix deprecated Gtk.Widget.margin_left and Gtk.Widget.margin_right properties
+  * Use get_hadjustment via casting TreeView to Gtk.Scrollable
+  * meson: add project's license definition
+  * Don't use the deprecated Gtk.TreeView.rules_hint feature (#201)
+  * docs: automatically generate timeshift-gtk manpage (#194)
+  * Use an unsafe cast (#200)
+
+  [ Clement Lefebvre ]
+  * l10n: Update POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 01 Jun 2023 11:46:39 +0100
+
 timeshift (22.11.2) vera; urgency=medium
 
   [ Michael Webster ]
