@@ -7,17 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2022-06-30 15:17+0200\n"
-"PO-Revision-Date: 2018-02-26 08:05+0000\n"
-"Last-Translator: mahfiaz <mahfiaz@gmail.com>\n"
+"POT-Creation-Date: 2023-06-01 11:34+0100\n"
+"PO-Revision-Date: 2023-06-04 08:26+0000\n"
+"Last-Translator: vaba <Unknown>\n"
 "Language-Team: Estonian <et@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-07-24 09:42+0000\n"
-"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
+"X-Launchpad-Export-Date: 2023-06-08 10:22+0000\n"
+"X-Generator: Launchpad (build 620cd5280e3a973662e263ebf9346837ed657a46)\n"
+"Language: et\n"
 
-#: src/Console/AppConsole.vala:615
+#: src/AppConsole.vala:626
 #, c-format
 msgid ""
 "\n"
@@ -31,12 +32,12 @@ msgstr ""
 msgid "%d snapshots, %s free"
 msgstr "%d salvestust, %s vaba"
 
-#: src/Console/AppConsole.vala:916
+#: src/AppConsole.vala:927
 #, c-format
 msgid "'%s' will be on '%s'"
 msgstr "'%s' läheb  '%s' peale"
 
-#: src/Console/AppConsole.vala:913
+#: src/AppConsole.vala:924
 #, c-format
 msgid "'%s' will be on root device"
 msgstr "'%s' läheb juurkettale"
@@ -45,27 +46,27 @@ msgstr "'%s' läheb juurkettale"
 msgid "(Re)install GRUB2 on:"
 msgstr "(Taas)paigalda alglaadur GRUB2 seadmele:"
 
-#: src/Core/Main.vala:367
+#: src/Core/Main.vala:379
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr "** BTFRS Timeshift eemaldatud **"
 
-#: src/Core/Main.vala:3515
+#: src/Core/Main.vala:3527
 msgid "/ is mapped to device"
 msgstr "/ on seostatud seadmega (kettaga)"
 
-#: src/Core/Main.vala:3537
+#: src/Core/Main.vala:3549
 msgid "/boot is mapped to device"
 msgstr "/boot on seostatud seadmega"
 
-#: src/Core/Main.vala:3548
+#: src/Core/Main.vala:3560
 msgid "/boot/efi is mapped to device"
 msgstr "/boot/efi on seostatud seadmega"
 
-#: src/Core/Main.vala:3526
+#: src/Core/Main.vala:3538
 msgid "/home is mapped to device"
 msgstr "/home kodukataloog on seostatud seadmega"
 
-#: src/Gtk/SnapshotListBox.vala:238
+#: src/Gtk/SnapshotListBox.vala:289
 msgid "<b>Comments</b> (double-click to edit)"
 msgstr "<b>Kommentaarid</b> (redigeerimine topeltklõpsuga)"
 
@@ -73,76 +74,81 @@ msgstr "<b>Kommentaarid</b> (redigeerimine topeltklõpsuga)"
 msgid ""
 "A maintenance task runs once every hour and creates snapshots as needed."
 msgstr ""
+"Hooldusseade töötab kord tunnis ja loob vajaduse korral hetktõmmised."
 
-#: src/Console/AppConsole.vala:700 src/Console/AppConsole.vala:764
-#: src/Console/AppConsole.vala:896 src/Console/AppConsole.vala:991
-#: src/Console/AppConsole.vala:1036 src/Console/AppConsole.vala:1077
-#: src/Console/AppConsole.vala:1095
+#: src/AppConsole.vala:711 src/AppConsole.vala:775 src/AppConsole.vala:907
+#: src/AppConsole.vala:1002 src/AppConsole.vala:1047 src/AppConsole.vala:1088
+#: src/AppConsole.vala:1106
 msgid "Aborted."
-msgstr ""
+msgstr "Katkestatud."
 
 #: src/Gtk/MainWindow.vala:375
 msgid "About"
-msgstr ""
+msgstr "Lähemalt"
 
-#: src/Gtk/RsyncLogBox.vala:472
+#: src/Gtk/RsyncLogBox.vala:471
 msgid "Action"
-msgstr ""
+msgstr "Tegevus"
 
 #: src/Gtk/ExcludeBox.vala:225
 msgid "Add"
-msgstr ""
+msgstr "Lisa"
 
 #: src/Gtk/ExcludeBox.vala:242
 msgid "Add Files"
-msgstr ""
+msgstr "Lisa faile"
 
 #: src/Gtk/ExcludeBox.vala:248
 msgid "Add Folders"
-msgstr ""
+msgstr "Lisa kaustad"
 
 #: src/Gtk/ExcludeBox.vala:225
 msgid "Add custom pattern"
-msgstr ""
+msgstr "Lisa kohandatud muster"
 
 #: src/Gtk/ExcludeBox.vala:248
 msgid "Add directories"
-msgstr ""
+msgstr "Lisage kataloogid"
 
 #: src/Gtk/ExcludeBox.vala:242
 msgid "Add files"
-msgstr ""
+msgstr "Lisa faile"
 
-#: src/Console/AppConsole.vala:361
+#: src/AppConsole.vala:371
 msgid "Add tags to snapshot (default: O)"
-msgstr ""
+msgstr "Lisa hetktõmmisele sildid (vaikimisi: O)"
 
 #: src/Utility/CronTab.vala:312
 msgid "Added cron task"
-msgstr ""
+msgstr "Lisatud cron ülesanne"
 
-#: src/Gtk/AppGtk.vala:133
+#: src/AppGtk.vala:147
 msgid "Admin Access Required"
-msgstr ""
+msgstr "Nõutav administraatori juurdepääs"
 
-#: src/Gtk/AppGtk.vala:128
+#: src/AppGtk.vala:142
 msgid "Admin access is required to backup and restore system files."
 msgstr ""
+"Süsteemifailide varundamiseks ja taastamiseks on vaja administraatori "
+"juurdepääsu."
 
 #: src/Gtk/RsyncLogBox.vala:363
 msgid "All Files"
-msgstr ""
+msgstr "Kõik failid"
 
-#: src/Gtk/SnapshotBackendBox.vala:189
+#: src/Gtk/SnapshotBackendBox.vala:197
 msgid ""
 "All files are copied when first snapshot is created. Subsequent snapshots "
 "are incremental. Unchanged files will be hard-linked from the previous "
 "snapshot if available."
 msgstr ""
+"Kõik failid kopeeritakse esimese hetktõmmise loomisel. Järgnevad "
+"hetktõmmised on järkjärgulised. Muutmata failid lingitakse eelmise "
+"hetkepildiga, kui need on saadaval."
 
-#: src/Gtk/ExcludeMessageWindow.vala:130
+#: src/Gtk/ExcludeMessageWindow.vala:129
 msgid "All other files and folders are excluded."
-msgstr ""
+msgstr "Kõik muud failid ja kaustad on välistatud."
 
 #: src/Gtk/RestoreDeviceBox.vala:486
 msgid ""
@@ -153,68 +159,72 @@ msgid ""
 "Either select a non-encrypted device for boot directory or select a non-"
 "encrypted device for root filesystem."
 msgstr ""
+"Juurfailsüsteemi jaoks on valitud krüptitud seade (/). Süsteemi edukaks "
+"käivitamiseks peab alglaadimiskataloog (/boot) olema ühendatud krüptimata "
+"seadmesse.\n"
+"\n"
+"Valige alglaadimiskataloogi jaoks krüptimata seade või juurfailisüsteemi "
+"jaoks krüptimata seade."
 
-#: src/Core/Main.vala:253
+#: src/Core/Main.vala:265
 msgid "Another instance of Timeshift is creating a snapshot."
-msgstr ""
+msgstr "Üks Timeshift hetktõmmise protsess juba töötab."
 
 #: src/Utility/AppLock.vala:49
 msgid "Another instance of this application is running"
-msgstr ""
+msgstr "Üks Timeshift protsess juba töötab"
 
-#: src/Core/Main.vala:257
+#: src/Core/Main.vala:269
 msgid "Another instance of timeshift is currently running!"
-msgstr ""
+msgstr "Üks Timeshift protsess juba töötab!"
 
-#: src/Console/AppConsole.vala:377
+#: src/AppConsole.vala:387
 msgid "Answer YES to all confirmation prompts"
-msgstr ""
+msgstr "Kõigile kinnitusviipadele vastake JAH"
 
-#: src/Core/Main.vala:3352
+#: src/Core/Main.vala:3364
 msgid "App config loaded"
-msgstr ""
+msgstr "Rakenduse konfiguratsioon on laaditud"
 
-#: src/Core/Main.vala:3240
+#: src/Core/Main.vala:3252
 msgid "App config saved"
-msgstr ""
+msgstr "Rakenduse konfiguratsioon on salvestatud"
 
-#: src/Console/AppConsole.vala:102
+#: src/AppConsole.vala:107
 msgid "Application needs admin access."
-msgstr ""
+msgstr "Rakendus vajab administraatori juurdepääsu."
 
-#: src/Core/Main.vala:3692
+#: src/Core/Main.vala:3704
 msgid "Application will exit"
-msgstr ""
+msgstr "Rakendus suletakse"
 
-#: src/Core/Main.vala:383
+#: src/Core/Main.vala:395
 msgid "Application will exit."
-msgstr ""
+msgstr "Rakendus suletakse."
 
 #: src/Gtk/MainWindow.vala:345
 msgid "Available"
-msgstr ""
+msgstr "Saadaolev"
 
 #: src/Gtk/SnapshotBackendBox.vala:95
 msgid "BTRFS"
-msgstr ""
+msgstr "BTRFS"
 
-#: src/Gtk/SnapshotBackendBox.vala:166
+#: src/Gtk/SnapshotBackendBox.vala:174
 msgid "BTRFS Snapshots"
-msgstr ""
+msgstr "BTRFS-i hetktõmmised"
 
-#: src/Gtk/SnapshotBackendBox.vala:120
-msgid "BTRFS Tools Not Found"
-msgstr ""
-
-#: src/Core/Main.vala:2190 src/Core/Main.vala:2194
+#: src/Core/Main.vala:2202 src/Core/Main.vala:2206
 msgid "BTRFS device is not mounted"
-msgstr ""
+msgstr "BTRFS-seade ei ole haagitud"
 
 #: src/Gtk/BackupDeviceBox.vala:98
 msgid ""
 "BTRFS snapshots are saved on system partition. Other partitions are not "
 "supported."
 msgstr ""
+"BTRFS-i hetktõmmised salvestatakse süsteemisektsioonile. Muid partitsioone "
+"ei toetata."
 
 #: src/Gtk/FinishBox.vala:92
 msgid ""
@@ -223,86 +233,92 @@ msgid ""
 "snapshots to an external non-system disk in RSYNC mode to guard against disk "
 "failures."
 msgstr ""
+"BTRFS-i hetktõmmised salvestatakse samale kettale, millelt see loodi. Kui "
+"süsteemiketas ebaõnnestub, kaovad koos süsteemiga ka hetktõmmised. "
+"Kettatõrgete eest kaitsmiseks salvestage hetktõmmised välisele "
+"süsteemivälisele kettale RSYNC-režiimis."
 
 #: src/Gtk/SetupWizardWindow.vala:94
 msgid "Backend"
-msgstr ""
+msgstr "Taustaprogramm"
 
-#: src/Console/AppConsole.vala:357 src/Gtk/BackupWindow.vala:92
+#: src/Gtk/BackupWindow.vala:92 src/AppConsole.vala:367
 msgid "Backup"
-msgstr ""
+msgstr "Varunda"
 
-#: src/Core/Main.vala:2166
+#: src/Core/Main.vala:2178
 msgid "Backup Device"
-msgstr ""
+msgstr "Varundusseade"
 
-#: src/Core/Main.vala:2161
+#: src/Core/Main.vala:2173
 msgid "Backup device not specified!"
-msgstr ""
+msgstr "Varuseade pole määratud!"
 
 #: src/Gtk/RestoreExcludeBox.vala:91
 msgid "Bittorrent Clients"
-msgstr ""
+msgstr "Bittorrenti kliendid"
 
-#: src/Gtk/SnapshotListBox.vala:246 src/Gtk/ScheduleBox.vala:136
+#: src/Gtk/SnapshotListBox.vala:297 src/Gtk/ScheduleBox.vala:136
 msgid "Boot"
-msgstr ""
+msgstr "Alglaadimine"
 
 #: src/Gtk/RestoreDeviceBox.vala:485
 msgid "Boot device not selected"
-msgstr ""
+msgstr "Alglaadimisseade pole valitud"
 
-#: src/Core/Main.vala:1033
+#: src/Core/Main.vala:1045
 msgid "Boot snapshot failed!"
-msgstr ""
+msgstr "Alglaadimise hetktõmmis ebaõnnestus!"
 
 #: src/Gtk/ScheduleBox.vala:169
 msgid ""
 "Boot snapshots are created with a delay of 10 minutes after system startup."
 msgstr ""
+"Alglaadimise hetktõmmised luuakse 10-minutilise viivitusega pärast süsteemi "
+"käivitamist."
 
-#: src/Core/Main.vala:1014
+#: src/Core/Main.vala:1026
 msgid "Boot snapshots are enabled"
-msgstr ""
+msgstr "Alglaadimise hetktõmmised on lubatud"
 
 #: src/Gtk/BootOptionsWindow.vala:49
 msgid "Bootloader Options"
-msgstr ""
+msgstr "Buutimisvalikud"
 
 #: src/Gtk/RestoreDeviceBox.vala:402
 msgid "Bootloader Options (Advanced)"
-msgstr ""
+msgstr "Buutimisvalikud (lisavõimalusega)"
 
 #: src/Gtk/MainWindow.vala:170
 msgid "Browse"
-msgstr ""
+msgstr "Sirvi"
 
-#: src/Gtk/SnapshotListBox.vala:284
+#: src/Gtk/SnapshotListBox.vala:335
 msgid "Browse Files"
-msgstr ""
+msgstr "Failide sirvimine"
 
 #: src/Gtk/MainWindow.vala:171
 msgid "Browse selected snapshot"
-msgstr ""
+msgstr "Sirvi valitud tõmmist"
 
-#: src/Core/Main.vala:2656
+#: src/Core/Main.vala:2668
 msgid "Building file list..."
-msgstr ""
+msgstr "Failide loendi koostamine..."
 
-#: src/Core/Main.vala:1393
+#: src/Core/Main.vala:1405
 msgid "Calculating required disk space..."
-msgstr ""
+msgstr "Vajaliku kettaruumi arvutamine..."
 
 #: src/Utility/Gtk/CustomMessageDialog.vala:152 src/Utility/GtkHelper.vala:109
 #: src/Gtk/RestoreWindow.vala:215 src/Gtk/RestoreWindow.vala:224
 #: src/Gtk/BackupWindow.vala:181 src/Gtk/SetupWizardWindow.vala:220
 #: src/Gtk/DeleteWindow.vala:190
 msgid "Cancel"
-msgstr ""
+msgstr "Tühista"
 
 #: src/Gtk/RestoreWindow.vala:230
 msgid "Cancel restore?"
-msgstr ""
+msgstr "Kas tühistada taastamine?"
 
 #: src/Gtk/RestoreWindow.vala:232
 msgid ""
@@ -311,805 +327,835 @@ msgid ""
 "issues. After cancelling, you need to restore another snapshot, to bring the "
 "system to a consistent state. Click Yes to confirm."
 msgstr ""
+"Taasteprotsessi tühistamine jätab sihtsüsteemi ebajärjekindlasse olekusse. "
+"Süsteemi käivitamine ei pruugi õnnestuda või teil võib tekkida mitmesuguseid "
+"probleeme. Pärast tühistamist peate süsteemi ühtsesse olekusse viimiseks "
+"taastama teise hetktõmmise. Kinnitamiseks klõpsake nuppu Jah."
 
 #: src/Gtk/MainWindow.vala:547
 msgid "Cannot Delete Live Snapshot"
-msgstr ""
+msgstr "Reaalajas hetktõmmist ei saa kustutada"
 
 #: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
 #: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
-#: src/Gtk/RsyncLogBox.vala:567 src/Gtk/RsyncLogBox.vala:588
+#: src/Gtk/RsyncLogBox.vala:566 src/Gtk/RsyncLogBox.vala:587
 msgid "Changed"
-msgstr ""
+msgstr "Muudetud"
 
 #: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:127
 msgid "Changed items:"
-msgstr ""
+msgstr "Muudetud üksused:"
 
 #: src/Gtk/RestoreWindow.vala:104
 msgid "Checking Restore Actions (Dry Run)"
-msgstr ""
+msgstr "Taastamistoimingute kontrollimine (kuivkäivitus)"
 
-#: src/Core/Main.vala:2889
+#: src/Core/Main.vala:2901
 msgid "Checking file systems for errors..."
-msgstr ""
+msgstr "Failisüsteemide vigade kontrollimine..."
 
 #: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:130
 #: src/Gtk/RsyncLogBox.vala:390
 #, c-format
 msgid "Checksum"
-msgstr ""
+msgstr "Kontrollsumma"
 
-#: src/Core/Main.vala:2537
+#: src/Core/Main.vala:2549
 msgid "Cleaning up..."
-msgstr ""
+msgstr "Puhastamine..."
 
-#: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:89
+#: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:88
 msgid "Click to edit. Drag and drop to re-order."
-msgstr ""
+msgstr "Klõpsa muutmiseks. Järjestuse muutmiseks pukseerige."
 
 #: src/Gtk/ExcludeBox.vala:59
 msgid "Click to edit. Drag-drop to re-order."
-msgstr ""
+msgstr "Klõpsake muutmiseks. Järjestuse muutmiseks pukseerige."
 
 #: src/Gtk/RestoreWindow.vala:69
 msgid "Clone System"
-msgstr ""
+msgstr "Süsteemi kloonimine"
 
 #: src/Gtk/RestoreFinishBox.vala:68
 msgid "Cloning"
-msgstr ""
+msgstr "Kloonimine"
 
-#: src/Core/Main.vala:2939
+#: src/Core/Main.vala:2951
 msgid "Cloning system..."
-msgstr ""
+msgstr "Süsteemi kloonimine..."
 
 #: src/Gtk/BootOptionsWindow.vala:106 src/Gtk/RestoreWindow.vala:501
 #: src/Gtk/BackupWindow.vala:172 src/Gtk/RsyncLogBox.vala:266
 #: src/Gtk/DeleteWindow.vala:173
 msgid "Close"
-msgstr ""
+msgstr "Sulge"
 
 #: src/Gtk/FinishBox.vala:101 src/Gtk/DeleteFinishBox.vala:71
 #: src/Gtk/RestoreFinishBox.vala:106 src/Gtk/BackupFinishBox.vala:70
 msgid "Close window to exit"
-msgstr ""
+msgstr "Väljumiseks sulge aken"
 
-#: src/Core/Main.vala:352
+#: src/Core/Main.vala:364
 msgid "Commands listed below are not available on this system"
-msgstr ""
+msgstr "Allpool loetletud käsud pole selles süsteemis saadaval"
 
-#: src/Gtk/SnapshotListBox.vala:172
+#: src/Gtk/SnapshotListBox.vala:223
 msgid "Comments (click to edit)"
-msgstr ""
+msgstr "Kommentaarid (redigeerimiseks klõpsa)"
 
-#: src/Core/Main.vala:2932 src/Gtk/RestoreBox.vala:74
+#: src/Core/Main.vala:2944 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
 msgid "Comparing Files (Dry Run)..."
-msgstr ""
+msgstr "Failide võrdlemine (kuivkäivitus)..."
 
-#: src/Core/Main.vala:2698
+#: src/Core/Main.vala:2710
 msgid "Comparing files with rsync..."
-msgstr ""
+msgstr "Failide võrdlemine rsynciga..."
 
 #: src/Gtk/DeleteFinishBox.vala:50 src/Gtk/RestoreFinishBox.vala:50
 #: src/Gtk/RestoreFinishBox.vala:75 src/Gtk/BackupFinishBox.vala:50
 msgid "Completed"
-msgstr ""
+msgstr "Valmis"
 
 #: src/Gtk/RestoreFinishBox.vala:78
 msgid "Completed With Errors"
-msgstr ""
+msgstr "Valmis koos vigadega"
 
 #: src/Gtk/RestoreWindow.vala:109 src/Gtk/RsyncLogBox.vala:87
 msgid "Confirm Actions"
-msgstr ""
+msgstr "Kinnitage toimingud"
 
-#: src/Console/AppConsole.vala:1070
+#: src/AppConsole.vala:1081
 #, c-format
 msgid "Continue with restore? (y/n): "
-msgstr ""
+msgstr "Kas jätkata taastamisega? (y/n): "
 
-#: src/Console/AppConsole.vala:836 src/Console/AppConsole.vala:967
+#: src/AppConsole.vala:847 src/AppConsole.vala:978
 msgid "Could not find device"
-msgstr ""
+msgstr "Seadet ei leitud"
 
 #: src/Utility/Device.vala:1308
 #, c-format
 msgid "Could not find file"
-msgstr ""
+msgstr "Faili ei leitud"
 
-#: src/Console/AppConsole.vala:733
+#: src/AppConsole.vala:744
 msgid "Could not find snapshot"
-msgstr ""
+msgstr "Hetktõmmist ei leitud"
 
-#: src/Core/Main.vala:3101
+#: src/Core/Main.vala:3113
 msgid "Could not find system subvolume"
-msgstr ""
+msgstr "Süsteemi alammahtu ei leitud"
 
-#: src/Core/Main.vala:3129
+#: src/Core/Main.vala:3141
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
-msgstr ""
+msgstr "Taasteeelse hetktõmmise loomiseks ei leitud süsteemi alamköiteid"
 
 #: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
-#: src/Gtk/RsyncLogBox.vala:571
+#: src/Gtk/RsyncLogBox.vala:570
 #, c-format
 msgid "Create"
-msgstr ""
+msgstr "Loo"
 
 #: src/Gtk/BackupWindow.vala:62
 msgid "Create Snapshot"
-msgstr ""
+msgstr "Loo hetktõmmis"
 
 #: src/Gtk/ScheduleBox.vala:136
 msgid "Create one per boot"
-msgstr ""
+msgstr "Loo üks alglaadimise kohta"
 
 #: src/Gtk/ScheduleBox.vala:100
 msgid "Create one per day"
-msgstr ""
+msgstr "Loo üks päevas"
 
 #: src/Gtk/ScheduleBox.vala:118
 msgid "Create one per hour"
-msgstr ""
+msgstr "Loo üks tunnis"
 
 #: src/Gtk/ScheduleBox.vala:64
 msgid "Create one per month"
-msgstr ""
+msgstr "Loo üks kuus"
 
 #: src/Gtk/ScheduleBox.vala:82
 msgid "Create one per week"
-msgstr ""
+msgstr "Loo üks nädalas"
 
-#: src/Console/AppConsole.vala:359
+#: src/AppConsole.vala:369
 msgid "Create snapshot (even if not scheduled)"
-msgstr ""
+msgstr "Loo hetktõmmis (isegi kui see pole ajastatud)"
 
-#: src/Console/AppConsole.vala:358
+#: src/AppConsole.vala:368
 msgid "Create snapshot if scheduled"
-msgstr ""
+msgstr "Loo hetktõmmis, kui see on ajastatud"
 
 #: src/Gtk/MainWindow.vala:141
 msgid "Create snapshot of current system"
-msgstr ""
+msgstr "Loo praegusest süsteemist hetktõmmis"
 
 #: src/Gtk/MainWindow.vala:1027
 msgid ""
 "Create snapshots manually or enable scheduled snapshots to protect your "
 "system"
 msgstr ""
+"Loo hetktõmmiseid käsitsi või lubage oma süsteemi kaitsmiseks ajastatud "
+"hetktõmmised"
 
 #: src/Gtk/SnapshotBackendBox.vala:96
 msgid "Create snapshots using BTRFS"
-msgstr ""
+msgstr "Loo BTRFS-i abil pilte"
 
 #: src/Gtk/SnapshotBackendBox.vala:78
 msgid "Create snapshots using RSYNC tool and hard-links"
-msgstr ""
+msgstr "Loo hetktõmmiseid RSYNC-tööriista ja kõvalinkide abil"
 
 #: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
-#: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:571
-#: src/Gtk/RsyncLogBox.vala:592
+#: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:570
+#: src/Gtk/RsyncLogBox.vala:591
 #, c-format
 msgid "Created"
-msgstr ""
+msgstr "Loodud"
 
 #: src/Core/Snapshot.vala:430
 msgid "Created control file"
-msgstr ""
+msgstr "Loodud kontrollfail"
 
-#: src/Utility/TeeJee.FileSystem.vala:294
+#: src/Utility/TeeJee.FileSystem.vala:268
 msgid "Created directory"
-msgstr ""
+msgstr "Kataloog loodud"
 
-#: src/Core/Main.vala:3151
+#: src/Core/Main.vala:3163
 msgid "Created pre-restore snapshot"
-msgstr ""
+msgstr "Loodud taastamiseelne hetktõmmis"
 
-#: src/Core/Main.vala:1648
+#: src/Core/Main.vala:1660
 msgid "Created subvolume snapshot"
-msgstr ""
+msgstr "Loodud alamköite hetktõmmis"
 
 #: src/Gtk/BackupBox.vala:71
 msgid "Creating Snapshot..."
-msgstr ""
+msgstr "Tõmmise loomine..."
 
-#: src/Core/Main.vala:1586
+#: src/Core/Main.vala:1598
 msgid "Creating new backup..."
-msgstr ""
+msgstr "Uue varukoopia loomine..."
 
-#: src/Core/Main.vala:1432
+#: src/Core/Main.vala:1444
 msgid "Creating new snapshot..."
-msgstr ""
+msgstr "Uue hetktõmmise loomine..."
 
-#: src/Core/Main.vala:3079
+#: src/Core/Main.vala:3091
 msgid "Creating pre-restore snapshot from system subvolumes..."
-msgstr ""
+msgstr "Taaste-eelse hetktõmmise loomine süsteemi alamköidetest..."
 
-#: src/Core/Main.vala:3691
+#: src/Core/Main.vala:3703
 msgid "Critical Error"
-msgstr ""
+msgstr "Kriitiline viga"
 
 #: src/Utility/CronTab.vala:136
 msgid "Cron job added"
-msgstr ""
+msgstr "Lisatud cron ülesanne"
 
 #: src/Utility/CronTab.vala:217
 msgid "Cron job removed"
-msgstr ""
+msgstr "Cron töö eemaldati"
 
 #: src/Utility/CronTab.vala:304
 msgid "Cron task exists"
-msgstr ""
+msgstr "Cron ülesanne on olemas"
 
 #: src/Gtk/MiscBox.vala:94
 msgid "Custom"
-msgstr ""
+msgstr "Kohanda"
 
-#: src/Gtk/SnapshotListBox.vala:248 src/Gtk/ScheduleBox.vala:100
+#: src/Gtk/SnapshotListBox.vala:299 src/Gtk/ScheduleBox.vala:100
 msgid "Daily"
-msgstr ""
+msgstr "Igapäevane"
 
-#: src/Core/Main.vala:1095
+#: src/Core/Main.vala:1107
 msgid "Daily snapshot failed!"
-msgstr ""
+msgstr "Igapäevane hetktõmmis ebaõnnestus!"
 
-#: src/Core/Main.vala:1076
+#: src/Core/Main.vala:1088
 msgid "Daily snapshots are enabled"
-msgstr ""
+msgstr "Igapäevased hetktõmmised on lubatud"
 
-#: src/Core/Main.vala:2260
+#: src/Core/Main.vala:2272
 msgid "Data will be modified on following devices:"
-msgstr ""
+msgstr "Andmeid muudetakse järgmistes seadmetes:"
 
 #: src/Gtk/MiscBox.vala:67
 msgid "Date Format"
-msgstr ""
+msgstr "Kuupäeva vorming"
 
-#: src/Console/AppConsole.vala:371 src/Gtk/SnapshotListBox.vala:270
-#: src/Gtk/MainWindow.vala:160 src/Gtk/RsyncLogBox.vala:370
-#: src/Gtk/RsyncLogBox.vala:575 src/Gtk/DeleteWindow.vala:98
+#: src/Gtk/SnapshotListBox.vala:321 src/Gtk/MainWindow.vala:160
+#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
+#: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:381
 #, c-format
 msgid "Delete"
-msgstr ""
+msgstr "Kustuta"
 
 #: src/Gtk/DeleteWindow.vala:62
 msgid "Delete Snapshots"
-msgstr ""
+msgstr "Kustuta hetktõmmised"
 
-#: src/Console/AppConsole.vala:373
+#: src/AppConsole.vala:383
 msgid "Delete all snapshots"
-msgstr ""
+msgstr "Kustuta kõik hetktõmmised"
 
 #: src/Gtk/MainWindow.vala:161
 msgid "Delete selected snapshot"
-msgstr ""
+msgstr "Kustuta valitud hetktõmmis"
 
-#: src/Console/AppConsole.vala:372
+#: src/AppConsole.vala:382
 msgid "Delete snapshot"
-msgstr ""
+msgstr "Kustuta hetktõmmis"
 
 #: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
-#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:575
-#: src/Gtk/RsyncLogBox.vala:596
+#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
+#: src/Gtk/RsyncLogBox.vala:595
 #, c-format
 msgid "Deleted"
-msgstr ""
+msgstr "Kustutatud"
 
-#: src/Utility/TeeJee.FileSystem.vala:328
+#: src/Utility/TeeJee.FileSystem.vala:302
 msgid "Deleted directory"
-msgstr ""
+msgstr "Kataloog kustutatud"
 
-#: src/Core/Main.vala:3058 src/Core/Main.vala:3062 src/Core/Subvolume.vala:167
+#: src/Core/Main.vala:3070 src/Core/Main.vala:3074 src/Core/Subvolume.vala:167
 #, c-format
 msgid "Deleted subvolume"
-msgstr ""
+msgstr "Alamköide kustutatud"
 
 #: src/Gtk/DeleteBox.vala:58
 msgid "Deleting Snapshots..."
-msgstr ""
+msgstr "Hetktõmmise kustutamine..."
 
 #: src/Core/Subvolume.vala:141
 #, c-format
 msgid "Deleting subvolume"
-msgstr ""
+msgstr "Alamköite kustutamine"
 
 #: src/Gtk/RestoreExcludeBox.vala:105
 msgid "Deluge, Transmission"
-msgstr ""
+msgstr "Deluge, Transmission"
 
-#: src/Console/AppConsole.vala:428 src/Console/AppConsole.vala:544
+#: src/AppConsole.vala:439 src/AppConsole.vala:555
 msgid "Description"
-msgstr ""
+msgstr "Kirjeldus"
 
-#: src/Core/Main.vala:2263 src/Core/Main.vala:2295
+#: src/Core/Subvolume.vala:181
+#, c-format
+msgid "Destroyed qgroup"
+msgstr "Hävitas qgroupi"
+
+#: src/Core/Subvolume.vala:171
+#, c-format
+msgid "Destroying qgroup"
+msgstr "qgroupi hävitamine"
+
+#: src/Core/Main.vala:2275 src/Core/Main.vala:2307
 #: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
 #: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
-#: src/Utility/Device.vala:1942 src/Console/AppConsole.vala:456
-#: src/Console/AppConsole.vala:495 src/Console/AppConsole.vala:543
-#: src/Gtk/RestoreDeviceBox.vala:97
+#: src/Utility/Device.vala:1942 src/Gtk/RestoreDeviceBox.vala:97
+#: src/AppConsole.vala:467 src/AppConsole.vala:506 src/AppConsole.vala:554
 #, c-format
 msgid "Device"
-msgstr ""
+msgstr "Seade"
 
 #: src/Utility/Device.vala:1390
 msgid "Device is unlocked"
-msgstr ""
+msgstr "Seade on lukustamata"
 
 #: src/Utility/Device.vala:1285 src/Utility/Device.vala:1347
 msgid "Device name is empty!"
-msgstr ""
+msgstr "Seadme nimi on tühi!"
 
-#: src/Core/Main.vala:3405 src/Core/SnapshotRepo.vala:479
-#: src/Console/AppConsole.vala:665
+#: src/Core/Main.vala:3417 src/Core/SnapshotRepo.vala:479
+#: src/AppConsole.vala:676
 msgid "Device not found"
-msgstr ""
+msgstr "Liidest ei leitud"
 
 #: src/Gtk/BackupDeviceBox.vala:97
 #, c-format
 msgid "Devices displayed above have BTRFS file systems."
-msgstr ""
+msgstr "Eespool kuvatud seadmetes on BTRFS-failisüsteemid."
 
 #: src/Gtk/BackupDeviceBox.vala:104
 #, c-format
 msgid "Devices displayed above have Linux file systems."
-msgstr ""
+msgstr "Eespool kuvatud seadmetes on Linuxi failisüsteemid."
 
 #: src/Gtk/RestoreDeviceBox.vala:84
 msgid "Devices from which snapshot was created are pre-selected."
-msgstr ""
+msgstr "Seadmed, millest hetktõmmis tehti, on eelvalitud."
 
-#: src/Console/AppConsole.vala:327
+#: src/AppConsole.vala:332
 msgid "Devices with Linux file systems"
-msgstr ""
+msgstr "Linuxi failisüsteemidega seadmed"
 
 #: src/Gtk/BackupDeviceBox.vala:105
 msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
-msgstr ""
+msgstr "Windowsi failisüsteemidega seadmeid (NTFS, FAT jne) ei toetata."
 
 #: src/Core/SnapshotRepo.vala:914
 msgid "Directory not found"
-msgstr ""
+msgstr "Kataloogi ei leitud"
 
-#: src/Core/Main.vala:2355 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Core/Main.vala:2367 src/Gtk/RestoreSummaryBox.vala:64
 msgid "Disclaimer"
-msgstr ""
+msgstr "Lahtiütlus"
 
 #: src/Gtk/BackupDeviceBox.vala:127
 msgid "Disk"
-msgstr ""
+msgstr "Ketas"
 
-#: src/Core/Main.vala:230
+#: src/Core/Main.vala:242
 msgid "Distribution"
-msgstr ""
+msgstr "Distributsioon"
 
 #: src/Gtk/MainWindow.vala:1021
 msgid "Enable scheduled snapshots to protect your system"
-msgstr ""
+msgstr "Süsteemi kaitsmiseks lubage ajastatud hetktõmmised"
 
 #: src/Utility/Device.vala:1454
 msgid "Encrypted Device"
-msgstr ""
+msgstr "Krüptitud seade"
 
-#: src/Gtk/UsersBox.vala:233
+#: src/Gtk/UsersBox.vala:232
 msgid "Encrypted Home Directory"
-msgstr ""
+msgstr "Krüpteeritud kodukataloog"
 
-#: src/Console/AppConsole.vala:886
+#: src/AppConsole.vala:897
 #, c-format
 msgid "Enter device name or number"
-msgstr ""
+msgstr "Sisesta seadme nimi või number"
 
-#: src/Console/AppConsole.vala:684 src/Console/AppConsole.vala:1015
+#: src/AppConsole.vala:695 src/AppConsole.vala:1026
 #, c-format
 msgid "Enter device name or number (a=Abort)"
-msgstr ""
+msgstr "Sisesta seadme nimi või number (a = Katkesta)"
 
 #: src/Utility/Device.vala:1455
 #, c-format
 msgid "Enter passphrase to unlock '%s'"
-msgstr ""
+msgstr "Sisestage parool, et avada '%s'"
 
-#: src/Console/AppConsole.vala:756
+#: src/AppConsole.vala:767
 #, c-format
 msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
-msgstr ""
+msgstr "Sisesta hetktõmmise number (a = Katkesta, p = Eelmine, n = Järgmine)"
 
 #: src/Gtk/ExcludeBox.vala:231
 msgid "Enter the pattern to exclude (Ex: *.mp3, *.bak)"
-msgstr ""
+msgstr "Sisesta välistatav muster (nt *.mp3, *.bak)"
 
 #: src/Gtk/RestoreDeviceBox.vala:520
 msgid "Error"
-msgstr ""
+msgstr "Viga"
 
 #: src/Gtk/RestoreWindow.vala:481
 msgid "Error running Rsync"
-msgstr ""
+msgstr "Viga Rsynci käivitamisel"
 
 #: src/Gtk/BackupWindow.vala:82 src/Gtk/SetupWizardWindow.vala:99
 msgid "Estimate"
-msgstr ""
+msgstr "Hinnang"
 
 #: src/Gtk/EstimateBox.vala:56
 msgid "Estimating System Size..."
-msgstr ""
+msgstr "Süsteemi suuruse hindamine..."
 
-#: src/Core/Main.vala:1428
+#: src/Core/Main.vala:1440
 msgid "Estimating system size..."
-msgstr ""
+msgstr "Süsteemi suuruse hindamine..."
 
-#: src/Console/AppConsole.vala:387
+#: src/AppConsole.vala:398
 msgid "Examples"
-msgstr ""
+msgstr "Näited"
 
-#: src/Gtk/UsersBox.vala:133
+#: src/Gtk/UsersBox.vala:132
 msgid "Exclude All Files"
-msgstr ""
+msgstr "Välista kõik failid"
 
 #: src/Gtk/RestoreExcludeBox.vala:55 src/Gtk/ExcludeAppsBox.vala:51
 msgid "Exclude Application Settings"
-msgstr ""
+msgstr "Välista rakenduse sätted"
 
 #: src/Gtk/RestoreWindow.vala:99
 msgid "Exclude Apps"
-msgstr ""
+msgstr "Välista rakendused"
 
 #: src/Gtk/ExcludeMessageWindow.vala:70
 msgid "Exclude List"
-msgstr ""
+msgstr "Välista loend"
 
 #: src/Gtk/ExcludeListSummaryWindow.vala:49
 msgid "Exclude List Summary"
-msgstr ""
+msgstr "Välista loendi kokkuvõte"
 
 #: src/Gtk/ExcludeBox.vala:230
 msgid "Exclude Pattern"
-msgstr ""
+msgstr "Välista muster"
 
 #: src/Gtk/ExcludeMessageWindow.vala:56
 msgid "Excluded Directories"
-msgstr ""
+msgstr "Välistatud kataloogid"
 
-#: src/Core/Main.vala:1716
+#: src/Core/Main.vala:1728
 msgid "Expected values: O, B, H, D, W, M"
-msgstr ""
+msgstr "Eeldatavad väärtused: O, B, H, D, W, M"
 
 #: src/Utility/CronTab.vala:132
 msgid "Failed to add cron job"
-msgstr ""
+msgstr "Croni töö lisamine ebaõnnestus"
 
-#: src/Utility/TeeJee.FileSystem.vala:169
+#: src/Utility/TeeJee.FileSystem.vala:155
 msgid "Failed to copy file"
-msgstr ""
+msgstr "Faili kopeerimine nurjus"
 
-#: src/Utility/TeeJee.FileSystem.vala:297
-#: src/Utility/TeeJee.FileSystem.vala:306
+#: src/Utility/TeeJee.FileSystem.vala:271
+#: src/Utility/TeeJee.FileSystem.vala:280
 msgid "Failed to create directory"
-msgstr ""
+msgstr "Kataloogi loomine ebaõnnestus"
 
-#: src/Core/Main.vala:1554
+#: src/Core/Main.vala:1566
 msgid "Failed to create new snapshot"
-msgstr ""
+msgstr "Uue hetktõmmise loomine ebaõnnestus"
 
-#: src/Core/Main.vala:1308
+#: src/Core/Main.vala:1320
 msgid "Failed to create snapshot"
-msgstr ""
+msgstr "Hetktõmmise loomine ebaõnnestus"
 
-#: src/Core/Main.vala:1644
+#: src/Core/Main.vala:1656
 msgid "Failed to create subvolume snapshot"
-msgstr ""
+msgstr "Alamköite hetktõmmise loomine ebaõnnestus"
 
 #: src/Core/SnapshotRepo.vala:955
 msgid "Failed to create symlinks"
-msgstr ""
+msgstr "Sümbolilinkide loomine ebaõnnestus"
 
-#: src/Utility/TeeJee.FileSystem.vala:331
+#: src/Utility/TeeJee.FileSystem.vala:305
 msgid "Failed to delete directory"
-msgstr ""
+msgstr "Kataloogi kustutamine ebaõnnestus"
 
-#: src/Utility/TeeJee.FileSystem.vala:100
+#: src/Utility/TeeJee.FileSystem.vala:86
 msgid "Failed to delete file"
-msgstr ""
+msgstr "Faili kustutamine ebaõnnestus"
 
 #: src/Core/Subvolume.vala:153
 msgid "Failed to delete snapshot nested subvolume"
-msgstr ""
+msgstr "Hetktõmmise pesastatud alamköite kustutamine ebaõnnestus"
 
 #: src/Core/Subvolume.vala:163
 msgid "Failed to delete snapshot subvolume"
-msgstr ""
+msgstr "Hetktõmmise alamköite kustutamine ebaõnnestus"
 
 #: src/Core/SnapshotRepo.vala:981
 msgid "Failed to delete symlinks"
-msgstr ""
+msgstr "Sümbolilinkide kustutamine ebaõnnestus"
 
-#: src/Core/Main.vala:3906 src/Core/Main.vala:3912
+#: src/Core/Subvolume.vala:177
+msgid "Failed to destroy qgroup"
+msgstr "qgroupi hävitamine ebaõnnestus"
+
+#: src/Core/Main.vala:3918 src/Core/Main.vala:3924
 msgid "Failed to estimate system size"
-msgstr ""
+msgstr "Süsteemi suuruse hindamine ebaõnnestus"
 
 #: src/Utility/CronTab.vala:257
 msgid "Failed to export crontab file"
-msgstr ""
+msgstr "Crontab-faili eksportimine ebaõnnestus"
 
-#: src/Console/AppConsole.vala:699 src/Console/AppConsole.vala:763
-#: src/Console/AppConsole.vala:895 src/Console/AppConsole.vala:990
-#: src/Console/AppConsole.vala:1035 src/Console/AppConsole.vala:1076
+#: src/AppConsole.vala:710 src/AppConsole.vala:774 src/AppConsole.vala:906
+#: src/AppConsole.vala:1001 src/AppConsole.vala:1046 src/AppConsole.vala:1087
 msgid "Failed to get input from user in 3 attempts"
-msgstr ""
+msgstr "Kasutajalt sisendi hankimine ebaõnnestus 3 katsega"
 
 #: src/Utility/Device.vala:724
 msgid "Failed to get partition list"
-msgstr ""
+msgstr "Partitsioonide loendi hankimine ebaõnnestus"
 
-#: src/Core/Main.vala:3488
+#: src/Core/Main.vala:3500
 msgid "Failed to get partition list."
-msgstr ""
+msgstr "Partitsioonide loendi hankimine ebaõnnestus."
 
 #: src/Utility/CronTab.vala:240
 msgid "Failed to install crontab file"
-msgstr ""
+msgstr "Crontab-faili installimine ebaõnnestus"
 
 #: src/Gtk/RestoreDeviceBox.vala:521
 msgid "Failed to mount devices"
-msgstr ""
+msgstr "Seadmete ühendamine ebaõnnestus"
 
-#: src/Utility/TeeJee.FileSystem.vala:188
+#: src/Utility/TeeJee.FileSystem.vala:174
 msgid "Failed to move file"
-msgstr ""
+msgstr "Faili teisaldamine ebaõnnestus"
 
-#: src/Core/Main.vala:3116
+#: src/Core/Main.vala:3128
 msgid "Failed to move system subvolume to snapshot directory"
-msgstr ""
+msgstr "Süsteemi alamköite teisaldamine hetktõmmise kataloogi ebaõnnestus"
 
-#: src/Core/Main.vala:4011
+#: src/Core/Main.vala:4031
 msgid "Failed to query subvolume list"
-msgstr ""
+msgstr "Alamköite loendi päringu esitamine ebaõnnestus"
+
+#: src/Core/Main.vala:4116
+msgid "Failed to query subvolume quota"
+msgstr "Alammahu kvoodi päring ebaõnnestus"
 
 #: src/Utility/CronTab.vala:50
 msgid "Failed to read cron tab"
-msgstr ""
+msgstr "Croni vahekaardi lugemine ebaõnnestus"
 
-#: src/Utility/TeeJee.FileSystem.vala:126
+#: src/Utility/TeeJee.FileSystem.vala:112
 msgid "Failed to read file"
-msgstr ""
+msgstr "Faili lugemine ebaõnnestus"
 
 #: src/Core/SnapshotRepo.vala:901
 msgid "Failed to remove"
-msgstr ""
+msgstr "Eemaldamine ebaõnnestus"
 
 #: src/Utility/CronTab.vala:213
 msgid "Failed to remove cron job"
-msgstr ""
+msgstr "Cron töö eemaldamine ebaõnnestus"
 
 #: src/Core/Snapshot.vala:530 src/Core/Snapshot.vala:542
 #: src/Core/Snapshot.vala:550
 msgid "Failed to remove snapshot"
-msgstr ""
+msgstr "Hetktõmmise eemaldamine ebaõnnestus"
 
-#: src/Core/Subvolume.vala:200
+#: src/Core/Subvolume.vala:216
 msgid "Failed to restore system subvolume"
-msgstr ""
+msgstr "Süsteemi alammahu taastamine ebaõnnestus"
 
-#: src/Core/Main.vala:1504
+#: src/Core/Main.vala:1516
 msgid "Failed to save exclude list"
-msgstr ""
+msgstr "Välistamisloendi salvestamine ebaõnnestus"
 
 #: src/Utility/Device.vala:1381 src/Utility/Device.vala:1435
 #: src/Utility/Device.vala:1460 src/Utility/Device.vala:1481
 #: src/Utility/Device.vala:1501
 msgid "Failed to unlock device"
-msgstr ""
+msgstr "Seadme avamine ebaõnnestus"
 
 #: src/Utility/Device.vala:1733
 msgid "Failed to unmount"
-msgstr ""
+msgstr "Lahtiühendamine ebaõnnestus"
 
-#: src/Core/Main.vala:3692
+#: src/Core/Main.vala:3704
 msgid "Failed to unmount device!"
-msgstr ""
+msgstr "Seadme lahtiühendamine ebaõnnestus!"
 
-#: src/Utility/TeeJee.FileSystem.vala:153
+#: src/Utility/TeeJee.FileSystem.vala:139
 msgid "Failed to write file"
-msgstr ""
+msgstr "Faili kirjutamine ebaõnnestus"
 
 #: src/Gtk/RsyncLogBox.vala:122
 msgid "File (snapshot)"
-msgstr ""
+msgstr "Fail (hetktõmmis)"
 
 #: src/Gtk/RsyncLogBox.vala:119
 msgid "File (system)"
-msgstr ""
+msgstr "Fail (süsteem)"
 
-#: src/Gtk/ExcludeMessageWindow.vala:98
+#: src/Gtk/ExcludeMessageWindow.vala:97
 msgid "File Pattern"
-msgstr ""
+msgstr "Faili muster"
 
 #: src/Gtk/BackupBox.vala:83
 msgid "File and directory counts:"
-msgstr ""
+msgstr "Failide ja kataloogide arv:"
 
 #: src/Utility/CronTab.vala:225 src/Utility/RsyncTask.vala:298
-#: src/Utility/TeeJee.FileSystem.vala:183
+#: src/Utility/TeeJee.FileSystem.vala:169
 msgid "File not found"
-msgstr ""
+msgstr "Faili ei leitud"
 
 #: src/Gtk/ExcludeListSummaryWindow.vala:62
 msgid ""
 "Files &amp; directories matching the patterns below will be excluded. "
 "Patterns starting with a + will include the item instead of excluding."
 msgstr ""
+"Failid &amp; allolevatele mustritele vastavad kataloogid välistatakse. "
+"Mustrid, mis algavad märgiga +, sisaldavad üksust, mitte ei välista seda."
 
-#: src/Gtk/SnapshotBackendBox.vala:193
+#: src/Gtk/SnapshotBackendBox.vala:201
 msgid "Files and directories can be excluded to save disk space."
-msgstr ""
+msgstr "Kettaruumi säästmiseks saab failid ja kataloogid välja jätta."
 
 #: src/Gtk/RestoreBox.vala:119
 msgid "Files and directory counts:"
-msgstr ""
+msgstr "Failide ja kataloogide arv:"
 
 #: src/Gtk/ExcludeMessageWindow.vala:76
 msgid "Files matching the following patterns will be excluded"
-msgstr ""
+msgstr "Järgmistele mustritele vastavad failid jäetakse välja"
 
 #: src/Utility/Device.vala:1950
 #, c-format
 msgid "Filesystem"
-msgstr ""
+msgstr "Failisüsteem"
 
 #: src/Gtk/RsyncLogBox.vala:302
 msgid "Filter by name or path"
-msgstr ""
+msgstr "Filtreeri nime või tee järgi"
 
 #: src/Gtk/SettingsWindow.vala:103
 msgid "Filters"
-msgstr ""
+msgstr "Filtrid"
 
 #: src/Gtk/BackupWindow.vala:97 src/Gtk/SetupWizardWindow.vala:211
 #: src/Gtk/DeleteWindow.vala:103
 msgid "Finish"
-msgstr ""
+msgstr "Lõpeta"
 
 #: src/Gtk/RestoreWindow.vala:130 src/Gtk/SetupWizardWindow.vala:120
 msgid "Finished"
-msgstr ""
+msgstr "Lõpetatud"
 
 #: src/Gtk/RestoreExcludeBox.vala:78
 msgid "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
-msgstr ""
+msgstr "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 
 #: src/Core/SnapshotRepo.vala:583
 msgid "First snapshot requires:"
-msgstr ""
+msgstr "Esimene hetktõmmis nõuab:"
 
-#: src/Core/Main.vala:3049
+#: src/Core/Main.vala:3061
 msgid "Found existing pre-restore snapshot"
-msgstr ""
+msgstr "Leiti olemasolev taastamiseelne hetktõmmis"
 
 #: src/Gtk/BackupDeviceBox.vala:215
 msgid "Free"
-msgstr ""
+msgstr "Vaba"
 
 #: src/Core/SnapshotRepo.vala:75 src/Core/SnapshotRepo.vala:145
 msgid "Free space"
-msgstr ""
+msgstr "Vaba ruum"
 
-#: src/Console/AppConsole.vala:1044
+#: src/AppConsole.vala:1055
 msgid "GRUB Device"
-msgstr ""
+msgstr "GRUB seade"
 
 #: src/Gtk/RestoreDeviceBox.vala:497
 msgid "GRUB device not selected"
-msgstr ""
+msgstr "GRUB-seade pole valitud"
 
-#: src/Console/AppConsole.vala:1049
+#: src/AppConsole.vala:1060
 msgid "GRUB will NOT be reinstalled"
-msgstr ""
+msgstr "GRUB-i EI installita uuesti"
 
-#: src/Core/Main.vala:2497
+#: src/Core/Main.vala:2509
 msgid "Generating initramfs..."
-msgstr ""
+msgstr "Initramf-i genereerimine..."
 
-#: src/Console/AppConsole.vala:375
+#: src/AppConsole.vala:385
 msgid "Global"
-msgstr ""
+msgstr "Globaalne"
 
 #: src/Gtk/BackupBox.vala:100 src/Gtk/RestoreBox.vala:135
 #: src/Gtk/RsyncLogBox.vala:400
 #, c-format
 msgid "Group"
-msgstr ""
+msgstr "Grupp"
 
-#: src/Gtk/SnapshotBackendBox.vala:133
+#: src/Gtk/SnapshotBackendBox.vala:141
 msgid "Help"
-msgstr ""
+msgstr "Abi"
 
-#: src/Gtk/ExcludeMessageWindow.vala:129
+#: src/Gtk/ExcludeMessageWindow.vala:128
 msgid ""
 "Hidden files and folders are included by default since they contain user-"
 "specific configuration files."
 msgstr ""
+"Peidetud failid ja kaustad on vaikimisi kaasatud, kuna need sisaldavad "
+"kasutajaspetsiifilisi konfiguratsioonifaile."
 
 #: src/Gtk/DeleteWindow.vala:181
 msgid "Hide"
-msgstr ""
+msgstr "Peida"
 
-#: src/Console/AppConsole.vala:382
+#: src/AppConsole.vala:392
 msgid "Hide rsync output"
-msgstr ""
+msgstr "Peida rsynci väljund"
 
 #: src/Gtk/DeleteWindow.vala:182
 msgid "Hide this window (files will be deleted in background)"
-msgstr ""
+msgstr "Peida see aken (failid kustutatakse taustal)"
 
-#: src/Gtk/UsersBox.vala:117
+#: src/Gtk/UsersBox.vala:116
 msgid "Home"
-msgstr ""
+msgstr "Kodu"
 
-#: src/Gtk/ExcludeMessageWindow.vala:116
+#: src/Gtk/ExcludeMessageWindow.vala:115
 msgid "Home Directory"
-msgstr ""
+msgstr "Kodukataloog"
 
-#: src/Gtk/SnapshotListBox.vala:247 src/Gtk/ScheduleBox.vala:118
+#: src/Gtk/SnapshotListBox.vala:298 src/Gtk/ScheduleBox.vala:118
 msgid "Hourly"
-msgstr ""
+msgstr "Igatunnine"
 
-#: src/Core/Main.vala:1064
+#: src/Core/Main.vala:1076
 msgid "Hourly snapshot failed!"
-msgstr ""
+msgstr "Igatunnine hetktõmmis ebaõnnestus!"
 
-#: src/Core/Main.vala:1045
+#: src/Core/Main.vala:1057
 msgid "Hourly snapshots are enabled"
-msgstr ""
+msgstr "Tunni hetktõmmised on lubatud"
 
 #: src/Gtk/RestoreFinishBox.vala:102
 msgid ""
 "If the restored system fails to boot, then boot from the Live CD/USB, "
 "install Timeshift, and try restoring another snapshot."
 msgstr ""
+"Kui taastatud süsteemi käivitamine ebaõnnestub, käivita Live CD/USB-lt, "
+"installi Timeshift ja proovige taastada mõni muu hetktõmmis."
 
-#: src/Core/Main.vala:2361
+#: src/Core/Main.vala:2373
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
 msgstr ""
+"Kui need tingimused ei ole sulle vastuvõetavad, ära mine sellest punktist "
+"kaugemale!"
 
 #: src/Gtk/ExcludeBox.vala:54
 msgid "Include / Exclude Patterns"
-msgstr ""
+msgstr "Kaasa / välista mustrid"
 
-#: src/Gtk/UsersBox.vala:337
+#: src/Gtk/UsersBox.vala:336
 msgid "Include @home subvolume in backups"
-msgstr ""
+msgstr "Kaasa varukoopiatesse @home alamköide"
 
-#: src/Gtk/UsersBox.vala:263
+#: src/Gtk/UsersBox.vala:262
 msgid "Include All Files"
-msgstr ""
+msgstr "Kaasa kõik failid"
 
-#: src/Gtk/UsersBox.vala:191
+#: src/Gtk/UsersBox.vala:190
 msgid "Include Only Hidden Files"
-msgstr ""
+msgstr "Kaasake ainult peidetud failid"
 
-#: src/Core/Main.vala:2175
+#: src/Core/Main.vala:2187
 msgid "Invalid Snapshot"
-msgstr ""
+msgstr "Vigane tõmmis"
 
-#: src/Console/AppConsole.vala:252
+#: src/AppConsole.vala:257
 #, c-format
 msgid "Invalid command line arguments"
-msgstr ""
+msgstr "Valed käsurea argumendid"
 
 #: src/Gtk/MainWindow.vala:814
 msgid "Invalid snapshot"
-msgstr ""
+msgstr "Vigane tõmmis"
 
 #: src/Gtk/ExcludeBox.vala:282
 msgid "Items Not Selected"
-msgstr ""
+msgstr "Üksuseid pole valitud"
 
 #: src/Gtk/ScheduleBox.vala:283
 msgid "Keep"
-msgstr ""
+msgstr "Hoia alles"
 
 #: src/Gtk/RestoreExcludeBox.vala:112
 msgid ""
@@ -1117,556 +1163,577 @@ msgid ""
 "etc. If un-checked, previous configuration files will be restored from "
 "snapshot."
 msgstr ""
+"Säilitage konfiguratsioonifailid bittorrent-klientide jaoks, nagu Deluge, "
+"Transmission jne. Kui see märkimata jätta, taastatakse eelmised "
+"konfiguratsioonifailid hetktõmmistest."
 
 #: src/Gtk/RestoreExcludeBox.vala:85
 msgid ""
 "Keep configuration files for web browsers like Firefox and Chrome. If un-"
 "checked, previous configuration files will be restored from snapshot"
 msgstr ""
+"Säilita veebibrauserite (nt Firefox ja Chrome) konfiguratsioonifailid. Kui "
+"märkimata jätta, taastatakse eelmised konfiguratsioonifailid hetktõmmisest"
 
 #: src/Gtk/RestoreDeviceBox.vala:244
 msgid "Keep on Root Device"
-msgstr ""
+msgstr "Hoidke juurseadmes"
 
 #: src/Gtk/RestoreDeviceBox.vala:229
 msgid "Keep this mount path on the root filesystem"
-msgstr ""
+msgstr "Hoidke see ühendamistee juurfailisüsteemis"
 
-#: src/Gtk/SnapshotListBox.vala:472
+#: src/Gtk/SnapshotListBox.vala:523
 msgid "LIVE"
-msgstr ""
+msgstr "Live"
 
-#: src/Utility/Device.vala:1951 src/Console/AppConsole.vala:460
-#: src/Console/AppConsole.vala:499 src/Gtk/BackupDeviceBox.vala:254
+#: src/Utility/Device.vala:1951 src/Gtk/BackupDeviceBox.vala:254
+#: src/AppConsole.vala:471 src/AppConsole.vala:510
 #, c-format
 msgid "Label"
-msgstr ""
+msgstr "Pealdis"
 
-#: src/Core/Main.vala:1026
+#: src/Core/Main.vala:1038
 #, c-format
 msgid "Last boot snapshot is %d hours old"
-msgstr ""
+msgstr "Viimane alglaadimise hetktõmmis on %d tundi vana"
 
-#: src/Core/Main.vala:1021
+#: src/Core/Main.vala:1033
 msgid "Last boot snapshot is older than system start time"
-msgstr ""
+msgstr "Viimane alglaadimise hetktõmmis on vanem kui süsteemi algusaeg"
 
-#: src/Core/Main.vala:1017
+#: src/Core/Main.vala:1029
 msgid "Last boot snapshot not found"
-msgstr ""
+msgstr "Viimast alglaadimise hetktõmmist ei leitud"
 
-#: src/Core/Main.vala:1088
+#: src/Core/Main.vala:1100
 #, c-format
 msgid "Last daily snapshot is %d hours old"
-msgstr ""
+msgstr "Viimane päevane hetktõmmis on %d tundi vana"
 
-#: src/Core/Main.vala:1083
+#: src/Core/Main.vala:1095
 msgid "Last daily snapshot is more than 1 day old"
-msgstr ""
+msgstr "Viimane päevane hetktõmmis on rohkem kui 1 päev vana"
 
-#: src/Core/Main.vala:1079
+#: src/Core/Main.vala:1091
 msgid "Last daily snapshot not found"
-msgstr ""
+msgstr "Viimast igapäevast hetktõmmist ei leitud"
 
-#: src/Core/Main.vala:1057
+#: src/Core/Main.vala:1069
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
-msgstr ""
+msgstr "Viimane hetktõmmis on %d minutit vana"
 
-#: src/Core/Main.vala:1052
+#: src/Core/Main.vala:1064
 msgid "Last hourly snapshot is more than 1 hour old"
-msgstr ""
+msgstr "Viimane tunnipõhine hetktõmmis on rohkem kui 1 tund vana"
 
-#: src/Core/Main.vala:1048
+#: src/Core/Main.vala:1060
 msgid "Last hourly snapshot not found"
-msgstr ""
+msgstr "Viimast tunnipõhist hetktõmmist ei leitud"
 
-#: src/Core/Main.vala:1150
+#: src/Core/Main.vala:1162
 #, c-format
 msgid "Last monthly snapshot is %d days old"
-msgstr ""
+msgstr "Viimane igakuine hetktõmmis on %d päeva vana"
 
-#: src/Core/Main.vala:1145
+#: src/Core/Main.vala:1157
 msgid "Last monthly snapshot is more than 1 month old"
-msgstr ""
+msgstr "Viimane igakuine hetktõmmis on rohkem kui 1 kuu vana"
 
-#: src/Core/Main.vala:1141
+#: src/Core/Main.vala:1153
 msgid "Last monthly snapshot not found"
-msgstr ""
+msgstr "Viimast igakuist hetktõmmist ei leitud"
 
-#: src/Core/Main.vala:1119
+#: src/Core/Main.vala:1131
 #, c-format
 msgid "Last weekly snapshot is %d days old"
-msgstr ""
+msgstr "Viimane nädala hetktõmmis on %d päeva vana"
 
-#: src/Core/Main.vala:1114
+#: src/Core/Main.vala:1126
 msgid "Last weekly snapshot is more than 1 week old"
-msgstr ""
+msgstr "Viimane iganädalane hetktõmmis on rohkem kui 1 nädal vana"
 
-#: src/Core/Main.vala:1110
+#: src/Core/Main.vala:1122
 msgid "Last weekly snapshot not found"
-msgstr ""
+msgstr "Viimast nädala hetktõmmist ei leitud"
 
 #: src/Gtk/MainWindow.vala:1002
 #, c-format
 msgid "Latest snapshot"
-msgstr ""
+msgstr "Viimane hetktõmmis"
 
-#: src/Core/Main.vala:1493
+#: src/Core/Main.vala:1505
 #, c-format
 msgid "Linking from snapshot"
-msgstr ""
+msgstr "Linkimine hetktõmmisest"
 
-#: src/Console/AppConsole.vala:353
+#: src/AppConsole.vala:363
 msgid "List"
-msgstr ""
+msgstr "List"
 
-#: src/Console/AppConsole.vala:355
+#: src/AppConsole.vala:365
 msgid "List devices"
-msgstr ""
+msgstr "Seadmete loend"
 
-#: src/Console/AppConsole.vala:354
+#: src/AppConsole.vala:364
 msgid "List snapshots"
-msgstr ""
+msgstr "Hetktõmmiste loetelu"
 
 #: src/Gtk/MainWindow.vala:953
 msgid "Live USB Mode (Restore Only)"
-msgstr ""
+msgstr "Live USB-režiim (ainult taastamine)"
 
 #: src/Gtk/SettingsWindow.vala:90 src/Gtk/BackupWindow.vala:87
 #: src/Gtk/SetupWizardWindow.vala:104
 msgid "Location"
-msgstr ""
+msgstr "Asukoht"
 
 #: src/Gtk/MainWindow.vala:441
 msgid "Main window closed by user"
-msgstr ""
+msgstr "Peaaken on kasutaja poolt suletud"
 
-#: src/Gtk/SnapshotListBox.vala:277
+#: src/Gtk/SnapshotListBox.vala:328
 msgid "Mark/Unmark for Deletion"
-msgstr ""
+msgstr "Märgi/tühista kustutamiseks märge"
 
 #: src/Core/SnapshotRepo.vala:628 src/Core/SnapshotRepo.vala:671
 msgid "Maximum backups exceeded for backup level"
-msgstr ""
+msgstr "Varukoopiate maksimaalne arv on ületatud"
 
 #: src/Gtk/MainWindow.vala:207
 msgid "Menu"
-msgstr ""
+msgstr "Menüü"
 
 #: src/Gtk/SettingsWindow.vala:105
 msgid "Misc"
-msgstr ""
+msgstr "Muu"
 
-#: src/Core/Main.vala:239
+#: src/Core/Main.vala:251
 msgid "Missing Dependencies"
-msgstr ""
+msgstr "Puuduvad sõltuvused"
 
 #: src/Core/SnapshotRepo.vala:605
 #, c-format
 msgid "Mode"
-msgstr ""
+msgstr "Režiim"
 
 #: src/Utility/Device.vala:1934
 #, c-format
 msgid "Model"
-msgstr ""
+msgstr "Mudel"
 
-#: src/Gtk/SnapshotListBox.vala:250 src/Gtk/ScheduleBox.vala:64
+#: src/Gtk/SnapshotListBox.vala:301 src/Gtk/ScheduleBox.vala:64
 msgid "Monthly"
-msgstr ""
+msgstr "Igakuine"
 
-#: src/Core/Main.vala:1138
+#: src/Core/Main.vala:1150
 msgid "Monthly snapshot are enabled"
-msgstr ""
+msgstr "Igakuine hetktõmmis on lubatud"
 
-#: src/Core/Main.vala:1157
+#: src/Core/Main.vala:1169
 msgid "Monthly snapshot failed!"
-msgstr ""
+msgstr "Igakuine hetktõmmis ebaõnnestus!"
 
-#: src/Core/Main.vala:2262 src/Core/Main.vala:2295
+#: src/Core/Main.vala:2274 src/Core/Main.vala:2307
 msgid "Mount"
-msgstr ""
+msgstr "Haagi"
 
-#: src/Core/Main.vala:3123
+#: src/Core/Main.vala:3135
 msgid "Moved system subvolume to snapshot directory"
-msgstr ""
+msgstr "Süsteemi alamköidet teisaldati hetktõmmise kataloogi"
 
 #: src/Gtk/MainWindow.vala:790
 msgid "Multiple snapshots selected"
-msgstr ""
+msgstr "Valitud on mitu hetktõmmist"
 
-#: src/Console/AppConsole.vala:426 src/Gtk/BackupDeviceBox.vala:235
-#: src/Gtk/RsyncLogBox.vala:492
+#: src/Gtk/BackupDeviceBox.vala:235 src/Gtk/RsyncLogBox.vala:491
+#: src/AppConsole.vala:437
 msgid "Name"
-msgstr ""
+msgstr "Nimi"
 
 #: src/Gtk/RestoreWindow.vala:201 src/Gtk/BackupWindow.vala:164
 #: src/Gtk/SetupWizardWindow.vala:203 src/Gtk/DeleteWindow.vala:165
 msgid "Next"
-msgstr ""
+msgstr "Järgmine"
 
 #: src/Utility/Gtk/CustomMessageDialog.vala:157
 msgid "No"
-msgstr ""
+msgstr "Ei"
 
 #: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:122
 msgid "No Change"
-msgstr ""
+msgstr "Ei muudeta"
 
 #: src/Gtk/MainWindow.vala:599 src/Gtk/DeleteWindow.vala:335
 msgid "No Snapshots Selected"
-msgstr ""
+msgstr "Ühtegi tõmmist ei valitud"
 
 #: src/Gtk/MainWindow.vala:1026
 msgid "No snapshots available"
-msgstr ""
+msgstr "Ühtegi tõmmist ei leitud"
 
-#: src/Core/SnapshotRepo.vala:830 src/Console/AppConsole.vala:321
-#: src/Gtk/MainWindow.vala:970
+#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:970
+#: src/AppConsole.vala:326
 msgid "No snapshots found"
-msgstr ""
+msgstr "Ühtegi tõmmist ei leitud"
 
-#: src/Console/AppConsole.vala:742
+#: src/AppConsole.vala:753
 msgid "No snapshots found on device"
-msgstr ""
+msgstr "Seadmest ei leitud ühtegi hetktõmmist"
 
 #: src/Gtk/MainWindow.vala:537
 msgid "No snapshots on device"
-msgstr ""
+msgstr "Seadmes pole hetktõmmiseid"
 
 #: src/Core/SnapshotRepo.vala:581
 msgid "No snapshots on this device"
-msgstr ""
+msgstr "Selles seadmes pole hetktõmmiseid"
 
 #: src/Gtk/MainWindow.vala:783
 msgid "No snapshots selected"
-msgstr ""
+msgstr "Ühtegi tõmmist ei valitud"
 
 #: src/Gtk/MainWindow.vala:1003 src/Gtk/MainWindow.vala:1005
 msgid "None"
-msgstr ""
+msgstr "Mitte midagi"
 
-#: src/Core/Subvolume.vala:182
+#: src/Core/Subvolume.vala:198
 #, c-format
 msgid "Not Found"
-msgstr ""
+msgstr "Ei leitud"
 
 #: src/Core/SnapshotRepo.vala:599
 msgid "Not Selected"
-msgstr ""
+msgstr "Pole valitud"
 
-#: src/Core/Main.vala:384
+#: src/Core/Main.vala:396
 msgid "Not Supported"
-msgstr ""
+msgstr "Pole toetatud"
 
 #: src/Core/SnapshotRepo.vala:543 src/Core/SnapshotRepo.vala:572
 msgid "Not enough disk space"
-msgstr ""
+msgstr "Pole piisavalt kettaruumi"
 
-#: src/Console/AppConsole.vala:398 src/Gtk/FinishBox.vala:55
+#: src/Gtk/FinishBox.vala:55 src/AppConsole.vala:409
 msgid "Notes"
-msgstr ""
+msgstr "Märkused"
 
-#: src/Core/Main.vala:1168
+#: src/Core/Main.vala:1180
 msgid "Nothing to do!"
-msgstr ""
+msgstr "Pole midagi teha!"
 
-#: src/Console/AppConsole.vala:424 src/Console/AppConsole.vala:454
-#: src/Console/AppConsole.vala:493 src/Console/AppConsole.vala:541
+#: src/AppConsole.vala:435 src/AppConsole.vala:465 src/AppConsole.vala:504
+#: src/AppConsole.vala:552
 msgid "Num"
-msgstr ""
+msgstr "Num"
 
 #: src/Gtk/ScheduleBox.vala:282
 msgid ""
 "Number of snapshots to keep.\n"
 "Older snapshots will be removed once this limit is exceeded."
 msgstr ""
+"Säilitatavate tõmmiste arv.\n"
+"Vanemad hetktõmmised eemaldatakse, kui see piir on ületatud."
 
 #: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:147
 #: src/Utility/Gtk/CustomMessageDialog.vala:151 src/Utility/GtkHelper.vala:108
 #: src/Gtk/SettingsWindow.vala:123 src/Gtk/ExcludeListSummaryWindow.vala:84
 msgid "OK"
-msgstr ""
+msgstr "Olgu"
 
-#: src/Gtk/SnapshotBackendBox.vala:180
+#: src/Gtk/SnapshotBackendBox.vala:188
 msgid ""
 "OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout "
 "(@ and @home subvolumes). Other layouts are not supported."
 msgstr ""
+"OS tuleb installida BTRFS-i partitsioonile, millel on Ubuntu-tüüpi alamköite "
+"paigutus (@ ja @home alamköited). Muid paigutusi ei toetata."
 
-#: src/Core/Main.vala:4157
+#: src/Core/Main.vala:4289
 msgid "Older log files removed"
-msgstr ""
+msgstr "Vanemad logifailid eemaldati"
 
 #: src/Gtk/MainWindow.vala:1004
 msgid "Oldest snapshot"
-msgstr ""
+msgstr "Vanim hetktõmmis"
 
-#: src/Gtk/SnapshotListBox.vala:245
+#: src/Gtk/SnapshotListBox.vala:296
 msgid "On demand (manual)"
-msgstr ""
+msgstr "Nõudmisel (käsitsi)"
 
-#: src/Core/Main.vala:382 src/Core/Main.vala:3605
+#: src/Core/Main.vala:394 src/Core/Main.vala:3617
 #: src/Gtk/RestoreDeviceBox.vala:511
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
 msgstr ""
+"Praegu toetatakse ainult ubuntu-tüüpi paigutusi @ ja @home alamköitega."
 
 #: src/Gtk/MainWindow.vala:208
 msgid "Open Menu"
-msgstr ""
+msgstr "Ava menüü"
 
-#: src/Core/Main.vala:3387
+#: src/Core/Main.vala:3399
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
 msgstr ""
+"Suvandit --snapshot-device ei tohiks BTRFS-režiimis hetktõmmiste loomiseks "
+"määrata"
 
-#: src/Console/AppConsole.vala:351 src/Gtk/AppGtk.vala:115
+#: src/AppConsole.vala:361 src/AppGtk.vala:128
 msgid "Options"
-msgstr ""
+msgstr "Valikud"
 
 #: src/Gtk/RestoreExcludeBox.vala:118
 msgid "Other applications (next page)"
-msgstr ""
+msgstr "Muud rakendused (järgmine leht)"
 
 #: src/Gtk/BackupBox.vala:99 src/Gtk/RestoreBox.vala:134
 #: src/Gtk/RsyncLogBox.vala:398
 #, c-format
 msgid "Owner"
-msgstr ""
+msgstr "Omanik"
 
 #: src/Utility/Device.vala:1946
 #, c-format
 msgid "Parent Device"
-msgstr ""
+msgstr "Vanemseade"
 
-#: src/Core/Main.vala:2626 src/Core/Main.vala:2717 src/Gtk/RsyncLogBox.vala:222
+#: src/Core/Main.vala:2638 src/Core/Main.vala:2729 src/Gtk/RsyncLogBox.vala:222
 msgid "Parsing log file..."
-msgstr ""
+msgstr "Logifaili sõelumine..."
 
 #: src/Gtk/RestoreDeviceBox.vala:510
 msgid "Partition has an unsupported subvolume layout."
-msgstr ""
+msgstr "Partitsioonil on toetamata alamköite paigutus."
 
 #: src/Core/SnapshotRepo.vala:604 src/Gtk/RestoreDeviceBox.vala:93
 #, c-format
 msgid "Path"
-msgstr ""
+msgstr "Rada"
 
 #: src/Gtk/ExcludeBox.vala:166
 msgid "Pattern"
-msgstr ""
+msgstr "Muster"
 
 #: src/Gtk/BackupBox.vala:98 src/Gtk/RestoreBox.vala:133
 #: src/Gtk/RsyncLogBox.vala:396
 #, c-format
 msgid "Permissions"
-msgstr ""
+msgstr "Õigused"
 
-#: src/Core/Main.vala:258
+#: src/Core/Main.vala:270
 msgid "Please check if you have multiple windows open."
-msgstr ""
+msgstr "Kontrollige, kas teil on avatud mitu akent."
 
-#: src/Core/Main.vala:2393
+#: src/Core/Main.vala:2405
 msgid "Please do not interrupt the restore process!"
-msgstr ""
+msgstr "Palun ärge katkestage taastamisprotsessi!"
 
-#: src/Core/Main.vala:353
+#: src/Core/Main.vala:365
 msgid "Please install required packages and try running TimeShift again"
-msgstr ""
+msgstr "Installige vajalikud paketid ja proovige TimeShift uuesti käivitada"
 
-#: src/Gtk/AppGtk.vala:129
+#: src/AppGtk.vala:143
 msgid "Please re-run the application as admin (using 'sudo' or 'su')"
 msgstr ""
+"Käivitage rakendus uuesti administraatorina (kasutades \"sudo\" või \"su\")"
 
-#: src/Console/AppConsole.vala:103
+#: src/AppConsole.vala:108
 msgid "Please run the application as admin (using 'sudo' or 'su')"
-msgstr ""
+msgstr "Käivita rakendus administraatorina (kasutades \"sudo\" või \"su\")"
 
-#: src/Core/Main.vala:2343
+#: src/Core/Main.vala:2355
 msgid "Please save your work and close all applications."
-msgstr ""
+msgstr "Salvesta oma töö ja sulge kõik rakendused."
 
 #: src/Gtk/MainWindow.vala:685
 msgid "Please select a snapshot to view the log!"
-msgstr ""
+msgstr "Logi vaatamiseks vali hetktõmmis!"
 
 #: src/Gtk/RestoreDeviceBox.vala:498
 msgid "Please select the GRUB device"
-msgstr ""
+msgstr "Vali GRUB-seade"
 
-#: src/Core/Main.vala:254
+#: src/Core/Main.vala:266
 msgid "Please wait a few minutes and try again."
-msgstr ""
+msgstr "Palun oota mõni minut ja proovi uuesti."
 
 #: src/Gtk/MainWindow.vala:752
 msgid "Please wait for snapshots to be deleted."
-msgstr ""
+msgstr "Palun oota, kuni pildid kustutatakse."
 
 #: src/Gtk/EstimateBox.vala:66
 msgid "Please wait..."
-msgstr ""
+msgstr "Palun oota..."
 
 #: src/Gtk/RsyncLogBox.vala:188
 msgid "Populating list..."
-msgstr ""
+msgstr "Loendi täitmine..."
 
-#: src/Core/Main.vala:1728 src/Gtk/BackupBox.vala:117
+#: src/Core/Main.vala:1740 src/Gtk/BackupBox.vala:117
 #: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
 #: src/Gtk/RsyncLogBox.vala:232
 msgid "Preparing..."
-msgstr ""
+msgstr "Ettevalmistamine..."
 
 #: src/Gtk/RestoreWindow.vala:193 src/Gtk/BackupWindow.vala:156
 #: src/Gtk/SetupWizardWindow.vala:195 src/Gtk/DeleteWindow.vala:157
 msgid "Previous"
-msgstr ""
+msgstr "Eelmine"
 
-#: src/Gtk/AppGtk.vala:117
+#: src/AppGtk.vala:130
 msgid "Print debug information"
-msgstr ""
+msgstr "Prindi silumisinfo"
 
-#: src/Core/Main.vala:3967
+#: src/AppConsole.vala:395 src/AppGtk.vala:132
+msgid "Print version number"
+msgstr "Prindi versiooni number"
+
+#: src/Core/Main.vala:3979
 msgid "Query completed"
-msgstr ""
+msgstr "Päring lõpetatud"
 
-#: src/Core/Main.vala:3950
+#: src/Core/Main.vala:3962
 msgid "Querying subvolume info..."
-msgstr ""
+msgstr "Alamköite teabe päring..."
 
 #: src/Gtk/SnapshotBackendBox.vala:77
 msgid "RSYNC"
-msgstr ""
+msgstr "RSYNC"
 
-#: src/Gtk/SnapshotBackendBox.vala:185
+#: src/Gtk/SnapshotBackendBox.vala:193
 msgid "RSYNC Snapshots"
-msgstr ""
+msgstr "RSYNC-i hetktõmmised"
 
 #: src/Gtk/BootOptionsBox.vala:137
 msgid ""
 "Re-generates initramfs for all installed kernels. This is generally not "
 "needed. Select this only if the restored system fails to boot."
 msgstr ""
+"Taasgenereerib initramfs-i kõigi installitud tuumade jaoks. Üldiselt pole "
+"seda vaja. Vali see ainult siis, kui taastatud süsteemi käivitamine "
+"ebaõnnestub."
 
-#: src/Console/AppConsole.vala:984
+#: src/AppConsole.vala:995
 #, c-format
 msgid "Re-install GRUB2 bootloader?"
-msgstr ""
+msgstr "Kas installida GRUB2 alglaadur uuesti?"
 
-#: src/Core/Main.vala:2456
+#: src/Core/Main.vala:2468
 msgid "Re-installing GRUB2 bootloader..."
-msgstr ""
+msgstr "GRUB2 alglaaduri uuesti installimine..."
 
 #: src/Gtk/BootOptionsBox.vala:120
 msgid "Re-installs the GRUB2 bootloader on the selected device."
-msgstr ""
+msgstr "Installib GRUB2 alglaaduri valitud seadmesse uuesti."
 
 #: src/Gtk/RsyncLogBox.vala:181
 #, c-format
 msgid "Read %'d of %'d lines..."
-msgstr ""
+msgstr "Loe %'d reast %'d..."
 
-#: src/Core/Main.vala:2556
+#: src/Core/Main.vala:2568
 msgid "Rebooting system..."
-msgstr ""
+msgstr "Süsteemi taaskäivitamine..."
 
 #: src/Gtk/RestoreExcludeBox.vala:61 src/Gtk/RestoreExcludeBox.vala:91
 #, c-format
 msgid "Recommended"
-msgstr ""
+msgstr "Soovitatav"
 
 #: src/Gtk/BackupDeviceBox.vala:65 src/Gtk/RestoreDeviceBox.vala:70
 msgid "Refresh"
-msgstr ""
+msgstr "Värskenda"
 
 #: src/Gtk/BackupDeviceBox.vala:106
 msgid "Remote and network locations are not supported."
-msgstr ""
+msgstr "Kaug- ja võrguasukohti ei toetata."
 
 #: src/Gtk/ExcludeBox.vala:262
 msgid "Remove"
-msgstr ""
+msgstr "Eemalda"
 
-#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1766 src/Core/Main.vala:1777
-#: src/Core/Main.vala:4153 src/Core/SnapshotRepo.vala:907
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1778 src/Core/Main.vala:1789
+#: src/Core/Main.vala:4285 src/Core/SnapshotRepo.vala:907
 #, c-format
 msgid "Removed"
-msgstr ""
+msgstr "Eemaldatud"
 
 #: src/Utility/CronTab.vala:340
 msgid "Removed cron task"
-msgstr ""
+msgstr "Cron-ülesanne eemaldati"
 
-#: src/Core/Main.vala:3755
+#: src/Core/Main.vala:3767
 #, c-format
 msgid "Removed mount directory: '%s'"
-msgstr ""
+msgstr "Eemaldatud ühendamiskataloog: '%s'"
 
 #: src/Core/Snapshot.vala:555
 msgid "Removed snapshot"
-msgstr ""
+msgstr "Hetktõmmis on eemaldatud"
 
 #: src/Core/Snapshot.vala:484
 msgid "Removing"
-msgstr ""
+msgstr "Eemaldamine"
 
 #: src/Core/Snapshot.vala:521
 msgid "Removing snapshot"
-msgstr ""
+msgstr "Hetktõmmise eemaldamine"
 
 #: src/Core/SnapshotRepo.vala:763 src/Core/SnapshotRepo.vala:782
 #: src/Core/SnapshotRepo.vala:800 src/Core/SnapshotRepo.vala:814
 #, c-format
 msgid "Removing snapshots"
-msgstr ""
+msgstr "Hetktõmmiste eemaldamine"
 
-#: src/Console/AppConsole.vala:363 src/Gtk/MainWindow.vala:150
-#: src/Gtk/RestoreWindow.vala:125 src/Gtk/RsyncLogBox.vala:377
-#: src/Gtk/RsyncLogBox.vala:567 src/Gtk/RestoreFinishBox.vala:71
+#: src/Gtk/MainWindow.vala:150 src/Gtk/RestoreWindow.vala:125
+#: src/Gtk/RsyncLogBox.vala:377 src/Gtk/RsyncLogBox.vala:566
+#: src/Gtk/RestoreFinishBox.vala:71 src/AppConsole.vala:373
 msgid "Restore"
-msgstr ""
+msgstr "Taasta"
 
-#: src/Gtk/UsersBox.vala:326
+#: src/Gtk/UsersBox.vala:325
 msgid "Restore @home subvolume"
-msgstr ""
+msgstr "Taasta @home alamköide"
 
 #: src/Gtk/RestoreWindow.vala:89
 msgid "Restore Device"
-msgstr ""
+msgstr "Taasta seade"
 
 #: src/Gtk/RestoreWindow.vala:94
 msgid "Restore Exclude"
-msgstr ""
+msgstr "Taasta Välista"
 
 #: src/Gtk/RestoreWindow.vala:69
 msgid "Restore Snapshot"
-msgstr ""
+msgstr "Taasta hetktõmmis"
 
-#: src/Core/Main.vala:2966 src/Core/Main.vala:3008
+#: src/Core/Main.vala:2978 src/Core/Main.vala:3020
 msgid "Restore completed"
-msgstr ""
+msgstr "Taastamine lõpetatud"
 
 #: src/Gtk/MainWindow.vala:151
 msgid "Restore selected snapshot"
-msgstr ""
+msgstr "Taasta valitud hetktõmmis"
 
-#: src/Console/AppConsole.vala:364
+#: src/AppConsole.vala:374
 msgid "Restore snapshot"
-msgstr ""
+msgstr "Taasta hetktõmmis"
 
 #: src/Gtk/RestoreFinishBox.vala:96
 msgid "Restored subvolumes will become active after system is restarted."
 msgstr ""
+"Taastatud alamköited muutuvad aktiivseks pärast süsteemi taaskäivitamist."
 
-#: src/Core/Subvolume.vala:204
+#: src/Core/Subvolume.vala:220
 msgid "Restored system subvolume"
-msgstr ""
+msgstr "Süsteemi alamköide on taastatud"
 
 #: src/Gtk/RestoreBox.vala:77 src/Gtk/RestoreBox.vala:190
 msgid "Restoring Snapshot..."
-msgstr ""
+msgstr "Hetktõmmise taastamine..."
 
 #: src/Gtk/FinishBox.vala:85
 msgid ""
@@ -1674,10 +1741,13 @@ msgid ""
 "currently in use will be preserved as a new snapshot. If required, this "
 "snapshot can be restored later to 'undo' the restore."
 msgstr ""
+"Hetktõmmise taastamine asendab süsteemi alamköiteid ja praegu kasutusel "
+"olevad süsteemi alamköited säilitatakse uue hetktõmmisena. Vajadusel saab "
+"selle hetktõmmise hiljem taastada, et taastamine tagasi võtta."
 
-#: src/Core/Main.vala:2935
+#: src/Core/Main.vala:2947
 msgid "Restoring snapshot..."
-msgstr ""
+msgstr "Hetktõmmise taastamine..."
 
 #: src/Gtk/FinishBox.vala:88
 msgid ""
@@ -1687,38 +1757,45 @@ msgid ""
 "files will be backed up when snapshot is created, and replaced when snapshot "
 "is restored."
 msgstr ""
+"Hetktõmmiste taastamine asendab ainult süsteemifaile ja sätteid. Kasutaja "
+"kodukataloogides olevaid mittepeidetud faile ja katalooge ei puudutata. Seda "
+"käitumist saab muuta, lisades nende failide kaasamiseks filtri. Kaasatud "
+"failid varundatakse hetktõmmise loomisel ja hetktõmmise taastamisel "
+"asendatakse."
 
 #: src/Utility/Device.vala:1936
 #, c-format
 msgid "Revision"
-msgstr ""
+msgstr "Läbivaatamine"
 
 #: src/Gtk/RestoreDeviceBox.vala:438
 msgid "Root device not selected"
-msgstr ""
+msgstr "Juurseade pole valitud"
 
 #: src/Gtk/RsyncLogWindow.vala:49
 msgid "Rsync Log Viewer"
-msgstr ""
+msgstr "Rsynci logivaatur"
 
-#: src/Gtk/AppGtk.vala:120
+#: src/AppGtk.vala:134
 #, c-format
 msgid "Run 'timeshift' for the command-line version of this tool"
-msgstr ""
+msgstr "Käivita selle tööriista käsureaversiooni jaoks \"timeshift\""
 
-#: src/Console/AppConsole.vala:383
+#: src/AppConsole.vala:393
 msgid "Run in non-interactive mode"
-msgstr ""
+msgstr "Käivita mitteinteraktiivses režiimis"
 
-#: src/Core/Main.vala:190
+#: src/Core/Main.vala:202
 msgid "Running"
-msgstr ""
+msgstr "Töötab"
 
 #: src/Gtk/FinishBox.vala:95
 msgid ""
 "Save snapshots to an external disk instead of the system disk to guard "
 "against drive failures."
 msgstr ""
+"Draivi rikete eest kaitsmiseks salvesta hetktõmmised süsteemiketta asemel "
+"välisele kettale."
 
 #: src/Gtk/FinishBox.vala:97
 msgid ""
@@ -1727,269 +1804,282 @@ msgid ""
 "even install another Linux distribution and later roll-back the previous "
 "distribution by restoring a snapshot."
 msgstr ""
+"Tõmmiste salvestamine süsteemivälisele kettale võimaldab OS-i "
+"süsteemikettale vormindada ja uuesti installida, kaotamata sellele "
+"salvestatud hetktõmmiseid. Saate installida isegi teise Linuxi "
+"distributsiooni ja hiljem hetktõmmise taastades eelmise distributsiooni "
+"tagasi pöörata."
 
-#: src/Core/Main.vala:1434 src/Core/Main.vala:1588 src/Core/Main.vala:1590
+#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
 msgid "Saving to device"
-msgstr ""
+msgstr "Seadmesse salvestamine"
 
 #: src/Gtk/SettingsWindow.vala:93 src/Gtk/SetupWizardWindow.vala:109
 msgid "Schedule"
-msgstr ""
+msgstr "Ajakava"
 
-#: src/Core/Main.vala:261
+#: src/Core/Main.vala:273
 msgid "Scheduled snapshot in progress..."
-msgstr ""
+msgstr "Ajastatud hetktõmmis on pooleli..."
 
-#: src/Core/Main.vala:1168 src/Gtk/MainWindow.vala:1020
+#: src/Core/Main.vala:1180 src/Gtk/MainWindow.vala:1020
 #: src/Gtk/ScheduleBox.vala:312
 msgid "Scheduled snapshots are disabled"
-msgstr ""
+msgstr "Ajastatud hetktõmmised on keelatud"
 
 #: src/Gtk/FinishBox.vala:78
 msgid "Scheduled snapshots are disabled. It's recommended to enable it."
-msgstr ""
+msgstr "Ajastatud hetktõmmised on keelatud. Soovitatav on see lubada."
 
 #: src/Gtk/ScheduleBox.vala:305
 msgid "Scheduled snapshots are enabled"
-msgstr ""
+msgstr "Ajastatud hetktõmmised on lubatud"
 
 #: src/Gtk/FinishBox.vala:75
 msgid ""
 "Scheduled snapshots are enabled. Snapshots will be created automatically for "
 "selected levels."
 msgstr ""
+"Ajastatud hetktõmmised on lubatud. Valitud tasemete jaoks luuakse "
+"hetktõmmised automaatselt."
 
-#: src/Console/AppConsole.vala:872
+#: src/AppConsole.vala:883
 #, c-format
 msgid "Select '%s' device (default = %s)"
-msgstr ""
+msgstr "Vali seade '%s' (vaikeseade = %s)"
 
-#: src/Core/SnapshotRepo.vala:510 src/Console/AppConsole.vala:691
+#: src/Core/SnapshotRepo.vala:510 src/AppConsole.vala:702
 msgid "Select BTRFS system disk with root subvolume (@)"
-msgstr ""
+msgstr "Vali juur-alamköitega BTRFS-süsteemi ketas (@)"
 
-#: src/Console/AppConsole.vala:1000
+#: src/AppConsole.vala:1011
 msgid "Select GRUB device"
-msgstr ""
+msgstr "Vali GRUB-seade"
 
 #: src/Gtk/MainWindow.vala:684
 msgid "Select Snapshot"
-msgstr ""
+msgstr "Vali hetktõmmis"
 
 #: src/Gtk/ScheduleBox.vala:57
 msgid "Select Snapshot Levels"
-msgstr ""
+msgstr "Vali hetktõmmise tasemed"
 
 #: src/Gtk/BackupDeviceBox.vala:56
 msgid "Select Snapshot Location"
-msgstr ""
+msgstr "Vali hetktõmmise asukoht"
 
 #: src/Gtk/SnapshotBackendBox.vala:62
 msgid "Select Snapshot Type"
-msgstr ""
+msgstr "Vali hetktõmmise tüüp"
 
 #: src/Gtk/DeleteWindow.vala:85
 msgid "Select Snapshots"
-msgstr ""
+msgstr "Vali hetktõmmised"
 
 #: src/Gtk/RestoreDeviceBox.vala:61
 msgid "Select Target Device"
-msgstr ""
+msgstr "Vali sihtseade"
 
 #: src/Gtk/BackupDeviceBox.vala:410
 #, c-format
 msgid "Select a partition on this disk"
-msgstr ""
+msgstr "Vali sellel kettal partitsioon"
 
 #: src/Gtk/MainWindow.vala:791
 msgid "Select a single snapshot to restore"
-msgstr ""
+msgstr "Valige taastamiseks üks hetktõmmis"
 
 #: src/Gtk/RestoreDeviceBox.vala:467
 msgid "Select another device for root file system (/)"
-msgstr ""
+msgstr "Vali juurfailisüsteemi jaoks mõni muu seade (/)"
 
 #: src/Core/SnapshotRepo.vala:546 src/Core/SnapshotRepo.vala:575
 msgid "Select another device or free up some space"
-msgstr ""
+msgstr "Vali mõni muu seade või vabasta ruumi"
 
 #: src/Gtk/MainWindow.vala:531 src/Gtk/MainWindow.vala:538
 msgid "Select another device to delete snasphots"
-msgstr ""
+msgstr "Vali hetktõmmiste kustutamiseks mõni muu seade"
 
 #: src/Gtk/MainWindow.vala:463
 msgid "Select another device?"
-msgstr ""
+msgstr "Kas valida mõni muu seade?"
 
 #: src/Gtk/RestoreExcludeBox.vala:57
 msgid "Select applications to exclude from restore"
-msgstr ""
+msgstr "Vali taastamisest välistavad rakendused"
 
-#: src/Console/AppConsole.vala:674
+#: src/AppConsole.vala:685
 msgid "Select backup device"
-msgstr ""
+msgstr "Vali varuseade"
 
 #: src/Gtk/ExcludeBox.vala:443
 msgid "Select directory"
-msgstr ""
+msgstr "Vali kataloog"
 
 #: src/Gtk/ExcludeBox.vala:416
 msgid "Select file(s)"
-msgstr ""
+msgstr "Vali fail(id)"
 
-#: src/Console/AppConsole.vala:748
+#: src/AppConsole.vala:759
 msgid "Select snapshot"
-msgstr ""
+msgstr "Vali hetktõmmis"
 
 #: src/Gtk/DeleteWindow.vala:336
 msgid "Select snapshots to delete"
-msgstr ""
+msgstr "Vali kustutamiseks hetktõmmised"
 
 #: src/Gtk/RestoreDeviceBox.vala:439
 msgid "Select the device for root file system (/)"
-msgstr ""
+msgstr "Vali juurfailisüsteemi seade (/)"
 
 #: src/Gtk/RestoreDeviceBox.vala:83
 msgid "Select the devices where files will be restored."
-msgstr ""
+msgstr "Vali seadmed, kuhu failid taastatakse."
 
 #: src/Gtk/ScheduleBox.vala:313
 msgid "Select the intervals for creating snapshots"
-msgstr ""
+msgstr "Vali hetktõmmiste loomise intervallid"
 
 #: src/Gtk/ExcludeBox.vala:283
 msgid "Select the items to be removed from the list"
-msgstr ""
+msgstr "Vali loendist eemaldatavad üksused"
 
 #: src/Core/SnapshotRepo.vala:472
 msgid "Select the snapshot device"
-msgstr ""
+msgstr "Vali hetktõmmise seade"
 
 #: src/Gtk/MainWindow.vala:784
 msgid "Select the snapshot to restore"
-msgstr ""
+msgstr "Vali taastamiseks hetktõmmis"
 
 #: src/Gtk/DeleteWindow.vala:87
 msgid "Select the snapshots to be deleted"
-msgstr ""
+msgstr "Vali kustutatavad hetktõmmised"
 
 #: src/Gtk/MainWindow.vala:600
 msgid "Select the snapshots to mark for deletion"
-msgstr ""
+msgstr "Vali kustutamiseks märgitavad hetktõmmised"
 
 #: src/Gtk/RestoreDeviceBox.vala:79
 msgid "Select the target devices where system will be cloned."
-msgstr ""
+msgstr "Vali sihtseadmed, kuhu süsteem kloonitakse."
 
-#: src/Core/Main.vala:3415
+#: src/Core/Main.vala:3427
 msgid "Selected default snapshot device"
-msgstr ""
+msgstr "Valitud hetktõmmise vaikeseade"
 
-#: src/Core/Main.vala:3366 src/Core/Main.vala:3370
+#: src/Core/Main.vala:3378 src/Core/Main.vala:3382
 msgid "Selected default snapshot type"
-msgstr ""
+msgstr "Valitud hetktõmmise vaiketüüp"
 
 #: src/Gtk/BackupDeviceBox.vala:388
 msgid "Selected device does not have BTRFS partition"
-msgstr ""
+msgstr "Valitud seadmel pole BTRFS-i partitsiooni"
 
 #: src/Gtk/BackupDeviceBox.vala:385
 msgid "Selected device does not have Linux partition"
-msgstr ""
+msgstr "Valitud seadmel pole Linuxi partitsiooni"
 
 #: src/Core/SnapshotRepo.vala:144
 msgid "Selected snapshot device"
-msgstr ""
+msgstr "Valitud hetktõmmise seade"
 
-#: src/Core/SnapshotRepo.vala:509 src/Console/AppConsole.vala:690
+#: src/Core/SnapshotRepo.vala:509 src/AppConsole.vala:701
 msgid "Selected snapshot device is not a system disk"
-msgstr ""
+msgstr "Valitud hetktõmmise seade ei ole süsteemiketas"
 
-#: src/Core/Main.vala:2176
+#: src/Core/Main.vala:2188
 msgid "Selected snapshot is marked for deletion"
-msgstr ""
+msgstr "Valitud hetktõmmis märgitakse kustutamiseks"
 
 #: src/Gtk/MainWindow.vala:815
 msgid "Selected snapshot is marked for deletion and cannot be restored"
-msgstr ""
+msgstr "Valitud hetktõmmis on märgitud kustutamiseks ja seda ei saa taastada"
 
-#: src/Gtk/UsersBox.vala:235
+#: src/Gtk/UsersBox.vala:234
 msgid ""
 "Selected user has an encrypted home directory. It's not possible to include "
 "only hidden files."
 msgstr ""
+"Valitud kasutajal on krüptitud kodukataloog. Ainult peidetud faile pole "
+"võimalik kaasata."
 
 #: src/Utility/Device.vala:1935
 #, c-format
 msgid "Serial"
-msgstr ""
+msgstr "Seeria"
 
-#: src/Core/Main.vala:218
+#: src/Core/Main.vala:230
 msgid "Session log file"
-msgstr ""
+msgstr "Seansi logifail"
 
-#: src/Console/AppConsole.vala:360
+#: src/AppConsole.vala:370
 msgid "Set snapshot description"
-msgstr ""
+msgstr "Määra hetktõmmise kirjeldus"
 
 #: src/Gtk/MainWindow.vala:180 src/Gtk/MainWindow.vala:181
 #: src/Gtk/SettingsWindow.vala:56
 msgid "Settings"
-msgstr ""
+msgstr "Seadistused"
 
 #: src/Gtk/MainWindow.vala:191
 msgid "Settings wizard"
-msgstr ""
+msgstr "Seadistamisnõustaja"
 
 #: src/Gtk/FinishBox.vala:58
 msgid "Setup Complete"
-msgstr ""
+msgstr "Seadistamine on lõpetatud"
 
 #: src/Gtk/SetupWizardWindow.vala:64
 msgid "Setup Wizard"
-msgstr ""
+msgstr "Seadistusviisard"
 
-#: src/Console/AppConsole.vala:380
+#: src/AppConsole.vala:390
 msgid "Show additional debug messages"
-msgstr ""
+msgstr "Kuva täiendavad silumissõnumid"
 
-#: src/Console/AppConsole.vala:384 src/Gtk/AppGtk.vala:118
+#: src/AppConsole.vala:394 src/AppGtk.vala:131
 msgid "Show all options"
-msgstr ""
+msgstr "Kuva kõik valikud"
 
 #: src/Gtk/RestoreExcludeBox.vala:121
 msgid "Show more applications to exclude on the next page"
-msgstr ""
+msgstr "Kuva järgmisel lehel rohkem rakendusi, mida välistada"
 
-#: src/Console/AppConsole.vala:381
+#: src/AppConsole.vala:391
 msgid "Show rsync output (default)"
-msgstr ""
+msgstr "Kuva rsynci väljund (vaikimisi)"
 
 #: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
-#: src/Console/AppConsole.vala:458 src/Console/AppConsole.vala:497
-#: src/Gtk/BackupBox.vala:96 src/Gtk/BackupDeviceBox.vala:202
-#: src/Gtk/RestoreBox.vala:131 src/Gtk/RsyncLogBox.vala:392
+#: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
+#: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
+#: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:469 src/AppConsole.vala:508
 #, c-format
 msgid "Size"
-msgstr ""
+msgstr "Maht"
 
-#: src/Gtk/SnapshotBackendBox.vala:178
+#: src/Gtk/SnapshotBackendBox.vala:186
 msgid ""
 "Size of BTRFS snapshots are initially zero. As system files gradually change "
 "with time, data gets written to new data blocks which take up disk space "
 "(copy-on-write). Files in the snapshot continue to point to original data "
 "blocks."
 msgstr ""
+"BTRFS-i hetktõmmiste suurus on algselt null. Kuna süsteemifailid aja jooksul "
+"järk-järgult muutuvad, kirjutatakse andmed uutesse andmeplokkidesse, mis "
+"võtavad kettaruumi (kopeerimine-kirjutamisel). Hetktõmmis olevad failid "
+"osutavad jätkuvalt algsetele andmeplokkidele."
 
-#: src/Console/AppConsole.vala:369
+#: src/AppConsole.vala:379
 msgid "Skip GRUB2 reinstall"
-msgstr ""
+msgstr "Jätke GRUB2 uuesti installimine vahele"
 
-#: src/Core/Main.vala:2181 src/Core/SnapshotRepo.vala:631
-#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:93
+#: src/Core/Main.vala:2193 src/Core/SnapshotRepo.vala:631
+#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:94
 #, c-format
 msgid "Snapshot"
-msgstr ""
+msgstr "Hetktõmmis"
 
 #: src/Gtk/MainWindow.vala:548
 #, c-format
@@ -1997,256 +2087,273 @@ msgid ""
 "Snapshot '%s' is being used by the system and cannot be deleted. Restart the "
 "system to activate the restored snapshot."
 msgstr ""
+"Süsteem kasutab hetktõmmist '%s' ja seda ei saa kustutada. Taaskäivita "
+"süsteem taastatud hetktõmmise aktiveerimiseks."
 
 #: src/Gtk/BackupFinishBox.vala:60
 msgid "Snapshot Created"
-msgstr ""
+msgstr "Hetktõmmis loodud"
 
-#: src/Gtk/SnapshotListBox.vala:244
+#: src/Gtk/SnapshotListBox.vala:295
 #, c-format
 msgid "Snapshot Levels"
-msgstr ""
+msgstr "Hetktõmmise tasemed"
 
 #: src/Gtk/MainWindow.vala:751
 msgid "Snapshot deletion in progress..."
-msgstr ""
+msgstr "Hetktõmmise kustutamine on pooleli..."
 
 #: src/Core/SnapshotRepo.vala:442
 #, c-format
 msgid "Snapshot device"
-msgstr ""
+msgstr "Hetktõmmise seade"
 
-#: src/Core/SnapshotRepo.vala:478 src/Console/AppConsole.vala:664
+#: src/Core/SnapshotRepo.vala:478 src/AppConsole.vala:675
 msgid "Snapshot device not available"
-msgstr ""
+msgstr "Hetktõmmise seade pole saadaval"
 
-#: src/Core/SnapshotRepo.vala:471 src/Console/AppConsole.vala:660
+#: src/Core/SnapshotRepo.vala:471 src/AppConsole.vala:671
 msgid "Snapshot device not selected"
-msgstr ""
+msgstr "Hetktõmmise seade pole valitud"
 
 #: src/Core/SnapshotRepo.vala:446
 #, c-format
 msgid "Snapshot location"
-msgstr ""
+msgstr "Hetktõmmise asukoht"
 
-#: src/Core/Main.vala:1305
+#: src/Core/Main.vala:1317
 msgid "Snapshot saved successfully"
-msgstr ""
+msgstr "Hetktõmmis salvestati edukalt"
 
-#: src/Core/Main.vala:2171
+#: src/Core/Main.vala:2183
 msgid "Snapshot to restore not specified!"
-msgstr ""
+msgstr "Taastatav hetktõmmis pole määratud!"
 
-#: src/Core/Main.vala:3012
+#: src/Core/Main.vala:3024
 msgid "Snapshot will become active after system is rebooted."
-msgstr ""
+msgstr "Hetktõmmis muutub aktiivseks pärast süsteemi taaskäivitamist."
 
 #: src/Gtk/DeleteFinishBox.vala:60
 msgid "Snapshot(s) Deleted"
-msgstr ""
+msgstr "Hetktõmmis(ed) kustutatud"
 
 #: src/Gtk/MainWindow.vala:309 src/Gtk/DeleteWindow.vala:89
 msgid "Snapshots"
-msgstr ""
+msgstr "Hetktõmmised"
 
-#: src/Gtk/SnapshotBackendBox.vala:170
+#: src/Gtk/SnapshotBackendBox.vala:178
 msgid ""
 "Snapshots are created and restored instantly. Snapshot creation is an atomic "
 "transaction at the file system level."
 msgstr ""
+"Hetktõmmised luuakse ja taastatakse kohe. Hetktõmmise loomine on "
+"failisüsteemi tasemel tehing."
 
-#: src/Gtk/SnapshotBackendBox.vala:187
+#: src/Gtk/SnapshotBackendBox.vala:195
 msgid ""
 "Snapshots are created by creating copies of system files using rsync, and "
 "hard-linking unchanged files from previous snapshot."
 msgstr ""
+"Hetktõmmised luuakse süsteemifailide koopiate loomisel rsynci abil ja "
+"muutmata failide kõvalinkimisega eelmisest hetktõmmisest."
 
-#: src/Gtk/SnapshotBackendBox.vala:168
+#: src/Gtk/SnapshotBackendBox.vala:176
 msgid ""
 "Snapshots are created using the built-in features of the BTRFS file system."
 msgstr ""
+"Hetktõmmised luuakse BTRFS-failisüsteemi sisseehitatud funktsioonide abil."
 
 #: src/Gtk/ScheduleBox.vala:167
 #, c-format
 msgid "Snapshots are not scheduled at fixed times."
-msgstr ""
+msgstr "Hetktõmmiseid ei planeerita kindlatel kellaaegadel."
 
-#: src/Gtk/SnapshotBackendBox.vala:174
+#: src/Gtk/SnapshotBackendBox.vala:182
 msgid ""
 "Snapshots are perfect, byte-for-byte copies of the system. Nothing is "
 "excluded."
 msgstr ""
+"Hetktõmmised on süsteemi täiuslikud bait-baidipõhised koopiad. Midagi pole "
+"välistatud."
 
-#: src/Gtk/SnapshotBackendBox.vala:172
+#: src/Gtk/SnapshotBackendBox.vala:180
 msgid ""
 "Snapshots are restored by replacing system subvolumes. Since files are never "
 "copied, deleted or overwritten, there is no risk of data loss. The existing "
 "system is preserved as a new snapshot after restore."
 msgstr ""
+"Hetktõmmised taastatakse süsteemi alamköidete asendamisega. Kuna faile "
+"kunagi ei kopeerita, ei kustutata ega kirjutata üle, puudub andmete kadumise "
+"oht. Olemasolev süsteem säilitatakse pärast taastamist uue hetktõmmisena."
 
-#: src/Gtk/SnapshotBackendBox.vala:176
+#: src/Gtk/SnapshotBackendBox.vala:184
 msgid ""
 "Snapshots are saved on the same disk from which they are created (system "
 "disk). Storage on other disks is not supported. If system disk fails then "
 "snapshots stored on it will be lost along with the system."
 msgstr ""
+"Hetktõmmised salvestatakse samale kettale, millelt need loodi "
+"(süsteemikettale). Teistele ketastele salvestamist ei toetata. Kui "
+"süsteemiketas ebaõnnestub, lähevad sellele salvestatud hetktõmmised koos "
+"süsteemiga kaotsi."
 
 #: src/Gtk/BackupDeviceBox.vala:107
 msgid ""
 "Snapshots are saved to /timeshift on selected partition. Other locations are "
 "not supported."
 msgstr ""
+"Hetktõmmised salvestatakse valitud partitsiooni kausta /timeshift. Muid "
+"asukohti ei toetata."
 
 #: src/Gtk/BackupDeviceBox.vala:99
 msgid ""
 "Snapshots are saved to /timeshift-btrfs on selected partition. Other "
 "locations are not supported."
 msgstr ""
+"Hetktõmmised salvestatakse valitud partitsiooni kausta /timeshift-btrfs. "
+"Muid asukohti ei toetata."
 
 #: src/Gtk/MainWindow.vala:965
 msgid "Snapshots available for restore"
-msgstr ""
+msgstr "Taastamiseks on saadaval hetktõmmised"
 
-#: src/Gtk/SnapshotBackendBox.vala:191
+#: src/Gtk/SnapshotBackendBox.vala:199
 msgid ""
 "Snapshots can be saved to any disk formatted with a Linux file system. "
 "Saving snapshots to non-system or external disk allows the system to be "
 "restored even if system disk is damaged or re-formatted."
 msgstr ""
+"Hetktõmmiseid saab salvestada mis tahes kettale, mis on vormindatud Linuxi "
+"failisüsteemiga. Tõmmiste salvestamine süsteemivälisele või välisele kettale "
+"võimaldab süsteemi taastada isegi siis, kui süsteemiketas on kahjustatud või "
+"uuesti vormindatud."
 
-#: src/Console/AppConsole.vala:284
+#: src/AppConsole.vala:289
 msgid "Snapshots cannot be created in Live CD mode"
-msgstr ""
+msgstr "Reaalajas CD-režiimis ei saa tõmmiseid luua"
 
 #: src/Gtk/MainWindow.vala:1012
 msgid "Snapshots will be created at selected intervals"
-msgstr ""
+msgstr "Tõmmiseid luuakse valitud ajavahemike järel"
 
 #: src/Gtk/ScheduleBox.vala:306
 msgid ""
 "Snapshots will be created at selected intervals if snapshot disk has enough "
 "space (> 1 GB)"
 msgstr ""
+"Hetktõmmised luuakse valitud ajavahemike järel, kui hetktõmmise kettal on "
+"piisavalt ruumi (> 1 GB)"
 
-#: src/Console/AppConsole.vala:376
+#: src/AppConsole.vala:386
 msgid "Specify backup device (default: config)"
-msgstr ""
+msgstr "Määra varuseade (vaikimisi: config)"
 
-#: src/Console/AppConsole.vala:368
+#: src/AppConsole.vala:378
 msgid "Specify device for installing GRUB2 bootloader"
-msgstr ""
+msgstr "Määra seade GRUB2 alglaaduri installimiseks"
 
-#: src/Console/AppConsole.vala:366
+#: src/AppConsole.vala:376
 msgid "Specify snapshot to restore"
-msgstr ""
+msgstr "Määra taastamiseks hetktõmmis"
 
-#: src/Console/AppConsole.vala:367
+#: src/AppConsole.vala:377
 msgid "Specify target device"
-msgstr ""
+msgstr "Määra sihtseade"
 
 #: src/Core/SnapshotRepo.vala:452 src/Core/SnapshotRepo.vala:606
-#: src/Gtk/RsyncLogBox.vala:472
+#: src/Gtk/RsyncLogBox.vala:471
 #, c-format
 msgid "Status"
-msgstr ""
+msgstr "Seisund"
 
 #: src/Gtk/ScheduleBox.vala:154
 msgid "Stop cron emails for scheduled tasks"
-msgstr ""
-
-#: src/Utility/TeeJee.Process.vala:487
-msgid "Stopped"
-msgstr ""
+msgstr "Peata ajastatud toimingute jaoks cron-meilid"
 
 #: src/Gtk/RestoreDeviceBox.vala:101
 msgid "Subvolume"
-msgstr ""
+msgstr "Alamköide"
 
-#: src/Core/Subvolume.vala:187
+#: src/Core/Subvolume.vala:203
 #, c-format
 msgid "Subvolume exists at destination"
-msgstr ""
+msgstr "Alamköide on sihtkohas olemas"
 
-#: src/Gtk/SnapshotListBox.vala:223
+#: src/Gtk/SnapshotListBox.vala:274
 #, c-format
 msgid "Subvolumes"
-msgstr ""
+msgstr "Alamköited"
 
 #: src/Gtk/ExcludeBox.vala:267 src/Gtk/RestoreWindow.vala:120
-#: src/Gtk/ExcludeAppsBox.vala:135
+#: src/Gtk/ExcludeAppsBox.vala:134
 msgid "Summary"
-msgstr ""
+msgstr "Kokkuvõte"
 
-#: src/Console/AppConsole.vala:378
+#: src/AppConsole.vala:388
 msgid "Switch to BTRFS mode (default: config)"
-msgstr ""
+msgstr "Lülitu BTRFS-režiimi (vaikimisi: config)"
 
-#: src/Console/AppConsole.vala:379
+#: src/AppConsole.vala:389
 msgid "Switch to RSYNC mode (default: config)"
-msgstr ""
+msgstr "RSYNC-režiimi lülitumine (vaikimisi: config)"
 
 #: src/Core/SnapshotRepo.vala:961
 msgid "Symlinks updated"
-msgstr ""
+msgstr "Nimeviidad on uuendatud"
 
-#: src/Core/Main.vala:2531
+#: src/Core/Main.vala:2543
 msgid "Syncing file systems..."
-msgstr ""
+msgstr "Failisüsteemide sünkroonimine..."
 
-#: src/Core/Main.vala:1510 src/Core/Main.vala:2701 src/Core/Main.vala:2942
+#: src/Core/Main.vala:1522 src/Core/Main.vala:2713 src/Core/Main.vala:2954
 msgid "Syncing files with rsync..."
-msgstr ""
+msgstr "Failide sünkroonimine rsynciga..."
 
-#: src/Gtk/AppGtk.vala:113
+#: src/AppGtk.vala:126
 msgid "Syntax"
-msgstr ""
+msgstr "Süntaks"
 
-#: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:125
+#: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:126
 #, c-format
 msgid "System"
-msgstr ""
+msgstr "Süsteem"
 
 #: src/Gtk/MainWindow.vala:912
 msgid "System Restore Utility"
-msgstr ""
+msgstr "Süsteemi taastamise utiliit"
 
 #: src/Gtk/FinishBox.vala:82
 msgid "System can be rolled-back to a previous date by restoring a snapshot."
 msgstr ""
+"Süsteemi saab tagasi pöörata eelmisele kuupäevale, taastades hetktõmmise."
 
-#: src/Core/Main.vala:2394
+#: src/Core/Main.vala:2406
 msgid "System will reboot after files are restored"
-msgstr ""
+msgstr "Süsteem taaskäivitub pärast failide taastamist"
 
-#: src/Core/Main.vala:2344
+#: src/Core/Main.vala:2356
 msgid "System will reboot after files are restored."
-msgstr ""
+msgstr "Süsteem taaskäivitub pärast failide taastamist."
 
-#: src/Core/Main.vala:1241 src/Core/Main.vala:1315
+#: src/Core/Main.vala:1253 src/Core/Main.vala:1327
 msgid "Tagged snapshot"
-msgstr ""
+msgstr "Märgistatud hetktõmmis"
 
-#: src/Console/AppConsole.vala:427 src/Gtk/SnapshotListBox.vala:149
+#: src/Gtk/SnapshotListBox.vala:150 src/AppConsole.vala:438
 msgid "Tags"
-msgstr ""
+msgstr "Sildid"
 
-#: src/Core/Main.vala:2206
+#: src/Core/Main.vala:2218
 msgid "Target device is not mounted"
-msgstr ""
+msgstr "Sihtseade pole ühendatud"
 
 #: src/Gtk/RestoreDeviceBox.vala:466
 msgid "Target device is same as system device"
-msgstr ""
+msgstr "Sihtseade on sama mis süsteemiseade"
 
-#: src/Core/Main.vala:2200
+#: src/Core/Main.vala:2212
 msgid "Target device not specified!"
-msgstr ""
-
-#: src/Gtk/SnapshotBackendBox.vala:119
-msgid ""
-"The 'btrfs' command is not available on your system. Install the 'btrfs-"
-"tools' package and try again."
-msgstr ""
+msgstr "Sihtseade pole määratud!"
 
 #: src/Gtk/ScheduleBox.vala:156
 msgid ""
@@ -2254,198 +2361,211 @@ msgid ""
 "current user. Select this option to suppress the emails for cron tasks "
 "created by Timeshift."
 msgstr ""
+"Teenus cron saadab ajastatud toimingute väljundi praegusele kasutajale "
+"meilina. Valige see suvand, et keelata Timeshifti loodud cron-ülesannete "
+"meilid."
 
-#: src/Core/Main.vala:381
+#: src/Core/Main.vala:393
 msgid "The system partition has an unsupported subvolume layout."
-msgstr ""
+msgstr "Süsteemi partitsioonil on toetamata alamköite paigutus."
 
-#: src/Core/Main.vala:3604
+#: src/Core/Main.vala:3616
 msgid "The target partition has an unsupported subvolume layout."
-msgstr ""
+msgstr "Sihtpartitsioonil on toetamata alamköite paigutus."
 
 #: src/Gtk/BackupDeviceBox.vala:512
 #, c-format
 msgid "There are no snapshots on this device"
-msgstr ""
+msgstr "Selles seadmes pole hetktõmmiseid"
 
 #: src/Utility/Device.vala:1380
 msgid "This device is not encrypted"
-msgstr ""
+msgstr "See seade ei ole krüptitud"
 
-#: src/Core/Main.vala:2360
+#: src/Core/Main.vala:2372
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
 msgstr ""
+"Sellel tarkvaral puudub absoluutne garantii ja autor ei vastuta selle "
+"programmi kasutamisest tulenevate kahjude eest."
 
 #: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1011
 msgid "Timeshift is active"
-msgstr ""
+msgstr "Timeshift on aktiivne"
 
 #: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:132
 #: src/Gtk/RsyncLogBox.vala:394
 #, c-format
 msgid "Timestamp"
-msgstr ""
+msgstr "Ajatempel"
 
-#: src/Console/AppConsole.vala:613
+#: src/AppConsole.vala:624
 #, c-format
 msgid "To restore with default options, press the ENTER key for all prompts!"
 msgstr ""
+"Vaikevalikutega taastamiseks vajuta kõigi viipade jaoks klahvi ENTER!"
 
-#: src/Utility/Device.vala:1949 src/Console/AppConsole.vala:459
-#: src/Console/AppConsole.vala:498 src/Gtk/BackupDeviceBox.vala:190
-#: src/Gtk/SettingsWindow.vala:87
+#: src/Utility/Device.vala:1949 src/Gtk/BackupDeviceBox.vala:190
+#: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:470
+#: src/AppConsole.vala:509
 #, c-format
 msgid "Type"
-msgstr ""
+msgstr "Tüüp"
 
 #: src/Utility/Device.vala:1948
 #, c-format
 msgid "UUID"
-msgstr ""
+msgstr "UUID"
 
-#: src/Gtk/AppGtk.vala:99
+#: src/AppGtk.vala:107
 msgid "Unknown option"
-msgstr ""
+msgstr "Tundmatu valik"
 
-#: src/Core/Main.vala:1223
+#: src/Core/Main.vala:1235
 msgid "Unknown snapshot type"
-msgstr ""
+msgstr "Tundmatu hetktõmmise tüüp"
 
-#: src/Core/Main.vala:1715
+#: src/Core/Main.vala:1727
 msgid "Unknown value specified for option --tags"
-msgstr ""
+msgstr "Suvandi --tags jaoks määratud tundmatu väärtus"
 
 #: src/Utility/Device.vala:1391 src/Utility/Device.vala:1507
 #, c-format
 msgid "Unlocked device is mapped to '%s'"
-msgstr ""
+msgstr "Avatud seade on kaardistatud asukohaga '%s'"
 
 #: src/Utility/Device.vala:1506
 msgid "Unlocked successfully"
-msgstr ""
+msgstr "Lahti lukustatud"
 
 #: src/Utility/Device.vala:1722
 msgid "Unmounting from"
-msgstr ""
+msgstr "Lahutamine kohast"
 
-#: src/Core/Main.vala:3608 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Gtk/SnapshotListBox.vala:198
+msgid "Unshared"
+msgstr "Jagamata"
+
+#: src/Core/Main.vala:3620 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
-msgstr ""
+msgstr "Toetamata alamköite paigutus"
 
 #: src/Gtk/BootOptionsBox.vala:150
 msgid "Update GRUB menu"
-msgstr ""
+msgstr "Värskenda GRUB-i menüüd"
 
 #: src/Gtk/BootOptionsBox.vala:135
 msgid "Update initramfs"
-msgstr ""
+msgstr "Uuenda initramfs-i"
 
-#: src/Core/Main.vala:2881
+#: src/Core/Main.vala:2893
 msgid "Updated /etc/crypttab on target device"
-msgstr ""
+msgstr "Sihtseadmes värskendati /etc/crypttab"
 
-#: src/Core/Main.vala:2801
+#: src/Core/Main.vala:2813
 msgid "Updated /etc/fstab on target device"
-msgstr ""
+msgstr "Sihtseadmes värskendati /etc/fstab"
 
 #: src/Gtk/BootOptionsBox.vala:152
 msgid ""
 "Updates the GRUB menu entries (recommended). This is safe to run and should "
 "be left selected."
 msgstr ""
+"Värskendab GRUB-i menüükirjeid (soovitatav). Seda on ohutu kasutada ja see "
+"tuleks valida."
 
-#: src/Core/Main.vala:2514
+#: src/Core/Main.vala:2526
 msgid "Updating GRUB menu..."
-msgstr ""
+msgstr "GRUB-i menüü värskendamine..."
 
-#: src/Core/Main.vala:2725
+#: src/Core/Main.vala:2737
 msgid "Updating bootloader configuration..."
-msgstr ""
+msgstr "Alglaaduri konfiguratsiooni värskendamine..."
 
 #: src/Utility/Device.vala:1956
 #, c-format
 msgid "Used"
-msgstr ""
+msgstr "Kasutusel"
 
-#: src/Gtk/SetupWizardWindow.vala:114 src/Gtk/UsersBox.vala:102
+#: src/Gtk/SetupWizardWindow.vala:114 src/Gtk/UsersBox.vala:101
 msgid "User"
-msgstr ""
+msgstr "Kasutaja"
 
 #: src/Gtk/UsersBox.vala:62
 msgid "User Home Directories"
-msgstr ""
+msgstr "Kasutaja kodukataloog"
 
 #: src/Utility/Device.vala:1461
 msgid "User cancelled the password prompt"
-msgstr ""
+msgstr "Kasutaja tühistas parooli küsimise"
 
 #: src/Gtk/UsersBox.vala:66
 msgid ""
 "User home directories are excluded by default unless you enable them here"
 msgstr ""
+"Kasutajate kodukataloogid on vaikimisi välistatud, kui te neid siin ei luba"
 
 #: src/Gtk/SettingsWindow.vala:101
 msgid "Users"
-msgstr ""
+msgstr "Kasutajad"
 
 #: src/Gtk/RestoreWindow.vala:114
 msgid "Users Home"
-msgstr ""
+msgstr "Kasutajate Kodukaust"
 
 #: src/Utility/Device.vala:1933
 #, c-format
 msgid "Vendor"
-msgstr ""
+msgstr "Tootja"
 
-#: src/Gtk/SnapshotListBox.vala:291
+#: src/Gtk/SnapshotListBox.vala:342
 msgid "View Rsync Log for Create"
-msgstr ""
+msgstr "Kuva Rsynci logi loomiseks"
 
-#: src/Gtk/SnapshotListBox.vala:298
+#: src/Gtk/SnapshotListBox.vala:349
 msgid "View Rsync Log for Restore"
-msgstr ""
+msgstr "Vaata taastamiseks Rsynci logi"
 
 #: src/Gtk/MainWindow.vala:369
 msgid "View TimeShift Logs"
-msgstr ""
+msgstr "Vaata TimeShifti logisid"
 
-#: src/Core/Main.vala:2255 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Core/Main.vala:2267 src/Gtk/RestoreSummaryBox.vala:53
 msgid "Warning"
-msgstr ""
+msgstr "Hoiatus"
 
 #: src/Gtk/RestoreExcludeBox.vala:61
 msgid "Web Browsers"
-msgstr ""
+msgstr "Veebibrauserid"
 
-#: src/Gtk/SnapshotListBox.vala:249 src/Gtk/ScheduleBox.vala:82
+#: src/Gtk/SnapshotListBox.vala:300 src/Gtk/ScheduleBox.vala:82
 msgid "Weekly"
-msgstr ""
+msgstr "Iganädalane"
 
-#: src/Core/Main.vala:1126
+#: src/Core/Main.vala:1138
 msgid "Weekly snapshot failed!"
-msgstr ""
+msgstr "Iganädalane hetktõmmis ebaõnnestus!"
 
-#: src/Core/Main.vala:1107
+#: src/Core/Main.vala:1119
 msgid "Weekly snapshots are enabled"
-msgstr ""
+msgstr "Iganädalased hetktõmmised on lubatud"
 
 #: src/Gtk/DeleteFinishBox.vala:63 src/Gtk/BackupFinishBox.vala:63
 msgid "With Errors"
-msgstr ""
+msgstr "Koos vigadega"
 
 #: src/Gtk/MainWindow.vala:190
 msgid "Wizard"
-msgstr ""
+msgstr "Nõustaja"
 
 #: src/Utility/Device.vala:1434 src/Utility/Device.vala:1480
 msgid "Wrong password"
-msgstr ""
+msgstr "Vale parool"
 
 #: src/Utility/Gtk/CustomMessageDialog.vala:156
 msgid "Yes"
-msgstr ""
+msgstr "Jah"
 
 #: src/Gtk/RestoreFinishBox.vala:98
 msgid ""
@@ -2453,83 +2573,89 @@ msgid ""
 "system will be visible as a new snapshot. This snapshot can be restored "
 "later if required, to 'undo' the restore."
 msgstr ""
+"Saad jätkata tööd praeguse süsteemiga. Pärast taaskäivitamist on praegune "
+"süsteem nähtav uue hetktõmmisena. Vajadusel saab selle hetktõmmise hiljem "
+"taastada, et taastamine tagasi võtta."
 
-#: src/Console/AppConsole.vala:1012
+#: src/AppConsole.vala:1023
 #, c-format
 msgid "[ENTER = Default (%s), a = Abort]"
-msgstr ""
+msgstr "[ENTER = Vaikeväärtus (%s), a = Katkesta]"
 
-#: src/Console/AppConsole.vala:883
+#: src/AppConsole.vala:894
 #, c-format
 msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
-msgstr ""
+msgstr "[ENTER = vaikeseade (%s), r = juurseade, a = katkestada]"
 
 #: src/Gtk/RestoreDeviceBox.vala:401
 msgid ""
 "[For Experienced Users] Change these settings if the restored system fails "
 "to boot."
 msgstr ""
+"[Kogenud kasutajatele] Muutke neid sätteid, kui taastatud süsteemi "
+"käivitamine ebaõnnestub."
 
 #: src/Utility/AppLock.vala:54
 msgid "[Warning] Deleted invalid lock"
-msgstr ""
+msgstr "[Hoiatus] Kehtetu lukk on kustutatud"
 
 #: src/Core/SnapshotRepo.vala:814
 msgid "all"
-msgstr ""
+msgstr "kõik"
 
-#: src/Core/Main.vala:1643 src/Core/Main.vala:4010 src/Core/Subvolume.vala:199
+#: src/Core/Main.vala:1655 src/Core/Main.vala:4030 src/Core/Main.vala:4115
+#: src/Core/Subvolume.vala:215
 msgid "btrfs returned an error"
-msgstr ""
+msgstr "btrfs tagastas vea"
 
-#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1542
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1554
 msgid "complete"
-msgstr ""
+msgstr "lõpetatud"
 
 #: src/Utility/CronTab.vala:261
 msgid "crontab file exported"
-msgstr ""
+msgstr "crontab fail eksporditi"
 
 #: src/Utility/CronTab.vala:244
 msgid "crontab file installed"
-msgstr ""
+msgstr "crontab fail installitud"
 
 #: src/Core/SnapshotRepo.vala:800
 msgid "incomplete"
-msgstr ""
+msgstr "lõpetamata"
 
 #: src/Core/SnapshotRepo.vala:782
 msgid "marked for deletion"
-msgstr ""
+msgstr "kustutamiseks märgitud"
 
-#: src/Core/Main.vala:1434 src/Core/Main.vala:1588 src/Core/Main.vala:1590
+#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
 msgid "mounted at path"
-msgstr ""
+msgstr "ühendatud asukohas"
 
-#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1542
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1554
 #: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
 #: src/Gtk/DeleteBox.vala:149
 msgid "remaining"
-msgstr ""
+msgstr "jäänud"
 
-#: src/Core/Main.vala:1553
+#: src/Core/Main.vala:1565
 msgid "rsync returned an error"
-msgstr ""
+msgstr "rsync tagastas vea"
 
 #: src/Core/SnapshotRepo.vala:631 src/Core/SnapshotRepo.vala:684
 #: src/Core/SnapshotRepo.vala:763
 msgid "un-tagged"
-msgstr ""
+msgstr "sildistamata"
 
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:9
 msgid "Timeshift"
-msgstr ""
+msgstr "Timeshift"
 
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:10
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:22
 msgid "Run Timeshift as Administrator"
-msgstr ""
+msgstr "Käivita Timeshift administraatorina"
 
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:21
 msgid "Authentication is required to run Timeshift as Administrator"
-msgstr ""
+msgstr "Timeshift administraatorina käivitamiseks on vaja autentimist"

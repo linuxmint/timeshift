@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2022-06-30 15:17+0200\n"
+"POT-Creation-Date: 2023-06-01 11:34+0100\n"
 "PO-Revision-Date: 2018-02-05 15:44+0000\n"
 "Last-Translator: samson <Unknown>\n"
 "Language-Team: Amharic <am@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-07-24 09:42+0000\n"
-"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
+"X-Launchpad-Export-Date: 2023-06-08 10:22+0000\n"
+"X-Generator: Launchpad (build 620cd5280e3a973662e263ebf9346837ed657a46)\n"
 
-#: src/Console/AppConsole.vala:615
+#: src/AppConsole.vala:626
 #, c-format
 msgid ""
 "\n"
@@ -31,12 +31,12 @@ msgstr ""
 msgid "%d snapshots, %s free"
 msgstr "%d የ መመልከቻ ፎቶ %s ነፃ"
 
-#: src/Console/AppConsole.vala:916
+#: src/AppConsole.vala:927
 #, c-format
 msgid "'%s' will be on '%s'"
 msgstr "'%s' ይኖራል በ '%s'"
 
-#: src/Console/AppConsole.vala:913
+#: src/AppConsole.vala:924
 #, c-format
 msgid "'%s' will be on root device"
 msgstr "'%s' ይኖራል በ root አካል ላይ"
@@ -45,27 +45,27 @@ msgstr "'%s' ይኖራል በ root አካል ላይ"
 msgid "(Re)install GRUB2 on:"
 msgstr "(እንደገና)መግጠሚያ GRUB2 በ:"
 
-#: src/Core/Main.vala:367
+#: src/Core/Main.vala:379
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr "** የ Timeshift BTRFS ማስወገጃ**"
 
-#: src/Core/Main.vala:3515
+#: src/Core/Main.vala:3527
 msgid "/ is mapped to device"
 msgstr ""
 
-#: src/Core/Main.vala:3537
+#: src/Core/Main.vala:3549
 msgid "/boot is mapped to device"
 msgstr ""
 
-#: src/Core/Main.vala:3548
+#: src/Core/Main.vala:3560
 msgid "/boot/efi is mapped to device"
 msgstr ""
 
-#: src/Core/Main.vala:3526
+#: src/Core/Main.vala:3538
 msgid "/home is mapped to device"
 msgstr ""
 
-#: src/Gtk/SnapshotListBox.vala:238
+#: src/Gtk/SnapshotListBox.vala:289
 msgid "<b>Comments</b> (double-click to edit)"
 msgstr "<b>አስተያየቶች</b> (ሁለት ጊዜ-ይጫኑ ለማረም)"
 
@@ -74,10 +74,9 @@ msgid ""
 "A maintenance task runs once every hour and creates snapshots as needed."
 msgstr ""
 
-#: src/Console/AppConsole.vala:700 src/Console/AppConsole.vala:764
-#: src/Console/AppConsole.vala:896 src/Console/AppConsole.vala:991
-#: src/Console/AppConsole.vala:1036 src/Console/AppConsole.vala:1077
-#: src/Console/AppConsole.vala:1095
+#: src/AppConsole.vala:711 src/AppConsole.vala:775 src/AppConsole.vala:907
+#: src/AppConsole.vala:1002 src/AppConsole.vala:1047 src/AppConsole.vala:1088
+#: src/AppConsole.vala:1106
 msgid "Aborted."
 msgstr "ተቋርጧል"
 
@@ -85,7 +84,7 @@ msgstr "ተቋርጧል"
 msgid "About"
 msgstr "ስለ"
 
-#: src/Gtk/RsyncLogBox.vala:472
+#: src/Gtk/RsyncLogBox.vala:471
 msgid "Action"
 msgstr ""
 
@@ -113,7 +112,7 @@ msgstr "ዳይሬክቶሪ መጨመሪያ"
 msgid "Add files"
 msgstr "ፋይሎች መጨመሪያ"
 
-#: src/Console/AppConsole.vala:361
+#: src/AppConsole.vala:371
 msgid "Add tags to snapshot (default: O)"
 msgstr "ወደ መመልከቻ ፎቶ መጨመሪያ (ነባር: O)"
 
@@ -121,11 +120,11 @@ msgstr "ወደ መመልከቻ ፎቶ መጨመሪያ (ነባር: O)"
 msgid "Added cron task"
 msgstr "ወደ እቅድ ስራ ውስጥ ተጨምሯል"
 
-#: src/Gtk/AppGtk.vala:133
+#: src/AppGtk.vala:147
 msgid "Admin Access Required"
 msgstr "የ አስተዳዳሪ ፍቃድ ያስፈልጋል"
 
-#: src/Gtk/AppGtk.vala:128
+#: src/AppGtk.vala:142
 msgid "Admin access is required to backup and restore system files."
 msgstr "ስርአቱን እንደ ነበር ለ መመለስ እና ተተኪ ለ መፍጠር የ አስተዳዳሪ ፍቃድ ያስፈልጋል"
 
@@ -133,7 +132,7 @@ msgstr "ስርአቱን እንደ ነበር ለ መመለስ እና ተተኪ �
 msgid "All Files"
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:189
+#: src/Gtk/SnapshotBackendBox.vala:197
 msgid ""
 "All files are copied when first snapshot is created. Subsequent snapshots "
 "are incremental. Unchanged files will be hard-linked from the previous "
@@ -142,7 +141,7 @@ msgstr ""
 "የ መመልከቻ ፎቶ ለ መጀመሪያ ጊዜ ሲፈጠር ሁሉም ፋይሎች ኮፒ ይደረጋሉ: ከዚያ በኋላ ልዩነቱ ይጨመራል: ያልተቀየሩ "
 "ፋይሎች ጠንካራ-አገናኝ ይሆናሉ ቀደም ካለው የ መመልከቻ ፎቶ ጋር ቀደም ብሎ ከ ነበረ"
 
-#: src/Gtk/ExcludeMessageWindow.vala:130
+#: src/Gtk/ExcludeMessageWindow.vala:129
 msgid "All other files and folders are excluded."
 msgstr "ሁሉም ሌሎች ፋይሎች እና ፎልደሮች አልተካተቱም"
 
@@ -161,7 +160,7 @@ msgstr ""
 "ይምረጡ አንዱን ምንም-ያልተመሰጠረ አካል ለ boot ዳይሬክቶሪ ወይንም ይምረጡ ምንም-ያልተመሰጠረ አካል ለ root ፋይል "
 "ስርአት"
 
-#: src/Core/Main.vala:253
+#: src/Core/Main.vala:265
 msgid "Another instance of Timeshift is creating a snapshot."
 msgstr "ሌላ የ Timeshift ሁኔታ የ መመልከቻ ፎቶ እየፈጠረ ነው"
 
@@ -169,31 +168,31 @@ msgstr "ሌላ የ Timeshift ሁኔታ የ መመልከቻ ፎቶ እየፈጠ�
 msgid "Another instance of this application is running"
 msgstr "የዚህ መተግበሪያ ሌላ ሁኔታ እየሄደ ነው"
 
-#: src/Core/Main.vala:257
+#: src/Core/Main.vala:269
 msgid "Another instance of timeshift is currently running!"
 msgstr "ሌላ የ timeshift ሁኔታ እየሄደ ነው"
 
-#: src/Console/AppConsole.vala:377
+#: src/AppConsole.vala:387
 msgid "Answer YES to all confirmation prompts"
 msgstr "ለሁሉም ማረጋገጫ አዎ ይመልሱ"
 
-#: src/Core/Main.vala:3352
+#: src/Core/Main.vala:3364
 msgid "App config loaded"
 msgstr "የ መተግበሪያ ማሰናጃ ተጭኗል"
 
-#: src/Core/Main.vala:3240
+#: src/Core/Main.vala:3252
 msgid "App config saved"
 msgstr "የ መተግበሪያ ማሰናጃ ተቀምጧል"
 
-#: src/Console/AppConsole.vala:102
+#: src/AppConsole.vala:107
 msgid "Application needs admin access."
 msgstr "መተግበሪያ አስተዳዳሪ ጋር መድረስ ይፈልጋል"
 
-#: src/Core/Main.vala:3692
+#: src/Core/Main.vala:3704
 msgid "Application will exit"
 msgstr "መተግበሪያ አሁን ይጠፋል"
 
-#: src/Core/Main.vala:383
+#: src/Core/Main.vala:395
 msgid "Application will exit."
 msgstr "መተግበሪያ አሁን ይጠፋል"
 
@@ -205,15 +204,11 @@ msgstr "ዝግጁ"
 msgid "BTRFS"
 msgstr "BTRFS"
 
-#: src/Gtk/SnapshotBackendBox.vala:166
+#: src/Gtk/SnapshotBackendBox.vala:174
 msgid "BTRFS Snapshots"
 msgstr "የ BTRFS መመልከቻ ፎቶ"
 
-#: src/Gtk/SnapshotBackendBox.vala:120
-msgid "BTRFS Tools Not Found"
-msgstr "የ BTRFS መሳሪያዎች አልተገኙም"
-
-#: src/Core/Main.vala:2190 src/Core/Main.vala:2194
+#: src/Core/Main.vala:2202 src/Core/Main.vala:2206
 msgid "BTRFS device is not mounted"
 msgstr "የ BTRFS አካሎች አልተጫኑም"
 
@@ -238,15 +233,15 @@ msgstr ""
 msgid "Backend"
 msgstr "ተተኪ ተፈጥሯል"
 
-#: src/Console/AppConsole.vala:357 src/Gtk/BackupWindow.vala:92
+#: src/Gtk/BackupWindow.vala:92 src/AppConsole.vala:367
 msgid "Backup"
 msgstr "ተተኪ"
 
-#: src/Core/Main.vala:2166
+#: src/Core/Main.vala:2178
 msgid "Backup Device"
 msgstr "ተተኪ አካል"
 
-#: src/Core/Main.vala:2161
+#: src/Core/Main.vala:2173
 msgid "Backup device not specified!"
 msgstr "ተተኪ አካል አልተገለጸም"
 
@@ -254,7 +249,7 @@ msgstr "ተተኪ አካል አልተገለጸም"
 msgid "Bittorrent Clients"
 msgstr ""
 
-#: src/Gtk/SnapshotListBox.vala:246 src/Gtk/ScheduleBox.vala:136
+#: src/Gtk/SnapshotListBox.vala:297 src/Gtk/ScheduleBox.vala:136
 msgid "Boot"
 msgstr "ማስነሻ"
 
@@ -262,7 +257,7 @@ msgstr "ማስነሻ"
 msgid "Boot device not selected"
 msgstr "የ ማስነሻ አካል አልተመረጠም"
 
-#: src/Core/Main.vala:1033
+#: src/Core/Main.vala:1045
 msgid "Boot snapshot failed!"
 msgstr "የ መመልከቻ ፎቶ ማስነሻ ወድቋል!"
 
@@ -271,7 +266,7 @@ msgid ""
 "Boot snapshots are created with a delay of 10 minutes after system startup."
 msgstr ""
 
-#: src/Core/Main.vala:1014
+#: src/Core/Main.vala:1026
 msgid "Boot snapshots are enabled"
 msgstr "የ መመልከቻ ፎቶ ማስነሻ አስችለዋል"
 
@@ -287,7 +282,7 @@ msgstr "የ ማስነሻ መጫኛ ምርጫ (የ ረቀቀ)"
 msgid "Browse"
 msgstr "መቃኛ"
 
-#: src/Gtk/SnapshotListBox.vala:284
+#: src/Gtk/SnapshotListBox.vala:335
 msgid "Browse Files"
 msgstr "ፋይሎች መቃኛ"
 
@@ -295,11 +290,11 @@ msgstr "ፋይሎች መቃኛ"
 msgid "Browse selected snapshot"
 msgstr "የ ተመረጠውን የ መመልከቻ ፎቶ መቃኛ"
 
-#: src/Core/Main.vala:2656
+#: src/Core/Main.vala:2668
 msgid "Building file list..."
 msgstr "የ ፋይል ዝርዝር በ መገንባት ላይ"
 
-#: src/Core/Main.vala:1393
+#: src/Core/Main.vala:1405
 msgid "Calculating required disk space..."
 msgstr ""
 
@@ -331,7 +326,7 @@ msgstr "በ ቀጥታ የ መመልከቻ ፎቶ ማጥፋት አይቻልም"
 
 #: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
 #: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
-#: src/Gtk/RsyncLogBox.vala:567 src/Gtk/RsyncLogBox.vala:588
+#: src/Gtk/RsyncLogBox.vala:566 src/Gtk/RsyncLogBox.vala:587
 msgid "Changed"
 msgstr "ተቀይሯል"
 
@@ -343,7 +338,7 @@ msgstr "የ ተቀየሩ አካሎች"
 msgid "Checking Restore Actions (Dry Run)"
 msgstr ""
 
-#: src/Core/Main.vala:2889
+#: src/Core/Main.vala:2901
 msgid "Checking file systems for errors..."
 msgstr "የ ፋይል ስርአት ስህተት በ መፈለግ ላይ..."
 
@@ -353,11 +348,11 @@ msgstr "የ ፋይል ስርአት ስህተት በ መፈለግ ላይ..."
 msgid "Checksum"
 msgstr "ጠቅላላ ድምር"
 
-#: src/Core/Main.vala:2537
+#: src/Core/Main.vala:2549
 msgid "Cleaning up..."
 msgstr "በ ማጽዳት ላይ..."
 
-#: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:89
+#: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:88
 msgid "Click to edit. Drag and drop to re-order."
 msgstr "ይጫኑ ለ ማረም: ይጎትቱ እና ይጣሉ እንደገና-ለማሰናዳት"
 
@@ -373,7 +368,7 @@ msgstr "ስርአት ማባዣ"
 msgid "Cloning"
 msgstr "በ ማባዛት ላይ"
 
-#: src/Core/Main.vala:2939
+#: src/Core/Main.vala:2951
 msgid "Cloning system..."
 msgstr "ስርአቱን በ ማባዛት ላይ..."
 
@@ -388,20 +383,20 @@ msgstr "መዝጊያ"
 msgid "Close window to exit"
 msgstr "ለ መውጣት መስኮቱን ይዝጉ"
 
-#: src/Core/Main.vala:352
+#: src/Core/Main.vala:364
 msgid "Commands listed below are not available on this system"
 msgstr "ከ ታች በኩል የ ተዘረዘሩት ትእዛዞች በዚህ ስርአት ውስጥ የሉም"
 
-#: src/Gtk/SnapshotListBox.vala:172
+#: src/Gtk/SnapshotListBox.vala:223
 msgid "Comments (click to edit)"
 msgstr ""
 
-#: src/Core/Main.vala:2932 src/Gtk/RestoreBox.vala:74
+#: src/Core/Main.vala:2944 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
 msgid "Comparing Files (Dry Run)..."
 msgstr ""
 
-#: src/Core/Main.vala:2698
+#: src/Core/Main.vala:2710
 msgid "Comparing files with rsync..."
 msgstr ""
 
@@ -418,12 +413,12 @@ msgstr "ተፈጽሟል ከ ስህተት ጋር"
 msgid "Confirm Actions"
 msgstr ""
 
-#: src/Console/AppConsole.vala:1070
+#: src/AppConsole.vala:1081
 #, c-format
 msgid "Continue with restore? (y/n): "
 msgstr "እንደ ነበር መመለስ ልቀጥል? (y/n): "
 
-#: src/Console/AppConsole.vala:836 src/Console/AppConsole.vala:967
+#: src/AppConsole.vala:847 src/AppConsole.vala:978
 msgid "Could not find device"
 msgstr "አካሉን ማግኘት አልተቻለም"
 
@@ -432,20 +427,20 @@ msgstr "አካሉን ማግኘት አልተቻለም"
 msgid "Could not find file"
 msgstr "ፋይል ማግኘት አልተቻለም"
 
-#: src/Console/AppConsole.vala:733
+#: src/AppConsole.vala:744
 msgid "Could not find snapshot"
 msgstr "የ መመልከቻ ፎቶ ማግኘት አልተቻለም"
 
-#: src/Core/Main.vala:3101
+#: src/Core/Main.vala:3113
 msgid "Could not find system subvolume"
 msgstr "የ ስርአቱን ንዑስ መጠን ማግኘት አልተቻለም"
 
-#: src/Core/Main.vala:3129
+#: src/Core/Main.vala:3141
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr "የ ስርአቱን ንዑስ መጠን ማግኘት አልተቻለም: በ ቅድሚያ-እንደ ነበር መመለሻ የ መመልከቻ ፎቶ መፍጠሪያ"
 
 #: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
-#: src/Gtk/RsyncLogBox.vala:571
+#: src/Gtk/RsyncLogBox.vala:570
 #, c-format
 msgid "Create"
 msgstr "መፍጠሪያ"
@@ -474,11 +469,11 @@ msgstr "መፍጠሪያ አንድ በ ወር ውስጥ"
 msgid "Create one per week"
 msgstr "መፍጠሪያ አንድ በ ሳምንት ውስጥ"
 
-#: src/Console/AppConsole.vala:359
+#: src/AppConsole.vala:369
 msgid "Create snapshot (even if not scheduled)"
 msgstr "የ መመልከቻ ፎቶ መፍጠሪያ (ባይታቀድም እንኳን)"
 
-#: src/Console/AppConsole.vala:358
+#: src/AppConsole.vala:368
 msgid "Create snapshot if scheduled"
 msgstr "የ መመልከቻ ፎቶ መፍጠሪያ ከ ታቀደ"
 
@@ -502,8 +497,8 @@ msgid "Create snapshots using RSYNC tool and hard-links"
 msgstr "የ መመልከቻ ፎቶ መፍጠሪያ RSYNC መሳሪያዎች እና ጠንካራ-አካል በ መጠቀም"
 
 #: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
-#: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:571
-#: src/Gtk/RsyncLogBox.vala:592
+#: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:570
+#: src/Gtk/RsyncLogBox.vala:591
 #, c-format
 msgid "Created"
 msgstr "የ ተፈጠረው"
@@ -512,15 +507,15 @@ msgstr "የ ተፈጠረው"
 msgid "Created control file"
 msgstr "መቆጣጠሪያ ፋይል ተፈጥሯል"
 
-#: src/Utility/TeeJee.FileSystem.vala:294
+#: src/Utility/TeeJee.FileSystem.vala:268
 msgid "Created directory"
 msgstr "የ ተፈጠረው ዳይሬክቶሪ"
 
-#: src/Core/Main.vala:3151
+#: src/Core/Main.vala:3163
 msgid "Created pre-restore snapshot"
 msgstr "በ ቅድሚያ-እንደ ነበር መመለሻ የ መመልከቻ ፎቶ መፍጠሪያ"
 
-#: src/Core/Main.vala:1648
+#: src/Core/Main.vala:1660
 msgid "Created subvolume snapshot"
 msgstr "የ ተፈጠረው ንዑስ መጠን የ መመልከቻ ፎቶ"
 
@@ -528,19 +523,19 @@ msgstr "የ ተፈጠረው ንዑስ መጠን የ መመልከቻ ፎቶ"
 msgid "Creating Snapshot..."
 msgstr "የ መመልከቻ ፎቶ በ መፍጠር ላይ..."
 
-#: src/Core/Main.vala:1586
+#: src/Core/Main.vala:1598
 msgid "Creating new backup..."
 msgstr "አዲስ ተተኪ በ መፍጠር ላይ..."
 
-#: src/Core/Main.vala:1432
+#: src/Core/Main.vala:1444
 msgid "Creating new snapshot..."
 msgstr "አዲስ የ መመልከቻ ፎቶ በ መፍጠር ላይ..."
 
-#: src/Core/Main.vala:3079
+#: src/Core/Main.vala:3091
 msgid "Creating pre-restore snapshot from system subvolumes..."
 msgstr "በ ቅድሚያ-እንደ ነበር መመለሻ የ መመልከቻ ፎቶ ከ ስርአት ንዑስ መጠን ውስጥ መፍጠሪያ"
 
-#: src/Core/Main.vala:3691
+#: src/Core/Main.vala:3703
 msgid "Critical Error"
 msgstr "አደገኛ ስህተት"
 
@@ -560,19 +555,19 @@ msgstr "የ ነበረ የ ስራ እቅድ"
 msgid "Custom"
 msgstr ""
 
-#: src/Gtk/SnapshotListBox.vala:248 src/Gtk/ScheduleBox.vala:100
+#: src/Gtk/SnapshotListBox.vala:299 src/Gtk/ScheduleBox.vala:100
 msgid "Daily"
 msgstr "በየ ቀኑ"
 
-#: src/Core/Main.vala:1095
+#: src/Core/Main.vala:1107
 msgid "Daily snapshot failed!"
 msgstr "በየቀኑ የ መመልከቻ ፎቶ መፍጠር አልተቻለም!"
 
-#: src/Core/Main.vala:1076
+#: src/Core/Main.vala:1088
 msgid "Daily snapshots are enabled"
 msgstr "በየቀኑ የ መመልከቻ ፎቶ መፍጠሪያ አስችለዋል"
 
-#: src/Core/Main.vala:2260
+#: src/Core/Main.vala:2272
 msgid "Data will be modified on following devices:"
 msgstr "በሚቀጥሉት አካሎች ላይ ዳታ ይሻሻላል"
 
@@ -580,9 +575,9 @@ msgstr "በሚቀጥሉት አካሎች ላይ ዳታ ይሻሻላል"
 msgid "Date Format"
 msgstr ""
 
-#: src/Console/AppConsole.vala:371 src/Gtk/SnapshotListBox.vala:270
-#: src/Gtk/MainWindow.vala:160 src/Gtk/RsyncLogBox.vala:370
-#: src/Gtk/RsyncLogBox.vala:575 src/Gtk/DeleteWindow.vala:98
+#: src/Gtk/SnapshotListBox.vala:321 src/Gtk/MainWindow.vala:160
+#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
+#: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:381
 #, c-format
 msgid "Delete"
 msgstr "ማጥፊያ"
@@ -591,7 +586,7 @@ msgstr "ማጥፊያ"
 msgid "Delete Snapshots"
 msgstr "የ መመልከቻ ፎቶ ማጥፊያ"
 
-#: src/Console/AppConsole.vala:373
+#: src/AppConsole.vala:383
 msgid "Delete all snapshots"
 msgstr "ሁሉንም የ መመልከቻ ፎቶ ማጥፊያ"
 
@@ -599,22 +594,22 @@ msgstr "ሁሉንም የ መመልከቻ ፎቶ ማጥፊያ"
 msgid "Delete selected snapshot"
 msgstr "የ ተመረጠውን የ መመልከቻ ፎቶ ማጥፊያ"
 
-#: src/Console/AppConsole.vala:372
+#: src/AppConsole.vala:382
 msgid "Delete snapshot"
 msgstr "የ መመልከቻ ፎቶ ማጥፊያ"
 
 #: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
-#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:575
-#: src/Gtk/RsyncLogBox.vala:596
+#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
+#: src/Gtk/RsyncLogBox.vala:595
 #, c-format
 msgid "Deleted"
 msgstr "ጠፍቷል"
 
-#: src/Utility/TeeJee.FileSystem.vala:328
+#: src/Utility/TeeJee.FileSystem.vala:302
 msgid "Deleted directory"
 msgstr "ዳይሬክቶሪ ማጥፊያ"
 
-#: src/Core/Main.vala:3058 src/Core/Main.vala:3062 src/Core/Subvolume.vala:167
+#: src/Core/Main.vala:3070 src/Core/Main.vala:3074 src/Core/Subvolume.vala:167
 #, c-format
 msgid "Deleted subvolume"
 msgstr "ንዑስ መጠን ማጥፊያ"
@@ -632,16 +627,25 @@ msgstr "ንዑስ መጠን ማጥፊያ"
 msgid "Deluge, Transmission"
 msgstr ""
 
-#: src/Console/AppConsole.vala:428 src/Console/AppConsole.vala:544
+#: src/AppConsole.vala:439 src/AppConsole.vala:555
 msgid "Description"
 msgstr "መግለጫ"
 
-#: src/Core/Main.vala:2263 src/Core/Main.vala:2295
+#: src/Core/Subvolume.vala:181
+#, c-format
+msgid "Destroyed qgroup"
+msgstr ""
+
+#: src/Core/Subvolume.vala:171
+#, c-format
+msgid "Destroying qgroup"
+msgstr ""
+
+#: src/Core/Main.vala:2275 src/Core/Main.vala:2307
 #: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
 #: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
-#: src/Utility/Device.vala:1942 src/Console/AppConsole.vala:456
-#: src/Console/AppConsole.vala:495 src/Console/AppConsole.vala:543
-#: src/Gtk/RestoreDeviceBox.vala:97
+#: src/Utility/Device.vala:1942 src/Gtk/RestoreDeviceBox.vala:97
+#: src/AppConsole.vala:467 src/AppConsole.vala:506 src/AppConsole.vala:554
 #, c-format
 msgid "Device"
 msgstr "አካል"
@@ -654,8 +658,8 @@ msgstr "አካሉ ተከፍቷል"
 msgid "Device name is empty!"
 msgstr "የ አካሉ ስም ባዶ ነው!"
 
-#: src/Core/Main.vala:3405 src/Core/SnapshotRepo.vala:479
-#: src/Console/AppConsole.vala:665
+#: src/Core/Main.vala:3417 src/Core/SnapshotRepo.vala:479
+#: src/AppConsole.vala:676
 msgid "Device not found"
 msgstr "አካሉ አልተገኘም"
 
@@ -673,7 +677,7 @@ msgstr ""
 msgid "Devices from which snapshot was created are pre-selected."
 msgstr "አካሎች የ መመልከቻ ፎቶ የ ተፈጠረበት በ ቅድሚያ-የ ተመረጠው ነው"
 
-#: src/Console/AppConsole.vala:327
+#: src/AppConsole.vala:332
 msgid "Devices with Linux file systems"
 msgstr "አካሎች ከ ሊነክስ ፋይል ስርአት ጋር"
 
@@ -685,7 +689,7 @@ msgstr ""
 msgid "Directory not found"
 msgstr "ዳይሬክቶሪ አልተገኘም"
 
-#: src/Core/Main.vala:2355 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Core/Main.vala:2367 src/Gtk/RestoreSummaryBox.vala:64
 msgid "Disclaimer"
 msgstr "አላውቅም"
 
@@ -693,7 +697,7 @@ msgstr "አላውቅም"
 msgid "Disk"
 msgstr "ዲስክ"
 
-#: src/Core/Main.vala:230
+#: src/Core/Main.vala:242
 msgid "Distribution"
 msgstr "ስርጭት"
 
@@ -705,16 +709,16 @@ msgstr "የ እርስዎን ስርአት ለ መጠበቅ በ እቅድ የ መ�
 msgid "Encrypted Device"
 msgstr "የ ተመሰጠረ አካል"
 
-#: src/Gtk/UsersBox.vala:233
+#: src/Gtk/UsersBox.vala:232
 msgid "Encrypted Home Directory"
 msgstr "የ ተመሰጠረ የ ቤት ዳይሬክቶሪ"
 
-#: src/Console/AppConsole.vala:886
+#: src/AppConsole.vala:897
 #, c-format
 msgid "Enter device name or number"
 msgstr "የ አካሉን ስም ወይንም ቁጥር ያስገቡ"
 
-#: src/Console/AppConsole.vala:684 src/Console/AppConsole.vala:1015
+#: src/AppConsole.vala:695 src/AppConsole.vala:1026
 #, c-format
 msgid "Enter device name or number (a=Abort)"
 msgstr "የ አካሉን ስም ወይንም ቁጥር ያስገቡ (a=Abort)"
@@ -724,7 +728,7 @@ msgstr "የ አካሉን ስም ወይንም ቁጥር ያስገቡ (a=Abort)"
 msgid "Enter passphrase to unlock '%s'"
 msgstr "ለ መክፈት የ ማለፊያ ሀረግ ያስገቡ '%s'"
 
-#: src/Console/AppConsole.vala:756
+#: src/AppConsole.vala:767
 #, c-format
 msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
 msgstr "የ መመልከቻ ፎቶ ቁጥር ያስገቡ (a=Abort, p=Previous, n=Next)"
@@ -749,15 +753,15 @@ msgstr "ግምት"
 msgid "Estimating System Size..."
 msgstr "የ ስርአቱን መጠን በ መገመት ላይ..."
 
-#: src/Core/Main.vala:1428
+#: src/Core/Main.vala:1440
 msgid "Estimating system size..."
 msgstr "የ ስርአቱን መጠን በ መገመት ላይ..."
 
-#: src/Console/AppConsole.vala:387
+#: src/AppConsole.vala:398
 msgid "Examples"
 msgstr "ምሳሌዎች"
 
-#: src/Gtk/UsersBox.vala:133
+#: src/Gtk/UsersBox.vala:132
 msgid "Exclude All Files"
 msgstr ""
 
@@ -785,7 +789,7 @@ msgstr "ያልተካተተ ንድፍ"
 msgid "Excluded Directories"
 msgstr "የማይካተት ዳይሬክቶሪዎች"
 
-#: src/Core/Main.vala:1716
+#: src/Core/Main.vala:1728
 msgid "Expected values: O, B, H, D, W, M"
 msgstr "የሚጠበቁ ዋጋዎች: O, B, H, D, W, M"
 
@@ -793,24 +797,24 @@ msgstr "የሚጠበቁ ዋጋዎች: O, B, H, D, W, M"
 msgid "Failed to add cron job"
 msgstr "የ ስራ እቅድ መጨመር አልተቻለም"
 
-#: src/Utility/TeeJee.FileSystem.vala:169
+#: src/Utility/TeeJee.FileSystem.vala:155
 msgid "Failed to copy file"
 msgstr "ፋይል ኮፒ ማድረግ አልተቻለም"
 
-#: src/Utility/TeeJee.FileSystem.vala:297
-#: src/Utility/TeeJee.FileSystem.vala:306
+#: src/Utility/TeeJee.FileSystem.vala:271
+#: src/Utility/TeeJee.FileSystem.vala:280
 msgid "Failed to create directory"
 msgstr "ዳይሬክቶሪ ኮፒ ማድረግ አልተቻለም"
 
-#: src/Core/Main.vala:1554
+#: src/Core/Main.vala:1566
 msgid "Failed to create new snapshot"
 msgstr "አዲስ የ መመልከቻ ፎቶ መፍጠር አልተቻለም"
 
-#: src/Core/Main.vala:1308
+#: src/Core/Main.vala:1320
 msgid "Failed to create snapshot"
 msgstr "የ መመልከቻ ፎቶ መፍጠር አልተቻለም"
 
-#: src/Core/Main.vala:1644
+#: src/Core/Main.vala:1656
 msgid "Failed to create subvolume snapshot"
 msgstr "የ ንዑስ መጠን የ ፎቶ መመልከቻ መፍጠር አልተቻለም"
 
@@ -818,11 +822,11 @@ msgstr "የ ንዑስ መጠን የ ፎቶ መመልከቻ መፍጠር አል�
 msgid "Failed to create symlinks"
 msgstr "አገናኝ መፍጠር አልተቻለም"
 
-#: src/Utility/TeeJee.FileSystem.vala:331
+#: src/Utility/TeeJee.FileSystem.vala:305
 msgid "Failed to delete directory"
 msgstr "ዳይሬክቶሪ ማጥፋት አልተቻለም"
 
-#: src/Utility/TeeJee.FileSystem.vala:100
+#: src/Utility/TeeJee.FileSystem.vala:86
 msgid "Failed to delete file"
 msgstr "ፋይል ማጥፋት አልተቻለም"
 
@@ -838,7 +842,11 @@ msgstr "የ መመልከቻ ፎቶ ንዑስ መጠን ማጥፋት አልተቻ
 msgid "Failed to delete symlinks"
 msgstr "symlinks ማጥፋት አልተቻለም"
 
-#: src/Core/Main.vala:3906 src/Core/Main.vala:3912
+#: src/Core/Subvolume.vala:177
+msgid "Failed to destroy qgroup"
+msgstr ""
+
+#: src/Core/Main.vala:3918 src/Core/Main.vala:3924
 msgid "Failed to estimate system size"
 msgstr "የ ስርአቱን መጠን መገመት አልተቻለም"
 
@@ -846,9 +854,8 @@ msgstr "የ ስርአቱን መጠን መገመት አልተቻለም"
 msgid "Failed to export crontab file"
 msgstr "ፋይል በ እቅድ መላክ አልተቻለም"
 
-#: src/Console/AppConsole.vala:699 src/Console/AppConsole.vala:763
-#: src/Console/AppConsole.vala:895 src/Console/AppConsole.vala:990
-#: src/Console/AppConsole.vala:1035 src/Console/AppConsole.vala:1076
+#: src/AppConsole.vala:710 src/AppConsole.vala:774 src/AppConsole.vala:906
+#: src/AppConsole.vala:1001 src/AppConsole.vala:1046 src/AppConsole.vala:1087
 msgid "Failed to get input from user in 3 attempts"
 msgstr "ከ ተጠቃሚው በ 3 ሙከራዎች ማስገቢያ ማግኘት አልተቻለም"
 
@@ -856,7 +863,7 @@ msgstr "ከ ተጠቃሚው በ 3 ሙከራዎች ማስገቢያ ማግኘት �
 msgid "Failed to get partition list"
 msgstr "የ ክፍልፋይ ዝርዝር ማግኘት አልተቻለም"
 
-#: src/Core/Main.vala:3488
+#: src/Core/Main.vala:3500
 msgid "Failed to get partition list."
 msgstr "የ ክፍልፋይ ዝርዝር ማግኘት አልተቻለም"
 
@@ -868,23 +875,27 @@ msgstr "ፋይል በ እቅድ መግጠም አልተቻለም"
 msgid "Failed to mount devices"
 msgstr "አካሎችን መጫን አልተቻለም"
 
-#: src/Utility/TeeJee.FileSystem.vala:188
+#: src/Utility/TeeJee.FileSystem.vala:174
 msgid "Failed to move file"
 msgstr "ፋይል ማንቀሳቀስ አልተቻለም"
 
-#: src/Core/Main.vala:3116
+#: src/Core/Main.vala:3128
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr "የ ስርአቱን ንዑስ መጠን ማንቀሳቀስ አልተቻለም ወደ መመልከቻ ፎቶ ማንሻ"
 
-#: src/Core/Main.vala:4011
+#: src/Core/Main.vala:4031
 msgid "Failed to query subvolume list"
 msgstr "የ ንዑስ መጠን ዝርዝር መጠየቅ አልተቻለም"
+
+#: src/Core/Main.vala:4116
+msgid "Failed to query subvolume quota"
+msgstr ""
 
 #: src/Utility/CronTab.vala:50
 msgid "Failed to read cron tab"
 msgstr "በ እቅድ tab  ማንበብ አልተቻለም"
 
-#: src/Utility/TeeJee.FileSystem.vala:126
+#: src/Utility/TeeJee.FileSystem.vala:112
 msgid "Failed to read file"
 msgstr "ፋይል ማንበብ አልተቻለም"
 
@@ -901,11 +912,11 @@ msgstr "በ እቅድ ስራ ማስወገድ አልተቻለም"
 msgid "Failed to remove snapshot"
 msgstr "የ መመልከቻ ፎቶ ማስወገድ አልተቻለም"
 
-#: src/Core/Subvolume.vala:200
+#: src/Core/Subvolume.vala:216
 msgid "Failed to restore system subvolume"
 msgstr "የ ስርአቱን የ ንዑስ መጠን እንደ ነበር መመለስ አልተቻለም"
 
-#: src/Core/Main.vala:1504
+#: src/Core/Main.vala:1516
 msgid "Failed to save exclude list"
 msgstr "የማይካተቱ ዝርዝር ማስቀመጥ አልተቻለም"
 
@@ -919,11 +930,11 @@ msgstr "አካሉን መክፈት አልተቻለም"
 msgid "Failed to unmount"
 msgstr "ማውረድ አልተቻለም"
 
-#: src/Core/Main.vala:3692
+#: src/Core/Main.vala:3704
 msgid "Failed to unmount device!"
 msgstr "አካሉን ማውረድ አልተቻለም"
 
-#: src/Utility/TeeJee.FileSystem.vala:153
+#: src/Utility/TeeJee.FileSystem.vala:139
 msgid "Failed to write file"
 msgstr "ፋይል ላይ መጻፍ አልተቻለም"
 
@@ -935,7 +946,7 @@ msgstr ""
 msgid "File (system)"
 msgstr ""
 
-#: src/Gtk/ExcludeMessageWindow.vala:98
+#: src/Gtk/ExcludeMessageWindow.vala:97
 msgid "File Pattern"
 msgstr "የ ፋይል አዘገጃጀት"
 
@@ -944,7 +955,7 @@ msgid "File and directory counts:"
 msgstr "ፋይል እና ዳይሬክቶሪ መቁጠሪያ:"
 
 #: src/Utility/CronTab.vala:225 src/Utility/RsyncTask.vala:298
-#: src/Utility/TeeJee.FileSystem.vala:183
+#: src/Utility/TeeJee.FileSystem.vala:169
 msgid "File not found"
 msgstr "ፋይሉ አልተገኘም"
 
@@ -954,7 +965,7 @@ msgid ""
 "Patterns starting with a + will include the item instead of excluding."
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:193
+#: src/Gtk/SnapshotBackendBox.vala:201
 msgid "Files and directories can be excluded to save disk space."
 msgstr "ፋይሎች እና ዳይሬክቶሪዎች ማስቀረት ይቻላል የ ዲስክ ቦታ ለ መቆጠብ"
 
@@ -996,7 +1007,7 @@ msgstr "ፋየር ፎክስ: ክሮሚየም: ክሮም: ኦፕራ: ኤፒፈኒ
 msgid "First snapshot requires:"
 msgstr "መጀመሪያ የ መመልከቻ ፎቶ ያስፈልጋል:"
 
-#: src/Core/Main.vala:3049
+#: src/Core/Main.vala:3061
 msgid "Found existing pre-restore snapshot"
 msgstr "በ ቅድሚያ-እንደ ነበር መመለሻ የ መመልከቻ ፎት ተገኝቷል"
 
@@ -1008,7 +1019,7 @@ msgstr "ነፃ"
 msgid "Free space"
 msgstr "ነፃ ቦታ"
 
-#: src/Console/AppConsole.vala:1044
+#: src/AppConsole.vala:1055
 msgid "GRUB Device"
 msgstr ""
 
@@ -1016,15 +1027,15 @@ msgstr ""
 msgid "GRUB device not selected"
 msgstr "የ GRUB አካል አልተመረጠም"
 
-#: src/Console/AppConsole.vala:1049
+#: src/AppConsole.vala:1060
 msgid "GRUB will NOT be reinstalled"
 msgstr "GRUB እንደገና አይገጠምም"
 
-#: src/Core/Main.vala:2497
+#: src/Core/Main.vala:2509
 msgid "Generating initramfs..."
 msgstr "initramfs በማመንጨት ላይ..."
 
-#: src/Console/AppConsole.vala:375
+#: src/AppConsole.vala:385
 msgid "Global"
 msgstr "አለም አቀፍ"
 
@@ -1034,11 +1045,11 @@ msgstr "አለም አቀፍ"
 msgid "Group"
 msgstr "ቡድን"
 
-#: src/Gtk/SnapshotBackendBox.vala:133
+#: src/Gtk/SnapshotBackendBox.vala:141
 msgid "Help"
 msgstr ""
 
-#: src/Gtk/ExcludeMessageWindow.vala:129
+#: src/Gtk/ExcludeMessageWindow.vala:128
 msgid ""
 "Hidden files and folders are included by default since they contain user-"
 "specific configuration files."
@@ -1048,7 +1059,7 @@ msgstr "የ ተደበቁ ፋይሎች እና ፎልደሮች በ ነባር ይ�
 msgid "Hide"
 msgstr "መደበቂያ"
 
-#: src/Console/AppConsole.vala:382
+#: src/AppConsole.vala:392
 msgid "Hide rsync output"
 msgstr "የ ማስማሚያ ውጤት መደበቂያ"
 
@@ -1056,23 +1067,23 @@ msgstr "የ ማስማሚያ ውጤት መደበቂያ"
 msgid "Hide this window (files will be deleted in background)"
 msgstr "ይህን መስኮት መደበቂያ (ፋይሎች ከ በስተ ጀርባ ይጠፋሉ)"
 
-#: src/Gtk/UsersBox.vala:117
+#: src/Gtk/UsersBox.vala:116
 msgid "Home"
 msgstr "ቤት"
 
-#: src/Gtk/ExcludeMessageWindow.vala:116
+#: src/Gtk/ExcludeMessageWindow.vala:115
 msgid "Home Directory"
 msgstr "የ ቤት ዳይሬክቶሪ"
 
-#: src/Gtk/SnapshotListBox.vala:247 src/Gtk/ScheduleBox.vala:118
+#: src/Gtk/SnapshotListBox.vala:298 src/Gtk/ScheduleBox.vala:118
 msgid "Hourly"
 msgstr "በየ ሰአቱ"
 
-#: src/Core/Main.vala:1064
+#: src/Core/Main.vala:1076
 msgid "Hourly snapshot failed!"
 msgstr "በየሰአቱ መመልከቻ ፎቶ ማንሳት አልተቻለም!"
 
-#: src/Core/Main.vala:1045
+#: src/Core/Main.vala:1057
 msgid "Hourly snapshots are enabled"
 msgstr "በየሰአቱ መመልከቻ ፎቶ ማንሳት አስችለዋል"
 
@@ -1084,7 +1095,7 @@ msgstr ""
 "እንደ ነበር የተመለሰው ስርአት ካልተነሳ: እርስዎ በ ቀጥታ ከ ሲዲ/USB ያስጀምሩ: እና Timeshift ይግጠሙ: እና "
 "ሌላ የ መመልከቻ ፎቶ እንደ ነበር ይመልሱ"
 
-#: src/Core/Main.vala:2361
+#: src/Core/Main.vala:2373
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
@@ -1094,23 +1105,23 @@ msgstr "እርስዎ እነዚህን ደንቦች የማይቀበሉ ከሆነ: 
 msgid "Include / Exclude Patterns"
 msgstr "የሚካተቱ /የማይካተቱ አዘገጃጀት"
 
-#: src/Gtk/UsersBox.vala:337
+#: src/Gtk/UsersBox.vala:336
 msgid "Include @home subvolume in backups"
 msgstr "ያካትቱ @home ንዑስ መጠን በ ተተኪ ውስጥ"
 
-#: src/Gtk/UsersBox.vala:263
+#: src/Gtk/UsersBox.vala:262
 msgid "Include All Files"
 msgstr ""
 
-#: src/Gtk/UsersBox.vala:191
+#: src/Gtk/UsersBox.vala:190
 msgid "Include Only Hidden Files"
 msgstr ""
 
-#: src/Core/Main.vala:2175
+#: src/Core/Main.vala:2187
 msgid "Invalid Snapshot"
 msgstr "ዋጋ የሌለው የ መመልከቻ ፎቶ"
 
-#: src/Console/AppConsole.vala:252
+#: src/AppConsole.vala:257
 #, c-format
 msgid "Invalid command line arguments"
 msgstr "ዋጋ የሌለው የ ትእዛዝ መስመር ክርክርክ"
@@ -1148,78 +1159,78 @@ msgstr "በ Root አካል ላይ ማስቀመጫ"
 msgid "Keep this mount path on the root filesystem"
 msgstr "ይህን የ መጫኛ መንገድ በ root ፋይል ስርአት ላይ ማስቀመጫ"
 
-#: src/Gtk/SnapshotListBox.vala:472
+#: src/Gtk/SnapshotListBox.vala:523
 msgid "LIVE"
 msgstr "በ ቀጥታ"
 
-#: src/Utility/Device.vala:1951 src/Console/AppConsole.vala:460
-#: src/Console/AppConsole.vala:499 src/Gtk/BackupDeviceBox.vala:254
+#: src/Utility/Device.vala:1951 src/Gtk/BackupDeviceBox.vala:254
+#: src/AppConsole.vala:471 src/AppConsole.vala:510
 #, c-format
 msgid "Label"
 msgstr "ምልክት"
 
-#: src/Core/Main.vala:1026
+#: src/Core/Main.vala:1038
 #, c-format
 msgid "Last boot snapshot is %d hours old"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ የ ተነሳው ከ %d ሰአቶች በፊት ነው"
 
-#: src/Core/Main.vala:1021
+#: src/Core/Main.vala:1033
 msgid "Last boot snapshot is older than system start time"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ የ ተነሳው አሮጌ ነው ከ ስርአቱ ማስጀመሪያ ጊዜ"
 
-#: src/Core/Main.vala:1017
+#: src/Core/Main.vala:1029
 msgid "Last boot snapshot not found"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ የ ተነሳው አልተገኘም"
 
-#: src/Core/Main.vala:1088
+#: src/Core/Main.vala:1100
 #, c-format
 msgid "Last daily snapshot is %d hours old"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ የ ተነሳው ከ %d ሰአቶች በፊት ነው"
 
-#: src/Core/Main.vala:1083
+#: src/Core/Main.vala:1095
 msgid "Last daily snapshot is more than 1 day old"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ በየ ቀኑ የ ተነሳው ከ 1 ቀን በፊት ነው"
 
-#: src/Core/Main.vala:1079
+#: src/Core/Main.vala:1091
 msgid "Last daily snapshot not found"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ በየ ቀኑ የ ተነሳው አልተገኘም"
 
-#: src/Core/Main.vala:1057
+#: src/Core/Main.vala:1069
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ በየ ሰአቱ የ ተነሳው ከ %d ደቂቆች በፊት ነው"
 
-#: src/Core/Main.vala:1052
+#: src/Core/Main.vala:1064
 msgid "Last hourly snapshot is more than 1 hour old"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ በየ ሰአቱ የ ተነሳው ከ ሰአት በፊት ነው"
 
-#: src/Core/Main.vala:1048
+#: src/Core/Main.vala:1060
 msgid "Last hourly snapshot not found"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ በየ ሰአቱ የ ተነሳው አልተገኘም"
 
-#: src/Core/Main.vala:1150
+#: src/Core/Main.vala:1162
 #, c-format
 msgid "Last monthly snapshot is %d days old"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ በየ ወሩ የ ተነሳው ከ %d ቀኖች በፊት ነው"
 
-#: src/Core/Main.vala:1145
+#: src/Core/Main.vala:1157
 msgid "Last monthly snapshot is more than 1 month old"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ በየ ወሩ የ ተነሳው ከ 1 ወር በፊት ነው"
 
-#: src/Core/Main.vala:1141
+#: src/Core/Main.vala:1153
 msgid "Last monthly snapshot not found"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ በየ ወሩ የ ተነሳው አልተገኘም"
 
-#: src/Core/Main.vala:1119
+#: src/Core/Main.vala:1131
 #, c-format
 msgid "Last weekly snapshot is %d days old"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ በየ ሳምንቱ የ ተነሳው ከ %d ቀኖች በፊት ነው"
 
-#: src/Core/Main.vala:1114
+#: src/Core/Main.vala:1126
 msgid "Last weekly snapshot is more than 1 week old"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ በየ ሳምንቱ የ ተነሳው ከ 1 ሳምንት በፊት ነው"
 
-#: src/Core/Main.vala:1110
+#: src/Core/Main.vala:1122
 msgid "Last weekly snapshot not found"
 msgstr "የ መመልከቻ ፎቶ መጨረሻ በየ ሳምንቱ የ ተነሳው አልተገኘም"
 
@@ -1228,20 +1239,20 @@ msgstr "የ መመልከቻ ፎቶ መጨረሻ በየ ሳምንቱ የ ተነ�
 msgid "Latest snapshot"
 msgstr "ዘመናዊ የ መመልከቻ ፎቶ"
 
-#: src/Core/Main.vala:1493
+#: src/Core/Main.vala:1505
 #, c-format
 msgid "Linking from snapshot"
 msgstr "ከ መመልከቻ ፎቶ ጋር በ ማገናኘት ላይ"
 
-#: src/Console/AppConsole.vala:353
+#: src/AppConsole.vala:363
 msgid "List"
 msgstr "ዝርዝር"
 
-#: src/Console/AppConsole.vala:355
+#: src/AppConsole.vala:365
 msgid "List devices"
 msgstr "የ ካሎች ዝርዝር"
 
-#: src/Console/AppConsole.vala:354
+#: src/AppConsole.vala:364
 msgid "List snapshots"
 msgstr "የ መመልከቻ ፎቶ ዝርዝር"
 
@@ -1258,7 +1269,7 @@ msgstr "አካባቢ"
 msgid "Main window closed by user"
 msgstr "ተጠቃሚው ዋናውን መስኮት ዘግቷል"
 
-#: src/Gtk/SnapshotListBox.vala:277
+#: src/Gtk/SnapshotListBox.vala:328
 msgid "Mark/Unmark for Deletion"
 msgstr ""
 
@@ -1274,7 +1285,7 @@ msgstr "ዝርዝር"
 msgid "Misc"
 msgstr ""
 
-#: src/Core/Main.vala:239
+#: src/Core/Main.vala:251
 msgid "Missing Dependencies"
 msgstr "የ ጎደሉ ጥገኞች"
 
@@ -1288,23 +1299,23 @@ msgstr "ዘዴ"
 msgid "Model"
 msgstr "ሞዴል"
 
-#: src/Gtk/SnapshotListBox.vala:250 src/Gtk/ScheduleBox.vala:64
+#: src/Gtk/SnapshotListBox.vala:301 src/Gtk/ScheduleBox.vala:64
 msgid "Monthly"
 msgstr "በየ ወሩ"
 
-#: src/Core/Main.vala:1138
+#: src/Core/Main.vala:1150
 msgid "Monthly snapshot are enabled"
 msgstr "የ መመልከቻ ፎቶ በየ ወሩ ማንሳት አስችለዋል"
 
-#: src/Core/Main.vala:1157
+#: src/Core/Main.vala:1169
 msgid "Monthly snapshot failed!"
 msgstr "የ መመልከቻ ፎቶ በየ ወሩ ማንሳት አልተቻለም!"
 
-#: src/Core/Main.vala:2262 src/Core/Main.vala:2295
+#: src/Core/Main.vala:2274 src/Core/Main.vala:2307
 msgid "Mount"
 msgstr "መጫኛ"
 
-#: src/Core/Main.vala:3123
+#: src/Core/Main.vala:3135
 msgid "Moved system subvolume to snapshot directory"
 msgstr "የ ስርአቱ ንዑስ መጠን ወደ መመልከቻ ፎቶ ማንሻ ዳይሬክቶሪ የ ተንቀሳቀሱ"
 
@@ -1312,8 +1323,8 @@ msgstr "የ ስርአቱ ንዑስ መጠን ወደ መመልከቻ ፎቶ ማ�
 msgid "Multiple snapshots selected"
 msgstr "በርካታ የ መመልከቻ ፎቶ ማንሻ ተመርጧል"
 
-#: src/Console/AppConsole.vala:426 src/Gtk/BackupDeviceBox.vala:235
-#: src/Gtk/RsyncLogBox.vala:492
+#: src/Gtk/BackupDeviceBox.vala:235 src/Gtk/RsyncLogBox.vala:491
+#: src/AppConsole.vala:437
 msgid "Name"
 msgstr "ስም"
 
@@ -1338,12 +1349,12 @@ msgstr "ምንም የ መመልከቻ ፎቶ አልተመረጠም"
 msgid "No snapshots available"
 msgstr "ምንም የ መመልከቻ ፎቶ አልተገኘም"
 
-#: src/Core/SnapshotRepo.vala:830 src/Console/AppConsole.vala:321
-#: src/Gtk/MainWindow.vala:970
+#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:970
+#: src/AppConsole.vala:326
 msgid "No snapshots found"
 msgstr "ምንም የ መመልከቻ ፎቶ አልተገኘም"
 
-#: src/Console/AppConsole.vala:742
+#: src/AppConsole.vala:753
 msgid "No snapshots found on device"
 msgstr "ምንም የ መመልከቻ ፎቶ በ አካሉ ላይ አልተገኘም"
 
@@ -1363,7 +1374,7 @@ msgstr "ምንም የ መመልከቻ ፎቶ አልተመረጠም"
 msgid "None"
 msgstr "ምንም"
 
-#: src/Core/Subvolume.vala:182
+#: src/Core/Subvolume.vala:198
 #, c-format
 msgid "Not Found"
 msgstr ""
@@ -1372,7 +1383,7 @@ msgstr ""
 msgid "Not Selected"
 msgstr "አልተመረጠም"
 
-#: src/Core/Main.vala:384
+#: src/Core/Main.vala:396
 msgid "Not Supported"
 msgstr "የ ተደገፈ አይደለም"
 
@@ -1380,16 +1391,16 @@ msgstr "የ ተደገፈ አይደለም"
 msgid "Not enough disk space"
 msgstr "ነፃ በቂ የ ዲስክ ቦታ የለም"
 
-#: src/Console/AppConsole.vala:398 src/Gtk/FinishBox.vala:55
+#: src/Gtk/FinishBox.vala:55 src/AppConsole.vala:409
 msgid "Notes"
 msgstr "ማስታወሻዎች"
 
-#: src/Core/Main.vala:1168
+#: src/Core/Main.vala:1180
 msgid "Nothing to do!"
 msgstr "ምንም የሚሰራ የለም!"
 
-#: src/Console/AppConsole.vala:424 src/Console/AppConsole.vala:454
-#: src/Console/AppConsole.vala:493 src/Console/AppConsole.vala:541
+#: src/AppConsole.vala:435 src/AppConsole.vala:465 src/AppConsole.vala:504
+#: src/AppConsole.vala:552
 msgid "Num"
 msgstr "ቁጥር"
 
@@ -1407,13 +1418,13 @@ msgstr ""
 msgid "OK"
 msgstr "እሺ"
 
-#: src/Gtk/SnapshotBackendBox.vala:180
+#: src/Gtk/SnapshotBackendBox.vala:188
 msgid ""
 "OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout "
 "(@ and @home subvolumes). Other layouts are not supported."
 msgstr ""
 
-#: src/Core/Main.vala:4157
+#: src/Core/Main.vala:4289
 msgid "Older log files removed"
 msgstr "አሮጌ የ መግቢያ ፋይል ተወግዷል"
 
@@ -1421,11 +1432,11 @@ msgstr "አሮጌ የ መግቢያ ፋይል ተወግዷል"
 msgid "Oldest snapshot"
 msgstr "አሮጌው የ መመልከቻ ፎቶ"
 
-#: src/Gtk/SnapshotListBox.vala:245
+#: src/Gtk/SnapshotListBox.vala:296
 msgid "On demand (manual)"
 msgstr ""
 
-#: src/Core/Main.vala:382 src/Core/Main.vala:3605
+#: src/Core/Main.vala:394 src/Core/Main.vala:3617
 #: src/Gtk/RestoreDeviceBox.vala:511
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
@@ -1435,13 +1446,13 @@ msgstr ""
 msgid "Open Menu"
 msgstr "ዝርዝር መክፈቻ"
 
-#: src/Core/Main.vala:3387
+#: src/Core/Main.vala:3399
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
 msgstr "ምርጫ --የ መመልከቻ ፎቶ ማንሻ-አካል መወሰን የለበትም የ መመልከቻ ፎቶ ለ መፍጠር በ BTRFS ዘዴ ውስጥ"
 
-#: src/Console/AppConsole.vala:351 src/Gtk/AppGtk.vala:115
+#: src/AppConsole.vala:361 src/AppGtk.vala:128
 msgid "Options"
 msgstr "ምርጫዎች"
 
@@ -1460,7 +1471,7 @@ msgstr "ባለቤት"
 msgid "Parent Device"
 msgstr "ወላጅ አካል"
 
-#: src/Core/Main.vala:2626 src/Core/Main.vala:2717 src/Gtk/RsyncLogBox.vala:222
+#: src/Core/Main.vala:2638 src/Core/Main.vala:2729 src/Gtk/RsyncLogBox.vala:222
 msgid "Parsing log file..."
 msgstr "የ ነግቢያ ፋይል በ መመረምር ላይ..."
 
@@ -1483,27 +1494,27 @@ msgstr "ንድፍ"
 msgid "Permissions"
 msgstr "ፍቃዶች"
 
-#: src/Core/Main.vala:258
+#: src/Core/Main.vala:270
 msgid "Please check if you have multiple windows open."
 msgstr "እባክዎን በርካታ መስኮቶች ተከፍተው እንደሆን ይመርምሩ"
 
-#: src/Core/Main.vala:2393
+#: src/Core/Main.vala:2405
 msgid "Please do not interrupt the restore process!"
 msgstr "እባክዎን እንደ ነበር መመለሻውን አያቋርጡ"
 
-#: src/Core/Main.vala:353
+#: src/Core/Main.vala:365
 msgid "Please install required packages and try running TimeShift again"
 msgstr "እባክዎን አስፈላጊውን ጥቅል ይግጠሙ እና TimeShift እንደገና ለ ማስኬድ ይሞክሩ"
 
-#: src/Gtk/AppGtk.vala:129
+#: src/AppGtk.vala:143
 msgid "Please re-run the application as admin (using 'sudo' or 'su')"
 msgstr "እባክዎን መተግበሪያውን-እንደገና ያስኪዱ እንደ አስተዳዳሪ (በ መጠቀም 'sudo' ወይንም 'su')"
 
-#: src/Console/AppConsole.vala:103
+#: src/AppConsole.vala:108
 msgid "Please run the application as admin (using 'sudo' or 'su')"
 msgstr "እባክዎን መተግበሪያውን እንደ አስተዳዳሪ ያስኪዱ (በ መጠቀም 'sudo' ወይንም 'su')"
 
-#: src/Core/Main.vala:2343
+#: src/Core/Main.vala:2355
 msgid "Please save your work and close all applications."
 msgstr "እባክዎን የ እርስዎን ስራ ያስቀምጡ እና መተግበሪያውን ይዝጉ"
 
@@ -1515,7 +1526,7 @@ msgstr "እባክዎን የ መመልከቻ ፎቶ ይምረጡ መግቢያው�
 msgid "Please select the GRUB device"
 msgstr "እባክዎን የ GRUB አካል ይምረጡ"
 
-#: src/Core/Main.vala:254
+#: src/Core/Main.vala:266
 msgid "Please wait a few minutes and try again."
 msgstr "እባክዎን ትንሽ ይቆዩ እና እንደገና ይሞክሩ"
 
@@ -1531,7 +1542,7 @@ msgstr ""
 msgid "Populating list..."
 msgstr ""
 
-#: src/Core/Main.vala:1728 src/Gtk/BackupBox.vala:117
+#: src/Core/Main.vala:1740 src/Gtk/BackupBox.vala:117
 #: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
 #: src/Gtk/RsyncLogBox.vala:232
 msgid "Preparing..."
@@ -1542,15 +1553,19 @@ msgstr "በ ማሰናዳት ላይ..."
 msgid "Previous"
 msgstr "ያለፈው"
 
-#: src/Gtk/AppGtk.vala:117
+#: src/AppGtk.vala:130
 msgid "Print debug information"
 msgstr "የ ማስተካከያ መረጃ ማተሚያ"
 
-#: src/Core/Main.vala:3967
+#: src/AppConsole.vala:395 src/AppGtk.vala:132
+msgid "Print version number"
+msgstr ""
+
+#: src/Core/Main.vala:3979
 msgid "Query completed"
 msgstr "ጥያቄው ተፈጽሟል"
 
-#: src/Core/Main.vala:3950
+#: src/Core/Main.vala:3962
 msgid "Querying subvolume info..."
 msgstr "የ ንዑስ መጠን መረጃ በ መጠየቅ ላይ..."
 
@@ -1558,7 +1573,7 @@ msgstr "የ ንዑስ መጠን መረጃ በ መጠየቅ ላይ..."
 msgid "RSYNC"
 msgstr "RSYNC"
 
-#: src/Gtk/SnapshotBackendBox.vala:185
+#: src/Gtk/SnapshotBackendBox.vala:193
 msgid "RSYNC Snapshots"
 msgstr "RSYNC የ መመልከቻ ፎቶ"
 
@@ -1568,12 +1583,12 @@ msgid ""
 "needed. Select this only if the restored system fails to boot."
 msgstr ""
 
-#: src/Console/AppConsole.vala:984
+#: src/AppConsole.vala:995
 #, c-format
 msgid "Re-install GRUB2 bootloader?"
 msgstr "እንደገና-መግጠሚያ የ GRUB2 ማስነሻ መጫኛ?"
 
-#: src/Core/Main.vala:2456
+#: src/Core/Main.vala:2468
 msgid "Re-installing GRUB2 bootloader..."
 msgstr "እንደገና-መግጠሚያ የ GRUB2 ማስነሻ መጫኛ..."
 
@@ -1586,7 +1601,7 @@ msgstr "እንደገና-መግጠሚያ የ GRUB2 ማስነሻ መጫኛ በ ተ
 msgid "Read %'d of %'d lines..."
 msgstr "ማንበቢያ %'d ከ %'d መስመሮች..."
 
-#: src/Core/Main.vala:2556
+#: src/Core/Main.vala:2568
 msgid "Rebooting system..."
 msgstr "ስርአቱን እንደገና በ ማስነሳት ላይ..."
 
@@ -1607,8 +1622,8 @@ msgstr ""
 msgid "Remove"
 msgstr "ማስወገጃ"
 
-#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1766 src/Core/Main.vala:1777
-#: src/Core/Main.vala:4153 src/Core/SnapshotRepo.vala:907
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1778 src/Core/Main.vala:1789
+#: src/Core/Main.vala:4285 src/Core/SnapshotRepo.vala:907
 #, c-format
 msgid "Removed"
 msgstr "ተወግዷል"
@@ -1617,7 +1632,7 @@ msgstr "ተወግዷል"
 msgid "Removed cron task"
 msgstr "የ ተወገደ የ እቅድ ስራ"
 
-#: src/Core/Main.vala:3755
+#: src/Core/Main.vala:3767
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr "የ ተወገደ የ ዳይሬክቶሪ መጫኛ: '%s'"
@@ -1640,13 +1655,13 @@ msgstr "የ መመልከቻ ፎቶ በ ማስወገድ ላይ"
 msgid "Removing snapshots"
 msgstr "የ መመልከቻ ፎቶ በ ማስወገድ ላይ"
 
-#: src/Console/AppConsole.vala:363 src/Gtk/MainWindow.vala:150
-#: src/Gtk/RestoreWindow.vala:125 src/Gtk/RsyncLogBox.vala:377
-#: src/Gtk/RsyncLogBox.vala:567 src/Gtk/RestoreFinishBox.vala:71
+#: src/Gtk/MainWindow.vala:150 src/Gtk/RestoreWindow.vala:125
+#: src/Gtk/RsyncLogBox.vala:377 src/Gtk/RsyncLogBox.vala:566
+#: src/Gtk/RestoreFinishBox.vala:71 src/AppConsole.vala:373
 msgid "Restore"
 msgstr "እንደ ነበር መመለሻ"
 
-#: src/Gtk/UsersBox.vala:326
+#: src/Gtk/UsersBox.vala:325
 msgid "Restore @home subvolume"
 msgstr ""
 
@@ -1662,7 +1677,7 @@ msgstr "እንደ ነበር መመለሻ ያልተካተቱ"
 msgid "Restore Snapshot"
 msgstr "የ መመልከቻ ፎቶ እንደ ነበር መመለሻ"
 
-#: src/Core/Main.vala:2966 src/Core/Main.vala:3008
+#: src/Core/Main.vala:2978 src/Core/Main.vala:3020
 msgid "Restore completed"
 msgstr "እንደ ነበር መመለስ ጨርሷል"
 
@@ -1670,7 +1685,7 @@ msgstr "እንደ ነበር መመለስ ጨርሷል"
 msgid "Restore selected snapshot"
 msgstr "የ ተመረጠውን የ መመልከቻ ፎቶ እንደ ነበር መመለሻ"
 
-#: src/Console/AppConsole.vala:364
+#: src/AppConsole.vala:374
 msgid "Restore snapshot"
 msgstr "የ መመልከቻ ፎቶ እንደ ነበር መመለሻ"
 
@@ -1678,7 +1693,7 @@ msgstr "የ መመልከቻ ፎቶ እንደ ነበር መመለሻ"
 msgid "Restored subvolumes will become active after system is restarted."
 msgstr "እንደ ነበር የ ተመለሰው ንዑስ መጠን ንቁ ይሆናል ስርአቱ እንደገና ከ ጀመረ በኋላ"
 
-#: src/Core/Subvolume.vala:204
+#: src/Core/Subvolume.vala:220
 msgid "Restored system subvolume"
 msgstr "የ ስርአት ንዑስ መጠን እንደ ነበር መመለሻ"
 
@@ -1693,7 +1708,7 @@ msgid ""
 "snapshot can be restored later to 'undo' the restore."
 msgstr ""
 
-#: src/Core/Main.vala:2935
+#: src/Core/Main.vala:2947
 msgid "Restoring snapshot..."
 msgstr "የ መመልከቻ ፎቶ እንደ ነበር በ መመለስ ላይ..."
 
@@ -1719,16 +1734,16 @@ msgstr "የ Root አካል አልተመረጠም"
 msgid "Rsync Log Viewer"
 msgstr ""
 
-#: src/Gtk/AppGtk.vala:120
+#: src/AppGtk.vala:134
 #, c-format
 msgid "Run 'timeshift' for the command-line version of this tool"
 msgstr ""
 
-#: src/Console/AppConsole.vala:383
+#: src/AppConsole.vala:393
 msgid "Run in non-interactive mode"
 msgstr ""
 
-#: src/Core/Main.vala:190
+#: src/Core/Main.vala:202
 msgid "Running"
 msgstr "በ ማስኬድ ላይ"
 
@@ -1748,7 +1763,7 @@ msgid ""
 "distribution by restoring a snapshot."
 msgstr ""
 
-#: src/Core/Main.vala:1434 src/Core/Main.vala:1588 src/Core/Main.vala:1590
+#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
 msgid "Saving to device"
 msgstr "ወደ አካሉ በ ማስቀመጥ ላይ"
 
@@ -1756,11 +1771,11 @@ msgstr "ወደ አካሉ በ ማስቀመጥ ላይ"
 msgid "Schedule"
 msgstr "እቅድ"
 
-#: src/Core/Main.vala:261
+#: src/Core/Main.vala:273
 msgid "Scheduled snapshot in progress..."
 msgstr "የ ታቀደው የ መመልከቻ ፎቶ በ ሂደት ላይ..."
 
-#: src/Core/Main.vala:1168 src/Gtk/MainWindow.vala:1020
+#: src/Core/Main.vala:1180 src/Gtk/MainWindow.vala:1020
 #: src/Gtk/ScheduleBox.vala:312
 msgid "Scheduled snapshots are disabled"
 msgstr "የ ታቀደው የ መመልከቻ ፎቶ ተሰናክሏል"
@@ -1779,16 +1794,16 @@ msgid ""
 "selected levels."
 msgstr "በ እቅድ መመልከቻ ፎቶ ማንሳት አስችለዋል: የ መመልከቻ ፎቶ ራሱ በራሱ ይፈጥራል ለ ተመረጠው ደረጃ"
 
-#: src/Console/AppConsole.vala:872
+#: src/AppConsole.vala:883
 #, c-format
 msgid "Select '%s' device (default = %s)"
 msgstr "ይምረጡ '%s' አካል (ነባር = %s)"
 
-#: src/Core/SnapshotRepo.vala:510 src/Console/AppConsole.vala:691
+#: src/Core/SnapshotRepo.vala:510 src/AppConsole.vala:702
 msgid "Select BTRFS system disk with root subvolume (@)"
 msgstr ""
 
-#: src/Console/AppConsole.vala:1000
+#: src/AppConsole.vala:1011
 msgid "Select GRUB device"
 msgstr "የ GRUB አካል ይምረጡ"
 
@@ -1845,7 +1860,7 @@ msgstr "ሌላ አካል ልምረጥ?"
 msgid "Select applications to exclude from restore"
 msgstr "መተግበሪያ ይምረጡ ከ እንደ ነበር መመለሻ ውስጥ ለማስቀረት"
 
-#: src/Console/AppConsole.vala:674
+#: src/AppConsole.vala:685
 msgid "Select backup device"
 msgstr "ተተኪ አካል ይምረጡ"
 
@@ -1857,7 +1872,7 @@ msgstr "ዳይሬክቶሪ ይምረጡ"
 msgid "Select file(s)"
 msgstr "ይምረጡ ፋይል(ሎች)"
 
-#: src/Console/AppConsole.vala:748
+#: src/AppConsole.vala:759
 msgid "Select snapshot"
 msgstr "የ መመልከቻ ፎቶ ይምረጡ"
 
@@ -1901,11 +1916,11 @@ msgstr "የ መመልከቻ ፎቶ የሚጠፋውን ምልክት በማድረ�
 msgid "Select the target devices where system will be cloned."
 msgstr "የ ታለመውን አካል ይምረጡ ስርአቱ የሚባዛበትን"
 
-#: src/Core/Main.vala:3415
+#: src/Core/Main.vala:3427
 msgid "Selected default snapshot device"
 msgstr "ነባር የ መመልከቻ ፎቶ አካል ይምረጡ"
 
-#: src/Core/Main.vala:3366 src/Core/Main.vala:3370
+#: src/Core/Main.vala:3378 src/Core/Main.vala:3382
 msgid "Selected default snapshot type"
 msgstr "ነባር የ መመልከቻ ፎቶ አይነት ይምረጡ"
 
@@ -1921,11 +1936,11 @@ msgstr "የ ተመረጠው አካል የ ሊነክስ ክፍልፋይ አልያ
 msgid "Selected snapshot device"
 msgstr "የ ተመረጠው የ መመልከቻ ፎቶ አካል"
 
-#: src/Core/SnapshotRepo.vala:509 src/Console/AppConsole.vala:690
+#: src/Core/SnapshotRepo.vala:509 src/AppConsole.vala:701
 msgid "Selected snapshot device is not a system disk"
 msgstr "የ ተመረጠው የ መመልከቻ ፎቶ አካል የ ስርአት ዲስክ አይደለም"
 
-#: src/Core/Main.vala:2176
+#: src/Core/Main.vala:2188
 msgid "Selected snapshot is marked for deletion"
 msgstr "ለማጥፋት ምልክት የ ተደረገበትን የ መመልከቻ ፎቶ ይምረጡ"
 
@@ -1933,7 +1948,7 @@ msgstr "ለማጥፋት ምልክት የ ተደረገበትን የ መመልከ�
 msgid "Selected snapshot is marked for deletion and cannot be restored"
 msgstr "ለማጥፋት ምልክት የ ተደረገበትን የ መመልከቻ ፎቶ እንደ ነበር መመለስ አይቻልም"
 
-#: src/Gtk/UsersBox.vala:235
+#: src/Gtk/UsersBox.vala:234
 msgid ""
 "Selected user has an encrypted home directory. It's not possible to include "
 "only hidden files."
@@ -1944,11 +1959,11 @@ msgstr "የ ተመረጠው ተጠቃሚ የ ተመሰጠረ የ ቤት ዳይ�
 msgid "Serial"
 msgstr "ተከታታይ"
 
-#: src/Core/Main.vala:218
+#: src/Core/Main.vala:230
 msgid "Session log file"
 msgstr "የ ክፍለ ጊዜ መግቢያ ፋይል"
 
-#: src/Console/AppConsole.vala:360
+#: src/AppConsole.vala:370
 msgid "Set snapshot description"
 msgstr "የ መመልከቻ ፎቶ መግለጫ ማሰናጃ"
 
@@ -1969,11 +1984,11 @@ msgstr "ማሰናጃ ጨርሷል"
 msgid "Setup Wizard"
 msgstr "የ ማሰናጃ እረዳት"
 
-#: src/Console/AppConsole.vala:380
+#: src/AppConsole.vala:390
 msgid "Show additional debug messages"
 msgstr "ተጨማሪ መልእክት ማስተካከያ ማሳያ"
 
-#: src/Console/AppConsole.vala:384 src/Gtk/AppGtk.vala:118
+#: src/AppConsole.vala:394 src/AppGtk.vala:131
 msgid "Show all options"
 msgstr "ሁሉንም ምርጫዎች ማሳያ"
 
@@ -1981,19 +1996,19 @@ msgstr "ሁሉንም ምርጫዎች ማሳያ"
 msgid "Show more applications to exclude on the next page"
 msgstr "ተጨማሪ መተግበሪያ ማሳያ ለ መተው በሚቀጥለው ገጽ ላይ"
 
-#: src/Console/AppConsole.vala:381
+#: src/AppConsole.vala:391
 msgid "Show rsync output (default)"
 msgstr ""
 
 #: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
-#: src/Console/AppConsole.vala:458 src/Console/AppConsole.vala:497
-#: src/Gtk/BackupBox.vala:96 src/Gtk/BackupDeviceBox.vala:202
-#: src/Gtk/RestoreBox.vala:131 src/Gtk/RsyncLogBox.vala:392
+#: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
+#: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
+#: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:469 src/AppConsole.vala:508
 #, c-format
 msgid "Size"
 msgstr "መጠን"
 
-#: src/Gtk/SnapshotBackendBox.vala:178
+#: src/Gtk/SnapshotBackendBox.vala:186
 msgid ""
 "Size of BTRFS snapshots are initially zero. As system files gradually change "
 "with time, data gets written to new data blocks which take up disk space "
@@ -2001,12 +2016,12 @@ msgid ""
 "blocks."
 msgstr ""
 
-#: src/Console/AppConsole.vala:369
+#: src/AppConsole.vala:379
 msgid "Skip GRUB2 reinstall"
 msgstr "የ GRUB2 እንደገና መግጠሚያ መዝለያ"
 
-#: src/Core/Main.vala:2181 src/Core/SnapshotRepo.vala:631
-#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:93
+#: src/Core/Main.vala:2193 src/Core/SnapshotRepo.vala:631
+#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:94
 #, c-format
 msgid "Snapshot"
 msgstr "የ መመልከቻ ፎቶ"
@@ -2024,7 +2039,7 @@ msgstr ""
 msgid "Snapshot Created"
 msgstr "የ መመልከቻ ፎቶ ተፈጥሯል"
 
-#: src/Gtk/SnapshotListBox.vala:244
+#: src/Gtk/SnapshotListBox.vala:295
 #, c-format
 msgid "Snapshot Levels"
 msgstr ""
@@ -2038,11 +2053,11 @@ msgstr "የ መመልከቻ ፎቶ ማጥፋት በ ሂደት ላይ ነው..."
 msgid "Snapshot device"
 msgstr "የ መመልከቻ ፎቶአካል"
 
-#: src/Core/SnapshotRepo.vala:478 src/Console/AppConsole.vala:664
+#: src/Core/SnapshotRepo.vala:478 src/AppConsole.vala:675
 msgid "Snapshot device not available"
 msgstr "የ መመልከቻ ፎቶአካል አልተገኘም"
 
-#: src/Core/SnapshotRepo.vala:471 src/Console/AppConsole.vala:660
+#: src/Core/SnapshotRepo.vala:471 src/AppConsole.vala:671
 msgid "Snapshot device not selected"
 msgstr "የ መመልከቻ ፎቶአካል አልተመረጠም"
 
@@ -2051,15 +2066,15 @@ msgstr "የ መመልከቻ ፎቶአካል አልተመረጠም"
 msgid "Snapshot location"
 msgstr "የ መመልከቻ ፎቶ አካል አካባቢ"
 
-#: src/Core/Main.vala:1305
+#: src/Core/Main.vala:1317
 msgid "Snapshot saved successfully"
 msgstr "የ መመልከቻ ፎቶ ተሳክቶ ተቀምጧል"
 
-#: src/Core/Main.vala:2171
+#: src/Core/Main.vala:2183
 msgid "Snapshot to restore not specified!"
 msgstr "የ መመልከቻ ፎቶ እንደ ነበር ለ መመለስ አልተገለጸም!"
 
-#: src/Core/Main.vala:3012
+#: src/Core/Main.vala:3024
 msgid "Snapshot will become active after system is rebooted."
 msgstr "የ መመልከቻ ፎቶ ንቁ የሚሆነው ስርአቱ እንደገና ከ ተነሳ በኋላ ነው"
 
@@ -2071,19 +2086,19 @@ msgstr "የ መመልከቻ ፎቶ(ዎች) ጠፍተዋል"
 msgid "Snapshots"
 msgstr "የ መመልከቻ ፎቶ"
 
-#: src/Gtk/SnapshotBackendBox.vala:170
+#: src/Gtk/SnapshotBackendBox.vala:178
 msgid ""
 "Snapshots are created and restored instantly. Snapshot creation is an atomic "
 "transaction at the file system level."
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:187
+#: src/Gtk/SnapshotBackendBox.vala:195
 msgid ""
 "Snapshots are created by creating copies of system files using rsync, and "
 "hard-linking unchanged files from previous snapshot."
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:168
+#: src/Gtk/SnapshotBackendBox.vala:176
 msgid ""
 "Snapshots are created using the built-in features of the BTRFS file system."
 msgstr "የ መመልከቻ ፎቶ የሚፈጠረው የ BTRFS ፋይል ስርአት አብሮ-የ ተገነባውን ገጽታ በ መጠቀም ነው"
@@ -2093,20 +2108,20 @@ msgstr "የ መመልከቻ ፎቶ የሚፈጠረው የ BTRFS ፋይል ስር
 msgid "Snapshots are not scheduled at fixed times."
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:174
+#: src/Gtk/SnapshotBackendBox.vala:182
 msgid ""
 "Snapshots are perfect, byte-for-byte copies of the system. Nothing is "
 "excluded."
 msgstr "የ መመልከቻ ፎቶ ትክክለኛ ነው ባይት-ለ-ባይት ስርአት ኮፒ ማድረጊያ ነው: ምንም የሚቀር የለም"
 
-#: src/Gtk/SnapshotBackendBox.vala:172
+#: src/Gtk/SnapshotBackendBox.vala:180
 msgid ""
 "Snapshots are restored by replacing system subvolumes. Since files are never "
 "copied, deleted or overwritten, there is no risk of data loss. The existing "
 "system is preserved as a new snapshot after restore."
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:176
+#: src/Gtk/SnapshotBackendBox.vala:184
 msgid ""
 "Snapshots are saved on the same disk from which they are created (system "
 "disk). Storage on other disks is not supported. If system disk fails then "
@@ -2129,14 +2144,14 @@ msgstr ""
 msgid "Snapshots available for restore"
 msgstr "የ መመልከቻ ፎቶ ዝግጁ ነው እንደ ነበር ለ መመለስ"
 
-#: src/Gtk/SnapshotBackendBox.vala:191
+#: src/Gtk/SnapshotBackendBox.vala:199
 msgid ""
 "Snapshots can be saved to any disk formatted with a Linux file system. "
 "Saving snapshots to non-system or external disk allows the system to be "
 "restored even if system disk is damaged or re-formatted."
 msgstr ""
 
-#: src/Console/AppConsole.vala:284
+#: src/AppConsole.vala:289
 msgid "Snapshots cannot be created in Live CD mode"
 msgstr "የ መመልከቻ ፎቶ በ ቀጥታ ሲዲ ዘዴ ውስጥ መፍጠር አይቻልም"
 
@@ -2151,24 +2166,24 @@ msgid ""
 msgstr ""
 "የ መመልከቻ ፎቶ በ ተመረጠው ክፍተት መሰረት ይፈጠራል: ለ መመልከቻ ፎቶ ማንሻ በቂ ነፃ የ ዲስክ ቦታ ካለ (> 1 ጌባ)"
 
-#: src/Console/AppConsole.vala:376
+#: src/AppConsole.vala:386
 msgid "Specify backup device (default: config)"
 msgstr "የ ተተኪ አክል መወሰኛ (ነባር: ማሰናጃ)"
 
-#: src/Console/AppConsole.vala:368
+#: src/AppConsole.vala:378
 msgid "Specify device for installing GRUB2 bootloader"
 msgstr ""
 
-#: src/Console/AppConsole.vala:366
+#: src/AppConsole.vala:376
 msgid "Specify snapshot to restore"
 msgstr "እንደ ነበር የሚመለሰውን የ መመልከቻ ፎቶ ይወስኑ"
 
-#: src/Console/AppConsole.vala:367
+#: src/AppConsole.vala:377
 msgid "Specify target device"
 msgstr "የታለመውን አካል ይወስኑ"
 
 #: src/Core/SnapshotRepo.vala:452 src/Core/SnapshotRepo.vala:606
-#: src/Gtk/RsyncLogBox.vala:472
+#: src/Gtk/RsyncLogBox.vala:471
 #, c-format
 msgid "Status"
 msgstr "ሁኔታው"
@@ -2177,34 +2192,30 @@ msgstr "ሁኔታው"
 msgid "Stop cron emails for scheduled tasks"
 msgstr "ለታቀደ ስራ የ እቅድ ኢሜይል ማስቆሚያ"
 
-#: src/Utility/TeeJee.Process.vala:487
-msgid "Stopped"
-msgstr "ማስቆሚያ"
-
 #: src/Gtk/RestoreDeviceBox.vala:101
 msgid "Subvolume"
 msgstr ""
 
-#: src/Core/Subvolume.vala:187
+#: src/Core/Subvolume.vala:203
 #, c-format
 msgid "Subvolume exists at destination"
 msgstr ""
 
-#: src/Gtk/SnapshotListBox.vala:223
+#: src/Gtk/SnapshotListBox.vala:274
 #, c-format
 msgid "Subvolumes"
 msgstr ""
 
 #: src/Gtk/ExcludeBox.vala:267 src/Gtk/RestoreWindow.vala:120
-#: src/Gtk/ExcludeAppsBox.vala:135
+#: src/Gtk/ExcludeAppsBox.vala:134
 msgid "Summary"
 msgstr "ማጠቃለያ"
 
-#: src/Console/AppConsole.vala:378
+#: src/AppConsole.vala:388
 msgid "Switch to BTRFS mode (default: config)"
 msgstr "ወደ BTRFS ዘዴ መቀየሪያ (ነባር: ማሰናጃ)"
 
-#: src/Console/AppConsole.vala:379
+#: src/AppConsole.vala:389
 msgid "Switch to RSYNC mode (default: config)"
 msgstr "ወደ RSYNC ዘዴ መቀየሪያ (ነባር: ማሰናጃ)"
 
@@ -2212,19 +2223,19 @@ msgstr "ወደ RSYNC ዘዴ መቀየሪያ (ነባር: ማሰናጃ)"
 msgid "Symlinks updated"
 msgstr ""
 
-#: src/Core/Main.vala:2531
+#: src/Core/Main.vala:2543
 msgid "Syncing file systems..."
 msgstr ""
 
-#: src/Core/Main.vala:1510 src/Core/Main.vala:2701 src/Core/Main.vala:2942
+#: src/Core/Main.vala:1522 src/Core/Main.vala:2713 src/Core/Main.vala:2954
 msgid "Syncing files with rsync..."
 msgstr ""
 
-#: src/Gtk/AppGtk.vala:113
+#: src/AppGtk.vala:126
 msgid "Syntax"
 msgstr "አገባብ"
 
-#: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:125
+#: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:126
 #, c-format
 msgid "System"
 msgstr "ስርአት"
@@ -2237,23 +2248,23 @@ msgstr "ስርአት እንደ ነበር መመለሻ መሳሪያ"
 msgid "System can be rolled-back to a previous date by restoring a snapshot."
 msgstr ""
 
-#: src/Core/Main.vala:2394
+#: src/Core/Main.vala:2406
 msgid "System will reboot after files are restored"
 msgstr "ስርአቱ እንደገና ይጀምራል ፋይሎች እንደ ነበር ከ ተመለሱ በኋላ"
 
-#: src/Core/Main.vala:2344
+#: src/Core/Main.vala:2356
 msgid "System will reboot after files are restored."
 msgstr "ፋይሎች እንደ ነበር ከ ተመለሱ በኋላ ስርአቱ እንደገና ይጀምራል"
 
-#: src/Core/Main.vala:1241 src/Core/Main.vala:1315
+#: src/Core/Main.vala:1253 src/Core/Main.vala:1327
 msgid "Tagged snapshot"
 msgstr ""
 
-#: src/Console/AppConsole.vala:427 src/Gtk/SnapshotListBox.vala:149
+#: src/Gtk/SnapshotListBox.vala:150 src/AppConsole.vala:438
 msgid "Tags"
 msgstr "ምልክት"
 
-#: src/Core/Main.vala:2206
+#: src/Core/Main.vala:2218
 msgid "Target device is not mounted"
 msgstr "የታለመው አካል አልተጫነም"
 
@@ -2261,15 +2272,9 @@ msgstr "የታለመው አካል አልተጫነም"
 msgid "Target device is same as system device"
 msgstr "የታለመው አካል ከ ስርአቱ አካል ጋር ተመሳሳይ ነው"
 
-#: src/Core/Main.vala:2200
+#: src/Core/Main.vala:2212
 msgid "Target device not specified!"
 msgstr "የታለመው አካል አልተወሰነም!"
-
-#: src/Gtk/SnapshotBackendBox.vala:119
-msgid ""
-"The 'btrfs' command is not available on your system. Install the 'btrfs-"
-"tools' package and try again."
-msgstr ""
 
 #: src/Gtk/ScheduleBox.vala:156
 msgid ""
@@ -2278,11 +2283,11 @@ msgid ""
 "created by Timeshift."
 msgstr ""
 
-#: src/Core/Main.vala:381
+#: src/Core/Main.vala:393
 msgid "The system partition has an unsupported subvolume layout."
 msgstr "የ ስርአቱ ክፍልፋይ ያልተደገፈ ንዑስ መጠን እቅድ አለው"
 
-#: src/Core/Main.vala:3604
+#: src/Core/Main.vala:3616
 msgid "The target partition has an unsupported subvolume layout."
 msgstr "የታለመው ክፍልፋይ ያልተደገፈ ንዑስ መጠን እቅድ አለው"
 
@@ -2295,7 +2300,7 @@ msgstr "የ መመልከቻ ፎቶ በዚህ አካል የለም"
 msgid "This device is not encrypted"
 msgstr "ይህ አካል አልተመሰጠረም"
 
-#: src/Core/Main.vala:2360
+#: src/Core/Main.vala:2372
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
@@ -2311,14 +2316,14 @@ msgstr "Timeshift ንቁ ነው"
 msgid "Timestamp"
 msgstr "የ ሰአት ማህተም"
 
-#: src/Console/AppConsole.vala:613
+#: src/AppConsole.vala:624
 #, c-format
 msgid "To restore with default options, press the ENTER key for all prompts!"
 msgstr "እንደ ነበር ለ መመለስ ነባሩን ምርጫ: ይጫኑ የ ማስገቢያውን ቁልፍ ለሁሉም ሙከራዎች!"
 
-#: src/Utility/Device.vala:1949 src/Console/AppConsole.vala:459
-#: src/Console/AppConsole.vala:498 src/Gtk/BackupDeviceBox.vala:190
-#: src/Gtk/SettingsWindow.vala:87
+#: src/Utility/Device.vala:1949 src/Gtk/BackupDeviceBox.vala:190
+#: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:470
+#: src/AppConsole.vala:509
 #, c-format
 msgid "Type"
 msgstr "አይነት"
@@ -2328,15 +2333,15 @@ msgstr "አይነት"
 msgid "UUID"
 msgstr "UUID"
 
-#: src/Gtk/AppGtk.vala:99
+#: src/AppGtk.vala:107
 msgid "Unknown option"
 msgstr "ያልታወቀ ምርጫ"
 
-#: src/Core/Main.vala:1223
+#: src/Core/Main.vala:1235
 msgid "Unknown snapshot type"
 msgstr "ያልታወቀ የ መመልከቻ ፎቶ አይነት"
 
-#: src/Core/Main.vala:1715
+#: src/Core/Main.vala:1727
 msgid "Unknown value specified for option --tags"
 msgstr ""
 
@@ -2353,7 +2358,11 @@ msgstr "ተሳክቶ ተከፍቷል"
 msgid "Unmounting from"
 msgstr "በ ማውረድ ላይ ከ"
 
-#: src/Core/Main.vala:3608 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Gtk/SnapshotListBox.vala:198
+msgid "Unshared"
+msgstr ""
+
+#: src/Core/Main.vala:3620 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
 msgstr "ያልተደገፈ የ ንዑስ መጠን እቅድ"
 
@@ -2365,11 +2374,11 @@ msgstr "የ GRUB ዝርዝር ማሻሻያ"
 msgid "Update initramfs"
 msgstr "initramfs ማሻሻያ"
 
-#: src/Core/Main.vala:2881
+#: src/Core/Main.vala:2893
 msgid "Updated /etc/crypttab on target device"
 msgstr "ተሻሽሏል /etc/crypttab በታለመው አካል ላይ"
 
-#: src/Core/Main.vala:2801
+#: src/Core/Main.vala:2813
 msgid "Updated /etc/fstab on target device"
 msgstr "ተሻሽሏል /etc/fstab በታለመው አካል ላይ"
 
@@ -2380,11 +2389,11 @@ msgid ""
 msgstr ""
 "የ GRUB ዝርዝር ማስገቢያ ማሻሻያ (እንመክራለን). ይህ ለማኬድ አስተማማኝ ነው እና እንደ ተመረጠ መቆየት አለበት"
 
-#: src/Core/Main.vala:2514
+#: src/Core/Main.vala:2526
 msgid "Updating GRUB menu..."
 msgstr "GRUB menu ማሻሻያ..."
 
-#: src/Core/Main.vala:2725
+#: src/Core/Main.vala:2737
 msgid "Updating bootloader configuration..."
 msgstr "የ bootloader ማሰናጅ በ ማሻሻል ላይ..."
 
@@ -2393,7 +2402,7 @@ msgstr "የ bootloader ማሰናጅ በ ማሻሻል ላይ..."
 msgid "Used"
 msgstr "የ ተጠቀሙት"
 
-#: src/Gtk/SetupWizardWindow.vala:114 src/Gtk/UsersBox.vala:102
+#: src/Gtk/SetupWizardWindow.vala:114 src/Gtk/UsersBox.vala:101
 msgid "User"
 msgstr "ተጠቃሚ"
 
@@ -2423,11 +2432,11 @@ msgstr ""
 msgid "Vendor"
 msgstr "ሻጭ"
 
-#: src/Gtk/SnapshotListBox.vala:291
+#: src/Gtk/SnapshotListBox.vala:342
 msgid "View Rsync Log for Create"
 msgstr ""
 
-#: src/Gtk/SnapshotListBox.vala:298
+#: src/Gtk/SnapshotListBox.vala:349
 msgid "View Rsync Log for Restore"
 msgstr ""
 
@@ -2435,7 +2444,7 @@ msgstr ""
 msgid "View TimeShift Logs"
 msgstr "የ TimeShift መግቢያ መመልከቻ"
 
-#: src/Core/Main.vala:2255 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Core/Main.vala:2267 src/Gtk/RestoreSummaryBox.vala:53
 msgid "Warning"
 msgstr "ማስጠንቀቂያ"
 
@@ -2443,15 +2452,15 @@ msgstr "ማስጠንቀቂያ"
 msgid "Web Browsers"
 msgstr "ዌብ መቃኛ"
 
-#: src/Gtk/SnapshotListBox.vala:249 src/Gtk/ScheduleBox.vala:82
+#: src/Gtk/SnapshotListBox.vala:300 src/Gtk/ScheduleBox.vala:82
 msgid "Weekly"
 msgstr "በየ ሳምንቱ"
 
-#: src/Core/Main.vala:1126
+#: src/Core/Main.vala:1138
 msgid "Weekly snapshot failed!"
 msgstr "የ መመልከቻ ፎቶ በየ ሳምንቱ ማንሳት አልተቻለም!"
 
-#: src/Core/Main.vala:1107
+#: src/Core/Main.vala:1119
 msgid "Weekly snapshots are enabled"
 msgstr "የ መመልከቻ ፎቶ በየ ሳምንቱ ማንሳት አስችለዋል"
 
@@ -2478,12 +2487,12 @@ msgid ""
 "later if required, to 'undo' the restore."
 msgstr ""
 
-#: src/Console/AppConsole.vala:1012
+#: src/AppConsole.vala:1023
 #, c-format
 msgid "[ENTER = Default (%s), a = Abort]"
 msgstr "[ማስገቢያ = ነባር (%s), a = ማቋረጫ]"
 
-#: src/Console/AppConsole.vala:883
+#: src/AppConsole.vala:894
 #, c-format
 msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
 msgstr "[ማስገቢያ = ነባር (%s), r = Root device, a = ማቋረጫ]"
@@ -2502,11 +2511,12 @@ msgstr "[ማስጠንቀቂያ] ዋጋ የሌለው መቆለፊያ ጠፍቷል
 msgid "all"
 msgstr "ሁሉንም"
 
-#: src/Core/Main.vala:1643 src/Core/Main.vala:4010 src/Core/Subvolume.vala:199
+#: src/Core/Main.vala:1655 src/Core/Main.vala:4030 src/Core/Main.vala:4115
+#: src/Core/Subvolume.vala:215
 msgid "btrfs returned an error"
 msgstr "btrfs ስህተት መልሷል"
 
-#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1542
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1554
 msgid "complete"
 msgstr "ተፈጽሟል"
 
@@ -2526,17 +2536,17 @@ msgstr "አልተፈጸመም"
 msgid "marked for deletion"
 msgstr "ለ ማጥፋት ምልክት የ ተደረገበት"
 
-#: src/Core/Main.vala:1434 src/Core/Main.vala:1588 src/Core/Main.vala:1590
+#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
 msgid "mounted at path"
 msgstr "በዚህ መንገድ ተጭኗል"
 
-#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1542
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1554
 #: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
 #: src/Gtk/DeleteBox.vala:149
 msgid "remaining"
 msgstr "የ ቀረው"
 
-#: src/Core/Main.vala:1553
+#: src/Core/Main.vala:1565
 msgid "rsync returned an error"
 msgstr "rsync ስህተት መልሷል"
 
