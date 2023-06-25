@@ -2,10 +2,17 @@ conf_data = configuration_data()
 conf_data.set('GETTEXT_PACKAGE', meson.project_name())
 conf_data.set('VERSION', meson.project_version())
 
+fs = import('fs')
+if (fs.is_absolute(get_option('sysconfdir')))
+  conf_data.set('SYSCONFDIR', get_option('sysconfdir'))
+else
+  conf_data.set('SYSCONFDIR', get_option('prefix') / get_option('sysconfdir'))
+endif
+
 config_header = configure_file(
-    input: 'config.vala.in',
-    output: 'config.vala',
-    configuration: conf_data
+  input: 'config.vala.in',
+  output: 'config.vala',
+  configuration: conf_data
 )
 
 sources_core = files([
