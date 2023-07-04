@@ -285,7 +285,7 @@ public class Main : GLib.Object{
 		this.share_folder = "/usr/share";
 		this.app_conf_path = "/etc/timeshift/timeshift.json";
 		this.app_conf_path_old = "/etc/timeshift.json";
-		this.app_conf_path_default = "/etc/timeshift/default.json";
+		this.app_conf_path_default = GLib.Path.build_path (GLib.Path.DIR_SEPARATOR_S, Constants.SYSCONFDIR, "timeshift", "default.json");
 		//sys_root and sys_home will be initialized by update_partition_list()
 		
 		// check if running locally ------------------------
@@ -3268,6 +3268,10 @@ public class Main : GLib.Object{
 				file_move(app_conf_path_old, app_conf_path);
 			}
 			else if (file_exists(app_conf_path_default)){
+				// /etc/timeshift might not pre-exist when sysconfdir is not /etc
+				if (!dir_exists(file_parent(app_conf_path))){
+					dir_create(file_parent(app_conf_path));
+				}
 				// copy default file
 				file_copy(app_conf_path_default, app_conf_path);
 			}
