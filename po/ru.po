@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: timeshift\n"
 "Report-Msgid-Bugs-To: teejee2008@gmail.com\n"
 "POT-Creation-Date: 2023-06-01 11:34+0100\n"
-"PO-Revision-Date: 2023-04-25 17:34+0000\n"
-"Last-Translator: adem <adem4ik@gmail.com>\n"
+"PO-Revision-Date: 2023-06-24 13:54+0000\n"
+"Last-Translator: Темак <artemkotlubai@yandex.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-06-08 10:22+0000\n"
-"X-Generator: Launchpad (build 620cd5280e3a973662e263ebf9346837ed657a46)\n"
+"X-Launchpad-Export-Date: 2023-07-07 12:57+0000\n"
+"X-Generator: Launchpad (build 2ac9e3bf4ab511504f8fc651371e24a6a047ba12)\n"
 "Language: ru\n"
 
 #: src/AppConsole.vala:626
@@ -144,7 +144,7 @@ msgid ""
 "snapshot if available."
 msgstr ""
 "Все файлы копируются при создании первого снимка. Последующие снимки "
-"являются инкрементальными. Неизменённые файлы будут связаны с предыдущим "
+"являются несоразмерными. Неизменённые файлы будут связаны с предыдущим "
 "снимком, если он доступен."
 
 #: src/Gtk/ExcludeMessageWindow.vala:129
@@ -237,7 +237,7 @@ msgstr ""
 "Снимки BTRFS сохраняются на том же накопителе, с которого создавались. Если "
 "системный накопитель выйдет из строя, снимки будут потеряны вместе с "
 "системой. Для защиты от сбоев накопителя сохраняйте снимки на внешнем "
-"несистемном диске в режиме RSYNC."
+"несистемном накопителе в режиме RSYNC."
 
 #: src/Gtk/SetupWizardWindow.vala:94
 msgid "Backend"
@@ -402,7 +402,7 @@ msgstr "Команды, перечисленные ниже, недоступн�
 
 #: src/Gtk/SnapshotListBox.vala:223
 msgid "Comments (click to edit)"
-msgstr "Комментарии (щёлкните для редактирования)"
+msgstr "Комментарии (нажмите для изменения)"
 
 #: src/Core/Main.vala:2944 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
@@ -649,12 +649,12 @@ msgstr "Описание"
 #: src/Core/Subvolume.vala:181
 #, c-format
 msgid "Destroyed qgroup"
-msgstr ""
+msgstr "Уничтоженная qgroup"
 
 #: src/Core/Subvolume.vala:171
 #, c-format
 msgid "Destroying qgroup"
-msgstr ""
+msgstr "Уничтожение qgroup"
 
 #: src/Core/Main.vala:2275 src/Core/Main.vala:2307
 #: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
@@ -861,7 +861,7 @@ msgstr "Не удалось удалить символические ссылк
 
 #: src/Core/Subvolume.vala:177
 msgid "Failed to destroy qgroup"
-msgstr ""
+msgstr "Не удалось уничножить qgroup"
 
 #: src/Core/Main.vala:3918 src/Core/Main.vala:3924
 msgid "Failed to estimate system size"
@@ -906,7 +906,7 @@ msgstr "Не удалось запросить список подраздело
 
 #: src/Core/Main.vala:4116
 msgid "Failed to query subvolume quota"
-msgstr ""
+msgstr "Не удалось запросить квоту подраздела"
 
 #: src/Utility/CronTab.vala:50
 msgid "Failed to read cron tab"
@@ -1290,7 +1290,7 @@ msgstr "Список снимков"
 
 #: src/Gtk/MainWindow.vala:953
 msgid "Live USB Mode (Restore Only)"
-msgstr "Режим загрузочного USB диска (только восстановление)"
+msgstr "Режим загрузочного USB-накопителя (только восстановление)"
 
 #: src/Gtk/SettingsWindow.vala:90 src/Gtk/BackupWindow.vala:87
 #: src/Gtk/SetupWizardWindow.vala:104
@@ -1600,7 +1600,7 @@ msgstr "Выводить отладочные сведения"
 
 #: src/AppConsole.vala:395 src/AppGtk.vala:132
 msgid "Print version number"
-msgstr ""
+msgstr "Вывести номер версии"
 
 #: src/Core/Main.vala:3979
 msgid "Query completed"
@@ -2464,7 +2464,7 @@ msgstr "Размонтировано с"
 
 #: src/Gtk/SnapshotListBox.vala:198
 msgid "Unshared"
-msgstr ""
+msgstr "Неразделяемый"
 
 #: src/Core/Main.vala:3620 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
