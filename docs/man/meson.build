@@ -1,8 +1,8 @@
 help2man = find_program('help2man')
 
 mans = [
-  ['timeshift', [help2man, '--output=@OUTPUT@', timeshift]],
-  ['timeshift-gtk', [help2man, '--output=@OUTPUT@', timeshift_gtk]],
+  ['timeshift', [help2man, '-N', '--output=@OUTPUT@', timeshift]],
+  ['timeshift-gtk', [help2man, '-N', '--output=@OUTPUT@', timeshift_gtk]],
 ]
 
 foreach man: mans
