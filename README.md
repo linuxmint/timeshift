@@ -168,6 +168,12 @@ sudo dnf update
 sudo dnf install timeshift
 ```
 
+#### Arch
+
+```sh
+sudo pacman -S timeshift
+```
+
 ## Removal
 
 Run the following command in a terminal window:  
@@ -177,6 +183,10 @@ Run the following command in a terminal window:
 or
 
     sudo dnf remove timeshift
+
+or
+
+    sudo pacman -R timeshift
 
 depending in your package management system.
 
