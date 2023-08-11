@@ -146,8 +146,8 @@ class RestoreBox : Gtk.Box{
 
 		var label = add_label(hbox, text + ":");
 		label.xalign = (float) 1.0;
-		label.margin_left = 12;
-		label.margin_right = 6;
+		label.margin_start = 12;
+		label.margin_end = 6;
 
 		if (add_margin_bottom > 0){
 			label.margin_bottom = add_margin_bottom;
@@ -192,7 +192,7 @@ class RestoreBox : Gtk.Box{
 		
 		try {
 			thread_is_running = true;
-			Thread.create<void> (restore_thread, true);
+			new Thread<void>.try ("restore", () => {restore_thread();});
 		}
 		catch (Error e) {
 			log_error (e.message);

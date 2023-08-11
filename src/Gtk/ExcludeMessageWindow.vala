@@ -84,7 +84,6 @@ public class ExcludeMessageWindow : Gtk.Dialog{
 		tv_exclude = new TreeView();
 		tv_exclude.get_selection().mode = SelectionMode.MULTIPLE;
 		tv_exclude.headers_visible = false;
-		tv_exclude.set_rules_hint (true);
 
 		//sw_exclude
 		sw_exclude = new ScrolledWindow(null, null);
@@ -156,7 +155,7 @@ public class ExcludeMessageWindow : Gtk.Dialog{
 		
 		string pattern;
 		model.get (iter, 0, out pattern, -1);
-		(cell as Gtk.CellRendererText).text = pattern.has_prefix("+ ") ? pattern[2:pattern.length] : pattern;
+		((Gtk.CellRendererText)cell).text = pattern.has_prefix("+ ") ? pattern[2:pattern.length] : pattern;
 	}
 
 	private void tv_exclude_add_item(string path){
@@ -176,7 +175,7 @@ public class ExcludeMessageWindow : Gtk.Dialog{
 
 		model.set (iter, 0, path, 1, icon_name);
 
-		Adjustment adj = tv_exclude.get_hadjustment();
+		Adjustment adj = ((Gtk.Scrollable)tv_exclude).get_hadjustment();
 		adj.value = adj.upper;
 	}
 

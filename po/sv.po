@@ -1,0 +1,2655 @@
+# Swedish translation for timeshift
+# Copyright (c) 2016 Rosetta Contributors and Canonical Ltd 2016
+# This file is distributed under the same license as the timeshift package.
+# FIRST AUTHOR Åke Engelbrektson <eson@svenskasprakfiler.se>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: timeshift\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2023-06-01 11:34+0100\n"
+"PO-Revision-Date: 2023-06-03 19:40+0000\n"
+"Last-Translator: Jan-Olof Svensson <jan-olof.svensson@abc.se>\n"
+"Language-Team: Svenska Språkfiler <eson@svenskasprakfiler.se>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2023-07-07 12:57+0000\n"
+"X-Generator: Launchpad (build 2ac9e3bf4ab511504f8fc651371e24a6a047ba12)\n"
+"Language: sv\n"
+
+#: src/AppConsole.vala:626
+#, c-format
+msgid ""
+"\n"
+"Press ENTER to continue..."
+msgstr ""
+"\n"
+"Tryck RETUR för att fortsätta ..."
+
+#: src/Core/SnapshotRepo.vala:556
+#, c-format
+msgid "%d snapshots, %s free"
+msgstr "%d avbilder, %s ledigt"
+
+#: src/AppConsole.vala:927
+#, c-format
+msgid "'%s' will be on '%s'"
+msgstr "\"%s\" kommer att finnas på \"%s\""
+
+#: src/AppConsole.vala:924
+#, c-format
+msgid "'%s' will be on root device"
+msgstr "\"%s\" kommer att finnas på root-enheten"
+
+#: src/Gtk/BootOptionsBox.vala:118
+msgid "(Re)install GRUB2 on:"
+msgstr "(Åter)installera GRUB2 på:"
+
+#: src/Core/Main.vala:379
+msgid "** Uninstalled Timeshift BTRFS **"
+msgstr "** Avinstallerade Timeshift BTRFS **"
+
+#: src/Core/Main.vala:3527
+msgid "/ is mapped to device"
+msgstr "/ är mappad på enhet"
+
+#: src/Core/Main.vala:3549
+msgid "/boot is mapped to device"
+msgstr "/boot är mappad på enhet"
+
+#: src/Core/Main.vala:3560
+msgid "/boot/efi is mapped to device"
+msgstr "/boot/efi är mappad på enhet"
+
+#: src/Core/Main.vala:3538
+msgid "/home is mapped to device"
+msgstr "/home är mappad på enhet"
+
+#: src/Gtk/SnapshotListBox.vala:289
+msgid "<b>Comments</b> (double-click to edit)"
+msgstr "<b>Kommentarer</b> (Dubbelklick för redigering)"
+
+#: src/Gtk/ScheduleBox.vala:168
+msgid ""
+"A maintenance task runs once every hour and creates snapshots as needed."
+msgstr "En underhållsåtgärd körs varje timma och skapar avbilder vid behov."
+
+#: src/AppConsole.vala:711 src/AppConsole.vala:775 src/AppConsole.vala:907
+#: src/AppConsole.vala:1002 src/AppConsole.vala:1047 src/AppConsole.vala:1088
+#: src/AppConsole.vala:1106
+msgid "Aborted."
+msgstr "Avbruten."
+
+#: src/Gtk/MainWindow.vala:375
+msgid "About"
+msgstr "Om"
+
+#: src/Gtk/RsyncLogBox.vala:471
+msgid "Action"
+msgstr "Åtgärd"
+
+#: src/Gtk/ExcludeBox.vala:225
+msgid "Add"
+msgstr "Lägg till"
+
+#: src/Gtk/ExcludeBox.vala:242
+msgid "Add Files"
+msgstr "Lägg till filer"
+
+#: src/Gtk/ExcludeBox.vala:248
+msgid "Add Folders"
+msgstr "Lägg till mappar"
+
+#: src/Gtk/ExcludeBox.vala:225
+msgid "Add custom pattern"
+msgstr "Lägg till anpassat mönster"
+
+#: src/Gtk/ExcludeBox.vala:248
+msgid "Add directories"
+msgstr "Lägg till mappar"
+
+#: src/Gtk/ExcludeBox.vala:242
+msgid "Add files"
+msgstr "Lägg till filer"
+
+#: src/AppConsole.vala:371
+msgid "Add tags to snapshot (default: O)"
+msgstr "Lägg till taggar till avbild (standard: O)"
+
+#: src/Utility/CronTab.vala:312
+msgid "Added cron task"
+msgstr "Lade till cron-åtgärd"
+
+#: src/AppGtk.vala:147
+msgid "Admin Access Required"
+msgstr "Administratörsbehörighet krävs"
+
+#: src/AppGtk.vala:142
+msgid "Admin access is required to backup and restore system files."
+msgstr ""
+"Administratörsrättigheter krävs för att säkerhetskopiera och återställa "
+"systemfiler."
+
+#: src/Gtk/RsyncLogBox.vala:363
+msgid "All Files"
+msgstr "Alla filer"
+
+#: src/Gtk/SnapshotBackendBox.vala:197
+msgid ""
+"All files are copied when first snapshot is created. Subsequent snapshots "
+"are incremental. Unchanged files will be hard-linked from the previous "
+"snapshot if available."
+msgstr ""
+"Alla filer kopieras när den första avbilden skapas. Efterföljande avbilder "
+"är inkrementella. Oförändrade filer hårdlänkas från föregående avbild, om "
+"tillgänglig."
+
+#: src/Gtk/ExcludeMessageWindow.vala:129
+msgid "All other files and folders are excluded."
+msgstr "Alla andra filer och mappar undantas."
+
+#: src/Gtk/RestoreDeviceBox.vala:486
+msgid ""
+"An encrypted device is selected for root file system (/). The boot directory "
+"(/boot) must be mounted on a non-encrypted device for the system to boot "
+"successfully.\n"
+"\n"
+"Either select a non-encrypted device for boot directory or select a non-"
+"encrypted device for root filesystem."
+msgstr ""
+"En krypterad enhet har valts som systemrot (/). Startkatalogen (/boot) måste "
+"monteras på en okrypterad enhet för att systemet skall kunna starta.\n"
+"\n"
+"Välj antingen en okrypterad enhet för startkatalogen, eller välj en "
+"okrypterad enhet för filsystemets rot."
+
+#: src/Core/Main.vala:265
+msgid "Another instance of Timeshift is creating a snapshot."
+msgstr "En annan instans av Timeshift skapar en avbild."
+
+#: src/Utility/AppLock.vala:49
+msgid "Another instance of this application is running"
+msgstr "En annan programinstans körs redan."
+
+#: src/Core/Main.vala:269
+msgid "Another instance of timeshift is currently running!"
+msgstr "En annan instans av Timeshift körs för närvarande!"
+
+#: src/AppConsole.vala:387
+msgid "Answer YES to all confirmation prompts"
+msgstr "Svara JA i alla bekräftelsedialoger"
+
+#: src/Core/Main.vala:3364
+msgid "App config loaded"
+msgstr "Programinställningar inlästa"
+
+#: src/Core/Main.vala:3252
+msgid "App config saved"
+msgstr "Programinställningar sparade"
+
+#: src/AppConsole.vala:107
+msgid "Application needs admin access."
+msgstr "Programmet behöver administratörsåtkomst."
+
+#: src/Core/Main.vala:3704
+msgid "Application will exit"
+msgstr "Programmet kommer att avslutas"
+
+#: src/Core/Main.vala:395
+msgid "Application will exit."
+msgstr "Programmet kommer att avslutas."
+
+#: src/Gtk/MainWindow.vala:345
+msgid "Available"
+msgstr "Tillgänglig"
+
+#: src/Gtk/SnapshotBackendBox.vala:95
+msgid "BTRFS"
+msgstr "BTRFS"
+
+#: src/Gtk/SnapshotBackendBox.vala:174
+msgid "BTRFS Snapshots"
+msgstr "BTRFS-avbilder"
+
+#: src/Core/Main.vala:2202 src/Core/Main.vala:2206
+msgid "BTRFS device is not mounted"
+msgstr "Ingen BTRFS-enhet monterad"
+
+#: src/Gtk/BackupDeviceBox.vala:98
+msgid ""
+"BTRFS snapshots are saved on system partition. Other partitions are not "
+"supported."
+msgstr ""
+"BTRFS-avbilder sparas på systempartitionen. Andra partitioner stöds inte."
+
+#: src/Gtk/FinishBox.vala:92
+msgid ""
+"BTRFS snapshots are saved on the same disk from which it is created. If the "
+"system disk fails, snapshots will be lost along with the system. Save "
+"snapshots to an external non-system disk in RSYNC mode to guard against disk "
+"failures."
+msgstr ""
+"BTRFS-avbilder sparas på samma diskenhet som den skapades ifrån. Om "
+"systemdisken kraschar, kommer avbilderna att förloras ihop med systemet. "
+"Spara avbilder på en extern icke systemdisk, i RSYNK-läge som skydd mot "
+"diskhaveri."
+
+#: src/Gtk/SetupWizardWindow.vala:94
+msgid "Backend"
+msgstr "Bakgrundsgränssnitt"
+
+#: src/Gtk/BackupWindow.vala:92 src/AppConsole.vala:367
+msgid "Backup"
+msgstr "Säkerhetskopia"
+
+#: src/Core/Main.vala:2178
+msgid "Backup Device"
+msgstr "Enhet för säkerhetskopior"
+
+#: src/Core/Main.vala:2173
+msgid "Backup device not specified!"
+msgstr "Enhet för säkerhetskopior ej specificerad!"
+
+#: src/Gtk/RestoreExcludeBox.vala:91
+msgid "Bittorrent Clients"
+msgstr "Bittorrent-klienter"
+
+#: src/Gtk/SnapshotListBox.vala:297 src/Gtk/ScheduleBox.vala:136
+msgid "Boot"
+msgstr "Boot"
+
+#: src/Gtk/RestoreDeviceBox.vala:485
+msgid "Boot device not selected"
+msgstr "Startenhet inte vald"
+
+#: src/Core/Main.vala:1045
+msgid "Boot snapshot failed!"
+msgstr "Boot-avbild misslyckades!"
+
+#: src/Gtk/ScheduleBox.vala:169
+msgid ""
+"Boot snapshots are created with a delay of 10 minutes after system startup."
+msgstr "Avbilder vid systemstart skapas efter en fördröjning på 10 minuter."
+
+#: src/Core/Main.vala:1026
+msgid "Boot snapshots are enabled"
+msgstr "Avbilder vid systemstart är aktiverat"
+
+#: src/Gtk/BootOptionsWindow.vala:49
+msgid "Bootloader Options"
+msgstr "Alternativ för starthanterare"
+
+#: src/Gtk/RestoreDeviceBox.vala:402
+msgid "Bootloader Options (Advanced)"
+msgstr "Alternativ för starthanterare (Avancerat)"
+
+#: src/Gtk/MainWindow.vala:170
+msgid "Browse"
+msgstr "Bläddra"
+
+#: src/Gtk/SnapshotListBox.vala:335
+msgid "Browse Files"
+msgstr "Bläddra bland filerna"
+
+#: src/Gtk/MainWindow.vala:171
+msgid "Browse selected snapshot"
+msgstr "Bläddra i markerad avbild"
+
+#: src/Core/Main.vala:2668
+msgid "Building file list..."
+msgstr "Bygger fillista ..."
+
+#: src/Core/Main.vala:1405
+msgid "Calculating required disk space..."
+msgstr "Beräknar nödvändigt diskutrymme..."
+
+#: src/Utility/Gtk/CustomMessageDialog.vala:152 src/Utility/GtkHelper.vala:109
+#: src/Gtk/RestoreWindow.vala:215 src/Gtk/RestoreWindow.vala:224
+#: src/Gtk/BackupWindow.vala:181 src/Gtk/SetupWizardWindow.vala:220
+#: src/Gtk/DeleteWindow.vala:190
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: src/Gtk/RestoreWindow.vala:230
+msgid "Cancel restore?"
+msgstr "Vill du avbryta återställningen?"
+
+#: src/Gtk/RestoreWindow.vala:232
+msgid ""
+"Cancelling the restore process will leave the target system in an "
+"inconsistent state. The system may fail to boot or you may run into various "
+"issues. After cancelling, you need to restore another snapshot, to bring the "
+"system to a consistent state. Click Yes to confirm."
+msgstr ""
+"Att avbryta återställningen kommer att lämna målsystemet i ett inkonsekvent "
+"tillstånd. Systemet kanske inte kan startas, eller du kan stöta på olika "
+"problem. Om du avbryter, behöver du återställa en annan avbild, för att "
+"återställa systemet till ett konsekvent tillstånd. Klicka på \"Ja\" för att "
+"bekräfta."
+
+#: src/Gtk/MainWindow.vala:547
+msgid "Cannot Delete Live Snapshot"
+msgstr "Kan inte ta bort Live-avbild"
+
+#: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
+#: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
+#: src/Gtk/RsyncLogBox.vala:566 src/Gtk/RsyncLogBox.vala:587
+msgid "Changed"
+msgstr "Ändrat"
+
+#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:127
+msgid "Changed items:"
+msgstr "Ändrade objekt:"
+
+#: src/Gtk/RestoreWindow.vala:104
+msgid "Checking Restore Actions (Dry Run)"
+msgstr "Kontrollerar åtgärder för återställning (simulering)"
+
+#: src/Core/Main.vala:2901
+msgid "Checking file systems for errors..."
+msgstr "Kontrollerar filsystemet efter fel..."
+
+#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:130
+#: src/Gtk/RsyncLogBox.vala:390
+#, c-format
+msgid "Checksum"
+msgstr "Kontrollsumma"
+
+#: src/Core/Main.vala:2549
+msgid "Cleaning up..."
+msgstr "Rensar upp ..."
+
+#: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:88
+msgid "Click to edit. Drag and drop to re-order."
+msgstr "Klicka för att redigera. Dra och släpp för att sortera."
+
+#: src/Gtk/ExcludeBox.vala:59
+msgid "Click to edit. Drag-drop to re-order."
+msgstr "Klicka för att redigera. Dra och släpp för att ändra ordningsföljd."
+
+#: src/Gtk/RestoreWindow.vala:69
+msgid "Clone System"
+msgstr "Klona systemet"
+
+#: src/Gtk/RestoreFinishBox.vala:68
+msgid "Cloning"
+msgstr "Klonar"
+
+#: src/Core/Main.vala:2951
+msgid "Cloning system..."
+msgstr "Klonar systemet ..."
+
+#: src/Gtk/BootOptionsWindow.vala:106 src/Gtk/RestoreWindow.vala:501
+#: src/Gtk/BackupWindow.vala:172 src/Gtk/RsyncLogBox.vala:266
+#: src/Gtk/DeleteWindow.vala:173
+msgid "Close"
+msgstr "Stäng"
+
+#: src/Gtk/FinishBox.vala:101 src/Gtk/DeleteFinishBox.vala:71
+#: src/Gtk/RestoreFinishBox.vala:106 src/Gtk/BackupFinishBox.vala:70
+msgid "Close window to exit"
+msgstr "Stäng fönstret för att avsluta"
+
+#: src/Core/Main.vala:364
+msgid "Commands listed below are not available on this system"
+msgstr "Nedanstående kommandon är inte tillgängliga i detta system"
+
+#: src/Gtk/SnapshotListBox.vala:223
+msgid "Comments (click to edit)"
+msgstr "Kommentarer (klicka för att redigera)"
+
+#: src/Core/Main.vala:2944 src/Gtk/RestoreBox.vala:74
+#: src/Gtk/RestoreBox.vala:187
+msgid "Comparing Files (Dry Run)..."
+msgstr "Jämför filer (simulering)..."
+
+#: src/Core/Main.vala:2710
+msgid "Comparing files with rsync..."
+msgstr "Jämför filer med rsync..."
+
+#: src/Gtk/DeleteFinishBox.vala:50 src/Gtk/RestoreFinishBox.vala:50
+#: src/Gtk/RestoreFinishBox.vala:75 src/Gtk/BackupFinishBox.vala:50
+msgid "Completed"
+msgstr "Slutfört"
+
+#: src/Gtk/RestoreFinishBox.vala:78
+msgid "Completed With Errors"
+msgstr "Slutfört med fel"
+
+#: src/Gtk/RestoreWindow.vala:109 src/Gtk/RsyncLogBox.vala:87
+msgid "Confirm Actions"
+msgstr "Bekräfta åtgärder"
+
+#: src/AppConsole.vala:1081
+#, c-format
+msgid "Continue with restore? (y/n): "
+msgstr "Vill du fortsätta med återställningen? (y/n): "
+
+#: src/AppConsole.vala:847 src/AppConsole.vala:978
+msgid "Could not find device"
+msgstr "Kunde inte hitta enheten"
+
+#: src/Utility/Device.vala:1308
+#, c-format
+msgid "Could not find file"
+msgstr "Kunde inte hitta filen"
+
+#: src/AppConsole.vala:744
+msgid "Could not find snapshot"
+msgstr "Kunde inte hitta avbilden"
+
+#: src/Core/Main.vala:3113
+msgid "Could not find system subvolume"
+msgstr "Kunde inte hitta systemvolym"
+
+#: src/Core/Main.vala:3141
+msgid "Could not find system subvolumes for creating pre-restore snapshot"
+msgstr "Kunde inte hitta systemvolymer för att skapa föråterställningsavbild"
+
+#: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
+#: src/Gtk/RsyncLogBox.vala:570
+#, c-format
+msgid "Create"
+msgstr "Skapa"
+
+#: src/Gtk/BackupWindow.vala:62
+msgid "Create Snapshot"
+msgstr "Skapa avbild"
+
+#: src/Gtk/ScheduleBox.vala:136
+msgid "Create one per boot"
+msgstr "Skapa en per systemstart"
+
+#: src/Gtk/ScheduleBox.vala:100
+msgid "Create one per day"
+msgstr "Skapa en per dag"
+
+#: src/Gtk/ScheduleBox.vala:118
+msgid "Create one per hour"
+msgstr "Skapa en per timma"
+
+#: src/Gtk/ScheduleBox.vala:64
+msgid "Create one per month"
+msgstr "Skapa en per månad"
+
+#: src/Gtk/ScheduleBox.vala:82
+msgid "Create one per week"
+msgstr "Skapa en per vecka"
+
+#: src/AppConsole.vala:369
+msgid "Create snapshot (even if not scheduled)"
+msgstr "Skapa avbild (även om ej schemalagd)"
+
+#: src/AppConsole.vala:368
+msgid "Create snapshot if scheduled"
+msgstr "Skapa avbild om schemalagd"
+
+#: src/Gtk/MainWindow.vala:141
+msgid "Create snapshot of current system"
+msgstr "Skapa en ögonblicksbild av aktuellt system"
+
+#: src/Gtk/MainWindow.vala:1027
+msgid ""
+"Create snapshots manually or enable scheduled snapshots to protect your "
+"system"
+msgstr ""
+"Skapa ögonblicksbilder manuellt, eller aktivera schemalagda avbilder för att "
+"skydda ditt system"
+
+#: src/Gtk/SnapshotBackendBox.vala:96
+msgid "Create snapshots using BTRFS"
+msgstr "Skapa avbilder med BTRFS"
+
+#: src/Gtk/SnapshotBackendBox.vala:78
+msgid "Create snapshots using RSYNC tool and hard-links"
+msgstr "Skapa avbilder med RSYNC-verktyget och hårda länkar"
+
+#: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
+#: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:570
+#: src/Gtk/RsyncLogBox.vala:591
+#, c-format
+msgid "Created"
+msgstr "Skapad"
+
+#: src/Core/Snapshot.vala:430
+msgid "Created control file"
+msgstr "Skapade kontrollfil"
+
+#: src/Utility/TeeJee.FileSystem.vala:268
+msgid "Created directory"
+msgstr "Skapade mapp"
+
+#: src/Core/Main.vala:3163
+msgid "Created pre-restore snapshot"
+msgstr "Skapade föråterställningsavbild"
+
+#: src/Core/Main.vala:1660
+msgid "Created subvolume snapshot"
+msgstr "Skapade undervolymsavbild"
+
+#: src/Gtk/BackupBox.vala:71
+msgid "Creating Snapshot..."
+msgstr "Skapar avbild ..."
+
+#: src/Core/Main.vala:1598
+msgid "Creating new backup..."
+msgstr "Skapar ny säkerhetskopia..."
+
+#: src/Core/Main.vala:1444
+msgid "Creating new snapshot..."
+msgstr "Skapar ny avbild..."
+
+#: src/Core/Main.vala:3091
+msgid "Creating pre-restore snapshot from system subvolumes..."
+msgstr "Skapar föråterställningsavbild från systemvolymer..."
+
+#: src/Core/Main.vala:3703
+msgid "Critical Error"
+msgstr "Kritiskt fel"
+
+#: src/Utility/CronTab.vala:136
+msgid "Cron job added"
+msgstr "Cron-åtgärd tillagd"
+
+#: src/Utility/CronTab.vala:217
+msgid "Cron job removed"
+msgstr "Cron-åtgärd borttagen"
+
+#: src/Utility/CronTab.vala:304
+msgid "Cron task exists"
+msgstr "Cron-åtgärden finns redan"
+
+#: src/Gtk/MiscBox.vala:94
+msgid "Custom"
+msgstr "Anpassad"
+
+#: src/Gtk/SnapshotListBox.vala:299 src/Gtk/ScheduleBox.vala:100
+msgid "Daily"
+msgstr "Varje dag"
+
+#: src/Core/Main.vala:1107
+msgid "Daily snapshot failed!"
+msgstr "Daglig avbild misslyckades!"
+
+#: src/Core/Main.vala:1088
+msgid "Daily snapshots are enabled"
+msgstr "Dagliga avbilder är aktiverat"
+
+#: src/Core/Main.vala:2272
+msgid "Data will be modified on following devices:"
+msgstr "Data kommer att ändras på följande enheter:"
+
+#: src/Gtk/MiscBox.vala:67
+msgid "Date Format"
+msgstr "Datumformat"
+
+#: src/Gtk/SnapshotListBox.vala:321 src/Gtk/MainWindow.vala:160
+#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
+#: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:381
+#, c-format
+msgid "Delete"
+msgstr "Ta bort"
+
+#: src/Gtk/DeleteWindow.vala:62
+msgid "Delete Snapshots"
+msgstr "Ta bort avbilder"
+
+#: src/AppConsole.vala:383
+msgid "Delete all snapshots"
+msgstr "Ta bort alla avbilder"
+
+#: src/Gtk/MainWindow.vala:161
+msgid "Delete selected snapshot"
+msgstr "Ta bort markerad avbild"
+
+#: src/AppConsole.vala:382
+msgid "Delete snapshot"
+msgstr "Ta bort avbild"
+
+#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
+#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
+#: src/Gtk/RsyncLogBox.vala:595
+#, c-format
+msgid "Deleted"
+msgstr "Borttagen"
+
+#: src/Utility/TeeJee.FileSystem.vala:302
+msgid "Deleted directory"
+msgstr "Tog bort mapp"
+
+#: src/Core/Main.vala:3070 src/Core/Main.vala:3074 src/Core/Subvolume.vala:167
+#, c-format
+msgid "Deleted subvolume"
+msgstr "Tog bort undervolym"
+
+#: src/Gtk/DeleteBox.vala:58
+msgid "Deleting Snapshots..."
+msgstr "Tar bort avbilder ..."
+
+#: src/Core/Subvolume.vala:141
+#, c-format
+msgid "Deleting subvolume"
+msgstr "Tar bort undervolym"
+
+#: src/Gtk/RestoreExcludeBox.vala:105
+msgid "Deluge, Transmission"
+msgstr "Deluge, Transmission"
+
+#: src/AppConsole.vala:439 src/AppConsole.vala:555
+msgid "Description"
+msgstr "Beskrivning"
+
+#: src/Core/Subvolume.vala:181
+#, c-format
+msgid "Destroyed qgroup"
+msgstr "Borttagen qgrupp"
+
+#: src/Core/Subvolume.vala:171
+#, c-format
+msgid "Destroying qgroup"
+msgstr "Tar bort qgrupp"
+
+#: src/Core/Main.vala:2275 src/Core/Main.vala:2307
+#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
+#: src/Utility/Device.vala:1942 src/Gtk/RestoreDeviceBox.vala:97
+#: src/AppConsole.vala:467 src/AppConsole.vala:506 src/AppConsole.vala:554
+#, c-format
+msgid "Device"
+msgstr "Enhet"
+
+#: src/Utility/Device.vala:1390
+msgid "Device is unlocked"
+msgstr "Enheten är olåst"
+
+#: src/Utility/Device.vala:1285 src/Utility/Device.vala:1347
+msgid "Device name is empty!"
+msgstr "Enhetsnamnet saknas!"
+
+#: src/Core/Main.vala:3417 src/Core/SnapshotRepo.vala:479
+#: src/AppConsole.vala:676
+msgid "Device not found"
+msgstr "Enheten kunde inte hittas"
+
+#: src/Gtk/BackupDeviceBox.vala:97
+#, c-format
+msgid "Devices displayed above have BTRFS file systems."
+msgstr "Ovanstående enheter har filsystem av typen BTRFS."
+
+#: src/Gtk/BackupDeviceBox.vala:104
+#, c-format
+msgid "Devices displayed above have Linux file systems."
+msgstr "Ovanstående enheter har filsystem avsedda för Linux."
+
+#: src/Gtk/RestoreDeviceBox.vala:84
+msgid "Devices from which snapshot was created are pre-selected."
+msgstr "Enheter, från vilka avbild skapats, är förvalda."
+
+#: src/AppConsole.vala:332
+msgid "Devices with Linux file systems"
+msgstr "Enheter med filsystem avsedda för Linux"
+
+#: src/Gtk/BackupDeviceBox.vala:105
+msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
+msgstr ""
+"Enheter med filsystem avsedda för Windows stöds inte (NTFS, FAT etc)."
+
+#: src/Core/SnapshotRepo.vala:914
+msgid "Directory not found"
+msgstr "Mappen kunde inte hittas"
+
+#: src/Core/Main.vala:2367 src/Gtk/RestoreSummaryBox.vala:64
+msgid "Disclaimer"
+msgstr "Ansvarsfriskrivning"
+
+#: src/Gtk/BackupDeviceBox.vala:127
+msgid "Disk"
+msgstr "Disk"
+
+#: src/Core/Main.vala:242
+msgid "Distribution"
+msgstr "Distribution"
+
+#: src/Gtk/MainWindow.vala:1021
+msgid "Enable scheduled snapshots to protect your system"
+msgstr "Aktivera schemalagda avbilder för att skydda ditt system"
+
+#: src/Utility/Device.vala:1454
+msgid "Encrypted Device"
+msgstr "Krypterad enhet"
+
+#: src/Gtk/UsersBox.vala:232
+msgid "Encrypted Home Directory"
+msgstr "Krypterad hemkatalog"
+
+#: src/AppConsole.vala:897
+#, c-format
+msgid "Enter device name or number"
+msgstr "Ange enhetsnamn eller nummer"
+
+#: src/AppConsole.vala:695 src/AppConsole.vala:1026
+#, c-format
+msgid "Enter device name or number (a=Abort)"
+msgstr "Ange enhetsnamn eller nummer (a=Avbryt)"
+
+#: src/Utility/Device.vala:1455
+#, c-format
+msgid "Enter passphrase to unlock '%s'"
+msgstr "Ange lösenordsfras för att låsa upp \"%s\""
+
+#: src/AppConsole.vala:767
+#, c-format
+msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
+msgstr "Ange avbildsnummer (a=Avbryt, p=Föregående, n=Nästa)"
+
+#: src/Gtk/ExcludeBox.vala:231
+msgid "Enter the pattern to exclude (Ex: *.mp3, *.bak)"
+msgstr "Ange mönster för undantag (exempel: *.mp3, *.bak)"
+
+#: src/Gtk/RestoreDeviceBox.vala:520
+msgid "Error"
+msgstr "Fel"
+
+#: src/Gtk/RestoreWindow.vala:481
+msgid "Error running Rsync"
+msgstr "Fel vid körning av Rsync"
+
+#: src/Gtk/BackupWindow.vala:82 src/Gtk/SetupWizardWindow.vala:99
+msgid "Estimate"
+msgstr "Beräkna"
+
+#: src/Gtk/EstimateBox.vala:56
+msgid "Estimating System Size..."
+msgstr "Beräknar systemets storlek ..."
+
+#: src/Core/Main.vala:1440
+msgid "Estimating system size..."
+msgstr "Beräknar systemstorlek..."
+
+#: src/AppConsole.vala:398
+msgid "Examples"
+msgstr "Exempel"
+
+#: src/Gtk/UsersBox.vala:132
+msgid "Exclude All Files"
+msgstr "Hoppa över alla filer"
+
+#: src/Gtk/RestoreExcludeBox.vala:55 src/Gtk/ExcludeAppsBox.vala:51
+msgid "Exclude Application Settings"
+msgstr "Inställningar för programundantag"
+
+#: src/Gtk/RestoreWindow.vala:99
+msgid "Exclude Apps"
+msgstr "Hoppa över program"
+
+#: src/Gtk/ExcludeMessageWindow.vala:70
+msgid "Exclude List"
+msgstr "Undantagslista"
+
+#: src/Gtk/ExcludeListSummaryWindow.vala:49
+msgid "Exclude List Summary"
+msgstr "Sammandrag för undantagslista"
+
+#: src/Gtk/ExcludeBox.vala:230
+msgid "Exclude Pattern"
+msgstr "Undantagsmönster"
+
+#: src/Gtk/ExcludeMessageWindow.vala:56
+msgid "Excluded Directories"
+msgstr "Undantagna mappar"
+
+#: src/Core/Main.vala:1728
+msgid "Expected values: O, B, H, D, W, M"
+msgstr "Förväntade värden: O, B, H, D, W, M"
+
+#: src/Utility/CronTab.vala:132
+msgid "Failed to add cron job"
+msgstr "Kunde inte lägga till cron-jobb"
+
+#: src/Utility/TeeJee.FileSystem.vala:155
+msgid "Failed to copy file"
+msgstr "Kunde inte kopiera fil"
+
+#: src/Utility/TeeJee.FileSystem.vala:271
+#: src/Utility/TeeJee.FileSystem.vala:280
+msgid "Failed to create directory"
+msgstr "Kunde inte skapa mapp"
+
+#: src/Core/Main.vala:1566
+msgid "Failed to create new snapshot"
+msgstr "Kunde inte skapa ny avbild"
+
+#: src/Core/Main.vala:1320
+msgid "Failed to create snapshot"
+msgstr "Kunde inte skapa avbild"
+
+#: src/Core/Main.vala:1656
+msgid "Failed to create subvolume snapshot"
+msgstr "Kunde inte skapa undervolymsavbild"
+
+#: src/Core/SnapshotRepo.vala:955
+msgid "Failed to create symlinks"
+msgstr "Kunde inte kopiera symboliska länkar"
+
+#: src/Utility/TeeJee.FileSystem.vala:305
+msgid "Failed to delete directory"
+msgstr "Kunde inte ta bort mapp"
+
+#: src/Utility/TeeJee.FileSystem.vala:86
+msgid "Failed to delete file"
+msgstr "Kunde inte ta bort fil"
+
+#: src/Core/Subvolume.vala:153
+msgid "Failed to delete snapshot nested subvolume"
+msgstr "Kunde inte ta bort kapslad undervolym för avbilden"
+
+#: src/Core/Subvolume.vala:163
+msgid "Failed to delete snapshot subvolume"
+msgstr "Kunde inte ta bort avbildsundervolym"
+
+#: src/Core/SnapshotRepo.vala:981
+msgid "Failed to delete symlinks"
+msgstr "Kunde inte ta bort symboliska länkar"
+
+#: src/Core/Subvolume.vala:177
+msgid "Failed to destroy qgroup"
+msgstr "Kunde inte ta bort qgrupp"
+
+#: src/Core/Main.vala:3918 src/Core/Main.vala:3924
+msgid "Failed to estimate system size"
+msgstr "Kunde inte beräkna systemstorlek"
+
+#: src/Utility/CronTab.vala:257
+msgid "Failed to export crontab file"
+msgstr "Kunde inte exportera crontab-fil"
+
+#: src/AppConsole.vala:710 src/AppConsole.vala:774 src/AppConsole.vala:906
+#: src/AppConsole.vala:1001 src/AppConsole.vala:1046 src/AppConsole.vala:1087
+msgid "Failed to get input from user in 3 attempts"
+msgstr "Kunde inte hämta indata från användaren, på 3 försök"
+
+#: src/Utility/Device.vala:724
+msgid "Failed to get partition list"
+msgstr "Kunde inte hämta partitionslista"
+
+#: src/Core/Main.vala:3500
+msgid "Failed to get partition list."
+msgstr "Kunde inte hämta partitionslista"
+
+#: src/Utility/CronTab.vala:240
+msgid "Failed to install crontab file"
+msgstr "Kunde inte installera crontab-fil"
+
+#: src/Gtk/RestoreDeviceBox.vala:521
+msgid "Failed to mount devices"
+msgstr "Kunde inte montera enheter"
+
+#: src/Utility/TeeJee.FileSystem.vala:174
+msgid "Failed to move file"
+msgstr "Kunde inte flytta fil"
+
+#: src/Core/Main.vala:3128
+msgid "Failed to move system subvolume to snapshot directory"
+msgstr "Kunde inte flytta systemvolymen till platsen för avbilder"
+
+#: src/Core/Main.vala:4031
+msgid "Failed to query subvolume list"
+msgstr "Kunde inte begära undervolymslista"
+
+#: src/Core/Main.vala:4116
+msgid "Failed to query subvolume quota"
+msgstr "Kunde inte få fram kvot för undervolym"
+
+#: src/Utility/CronTab.vala:50
+msgid "Failed to read cron tab"
+msgstr "Kunde inte läsa crontab"
+
+#: src/Utility/TeeJee.FileSystem.vala:112
+msgid "Failed to read file"
+msgstr "Kunde inte läsa fil"
+
+#: src/Core/SnapshotRepo.vala:901
+msgid "Failed to remove"
+msgstr "Kunde inte ta bort"
+
+#: src/Utility/CronTab.vala:213
+msgid "Failed to remove cron job"
+msgstr "Kunde inte ta bort cron-jobb"
+
+#: src/Core/Snapshot.vala:530 src/Core/Snapshot.vala:542
+#: src/Core/Snapshot.vala:550
+msgid "Failed to remove snapshot"
+msgstr "Kunde inte ta bort avbild"
+
+#: src/Core/Subvolume.vala:216
+msgid "Failed to restore system subvolume"
+msgstr "Kunde inte återställa systemvolym"
+
+#: src/Core/Main.vala:1516
+msgid "Failed to save exclude list"
+msgstr "Kunde inte spara undantagslista"
+
+#: src/Utility/Device.vala:1381 src/Utility/Device.vala:1435
+#: src/Utility/Device.vala:1460 src/Utility/Device.vala:1481
+#: src/Utility/Device.vala:1501
+msgid "Failed to unlock device"
+msgstr "Kunde inte låsa upp enhet"
+
+#: src/Utility/Device.vala:1733
+msgid "Failed to unmount"
+msgstr "Kunde inte montera"
+
+#: src/Core/Main.vala:3704
+msgid "Failed to unmount device!"
+msgstr "Kunde inte avmontera enhet!"
+
+#: src/Utility/TeeJee.FileSystem.vala:139
+msgid "Failed to write file"
+msgstr "Kunde inte skriva fil"
+
+#: src/Gtk/RsyncLogBox.vala:122
+msgid "File (snapshot)"
+msgstr "Fil (avbild)"
+
+#: src/Gtk/RsyncLogBox.vala:119
+msgid "File (system)"
+msgstr "Fil (system)"
+
+#: src/Gtk/ExcludeMessageWindow.vala:97
+msgid "File Pattern"
+msgstr "Filmönster"
+
+#: src/Gtk/BackupBox.vala:83
+msgid "File and directory counts:"
+msgstr "Antal filer och mappar:"
+
+#: src/Utility/CronTab.vala:225 src/Utility/RsyncTask.vala:298
+#: src/Utility/TeeJee.FileSystem.vala:169
+msgid "File not found"
+msgstr "Filen hittades inte"
+
+#: src/Gtk/ExcludeListSummaryWindow.vala:62
+msgid ""
+"Files &amp; directories matching the patterns below will be excluded. "
+"Patterns starting with a + will include the item instead of excluding."
+msgstr ""
+"Filer och mappar som matchar nedanstående mönster kommer att undantas. "
+"Mönster som börjar med ett +, inkluderar objektet istället för att undanta "
+"det."
+
+#: src/Gtk/SnapshotBackendBox.vala:201
+msgid "Files and directories can be excluded to save disk space."
+msgstr "Filer och mappar kan undantas för att spara diskutrymme."
+
+#: src/Gtk/RestoreBox.vala:119
+msgid "Files and directory counts:"
+msgstr "Antal filer och mappar:"
+
+#: src/Gtk/ExcludeMessageWindow.vala:76
+msgid "Files matching the following patterns will be excluded"
+msgstr "Filer som matchar följande mönster kommer att undantas"
+
+#: src/Utility/Device.vala:1950
+#, c-format
+msgid "Filesystem"
+msgstr "Filsystem"
+
+#: src/Gtk/RsyncLogBox.vala:302
+msgid "Filter by name or path"
+msgstr "Filtrera på namn eller sökväg"
+
+#: src/Gtk/SettingsWindow.vala:103
+msgid "Filters"
+msgstr "Filter"
+
+#: src/Gtk/BackupWindow.vala:97 src/Gtk/SetupWizardWindow.vala:211
+#: src/Gtk/DeleteWindow.vala:103
+msgid "Finish"
+msgstr "Slutför"
+
+#: src/Gtk/RestoreWindow.vala:130 src/Gtk/SetupWizardWindow.vala:120
+msgid "Finished"
+msgstr "Slutfört"
+
+#: src/Gtk/RestoreExcludeBox.vala:78
+msgid "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
+msgstr "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
+
+#: src/Core/SnapshotRepo.vala:583
+msgid "First snapshot requires:"
+msgstr "Första avbilden kräver:"
+
+#: src/Core/Main.vala:3061
+msgid "Found existing pre-restore snapshot"
+msgstr "Hittade befintlig föråterställningsavbild"
+
+#: src/Gtk/BackupDeviceBox.vala:215
+msgid "Free"
+msgstr "Ledigt"
+
+#: src/Core/SnapshotRepo.vala:75 src/Core/SnapshotRepo.vala:145
+msgid "Free space"
+msgstr "Ledigt utrymme"
+
+#: src/AppConsole.vala:1055
+msgid "GRUB Device"
+msgstr "GRUB-enhet"
+
+#: src/Gtk/RestoreDeviceBox.vala:497
+msgid "GRUB device not selected"
+msgstr "GRUB-enhet inte vald"
+
+#: src/AppConsole.vala:1060
+msgid "GRUB will NOT be reinstalled"
+msgstr "GRUB kommer INTE att installeras om"
+
+#: src/Core/Main.vala:2509
+msgid "Generating initramfs..."
+msgstr "Genererar initramfs ..."
+
+#: src/AppConsole.vala:385
+msgid "Global"
+msgstr "Global"
+
+#: src/Gtk/BackupBox.vala:100 src/Gtk/RestoreBox.vala:135
+#: src/Gtk/RsyncLogBox.vala:400
+#, c-format
+msgid "Group"
+msgstr "Grupp"
+
+#: src/Gtk/SnapshotBackendBox.vala:141
+msgid "Help"
+msgstr "Hjälp"
+
+#: src/Gtk/ExcludeMessageWindow.vala:128
+msgid ""
+"Hidden files and folders are included by default since they contain user-"
+"specific configuration files."
+msgstr ""
+"Dolda filer och mappar inkluderas som standard, eftersom de innehåller "
+"användarspecifika konfigurationsfiler."
+
+#: src/Gtk/DeleteWindow.vala:181
+msgid "Hide"
+msgstr "Dölj"
+
+#: src/AppConsole.vala:392
+msgid "Hide rsync output"
+msgstr "Dölj rsync-utdata"
+
+#: src/Gtk/DeleteWindow.vala:182
+msgid "Hide this window (files will be deleted in background)"
+msgstr "Dölj fönstret (filerna tas bort i bakgrunden)"
+
+#: src/Gtk/UsersBox.vala:116
+msgid "Home"
+msgstr "Hem"
+
+#: src/Gtk/ExcludeMessageWindow.vala:115
+msgid "Home Directory"
+msgstr "Hemkatalog"
+
+#: src/Gtk/SnapshotListBox.vala:298 src/Gtk/ScheduleBox.vala:118
+msgid "Hourly"
+msgstr "Varje timma"
+
+#: src/Core/Main.vala:1076
+msgid "Hourly snapshot failed!"
+msgstr "Timavbild misslyckades!"
+
+#: src/Core/Main.vala:1057
+msgid "Hourly snapshots are enabled"
+msgstr "Timavbilder är aktiverat"
+
+#: src/Gtk/RestoreFinishBox.vala:102
+msgid ""
+"If the restored system fails to boot, then boot from the Live CD/USB, "
+"install Timeshift, and try restoring another snapshot."
+msgstr ""
+"Om det återställda systemet inte startar, kan du starta från en Live-CD/USB, "
+"installera Timeshift och försöka återställa en annan avbild."
+
+#: src/Core/Main.vala:2373
+msgid ""
+"If these terms are not acceptable to you, please do not proceed beyond this "
+"point!"
+msgstr ""
+"Om dessa villkor inte är accepteras av dig, bör du inte fortsätta vidare!"
+
+#: src/Gtk/ExcludeBox.vala:54
+msgid "Include / Exclude Patterns"
+msgstr "Inkluderings- / Undantagsmönster"
+
+#: src/Gtk/UsersBox.vala:336
+msgid "Include @home subvolume in backups"
+msgstr "Ta med @home undervolym i säkerhetskopior"
+
+#: src/Gtk/UsersBox.vala:262
+msgid "Include All Files"
+msgstr "Inkludera alla filer"
+
+#: src/Gtk/UsersBox.vala:190
+msgid "Include Only Hidden Files"
+msgstr "Inkludera endast dolda filer"
+
+#: src/Core/Main.vala:2187
+msgid "Invalid Snapshot"
+msgstr "Ogiltig avbild"
+
+#: src/AppConsole.vala:257
+#, c-format
+msgid "Invalid command line arguments"
+msgstr "Ogiltigt kommandoradsargument"
+
+#: src/Gtk/MainWindow.vala:814
+msgid "Invalid snapshot"
+msgstr "Ogiltig avbild"
+
+#: src/Gtk/ExcludeBox.vala:282
+msgid "Items Not Selected"
+msgstr "Inga objekt valda"
+
+#: src/Gtk/ScheduleBox.vala:283
+msgid "Keep"
+msgstr "Behåll"
+
+#: src/Gtk/RestoreExcludeBox.vala:112
+msgid ""
+"Keep configuration files for bittorrent clients like Deluge, Transmission, "
+"etc. If un-checked, previous configuration files will be restored from "
+"snapshot."
+msgstr ""
+"Bevara konfigurationsfiler för bittorrent-klienter som Deluge, Transmission "
+"m.fl. Om omarkerad, kommer tidigare konfigurationsfiler att återställas från "
+"avbilden."
+
+#: src/Gtk/RestoreExcludeBox.vala:85
+msgid ""
+"Keep configuration files for web browsers like Firefox and Chrome. If un-"
+"checked, previous configuration files will be restored from snapshot"
+msgstr ""
+"Bevara konfigurationsfiler för webbläsare som Firefox och Chrome. Om "
+"omarkerad, kommer tidigare konfigurationsfiler att återställas från avbilden."
+
+#: src/Gtk/RestoreDeviceBox.vala:244
+msgid "Keep on Root Device"
+msgstr "Behåll på Root-enheten"
+
+#: src/Gtk/RestoreDeviceBox.vala:229
+msgid "Keep this mount path on the root filesystem"
+msgstr "Behåll monteringspunkten på root-enhetens filsystem"
+
+#: src/Gtk/SnapshotListBox.vala:523
+msgid "LIVE"
+msgstr "LIVE"
+
+#: src/Utility/Device.vala:1951 src/Gtk/BackupDeviceBox.vala:254
+#: src/AppConsole.vala:471 src/AppConsole.vala:510
+#, c-format
+msgid "Label"
+msgstr "Etikett"
+
+#: src/Core/Main.vala:1038
+#, c-format
+msgid "Last boot snapshot is %d hours old"
+msgstr "Senaste boot-avbilden är %d timmar gammal"
+
+#: src/Core/Main.vala:1033
+msgid "Last boot snapshot is older than system start time"
+msgstr "Senaste boot-avbilden är äldre än systemets starttid"
+
+#: src/Core/Main.vala:1029
+msgid "Last boot snapshot not found"
+msgstr "Senaste boot-avbilden kunde inte hittas"
+
+#: src/Core/Main.vala:1100
+#, c-format
+msgid "Last daily snapshot is %d hours old"
+msgstr "Senaste dagliga avbilden är %d timmar gammal"
+
+#: src/Core/Main.vala:1095
+msgid "Last daily snapshot is more than 1 day old"
+msgstr "Senaste dagliga avbilden är mer än 1 dag gammal"
+
+#: src/Core/Main.vala:1091
+msgid "Last daily snapshot not found"
+msgstr "Senaste dagliga avbilden kunde inte hittas"
+
+#: src/Core/Main.vala:1069
+#, c-format
+msgid "Last hourly snapshot is %d minutes old"
+msgstr "Senaste timavbilden är %d minuter gammal"
+
+#: src/Core/Main.vala:1064
+msgid "Last hourly snapshot is more than 1 hour old"
+msgstr "Senaste timavbilden är mer än 1 timma gammal"
+
+#: src/Core/Main.vala:1060
+msgid "Last hourly snapshot not found"
+msgstr "Senaste månadsavbilden kunde inte hittas"
+
+#: src/Core/Main.vala:1162
+#, c-format
+msgid "Last monthly snapshot is %d days old"
+msgstr "Senaste månadsavbilden är %d dagar gammal"
+
+#: src/Core/Main.vala:1157
+msgid "Last monthly snapshot is more than 1 month old"
+msgstr "Senaste månadsavbilden är mer än 1 månad gammal"
+
+#: src/Core/Main.vala:1153
+msgid "Last monthly snapshot not found"
+msgstr "Senaste månadsavbilden kunde inte hittas"
+
+#: src/Core/Main.vala:1131
+#, c-format
+msgid "Last weekly snapshot is %d days old"
+msgstr "Senaste veckoavbilden är %d dagar gammal"
+
+#: src/Core/Main.vala:1126
+msgid "Last weekly snapshot is more than 1 week old"
+msgstr "Senaste veckoavbilden är mer än 1 vecka gammal"
+
+#: src/Core/Main.vala:1122
+msgid "Last weekly snapshot not found"
+msgstr "Senaste veckoavbilden kunde inte hittas"
+
+#: src/Gtk/MainWindow.vala:1002
+#, c-format
+msgid "Latest snapshot"
+msgstr "Senaste avbild"
+
+#: src/Core/Main.vala:1505
+#, c-format
+msgid "Linking from snapshot"
+msgstr "Länkar från avbild"
+
+#: src/AppConsole.vala:363
+msgid "List"
+msgstr "Lista"
+
+#: src/AppConsole.vala:365
+msgid "List devices"
+msgstr "Lista enheter"
+
+#: src/AppConsole.vala:364
+msgid "List snapshots"
+msgstr "Lista avbilder"
+
+#: src/Gtk/MainWindow.vala:953
+msgid "Live USB Mode (Restore Only)"
+msgstr "Live USB-läge (Endast återställning)"
+
+#: src/Gtk/SettingsWindow.vala:90 src/Gtk/BackupWindow.vala:87
+#: src/Gtk/SetupWizardWindow.vala:104
+msgid "Location"
+msgstr "Plats"
+
+#: src/Gtk/MainWindow.vala:441
+msgid "Main window closed by user"
+msgstr "Programfönstret stängt av användaren"
+
+#: src/Gtk/SnapshotListBox.vala:328
+msgid "Mark/Unmark for Deletion"
+msgstr "Markera/Avmarkera för borttagning"
+
+#: src/Core/SnapshotRepo.vala:628 src/Core/SnapshotRepo.vala:671
+msgid "Maximum backups exceeded for backup level"
+msgstr "Max antal säkerhetskopior uppnått"
+
+#: src/Gtk/MainWindow.vala:207
+msgid "Menu"
+msgstr "Meny"
+
+#: src/Gtk/SettingsWindow.vala:105
+msgid "Misc"
+msgstr "Diverse"
+
+#: src/Core/Main.vala:251
+msgid "Missing Dependencies"
+msgstr "Saknade beroenden"
+
+#: src/Core/SnapshotRepo.vala:605
+#, c-format
+msgid "Mode"
+msgstr "Läge"
+
+#: src/Utility/Device.vala:1934
+#, c-format
+msgid "Model"
+msgstr "Modell"
+
+#: src/Gtk/SnapshotListBox.vala:301 src/Gtk/ScheduleBox.vala:64
+msgid "Monthly"
+msgstr "Varje månad"
+
+#: src/Core/Main.vala:1150
+msgid "Monthly snapshot are enabled"
+msgstr "Månadsavbild är aktiverat"
+
+#: src/Core/Main.vala:1169
+msgid "Monthly snapshot failed!"
+msgstr "Månadsavbild misslyckades!"
+
+#: src/Core/Main.vala:2274 src/Core/Main.vala:2307
+msgid "Mount"
+msgstr "Montera"
+
+#: src/Core/Main.vala:3135
+msgid "Moved system subvolume to snapshot directory"
+msgstr "Flyttade systemvolym till avbildsmappen"
+
+#: src/Gtk/MainWindow.vala:790
+msgid "Multiple snapshots selected"
+msgstr "Flera avbilder markerade"
+
+#: src/Gtk/BackupDeviceBox.vala:235 src/Gtk/RsyncLogBox.vala:491
+#: src/AppConsole.vala:437
+msgid "Name"
+msgstr "Namn"
+
+#: src/Gtk/RestoreWindow.vala:201 src/Gtk/BackupWindow.vala:164
+#: src/Gtk/SetupWizardWindow.vala:203 src/Gtk/DeleteWindow.vala:165
+msgid "Next"
+msgstr "Nästa"
+
+#: src/Utility/Gtk/CustomMessageDialog.vala:157
+msgid "No"
+msgstr "Nej"
+
+#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:122
+msgid "No Change"
+msgstr "Ingen ändring"
+
+#: src/Gtk/MainWindow.vala:599 src/Gtk/DeleteWindow.vala:335
+msgid "No Snapshots Selected"
+msgstr "Inga avbilder valda"
+
+#: src/Gtk/MainWindow.vala:1026
+msgid "No snapshots available"
+msgstr "Inga avbilder tillgängliga"
+
+#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:970
+#: src/AppConsole.vala:326
+msgid "No snapshots found"
+msgstr "Inga avbilder hittades"
+
+#: src/AppConsole.vala:753
+msgid "No snapshots found on device"
+msgstr "Inga avbilder hittades på enheten"
+
+#: src/Gtk/MainWindow.vala:537
+msgid "No snapshots on device"
+msgstr "Inga avbilder på enheten"
+
+#: src/Core/SnapshotRepo.vala:581
+msgid "No snapshots on this device"
+msgstr "Inga avbilder på denna enhet"
+
+#: src/Gtk/MainWindow.vala:783
+msgid "No snapshots selected"
+msgstr "Inga avbilder valda"
+
+#: src/Gtk/MainWindow.vala:1003 src/Gtk/MainWindow.vala:1005
+msgid "None"
+msgstr "Ingen"
+
+#: src/Core/Subvolume.vala:198
+#, c-format
+msgid "Not Found"
+msgstr "Hittades inte"
+
+#: src/Core/SnapshotRepo.vala:599
+msgid "Not Selected"
+msgstr "Inte vald"
+
+#: src/Core/Main.vala:396
+msgid "Not Supported"
+msgstr "Stöds inte"
+
+#: src/Core/SnapshotRepo.vala:543 src/Core/SnapshotRepo.vala:572
+msgid "Not enough disk space"
+msgstr "Tillräckligt diskutrymme saknas"
+
+#: src/Gtk/FinishBox.vala:55 src/AppConsole.vala:409
+msgid "Notes"
+msgstr "Notiser"
+
+#: src/Core/Main.vala:1180
+msgid "Nothing to do!"
+msgstr "Inget att göra!"
+
+#: src/AppConsole.vala:435 src/AppConsole.vala:465 src/AppConsole.vala:504
+#: src/AppConsole.vala:552
+msgid "Num"
+msgstr "Nr"
+
+#: src/Gtk/ScheduleBox.vala:282
+msgid ""
+"Number of snapshots to keep.\n"
+"Older snapshots will be removed once this limit is exceeded."
+msgstr ""
+"Antal avbilder att spara.\n"
+"Äldre avbilder tas bort när denna gräns uppnåtts."
+
+#: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:147
+#: src/Utility/Gtk/CustomMessageDialog.vala:151 src/Utility/GtkHelper.vala:108
+#: src/Gtk/SettingsWindow.vala:123 src/Gtk/ExcludeListSummaryWindow.vala:84
+msgid "OK"
+msgstr "OK"
+
+#: src/Gtk/SnapshotBackendBox.vala:188
+msgid ""
+"OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout "
+"(@ and @home subvolumes). Other layouts are not supported."
+msgstr ""
+"Operativsystemet måste vara installerat på en BTRFS-partition med "
+"undervolymslayout av Ubuntu-typ (@ och @home undervolymer). Andra layouter "
+"stöds inte."
+
+#: src/Core/Main.vala:4289
+msgid "Older log files removed"
+msgstr "Äldre loggfiler borttagna"
+
+#: src/Gtk/MainWindow.vala:1004
+msgid "Oldest snapshot"
+msgstr "Äldsta avbilden"
+
+#: src/Gtk/SnapshotListBox.vala:296
+msgid "On demand (manual)"
+msgstr "Vid behov (manuellt)"
+
+#: src/Core/Main.vala:394 src/Core/Main.vala:3617
+#: src/Gtk/RestoreDeviceBox.vala:511
+msgid ""
+"Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
+msgstr ""
+"Endast layouter av Ubuntu-typ, med @ och @home undervolymer stöds för "
+"närvarande."
+
+#: src/Gtk/MainWindow.vala:208
+msgid "Open Menu"
+msgstr "Öppna menyn"
+
+#: src/Core/Main.vala:3399
+msgid ""
+"Option --snapshot-device should not be specified for creating snapshots in "
+"BTRFS mode"
+msgstr ""
+"Alternativet --snapshot-device, bör inte användas för att skapa avbilder i "
+"BTRFS-läge"
+
+#: src/AppConsole.vala:361 src/AppGtk.vala:128
+msgid "Options"
+msgstr "Alternativ"
+
+#: src/Gtk/RestoreExcludeBox.vala:118
+msgid "Other applications (next page)"
+msgstr "Andra program (nästa sida)"
+
+#: src/Gtk/BackupBox.vala:99 src/Gtk/RestoreBox.vala:134
+#: src/Gtk/RsyncLogBox.vala:398
+#, c-format
+msgid "Owner"
+msgstr "Ägare"
+
+#: src/Utility/Device.vala:1946
+#, c-format
+msgid "Parent Device"
+msgstr "Överordnad enhet"
+
+#: src/Core/Main.vala:2638 src/Core/Main.vala:2729 src/Gtk/RsyncLogBox.vala:222
+msgid "Parsing log file..."
+msgstr "Tolkar loggfil ..."
+
+#: src/Gtk/RestoreDeviceBox.vala:510
+msgid "Partition has an unsupported subvolume layout."
+msgstr "Partitionen har en undervolymlayout som inte stöds."
+
+#: src/Core/SnapshotRepo.vala:604 src/Gtk/RestoreDeviceBox.vala:93
+#, c-format
+msgid "Path"
+msgstr "Sökväg"
+
+#: src/Gtk/ExcludeBox.vala:166
+msgid "Pattern"
+msgstr "Mönster"
+
+#: src/Gtk/BackupBox.vala:98 src/Gtk/RestoreBox.vala:133
+#: src/Gtk/RsyncLogBox.vala:396
+#, c-format
+msgid "Permissions"
+msgstr "Rättigheter"
+
+#: src/Core/Main.vala:270
+msgid "Please check if you have multiple windows open."
+msgstr "Kontrollera om du har flera fönster öppna."
+
+#: src/Core/Main.vala:2405
+msgid "Please do not interrupt the restore process!"
+msgstr "Avbryt inte återställningsprocessen!"
+
+#: src/Core/Main.vala:365
+msgid "Please install required packages and try running TimeShift again"
+msgstr "Installera nödvändiga paket och försök köra TimeShift igen"
+
+#: src/AppGtk.vala:143
+msgid "Please re-run the application as admin (using 'sudo' or 'su')"
+msgstr "Starta om programmet som administratör (med \"su\" eller \"sudo\")"
+
+#: src/AppConsole.vala:108
+msgid "Please run the application as admin (using 'sudo' or 'su')"
+msgstr "Kör programmet som administratör (med \"sudo\" eller \"su\")"
+
+#: src/Core/Main.vala:2355
+msgid "Please save your work and close all applications."
+msgstr "Spara ditt arbete och stäng alla öppna program."
+
+#: src/Gtk/MainWindow.vala:685
+msgid "Please select a snapshot to view the log!"
+msgstr "Välj en avbild för att se loggen!"
+
+#: src/Gtk/RestoreDeviceBox.vala:498
+msgid "Please select the GRUB device"
+msgstr "Välj GRUB-enhet"
+
+#: src/Core/Main.vala:266
+msgid "Please wait a few minutes and try again."
+msgstr "Vänta några minuter och försök igen."
+
+#: src/Gtk/MainWindow.vala:752
+msgid "Please wait for snapshots to be deleted."
+msgstr "Vänta tills avbilderna är borttagna."
+
+#: src/Gtk/EstimateBox.vala:66
+msgid "Please wait..."
+msgstr "Vänta..."
+
+#: src/Gtk/RsyncLogBox.vala:188
+msgid "Populating list..."
+msgstr "Fyller lista ..."
+
+#: src/Core/Main.vala:1740 src/Gtk/BackupBox.vala:117
+#: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
+#: src/Gtk/RsyncLogBox.vala:232
+msgid "Preparing..."
+msgstr "Förbereder ..."
+
+#: src/Gtk/RestoreWindow.vala:193 src/Gtk/BackupWindow.vala:156
+#: src/Gtk/SetupWizardWindow.vala:195 src/Gtk/DeleteWindow.vala:157
+msgid "Previous"
+msgstr "Föregående"
+
+#: src/AppGtk.vala:130
+msgid "Print debug information"
+msgstr "Skriv ut felsökningsinfo"
+
+#: src/AppConsole.vala:395 src/AppGtk.vala:132
+msgid "Print version number"
+msgstr "Skriv ut versionsnummer"
+
+#: src/Core/Main.vala:3979
+msgid "Query completed"
+msgstr "Begäran slutförd"
+
+#: src/Core/Main.vala:3962
+msgid "Querying subvolume info..."
+msgstr "Begär undervolymsinfo..."
+
+#: src/Gtk/SnapshotBackendBox.vala:77
+msgid "RSYNC"
+msgstr "RSYNC"
+
+#: src/Gtk/SnapshotBackendBox.vala:193
+msgid "RSYNC Snapshots"
+msgstr "RSYNC-avbild"
+
+#: src/Gtk/BootOptionsBox.vala:137
+msgid ""
+"Re-generates initramfs for all installed kernels. This is generally not "
+"needed. Select this only if the restored system fails to boot."
+msgstr ""
+"Återskapa initramfs för alla installerade kärnor. Detta behövs vanligen "
+"inte. Välj detta endast om det återställda systemet inte kan starta."
+
+#: src/AppConsole.vala:995
+#, c-format
+msgid "Re-install GRUB2 bootloader?"
+msgstr "Vill du installera om GRUB2 starthanterare?"
+
+#: src/Core/Main.vala:2468
+msgid "Re-installing GRUB2 bootloader..."
+msgstr "Installerar om starthanteraren GRUB2 ..."
+
+#: src/Gtk/BootOptionsBox.vala:120
+msgid "Re-installs the GRUB2 bootloader on the selected device."
+msgstr "Installera om GRUB2 starthanterare på den valda enheten."
+
+#: src/Gtk/RsyncLogBox.vala:181
+#, c-format
+msgid "Read %'d of %'d lines..."
+msgstr "Läst %'d av %'d rader..."
+
+#: src/Core/Main.vala:2568
+msgid "Rebooting system..."
+msgstr "Startar om systemet ..."
+
+#: src/Gtk/RestoreExcludeBox.vala:61 src/Gtk/RestoreExcludeBox.vala:91
+#, c-format
+msgid "Recommended"
+msgstr "Rekommenderat"
+
+#: src/Gtk/BackupDeviceBox.vala:65 src/Gtk/RestoreDeviceBox.vala:70
+msgid "Refresh"
+msgstr "Uppdatera"
+
+#: src/Gtk/BackupDeviceBox.vala:106
+msgid "Remote and network locations are not supported."
+msgstr "Fjärr- och nätverksplatser stöds inte."
+
+#: src/Gtk/ExcludeBox.vala:262
+msgid "Remove"
+msgstr "Ta bort"
+
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1778 src/Core/Main.vala:1789
+#: src/Core/Main.vala:4285 src/Core/SnapshotRepo.vala:907
+#, c-format
+msgid "Removed"
+msgstr "Borttaget"
+
+#: src/Utility/CronTab.vala:340
+msgid "Removed cron task"
+msgstr "Tog bort cron-åtgärd"
+
+#: src/Core/Main.vala:3767
+#, c-format
+msgid "Removed mount directory: '%s'"
+msgstr "Tog bort monteringsmappen: \"%s\""
+
+#: src/Core/Snapshot.vala:555
+msgid "Removed snapshot"
+msgstr "Tog bort avbild"
+
+#: src/Core/Snapshot.vala:484
+msgid "Removing"
+msgstr "Tar bort"
+
+#: src/Core/Snapshot.vala:521
+msgid "Removing snapshot"
+msgstr "Tar bort avbild"
+
+#: src/Core/SnapshotRepo.vala:763 src/Core/SnapshotRepo.vala:782
+#: src/Core/SnapshotRepo.vala:800 src/Core/SnapshotRepo.vala:814
+#, c-format
+msgid "Removing snapshots"
+msgstr "Tar bort avbilder"
+
+#: src/Gtk/MainWindow.vala:150 src/Gtk/RestoreWindow.vala:125
+#: src/Gtk/RsyncLogBox.vala:377 src/Gtk/RsyncLogBox.vala:566
+#: src/Gtk/RestoreFinishBox.vala:71 src/AppConsole.vala:373
+msgid "Restore"
+msgstr "Återställ"
+
+#: src/Gtk/UsersBox.vala:325
+msgid "Restore @home subvolume"
+msgstr "Återställ undervolymen @home"
+
+#: src/Gtk/RestoreWindow.vala:89
+msgid "Restore Device"
+msgstr "Återställningsenhet"
+
+#: src/Gtk/RestoreWindow.vala:94
+msgid "Restore Exclude"
+msgstr "Återställningsundantag"
+
+#: src/Gtk/RestoreWindow.vala:69
+msgid "Restore Snapshot"
+msgstr "Återställ avbild"
+
+#: src/Core/Main.vala:2978 src/Core/Main.vala:3020
+msgid "Restore completed"
+msgstr "Återställning slutförd"
+
+#: src/Gtk/MainWindow.vala:151
+msgid "Restore selected snapshot"
+msgstr "Återställ markerad avbild"
+
+#: src/AppConsole.vala:374
+msgid "Restore snapshot"
+msgstr "Återställ avbild"
+
+#: src/Gtk/RestoreFinishBox.vala:96
+msgid "Restored subvolumes will become active after system is restarted."
+msgstr "Återställda undervolymer aktiveras när systemet startas om."
+
+#: src/Core/Subvolume.vala:220
+msgid "Restored system subvolume"
+msgstr "Återställde systemvolym"
+
+#: src/Gtk/RestoreBox.vala:77 src/Gtk/RestoreBox.vala:190
+msgid "Restoring Snapshot..."
+msgstr "Återställer avbild ..."
+
+#: src/Gtk/FinishBox.vala:85
+msgid ""
+"Restoring a snapshot will replace system subvolumes, and system subvolumes "
+"currently in use will be preserved as a new snapshot. If required, this "
+"snapshot can be restored later to 'undo' the restore."
+msgstr ""
+"Återställning av en avbild, ersätter systemvolymer och aktiva systemvolymer "
+"sparas som ny avbild. Vid behov kan denna avbild återställas senare, för att "
+"\"ångra\" föregående återställning."
+
+#: src/Core/Main.vala:2947
+msgid "Restoring snapshot..."
+msgstr "Återställer avbild ..."
+
+#: src/Gtk/FinishBox.vala:88
+msgid ""
+"Restoring snapshots only replaces system files and settings. Non-hidden "
+"files and directories in user home directories will not be touched. This "
+"behaviour can be changed by adding a filter to include these files. Included "
+"files will be backed up when snapshot is created, and replaced when snapshot "
+"is restored."
+msgstr ""
+"Återställning av avbilder ersätter endast systemfiler och inställningar. Ej "
+"dolda filer och mappar i användares hemmapp, berörs inte. Detta beteende kan "
+"ändras genom att lägga till ett filter som inkluderar dessa filer. "
+"Inkluderade filer säkerhetskopieras när avbilden skapas och återställs när "
+"avbilden återställs."
+
+#: src/Utility/Device.vala:1936
+#, c-format
+msgid "Revision"
+msgstr "Revision"
+
+#: src/Gtk/RestoreDeviceBox.vala:438
+msgid "Root device not selected"
+msgstr "Root-enhet inte vald"
+
+#: src/Gtk/RsyncLogWindow.vala:49
+msgid "Rsync Log Viewer"
+msgstr "Visning av Rsync-logg"
+
+#: src/AppGtk.vala:134
+#, c-format
+msgid "Run 'timeshift' for the command-line version of this tool"
+msgstr "Kör \"timeshift\", för kommandoradsversionen av detta verktyg"
+
+#: src/AppConsole.vala:393
+msgid "Run in non-interactive mode"
+msgstr "Kör i icke-interaktivt läge"
+
+#: src/Core/Main.vala:202
+msgid "Running"
+msgstr "Körs"
+
+#: src/Gtk/FinishBox.vala:95
+msgid ""
+"Save snapshots to an external disk instead of the system disk to guard "
+"against drive failures."
+msgstr ""
+"Spara avbilder på en extern disk istället för systemdisken, som skydd mot "
+"diskhaveri."
+
+#: src/Gtk/FinishBox.vala:97
+msgid ""
+"Saving snapshots to a non-system disk allows you to format and re-install "
+"the OS on the system disk without losing snapshots stored on it. You can "
+"even install another Linux distribution and later roll-back the previous "
+"distribution by restoring a snapshot."
+msgstr ""
+"Att spara avbilder på en icke-systemdisk, låter dig formatera och installera "
+"om operativsystemet på systemdisken, utan att förlora avbilderna. Du kan "
+"t.o.m. installera en annan Linux-dist och senare rulla tillbaka föregående "
+"distribution genom att återställa en avbild."
+
+#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+msgid "Saving to device"
+msgstr "Sparar på enhet"
+
+#: src/Gtk/SettingsWindow.vala:93 src/Gtk/SetupWizardWindow.vala:109
+msgid "Schedule"
+msgstr "Schema"
+
+#: src/Core/Main.vala:273
+msgid "Scheduled snapshot in progress..."
+msgstr "Schemalagd avbild bearbetas ..."
+
+#: src/Core/Main.vala:1180 src/Gtk/MainWindow.vala:1020
+#: src/Gtk/ScheduleBox.vala:312
+msgid "Scheduled snapshots are disabled"
+msgstr "Schemalagda avbilder är inaktiverat"
+
+#: src/Gtk/FinishBox.vala:78
+msgid "Scheduled snapshots are disabled. It's recommended to enable it."
+msgstr ""
+"Schemalagda avbilder är inaktiverat. Du rekommenderas att aktivera det."
+
+#: src/Gtk/ScheduleBox.vala:305
+msgid "Scheduled snapshots are enabled"
+msgstr "Schemalagda avbilder är aktiverat"
+
+#: src/Gtk/FinishBox.vala:75
+msgid ""
+"Scheduled snapshots are enabled. Snapshots will be created automatically for "
+"selected levels."
+msgstr ""
+"Schemalagda avbilder är aktiverat. Avbilder kommer att skapas automatiskt, "
+"på valda nivåer."
+
+#: src/AppConsole.vala:883
+#, c-format
+msgid "Select '%s' device (default = %s)"
+msgstr "välj enhet för \"%s\" (standard = %s)"
+
+#: src/Core/SnapshotRepo.vala:510 src/AppConsole.vala:702
+msgid "Select BTRFS system disk with root subvolume (@)"
+msgstr "Välj BTRFS-systemdisk med root-volym (@)"
+
+#: src/AppConsole.vala:1011
+msgid "Select GRUB device"
+msgstr "Välj GRUB-enhet"
+
+#: src/Gtk/MainWindow.vala:684
+msgid "Select Snapshot"
+msgstr "Välj avbild"
+
+#: src/Gtk/ScheduleBox.vala:57
+msgid "Select Snapshot Levels"
+msgstr "Välj avbildsnivåer"
+
+#: src/Gtk/BackupDeviceBox.vala:56
+msgid "Select Snapshot Location"
+msgstr "Välj avbildsplats"
+
+#: src/Gtk/SnapshotBackendBox.vala:62
+msgid "Select Snapshot Type"
+msgstr "Välj avbildstyp"
+
+#: src/Gtk/DeleteWindow.vala:85
+msgid "Select Snapshots"
+msgstr "Välj avbilder"
+
+#: src/Gtk/RestoreDeviceBox.vala:61
+msgid "Select Target Device"
+msgstr "Välj målenhet"
+
+#: src/Gtk/BackupDeviceBox.vala:410
+#, c-format
+msgid "Select a partition on this disk"
+msgstr "Välj en partition på disken"
+
+#: src/Gtk/MainWindow.vala:791
+msgid "Select a single snapshot to restore"
+msgstr "Välj en enskild avbild för återställning"
+
+#: src/Gtk/RestoreDeviceBox.vala:467
+msgid "Select another device for root file system (/)"
+msgstr "Välj en annan enhet för root-filsystemet (/)"
+
+#: src/Core/SnapshotRepo.vala:546 src/Core/SnapshotRepo.vala:575
+msgid "Select another device or free up some space"
+msgstr "Välj en annan enhet eller rensa för mer ledigt diskutrymme"
+
+#: src/Gtk/MainWindow.vala:531 src/Gtk/MainWindow.vala:538
+msgid "Select another device to delete snasphots"
+msgstr "Välj en annan enhet för att ta bort avbilder"
+
+#: src/Gtk/MainWindow.vala:463
+msgid "Select another device?"
+msgstr "Vill du välja en annan enhet?"
+
+#: src/Gtk/RestoreExcludeBox.vala:57
+msgid "Select applications to exclude from restore"
+msgstr "Välj program att undantas vid återställning"
+
+#: src/AppConsole.vala:685
+msgid "Select backup device"
+msgstr "Välj lagringsenhet för säkerhetskopior"
+
+#: src/Gtk/ExcludeBox.vala:443
+msgid "Select directory"
+msgstr "Välj mapp"
+
+#: src/Gtk/ExcludeBox.vala:416
+msgid "Select file(s)"
+msgstr "Välj fil(er)"
+
+#: src/AppConsole.vala:759
+msgid "Select snapshot"
+msgstr "Välj avbild"
+
+#: src/Gtk/DeleteWindow.vala:336
+msgid "Select snapshots to delete"
+msgstr "Välj avbilder för borttagning"
+
+#: src/Gtk/RestoreDeviceBox.vala:439
+msgid "Select the device for root file system (/)"
+msgstr "Välj enhet för root-filsystemet (/)"
+
+#: src/Gtk/RestoreDeviceBox.vala:83
+msgid "Select the devices where files will be restored."
+msgstr "Välj enhet för filåterställning"
+
+#: src/Gtk/ScheduleBox.vala:313
+msgid "Select the intervals for creating snapshots"
+msgstr "Välj intervall för att skapa avbilder"
+
+#: src/Gtk/ExcludeBox.vala:283
+msgid "Select the items to be removed from the list"
+msgstr "Välj objekt för borttagning från listan"
+
+#: src/Core/SnapshotRepo.vala:472
+msgid "Select the snapshot device"
+msgstr "Välj avbildsenhet"
+
+#: src/Gtk/MainWindow.vala:784
+msgid "Select the snapshot to restore"
+msgstr "Välj avbild för återställning"
+
+#: src/Gtk/DeleteWindow.vala:87
+msgid "Select the snapshots to be deleted"
+msgstr "Välj avbilder för borttagning"
+
+#: src/Gtk/MainWindow.vala:600
+msgid "Select the snapshots to mark for deletion"
+msgstr "Välj avbilder att markera för borttagning"
+
+#: src/Gtk/RestoreDeviceBox.vala:79
+msgid "Select the target devices where system will be cloned."
+msgstr "Välj målenhet, dit systemet skall klonas."
+
+#: src/Core/Main.vala:3427
+msgid "Selected default snapshot device"
+msgstr "Välj standardenhet för avbildslagring"
+
+#: src/Core/Main.vala:3378 src/Core/Main.vala:3382
+msgid "Selected default snapshot type"
+msgstr "Välj standardtyp för avbilder"
+
+#: src/Gtk/BackupDeviceBox.vala:388
+msgid "Selected device does not have BTRFS partition"
+msgstr "Den valda enheten har ingen BTRFS-partition"
+
+#: src/Gtk/BackupDeviceBox.vala:385
+msgid "Selected device does not have Linux partition"
+msgstr "Den valda enheten har ingen Linux-partition"
+
+#: src/Core/SnapshotRepo.vala:144
+msgid "Selected snapshot device"
+msgstr "Vald avbildsenhet"
+
+#: src/Core/SnapshotRepo.vala:509 src/AppConsole.vala:701
+msgid "Selected snapshot device is not a system disk"
+msgstr "Den valda avbildsenheten är ingen systemdisk"
+
+#: src/Core/Main.vala:2188
+msgid "Selected snapshot is marked for deletion"
+msgstr "Den valda avbilden är markerad för borttagning"
+
+#: src/Gtk/MainWindow.vala:815
+msgid "Selected snapshot is marked for deletion and cannot be restored"
+msgstr ""
+"Den valda avbilden är markerad för borttagning och kan inte återställas"
+
+#: src/Gtk/UsersBox.vala:234
+msgid ""
+"Selected user has an encrypted home directory. It's not possible to include "
+"only hidden files."
+msgstr ""
+"Aktuell användare har en krypterad hemkatalog. Det är inte möjligt att ta "
+"med endast dolda filer."
+
+#: src/Utility/Device.vala:1935
+#, c-format
+msgid "Serial"
+msgstr "Serienummer"
+
+#: src/Core/Main.vala:230
+msgid "Session log file"
+msgstr "Sessionsloggfil"
+
+#: src/AppConsole.vala:370
+msgid "Set snapshot description"
+msgstr "Ange avbildsbeskrivning"
+
+#: src/Gtk/MainWindow.vala:180 src/Gtk/MainWindow.vala:181
+#: src/Gtk/SettingsWindow.vala:56
+msgid "Settings"
+msgstr "Inställningar"
+
+#: src/Gtk/MainWindow.vala:191
+msgid "Settings wizard"
+msgstr "Inställningsguide"
+
+#: src/Gtk/FinishBox.vala:58
+msgid "Setup Complete"
+msgstr "Inställning slutförd"
+
+#: src/Gtk/SetupWizardWindow.vala:64
+msgid "Setup Wizard"
+msgstr "Inställningsguide"
+
+#: src/AppConsole.vala:390
+msgid "Show additional debug messages"
+msgstr "Visa extra felsökningsmeddelanden"
+
+#: src/AppConsole.vala:394 src/AppGtk.vala:131
+msgid "Show all options"
+msgstr "Visa alla alternativ"
+
+#: src/Gtk/RestoreExcludeBox.vala:121
+msgid "Show more applications to exclude on the next page"
+msgstr "Visa fler program att undanta på nästa sida"
+
+#: src/AppConsole.vala:391
+msgid "Show rsync output (default)"
+msgstr "Visa rsync-utdata (standard)"
+
+#: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
+#: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
+#: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
+#: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:469 src/AppConsole.vala:508
+#, c-format
+msgid "Size"
+msgstr "Storlek"
+
+#: src/Gtk/SnapshotBackendBox.vala:186
+msgid ""
+"Size of BTRFS snapshots are initially zero. As system files gradually change "
+"with time, data gets written to new data blocks which take up disk space "
+"(copy-on-write). Files in the snapshot continue to point to original data "
+"blocks."
+msgstr ""
+"Storleken på BTRFS-avbilder är initialt noll. Allt eftersom systemfilerna "
+"gradvis ändras över tid, skrivs data till nya datablock, vilket tar upp "
+"diskutrymme (copy-on-write). Filer i avbilden fortsätter att peka mot "
+"ursprungliga datablock."
+
+#: src/AppConsole.vala:379
+msgid "Skip GRUB2 reinstall"
+msgstr "Hoppa över ominstallation av GRUB2"
+
+#: src/Core/Main.vala:2193 src/Core/SnapshotRepo.vala:631
+#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:94
+#, c-format
+msgid "Snapshot"
+msgstr "Avbild"
+
+#: src/Gtk/MainWindow.vala:548
+#, c-format
+msgid ""
+"Snapshot '%s' is being used by the system and cannot be deleted. Restart the "
+"system to activate the restored snapshot."
+msgstr ""
+"Avbild \"%s\" används av systemet och kan inte tas bort. Starta om systemet "
+"för att aktivera den återställda avbilden."
+
+#: src/Gtk/BackupFinishBox.vala:60
+msgid "Snapshot Created"
+msgstr "Avbild skapad"
+
+#: src/Gtk/SnapshotListBox.vala:295
+#, c-format
+msgid "Snapshot Levels"
+msgstr "Avbildsintervall"
+
+#: src/Gtk/MainWindow.vala:751
+msgid "Snapshot deletion in progress..."
+msgstr "Avbildsborttagning pågår ..."
+
+#: src/Core/SnapshotRepo.vala:442
+#, c-format
+msgid "Snapshot device"
+msgstr "Avbildsenhet"
+
+#: src/Core/SnapshotRepo.vala:478 src/AppConsole.vala:675
+msgid "Snapshot device not available"
+msgstr "Avbildsenheten är inte tillgänglig"
+
+#: src/Core/SnapshotRepo.vala:471 src/AppConsole.vala:671
+msgid "Snapshot device not selected"
+msgstr "Avbildsenhet inte vald"
+
+#: src/Core/SnapshotRepo.vala:446
+#, c-format
+msgid "Snapshot location"
+msgstr "Avbildsplats"
+
+#: src/Core/Main.vala:1317
+msgid "Snapshot saved successfully"
+msgstr "Avbilden sparades"
+
+#: src/Core/Main.vala:2183
+msgid "Snapshot to restore not specified!"
+msgstr "Avbild för återställning har inte specificerats!"
+
+#: src/Core/Main.vala:3024
+msgid "Snapshot will become active after system is rebooted."
+msgstr "Avbilden aktiveras när systemet startas om."
+
+#: src/Gtk/DeleteFinishBox.vala:60
+msgid "Snapshot(s) Deleted"
+msgstr "Avbild(er) borttagna"
+
+#: src/Gtk/MainWindow.vala:309 src/Gtk/DeleteWindow.vala:89
+msgid "Snapshots"
+msgstr "Avbilder"
+
+#: src/Gtk/SnapshotBackendBox.vala:178
+msgid ""
+"Snapshots are created and restored instantly. Snapshot creation is an atomic "
+"transaction at the file system level."
+msgstr ""
+"Avbilder skapas och återställs omedelbart. Skapa ögonblicksbilder är en "
+"atomär transaktion på filsystemnivå."
+
+#: src/Gtk/SnapshotBackendBox.vala:195
+msgid ""
+"Snapshots are created by creating copies of system files using rsync, and "
+"hard-linking unchanged files from previous snapshot."
+msgstr ""
+"Avbilder skapas genom att skapa kopior av systemfiler med rsync och "
+"hårdlänka oförändrade filer från föregående avbild."
+
+#: src/Gtk/SnapshotBackendBox.vala:176
+msgid ""
+"Snapshots are created using the built-in features of the BTRFS file system."
+msgstr "Avbilder skapas med inbyggda funktioner i BTRFS-filsystemet."
+
+#: src/Gtk/ScheduleBox.vala:167
+#, c-format
+msgid "Snapshots are not scheduled at fixed times."
+msgstr "Skapande av avbilder har inte schemalagts på bestämda tider."
+
+#: src/Gtk/SnapshotBackendBox.vala:182
+msgid ""
+"Snapshots are perfect, byte-for-byte copies of the system. Nothing is "
+"excluded."
+msgstr ""
+"Avbilder är perfekta, byte-för-byte-kopior av systemet. Inget undantas."
+
+#: src/Gtk/SnapshotBackendBox.vala:180
+msgid ""
+"Snapshots are restored by replacing system subvolumes. Since files are never "
+"copied, deleted or overwritten, there is no risk of data loss. The existing "
+"system is preserved as a new snapshot after restore."
+msgstr ""
+"Avbilder återställs genom att ersätta systemvolymer. Eftersom filer aldrig "
+"kopieras, tas bort eller skrivs över, finns ingen risk för dataförlust. Det "
+"befintliga systemet bevaras som en ny avbild vid återställning."
+
+#: src/Gtk/SnapshotBackendBox.vala:184
+msgid ""
+"Snapshots are saved on the same disk from which they are created (system "
+"disk). Storage on other disks is not supported. If system disk fails then "
+"snapshots stored on it will be lost along with the system."
+msgstr ""
+"Avbilder sparas på samma disk som de skapades ifrån (systemdisken). Lagring "
+"på andra diskar stöds ej. Om systemdisken havererar, kommer avbilder som "
+"lagrats på den också att förloras ihop med systemet."
+
+#: src/Gtk/BackupDeviceBox.vala:107
+msgid ""
+"Snapshots are saved to /timeshift on selected partition. Other locations are "
+"not supported."
+msgstr ""
+"Avbilderna sparas i mappen /timeshift på den valda enheten. Andra platser "
+"stöds inte."
+
+#: src/Gtk/BackupDeviceBox.vala:99
+msgid ""
+"Snapshots are saved to /timeshift-btrfs on selected partition. Other "
+"locations are not supported."
+msgstr ""
+"Avbilderna sparas i mappen /timeshift-btrfs på den valda enheten. Andra "
+"platser stöds inte."
+
+#: src/Gtk/MainWindow.vala:965
+msgid "Snapshots available for restore"
+msgstr "Avbilder tillgängliga för återställning"
+
+#: src/Gtk/SnapshotBackendBox.vala:199
+msgid ""
+"Snapshots can be saved to any disk formatted with a Linux file system. "
+"Saving snapshots to non-system or external disk allows the system to be "
+"restored even if system disk is damaged or re-formatted."
+msgstr ""
+"Avbilder kan sparas på vilken disk som helst, som formaterats med ett Linux-"
+"filsystem. Lagring av avbilder på en icke-systemdisk eller extern disk, "
+"låter dig återställa systemet även om systemdisken skadas eller formateras."
+
+#: src/AppConsole.vala:289
+msgid "Snapshots cannot be created in Live CD mode"
+msgstr "Avbilder kan inte skapas i LiveCD-läge"
+
+#: src/Gtk/MainWindow.vala:1012
+msgid "Snapshots will be created at selected intervals"
+msgstr "Avbilder kommer att skapas med valda intervall"
+
+#: src/Gtk/ScheduleBox.vala:306
+msgid ""
+"Snapshots will be created at selected intervals if snapshot disk has enough "
+"space (> 1 GB)"
+msgstr ""
+"Avbilder kommer att skapas med valda intervall om avbildsdisken har "
+"tillräckligt utrymme (> 1 GB)"
+
+#: src/AppConsole.vala:386
+msgid "Specify backup device (default: config)"
+msgstr "Specificera säkerhetskopieringsenhet (standard: config)"
+
+#: src/AppConsole.vala:378
+msgid "Specify device for installing GRUB2 bootloader"
+msgstr "Specificera enhet för installation av starthanteraren GRUB2"
+
+#: src/AppConsole.vala:376
+msgid "Specify snapshot to restore"
+msgstr "Specificera avbild för återställning"
+
+#: src/AppConsole.vala:377
+msgid "Specify target device"
+msgstr "Specificera målenhet"
+
+#: src/Core/SnapshotRepo.vala:452 src/Core/SnapshotRepo.vala:606
+#: src/Gtk/RsyncLogBox.vala:471
+#, c-format
+msgid "Status"
+msgstr "Status"
+
+#: src/Gtk/ScheduleBox.vala:154
+msgid "Stop cron emails for scheduled tasks"
+msgstr "Stoppa e-post från cron angående schemalagda åtgärder"
+
+#: src/Gtk/RestoreDeviceBox.vala:101
+msgid "Subvolume"
+msgstr "Undervolym"
+
+#: src/Core/Subvolume.vala:203
+#, c-format
+msgid "Subvolume exists at destination"
+msgstr "Destinationen har undervolymer"
+
+#: src/Gtk/SnapshotListBox.vala:274
+#, c-format
+msgid "Subvolumes"
+msgstr "Undervolymer"
+
+#: src/Gtk/ExcludeBox.vala:267 src/Gtk/RestoreWindow.vala:120
+#: src/Gtk/ExcludeAppsBox.vala:134
+msgid "Summary"
+msgstr "Sammandrag"
+
+#: src/AppConsole.vala:388
+msgid "Switch to BTRFS mode (default: config)"
+msgstr "Växla till BTRFS-läge (standard: config)"
+
+#: src/AppConsole.vala:389
+msgid "Switch to RSYNC mode (default: config)"
+msgstr "Växla till RSYNC-läge (standard: config)"
+
+#: src/Core/SnapshotRepo.vala:961
+msgid "Symlinks updated"
+msgstr "Symboliska länkar uppdaterade"
+
+#: src/Core/Main.vala:2543
+msgid "Syncing file systems..."
+msgstr "Synkroniserar filsystemen..."
+
+#: src/Core/Main.vala:1522 src/Core/Main.vala:2713 src/Core/Main.vala:2954
+msgid "Syncing files with rsync..."
+msgstr "Synkroniserar filer med rsync..."
+
+#: src/AppGtk.vala:126
+msgid "Syntax"
+msgstr "Syntax"
+
+#: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:126
+#, c-format
+msgid "System"
+msgstr "System"
+
+#: src/Gtk/MainWindow.vala:912
+msgid "System Restore Utility"
+msgstr "Systemåterställningsverktyg"
+
+#: src/Gtk/FinishBox.vala:82
+msgid "System can be rolled-back to a previous date by restoring a snapshot."
+msgstr ""
+"Systemet kan rullas tillbaka till ett tidigare datum, genom att återställa "
+"en avbild."
+
+#: src/Core/Main.vala:2406
+msgid "System will reboot after files are restored"
+msgstr "Systemet startas om efter filåterställning"
+
+#: src/Core/Main.vala:2356
+msgid "System will reboot after files are restored."
+msgstr "Systemet startas om när filerna återställts."
+
+#: src/Core/Main.vala:1253 src/Core/Main.vala:1327
+msgid "Tagged snapshot"
+msgstr "Taggad avbild"
+
+#: src/Gtk/SnapshotListBox.vala:150 src/AppConsole.vala:438
+msgid "Tags"
+msgstr "Taggar"
+
+#: src/Core/Main.vala:2218
+msgid "Target device is not mounted"
+msgstr "Målenheten är inte monterad"
+
+#: src/Gtk/RestoreDeviceBox.vala:466
+msgid "Target device is same as system device"
+msgstr "Målenheten är samma som systemenheten"
+
+#: src/Core/Main.vala:2212
+msgid "Target device not specified!"
+msgstr "Målenheten har inte specificerats!"
+
+#: src/Gtk/ScheduleBox.vala:156
+msgid ""
+"The cron service sends the output of scheduled tasks as an email to the "
+"current user. Select this option to suppress the emails for cron tasks "
+"created by Timeshift."
+msgstr ""
+"Cron-tjänsten skickar utdata från en schemalagd åtgärd, som e-post till "
+"aktuell användare. Markera det här alternativet för att förhindra e-post om "
+"cron-åtgärder som skapats av Timeshift."
+
+#: src/Core/Main.vala:393
+msgid "The system partition has an unsupported subvolume layout."
+msgstr "Systempartitionen har en undervolymslayout som inte stöds."
+
+#: src/Core/Main.vala:3616
+msgid "The target partition has an unsupported subvolume layout."
+msgstr "Målpartitionen har en undervolymslayout som inte stöds."
+
+#: src/Gtk/BackupDeviceBox.vala:512
+#, c-format
+msgid "There are no snapshots on this device"
+msgstr "Det finns inga avbilder på denna enhet"
+
+#: src/Utility/Device.vala:1380
+msgid "This device is not encrypted"
+msgstr "Denna enhet är inte krypterad"
+
+#: src/Core/Main.vala:2372
+msgid ""
+"This software comes without absolutely NO warranty and the author takes no "
+"responsibility for any damage arising from the use of this program."
+msgstr ""
+"Mjukvaran tillhandahålls UTAN några som helst garantier och utvecklaren tar "
+"inget ansvar för eventuell skada, orsakad av detta programs användning."
+
+#: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1011
+msgid "Timeshift is active"
+msgstr "TimeShift är aktiv"
+
+#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:132
+#: src/Gtk/RsyncLogBox.vala:394
+#, c-format
+msgid "Timestamp"
+msgstr "Tidsstämpel"
+
+#: src/AppConsole.vala:624
+#, c-format
+msgid "To restore with default options, press the ENTER key for all prompts!"
+msgstr ""
+"Tryck RETUR i alla dialoger, för att återställa med standardinställningar."
+
+#: src/Utility/Device.vala:1949 src/Gtk/BackupDeviceBox.vala:190
+#: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:470
+#: src/AppConsole.vala:509
+#, c-format
+msgid "Type"
+msgstr "Typ"
+
+#: src/Utility/Device.vala:1948
+#, c-format
+msgid "UUID"
+msgstr "UUID"
+
+#: src/AppGtk.vala:107
+msgid "Unknown option"
+msgstr "Okänt alternativ"
+
+#: src/Core/Main.vala:1235
+msgid "Unknown snapshot type"
+msgstr "Okänd avbildstyp"
+
+#: src/Core/Main.vala:1727
+msgid "Unknown value specified for option --tags"
+msgstr "Okänt värde specificerat för alternativet --tags"
+
+#: src/Utility/Device.vala:1391 src/Utility/Device.vala:1507
+#, c-format
+msgid "Unlocked device is mapped to '%s'"
+msgstr "Olåst enhet är mappad på \"%s\""
+
+#: src/Utility/Device.vala:1506
+msgid "Unlocked successfully"
+msgstr "Korrekt upplåst"
+
+#: src/Utility/Device.vala:1722
+msgid "Unmounting from"
+msgstr "Avmonterar från"
+
+#: src/Gtk/SnapshotListBox.vala:198
+msgid "Unshared"
+msgstr "Ej delad"
+
+#: src/Core/Main.vala:3620 src/Gtk/RestoreDeviceBox.vala:508
+msgid "Unsupported Subvolume Layout"
+msgstr "Undervolymslayout som inte stöds"
+
+#: src/Gtk/BootOptionsBox.vala:150
+msgid "Update GRUB menu"
+msgstr "Uppdatera GRUB-menyn"
+
+#: src/Gtk/BootOptionsBox.vala:135
+msgid "Update initramfs"
+msgstr "Uppdatera initramfs"
+
+#: src/Core/Main.vala:2893
+msgid "Updated /etc/crypttab on target device"
+msgstr "Uppdaterade /etc/crypttab på målenhet"
+
+#: src/Core/Main.vala:2813
+msgid "Updated /etc/fstab on target device"
+msgstr "Uppdaterade /etc/fstab på målenhet"
+
+#: src/Gtk/BootOptionsBox.vala:152
+msgid ""
+"Updates the GRUB menu entries (recommended). This is safe to run and should "
+"be left selected."
+msgstr ""
+"Uppdaterar GRUB-menyposter (rekommenderas). Detta är säkert att köra och bör "
+"lämnas aktiverat."
+
+#: src/Core/Main.vala:2526
+msgid "Updating GRUB menu..."
+msgstr "Uppdaterar GRUB-menyn ..."
+
+#: src/Core/Main.vala:2737
+msgid "Updating bootloader configuration..."
+msgstr "Uppdaterar starthanteringskonfigurationen ..."
+
+#: src/Utility/Device.vala:1956
+#, c-format
+msgid "Used"
+msgstr "Använd"
+
+#: src/Gtk/SetupWizardWindow.vala:114 src/Gtk/UsersBox.vala:101
+msgid "User"
+msgstr "Användare"
+
+#: src/Gtk/UsersBox.vala:62
+msgid "User Home Directories"
+msgstr "Användares hemkataloger"
+
+#: src/Utility/Device.vala:1461
+msgid "User cancelled the password prompt"
+msgstr "Användaren avbröt lösenordsdialogen"
+
+#: src/Gtk/UsersBox.vala:66
+msgid ""
+"User home directories are excluded by default unless you enable them here"
+msgstr ""
+"Användarens hemkataloger undantas som standard, om du inte aktiverar dem här"
+
+#: src/Gtk/SettingsWindow.vala:101
+msgid "Users"
+msgstr "Användare"
+
+#: src/Gtk/RestoreWindow.vala:114
+msgid "Users Home"
+msgstr "Mappen Hem"
+
+#: src/Utility/Device.vala:1933
+#, c-format
+msgid "Vendor"
+msgstr "Leverantör"
+
+#: src/Gtk/SnapshotListBox.vala:342
+msgid "View Rsync Log for Create"
+msgstr "Visa Rsync-logg för skapande"
+
+#: src/Gtk/SnapshotListBox.vala:349
+msgid "View Rsync Log for Restore"
+msgstr "Visa Rsync-logg för borttagning"
+
+#: src/Gtk/MainWindow.vala:369
+msgid "View TimeShift Logs"
+msgstr "Visa TimeShift-loggar"
+
+#: src/Core/Main.vala:2267 src/Gtk/RestoreSummaryBox.vala:53
+msgid "Warning"
+msgstr "Varning"
+
+#: src/Gtk/RestoreExcludeBox.vala:61
+msgid "Web Browsers"
+msgstr "Webbläsare"
+
+#: src/Gtk/SnapshotListBox.vala:300 src/Gtk/ScheduleBox.vala:82
+msgid "Weekly"
+msgstr "Varje vecka"
+
+#: src/Core/Main.vala:1138
+msgid "Weekly snapshot failed!"
+msgstr "Veckoavbild misslyckades!"
+
+#: src/Core/Main.vala:1119
+msgid "Weekly snapshots are enabled"
+msgstr "Veckoavbilder är aktiverat"
+
+#: src/Gtk/DeleteFinishBox.vala:63 src/Gtk/BackupFinishBox.vala:63
+msgid "With Errors"
+msgstr "Med fel"
+
+#: src/Gtk/MainWindow.vala:190
+msgid "Wizard"
+msgstr "Guide"
+
+#: src/Utility/Device.vala:1434 src/Utility/Device.vala:1480
+msgid "Wrong password"
+msgstr "Fel lösenord"
+
+#: src/Utility/Gtk/CustomMessageDialog.vala:156
+msgid "Yes"
+msgstr "Ja"
+
+#: src/Gtk/RestoreFinishBox.vala:98
+msgid ""
+"You can continue working on the current system. After restart, the current "
+"system will be visible as a new snapshot. This snapshot can be restored "
+"later if required, to 'undo' the restore."
+msgstr ""
+"Du kan fortsätta arbeta i nuvarande system. Efter omstart, kommer nuvarande "
+"system att synas som en ny avbild. Denna avbild kan senare återställas vid "
+"behov, för att \"ångra\" föregående återställning."
+
+#: src/AppConsole.vala:1023
+#, c-format
+msgid "[ENTER = Default (%s), a = Abort]"
+msgstr "[RETUR = Standard (%s), a = Avbryt]"
+
+#: src/AppConsole.vala:894
+#, c-format
+msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
+msgstr "[Retur = Standard (%s), r = Root-enhet, a = Avbryt]"
+
+#: src/Gtk/RestoreDeviceBox.vala:401
+msgid ""
+"[For Experienced Users] Change these settings if the restored system fails "
+"to boot."
+msgstr ""
+"[För erfarna användare] Ändra dessa iställningar om det återställda systemet "
+"inte startar."
+
+#: src/Utility/AppLock.vala:54
+msgid "[Warning] Deleted invalid lock"
+msgstr "[Varning] Tog bort ogiltigt lås"
+
+#: src/Core/SnapshotRepo.vala:814
+msgid "all"
+msgstr "alla"
+
+#: src/Core/Main.vala:1655 src/Core/Main.vala:4030 src/Core/Main.vala:4115
+#: src/Core/Subvolume.vala:215
+msgid "btrfs returned an error"
+msgstr "btrfs returnerade ett fel"
+
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1554
+msgid "complete"
+msgstr "slutförd"
+
+#: src/Utility/CronTab.vala:261
+msgid "crontab file exported"
+msgstr "crontab-fil exporterad"
+
+#: src/Utility/CronTab.vala:244
+msgid "crontab file installed"
+msgstr "crontab-fil installerad"
+
+#: src/Core/SnapshotRepo.vala:800
+msgid "incomplete"
+msgstr "ej slutförd"
+
+#: src/Core/SnapshotRepo.vala:782
+msgid "marked for deletion"
+msgstr "markerad för borttagning"
+
+#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+msgid "mounted at path"
+msgstr "monterad på sökväg"
+
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1554
+#: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
+#: src/Gtk/DeleteBox.vala:149
+msgid "remaining"
+msgstr "återstår"
+
+#: src/Core/Main.vala:1565
+msgid "rsync returned an error"
+msgstr "rsynk svarade med ett fel"
+
+#: src/Core/SnapshotRepo.vala:631 src/Core/SnapshotRepo.vala:684
+#: src/Core/SnapshotRepo.vala:763
+msgid "un-tagged"
+msgstr "avtaggad"
+
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:9
+msgid "Timeshift"
+msgstr "Timeshift"
+
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:10
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:22
+msgid "Run Timeshift as Administrator"
+msgstr "Kör Timeshift som administratör"
+
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:21
+msgid "Authentication is required to run Timeshift as Administrator"
+msgstr "Autentisering krävs för att köra Timeshift som administratör"

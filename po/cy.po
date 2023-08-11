@@ -1,0 +1,2675 @@
+# Welsh translation for linuxmint
+# Copyright (c) 2018 Rosetta Contributors and Canonical Ltd 2018
+# This file is distributed under the same license as the linuxmint package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: linuxmint\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2023-06-01 11:34+0100\n"
+"PO-Revision-Date: 2023-06-01 13:26+0000\n"
+"Last-Translator: Rhoslyn Prys <rprys@posteo.net>\n"
+"Language-Team: Welsh <cy@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2023-07-07 12:58+0000\n"
+"X-Generator: Launchpad (build 2ac9e3bf4ab511504f8fc651371e24a6a047ba12)\n"
+"Language: cy\n"
+
+#: src/AppConsole.vala:626
+#, c-format
+msgid ""
+"\n"
+"Press ENTER to continue..."
+msgstr ""
+"\n"
+"Pwyswch ENTER i barhau..."
+
+#: src/Core/SnapshotRepo.vala:556
+#, c-format
+msgid "%d snapshots, %s free"
+msgstr "%d ciplun, %s yn rhydd"
+
+#: src/AppConsole.vala:927
+#, c-format
+msgid "'%s' will be on '%s'"
+msgstr "Bydd '%s' ar '%s'"
+
+#: src/AppConsole.vala:924
+#, c-format
+msgid "'%s' will be on root device"
+msgstr "Bydd '%s' ar ddyfais gwraidd"
+
+#: src/Gtk/BootOptionsBox.vala:118
+msgid "(Re)install GRUB2 on:"
+msgstr "(Ail) gosod GRUB2 ar:"
+
+#: src/Core/Main.vala:379
+msgid "** Uninstalled Timeshift BTRFS **"
+msgstr "**Timeshift BTRFS heb ei osod**"
+
+#: src/Core/Main.vala:3527
+msgid "/ is mapped to device"
+msgstr "/ wedi'i fapio i ddyfais"
+
+#: src/Core/Main.vala:3549
+msgid "/boot is mapped to device"
+msgstr "Mae /boot wedi'i fapio i ddyfais"
+
+#: src/Core/Main.vala:3560
+msgid "/boot/efi is mapped to device"
+msgstr "Mae /boot/efi wedi'i fapio i ddyfais"
+
+#: src/Core/Main.vala:3538
+msgid "/home is mapped to device"
+msgstr "/home wedi'i fapio i ddyfais"
+
+#: src/Gtk/SnapshotListBox.vala:289
+msgid "<b>Comments</b> (double-click to edit)"
+msgstr "<b>Sylwadau</b> (clic dwbl i olygu)"
+
+#: src/Gtk/ScheduleBox.vala:168
+msgid ""
+"A maintenance task runs once every hour and creates snapshots as needed."
+msgstr ""
+"Mae tasg cynnal a chadw yn rhedeg unwaith bob awr ac yn creu cipluniau yn ôl "
+"yr angen."
+
+#: src/AppConsole.vala:711 src/AppConsole.vala:775 src/AppConsole.vala:907
+#: src/AppConsole.vala:1002 src/AppConsole.vala:1047 src/AppConsole.vala:1088
+#: src/AppConsole.vala:1106
+msgid "Aborted."
+msgstr "Terfynwyd."
+
+#: src/Gtk/MainWindow.vala:375
+msgid "About"
+msgstr "Ynghylch"
+
+#: src/Gtk/RsyncLogBox.vala:471
+msgid "Action"
+msgstr "Gweithred"
+
+#: src/Gtk/ExcludeBox.vala:225
+msgid "Add"
+msgstr "Ychwanegu"
+
+#: src/Gtk/ExcludeBox.vala:242
+msgid "Add Files"
+msgstr "Ychwanegu Ffeiliau"
+
+#: src/Gtk/ExcludeBox.vala:248
+msgid "Add Folders"
+msgstr "Ychwanegu Ffolderi"
+
+#: src/Gtk/ExcludeBox.vala:225
+msgid "Add custom pattern"
+msgstr "Ychwanegu patrwm cyfaddas"
+
+#: src/Gtk/ExcludeBox.vala:248
+msgid "Add directories"
+msgstr "Ychwanegu cyfeiriaduron"
+
+#: src/Gtk/ExcludeBox.vala:242
+msgid "Add files"
+msgstr "Ychwanegu ffeiliau"
+
+#: src/AppConsole.vala:371
+msgid "Add tags to snapshot (default: O)"
+msgstr "Ychwanegu tagiau at y ciplun (diofyn: O)"
+
+#: src/Utility/CronTab.vala:312
+msgid "Added cron task"
+msgstr "Ychwanegwyd tasg cron"
+
+#: src/AppGtk.vala:147
+msgid "Admin Access Required"
+msgstr "Angen Mynediad Gweinyddol"
+
+#: src/AppGtk.vala:142
+msgid "Admin access is required to backup and restore system files."
+msgstr ""
+"Mae angen mynediad gweinyddwr i wneud copi wrth gefn ac adfer ffeiliau "
+"system."
+
+#: src/Gtk/RsyncLogBox.vala:363
+msgid "All Files"
+msgstr "Pob Ffeil"
+
+#: src/Gtk/SnapshotBackendBox.vala:197
+msgid ""
+"All files are copied when first snapshot is created. Subsequent snapshots "
+"are incremental. Unchanged files will be hard-linked from the previous "
+"snapshot if available."
+msgstr ""
+"Mae pob ffeil yn cael ei chopïo pan fydd ciplun cyntaf yn cael ei greu. Mae "
+"cipluniau dilynol yn gynyddrannol. Bydd ffeiliau sydd heb eu newid yn cael "
+"eu cysylltu'n galed o'r ciplun blaenorol os yw ar gael."
+
+#: src/Gtk/ExcludeMessageWindow.vala:129
+msgid "All other files and folders are excluded."
+msgstr "Mae pob ffeil a ffolder arall wedi'u heithrio."
+
+#: src/Gtk/RestoreDeviceBox.vala:486
+msgid ""
+"An encrypted device is selected for root file system (/). The boot directory "
+"(/boot) must be mounted on a non-encrypted device for the system to boot "
+"successfully.\n"
+"\n"
+"Either select a non-encrypted device for boot directory or select a non-"
+"encrypted device for root filesystem."
+msgstr ""
+"Mae dyfais wedi'i hamgryptio wedi'i dewis ar gyfer system ffeiliau gwraidd "
+"(/). Rhaid gosod y cyfeiriadur cychwyn (/boot) ar ddyfais heb ei hamgryptio "
+"er mwyn i'r system gychwyn yn llwyddiannus.\n"
+"\n"
+"Naill ai dewiswch ddyfais heb ei hamgryptio ar gyfer cyfeiriadur cychwyn neu "
+"dewiswch ddyfais heb ei hamgryptio ar gyfer system ffeiliau gwraidd."
+
+#: src/Core/Main.vala:265
+msgid "Another instance of Timeshift is creating a snapshot."
+msgstr "Mae enghraifft arall o Timeshift yn creu ciplun."
+
+#: src/Utility/AppLock.vala:49
+msgid "Another instance of this application is running"
+msgstr "Mae enghraifft arall o'r rhaglen hon yn rhedeg"
+
+#: src/Core/Main.vala:269
+msgid "Another instance of timeshift is currently running!"
+msgstr "Mae enghraifft arall o Timeshift yn rhedeg ar hyn o bryd!"
+
+#: src/AppConsole.vala:387
+msgid "Answer YES to all confirmation prompts"
+msgstr "Atebwch IAWN i bob annogyn cadarnhau"
+
+#: src/Core/Main.vala:3364
+msgid "App config loaded"
+msgstr "Ffurfwedd rhaglen wedi'i lwytho"
+
+#: src/Core/Main.vala:3252
+msgid "App config saved"
+msgstr "Ffurfweddiad rhaglen wedi'i gadw"
+
+#: src/AppConsole.vala:107
+msgid "Application needs admin access."
+msgstr "Mae angen mynediad gweinyddol ar y rhaglen."
+
+#: src/Core/Main.vala:3704
+msgid "Application will exit"
+msgstr "Bydd y rhaglen yn cau"
+
+#: src/Core/Main.vala:395
+msgid "Application will exit."
+msgstr "Bydd y rhaglen yn cau."
+
+#: src/Gtk/MainWindow.vala:345
+msgid "Available"
+msgstr "Ar gael"
+
+#: src/Gtk/SnapshotBackendBox.vala:95
+msgid "BTRFS"
+msgstr "BTRFS"
+
+#: src/Gtk/SnapshotBackendBox.vala:174
+msgid "BTRFS Snapshots"
+msgstr "Cipluniau BTRFS"
+
+#: src/Core/Main.vala:2202 src/Core/Main.vala:2206
+msgid "BTRFS device is not mounted"
+msgstr "Nid yw dyfais BTRFS wedi'i arosod"
+
+#: src/Gtk/BackupDeviceBox.vala:98
+msgid ""
+"BTRFS snapshots are saved on system partition. Other partitions are not "
+"supported."
+msgstr ""
+"Mae cipluniau BTRFS yn cael eu cadw ar raniad system. Nid yw rhaniadau "
+"eraill yn cael eu cefnogi."
+
+#: src/Gtk/FinishBox.vala:92
+msgid ""
+"BTRFS snapshots are saved on the same disk from which it is created. If the "
+"system disk fails, snapshots will be lost along with the system. Save "
+"snapshots to an external non-system disk in RSYNC mode to guard against disk "
+"failures."
+msgstr ""
+"Mae cipluniau BTRFS yn cael eu cadw ar yr un ddisg y mae'n cael ei greu "
+"ohoni. Os bydd disg y system yn methu, bydd cipluniau'n cael eu colli ynghyd "
+"â'r system. Arbed cipluniau i ddisg allanol nad yw'n system yn y modd RSYNC "
+"i warchod rhag methiannau disg."
+
+#: src/Gtk/SetupWizardWindow.vala:94
+msgid "Backend"
+msgstr "Ochr Gefn"
+
+#: src/Gtk/BackupWindow.vala:92 src/AppConsole.vala:367
+msgid "Backup"
+msgstr "Copi wrth gefn"
+
+#: src/Core/Main.vala:2178
+msgid "Backup Device"
+msgstr "Dyfais wrth gefn"
+
+#: src/Core/Main.vala:2173
+msgid "Backup device not specified!"
+msgstr "Dyfais wrth gefn heb ei enwi!"
+
+#: src/Gtk/RestoreExcludeBox.vala:91
+msgid "Bittorrent Clients"
+msgstr "Cleientiaid Bittorrent"
+
+#: src/Gtk/SnapshotListBox.vala:297 src/Gtk/ScheduleBox.vala:136
+msgid "Boot"
+msgstr "Cychwyn"
+
+#: src/Gtk/RestoreDeviceBox.vala:485
+msgid "Boot device not selected"
+msgstr "Nid yw dyfais cychwyn wedi'i dewis"
+
+#: src/Core/Main.vala:1045
+msgid "Boot snapshot failed!"
+msgstr "Ciplun cychwyn wedi methu!"
+
+#: src/Gtk/ScheduleBox.vala:169
+msgid ""
+"Boot snapshots are created with a delay of 10 minutes after system startup."
+msgstr ""
+"Mae cipluniau cychwyn yn cael eu creu gydag oedi o 10 munud ar ôl cychwyn y "
+"system."
+
+#: src/Core/Main.vala:1026
+msgid "Boot snapshots are enabled"
+msgstr "Mae cipluniau cychwyn wedi'u galluogi"
+
+#: src/Gtk/BootOptionsWindow.vala:49
+msgid "Bootloader Options"
+msgstr "Dewisiadau Cipluniau Cychwyn"
+
+#: src/Gtk/RestoreDeviceBox.vala:402
+msgid "Bootloader Options (Advanced)"
+msgstr "Dewisiadau Cipluniau Cychwyn (Uwch)"
+
+#: src/Gtk/MainWindow.vala:170
+msgid "Browse"
+msgstr "Pori"
+
+#: src/Gtk/SnapshotListBox.vala:335
+msgid "Browse Files"
+msgstr "Pori Ffeiliau"
+
+#: src/Gtk/MainWindow.vala:171
+msgid "Browse selected snapshot"
+msgstr "Pori'r ciplun a ddewiswyd"
+
+#: src/Core/Main.vala:2668
+msgid "Building file list..."
+msgstr "Yn adeiladu rhestr ffeiliau..."
+
+#: src/Core/Main.vala:1405
+msgid "Calculating required disk space..."
+msgstr "Wrthi'n cyfrifo'r gofod disg gofynnol..."
+
+#: src/Utility/Gtk/CustomMessageDialog.vala:152 src/Utility/GtkHelper.vala:109
+#: src/Gtk/RestoreWindow.vala:215 src/Gtk/RestoreWindow.vala:224
+#: src/Gtk/BackupWindow.vala:181 src/Gtk/SetupWizardWindow.vala:220
+#: src/Gtk/DeleteWindow.vala:190
+msgid "Cancel"
+msgstr "Diddymu"
+
+#: src/Gtk/RestoreWindow.vala:230
+msgid "Cancel restore?"
+msgstr "Diddymu'r adfer?"
+
+#: src/Gtk/RestoreWindow.vala:232
+msgid ""
+"Cancelling the restore process will leave the target system in an "
+"inconsistent state. The system may fail to boot or you may run into various "
+"issues. After cancelling, you need to restore another snapshot, to bring the "
+"system to a consistent state. Click Yes to confirm."
+msgstr ""
+"Bydd diddymu'r broses adfer yn gadael y system darged mewn cyflwr anghyson. "
+"Efallai na fydd y system yn cychwyn neu efallai y byddwch chi'n profi "
+"gwahanol faterion. Ar ôl diddymu, mae angen i chi adfer ciplun arall, i ddod "
+"â'r system i gyflwr cyson. Cliciwch Iawn i gadarnhau."
+
+#: src/Gtk/MainWindow.vala:547
+msgid "Cannot Delete Live Snapshot"
+msgstr "Methu Dileu Ciplun Byw"
+
+#: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
+#: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
+#: src/Gtk/RsyncLogBox.vala:566 src/Gtk/RsyncLogBox.vala:587
+msgid "Changed"
+msgstr "Wedi'i newid"
+
+#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:127
+msgid "Changed items:"
+msgstr "Eitemau wedi'u newid:"
+
+#: src/Gtk/RestoreWindow.vala:104
+msgid "Checking Restore Actions (Dry Run)"
+msgstr "Yn Gwirio Camau Adfer (Prawf)"
+
+#: src/Core/Main.vala:2901
+msgid "Checking file systems for errors..."
+msgstr "Wrthi'n gwirio systemau ffeiliau am wallau..."
+
+#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:130
+#: src/Gtk/RsyncLogBox.vala:390
+#, c-format
+msgid "Checksum"
+msgstr "Siecswm"
+
+#: src/Core/Main.vala:2549
+msgid "Cleaning up..."
+msgstr "Wrthi'n glanhau..."
+
+#: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:88
+msgid "Click to edit. Drag and drop to re-order."
+msgstr "Cliciwch i olygu. Llusgwch a gollwng i ad-drefnu."
+
+#: src/Gtk/ExcludeBox.vala:59
+msgid "Click to edit. Drag-drop to re-order."
+msgstr "Cliciwch i olygu. Llusgo a gollwng i ad-drefnu."
+
+#: src/Gtk/RestoreWindow.vala:69
+msgid "Clone System"
+msgstr "Clonio'r System"
+
+#: src/Gtk/RestoreFinishBox.vala:68
+msgid "Cloning"
+msgstr "Wrthi'n Clonio"
+
+#: src/Core/Main.vala:2951
+msgid "Cloning system..."
+msgstr "Yn clonio'r system..."
+
+#: src/Gtk/BootOptionsWindow.vala:106 src/Gtk/RestoreWindow.vala:501
+#: src/Gtk/BackupWindow.vala:172 src/Gtk/RsyncLogBox.vala:266
+#: src/Gtk/DeleteWindow.vala:173
+msgid "Close"
+msgstr "Cau"
+
+#: src/Gtk/FinishBox.vala:101 src/Gtk/DeleteFinishBox.vala:71
+#: src/Gtk/RestoreFinishBox.vala:106 src/Gtk/BackupFinishBox.vala:70
+msgid "Close window to exit"
+msgstr "Caewch y ffenestr i adael"
+
+#: src/Core/Main.vala:364
+msgid "Commands listed below are not available on this system"
+msgstr "Nid yw'r gorchmynion ar y rhestr isod ar gael ar y system hon"
+
+#: src/Gtk/SnapshotListBox.vala:223
+msgid "Comments (click to edit)"
+msgstr "Sylwadau (cliciwch i olygu)"
+
+#: src/Core/Main.vala:2944 src/Gtk/RestoreBox.vala:74
+#: src/Gtk/RestoreBox.vala:187
+msgid "Comparing Files (Dry Run)..."
+msgstr "Cymharu Ffeiliau (Prawf)..."
+
+#: src/Core/Main.vala:2710
+msgid "Comparing files with rsync..."
+msgstr "Yn cymharu ffeiliau â rsync..."
+
+#: src/Gtk/DeleteFinishBox.vala:50 src/Gtk/RestoreFinishBox.vala:50
+#: src/Gtk/RestoreFinishBox.vala:75 src/Gtk/BackupFinishBox.vala:50
+msgid "Completed"
+msgstr "Wedi'i Gwblhau"
+
+#: src/Gtk/RestoreFinishBox.vala:78
+msgid "Completed With Errors"
+msgstr "Wedi'i Gwblhau Gyda Gwallau"
+
+#: src/Gtk/RestoreWindow.vala:109 src/Gtk/RsyncLogBox.vala:87
+msgid "Confirm Actions"
+msgstr "Cadarnhau Camau Gweithredu"
+
+#: src/AppConsole.vala:1081
+#, c-format
+msgid "Continue with restore? (y/n): "
+msgstr "Parhau i adfer? (i/n): "
+
+#: src/AppConsole.vala:847 src/AppConsole.vala:978
+msgid "Could not find device"
+msgstr "Methu canfod dyfais"
+
+#: src/Utility/Device.vala:1308
+#, c-format
+msgid "Could not find file"
+msgstr "Methu canfod ffeil"
+
+#: src/AppConsole.vala:744
+msgid "Could not find snapshot"
+msgstr "Methu canfod ciplun"
+
+#: src/Core/Main.vala:3113
+msgid "Could not find system subvolume"
+msgstr "Methu canfod is-gyfrol system"
+
+#: src/Core/Main.vala:3141
+msgid "Could not find system subvolumes for creating pre-restore snapshot"
+msgstr "Methu canfod is-gyfrolau system ar gyfer creu ciplun cyn adfer"
+
+#: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
+#: src/Gtk/RsyncLogBox.vala:570
+#, c-format
+msgid "Create"
+msgstr "Creu"
+
+#: src/Gtk/BackupWindow.vala:62
+msgid "Create Snapshot"
+msgstr "Creu Ciplun"
+
+#: src/Gtk/ScheduleBox.vala:136
+msgid "Create one per boot"
+msgstr "Creu un i bob cychwyn"
+
+#: src/Gtk/ScheduleBox.vala:100
+msgid "Create one per day"
+msgstr "Creu un y dydd"
+
+#: src/Gtk/ScheduleBox.vala:118
+msgid "Create one per hour"
+msgstr "Creu un yr awr"
+
+#: src/Gtk/ScheduleBox.vala:64
+msgid "Create one per month"
+msgstr "Creu un y mis"
+
+#: src/Gtk/ScheduleBox.vala:82
+msgid "Create one per week"
+msgstr "Creu un yr wythnos"
+
+#: src/AppConsole.vala:369
+msgid "Create snapshot (even if not scheduled)"
+msgstr "Creu ciplun (hyd yn oed os nad yw wedi'i amserlennu)"
+
+#: src/AppConsole.vala:368
+msgid "Create snapshot if scheduled"
+msgstr "Creu ciplun os yw wedi'i amserlennu"
+
+#: src/Gtk/MainWindow.vala:141
+msgid "Create snapshot of current system"
+msgstr "Creu ciplun o'r system gyfredol"
+
+#: src/Gtk/MainWindow.vala:1027
+msgid ""
+"Create snapshots manually or enable scheduled snapshots to protect your "
+"system"
+msgstr ""
+"Creu cipluniau â llaw neu alluogi cipluniau wedi'u hamserlennu i ddiogelu "
+"eich system"
+
+#: src/Gtk/SnapshotBackendBox.vala:96
+msgid "Create snapshots using BTRFS"
+msgstr "Creu cipluniau gan ddefnyddio BTRFS"
+
+#: src/Gtk/SnapshotBackendBox.vala:78
+msgid "Create snapshots using RSYNC tool and hard-links"
+msgstr "Creu cipluniau gan ddefnyddio teclyn RSYNC a dolenni caled"
+
+#: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
+#: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:570
+#: src/Gtk/RsyncLogBox.vala:591
+#, c-format
+msgid "Created"
+msgstr "Crëwyd"
+
+#: src/Core/Snapshot.vala:430
+msgid "Created control file"
+msgstr "Ffeil rheoli wedi'i chreu"
+
+#: src/Utility/TeeJee.FileSystem.vala:268
+msgid "Created directory"
+msgstr "Cyfeiriadur wedi'i greu"
+
+#: src/Core/Main.vala:3163
+msgid "Created pre-restore snapshot"
+msgstr "Ciplun cyn adfer wedi'i greu"
+
+#: src/Core/Main.vala:1660
+msgid "Created subvolume snapshot"
+msgstr "Ciplun is-gyfrol wedi'i greu"
+
+#: src/Gtk/BackupBox.vala:71
+msgid "Creating Snapshot..."
+msgstr "Wrthi'n creu Ciplun..."
+
+#: src/Core/Main.vala:1598
+msgid "Creating new backup..."
+msgstr "Wrthi'n creu copi wrth gefn newydd..."
+
+#: src/Core/Main.vala:1444
+msgid "Creating new snapshot..."
+msgstr "Wrthi'n creu ciplun newydd..."
+
+#: src/Core/Main.vala:3091
+msgid "Creating pre-restore snapshot from system subvolumes..."
+msgstr "Wrthi'n creu ciplun cyn adfer o is-gyfrolau'r system..."
+
+#: src/Core/Main.vala:3703
+msgid "Critical Error"
+msgstr "Gwall Critigol"
+
+#: src/Utility/CronTab.vala:136
+msgid "Cron job added"
+msgstr "Ychwanegwyd Cron job"
+
+#: src/Utility/CronTab.vala:217
+msgid "Cron job removed"
+msgstr "Tynnu Cron job"
+
+#: src/Utility/CronTab.vala:304
+msgid "Cron task exists"
+msgstr "Mae tasg Cron yn bodoli"
+
+#: src/Gtk/MiscBox.vala:94
+msgid "Custom"
+msgstr "Cyfaddas"
+
+#: src/Gtk/SnapshotListBox.vala:299 src/Gtk/ScheduleBox.vala:100
+msgid "Daily"
+msgstr "Dyddiol"
+
+#: src/Core/Main.vala:1107
+msgid "Daily snapshot failed!"
+msgstr "Ciplun dyddiol wedi methu!"
+
+#: src/Core/Main.vala:1088
+msgid "Daily snapshots are enabled"
+msgstr "Mae cipluniau dyddiol wedi'u galluogi"
+
+#: src/Core/Main.vala:2272
+msgid "Data will be modified on following devices:"
+msgstr "Bydd data'n cael ei addasu ar y dyfeisiau canlynol:"
+
+#: src/Gtk/MiscBox.vala:67
+msgid "Date Format"
+msgstr "Fformat Dyddiad"
+
+#: src/Gtk/SnapshotListBox.vala:321 src/Gtk/MainWindow.vala:160
+#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
+#: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:381
+#, c-format
+msgid "Delete"
+msgstr "Dileu"
+
+#: src/Gtk/DeleteWindow.vala:62
+msgid "Delete Snapshots"
+msgstr "Dileu Cipluniau"
+
+#: src/AppConsole.vala:383
+msgid "Delete all snapshots"
+msgstr "Dileu pob ciplun"
+
+#: src/Gtk/MainWindow.vala:161
+msgid "Delete selected snapshot"
+msgstr "Dileu ciplun a ddewiswyd"
+
+#: src/AppConsole.vala:382
+msgid "Delete snapshot"
+msgstr "Dileu ciplun"
+
+#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
+#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
+#: src/Gtk/RsyncLogBox.vala:595
+#, c-format
+msgid "Deleted"
+msgstr "Dilëwyd"
+
+#: src/Utility/TeeJee.FileSystem.vala:302
+msgid "Deleted directory"
+msgstr "Cyfeiriadur wedi'i ddileu"
+
+#: src/Core/Main.vala:3070 src/Core/Main.vala:3074 src/Core/Subvolume.vala:167
+#, c-format
+msgid "Deleted subvolume"
+msgstr "Is-gyfrol wedi'i ddileu"
+
+#: src/Gtk/DeleteBox.vala:58
+msgid "Deleting Snapshots..."
+msgstr "Wrthi'n dileu Cipluniau..."
+
+#: src/Core/Subvolume.vala:141
+#, c-format
+msgid "Deleting subvolume"
+msgstr "Dileu is-gyfrol"
+
+#: src/Gtk/RestoreExcludeBox.vala:105
+msgid "Deluge, Transmission"
+msgstr "Deluge, Transmission"
+
+#: src/AppConsole.vala:439 src/AppConsole.vala:555
+msgid "Description"
+msgstr "Disgrifiad"
+
+#: src/Core/Subvolume.vala:181
+#, c-format
+msgid "Destroyed qgroup"
+msgstr "Wedi dinistrio qgoup"
+
+#: src/Core/Subvolume.vala:171
+#, c-format
+msgid "Destroying qgroup"
+msgstr "Yn dinistrio qgoup"
+
+#: src/Core/Main.vala:2275 src/Core/Main.vala:2307
+#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
+#: src/Utility/Device.vala:1942 src/Gtk/RestoreDeviceBox.vala:97
+#: src/AppConsole.vala:467 src/AppConsole.vala:506 src/AppConsole.vala:554
+#, c-format
+msgid "Device"
+msgstr "Dyfais"
+
+#: src/Utility/Device.vala:1390
+msgid "Device is unlocked"
+msgstr "Mae'r ddyfais wedi'i datgloi"
+
+#: src/Utility/Device.vala:1285 src/Utility/Device.vala:1347
+msgid "Device name is empty!"
+msgstr "Mae enw'r ddyfais yn wag!"
+
+#: src/Core/Main.vala:3417 src/Core/SnapshotRepo.vala:479
+#: src/AppConsole.vala:676
+msgid "Device not found"
+msgstr "Heb ganfod dyfais"
+
+#: src/Gtk/BackupDeviceBox.vala:97
+#, c-format
+msgid "Devices displayed above have BTRFS file systems."
+msgstr ""
+"Mae gan y dyfeisiau sy'n cael ei ddangos uchod systemau ffeiliau BTRFS."
+
+#: src/Gtk/BackupDeviceBox.vala:104
+#, c-format
+msgid "Devices displayed above have Linux file systems."
+msgstr ""
+"Mae gan y dyfeisiau sy'n cael eu dangos uchod systemau ffeiliau Linux."
+
+#: src/Gtk/RestoreDeviceBox.vala:84
+msgid "Devices from which snapshot was created are pre-selected."
+msgstr "Mae dyfeisiau y crëwyd ciplun ohonyn nhw wedi'u dewis ymlaen llaw."
+
+#: src/AppConsole.vala:332
+msgid "Devices with Linux file systems"
+msgstr "Dyfeisiau gyda systemau ffeiliau Linux"
+
+#: src/Gtk/BackupDeviceBox.vala:105
+msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
+msgstr ""
+"Nid yw dyfeisiau gyda systemau ffeiliau Windows (NTFS, FAT, ac ati) yn cael "
+"eu cefnogi."
+
+#: src/Core/SnapshotRepo.vala:914
+msgid "Directory not found"
+msgstr "Heb ganfod y cyfeiriadur"
+
+#: src/Core/Main.vala:2367 src/Gtk/RestoreSummaryBox.vala:64
+msgid "Disclaimer"
+msgstr "Ymwadiad"
+
+#: src/Gtk/BackupDeviceBox.vala:127
+msgid "Disk"
+msgstr "Disg"
+
+#: src/Core/Main.vala:242
+msgid "Distribution"
+msgstr "Dosbarthu"
+
+#: src/Gtk/MainWindow.vala:1021
+msgid "Enable scheduled snapshots to protect your system"
+msgstr "Galluogi cipluniau wedi'u hamserlennu i ddiogelu eich system"
+
+#: src/Utility/Device.vala:1454
+msgid "Encrypted Device"
+msgstr "Dyfais Amgryptiedig"
+
+#: src/Gtk/UsersBox.vala:232
+msgid "Encrypted Home Directory"
+msgstr "Cyfeiriadur Cartref Amgryptiedig"
+
+#: src/AppConsole.vala:897
+#, c-format
+msgid "Enter device name or number"
+msgstr "Rhowch enw neu rif y ddyfais"
+
+#: src/AppConsole.vala:695 src/AppConsole.vala:1026
+#, c-format
+msgid "Enter device name or number (a=Abort)"
+msgstr "Rhowch enw neu rif dyfais (a= Atal)"
+
+#: src/Utility/Device.vala:1455
+#, c-format
+msgid "Enter passphrase to unlock '%s'"
+msgstr "Rhowch gyfrinymadrodd i ddatgloi '%s'"
+
+#: src/AppConsole.vala:767
+#, c-format
+msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
+msgstr "Rhowch rif ciplun (a=Atal, p=Blaenorol, n=Nesaf)"
+
+#: src/Gtk/ExcludeBox.vala:231
+msgid "Enter the pattern to exclude (Ex: *.mp3, *.bak)"
+msgstr "Rhowch y patrwm i'w eithrio (Eithrio: *.mp3, *.bak)"
+
+#: src/Gtk/RestoreDeviceBox.vala:520
+msgid "Error"
+msgstr "Gwall"
+
+#: src/Gtk/RestoreWindow.vala:481
+msgid "Error running Rsync"
+msgstr "Gwall wrth redeg Rsync"
+
+#: src/Gtk/BackupWindow.vala:82 src/Gtk/SetupWizardWindow.vala:99
+msgid "Estimate"
+msgstr "Amcangyfrif"
+
+#: src/Gtk/EstimateBox.vala:56
+msgid "Estimating System Size..."
+msgstr "Wrthi'n amcangyfrif maint y system..."
+
+#: src/Core/Main.vala:1440
+msgid "Estimating system size..."
+msgstr "Wrthi'n amcangyfrif maint y system..."
+
+#: src/AppConsole.vala:398
+msgid "Examples"
+msgstr "Enghreifftiau"
+
+#: src/Gtk/UsersBox.vala:132
+msgid "Exclude All Files"
+msgstr "Eithrio Pob Ffeil"
+
+#: src/Gtk/RestoreExcludeBox.vala:55 src/Gtk/ExcludeAppsBox.vala:51
+msgid "Exclude Application Settings"
+msgstr "Eithrio Gosodiadau'r Rhaglen"
+
+#: src/Gtk/RestoreWindow.vala:99
+msgid "Exclude Apps"
+msgstr "Eithrio Apiau"
+
+#: src/Gtk/ExcludeMessageWindow.vala:70
+msgid "Exclude List"
+msgstr "Rhestr Eithrio"
+
+#: src/Gtk/ExcludeListSummaryWindow.vala:49
+msgid "Exclude List Summary"
+msgstr "Eithrio Crynodeb o'r Rhestr"
+
+#: src/Gtk/ExcludeBox.vala:230
+msgid "Exclude Pattern"
+msgstr "Eithrio Patrwm"
+
+#: src/Gtk/ExcludeMessageWindow.vala:56
+msgid "Excluded Directories"
+msgstr "Cyfeiriaduron Eithriedig"
+
+#: src/Core/Main.vala:1728
+msgid "Expected values: O, B, H, D, W, M"
+msgstr "Gwerthoedd disgwyliedig: O, B, H, D, W, M"
+
+#: src/Utility/CronTab.vala:132
+msgid "Failed to add cron job"
+msgstr "Wedi methu ag ychwanegu cron job"
+
+#: src/Utility/TeeJee.FileSystem.vala:155
+msgid "Failed to copy file"
+msgstr "Wedi methu â chopïo ffeil"
+
+#: src/Utility/TeeJee.FileSystem.vala:271
+#: src/Utility/TeeJee.FileSystem.vala:280
+msgid "Failed to create directory"
+msgstr "Wedi methu â chreu cyfeiriadur"
+
+#: src/Core/Main.vala:1566
+msgid "Failed to create new snapshot"
+msgstr "Wedi methu â chreu ciplun newydd"
+
+#: src/Core/Main.vala:1320
+msgid "Failed to create snapshot"
+msgstr "Wedi methu â chreu ciplun"
+
+#: src/Core/Main.vala:1656
+msgid "Failed to create subvolume snapshot"
+msgstr "Wedi methu â chreu ciplun is-gyfrol"
+
+#: src/Core/SnapshotRepo.vala:955
+msgid "Failed to create symlinks"
+msgstr "Wedi methu â chreu symlinks"
+
+#: src/Utility/TeeJee.FileSystem.vala:305
+msgid "Failed to delete directory"
+msgstr "Wedi methu â dileu cyfeiriadur"
+
+#: src/Utility/TeeJee.FileSystem.vala:86
+msgid "Failed to delete file"
+msgstr "Wedi methu â dileu ffeil"
+
+#: src/Core/Subvolume.vala:153
+msgid "Failed to delete snapshot nested subvolume"
+msgstr "Wedi methu â dileu is-gyfrol nythu ciplun"
+
+#: src/Core/Subvolume.vala:163
+msgid "Failed to delete snapshot subvolume"
+msgstr "Wedi methu â dileu is-gyfrol ciplun"
+
+#: src/Core/SnapshotRepo.vala:981
+msgid "Failed to delete symlinks"
+msgstr "Wedi methu â dileu symlinks"
+
+#: src/Core/Subvolume.vala:177
+msgid "Failed to destroy qgroup"
+msgstr "Wedi methu â dinistrio qgoup"
+
+#: src/Core/Main.vala:3918 src/Core/Main.vala:3924
+msgid "Failed to estimate system size"
+msgstr "Wedi methu ag amcangyfrif maint y system"
+
+#: src/Utility/CronTab.vala:257
+msgid "Failed to export crontab file"
+msgstr "Wedi methu ag allforio ffeil crontab"
+
+#: src/AppConsole.vala:710 src/AppConsole.vala:774 src/AppConsole.vala:906
+#: src/AppConsole.vala:1001 src/AppConsole.vala:1046 src/AppConsole.vala:1087
+msgid "Failed to get input from user in 3 attempts"
+msgstr "Wedi methu â chael mewnbwn gan y defnyddiwr mewn 3 ymgais"
+
+#: src/Utility/Device.vala:724
+msgid "Failed to get partition list"
+msgstr "Wedi methu â chael rhestr rhaniad"
+
+#: src/Core/Main.vala:3500
+msgid "Failed to get partition list."
+msgstr "Wedi methu â chael rhestr rhaniad."
+
+#: src/Utility/CronTab.vala:240
+msgid "Failed to install crontab file"
+msgstr "Wedi methu â gosod ffeil crontab"
+
+#: src/Gtk/RestoreDeviceBox.vala:521
+msgid "Failed to mount devices"
+msgstr "Wedi methu ag arosod dyfeisiau"
+
+#: src/Utility/TeeJee.FileSystem.vala:174
+msgid "Failed to move file"
+msgstr "Wedi methu â symud ffeil"
+
+#: src/Core/Main.vala:3128
+msgid "Failed to move system subvolume to snapshot directory"
+msgstr "Wedi methu â symud is-gyfrol y system i gyfeiriadur ciplun"
+
+#: src/Core/Main.vala:4031
+msgid "Failed to query subvolume list"
+msgstr "Wedi methu â chwestiynu rhestr is-gyfrol"
+
+#: src/Core/Main.vala:4116
+msgid "Failed to query subvolume quota"
+msgstr "Wedi methu ag ymholi cwota is-grŵp"
+
+#: src/Utility/CronTab.vala:50
+msgid "Failed to read cron tab"
+msgstr "Wedi methu â darllen tab cron"
+
+#: src/Utility/TeeJee.FileSystem.vala:112
+msgid "Failed to read file"
+msgstr "Wedi methu â darllen y ffeil"
+
+#: src/Core/SnapshotRepo.vala:901
+msgid "Failed to remove"
+msgstr "Wedi methu â thynnu"
+
+#: src/Utility/CronTab.vala:213
+msgid "Failed to remove cron job"
+msgstr "Wedi methu â dileu swydd cron"
+
+#: src/Core/Snapshot.vala:530 src/Core/Snapshot.vala:542
+#: src/Core/Snapshot.vala:550
+msgid "Failed to remove snapshot"
+msgstr "Wedi methu â thynnu ciplun"
+
+#: src/Core/Subvolume.vala:216
+msgid "Failed to restore system subvolume"
+msgstr "Wedi methu ag adfer is-gyfrol y system"
+
+#: src/Core/Main.vala:1516
+msgid "Failed to save exclude list"
+msgstr "Wedi methu â chadw'r rhestr eithrio"
+
+#: src/Utility/Device.vala:1381 src/Utility/Device.vala:1435
+#: src/Utility/Device.vala:1460 src/Utility/Device.vala:1481
+#: src/Utility/Device.vala:1501
+msgid "Failed to unlock device"
+msgstr "Wedi methu â datgloi dyfais"
+
+#: src/Utility/Device.vala:1733
+msgid "Failed to unmount"
+msgstr "Wedi methu â dadarosod"
+
+#: src/Core/Main.vala:3704
+msgid "Failed to unmount device!"
+msgstr "Wedi methu â dadarosod dyfais!"
+
+#: src/Utility/TeeJee.FileSystem.vala:139
+msgid "Failed to write file"
+msgstr "Wedi methu ag ysgrifennu ffeil"
+
+#: src/Gtk/RsyncLogBox.vala:122
+msgid "File (snapshot)"
+msgstr "Ffeil (ciplun)"
+
+#: src/Gtk/RsyncLogBox.vala:119
+msgid "File (system)"
+msgstr "Ffeil (system)"
+
+#: src/Gtk/ExcludeMessageWindow.vala:97
+msgid "File Pattern"
+msgstr "Patrwm Ffeil"
+
+#: src/Gtk/BackupBox.vala:83
+msgid "File and directory counts:"
+msgstr "Cyfrif ffeil a chyfeiriadur:"
+
+#: src/Utility/CronTab.vala:225 src/Utility/RsyncTask.vala:298
+#: src/Utility/TeeJee.FileSystem.vala:169
+msgid "File not found"
+msgstr "Ffeil heb ei chanfod"
+
+#: src/Gtk/ExcludeListSummaryWindow.vala:62
+msgid ""
+"Files &amp; directories matching the patterns below will be excluded. "
+"Patterns starting with a + will include the item instead of excluding."
+msgstr ""
+"Ffeiliau &amp; bydd cyfeiriaduron sy'n cyfateb i'r patrymau isod yn cael eu "
+"heithrio. Bydd patrymau sy'n dechrau gyda + yn cynnwys yr eitem yn lle "
+"eithrio."
+
+#: src/Gtk/SnapshotBackendBox.vala:201
+msgid "Files and directories can be excluded to save disk space."
+msgstr "Mae modd eithrio ffeiliau a chyfeiriaduron i arbed lle ar ddisg."
+
+#: src/Gtk/RestoreBox.vala:119
+msgid "Files and directory counts:"
+msgstr "Ffeiliau a chyfrif cyfeiriadur:"
+
+#: src/Gtk/ExcludeMessageWindow.vala:76
+msgid "Files matching the following patterns will be excluded"
+msgstr "Bydd ffeiliau sy'n cyfateb i'r patrymau canlynol yn cael eu heithrio"
+
+#: src/Utility/Device.vala:1950
+#, c-format
+msgid "Filesystem"
+msgstr "System ffeiliau"
+
+#: src/Gtk/RsyncLogBox.vala:302
+msgid "Filter by name or path"
+msgstr "Hidlo yn ôl enw neu lwybr"
+
+#: src/Gtk/SettingsWindow.vala:103
+msgid "Filters"
+msgstr "Clirio pob hidl"
+
+#: src/Gtk/BackupWindow.vala:97 src/Gtk/SetupWizardWindow.vala:211
+#: src/Gtk/DeleteWindow.vala:103
+msgid "Finish"
+msgstr "Gorffen"
+
+#: src/Gtk/RestoreWindow.vala:130 src/Gtk/SetupWizardWindow.vala:120
+msgid "Finished"
+msgstr "Wedi gorffen"
+
+#: src/Gtk/RestoreExcludeBox.vala:78
+msgid "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
+msgstr "Firefox, Chromium, Chrome, Opera, Ystwyll, Midori"
+
+#: src/Core/SnapshotRepo.vala:583
+msgid "First snapshot requires:"
+msgstr "Mae angen y canlynol ar y ciplun cyntaf:"
+
+#: src/Core/Main.vala:3061
+msgid "Found existing pre-restore snapshot"
+msgstr "Wedi dod o hyd i giplun cyn-adfer cyfredol"
+
+#: src/Gtk/BackupDeviceBox.vala:215
+msgid "Free"
+msgstr "Am ddim"
+
+#: src/Core/SnapshotRepo.vala:75 src/Core/SnapshotRepo.vala:145
+msgid "Free space"
+msgstr "Lle rhydd"
+
+#: src/AppConsole.vala:1055
+msgid "GRUB Device"
+msgstr "Dyfais GRUB"
+
+#: src/Gtk/RestoreDeviceBox.vala:497
+msgid "GRUB device not selected"
+msgstr "Nid yw dyfais GRUB wedi'i dewis"
+
+#: src/AppConsole.vala:1060
+msgid "GRUB will NOT be reinstalled"
+msgstr "NI fydd GRUB yn cael ei ailosod"
+
+#: src/Core/Main.vala:2509
+msgid "Generating initramfs..."
+msgstr "Yn cynhyrchu initramfs..."
+
+#: src/AppConsole.vala:385
+msgid "Global"
+msgstr "Eang"
+
+#: src/Gtk/BackupBox.vala:100 src/Gtk/RestoreBox.vala:135
+#: src/Gtk/RsyncLogBox.vala:400
+#, c-format
+msgid "Group"
+msgstr "Grŵp"
+
+#: src/Gtk/SnapshotBackendBox.vala:141
+msgid "Help"
+msgstr "Cymorth"
+
+#: src/Gtk/ExcludeMessageWindow.vala:128
+msgid ""
+"Hidden files and folders are included by default since they contain user-"
+"specific configuration files."
+msgstr ""
+"Mae ffeiliau a ffolderi cudd yn cael eu cynnwys yn rhagosodedig gan eu bod "
+"yn cynnwys ffeiliau ffurfweddu sy'n benodol i ddefnyddwyr."
+
+#: src/Gtk/DeleteWindow.vala:181
+msgid "Hide"
+msgstr "Cuddio"
+
+#: src/AppConsole.vala:392
+msgid "Hide rsync output"
+msgstr "Cuddio allbwn rsync"
+
+#: src/Gtk/DeleteWindow.vala:182
+msgid "Hide this window (files will be deleted in background)"
+msgstr "Cuddio'r ffenestr hon (bydd ffeiliau'n cael eu dileu yn y cefndir)"
+
+#: src/Gtk/UsersBox.vala:116
+msgid "Home"
+msgstr "Cartref"
+
+#: src/Gtk/ExcludeMessageWindow.vala:115
+msgid "Home Directory"
+msgstr "Cyfeiriadur Cartref"
+
+#: src/Gtk/SnapshotListBox.vala:298 src/Gtk/ScheduleBox.vala:118
+msgid "Hourly"
+msgstr "Bob Awr"
+
+#: src/Core/Main.vala:1076
+msgid "Hourly snapshot failed!"
+msgstr "Ciplun bob awr wedi methu!"
+
+#: src/Core/Main.vala:1057
+msgid "Hourly snapshots are enabled"
+msgstr "Mae cipluniau bob awr wedi'u galluogi"
+
+#: src/Gtk/RestoreFinishBox.vala:102
+msgid ""
+"If the restored system fails to boot, then boot from the Live CD/USB, "
+"install Timeshift, and try restoring another snapshot."
+msgstr ""
+"Os na fydd y system wedi'i hadfer yn cychwyn, yna cychwynnwch o'r CD/USB "
+"Byw, gosodwch Timeshift, a cheisiwch adfer ciplun arall."
+
+#: src/Core/Main.vala:2373
+msgid ""
+"If these terms are not acceptable to you, please do not proceed beyond this "
+"point!"
+msgstr ""
+"Os nad yw'r telerau hyn yn dderbyniol i chi, peidiwch â mynd y tu hwnt i'r "
+"pwynt hwn!"
+
+#: src/Gtk/ExcludeBox.vala:54
+msgid "Include / Exclude Patterns"
+msgstr "Cynnwys / Eithrio Patrymau"
+
+#: src/Gtk/UsersBox.vala:336
+msgid "Include @home subvolume in backups"
+msgstr "Cynnwys is-gyfrol @home mewn copïau wrth gefn"
+
+#: src/Gtk/UsersBox.vala:262
+msgid "Include All Files"
+msgstr "Cynnwys Pob Ffeil"
+
+#: src/Gtk/UsersBox.vala:190
+msgid "Include Only Hidden Files"
+msgstr "Cynnwys Ffeiliau Cudd yn Unig"
+
+#: src/Core/Main.vala:2187
+msgid "Invalid Snapshot"
+msgstr "Ciplun Annilys"
+
+#: src/AppConsole.vala:257
+#, c-format
+msgid "Invalid command line arguments"
+msgstr "Ymresymiadau llinell orchymyn annilys"
+
+#: src/Gtk/MainWindow.vala:814
+msgid "Invalid snapshot"
+msgstr "Ciplun annilys"
+
+#: src/Gtk/ExcludeBox.vala:282
+msgid "Items Not Selected"
+msgstr "Eitemau Heb eu Dewis"
+
+#: src/Gtk/ScheduleBox.vala:283
+msgid "Keep"
+msgstr "Cadw"
+
+#: src/Gtk/RestoreExcludeBox.vala:112
+msgid ""
+"Keep configuration files for bittorrent clients like Deluge, Transmission, "
+"etc. If un-checked, previous configuration files will be restored from "
+"snapshot."
+msgstr ""
+"Cadwch ffeiliau ffurfweddiad ar gyfer cleientiaid bittorrent fel Deluge, "
+"Transmission, ac ati. Os na chânt eu gwirio, bydd ffeiliau ffurfweddiad "
+"blaenorol yn cael eu hadfer o giplun."
+
+#: src/Gtk/RestoreExcludeBox.vala:85
+msgid ""
+"Keep configuration files for web browsers like Firefox and Chrome. If un-"
+"checked, previous configuration files will be restored from snapshot"
+msgstr ""
+"Cadwch ffeiliau ffurfweddu ar gyfer porwyr gwe fel Firefox a Chrome. Os na "
+"chânt eu gwirio, bydd ffeiliau ffurfweddu blaenorol yn cael eu hadfer o'r "
+"ciplun"
+
+#: src/Gtk/RestoreDeviceBox.vala:244
+msgid "Keep on Root Device"
+msgstr "Cadwch ar Ddyfais Root"
+
+#: src/Gtk/RestoreDeviceBox.vala:229
+msgid "Keep this mount path on the root filesystem"
+msgstr "Cadwch y llwybr arosod hwn ar y system ffeiliau root"
+
+#: src/Gtk/SnapshotListBox.vala:523
+msgid "LIVE"
+msgstr "BYW"
+
+#: src/Utility/Device.vala:1951 src/Gtk/BackupDeviceBox.vala:254
+#: src/AppConsole.vala:471 src/AppConsole.vala:510
+#, c-format
+msgid "Label"
+msgstr "Label"
+
+#: src/Core/Main.vala:1038
+#, c-format
+msgid "Last boot snapshot is %d hours old"
+msgstr "Mae'r ciplun cychwyn diwethaf yn %d awr oed"
+
+#: src/Core/Main.vala:1033
+msgid "Last boot snapshot is older than system start time"
+msgstr "Mae'r ciplun cychwyn diwethaf yn hŷn nag amser cychwyn y system"
+
+#: src/Core/Main.vala:1029
+msgid "Last boot snapshot not found"
+msgstr "Heb ganfod y ciplun cychwyn diwethaf"
+
+#: src/Core/Main.vala:1100
+#, c-format
+msgid "Last daily snapshot is %d hours old"
+msgstr "Mae'r ciplun dyddiol diwethaf yn %d awr oed"
+
+#: src/Core/Main.vala:1095
+msgid "Last daily snapshot is more than 1 day old"
+msgstr "Mae'r ciplun dyddiol diwethaf yn fwy nag 1 diwrnod oed"
+
+#: src/Core/Main.vala:1091
+msgid "Last daily snapshot not found"
+msgstr "Heb ganfod y ciplun dyddiol diwethaf"
+
+#: src/Core/Main.vala:1069
+#, c-format
+msgid "Last hourly snapshot is %d minutes old"
+msgstr "Mae'r ciplun awr diwethaf yn %d munud oed"
+
+#: src/Core/Main.vala:1064
+msgid "Last hourly snapshot is more than 1 hour old"
+msgstr "Mae ciplun diwethaf yr awr yn fwy nag 1 awr oed"
+
+#: src/Core/Main.vala:1060
+msgid "Last hourly snapshot not found"
+msgstr "Ni chanfuwyd y ciplun awr diwethaf"
+
+#: src/Core/Main.vala:1162
+#, c-format
+msgid "Last monthly snapshot is %d days old"
+msgstr "Mae'r ciplun misol diwethaf yn %d diwrnod oed"
+
+#: src/Core/Main.vala:1157
+msgid "Last monthly snapshot is more than 1 month old"
+msgstr "Mae'r ciplun misol diwethaf yn fwy nag 1 mis oed"
+
+#: src/Core/Main.vala:1153
+msgid "Last monthly snapshot not found"
+msgstr "Heb ganfod y ciplun misol diwethaf"
+
+#: src/Core/Main.vala:1131
+#, c-format
+msgid "Last weekly snapshot is %d days old"
+msgstr "Mae'r ciplun wythnosol diwethaf yn %d diwrnod oed"
+
+#: src/Core/Main.vala:1126
+msgid "Last weekly snapshot is more than 1 week old"
+msgstr "Mae'r ciplun wythnosol diwethaf yn fwy nag 1 wythnos oed"
+
+#: src/Core/Main.vala:1122
+msgid "Last weekly snapshot not found"
+msgstr "Heb ganfod y ciplun wythnosol diwethaf"
+
+#: src/Gtk/MainWindow.vala:1002
+#, c-format
+msgid "Latest snapshot"
+msgstr "Ciplun diweddaraf"
+
+#: src/Core/Main.vala:1505
+#, c-format
+msgid "Linking from snapshot"
+msgstr "Cysylltu o'r ciplun"
+
+#: src/AppConsole.vala:363
+msgid "List"
+msgstr "Rhestr"
+
+#: src/AppConsole.vala:365
+msgid "List devices"
+msgstr "Rhestr dyfeisiau"
+
+#: src/AppConsole.vala:364
+msgid "List snapshots"
+msgstr "Rhestr cipluniau"
+
+#: src/Gtk/MainWindow.vala:953
+msgid "Live USB Mode (Restore Only)"
+msgstr "Modd USB Byw (Adfer yn Unig)"
+
+#: src/Gtk/SettingsWindow.vala:90 src/Gtk/BackupWindow.vala:87
+#: src/Gtk/SetupWizardWindow.vala:104
+msgid "Location"
+msgstr "Lleoliad"
+
+#: src/Gtk/MainWindow.vala:441
+msgid "Main window closed by user"
+msgstr "Prif ffenestr wedi'i gau gan y defnyddiwr"
+
+#: src/Gtk/SnapshotListBox.vala:328
+msgid "Mark/Unmark for Deletion"
+msgstr "Marcio/Dad-farcio i'w Ddileu"
+
+#: src/Core/SnapshotRepo.vala:628 src/Core/SnapshotRepo.vala:671
+msgid "Maximum backups exceeded for backup level"
+msgstr "Rhagorwyd ar uchafswm y copïau wrth gefn ar gyfer lefel wrth gefn"
+
+#: src/Gtk/MainWindow.vala:207
+msgid "Menu"
+msgstr "Dewislen"
+
+#: src/Gtk/SettingsWindow.vala:105
+msgid "Misc"
+msgstr "Arall"
+
+#: src/Core/Main.vala:251
+msgid "Missing Dependencies"
+msgstr "Dibyniaethau Coll"
+
+#: src/Core/SnapshotRepo.vala:605
+#, c-format
+msgid "Mode"
+msgstr "Dull"
+
+#: src/Utility/Device.vala:1934
+#, c-format
+msgid "Model"
+msgstr "Model"
+
+#: src/Gtk/SnapshotListBox.vala:301 src/Gtk/ScheduleBox.vala:64
+msgid "Monthly"
+msgstr "Misol"
+
+#: src/Core/Main.vala:1150
+msgid "Monthly snapshot are enabled"
+msgstr "Mae ciplun misol wedi'u galluogi"
+
+#: src/Core/Main.vala:1169
+msgid "Monthly snapshot failed!"
+msgstr "Ciplun misol wedi methu!"
+
+#: src/Core/Main.vala:2274 src/Core/Main.vala:2307
+msgid "Mount"
+msgstr "Arosod"
+
+#: src/Core/Main.vala:3135
+msgid "Moved system subvolume to snapshot directory"
+msgstr "Symud is-gyfrol system i gyfeiriadur ciplun"
+
+#: src/Gtk/MainWindow.vala:790
+msgid "Multiple snapshots selected"
+msgstr "Cipluniau lluosog wedi'u dewis"
+
+#: src/Gtk/BackupDeviceBox.vala:235 src/Gtk/RsyncLogBox.vala:491
+#: src/AppConsole.vala:437
+msgid "Name"
+msgstr "Enw"
+
+#: src/Gtk/RestoreWindow.vala:201 src/Gtk/BackupWindow.vala:164
+#: src/Gtk/SetupWizardWindow.vala:203 src/Gtk/DeleteWindow.vala:165
+msgid "Next"
+msgstr "Nesaf"
+
+#: src/Utility/Gtk/CustomMessageDialog.vala:157
+msgid "No"
+msgstr "Na"
+
+#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:122
+msgid "No Change"
+msgstr "Dim Newid"
+
+#: src/Gtk/MainWindow.vala:599 src/Gtk/DeleteWindow.vala:335
+msgid "No Snapshots Selected"
+msgstr "Dim Cipluniau wedi'u Dewis"
+
+#: src/Gtk/MainWindow.vala:1026
+msgid "No snapshots available"
+msgstr "Dim cipluniau ar gael"
+
+#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:970
+#: src/AppConsole.vala:326
+msgid "No snapshots found"
+msgstr "Heb ganfod unrhyw gipluniau"
+
+#: src/AppConsole.vala:753
+msgid "No snapshots found on device"
+msgstr "Heb ganfod unrhyw gipluniau ar y ddyfais"
+
+#: src/Gtk/MainWindow.vala:537
+msgid "No snapshots on device"
+msgstr "Dim cipluniau ar y ddyfais"
+
+#: src/Core/SnapshotRepo.vala:581
+msgid "No snapshots on this device"
+msgstr "Dim cipluniau ar y ddyfais hon"
+
+#: src/Gtk/MainWindow.vala:783
+msgid "No snapshots selected"
+msgstr "Heb ddewis ciplun"
+
+#: src/Gtk/MainWindow.vala:1003 src/Gtk/MainWindow.vala:1005
+msgid "None"
+msgstr "Dim"
+
+#: src/Core/Subvolume.vala:198
+#, c-format
+msgid "Not Found"
+msgstr "Heb Ganfod"
+
+#: src/Core/SnapshotRepo.vala:599
+msgid "Not Selected"
+msgstr "Heb ei Ddewis"
+
+#: src/Core/Main.vala:396
+msgid "Not Supported"
+msgstr "Heb ei Gefnogi"
+
+#: src/Core/SnapshotRepo.vala:543 src/Core/SnapshotRepo.vala:572
+msgid "Not enough disk space"
+msgstr "Dim digon o ofod ar y ddisg"
+
+#: src/Gtk/FinishBox.vala:55 src/AppConsole.vala:409
+msgid "Notes"
+msgstr "Nodiadau"
+
+#: src/Core/Main.vala:1180
+msgid "Nothing to do!"
+msgstr "Dim byd i wneud!"
+
+#: src/AppConsole.vala:435 src/AppConsole.vala:465 src/AppConsole.vala:504
+#: src/AppConsole.vala:552
+msgid "Num"
+msgstr "Rhif"
+
+#: src/Gtk/ScheduleBox.vala:282
+msgid ""
+"Number of snapshots to keep.\n"
+"Older snapshots will be removed once this limit is exceeded."
+msgstr ""
+"Nifer y cipluniau i'w cadw.\n"
+"Bydd cipluniau hŷn yn cael eu dileu o fynd heibio'r terfyn hwn."
+
+#: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:147
+#: src/Utility/Gtk/CustomMessageDialog.vala:151 src/Utility/GtkHelper.vala:108
+#: src/Gtk/SettingsWindow.vala:123 src/Gtk/ExcludeListSummaryWindow.vala:84
+msgid "OK"
+msgstr "Iawn"
+
+#: src/Gtk/SnapshotBackendBox.vala:188
+msgid ""
+"OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout "
+"(@ and @home subvolumes). Other layouts are not supported."
+msgstr ""
+"Rhaid gosod OS ar raniad BTRFS gyda gosodiad is-gyfrol tebyg i Ubuntu ( "
+"subvolumes @ a @home). Nid yw gosodiadau eraill yn cael eu cefnogi."
+
+#: src/Core/Main.vala:4289
+msgid "Older log files removed"
+msgstr "Ffeiliau log hŷn wedi'u dileu"
+
+#: src/Gtk/MainWindow.vala:1004
+msgid "Oldest snapshot"
+msgstr "Ciplun hynaf"
+
+#: src/Gtk/SnapshotListBox.vala:296
+msgid "On demand (manual)"
+msgstr "Ar alw (llaw)"
+
+#: src/Core/Main.vala:394 src/Core/Main.vala:3617
+#: src/Gtk/RestoreDeviceBox.vala:511
+msgid ""
+"Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
+msgstr ""
+"Dim ond cynlluniau tebyg i ubuntu gydag is-gyfrolau @ a @home sy'n cael eu "
+"cefnogi ar hyn o bryd."
+
+#: src/Gtk/MainWindow.vala:208
+msgid "Open Menu"
+msgstr "Agor y ddewislen"
+
+#: src/Core/Main.vala:3399
+msgid ""
+"Option --snapshot-device should not be specified for creating snapshots in "
+"BTRFS mode"
+msgstr ""
+"Peidiwch pennu Option --snapshot-device ar gyfer creu cipluniau yn y modd "
+"BTRFS"
+
+#: src/AppConsole.vala:361 src/AppGtk.vala:128
+msgid "Options"
+msgstr "Dewisiadau"
+
+#: src/Gtk/RestoreExcludeBox.vala:118
+msgid "Other applications (next page)"
+msgstr "Rhaglenni eraill (tudalen nesaf)"
+
+#: src/Gtk/BackupBox.vala:99 src/Gtk/RestoreBox.vala:134
+#: src/Gtk/RsyncLogBox.vala:398
+#, c-format
+msgid "Owner"
+msgstr "Perchennog"
+
+#: src/Utility/Device.vala:1946
+#, c-format
+msgid "Parent Device"
+msgstr "Dyfais Rhiant"
+
+#: src/Core/Main.vala:2638 src/Core/Main.vala:2729 src/Gtk/RsyncLogBox.vala:222
+msgid "Parsing log file..."
+msgstr "Wrthi'n dosrannu ffeil log..."
+
+#: src/Gtk/RestoreDeviceBox.vala:510
+msgid "Partition has an unsupported subvolume layout."
+msgstr "Mae gan y rhaniad gynllun is-gyfrol syddheb ei gynnal."
+
+#: src/Core/SnapshotRepo.vala:604 src/Gtk/RestoreDeviceBox.vala:93
+#, c-format
+msgid "Path"
+msgstr "Llwybr"
+
+#: src/Gtk/ExcludeBox.vala:166
+msgid "Pattern"
+msgstr "Patrwm"
+
+#: src/Gtk/BackupBox.vala:98 src/Gtk/RestoreBox.vala:133
+#: src/Gtk/RsyncLogBox.vala:396
+#, c-format
+msgid "Permissions"
+msgstr "Caniatâd"
+
+#: src/Core/Main.vala:270
+msgid "Please check if you have multiple windows open."
+msgstr "Gwiriwch a oes gennych nifer o ffenestri ar agor."
+
+#: src/Core/Main.vala:2405
+msgid "Please do not interrupt the restore process!"
+msgstr "Peidiwch ag ymyrryd â'r broses adfer!"
+
+#: src/Core/Main.vala:365
+msgid "Please install required packages and try running TimeShift again"
+msgstr "Gosodwch y pecynnau gofynnol a cheisiwch redeg TimeShift eto"
+
+#: src/AppGtk.vala:143
+msgid "Please re-run the application as admin (using 'sudo' or 'su')"
+msgstr "Ail-redwch y rhaglen fel gweinyddwr (gan ddefnyddio 'sudo' neu 'su')"
+
+#: src/AppConsole.vala:108
+msgid "Please run the application as admin (using 'sudo' or 'su')"
+msgstr "Rhedwch y rhaglen fel gweinyddwr (gan ddefnyddio 'sudo' neu 'su')"
+
+#: src/Core/Main.vala:2355
+msgid "Please save your work and close all applications."
+msgstr "Cadwch eich gwaith a chau pob rhaglen."
+
+#: src/Gtk/MainWindow.vala:685
+msgid "Please select a snapshot to view the log!"
+msgstr "Dewiswch giplun i weld y log!"
+
+#: src/Gtk/RestoreDeviceBox.vala:498
+msgid "Please select the GRUB device"
+msgstr "Dewiswch y ddyfais GRUB"
+
+#: src/Core/Main.vala:266
+msgid "Please wait a few minutes and try again."
+msgstr "Arhoswch ychydig funudau a rhowch gynnig arall arni."
+
+#: src/Gtk/MainWindow.vala:752
+msgid "Please wait for snapshots to be deleted."
+msgstr "Arhoswch i gipluniau gael eu dileu."
+
+#: src/Gtk/EstimateBox.vala:66
+msgid "Please wait..."
+msgstr "Arhoswch, os gwelwch yn dda..."
+
+#: src/Gtk/RsyncLogBox.vala:188
+msgid "Populating list..."
+msgstr "Wrthi'n llenwi'r rhestri..."
+
+#: src/Core/Main.vala:1740 src/Gtk/BackupBox.vala:117
+#: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
+#: src/Gtk/RsyncLogBox.vala:232
+msgid "Preparing..."
+msgstr "Yn paratoi..."
+
+#: src/Gtk/RestoreWindow.vala:193 src/Gtk/BackupWindow.vala:156
+#: src/Gtk/SetupWizardWindow.vala:195 src/Gtk/DeleteWindow.vala:157
+msgid "Previous"
+msgstr "Blaenorol"
+
+#: src/AppGtk.vala:130
+msgid "Print debug information"
+msgstr "Argraffu gwybodaeth dadfygio"
+
+#: src/AppConsole.vala:395 src/AppGtk.vala:132
+msgid "Print version number"
+msgstr "Rhif y fersiwn argraffu"
+
+#: src/Core/Main.vala:3979
+msgid "Query completed"
+msgstr "Cwblhawyd yr ymholiad"
+
+#: src/Core/Main.vala:3962
+msgid "Querying subvolume info..."
+msgstr "Wrthi'n ymholi manylion is-gyfrol..."
+
+#: src/Gtk/SnapshotBackendBox.vala:77
+msgid "RSYNC"
+msgstr "RSYNC"
+
+#: src/Gtk/SnapshotBackendBox.vala:193
+msgid "RSYNC Snapshots"
+msgstr "Cipluniau RSYNC"
+
+#: src/Gtk/BootOptionsBox.vala:137
+msgid ""
+"Re-generates initramfs for all installed kernels. This is generally not "
+"needed. Select this only if the restored system fails to boot."
+msgstr ""
+"Yn ail-greu initramfs ar gyfer pob cnewyllyn sydd wedi'i osod. Yn "
+"gyffredinol nid oes angen hyn. Dewiswch hwn dim ond os bydd y system "
+"adferedig yn methu cychwyn."
+
+#: src/AppConsole.vala:995
+#, c-format
+msgid "Re-install GRUB2 bootloader?"
+msgstr "Ail-osod cychwynnydd GRUB2?"
+
+#: src/Core/Main.vala:2468
+msgid "Re-installing GRUB2 bootloader..."
+msgstr "Wrthi'n ail-osod cychwynnydd GRUB2..."
+
+#: src/Gtk/BootOptionsBox.vala:120
+msgid "Re-installs the GRUB2 bootloader on the selected device."
+msgstr "Yn ail-osod y cychwynnydd GRUB2 ar y ddyfais a ddewiswyd."
+
+#: src/Gtk/RsyncLogBox.vala:181
+#, c-format
+msgid "Read %'d of %'d lines..."
+msgstr "Darllen %'d o %'d llinell..."
+
+#: src/Core/Main.vala:2568
+msgid "Rebooting system..."
+msgstr "Wrthi'n ailgychwyn y system..."
+
+#: src/Gtk/RestoreExcludeBox.vala:61 src/Gtk/RestoreExcludeBox.vala:91
+#, c-format
+msgid "Recommended"
+msgstr "Argymhellwyd"
+
+#: src/Gtk/BackupDeviceBox.vala:65 src/Gtk/RestoreDeviceBox.vala:70
+msgid "Refresh"
+msgstr "Adnewyddu"
+
+#: src/Gtk/BackupDeviceBox.vala:106
+msgid "Remote and network locations are not supported."
+msgstr "Nid yw lleoliadau pell na rhwydwaith yn cael eu cefnogi."
+
+#: src/Gtk/ExcludeBox.vala:262
+msgid "Remove"
+msgstr "Tynnu"
+
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1778 src/Core/Main.vala:1789
+#: src/Core/Main.vala:4285 src/Core/SnapshotRepo.vala:907
+#, c-format
+msgid "Removed"
+msgstr "Tynnwyd"
+
+#: src/Utility/CronTab.vala:340
+msgid "Removed cron task"
+msgstr "Tynnwyd tasg cron"
+
+#: src/Core/Main.vala:3767
+#, c-format
+msgid "Removed mount directory: '%s'"
+msgstr "Tynnwyd cyfeiriadur arosod: '%s'"
+
+#: src/Core/Snapshot.vala:555
+msgid "Removed snapshot"
+msgstr "Ciplun wedi'i dynnu"
+
+#: src/Core/Snapshot.vala:484
+msgid "Removing"
+msgstr "Wrthi'n tynnu"
+
+#: src/Core/Snapshot.vala:521
+msgid "Removing snapshot"
+msgstr "Yn tynnu ciplun"
+
+#: src/Core/SnapshotRepo.vala:763 src/Core/SnapshotRepo.vala:782
+#: src/Core/SnapshotRepo.vala:800 src/Core/SnapshotRepo.vala:814
+#, c-format
+msgid "Removing snapshots"
+msgstr "Yn tynnu cipluniau"
+
+#: src/Gtk/MainWindow.vala:150 src/Gtk/RestoreWindow.vala:125
+#: src/Gtk/RsyncLogBox.vala:377 src/Gtk/RsyncLogBox.vala:566
+#: src/Gtk/RestoreFinishBox.vala:71 src/AppConsole.vala:373
+msgid "Restore"
+msgstr "Adfer"
+
+#: src/Gtk/UsersBox.vala:325
+msgid "Restore @home subvolume"
+msgstr "Adfer is-gyfrol @home"
+
+#: src/Gtk/RestoreWindow.vala:89
+msgid "Restore Device"
+msgstr "Adfer Dyfais"
+
+#: src/Gtk/RestoreWindow.vala:94
+msgid "Restore Exclude"
+msgstr "Adfer Gwahardd"
+
+#: src/Gtk/RestoreWindow.vala:69
+msgid "Restore Snapshot"
+msgstr "Adfer Ciplun"
+
+#: src/Core/Main.vala:2978 src/Core/Main.vala:3020
+msgid "Restore completed"
+msgstr "Adfer wedi'i gwblhau"
+
+#: src/Gtk/MainWindow.vala:151
+msgid "Restore selected snapshot"
+msgstr "Adfer ciplun a ddewiswyd"
+
+#: src/AppConsole.vala:374
+msgid "Restore snapshot"
+msgstr "Adfer ciplun"
+
+#: src/Gtk/RestoreFinishBox.vala:96
+msgid "Restored subvolumes will become active after system is restarted."
+msgstr ""
+"Bydd is-gyfrolau wedi'u hadfer yn dod yn weithredol ar ôl ailgychwyn y "
+"system."
+
+#: src/Core/Subvolume.vala:220
+msgid "Restored system subvolume"
+msgstr "Is-gyfrol system wedi'i hadfer"
+
+#: src/Gtk/RestoreBox.vala:77 src/Gtk/RestoreBox.vala:190
+msgid "Restoring Snapshot..."
+msgstr "Wrthi'n adfer Ciplun..."
+
+#: src/Gtk/FinishBox.vala:85
+msgid ""
+"Restoring a snapshot will replace system subvolumes, and system subvolumes "
+"currently in use will be preserved as a new snapshot. If required, this "
+"snapshot can be restored later to 'undo' the restore."
+msgstr ""
+"Bydd adfer ciplun yn disodli is-gyfrolau system, a bydd is-gyfrolau system "
+"sy'n cael eu defnyddio ar hyn o bryd yn cael eu cadw fel ciplun newydd. Os "
+"oes angen, mae mod adfer y ciplun hwn yn ddiweddarach i 'ddadwneud' yr "
+"adferiad."
+
+#: src/Core/Main.vala:2947
+msgid "Restoring snapshot..."
+msgstr "Wrthi'n adfer ciplun..."
+
+#: src/Gtk/FinishBox.vala:88
+msgid ""
+"Restoring snapshots only replaces system files and settings. Non-hidden "
+"files and directories in user home directories will not be touched. This "
+"behaviour can be changed by adding a filter to include these files. Included "
+"files will be backed up when snapshot is created, and replaced when snapshot "
+"is restored."
+msgstr ""
+"Mae adfer cipluniau yn disodli ffeiliau system a gosodiadau yn unig. Nid "
+"yw'n cyffwrdd â ffeiliau a chyfeiriaduron nad ydynt yn gudd yng "
+"nghyfeirlyfrau cartref defnyddwyr. Mae modd newid yr ymddygiad hwn trwy "
+"ychwanegu hidlydd i gynnwys y ffeiliau hyn. Bydd ffeiliau sydd wedi'u "
+"cynnwys yn cael eu gwneud wrth gefn pan fydd ciplun yn cael ei greu, a'i "
+"ddisodli pan fydd ciplun yn cael ei adfer."
+
+#: src/Utility/Device.vala:1936
+#, c-format
+msgid "Revision"
+msgstr "Adolygiad"
+
+#: src/Gtk/RestoreDeviceBox.vala:438
+msgid "Root device not selected"
+msgstr "Dyfais root heb ei ddewis"
+
+#: src/Gtk/RsyncLogWindow.vala:49
+msgid "Rsync Log Viewer"
+msgstr "Darllenydd Log Rsync"
+
+#: src/AppGtk.vala:134
+#, c-format
+msgid "Run 'timeshift' for the command-line version of this tool"
+msgstr "Rhedeg 'timeshift' ar gyfer fersiwn llinell orchymyn yr offeryn hwn"
+
+#: src/AppConsole.vala:393
+msgid "Run in non-interactive mode"
+msgstr "Rhedeg yn y modd nad yw'n rhyngweithiol"
+
+#: src/Core/Main.vala:202
+msgid "Running"
+msgstr "Rhedeg"
+
+#: src/Gtk/FinishBox.vala:95
+msgid ""
+"Save snapshots to an external disk instead of the system disk to guard "
+"against drive failures."
+msgstr ""
+"Cadwch gipluniau i ddisg allanol yn lle disg y system i warchod rhag "
+"methiannau gyriant."
+
+#: src/Gtk/FinishBox.vala:97
+msgid ""
+"Saving snapshots to a non-system disk allows you to format and re-install "
+"the OS on the system disk without losing snapshots stored on it. You can "
+"even install another Linux distribution and later roll-back the previous "
+"distribution by restoring a snapshot."
+msgstr ""
+"Mae cadw cipluniau i ddisg nad yw'n system yn caniatáu i chi fformatio ac "
+"ail-osod yr OS ar ddisg y system heb golli cipluniau sydd wedi'u storio "
+"arno. Gallwch hyd yn oed osod dosbarthiad Linux arall a dychwelyd y "
+"dosbarthiad blaenorol yn ddiweddarach trwy adfer ciplun."
+
+#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+msgid "Saving to device"
+msgstr "Cadw i ddyfais"
+
+#: src/Gtk/SettingsWindow.vala:93 src/Gtk/SetupWizardWindow.vala:109
+msgid "Schedule"
+msgstr "Amserlen"
+
+#: src/Core/Main.vala:273
+msgid "Scheduled snapshot in progress..."
+msgstr "Ciplun wedi'i amserlennu ar y gweill..."
+
+#: src/Core/Main.vala:1180 src/Gtk/MainWindow.vala:1020
+#: src/Gtk/ScheduleBox.vala:312
+msgid "Scheduled snapshots are disabled"
+msgstr "Mae cipluniau wedi'u hamserlennu wedi'u hanalluogi"
+
+#: src/Gtk/FinishBox.vala:78
+msgid "Scheduled snapshots are disabled. It's recommended to enable it."
+msgstr ""
+"Mae cipluniau wedi'u hamserlennu wedi'u hanalluogi. Argymhellwn ei alluogi."
+
+#: src/Gtk/ScheduleBox.vala:305
+msgid "Scheduled snapshots are enabled"
+msgstr "Mae cipluniau wedi'u hamserlennu wedi'u galluogi"
+
+#: src/Gtk/FinishBox.vala:75
+msgid ""
+"Scheduled snapshots are enabled. Snapshots will be created automatically for "
+"selected levels."
+msgstr ""
+"Mae cipluniau wedi'u hamserlennu wedi'u galluogi. Bydd cipluniau'n cael eu "
+"creu'n awtomatig ar gyfer lefelau dethol."
+
+#: src/AppConsole.vala:883
+#, c-format
+msgid "Select '%s' device (default = %s)"
+msgstr "Dewiswch ddyfais '%s' (rhagosodedig = %s)"
+
+#: src/Core/SnapshotRepo.vala:510 src/AppConsole.vala:702
+msgid "Select BTRFS system disk with root subvolume (@)"
+msgstr "Dewiswch ddisg system BTRFS gydag is-gyfrol root (@)"
+
+#: src/AppConsole.vala:1011
+msgid "Select GRUB device"
+msgstr "Dewiswch ddyfais GRUB"
+
+#: src/Gtk/MainWindow.vala:684
+msgid "Select Snapshot"
+msgstr "Dewiswch Giplun"
+
+#: src/Gtk/ScheduleBox.vala:57
+msgid "Select Snapshot Levels"
+msgstr "Dewiswch Lefelau Ciplun"
+
+#: src/Gtk/BackupDeviceBox.vala:56
+msgid "Select Snapshot Location"
+msgstr "Dewiswch Lleoliad Ciplun"
+
+#: src/Gtk/SnapshotBackendBox.vala:62
+msgid "Select Snapshot Type"
+msgstr "Dewiswch y Math o Giplun"
+
+#: src/Gtk/DeleteWindow.vala:85
+msgid "Select Snapshots"
+msgstr "Dewiswch Gipluniau"
+
+#: src/Gtk/RestoreDeviceBox.vala:61
+msgid "Select Target Device"
+msgstr "Dewiswch Dyfais Targed"
+
+#: src/Gtk/BackupDeviceBox.vala:410
+#, c-format
+msgid "Select a partition on this disk"
+msgstr "Dewiswch raniad ar y ddisg hon"
+
+#: src/Gtk/MainWindow.vala:791
+msgid "Select a single snapshot to restore"
+msgstr "Dewiswch un ciplun i'w adfer"
+
+#: src/Gtk/RestoreDeviceBox.vala:467
+msgid "Select another device for root file system (/)"
+msgstr "Dewiswch ddyfais arall ar gyfer system ffeiliau gwraidd (/)"
+
+#: src/Core/SnapshotRepo.vala:546 src/Core/SnapshotRepo.vala:575
+msgid "Select another device or free up some space"
+msgstr "Dewiswch ddyfais arall neu rhyddhau ychydig o le"
+
+#: src/Gtk/MainWindow.vala:531 src/Gtk/MainWindow.vala:538
+msgid "Select another device to delete snasphots"
+msgstr "Dewiswch ddyfais arall i ddileu cipluniau"
+
+#: src/Gtk/MainWindow.vala:463
+msgid "Select another device?"
+msgstr "Dewiswch ddyfais arall?"
+
+#: src/Gtk/RestoreExcludeBox.vala:57
+msgid "Select applications to exclude from restore"
+msgstr "Dewiswch raglenni i'w heithrio rhag adfer"
+
+#: src/AppConsole.vala:685
+msgid "Select backup device"
+msgstr "Dewiswch ddyfais wrth gefn"
+
+#: src/Gtk/ExcludeBox.vala:443
+msgid "Select directory"
+msgstr "Dewid cyfeiriadur"
+
+#: src/Gtk/ExcludeBox.vala:416
+msgid "Select file(s)"
+msgstr "Dewis ffeil(iau)"
+
+#: src/AppConsole.vala:759
+msgid "Select snapshot"
+msgstr "Dewiswch giplun"
+
+#: src/Gtk/DeleteWindow.vala:336
+msgid "Select snapshots to delete"
+msgstr "Dewiswch gipluniau i'w dileu"
+
+#: src/Gtk/RestoreDeviceBox.vala:439
+msgid "Select the device for root file system (/)"
+msgstr "Dewiswch y ddyfais ar gyfer system ffeiliau root (/)"
+
+#: src/Gtk/RestoreDeviceBox.vala:83
+msgid "Select the devices where files will be restored."
+msgstr "Dewiswch y dyfeisiau lle bydd ffeiliau yn cael eu hadfer."
+
+#: src/Gtk/ScheduleBox.vala:313
+msgid "Select the intervals for creating snapshots"
+msgstr "Dewiswch y cyfnodau ar gyfer creu cipluniau"
+
+#: src/Gtk/ExcludeBox.vala:283
+msgid "Select the items to be removed from the list"
+msgstr "Dewiswch yr eitemau i'w tynnu o'r rhestr"
+
+#: src/Core/SnapshotRepo.vala:472
+msgid "Select the snapshot device"
+msgstr "Dewiswch y ddyfais ciplun"
+
+#: src/Gtk/MainWindow.vala:784
+msgid "Select the snapshot to restore"
+msgstr "Dewiswch y ciplun i'w adfer"
+
+#: src/Gtk/DeleteWindow.vala:87
+msgid "Select the snapshots to be deleted"
+msgstr "Dewiswch y cipluniau i'w dileu"
+
+#: src/Gtk/MainWindow.vala:600
+msgid "Select the snapshots to mark for deletion"
+msgstr "Dewiswch y cipluniau i'w marcio i'w dileu"
+
+#: src/Gtk/RestoreDeviceBox.vala:79
+msgid "Select the target devices where system will be cloned."
+msgstr "Dewiswch y dyfeisiau targed lle bydd y system yn cael ei glonio."
+
+#: src/Core/Main.vala:3427
+msgid "Selected default snapshot device"
+msgstr "Dyfais cipolwg rhagosodedig a ddewiswyd"
+
+#: src/Core/Main.vala:3378 src/Core/Main.vala:3382
+msgid "Selected default snapshot type"
+msgstr "Wedi dewis y math o giplun rhagosodedig"
+
+#: src/Gtk/BackupDeviceBox.vala:388
+msgid "Selected device does not have BTRFS partition"
+msgstr "Nid oes gan y ddyfais a ddewiswyd raniad BTRFS"
+
+#: src/Gtk/BackupDeviceBox.vala:385
+msgid "Selected device does not have Linux partition"
+msgstr "Nid oes gan y ddyfais a ddewiswyd raniad Linux"
+
+#: src/Core/SnapshotRepo.vala:144
+msgid "Selected snapshot device"
+msgstr "Dyfais ciplun a ddewiswyd"
+
+#: src/Core/SnapshotRepo.vala:509 src/AppConsole.vala:701
+msgid "Selected snapshot device is not a system disk"
+msgstr "Nid yw dyfais ciplun a ddewiswyd yn ddisg system"
+
+#: src/Core/Main.vala:2188
+msgid "Selected snapshot is marked for deletion"
+msgstr "Mae'r ciplun a ddewiswyd wedi'i farcio i'w ddileu"
+
+#: src/Gtk/MainWindow.vala:815
+msgid "Selected snapshot is marked for deletion and cannot be restored"
+msgstr ""
+"Mae'r ciplun a ddewiswyd wedi'i farcio i'w ddileu ac nid oes modd ei adfer"
+
+#: src/Gtk/UsersBox.vala:234
+msgid ""
+"Selected user has an encrypted home directory. It's not possible to include "
+"only hidden files."
+msgstr ""
+"Mae gan y defnyddiwr a ddewiswyd gyfeiriadur cartref wedi'i amgryptio. Nid "
+"yw'n bosibl cynnwys ffeiliau cudd yn unig."
+
+#: src/Utility/Device.vala:1935
+#, c-format
+msgid "Serial"
+msgstr "Cyfresol"
+
+#: src/Core/Main.vala:230
+msgid "Session log file"
+msgstr "Ffeil log sesiwn"
+
+#: src/AppConsole.vala:370
+msgid "Set snapshot description"
+msgstr "Gosod disgrifiad ciplun"
+
+#: src/Gtk/MainWindow.vala:180 src/Gtk/MainWindow.vala:181
+#: src/Gtk/SettingsWindow.vala:56
+msgid "Settings"
+msgstr "Gosodiadau"
+
+#: src/Gtk/MainWindow.vala:191
+msgid "Settings wizard"
+msgstr "Dewin gosodiadau"
+
+#: src/Gtk/FinishBox.vala:58
+msgid "Setup Complete"
+msgstr "Gosod Wedi'i Gwblhau"
+
+#: src/Gtk/SetupWizardWindow.vala:64
+msgid "Setup Wizard"
+msgstr "Dewin gosod"
+
+#: src/AppConsole.vala:390
+msgid "Show additional debug messages"
+msgstr "Dangos negeseuon dadfygio ychwanegol"
+
+#: src/AppConsole.vala:394 src/AppGtk.vala:131
+msgid "Show all options"
+msgstr "Dangos pob dewis"
+
+#: src/Gtk/RestoreExcludeBox.vala:121
+msgid "Show more applications to exclude on the next page"
+msgstr "Dangos mwy o raglenni i'w heithrio ar y dudalen nesaf"
+
+#: src/AppConsole.vala:391
+msgid "Show rsync output (default)"
+msgstr "Dangos allbwn rsync (rhagosodedig)"
+
+#: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
+#: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
+#: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
+#: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:469 src/AppConsole.vala:508
+#, c-format
+msgid "Size"
+msgstr "Maint"
+
+#: src/Gtk/SnapshotBackendBox.vala:186
+msgid ""
+"Size of BTRFS snapshots are initially zero. As system files gradually change "
+"with time, data gets written to new data blocks which take up disk space "
+"(copy-on-write). Files in the snapshot continue to point to original data "
+"blocks."
+msgstr ""
+"Mae maint cipluniau BTRFS yn sero i ddechrau. Wrth i ffeiliau system newid "
+"yn raddol gydag amser, mae data'n cael ei ysgrifennu i flociau data newydd "
+"sy'n cymryd lle ar ddisg (copi-ar-ysgrifennu). Mae ffeiliau yn y ciplun yn "
+"parhau i bwyntio at flociau data gwreiddiol."
+
+#: src/AppConsole.vala:379
+msgid "Skip GRUB2 reinstall"
+msgstr "Hepgor ailosod GRUB2"
+
+#: src/Core/Main.vala:2193 src/Core/SnapshotRepo.vala:631
+#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:94
+#, c-format
+msgid "Snapshot"
+msgstr "Ciplun"
+
+#: src/Gtk/MainWindow.vala:548
+#, c-format
+msgid ""
+"Snapshot '%s' is being used by the system and cannot be deleted. Restart the "
+"system to activate the restored snapshot."
+msgstr ""
+"Mae ciplun '%s' yn cael ei ddefnyddio gan y system ac nid oes modd ei "
+"ddileu. Ailgychwynnwch y system i gychwyn y ciplun wedi'i adfer."
+
+#: src/Gtk/BackupFinishBox.vala:60
+msgid "Snapshot Created"
+msgstr "Crëwyd Ciplun"
+
+#: src/Gtk/SnapshotListBox.vala:295
+#, c-format
+msgid "Snapshot Levels"
+msgstr "Lefelau Ciplun"
+
+#: src/Gtk/MainWindow.vala:751
+msgid "Snapshot deletion in progress..."
+msgstr "Wrthi'n dileu ciplun..."
+
+#: src/Core/SnapshotRepo.vala:442
+#, c-format
+msgid "Snapshot device"
+msgstr "Dyfais ciplun"
+
+#: src/Core/SnapshotRepo.vala:478 src/AppConsole.vala:675
+msgid "Snapshot device not available"
+msgstr "Nid yw dyfais ciplun ar gael"
+
+#: src/Core/SnapshotRepo.vala:471 src/AppConsole.vala:671
+msgid "Snapshot device not selected"
+msgstr "Nid yw dyfais ciplun wedi'i dewis"
+
+#: src/Core/SnapshotRepo.vala:446
+#, c-format
+msgid "Snapshot location"
+msgstr "Lleoliad ciplun"
+
+#: src/Core/Main.vala:1317
+msgid "Snapshot saved successfully"
+msgstr "Ciplun wedi'i gadw'n llwyddiannus"
+
+#: src/Core/Main.vala:2183
+msgid "Snapshot to restore not specified!"
+msgstr "Nid yw'r ciplun i'w adfer wedi'i nodi!"
+
+#: src/Core/Main.vala:3024
+msgid "Snapshot will become active after system is rebooted."
+msgstr "Bydd ciplun yn dod yn weithredol ar ôl ailgychwyn y system."
+
+#: src/Gtk/DeleteFinishBox.vala:60
+msgid "Snapshot(s) Deleted"
+msgstr "Ciplun(iau) wedi'u Dileu"
+
+#: src/Gtk/MainWindow.vala:309 src/Gtk/DeleteWindow.vala:89
+msgid "Snapshots"
+msgstr "Cipluniau"
+
+#: src/Gtk/SnapshotBackendBox.vala:178
+msgid ""
+"Snapshots are created and restored instantly. Snapshot creation is an atomic "
+"transaction at the file system level."
+msgstr ""
+"Mae cipluniau'n cael eu creu a'u hadfer ar unwaith. Mae creu ciplun yn "
+"drafodyn atomig ar lefel y system ffeiliau."
+
+#: src/Gtk/SnapshotBackendBox.vala:195
+msgid ""
+"Snapshots are created by creating copies of system files using rsync, and "
+"hard-linking unchanged files from previous snapshot."
+msgstr ""
+"Mae cipluniau yn cael eu creu drwy greu copïau o ffeiliau system gan "
+"ddefnyddio rsync, a thrwy gysylltu ffeiliau heb eu newid yn galed o'r ciplun "
+"blaenorol."
+
+#: src/Gtk/SnapshotBackendBox.vala:176
+msgid ""
+"Snapshots are created using the built-in features of the BTRFS file system."
+msgstr ""
+"Crëir cipluniau gan ddefnyddio nodweddion mewnol system ffeiliau BTRFS."
+
+#: src/Gtk/ScheduleBox.vala:167
+#, c-format
+msgid "Snapshots are not scheduled at fixed times."
+msgstr "Nid yw cipluniau wedi'u hamserlennu ar adegau penodol."
+
+#: src/Gtk/SnapshotBackendBox.vala:182
+msgid ""
+"Snapshots are perfect, byte-for-byte copies of the system. Nothing is "
+"excluded."
+msgstr ""
+"Mae cipluniau yn gopïau beit-am-beit perffaith o'r system. Nid oes dim yn "
+"cael ei eithrio."
+
+#: src/Gtk/SnapshotBackendBox.vala:180
+msgid ""
+"Snapshots are restored by replacing system subvolumes. Since files are never "
+"copied, deleted or overwritten, there is no risk of data loss. The existing "
+"system is preserved as a new snapshot after restore."
+msgstr ""
+"Mae cipluniau'n cael eu hadfer trwy ddisodli is-gyfrolau system. Gan nad yw "
+"ffeiliau byth yn cael eu copïo, eu dileu neu eu trosysgrifo, nid oes unrhyw "
+"berygl o golli data. Mae'r system bresennol yn cael ei chadw fel ciplun "
+"newydd ar ôl ei hadfer."
+
+#: src/Gtk/SnapshotBackendBox.vala:184
+msgid ""
+"Snapshots are saved on the same disk from which they are created (system "
+"disk). Storage on other disks is not supported. If system disk fails then "
+"snapshots stored on it will be lost along with the system."
+msgstr ""
+"Mae cipluniau'n cael eu cadw ar yr un ddisg y maen nhw'n cael eu creu ohoni "
+"(disg system). Nid yw storio ar ddisgiau eraill yn cael ei gefnogi. Os bydd "
+"disg system yn methu yna bydd cipluniau sydd wedi'u storio arno yn cael eu "
+"colli ynghyd â'r system."
+
+#: src/Gtk/BackupDeviceBox.vala:107
+msgid ""
+"Snapshots are saved to /timeshift on selected partition. Other locations are "
+"not supported."
+msgstr ""
+"Mae cipluniau'n cael eu cadw i /timeshift ar y rhaniad a ddewiswyd. Nid yw "
+"lleoliadau eraill yn cael eu cefnogi."
+
+#: src/Gtk/BackupDeviceBox.vala:99
+msgid ""
+"Snapshots are saved to /timeshift-btrfs on selected partition. Other "
+"locations are not supported."
+msgstr ""
+"Mae cipluniau'n cael eu cadw i /timeshift-btrfs ar raniad dethol. Nid yw "
+"lleoliadau eraill yn cael eu cefnogi."
+
+#: src/Gtk/MainWindow.vala:965
+msgid "Snapshots available for restore"
+msgstr "Cipluniau ar gael i'w hadfer"
+
+#: src/Gtk/SnapshotBackendBox.vala:199
+msgid ""
+"Snapshots can be saved to any disk formatted with a Linux file system. "
+"Saving snapshots to non-system or external disk allows the system to be "
+"restored even if system disk is damaged or re-formatted."
+msgstr ""
+"Mae modd cadw cipluniau ar unrhyw ddisg sydd wedi'i fformatio â system "
+"ffeiliau Linux. Mae cadw cipluniau i ddisg nad yw'n system neu'n allanol yn "
+"caniatáu i'r system gael ei hadfer hyd yn oed os caiff disg y system ei "
+"difrodi neu ei hail-fformatio."
+
+#: src/AppConsole.vala:289
+msgid "Snapshots cannot be created in Live CD mode"
+msgstr "Nid oes modd creu cipluniau yn y modd CD byw"
+
+#: src/Gtk/MainWindow.vala:1012
+msgid "Snapshots will be created at selected intervals"
+msgstr "Bydd cipluniau'n cael eu creu ar adegau penodol"
+
+#: src/Gtk/ScheduleBox.vala:306
+msgid ""
+"Snapshots will be created at selected intervals if snapshot disk has enough "
+"space (> 1 GB)"
+msgstr ""
+"Bydd cipluniau'n cael eu creu ar adegau penodol os oes gan ddisg ciplun "
+"ddigon o le (> 1 GB)"
+
+#: src/AppConsole.vala:386
+msgid "Specify backup device (default: config)"
+msgstr "Nodwch ddyfais wrth gefn (rhagosodedig: config)"
+
+#: src/AppConsole.vala:378
+msgid "Specify device for installing GRUB2 bootloader"
+msgstr "Nodwch ddyfais ar gyfer gosod cychwynnydd GRUB2"
+
+#: src/AppConsole.vala:376
+msgid "Specify snapshot to restore"
+msgstr "Nodwch giplun i'w adfer"
+
+#: src/AppConsole.vala:377
+msgid "Specify target device"
+msgstr "Nodwch ddyfais targed"
+
+#: src/Core/SnapshotRepo.vala:452 src/Core/SnapshotRepo.vala:606
+#: src/Gtk/RsyncLogBox.vala:471
+#, c-format
+msgid "Status"
+msgstr "Statws"
+
+#: src/Gtk/ScheduleBox.vala:154
+msgid "Stop cron emails for scheduled tasks"
+msgstr "Stopiwch e-byst cron ar gyfer tasgau a drefnwyd"
+
+#: src/Gtk/RestoreDeviceBox.vala:101
+msgid "Subvolume"
+msgstr "Is-gyfrol"
+
+#: src/Core/Subvolume.vala:203
+#, c-format
+msgid "Subvolume exists at destination"
+msgstr "Mae is-gyfrol yn bodoli yn y gyrchfan"
+
+#: src/Gtk/SnapshotListBox.vala:274
+#, c-format
+msgid "Subvolumes"
+msgstr "Is-gyfrolau"
+
+#: src/Gtk/ExcludeBox.vala:267 src/Gtk/RestoreWindow.vala:120
+#: src/Gtk/ExcludeAppsBox.vala:134
+msgid "Summary"
+msgstr "Crynodeb"
+
+#: src/AppConsole.vala:388
+msgid "Switch to BTRFS mode (default: config)"
+msgstr "Newid i fodd BTRFS (rhagosodedig: config)"
+
+#: src/AppConsole.vala:389
+msgid "Switch to RSYNC mode (default: config)"
+msgstr "Newid i'r modd RSYNC (rhagosodedig: config)"
+
+#: src/Core/SnapshotRepo.vala:961
+msgid "Symlinks updated"
+msgstr "Symlinks wedi'i ddiweddaru"
+
+#: src/Core/Main.vala:2543
+msgid "Syncing file systems..."
+msgstr "Wrthi'n cydweddu systemau ffeiliau..."
+
+#: src/Core/Main.vala:1522 src/Core/Main.vala:2713 src/Core/Main.vala:2954
+msgid "Syncing files with rsync..."
+msgstr "Wrthi'n cydweddu ffeiliau â rsync..."
+
+#: src/AppGtk.vala:126
+msgid "Syntax"
+msgstr "Cystrawen"
+
+#: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:126
+#, c-format
+msgid "System"
+msgstr "System"
+
+#: src/Gtk/MainWindow.vala:912
+msgid "System Restore Utility"
+msgstr "Teclyn Adfer Systemau"
+
+#: src/Gtk/FinishBox.vala:82
+msgid "System can be rolled-back to a previous date by restoring a snapshot."
+msgstr "Mae modd dychwelyd y system i ddyddiad blaenorol trwy adfer ciplun."
+
+#: src/Core/Main.vala:2406
+msgid "System will reboot after files are restored"
+msgstr "Bydd y system yn ailgychwyn ar ôl i'r ffeiliau gael eu hadfer"
+
+#: src/Core/Main.vala:2356
+msgid "System will reboot after files are restored."
+msgstr "Bydd y system yn ailgychwyn ar ôl i'r ffeiliau gael eu hadfer."
+
+#: src/Core/Main.vala:1253 src/Core/Main.vala:1327
+msgid "Tagged snapshot"
+msgstr "Ciplun wedi'i dagio"
+
+#: src/Gtk/SnapshotListBox.vala:150 src/AppConsole.vala:438
+msgid "Tags"
+msgstr "Tagiau"
+
+#: src/Core/Main.vala:2218
+msgid "Target device is not mounted"
+msgstr "Nid yw'r ddyfais darged wedi'i arosod"
+
+#: src/Gtk/RestoreDeviceBox.vala:466
+msgid "Target device is same as system device"
+msgstr "Mae dyfais darged yr un peth â dyfais system"
+
+#: src/Core/Main.vala:2212
+msgid "Target device not specified!"
+msgstr "Dyfais darged heb ei nodi!"
+
+#: src/Gtk/ScheduleBox.vala:156
+msgid ""
+"The cron service sends the output of scheduled tasks as an email to the "
+"current user. Select this option to suppress the emails for cron tasks "
+"created by Timeshift."
+msgstr ""
+"Mae'r gwasanaeth cron yn anfon allbwn tasgau a drefnwyd fel e-bost at y "
+"defnyddiwr presennol. Dewiswch yr opsiwn hwn i atal yr e-byst ar gyfer "
+"tasgau cron a grëwyd gan Timeshift."
+
+#: src/Core/Main.vala:393
+msgid "The system partition has an unsupported subvolume layout."
+msgstr "Mae gan y rhaniad system osodiad is-gyfrol syddheb ei gynnal."
+
+#: src/Core/Main.vala:3616
+msgid "The target partition has an unsupported subvolume layout."
+msgstr "Mae gan y rhaniad targed gynllun is-gyfrol sydd heb ei gynnal."
+
+#: src/Gtk/BackupDeviceBox.vala:512
+#, c-format
+msgid "There are no snapshots on this device"
+msgstr "Nid oes unrhyw gipluniau ar y ddyfais hon"
+
+#: src/Utility/Device.vala:1380
+msgid "This device is not encrypted"
+msgstr "Nid yw'r ddyfais hon wedi'i hamgryptio"
+
+#: src/Core/Main.vala:2372
+msgid ""
+"This software comes without absolutely NO warranty and the author takes no "
+"responsibility for any damage arising from the use of this program."
+msgstr ""
+"Daw'r feddalwedd hon heb unrhyw warant o gwbl ac nid yw'r awdur yn cymryd "
+"unrhyw gyfrifoldeb am unrhyw ddifrod sy'n deillio o ddefnyddio'r rhaglen hon."
+
+#: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1011
+msgid "Timeshift is active"
+msgstr "Mae Timeshift yn weithredol"
+
+#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:132
+#: src/Gtk/RsyncLogBox.vala:394
+#, c-format
+msgid "Timestamp"
+msgstr "Stamp amser"
+
+#: src/AppConsole.vala:624
+#, c-format
+msgid "To restore with default options, press the ENTER key for all prompts!"
+msgstr ""
+"I adfer gyda dewisiadau rhagosodedig, pwyswch y fysell ENTER ar gyfer pob "
+"anogwr!"
+
+#: src/Utility/Device.vala:1949 src/Gtk/BackupDeviceBox.vala:190
+#: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:470
+#: src/AppConsole.vala:509
+#, c-format
+msgid "Type"
+msgstr "Math"
+
+#: src/Utility/Device.vala:1948
+#, c-format
+msgid "UUID"
+msgstr "UUID"
+
+#: src/AppGtk.vala:107
+msgid "Unknown option"
+msgstr "Dewis anhysbys"
+
+#: src/Core/Main.vala:1235
+msgid "Unknown snapshot type"
+msgstr "Math ciplun anhysbys"
+
+#: src/Core/Main.vala:1727
+msgid "Unknown value specified for option --tags"
+msgstr "Gwerth anhysbys wedi'i nodi ar gyfer option --tags"
+
+#: src/Utility/Device.vala:1391 src/Utility/Device.vala:1507
+#, c-format
+msgid "Unlocked device is mapped to '%s'"
+msgstr "Dyfais sydd wedi'i datgloi wedi'i mapio i '%s'"
+
+#: src/Utility/Device.vala:1506
+msgid "Unlocked successfully"
+msgstr "Wedi'i ddatgloi yn llwyddiannus"
+
+#: src/Utility/Device.vala:1722
+msgid "Unmounting from"
+msgstr "Dadarosod o"
+
+#: src/Gtk/SnapshotListBox.vala:198
+msgid "Unshared"
+msgstr "Heb ei rannu"
+
+#: src/Core/Main.vala:3620 src/Gtk/RestoreDeviceBox.vala:508
+msgid "Unsupported Subvolume Layout"
+msgstr "Cynllun Is-gyfrol heb ei Gefnogi"
+
+#: src/Gtk/BootOptionsBox.vala:150
+msgid "Update GRUB menu"
+msgstr "Diweddaru'r ddewislen GRUB"
+
+#: src/Gtk/BootOptionsBox.vala:135
+msgid "Update initramfs"
+msgstr "Diweddaru initramfs"
+
+#: src/Core/Main.vala:2893
+msgid "Updated /etc/crypttab on target device"
+msgstr "Wedi'i ddiweddaru /etc/crypttab ar y ddyfais darged"
+
+#: src/Core/Main.vala:2813
+msgid "Updated /etc/fstab on target device"
+msgstr "Wedi'i ddiweddaru /etc/fstab ar ddyfais darged"
+
+#: src/Gtk/BootOptionsBox.vala:152
+msgid ""
+"Updates the GRUB menu entries (recommended). This is safe to run and should "
+"be left selected."
+msgstr ""
+"Yn diweddaru cofnodion dewislen GRUB (argymell). Mae hwn yn ddiogel i'w "
+"redeg a dylid ei adael wedi'i ddewis."
+
+#: src/Core/Main.vala:2526
+msgid "Updating GRUB menu..."
+msgstr "Wrthi'n diweddaru dewislen GRUB..."
+
+#: src/Core/Main.vala:2737
+msgid "Updating bootloader configuration..."
+msgstr "Wrthi'n diweddaru ffurfweddiad y cychwynnydd..."
+
+#: src/Utility/Device.vala:1956
+#, c-format
+msgid "Used"
+msgstr "Defnyddiwyd"
+
+#: src/Gtk/SetupWizardWindow.vala:114 src/Gtk/UsersBox.vala:101
+msgid "User"
+msgstr "Defnyddiwr"
+
+#: src/Gtk/UsersBox.vala:62
+msgid "User Home Directories"
+msgstr "Cyfeiriaduron Cartref Defnyddwyr"
+
+#: src/Utility/Device.vala:1461
+msgid "User cancelled the password prompt"
+msgstr "Mae'r defnyddiwr wedi diddymu'r anogwr cyfrinair"
+
+#: src/Gtk/UsersBox.vala:66
+msgid ""
+"User home directories are excluded by default unless you enable them here"
+msgstr ""
+"Mae cyfeiriaduron cartref defnyddwyr wedi'u heithrio yn ragosodedig oni bai "
+"eich bod yn eu galluogi yma"
+
+#: src/Gtk/SettingsWindow.vala:101
+msgid "Users"
+msgstr "Defnyddwyr"
+
+#: src/Gtk/RestoreWindow.vala:114
+msgid "Users Home"
+msgstr "Cartref Defnyddwyr"
+
+#: src/Utility/Device.vala:1933
+#, c-format
+msgid "Vendor"
+msgstr "Gwerthwr"
+
+#: src/Gtk/SnapshotListBox.vala:342
+msgid "View Rsync Log for Create"
+msgstr "Gweld Log Rsync ar gyfer Creu"
+
+#: src/Gtk/SnapshotListBox.vala:349
+msgid "View Rsync Log for Restore"
+msgstr "Gweld Log Rsync ar gyfer Adfer"
+
+#: src/Gtk/MainWindow.vala:369
+msgid "View TimeShift Logs"
+msgstr "Gweld Logiau TimeShift"
+
+#: src/Core/Main.vala:2267 src/Gtk/RestoreSummaryBox.vala:53
+msgid "Warning"
+msgstr "Rhybudd"
+
+#: src/Gtk/RestoreExcludeBox.vala:61
+msgid "Web Browsers"
+msgstr "Porwyr Gwe"
+
+#: src/Gtk/SnapshotListBox.vala:300 src/Gtk/ScheduleBox.vala:82
+msgid "Weekly"
+msgstr "Wythnosol"
+
+#: src/Core/Main.vala:1138
+msgid "Weekly snapshot failed!"
+msgstr "Ciplun wythnosol wedi methu!"
+
+#: src/Core/Main.vala:1119
+msgid "Weekly snapshots are enabled"
+msgstr "Mae cipluniau wythnosol wedi'u galluogi"
+
+#: src/Gtk/DeleteFinishBox.vala:63 src/Gtk/BackupFinishBox.vala:63
+msgid "With Errors"
+msgstr "Gyda Gwallau"
+
+#: src/Gtk/MainWindow.vala:190
+msgid "Wizard"
+msgstr "Dewin"
+
+#: src/Utility/Device.vala:1434 src/Utility/Device.vala:1480
+msgid "Wrong password"
+msgstr "Cyfrinair anghywir"
+
+#: src/Utility/Gtk/CustomMessageDialog.vala:156
+msgid "Yes"
+msgstr "Iawn"
+
+#: src/Gtk/RestoreFinishBox.vala:98
+msgid ""
+"You can continue working on the current system. After restart, the current "
+"system will be visible as a new snapshot. This snapshot can be restored "
+"later if required, to 'undo' the restore."
+msgstr ""
+"Gallwch barhau i weithio ar y system gyfredol. Ar ôl ailgychwyn, bydd y "
+"system bresennol yn weladwy fel ciplun newydd. Mae modd adfer y ciplun hwn "
+"yn ddiweddarach os oes angen, i 'ddadwneud' yr adferiad."
+
+#: src/AppConsole.vala:1023
+#, c-format
+msgid "[ENTER = Default (%s), a = Abort]"
+msgstr "[ ENTER = Rhagosodedig (%s), a = Atal]"
+
+#: src/AppConsole.vala:894
+#, c-format
+msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
+msgstr "[ ENTER = Rhagosodedig (%s), r = dyfais root, a = Atal]"
+
+#: src/Gtk/RestoreDeviceBox.vala:401
+msgid ""
+"[For Experienced Users] Change these settings if the restored system fails "
+"to boot."
+msgstr ""
+"[Ar gyfer Defnyddwyr Profiadol] Newidiwch y gosodiadau hyn os na fydd y "
+"system wedi'i hadfer yn cychwyn."
+
+#: src/Utility/AppLock.vala:54
+msgid "[Warning] Deleted invalid lock"
+msgstr "[Rhybudd] Clo annilys wedi'i ddileu"
+
+#: src/Core/SnapshotRepo.vala:814
+msgid "all"
+msgstr "popeth"
+
+#: src/Core/Main.vala:1655 src/Core/Main.vala:4030 src/Core/Main.vala:4115
+#: src/Core/Subvolume.vala:215
+msgid "btrfs returned an error"
+msgstr "dychwelodd btrfs wall"
+
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1554
+msgid "complete"
+msgstr "cyflawn"
+
+#: src/Utility/CronTab.vala:261
+msgid "crontab file exported"
+msgstr "ffeil crontab wedi'i hallforio"
+
+#: src/Utility/CronTab.vala:244
+msgid "crontab file installed"
+msgstr "ffeil crontab wedi'i gosod"
+
+#: src/Core/SnapshotRepo.vala:800
+msgid "incomplete"
+msgstr "anghyflawn"
+
+#: src/Core/SnapshotRepo.vala:782
+msgid "marked for deletion"
+msgstr "marcio ar gyfer dileu"
+
+#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+msgid "mounted at path"
+msgstr "wedi'i osod ar y llwybr"
+
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1554
+#: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
+#: src/Gtk/DeleteBox.vala:149
+msgid "remaining"
+msgstr "yn weddill"
+
+#: src/Core/Main.vala:1565
+msgid "rsync returned an error"
+msgstr "dychwelodd rsync wall"
+
+#: src/Core/SnapshotRepo.vala:631 src/Core/SnapshotRepo.vala:684
+#: src/Core/SnapshotRepo.vala:763
+msgid "un-tagged"
+msgstr "heb ei dagio"
+
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:9
+msgid "Timeshift"
+msgstr "Timeshift"
+
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:10
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:22
+msgid "Run Timeshift as Administrator"
+msgstr "Rhedeg Timeshift fel Gweinyddwr"
+
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:21
+msgid "Authentication is required to run Timeshift as Administrator"
+msgstr "Mae angen dilysu i redeg Timeshift fel Gweinyddwr"

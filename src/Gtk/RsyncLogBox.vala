@@ -164,7 +164,7 @@ public class RsyncLogBox : Gtk.Box {
 
 		try {
 			thread_is_running = true;
-			Thread.create<void> (parse_log_file_thread, true);
+			new Thread<void>.try ("log-file-parser", () => {parse_log_file_thread();});
 		}
 		catch (Error e) {
 			log_error (e.message);
@@ -350,7 +350,7 @@ public class RsyncLogBox : Gtk.Box {
 		combo.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
 			string val;
 			model.get (iter, 1, out val, -1);
-			(cell as Gtk.CellRendererText).text = val;
+			((Gtk.CellRendererText)cell).text = val;
 		});
 
 		//populate combo
@@ -447,7 +447,6 @@ public class RsyncLogBox : Gtk.Box {
 		treeview.headers_clickable = true;
 		treeview.rubber_banding = true;
 		treeview.has_tooltip = true;
-		treeview.set_rules_hint(true);
 		treeview.show_expanders = false;
 
 		// scrolled

@@ -466,7 +466,7 @@ public class SnapshotRepo : GLib.Object{
 		//log_debug("checking selected device");
 
 		if (device == null){
-			if (App.backup_uuid.length == 0){
+			if (App.backup_uuid == null || App.backup_uuid.length == 0){
 				log_debug("device is null");
 				status_message = _("Snapshot device not selected");
 				status_details = _("Select the snapshot device");
@@ -865,8 +865,8 @@ public class SnapshotRepo : GLib.Object{
 		try {
 			thr_running = true;
 			thr_success = false;
-			Thread.create<void> (delete_directory_thread, true);
-		} catch (ThreadError e) {
+			new Thread<void>.try ("delete-directory", () => {delete_directory_thread();});
+		} catch (Error e) {
 			thr_running = false;
 			thr_success = false;
 			log_error (e.message);

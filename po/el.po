@@ -1,0 +1,2710 @@
+# Greek translation for linuxmint
+# Copyright (c) 2017 Rosetta Contributors and Canonical Ltd 2017
+# This file is distributed under the same license as the linuxmint package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: linuxmint\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2023-06-01 11:34+0100\n"
+"PO-Revision-Date: 2023-06-02 10:32+0000\n"
+"Last-Translator: Vasilis Kosmidis <Unknown>\n"
+"Language-Team: Greek <el@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2023-07-07 12:58+0000\n"
+"X-Generator: Launchpad (build 2ac9e3bf4ab511504f8fc651371e24a6a047ba12)\n"
+
+#: src/AppConsole.vala:626
+#, c-format
+msgid ""
+"\n"
+"Press ENTER to continue..."
+msgstr ""
+"\n"
+"Πατήστε ENTER για να συνεχίσετε…"
+
+#: src/Core/SnapshotRepo.vala:556
+#, c-format
+msgid "%d snapshots, %s free"
+msgstr "%d στιγμιότυπα, %s ελεύθερα"
+
+#: src/AppConsole.vala:927
+#, c-format
+msgid "'%s' will be on '%s'"
+msgstr "'%s' θα είναι στο '%s'"
+
+#: src/AppConsole.vala:924
+#, c-format
+msgid "'%s' will be on root device"
+msgstr "'%s' θα βρίσκεται στη συσκευή root"
+
+#: src/Gtk/BootOptionsBox.vala:118
+msgid "(Re)install GRUB2 on:"
+msgstr "(Επαν)εγκατάσταση του GRUB2 στο:"
+
+#: src/Core/Main.vala:379
+msgid "** Uninstalled Timeshift BTRFS **"
+msgstr "** Το Timeshift BTRFS απεγκαταστάθηκε **"
+
+#: src/Core/Main.vala:3527
+msgid "/ is mapped to device"
+msgstr "Το / αντιστοιχίζεται στη συσκευή"
+
+#: src/Core/Main.vala:3549
+msgid "/boot is mapped to device"
+msgstr "Το /boot αντιστοιχίζεται στη συσκευή"
+
+#: src/Core/Main.vala:3560
+msgid "/boot/efi is mapped to device"
+msgstr "Το /boot/efi αντιστοιχίζεται στη συσκευή"
+
+#: src/Core/Main.vala:3538
+msgid "/home is mapped to device"
+msgstr "Το /home αντιστοιχίζεται στη συσκευή"
+
+#: src/Gtk/SnapshotListBox.vala:289
+msgid "<b>Comments</b> (double-click to edit)"
+msgstr "<b>Σχόλια</b> (κάντε διπλό κλικ για επεξεργασία)"
+
+#: src/Gtk/ScheduleBox.vala:168
+msgid ""
+"A maintenance task runs once every hour and creates snapshots as needed."
+msgstr ""
+"Η λειτουργία συντήρησης εκτελείται κάθε ώρα και δημιουργεί τα αναγκαία "
+"στιγμιότυπα."
+
+#: src/AppConsole.vala:711 src/AppConsole.vala:775 src/AppConsole.vala:907
+#: src/AppConsole.vala:1002 src/AppConsole.vala:1047 src/AppConsole.vala:1088
+#: src/AppConsole.vala:1106
+msgid "Aborted."
+msgstr "Ματαιώθηκε."
+
+#: src/Gtk/MainWindow.vala:375
+msgid "About"
+msgstr "Σχετικά"
+
+#: src/Gtk/RsyncLogBox.vala:471
+msgid "Action"
+msgstr "Ενέργεια"
+
+#: src/Gtk/ExcludeBox.vala:225
+msgid "Add"
+msgstr "Προσθήκη"
+
+#: src/Gtk/ExcludeBox.vala:242
+msgid "Add Files"
+msgstr "Προσθήκη αρχείων"
+
+#: src/Gtk/ExcludeBox.vala:248
+msgid "Add Folders"
+msgstr "Προσθήκη φακέλων"
+
+#: src/Gtk/ExcludeBox.vala:225
+msgid "Add custom pattern"
+msgstr "Προσθήκη προσαρμοσμένου μοτίβου"
+
+#: src/Gtk/ExcludeBox.vala:248
+msgid "Add directories"
+msgstr "Προσθήκη καταλόγων"
+
+#: src/Gtk/ExcludeBox.vala:242
+msgid "Add files"
+msgstr "Προσθήκη αρχείων"
+
+#: src/AppConsole.vala:371
+msgid "Add tags to snapshot (default: O)"
+msgstr "Προσθήκη ετικετών στο στιγμιότυπο (προεπιλογή: O)"
+
+#: src/Utility/CronTab.vala:312
+msgid "Added cron task"
+msgstr "Προστέθηκε προγραμματισμένη εργασία"
+
+#: src/AppGtk.vala:147
+msgid "Admin Access Required"
+msgstr "Απαιτείται πρόσβαση διαχειριστή"
+
+#: src/AppGtk.vala:142
+msgid "Admin access is required to backup and restore system files."
+msgstr ""
+"Απαιτείται πρόσβαση διαχειριστή για τη δημιουργία και επαναφορά αντιγράφων "
+"ασφαλείας αρχείων συστήματος."
+
+#: src/Gtk/RsyncLogBox.vala:363
+msgid "All Files"
+msgstr "Όλα τα αρχεία"
+
+#: src/Gtk/SnapshotBackendBox.vala:197
+msgid ""
+"All files are copied when first snapshot is created. Subsequent snapshots "
+"are incremental. Unchanged files will be hard-linked from the previous "
+"snapshot if available."
+msgstr ""
+"Όλα τα αρχεία αντιγράφονται κατά την δημιουργία του πρώτου στιγμιότυπου. Τα "
+"επόμενα στιγμιότυπα είναι αυξητικά. Για τα αμετάβλητα αρχεία θα "
+"χρησιμοποιούνται σύνδεσμοι (hard link) προς τα αντίστοιχα αρχεία από "
+"προηγούμενα στιγμιότυπα, αν είναι διαθέσιμα."
+
+#: src/Gtk/ExcludeMessageWindow.vala:129
+msgid "All other files and folders are excluded."
+msgstr "Όλα τα υπόλοιπα αρχεία και φάκελοι εξαιρούνται."
+
+#: src/Gtk/RestoreDeviceBox.vala:486
+msgid ""
+"An encrypted device is selected for root file system (/). The boot directory "
+"(/boot) must be mounted on a non-encrypted device for the system to boot "
+"successfully.\n"
+"\n"
+"Either select a non-encrypted device for boot directory or select a non-"
+"encrypted device for root filesystem."
+msgstr ""
+"Μια κρυπτογραφημένη συσκευή έχει επιλεγεί για το ριζικό σύστημα αρχείων (/). "
+"Ο κατάλογος εκκίνησης (/ boot) πρέπει να είναι προσαρτημένος σε μια μη "
+"κρυπτογραφημένη συσκευή για να μπορέσει το σύστημα να εκκινηθεί με "
+"επιτυχία.\n"
+"\n"
+"Επιλέξτε μια μη κρυπτογραφημένη συσκευή είτε για τον κατάλογο εκκίνησης είτε "
+"για το σύστημα αρχείων ρίζας."
+
+#: src/Core/Main.vala:265
+msgid "Another instance of Timeshift is creating a snapshot."
+msgstr "Το Timeshift ήδη δημιουργεί ένα στιγμιότυπο (σε άλλο παράθυρο)."
+
+#: src/Utility/AppLock.vala:49
+msgid "Another instance of this application is running"
+msgstr "Η εφαρμογή ήδη εκτελείται"
+
+#: src/Core/Main.vala:269
+msgid "Another instance of timeshift is currently running!"
+msgstr "Το Timeshift ήδη εκτελείται!"
+
+#: src/AppConsole.vala:387
+msgid "Answer YES to all confirmation prompts"
+msgstr "Απαντήστε ΝΑΙ σε όλες τις υποδείξεις επιβεβαίωσης"
+
+#: src/Core/Main.vala:3364
+msgid "App config loaded"
+msgstr "Οι ρυθμίσεις της εφαρμογής φορτώθηκαν"
+
+#: src/Core/Main.vala:3252
+msgid "App config saved"
+msgstr "Οι ρυθμίσεις της εφαρμογής αποθηκεύτηκαν"
+
+#: src/AppConsole.vala:107
+msgid "Application needs admin access."
+msgstr "Η εφαρμογή χρειάζεται πρόσβαση διαχειριστή."
+
+#: src/Core/Main.vala:3704
+msgid "Application will exit"
+msgstr "Η εφαρμογή θα κλείσει"
+
+#: src/Core/Main.vala:395
+msgid "Application will exit."
+msgstr "Η εφαρμογή θα κλείσει."
+
+#: src/Gtk/MainWindow.vala:345
+msgid "Available"
+msgstr "Διαθέσιμο"
+
+#: src/Gtk/SnapshotBackendBox.vala:95
+msgid "BTRFS"
+msgstr "BTRFS"
+
+#: src/Gtk/SnapshotBackendBox.vala:174
+msgid "BTRFS Snapshots"
+msgstr "Στυγμιότυπα BTRFS"
+
+#: src/Core/Main.vala:2202 src/Core/Main.vala:2206
+msgid "BTRFS device is not mounted"
+msgstr "Η συσκευή BTRFS δεν είναι προσαρτημένη"
+
+#: src/Gtk/BackupDeviceBox.vala:98
+msgid ""
+"BTRFS snapshots are saved on system partition. Other partitions are not "
+"supported."
+msgstr ""
+"Τα στιγμιότυπα BTRFS αποθηκεύονται σε διαμέρισμα του συστήματος. Δεν "
+"υποστηρίζονται άλλα διαμερίσματα."
+
+#: src/Gtk/FinishBox.vala:92
+msgid ""
+"BTRFS snapshots are saved on the same disk from which it is created. If the "
+"system disk fails, snapshots will be lost along with the system. Save "
+"snapshots to an external non-system disk in RSYNC mode to guard against disk "
+"failures."
+msgstr ""
+"Τα στιγμιότυπα BTRFS αποθηκεύονται στον ίδιο δίσκο από τον οποίο "
+"δημιουργούνται. Εάν ο δίσκος συστήματος αποτύχει, τα στιγμιότυπα θα χαθούν "
+"μαζί με το σύστημα. Αποθηκεύστε τα στιγμιότυπα σε έναν εξωτερικό δίσκο σε "
+"λειτουργία RSYNC για να αποφύγετε τα σφάλματα του δίσκου."
+
+#: src/Gtk/SetupWizardWindow.vala:94
+msgid "Backend"
+msgstr "Σύστημα υποστήριξης"
+
+#: src/Gtk/BackupWindow.vala:92 src/AppConsole.vala:367
+msgid "Backup"
+msgstr "Αντίγραφο ασφαλείας"
+
+#: src/Core/Main.vala:2178
+msgid "Backup Device"
+msgstr "Συσκευή αντιγράφων ασφαλείας"
+
+#: src/Core/Main.vala:2173
+msgid "Backup device not specified!"
+msgstr "Δεν καθορίστηκε συσκευή αντιγράφων ασφαλείας!"
+
+#: src/Gtk/RestoreExcludeBox.vala:91
+msgid "Bittorrent Clients"
+msgstr "Πρόγραμμα Bittorrent"
+
+#: src/Gtk/SnapshotListBox.vala:297 src/Gtk/ScheduleBox.vala:136
+msgid "Boot"
+msgstr "Κατά την εκκίνηση"
+
+#: src/Gtk/RestoreDeviceBox.vala:485
+msgid "Boot device not selected"
+msgstr "Δεν επιλέχθηκε συσκευή εκκίνησης"
+
+#: src/Core/Main.vala:1045
+msgid "Boot snapshot failed!"
+msgstr "Απέτυχε η λήψη στιγμιότυπου εκκίνησης!"
+
+#: src/Gtk/ScheduleBox.vala:169
+msgid ""
+"Boot snapshots are created with a delay of 10 minutes after system startup."
+msgstr ""
+"Τα στιγμιότυπα εκκίνησης δημιουργούνται με καθυστέρηση 10 λεπτών μετά την "
+"εκκίνηση του συστήματος."
+
+#: src/Core/Main.vala:1026
+msgid "Boot snapshots are enabled"
+msgstr "Ενεργοποιήθηκαν τα στιγμιότυπα εκκίνησης"
+
+#: src/Gtk/BootOptionsWindow.vala:49
+msgid "Bootloader Options"
+msgstr "Επιλογές εκκινητή"
+
+#: src/Gtk/RestoreDeviceBox.vala:402
+msgid "Bootloader Options (Advanced)"
+msgstr "Επιλογές εκκινητή (προχωρημένες)"
+
+#: src/Gtk/MainWindow.vala:170
+msgid "Browse"
+msgstr "Περιήγηση"
+
+#: src/Gtk/SnapshotListBox.vala:335
+msgid "Browse Files"
+msgstr "Περιήγηση στα αρχεία"
+
+#: src/Gtk/MainWindow.vala:171
+msgid "Browse selected snapshot"
+msgstr "Περίηγηση σε επιλεγμένα στιγμιότυπα"
+
+#: src/Core/Main.vala:2668
+msgid "Building file list..."
+msgstr "Δημιουργείται λίστα αρχείων..."
+
+#: src/Core/Main.vala:1405
+msgid "Calculating required disk space..."
+msgstr "Γίνεται υπολογισμός του απαιτούμενου χώρου στον δίσκο..."
+
+#: src/Utility/Gtk/CustomMessageDialog.vala:152 src/Utility/GtkHelper.vala:109
+#: src/Gtk/RestoreWindow.vala:215 src/Gtk/RestoreWindow.vala:224
+#: src/Gtk/BackupWindow.vala:181 src/Gtk/SetupWizardWindow.vala:220
+#: src/Gtk/DeleteWindow.vala:190
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+#: src/Gtk/RestoreWindow.vala:230
+msgid "Cancel restore?"
+msgstr "Να ακυρωθεί η επαναφορά;"
+
+#: src/Gtk/RestoreWindow.vala:232
+msgid ""
+"Cancelling the restore process will leave the target system in an "
+"inconsistent state. The system may fail to boot or you may run into various "
+"issues. After cancelling, you need to restore another snapshot, to bring the "
+"system to a consistent state. Click Yes to confirm."
+msgstr ""
+"Αν ακυρώσετε την διαδικασία επαναφοράς θα μείνετε με απρόβλεπτο σύστημα. Ο "
+"υπολογιστής σας ίσως δεν εκκινεί ή θα αντιμετωπίζετε διάφορα προβλήματα. "
+"Μετά την ακύρωση θα πρέπει να επαναφέρετε ένα άλλο στιγμιότυπο ώστε να "
+"φέρετε το σύστημά σας σε σταθερή κατάσταση. Για να επιβεβαιώσετε πατήστε Ναι."
+
+#: src/Gtk/MainWindow.vala:547
+msgid "Cannot Delete Live Snapshot"
+msgstr "Δεν μπορούν να διαγραφούν στιγμιότυπα που εκτελούνται"
+
+#: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
+#: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
+#: src/Gtk/RsyncLogBox.vala:566 src/Gtk/RsyncLogBox.vala:587
+msgid "Changed"
+msgstr "Τροποποιήθηκε"
+
+#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:127
+msgid "Changed items:"
+msgstr "Στοιχεία που αλλάχτηκαν:"
+
+#: src/Gtk/RestoreWindow.vala:104
+msgid "Checking Restore Actions (Dry Run)"
+msgstr "Γίνεται έλεγχος των ενεργειών επαναφοράς (δοκιμαστική λειτουργία)"
+
+#: src/Core/Main.vala:2901
+msgid "Checking file systems for errors..."
+msgstr "Γίνεται έλεγχος των συστημάτων αρχείων για σφάλματα"
+
+#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:130
+#: src/Gtk/RsyncLogBox.vala:390
+#, c-format
+msgid "Checksum"
+msgstr "Άθροισμα ελέγχου"
+
+#: src/Core/Main.vala:2549
+msgid "Cleaning up..."
+msgstr "Εκκαθάριση..."
+
+#: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:88
+msgid "Click to edit. Drag and drop to re-order."
+msgstr ""
+"Πατήστε για επεξεργασία. Για αλλαγή σειράς διάταξης, σύρετε και αφήστε."
+
+#: src/Gtk/ExcludeBox.vala:59
+msgid "Click to edit. Drag-drop to re-order."
+msgstr ""
+"Πατήστε για επεξεργασία. Για αλλαγή σειράς διάταξης, σύρετε και αφήστε."
+
+#: src/Gtk/RestoreWindow.vala:69
+msgid "Clone System"
+msgstr "Κλωνοποίηση συστήματος"
+
+#: src/Gtk/RestoreFinishBox.vala:68
+msgid "Cloning"
+msgstr "Κλωνοποίηση"
+
+#: src/Core/Main.vala:2951
+msgid "Cloning system..."
+msgstr "Γίνεται κλωνοποίηση του συστήματος..."
+
+#: src/Gtk/BootOptionsWindow.vala:106 src/Gtk/RestoreWindow.vala:501
+#: src/Gtk/BackupWindow.vala:172 src/Gtk/RsyncLogBox.vala:266
+#: src/Gtk/DeleteWindow.vala:173
+msgid "Close"
+msgstr "Κλείσιμο"
+
+#: src/Gtk/FinishBox.vala:101 src/Gtk/DeleteFinishBox.vala:71
+#: src/Gtk/RestoreFinishBox.vala:106 src/Gtk/BackupFinishBox.vala:70
+msgid "Close window to exit"
+msgstr "Κλείστε το παράθυρο για έξοδο"
+
+#: src/Core/Main.vala:364
+msgid "Commands listed below are not available on this system"
+msgstr "Οι παρακάτω εντολές δεν είναι διαθέσιμος στο σύστημα αυτό"
+
+#: src/Gtk/SnapshotListBox.vala:223
+msgid "Comments (click to edit)"
+msgstr "Σχόλια (πατήστε για επεξεργασία)"
+
+#: src/Core/Main.vala:2944 src/Gtk/RestoreBox.vala:74
+#: src/Gtk/RestoreBox.vala:187
+msgid "Comparing Files (Dry Run)..."
+msgstr "Σύγκριση αρχείων (δοκιμαστική λειτουργία)"
+
+#: src/Core/Main.vala:2710
+msgid "Comparing files with rsync..."
+msgstr "Γίνεται σύγκριση αρχείων μέσω rsync..."
+
+#: src/Gtk/DeleteFinishBox.vala:50 src/Gtk/RestoreFinishBox.vala:50
+#: src/Gtk/RestoreFinishBox.vala:75 src/Gtk/BackupFinishBox.vala:50
+msgid "Completed"
+msgstr "Ολοκληρώθηκε"
+
+#: src/Gtk/RestoreFinishBox.vala:78
+msgid "Completed With Errors"
+msgstr "Ολοκληρώθηκε με σφάλματα"
+
+#: src/Gtk/RestoreWindow.vala:109 src/Gtk/RsyncLogBox.vala:87
+msgid "Confirm Actions"
+msgstr "Επιβεβαιώστε τις ενέργειες"
+
+#: src/AppConsole.vala:1081
+#, c-format
+msgid "Continue with restore? (y/n): "
+msgstr "Να συνεχιστεί η επαναφορά; (ν/ό): "
+
+#: src/AppConsole.vala:847 src/AppConsole.vala:978
+msgid "Could not find device"
+msgstr "Δεν βρέθηκε συσκευή"
+
+#: src/Utility/Device.vala:1308
+#, c-format
+msgid "Could not find file"
+msgstr "Δεν βρέθηκε αρχείο"
+
+#: src/AppConsole.vala:744
+msgid "Could not find snapshot"
+msgstr "Δεν βρέθηκε στιγμιότυπο"
+
+#: src/Core/Main.vala:3113
+msgid "Could not find system subvolume"
+msgstr "Δεν βρέθηκε δίσκος συστήματος"
+
+#: src/Core/Main.vala:3141
+msgid "Could not find system subvolumes for creating pre-restore snapshot"
+msgstr ""
+"Δεν βρέθηκαν δίσκοι συστήματος για την δημιουργία του στιγμιότυπου "
+"προεπαναφοράς."
+
+#: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
+#: src/Gtk/RsyncLogBox.vala:570
+#, c-format
+msgid "Create"
+msgstr "Δημιουργία"
+
+#: src/Gtk/BackupWindow.vala:62
+msgid "Create Snapshot"
+msgstr "Δημιουργία στιγμιότυπου"
+
+#: src/Gtk/ScheduleBox.vala:136
+msgid "Create one per boot"
+msgstr "Δημιουργία ενός ανά εκκίνηση"
+
+#: src/Gtk/ScheduleBox.vala:100
+msgid "Create one per day"
+msgstr "Δημιουργία ενός ανά ημέρα"
+
+#: src/Gtk/ScheduleBox.vala:118
+msgid "Create one per hour"
+msgstr "Δημιουργία ενός ανά ώρα"
+
+#: src/Gtk/ScheduleBox.vala:64
+msgid "Create one per month"
+msgstr "Δημιουργία ενός ανά μήνα"
+
+#: src/Gtk/ScheduleBox.vala:82
+msgid "Create one per week"
+msgstr "Δημιουργία ενός ανά εβδομάδα"
+
+#: src/AppConsole.vala:369
+msgid "Create snapshot (even if not scheduled)"
+msgstr "Δημιουργία στιγμιότυπου (ακόμη και αν δεν είναι στο χρονοδιάγραμμα)"
+
+#: src/AppConsole.vala:368
+msgid "Create snapshot if scheduled"
+msgstr "Δημιουργία στιγμιότυπου εφόσον είναι στο χρονοδιάγραμμα"
+
+#: src/Gtk/MainWindow.vala:141
+msgid "Create snapshot of current system"
+msgstr "Δημιουργία στιγμιότυπου για το τρέχον σύστημα"
+
+#: src/Gtk/MainWindow.vala:1027
+msgid ""
+"Create snapshots manually or enable scheduled snapshots to protect your "
+"system"
+msgstr ""
+"Δημιουργείστε στιγμιότυπ χειροκίνητα ή ενεργοποιήστε τα "
+"χρονοπρογραμματισμένα στιγμιότυπα ώστε να προστατέψετε το σύστημά σας"
+
+#: src/Gtk/SnapshotBackendBox.vala:96
+msgid "Create snapshots using BTRFS"
+msgstr "Δημιουργία στιγμιοτύπων με χρήση BTRFS"
+
+#: src/Gtk/SnapshotBackendBox.vala:78
+msgid "Create snapshots using RSYNC tool and hard-links"
+msgstr ""
+"Δημιουργία στιγμιότυπων με χρήση του εργαλείου RSYNC και συνδέσμων hard-links"
+
+#: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
+#: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:570
+#: src/Gtk/RsyncLogBox.vala:591
+#, c-format
+msgid "Created"
+msgstr "Δημιουργήθηκε"
+
+#: src/Core/Snapshot.vala:430
+msgid "Created control file"
+msgstr "Δημιουργήθηκε αρχείο ελέγχου"
+
+#: src/Utility/TeeJee.FileSystem.vala:268
+msgid "Created directory"
+msgstr "Δημιουργήθηκε κατάλογος"
+
+#: src/Core/Main.vala:3163
+msgid "Created pre-restore snapshot"
+msgstr "Δημιουργήθηκε στιγμιότυπο προ-επαναφοράς"
+
+#: src/Core/Main.vala:1660
+msgid "Created subvolume snapshot"
+msgstr "Δημιουργήθηκε στιγμιότυπο υπομονάδας δίσκου"
+
+#: src/Gtk/BackupBox.vala:71
+msgid "Creating Snapshot..."
+msgstr "Δημιουργία στιγμιότυπου..."
+
+#: src/Core/Main.vala:1598
+msgid "Creating new backup..."
+msgstr "Δημιουργία νέου αντιγράφου..."
+
+#: src/Core/Main.vala:1444
+msgid "Creating new snapshot..."
+msgstr "Δημιουργία νέου στιγμιότυπου..."
+
+#: src/Core/Main.vala:3091
+msgid "Creating pre-restore snapshot from system subvolumes..."
+msgstr ""
+"Δημιουργία στιγμιότυπου προ-επαναφοράς από υπομονάδα δίσκου συστήματος"
+
+#: src/Core/Main.vala:3703
+msgid "Critical Error"
+msgstr "Κρίσιμο σφάλμα"
+
+#: src/Utility/CronTab.vala:136
+msgid "Cron job added"
+msgstr "Προστέθηκε προγραμματισμένη εργασία"
+
+#: src/Utility/CronTab.vala:217
+msgid "Cron job removed"
+msgstr "Αφαιρέθηκε προγραμματισμένη εργασία"
+
+#: src/Utility/CronTab.vala:304
+msgid "Cron task exists"
+msgstr "H προγραμματισμένη εργασία υπάρχει ήδη"
+
+#: src/Gtk/MiscBox.vala:94
+msgid "Custom"
+msgstr "Προσαρμογή"
+
+#: src/Gtk/SnapshotListBox.vala:299 src/Gtk/ScheduleBox.vala:100
+msgid "Daily"
+msgstr "Ημερήσια"
+
+#: src/Core/Main.vala:1107
+msgid "Daily snapshot failed!"
+msgstr "Το ημερήσιο στιγμιότυπο απέτυχε!"
+
+#: src/Core/Main.vala:1088
+msgid "Daily snapshots are enabled"
+msgstr "Το ημερήσια στιγμιότυπα είναι ενεργά"
+
+#: src/Core/Main.vala:2272
+msgid "Data will be modified on following devices:"
+msgstr "Τα δεδομένα θα τροποποιηθούν στις ακόλουθες συσκευές:"
+
+#: src/Gtk/MiscBox.vala:67
+msgid "Date Format"
+msgstr "Μορφή Ημερομηνίας"
+
+#: src/Gtk/SnapshotListBox.vala:321 src/Gtk/MainWindow.vala:160
+#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
+#: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:381
+#, c-format
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#: src/Gtk/DeleteWindow.vala:62
+msgid "Delete Snapshots"
+msgstr "Διαγραφή στιγμιότυπων"
+
+#: src/AppConsole.vala:383
+msgid "Delete all snapshots"
+msgstr "Διαγραφή όλων των στιγμιότυπων"
+
+#: src/Gtk/MainWindow.vala:161
+msgid "Delete selected snapshot"
+msgstr "Διαγραφή επιλεγμένου στιγμιότυπου"
+
+#: src/AppConsole.vala:382
+msgid "Delete snapshot"
+msgstr "Διαγραφή στιγμιότυπου"
+
+#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
+#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
+#: src/Gtk/RsyncLogBox.vala:595
+#, c-format
+msgid "Deleted"
+msgstr "Διαγράφηκε"
+
+#: src/Utility/TeeJee.FileSystem.vala:302
+msgid "Deleted directory"
+msgstr "Διαγράφηκε κατάλογος"
+
+#: src/Core/Main.vala:3070 src/Core/Main.vala:3074 src/Core/Subvolume.vala:167
+#, c-format
+msgid "Deleted subvolume"
+msgstr "Διαγράφηκε υπομονάδα δίσκου"
+
+#: src/Gtk/DeleteBox.vala:58
+msgid "Deleting Snapshots..."
+msgstr "Διαγραφή Στιγμιότυπων..."
+
+#: src/Core/Subvolume.vala:141
+#, c-format
+msgid "Deleting subvolume"
+msgstr "Διαγραφή υπομονάδας δίσκου"
+
+#: src/Gtk/RestoreExcludeBox.vala:105
+msgid "Deluge, Transmission"
+msgstr "Deluge, Transmission"
+
+#: src/AppConsole.vala:439 src/AppConsole.vala:555
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: src/Core/Subvolume.vala:181
+#, c-format
+msgid "Destroyed qgroup"
+msgstr "Το qgroup καταστράφηκε"
+
+#: src/Core/Subvolume.vala:171
+#, c-format
+msgid "Destroying qgroup"
+msgstr "Καταστροφή qgroup"
+
+#: src/Core/Main.vala:2275 src/Core/Main.vala:2307
+#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
+#: src/Utility/Device.vala:1942 src/Gtk/RestoreDeviceBox.vala:97
+#: src/AppConsole.vala:467 src/AppConsole.vala:506 src/AppConsole.vala:554
+#, c-format
+msgid "Device"
+msgstr "Συσκευή"
+
+#: src/Utility/Device.vala:1390
+msgid "Device is unlocked"
+msgstr "Η συσκευή είναι ξεκλείδωτη"
+
+#: src/Utility/Device.vala:1285 src/Utility/Device.vala:1347
+msgid "Device name is empty!"
+msgstr "Το όνομα συσκευής είναι κενό!"
+
+#: src/Core/Main.vala:3417 src/Core/SnapshotRepo.vala:479
+#: src/AppConsole.vala:676
+msgid "Device not found"
+msgstr "Η συσκευή δεν βρέθηκε"
+
+#: src/Gtk/BackupDeviceBox.vala:97
+#, c-format
+msgid "Devices displayed above have BTRFS file systems."
+msgstr "Οι συσκευές που εμφανίζονται παραπάνω έχουν σύστημα αρχείων BTRFS"
+
+#: src/Gtk/BackupDeviceBox.vala:104
+#, c-format
+msgid "Devices displayed above have Linux file systems."
+msgstr "Οι συσκευές που εμφανίζονται παραπάνω έχουν συστήματα αρχείων Linux"
+
+#: src/Gtk/RestoreDeviceBox.vala:84
+msgid "Devices from which snapshot was created are pre-selected."
+msgstr ""
+"Οι συσκευές για τις οποίες δημιουργήθηκε στιγμιότυπο είναι προεπιλεγμένες"
+
+#: src/AppConsole.vala:332
+msgid "Devices with Linux file systems"
+msgstr "Συσκευές με σύστημα αρχείων Linux"
+
+#: src/Gtk/BackupDeviceBox.vala:105
+msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
+msgstr ""
+"Δεν υποστηρίζονται συσκευές με Windows συστήματα αρχείων (NTFS, FAT κ.α.)"
+
+#: src/Core/SnapshotRepo.vala:914
+msgid "Directory not found"
+msgstr "Ο κατάλογος δε βρέθηκε"
+
+#: src/Core/Main.vala:2367 src/Gtk/RestoreSummaryBox.vala:64
+msgid "Disclaimer"
+msgstr "Αποποίηση ευθύνης"
+
+#: src/Gtk/BackupDeviceBox.vala:127
+msgid "Disk"
+msgstr "Δίσκος"
+
+#: src/Core/Main.vala:242
+msgid "Distribution"
+msgstr "Διανομή"
+
+#: src/Gtk/MainWindow.vala:1021
+msgid "Enable scheduled snapshots to protect your system"
+msgstr ""
+"Ενεργοποίηση περιοδικών στιγμιοτύπων για την προστασία του συστήματός σας"
+
+#: src/Utility/Device.vala:1454
+msgid "Encrypted Device"
+msgstr "Κρυπτογραφημένη Συσκευή"
+
+#: src/Gtk/UsersBox.vala:232
+msgid "Encrypted Home Directory"
+msgstr "Κρυπτογραφημένος Αρχικός Κατάλογος"
+
+#: src/AppConsole.vala:897
+#, c-format
+msgid "Enter device name or number"
+msgstr "Εισάγετε το όνομα ή τον αριθμό της συσκευής"
+
+#: src/AppConsole.vala:695 src/AppConsole.vala:1026
+#, c-format
+msgid "Enter device name or number (a=Abort)"
+msgstr "Εισάγετε το όνομα ή τον αριθμό της συσκευής (a=Aκύρωση)"
+
+#: src/Utility/Device.vala:1455
+#, c-format
+msgid "Enter passphrase to unlock '%s'"
+msgstr "Εισάγετε τον κωδικό για να ξεκλειδώσετε το '%s'"
+
+#: src/AppConsole.vala:767
+#, c-format
+msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
+msgstr ""
+"Εισάγετε τον αριθμό του στιγμιοτύπου (a=Ακύρωση, p=Προηγούμενο, n=Επόμενο)"
+
+#: src/Gtk/ExcludeBox.vala:231
+msgid "Enter the pattern to exclude (Ex: *.mp3, *.bak)"
+msgstr "Εισάγετε μοτίβο αποκλεισμού (Π.χ. *.mp3, *.bak)"
+
+#: src/Gtk/RestoreDeviceBox.vala:520
+msgid "Error"
+msgstr "Σφάλμα"
+
+#: src/Gtk/RestoreWindow.vala:481
+msgid "Error running Rsync"
+msgstr "Σφάλμα κατά την εκτέλεση του Rsync"
+
+#: src/Gtk/BackupWindow.vala:82 src/Gtk/SetupWizardWindow.vala:99
+msgid "Estimate"
+msgstr "Εκτίμηση"
+
+#: src/Gtk/EstimateBox.vala:56
+msgid "Estimating System Size..."
+msgstr "Εκτίμηση Μεγέθους Συστήματος..."
+
+#: src/Core/Main.vala:1440
+msgid "Estimating system size..."
+msgstr "Εκτίμηση μεγέθους συστήματος..."
+
+#: src/AppConsole.vala:398
+msgid "Examples"
+msgstr "Παραδείγματα"
+
+#: src/Gtk/UsersBox.vala:132
+msgid "Exclude All Files"
+msgstr "Εξαίρεση Όλων των Αρχείων"
+
+#: src/Gtk/RestoreExcludeBox.vala:55 src/Gtk/ExcludeAppsBox.vala:51
+msgid "Exclude Application Settings"
+msgstr "Εξαίρεση Ρυθμίσεων Εφαρμογών"
+
+#: src/Gtk/RestoreWindow.vala:99
+msgid "Exclude Apps"
+msgstr "Εξαίρεση Εφαρμογών"
+
+#: src/Gtk/ExcludeMessageWindow.vala:70
+msgid "Exclude List"
+msgstr "Λίστα Εξαιρέσεων"
+
+#: src/Gtk/ExcludeListSummaryWindow.vala:49
+msgid "Exclude List Summary"
+msgstr "Περίληψη Λίστας Εξαιρέσεων"
+
+#: src/Gtk/ExcludeBox.vala:230
+msgid "Exclude Pattern"
+msgstr "Μοτίβο Εξαίρεσης"
+
+#: src/Gtk/ExcludeMessageWindow.vala:56
+msgid "Excluded Directories"
+msgstr "Εξαιρούμενοι κατάλογοι"
+
+#: src/Core/Main.vala:1728
+msgid "Expected values: O, B, H, D, W, M"
+msgstr "Αναμενόμενες τιμές: O, B, H, D, W, M"
+
+#: src/Utility/CronTab.vala:132
+msgid "Failed to add cron job"
+msgstr "Αποτυχία προσθήκης προγραμματισμένης εργασίας"
+
+#: src/Utility/TeeJee.FileSystem.vala:155
+msgid "Failed to copy file"
+msgstr "Αποτυχία αντιγραφής αρχείου"
+
+#: src/Utility/TeeJee.FileSystem.vala:271
+#: src/Utility/TeeJee.FileSystem.vala:280
+msgid "Failed to create directory"
+msgstr "Αποτυχία δημιουργίας καταλόγου"
+
+#: src/Core/Main.vala:1566
+msgid "Failed to create new snapshot"
+msgstr "Αποτυχία δημιουργίας νέου στιγμιοτύπου"
+
+#: src/Core/Main.vala:1320
+msgid "Failed to create snapshot"
+msgstr "Αποτυχία δημιουργίας στιγμιοτύπου"
+
+#: src/Core/Main.vala:1656
+msgid "Failed to create subvolume snapshot"
+msgstr "Αποτυχία δημιουργίας στιγμιοτύπου υπο-όγκου"
+
+#: src/Core/SnapshotRepo.vala:955
+msgid "Failed to create symlinks"
+msgstr "Αποτυχία δημιουργίας συμβ. συνδέσμων"
+
+#: src/Utility/TeeJee.FileSystem.vala:305
+msgid "Failed to delete directory"
+msgstr "Αποτυχία διαγραφής καταλόγου"
+
+#: src/Utility/TeeJee.FileSystem.vala:86
+msgid "Failed to delete file"
+msgstr "Αποτυχία διαγραφής αρχείου"
+
+#: src/Core/Subvolume.vala:153
+msgid "Failed to delete snapshot nested subvolume"
+msgstr "Αποτυχία διαγραφής στιγμιοτύπου εμφωλευμένου υπο-όγκου"
+
+#: src/Core/Subvolume.vala:163
+msgid "Failed to delete snapshot subvolume"
+msgstr "Αποτυχία διαγραφής υπο-όγκου στιγμιοτύπου"
+
+#: src/Core/SnapshotRepo.vala:981
+msgid "Failed to delete symlinks"
+msgstr "Αποτυχία διαγραφής συμβ. συνδέσμων"
+
+#: src/Core/Subvolume.vala:177
+msgid "Failed to destroy qgroup"
+msgstr "Αποτυχία καταστροφής qgroup"
+
+#: src/Core/Main.vala:3918 src/Core/Main.vala:3924
+msgid "Failed to estimate system size"
+msgstr "Αποτυχία εκτίμησης του μεγέθους του συστήματος"
+
+#: src/Utility/CronTab.vala:257
+msgid "Failed to export crontab file"
+msgstr "Αποτυχία εξαγωγής αρχείου προγραμματισμένης εργασίας"
+
+#: src/AppConsole.vala:710 src/AppConsole.vala:774 src/AppConsole.vala:906
+#: src/AppConsole.vala:1001 src/AppConsole.vala:1046 src/AppConsole.vala:1087
+msgid "Failed to get input from user in 3 attempts"
+msgstr "Αποτυχία λήψης δεδομένων από το χρήστη κατόπιν 3 προσπαθειών"
+
+#: src/Utility/Device.vala:724
+msgid "Failed to get partition list"
+msgstr "Αποτυχία λήψης λίστας κατατμήσεων"
+
+#: src/Core/Main.vala:3500
+msgid "Failed to get partition list."
+msgstr "Αποτυχία λήψης λίστας κατατμήσεων."
+
+#: src/Utility/CronTab.vala:240
+msgid "Failed to install crontab file"
+msgstr "Αποτυχία εγκατάστασης αρχείου προγραμματισμένης εργασίας"
+
+#: src/Gtk/RestoreDeviceBox.vala:521
+msgid "Failed to mount devices"
+msgstr "Αποτυχία προσάρτησης συσκευών"
+
+#: src/Utility/TeeJee.FileSystem.vala:174
+msgid "Failed to move file"
+msgstr "Αποτυχία μετακίνησης αρχείου"
+
+#: src/Core/Main.vala:3128
+msgid "Failed to move system subvolume to snapshot directory"
+msgstr ""
+"Αποτυχία μετακίνησης του υπο-όγκου του συστήματος στον κατάλογο στιγμιοτύπων"
+
+#: src/Core/Main.vala:4031
+msgid "Failed to query subvolume list"
+msgstr "Αποτυχία αναζήτησης της λίστας των υπο-όγκων"
+
+#: src/Core/Main.vala:4116
+msgid "Failed to query subvolume quota"
+msgstr "Απέτυχε το ερώτημα για το όριο υποτόμου"
+
+#: src/Utility/CronTab.vala:50
+msgid "Failed to read cron tab"
+msgstr "Αποτυχία ανάγνωσης λίστας προγραμματισμένων εργασιών"
+
+#: src/Utility/TeeJee.FileSystem.vala:112
+msgid "Failed to read file"
+msgstr "Αποτυχία ανάγνωσης αρχείου"
+
+#: src/Core/SnapshotRepo.vala:901
+msgid "Failed to remove"
+msgstr "Αποτυχία διαγραφής"
+
+#: src/Utility/CronTab.vala:213
+msgid "Failed to remove cron job"
+msgstr "Αποτυχία αφαίρεσης προγραμματισμένης εργασίας"
+
+#: src/Core/Snapshot.vala:530 src/Core/Snapshot.vala:542
+#: src/Core/Snapshot.vala:550
+msgid "Failed to remove snapshot"
+msgstr "Αποτυχία διαγραφής στιγμιοτύπου"
+
+#: src/Core/Subvolume.vala:216
+msgid "Failed to restore system subvolume"
+msgstr "Αποτυχία επαναφοράς του υπο-όγκου του συστήματος"
+
+#: src/Core/Main.vala:1516
+msgid "Failed to save exclude list"
+msgstr "Αποτυχία αποθήκευσης λίστας εξαιρέσεων"
+
+#: src/Utility/Device.vala:1381 src/Utility/Device.vala:1435
+#: src/Utility/Device.vala:1460 src/Utility/Device.vala:1481
+#: src/Utility/Device.vala:1501
+msgid "Failed to unlock device"
+msgstr "Αποτυχία ξεκλειδώματος συσκευής"
+
+#: src/Utility/Device.vala:1733
+msgid "Failed to unmount"
+msgstr "Αποτυχία αποπροσάρτησης"
+
+#: src/Core/Main.vala:3704
+msgid "Failed to unmount device!"
+msgstr "Αποτυχία αποπροσάρτησης συσκευής"
+
+#: src/Utility/TeeJee.FileSystem.vala:139
+msgid "Failed to write file"
+msgstr "Αποτυχία εγγραφής αρχείου"
+
+#: src/Gtk/RsyncLogBox.vala:122
+msgid "File (snapshot)"
+msgstr "Αρχείο (στιγμιοτύπου)"
+
+#: src/Gtk/RsyncLogBox.vala:119
+msgid "File (system)"
+msgstr "Αρχείο (συστήματος)"
+
+#: src/Gtk/ExcludeMessageWindow.vala:97
+msgid "File Pattern"
+msgstr "Μοτίβο αρχείων"
+
+#: src/Gtk/BackupBox.vala:83
+msgid "File and directory counts:"
+msgstr "Καταμέτρηση αρχείων και καταλόγων:"
+
+#: src/Utility/CronTab.vala:225 src/Utility/RsyncTask.vala:298
+#: src/Utility/TeeJee.FileSystem.vala:169
+msgid "File not found"
+msgstr "Το αρχείο δε βρέθηκε"
+
+#: src/Gtk/ExcludeListSummaryWindow.vala:62
+msgid ""
+"Files &amp; directories matching the patterns below will be excluded. "
+"Patterns starting with a + will include the item instead of excluding."
+msgstr ""
+"Τα αρχεία και οι κατάλογοι που ταιριάζουν με τα παρακάτω μοτίβα θα "
+"αποκλειστούν. Μοτίβα που ξεκινούν με το + θα συμπεριλάβουν το αντικείμενο "
+"αντί να το αποκλείσουν."
+
+#: src/Gtk/SnapshotBackendBox.vala:201
+msgid "Files and directories can be excluded to save disk space."
+msgstr ""
+"Αρχεία και κατάλογοι δύνανται να εξαιρεθούν για εξοικονόμηση χώρου στο δίσκο."
+
+#: src/Gtk/RestoreBox.vala:119
+msgid "Files and directory counts:"
+msgstr "Καταμέτρηση αρχείων και καταλόγων:"
+
+#: src/Gtk/ExcludeMessageWindow.vala:76
+msgid "Files matching the following patterns will be excluded"
+msgstr "Τα αρχεία που ταιριάζουν με τα ακόλουθα μοτίβα θα αποκλειστούν"
+
+#: src/Utility/Device.vala:1950
+#, c-format
+msgid "Filesystem"
+msgstr "Σύστημα αρχείων"
+
+#: src/Gtk/RsyncLogBox.vala:302
+msgid "Filter by name or path"
+msgstr "Φιλτράρισμα μέσω ονόματος ή μονοπατιού"
+
+#: src/Gtk/SettingsWindow.vala:103
+msgid "Filters"
+msgstr "Φίλτρα"
+
+#: src/Gtk/BackupWindow.vala:97 src/Gtk/SetupWizardWindow.vala:211
+#: src/Gtk/DeleteWindow.vala:103
+msgid "Finish"
+msgstr "Λήξη"
+
+#: src/Gtk/RestoreWindow.vala:130 src/Gtk/SetupWizardWindow.vala:120
+msgid "Finished"
+msgstr "Ολοκληρώθηκε"
+
+#: src/Gtk/RestoreExcludeBox.vala:78
+msgid "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
+msgstr "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
+
+#: src/Core/SnapshotRepo.vala:583
+msgid "First snapshot requires:"
+msgstr "Το πρώτο στιγμιότυπο χρειάζεται:"
+
+#: src/Core/Main.vala:3061
+msgid "Found existing pre-restore snapshot"
+msgstr "Βρέθηκε υπάρχον στιγμιότυπο πριν την επαναφορά"
+
+#: src/Gtk/BackupDeviceBox.vala:215
+msgid "Free"
+msgstr "Ελεύθερα"
+
+#: src/Core/SnapshotRepo.vala:75 src/Core/SnapshotRepo.vala:145
+msgid "Free space"
+msgstr "Ελεύθερος χώρος"
+
+#: src/AppConsole.vala:1055
+msgid "GRUB Device"
+msgstr "Συσκευή GRUB"
+
+#: src/Gtk/RestoreDeviceBox.vala:497
+msgid "GRUB device not selected"
+msgstr "Δεν επιλέχθηκε συσκευή GRUB"
+
+#: src/AppConsole.vala:1060
+msgid "GRUB will NOT be reinstalled"
+msgstr "Το GRUB ΔΕ θα επανεγκατασταθεί"
+
+#: src/Core/Main.vala:2509
+msgid "Generating initramfs..."
+msgstr "Δημιουργία initramfs..."
+
+#: src/AppConsole.vala:385
+msgid "Global"
+msgstr "Καθολικά"
+
+#: src/Gtk/BackupBox.vala:100 src/Gtk/RestoreBox.vala:135
+#: src/Gtk/RsyncLogBox.vala:400
+#, c-format
+msgid "Group"
+msgstr "Ομάδα"
+
+#: src/Gtk/SnapshotBackendBox.vala:141
+msgid "Help"
+msgstr "Βοήθεια"
+
+#: src/Gtk/ExcludeMessageWindow.vala:128
+msgid ""
+"Hidden files and folders are included by default since they contain user-"
+"specific configuration files."
+msgstr ""
+"Τα κρυφά αρχεία και οι φάκελοι περιλαμβάνονται από προεπιλογή, διότι "
+"περιέχουν αρχεία ρυθμίσεων που αφορούν το χρήστη."
+
+#: src/Gtk/DeleteWindow.vala:181
+msgid "Hide"
+msgstr "Απόκρυψη"
+
+#: src/AppConsole.vala:392
+msgid "Hide rsync output"
+msgstr "Απόκρυψη εξόδου rsync"
+
+#: src/Gtk/DeleteWindow.vala:182
+msgid "Hide this window (files will be deleted in background)"
+msgstr "Απόκρυψη αυτού του παραθύρου (λειτουργία στο παρασκήνιο)"
+
+#: src/Gtk/UsersBox.vala:116
+msgid "Home"
+msgstr "Αρχικός κατάλογος"
+
+#: src/Gtk/ExcludeMessageWindow.vala:115
+msgid "Home Directory"
+msgstr "Αρχικός Κατάλογος"
+
+#: src/Gtk/SnapshotListBox.vala:298 src/Gtk/ScheduleBox.vala:118
+msgid "Hourly"
+msgstr "Ωριαία"
+
+#: src/Core/Main.vala:1076
+msgid "Hourly snapshot failed!"
+msgstr "Αποτυχία ωριαίου στιγμιοτύπου!"
+
+#: src/Core/Main.vala:1057
+msgid "Hourly snapshots are enabled"
+msgstr "Τα ωριαία στιγμιότυπα είναι ενεργοποιημένα"
+
+#: src/Gtk/RestoreFinishBox.vala:102
+msgid ""
+"If the restored system fails to boot, then boot from the Live CD/USB, "
+"install Timeshift, and try restoring another snapshot."
+msgstr ""
+"Αν το αποκαταστημένο σύστημα δεν μπορεί να εκκινήσει, τότε εκκινήστε από το "
+"Live CD/USB, εγκαταστήστε το Timeshift και δοκιμάστε να επαναφέρετε ένα άλλο "
+"στιγμιότυπο."
+
+#: src/Core/Main.vala:2373
+msgid ""
+"If these terms are not acceptable to you, please do not proceed beyond this "
+"point!"
+msgstr ""
+"Εάν αυτοί οι όροι δεν είναι αποδεκτοί από εσάς, παρακαλούμε μην προχωρήσετε "
+"πέρα από αυτό το σημείο!"
+
+#: src/Gtk/ExcludeBox.vala:54
+msgid "Include / Exclude Patterns"
+msgstr "Συμπερίληψη/Αποκλεισμός Μοτίβων"
+
+#: src/Gtk/UsersBox.vala:336
+msgid "Include @home subvolume in backups"
+msgstr "Συμπερίληψη του υπο-όγκου @home στα εφεδρικά αντίγραφα"
+
+#: src/Gtk/UsersBox.vala:262
+msgid "Include All Files"
+msgstr "Συμπερίληψη Όλων των Αρχείων"
+
+#: src/Gtk/UsersBox.vala:190
+msgid "Include Only Hidden Files"
+msgstr "Συμπερίληψη Μόνο των Κρυφών Αρχείων"
+
+#: src/Core/Main.vala:2187
+msgid "Invalid Snapshot"
+msgstr "Μη-έγκυρο Στιγμιότυπο"
+
+#: src/AppConsole.vala:257
+#, c-format
+msgid "Invalid command line arguments"
+msgstr "Μη-έγκυρα ορίσματα στη γραμμή εντολών"
+
+#: src/Gtk/MainWindow.vala:814
+msgid "Invalid snapshot"
+msgstr "Μη-έγκυρο στιγμιότυπο"
+
+#: src/Gtk/ExcludeBox.vala:282
+msgid "Items Not Selected"
+msgstr "Μη-επιλεγμένα Αντικείμενα"
+
+#: src/Gtk/ScheduleBox.vala:283
+msgid "Keep"
+msgstr "Διατήρηση"
+
+#: src/Gtk/RestoreExcludeBox.vala:112
+msgid ""
+"Keep configuration files for bittorrent clients like Deluge, Transmission, "
+"etc. If un-checked, previous configuration files will be restored from "
+"snapshot."
+msgstr ""
+"Διατήρηση αρχείων ρυθμίσεων για προγράμματα bittorrent, όπως το Deluge, το "
+"Transmission κ.τ.λ. Εάν η ρύθμιση αυτή απενεργοποιηθεί, το στιγμιότυπο θα "
+"επαναφέρει παλαιότερα  αρχεία ρυθμίσεων"
+
+#: src/Gtk/RestoreExcludeBox.vala:85
+msgid ""
+"Keep configuration files for web browsers like Firefox and Chrome. If un-"
+"checked, previous configuration files will be restored from snapshot"
+msgstr ""
+"Διατήρηση αρχείων ρυθμίσεων για περιηγητές, όπως το Firefox και το Chrome. "
+"Εάν η ρύθμιση αυτή απενεργοποιηθεί, το στιγμιότυπο θα επαναφέρει παλαιότερα  "
+"αρχεία ρυθμίσεων"
+
+#: src/Gtk/RestoreDeviceBox.vala:244
+msgid "Keep on Root Device"
+msgstr "Διατήρηση στη Συσκευή Root"
+
+#: src/Gtk/RestoreDeviceBox.vala:229
+msgid "Keep this mount path on the root filesystem"
+msgstr ""
+"Διατήρηση αυτής της διαδρομής προσάρτησης στο σύστημα αρχείων του root"
+
+#: src/Gtk/SnapshotListBox.vala:523
+msgid "LIVE"
+msgstr "Ζωντανά"
+
+#: src/Utility/Device.vala:1951 src/Gtk/BackupDeviceBox.vala:254
+#: src/AppConsole.vala:471 src/AppConsole.vala:510
+#, c-format
+msgid "Label"
+msgstr "Ετικέτα"
+
+#: src/Core/Main.vala:1038
+#, c-format
+msgid "Last boot snapshot is %d hours old"
+msgstr "Το πιο πρόσφατο στιγμιότυπο εκκίνησης ελήφθη πριν από %d ώρες"
+
+#: src/Core/Main.vala:1033
+msgid "Last boot snapshot is older than system start time"
+msgstr ""
+"Το πιο πρόσφατο στιγμιότυπο εκκίνησης ελήφθη πριν την εκκίνηση του παρόντος "
+"συστήματος"
+
+#: src/Core/Main.vala:1029
+msgid "Last boot snapshot not found"
+msgstr "Το πιο πρόσφατο στιγμιότυπο εκκίνησης δε βρέθηκε"
+
+#: src/Core/Main.vala:1100
+#, c-format
+msgid "Last daily snapshot is %d hours old"
+msgstr "Το πιο πρόσφατο ημερήσιο στιγμιότυπο ελήφθη πριν από %d ώρες"
+
+#: src/Core/Main.vala:1095
+msgid "Last daily snapshot is more than 1 day old"
+msgstr ""
+"Το πιο πρόσφατο ημερήσιο στιγμιότυπο ελήφθη τουλάχιστον μία ημέρα πριν"
+
+#: src/Core/Main.vala:1091
+msgid "Last daily snapshot not found"
+msgstr "Το πιο πρόσφατο ημερήσιο στιγμιότυπο δε βρέθηκε"
+
+#: src/Core/Main.vala:1069
+#, c-format
+msgid "Last hourly snapshot is %d minutes old"
+msgstr "Το πιο πρόσφατο ωριαίο στιγμιότυπο ελήφθη πριν από %d λεπτά"
+
+#: src/Core/Main.vala:1064
+msgid "Last hourly snapshot is more than 1 hour old"
+msgstr "Το πιο πρόσφατο ωριαίο στιγμιότυπο ελήφθη τουλάχιστον 1 ώρα πριν"
+
+#: src/Core/Main.vala:1060
+msgid "Last hourly snapshot not found"
+msgstr "Το πιο πρόδφατο ωριαίο στιγμιότυπο δε βρέθηκε"
+
+#: src/Core/Main.vala:1162
+#, c-format
+msgid "Last monthly snapshot is %d days old"
+msgstr "Το πιο πρόσφατο μηνιαίο στιγμιότυπο έγινε ελήφθη από %d ημέρες"
+
+#: src/Core/Main.vala:1157
+msgid "Last monthly snapshot is more than 1 month old"
+msgstr "Το πιο πρόσφατο μηνιαίο στιγμιότυπο ελήφθη τουλάχιστον 1 μήνα πριν"
+
+#: src/Core/Main.vala:1153
+msgid "Last monthly snapshot not found"
+msgstr "Το πιο πρόσφατο μηνιαίο στιγμιότυπο δε βρέθηκε"
+
+#: src/Core/Main.vala:1131
+#, c-format
+msgid "Last weekly snapshot is %d days old"
+msgstr "Το πιο πρόσφατο εβδομαδιαίο στιγμιότυπο ελήφθη πριν από %d ημέρες"
+
+#: src/Core/Main.vala:1126
+msgid "Last weekly snapshot is more than 1 week old"
+msgstr ""
+"Το πιο πρόσφατο εβδομαδιαίο στιγμιότυπο ελήφθη τουλάχιστον 1 εβδομάδα πριν"
+
+#: src/Core/Main.vala:1122
+msgid "Last weekly snapshot not found"
+msgstr "Το πιο πρόσφατο εβδομαδιαίο στιγμιότυπο δε βρέθηκε"
+
+#: src/Gtk/MainWindow.vala:1002
+#, c-format
+msgid "Latest snapshot"
+msgstr "Πιο πρόσφατο στιγμιότυπο"
+
+#: src/Core/Main.vala:1505
+#, c-format
+msgid "Linking from snapshot"
+msgstr "Διασύνδεση από το στιγμιότυπο"
+
+#: src/AppConsole.vala:363
+msgid "List"
+msgstr "Λίστα"
+
+#: src/AppConsole.vala:365
+msgid "List devices"
+msgstr "Απαρίθμηση συσκευών"
+
+#: src/AppConsole.vala:364
+msgid "List snapshots"
+msgstr "Απαρίθμηση στιγμιοτύπων"
+
+#: src/Gtk/MainWindow.vala:953
+msgid "Live USB Mode (Restore Only)"
+msgstr "Λειτουργία Live USB (Μόνο για Επαναφορά)"
+
+#: src/Gtk/SettingsWindow.vala:90 src/Gtk/BackupWindow.vala:87
+#: src/Gtk/SetupWizardWindow.vala:104
+msgid "Location"
+msgstr "Τοποθεσία"
+
+#: src/Gtk/MainWindow.vala:441
+msgid "Main window closed by user"
+msgstr "Το κύριο παράθυρο κλείστηκε από το χρήστη"
+
+#: src/Gtk/SnapshotListBox.vala:328
+msgid "Mark/Unmark for Deletion"
+msgstr "Επισήμανση/Αποσήμανση για Διαγραφή"
+
+#: src/Core/SnapshotRepo.vala:628 src/Core/SnapshotRepo.vala:671
+msgid "Maximum backups exceeded for backup level"
+msgstr ""
+"Υπέρβαση του μέγιστου αριθμού αντιγράφων ασφαλείας για το παρόν επίπεδο"
+
+#: src/Gtk/MainWindow.vala:207
+msgid "Menu"
+msgstr "Μενού"
+
+#: src/Gtk/SettingsWindow.vala:105
+msgid "Misc"
+msgstr "Διάφορα"
+
+#: src/Core/Main.vala:251
+msgid "Missing Dependencies"
+msgstr "Ελλείπουσες εξαρτήσεις"
+
+#: src/Core/SnapshotRepo.vala:605
+#, c-format
+msgid "Mode"
+msgstr "Λειτουργία"
+
+#: src/Utility/Device.vala:1934
+#, c-format
+msgid "Model"
+msgstr "Μοντέλο"
+
+#: src/Gtk/SnapshotListBox.vala:301 src/Gtk/ScheduleBox.vala:64
+msgid "Monthly"
+msgstr "Μηνιαία"
+
+#: src/Core/Main.vala:1150
+msgid "Monthly snapshot are enabled"
+msgstr "Τα μηνιαία στιγμιότυπα δεν έχουν ενεργοποιηθεί"
+
+#: src/Core/Main.vala:1169
+msgid "Monthly snapshot failed!"
+msgstr "Αποτυχία λήψης μηνιαίου στιγμιοτύπου"
+
+#: src/Core/Main.vala:2274 src/Core/Main.vala:2307
+msgid "Mount"
+msgstr "Προσάρτηση"
+
+#: src/Core/Main.vala:3135
+msgid "Moved system subvolume to snapshot directory"
+msgstr ""
+"Ο υπο-όγκος του συστήματος μεταφέρθηκε στον κατάλογο των στιγμιοτύπων"
+
+#: src/Gtk/MainWindow.vala:790
+msgid "Multiple snapshots selected"
+msgstr "Επιλέχθηκαν πολλαπλά στιγμιότυπα"
+
+#: src/Gtk/BackupDeviceBox.vala:235 src/Gtk/RsyncLogBox.vala:491
+#: src/AppConsole.vala:437
+msgid "Name"
+msgstr "Όνομα"
+
+#: src/Gtk/RestoreWindow.vala:201 src/Gtk/BackupWindow.vala:164
+#: src/Gtk/SetupWizardWindow.vala:203 src/Gtk/DeleteWindow.vala:165
+msgid "Next"
+msgstr "Επόμενο"
+
+#: src/Utility/Gtk/CustomMessageDialog.vala:157
+msgid "No"
+msgstr "Όχι"
+
+#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:122
+msgid "No Change"
+msgstr "Χωρίς αλλαγή"
+
+#: src/Gtk/MainWindow.vala:599 src/Gtk/DeleteWindow.vala:335
+msgid "No Snapshots Selected"
+msgstr "Δεν Επιλέχθηκε Στιγμιότυπο"
+
+#: src/Gtk/MainWindow.vala:1026
+msgid "No snapshots available"
+msgstr "Κανένα στιγμιότυπο δεν είναι διαθέσιμο"
+
+#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:970
+#: src/AppConsole.vala:326
+msgid "No snapshots found"
+msgstr "Δε βρέθηκε κανένα στιγμιότυπο"
+
+#: src/AppConsole.vala:753
+msgid "No snapshots found on device"
+msgstr "Δε βρέθηκαν στιγμιότυπα στη συσκευή"
+
+#: src/Gtk/MainWindow.vala:537
+msgid "No snapshots on device"
+msgstr "Κανένα στιγμιότυπο στη συσκευή"
+
+#: src/Core/SnapshotRepo.vala:581
+msgid "No snapshots on this device"
+msgstr "Κανένα στιγμιότυπο σε αυτή τη συσκευή"
+
+#: src/Gtk/MainWindow.vala:783
+msgid "No snapshots selected"
+msgstr "Δεν επιλέχθηκε κανένα στιγμιότυπο"
+
+#: src/Gtk/MainWindow.vala:1003 src/Gtk/MainWindow.vala:1005
+msgid "None"
+msgstr "Κανένα"
+
+#: src/Core/Subvolume.vala:198
+#, c-format
+msgid "Not Found"
+msgstr "Δε Βρέθηκε"
+
+#: src/Core/SnapshotRepo.vala:599
+msgid "Not Selected"
+msgstr "Δεν Επιλέχθηκε"
+
+#: src/Core/Main.vala:396
+msgid "Not Supported"
+msgstr "Δεν Υποστηρίζεται"
+
+#: src/Core/SnapshotRepo.vala:543 src/Core/SnapshotRepo.vala:572
+msgid "Not enough disk space"
+msgstr "Δεν υπάρχει αρκετός χώρος στο δίσκο"
+
+#: src/Gtk/FinishBox.vala:55 src/AppConsole.vala:409
+msgid "Notes"
+msgstr "Σημειώσεις"
+
+#: src/Core/Main.vala:1180
+msgid "Nothing to do!"
+msgstr "Δεν υπάρχει τίποτα για να γίνει!"
+
+#: src/AppConsole.vala:435 src/AppConsole.vala:465 src/AppConsole.vala:504
+#: src/AppConsole.vala:552
+msgid "Num"
+msgstr "Νο."
+
+#: src/Gtk/ScheduleBox.vala:282
+msgid ""
+"Number of snapshots to keep.\n"
+"Older snapshots will be removed once this limit is exceeded."
+msgstr ""
+"Αριθμός στιγμιότυπων προς διατήρηση\n"
+"Τα παλαιότερα στιγμιότυπα θα αφαιρούνται κατόπιν υπέρβασης αυτού το ορίου."
+
+#: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:147
+#: src/Utility/Gtk/CustomMessageDialog.vala:151 src/Utility/GtkHelper.vala:108
+#: src/Gtk/SettingsWindow.vala:123 src/Gtk/ExcludeListSummaryWindow.vala:84
+msgid "OK"
+msgstr "ΟΚ"
+
+#: src/Gtk/SnapshotBackendBox.vala:188
+msgid ""
+"OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout "
+"(@ and @home subvolumes). Other layouts are not supported."
+msgstr ""
+"Το λειτουργικό σύστημα πρέπει να είναι εγκατεστημένο  σε μια κατάτμηση BTRFS "
+"με διάταξη υπο-όγκων τύπου Ubuntu (@ και @home). Άλλες διατάξεις δεν "
+"υποστηρίζονται."
+
+#: src/Core/Main.vala:4289
+msgid "Older log files removed"
+msgstr "Τα παλαιότερα αρχεία καταγραφής έχουν αφαιρεθεί"
+
+#: src/Gtk/MainWindow.vala:1004
+msgid "Oldest snapshot"
+msgstr "Παλαιότερο στιγμιότυπο"
+
+#: src/Gtk/SnapshotListBox.vala:296
+msgid "On demand (manual)"
+msgstr "Κατ' απαίτηση (χειροκίνητα)"
+
+#: src/Core/Main.vala:394 src/Core/Main.vala:3617
+#: src/Gtk/RestoreDeviceBox.vala:511
+msgid ""
+"Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
+msgstr ""
+"Προς το παρόν υποστηρίζονται μόνο διατάξεις τύπου ubuntu με υπο-όγκους @ και "
+"@home."
+
+#: src/Gtk/MainWindow.vala:208
+msgid "Open Menu"
+msgstr "Άνοιγμα μενού"
+
+#: src/Core/Main.vala:3399
+msgid ""
+"Option --snapshot-device should not be specified for creating snapshots in "
+"BTRFS mode"
+msgstr ""
+"Το όρισμα --snapshot-device δεν πρέπει να δηλώνεται για τη δημιουργία "
+"στιγμιότυπων σε λειτουργία BTRFS"
+
+#: src/AppConsole.vala:361 src/AppGtk.vala:128
+msgid "Options"
+msgstr "Ρυθμίσεις"
+
+#: src/Gtk/RestoreExcludeBox.vala:118
+msgid "Other applications (next page)"
+msgstr "Άλλες εφαρμογές (επόμενη σελίδα)"
+
+#: src/Gtk/BackupBox.vala:99 src/Gtk/RestoreBox.vala:134
+#: src/Gtk/RsyncLogBox.vala:398
+#, c-format
+msgid "Owner"
+msgstr "Ιδιοκτήτης"
+
+#: src/Utility/Device.vala:1946
+#, c-format
+msgid "Parent Device"
+msgstr "Γονική Συσκευή"
+
+#: src/Core/Main.vala:2638 src/Core/Main.vala:2729 src/Gtk/RsyncLogBox.vala:222
+msgid "Parsing log file..."
+msgstr "Ανάλυση αρχείου καταγραφής..."
+
+#: src/Gtk/RestoreDeviceBox.vala:510
+msgid "Partition has an unsupported subvolume layout."
+msgstr "Η κατάτμηση έχει μη-υποστηριζόμενη διάταξη υπο-όγκου"
+
+#: src/Core/SnapshotRepo.vala:604 src/Gtk/RestoreDeviceBox.vala:93
+#, c-format
+msgid "Path"
+msgstr "Μονοπάτι"
+
+#: src/Gtk/ExcludeBox.vala:166
+msgid "Pattern"
+msgstr "Μοτίβο"
+
+#: src/Gtk/BackupBox.vala:98 src/Gtk/RestoreBox.vala:133
+#: src/Gtk/RsyncLogBox.vala:396
+#, c-format
+msgid "Permissions"
+msgstr "Δικαιώματα"
+
+#: src/Core/Main.vala:270
+msgid "Please check if you have multiple windows open."
+msgstr "Ελέγξτε εάν έχετε πολλά παράθυρα ανοιχτά."
+
+#: src/Core/Main.vala:2405
+msgid "Please do not interrupt the restore process!"
+msgstr "Μη διακόψετε τη διαδικασία επαναφοράς!"
+
+#: src/Core/Main.vala:365
+msgid "Please install required packages and try running TimeShift again"
+msgstr ""
+"Εγκαταστήστε τα απαιτούμενα πακέτα και δοκιμάστε να εκτελέσετε εκ νέου το "
+"TimeShift."
+
+#: src/AppGtk.vala:143
+msgid "Please re-run the application as admin (using 'sudo' or 'su')"
+msgstr ""
+"Επανεκτελέστε την εφαρμογή ως διαχειριστής (χρησιμοποιώντας 'sudo' ή 'su')."
+
+#: src/AppConsole.vala:108
+msgid "Please run the application as admin (using 'sudo' or 'su')"
+msgstr ""
+"Εκτελέστε την εφαρμογή ως διαχειριστής (χρησιμοποιώντας 'sudo' ή 'su')."
+
+#: src/Core/Main.vala:2355
+msgid "Please save your work and close all applications."
+msgstr "Αποθηκεύστε τα ανοικτά σας αρχεία και κλείστε όλες τις εφαρμογές."
+
+#: src/Gtk/MainWindow.vala:685
+msgid "Please select a snapshot to view the log!"
+msgstr "Επιλέξτε ένα στιγμιότυπο για να δείτε το αρχείο καταγραφής του!"
+
+#: src/Gtk/RestoreDeviceBox.vala:498
+msgid "Please select the GRUB device"
+msgstr "Επιλέξτε τη συσκευή GRUB"
+
+#: src/Core/Main.vala:266
+msgid "Please wait a few minutes and try again."
+msgstr "Περιμένετε λίγα λεπτά και προσπαθήστε ξανά."
+
+#: src/Gtk/MainWindow.vala:752
+msgid "Please wait for snapshots to be deleted."
+msgstr "Περιμένετε μέχρι να διαγραφούν τα στιγμιότυπα."
+
+#: src/Gtk/EstimateBox.vala:66
+msgid "Please wait..."
+msgstr "Περιμένετε…"
+
+#: src/Gtk/RsyncLogBox.vala:188
+msgid "Populating list..."
+msgstr "Συμπλήρωση της λίστας..."
+
+#: src/Core/Main.vala:1740 src/Gtk/BackupBox.vala:117
+#: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
+#: src/Gtk/RsyncLogBox.vala:232
+msgid "Preparing..."
+msgstr "Προετοιμασία..."
+
+#: src/Gtk/RestoreWindow.vala:193 src/Gtk/BackupWindow.vala:156
+#: src/Gtk/SetupWizardWindow.vala:195 src/Gtk/DeleteWindow.vala:157
+msgid "Previous"
+msgstr "Προηγούμενο"
+
+#: src/AppGtk.vala:130
+msgid "Print debug information"
+msgstr "Εκτύπωση πληροφοριών αποσφαλμάτωσης"
+
+#: src/AppConsole.vala:395 src/AppGtk.vala:132
+msgid "Print version number"
+msgstr "Εκτύπωση αριθμού έκδοσης"
+
+#: src/Core/Main.vala:3979
+msgid "Query completed"
+msgstr "Η αναζήτηση ολοκληρώθηκε"
+
+#: src/Core/Main.vala:3962
+msgid "Querying subvolume info..."
+msgstr "Αναζὴτηση πληροφοριών υπο-όγκων..."
+
+#: src/Gtk/SnapshotBackendBox.vala:77
+msgid "RSYNC"
+msgstr "RSYNC"
+
+#: src/Gtk/SnapshotBackendBox.vala:193
+msgid "RSYNC Snapshots"
+msgstr "Στιγμιότυπα RSYNC"
+
+#: src/Gtk/BootOptionsBox.vala:137
+msgid ""
+"Re-generates initramfs for all installed kernels. This is generally not "
+"needed. Select this only if the restored system fails to boot."
+msgstr ""
+"Δημιουργεί εκ νέου το  initramfs για όλους τους εγκατεστημένους πυρήνες. "
+"Αυτό συνήθως δε χρειάζεται. Επιλέξτε το μόνο εάν το αποκαταστημένο σύστημα "
+"δεν μπορεί να εκκινήσει."
+
+#: src/AppConsole.vala:995
+#, c-format
+msgid "Re-install GRUB2 bootloader?"
+msgstr "Να γίνει επανεγκατάσταση του GRUB2;"
+
+#: src/Core/Main.vala:2468
+msgid "Re-installing GRUB2 bootloader..."
+msgstr "Επανεγκατάσταση του GRUB2..."
+
+#: src/Gtk/BootOptionsBox.vala:120
+msgid "Re-installs the GRUB2 bootloader on the selected device."
+msgstr "Επανεγκαθιστά το GRUB2 στην επιλεγμένη συσκευή."
+
+#: src/Gtk/RsyncLogBox.vala:181
+#, c-format
+msgid "Read %'d of %'d lines..."
+msgstr "Διαβάστηκαν %'d από  %'d γραμμές..."
+
+#: src/Core/Main.vala:2568
+msgid "Rebooting system..."
+msgstr "Επανεκκίνηση συστήματος..."
+
+#: src/Gtk/RestoreExcludeBox.vala:61 src/Gtk/RestoreExcludeBox.vala:91
+#, c-format
+msgid "Recommended"
+msgstr "Προτείνεται"
+
+#: src/Gtk/BackupDeviceBox.vala:65 src/Gtk/RestoreDeviceBox.vala:70
+msgid "Refresh"
+msgstr "Επαναφόρτωση"
+
+#: src/Gtk/BackupDeviceBox.vala:106
+msgid "Remote and network locations are not supported."
+msgstr "Δεν υποστηρίζονται απομακρυσμένες τοποθεσίες και τοποθεσίες δικτύου."
+
+#: src/Gtk/ExcludeBox.vala:262
+msgid "Remove"
+msgstr "Αφαίρεση"
+
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1778 src/Core/Main.vala:1789
+#: src/Core/Main.vala:4285 src/Core/SnapshotRepo.vala:907
+#, c-format
+msgid "Removed"
+msgstr "Έχει αφαιρεθεί"
+
+#: src/Utility/CronTab.vala:340
+msgid "Removed cron task"
+msgstr "Η προγραμματισμένη εργασίας αφαιρέθηκε"
+
+#: src/Core/Main.vala:3767
+#, c-format
+msgid "Removed mount directory: '%s'"
+msgstr "Ο κατάλογος προσάρτησης '%s' έχει αφαιρεθεί"
+
+#: src/Core/Snapshot.vala:555
+msgid "Removed snapshot"
+msgstr "Το στιγμιότυπο έχει αφαιρεθεί"
+
+#: src/Core/Snapshot.vala:484
+msgid "Removing"
+msgstr "Γίνεται αφαίρεση"
+
+#: src/Core/Snapshot.vala:521
+msgid "Removing snapshot"
+msgstr "Γίνεται αφαίρεση του στιγμιοτύπου"
+
+#: src/Core/SnapshotRepo.vala:763 src/Core/SnapshotRepo.vala:782
+#: src/Core/SnapshotRepo.vala:800 src/Core/SnapshotRepo.vala:814
+#, c-format
+msgid "Removing snapshots"
+msgstr "Γίνεται αφαίρεση των στιγμιοτύπων"
+
+#: src/Gtk/MainWindow.vala:150 src/Gtk/RestoreWindow.vala:125
+#: src/Gtk/RsyncLogBox.vala:377 src/Gtk/RsyncLogBox.vala:566
+#: src/Gtk/RestoreFinishBox.vala:71 src/AppConsole.vala:373
+msgid "Restore"
+msgstr "Αποκατάσταση"
+
+#: src/Gtk/UsersBox.vala:325
+msgid "Restore @home subvolume"
+msgstr "Αποκατάσταση υπο-όγκου @home"
+
+#: src/Gtk/RestoreWindow.vala:89
+msgid "Restore Device"
+msgstr "Αποκατάσταση Συσκευής"
+
+#: src/Gtk/RestoreWindow.vala:94
+msgid "Restore Exclude"
+msgstr "Αποκατάσταση Εξαίρεσης"
+
+#: src/Gtk/RestoreWindow.vala:69
+msgid "Restore Snapshot"
+msgstr "Αποκατάσταση Στιγμιοτύπου"
+
+#: src/Core/Main.vala:2978 src/Core/Main.vala:3020
+msgid "Restore completed"
+msgstr "Η αποκατάσταση ολοκληρώθηκε"
+
+#: src/Gtk/MainWindow.vala:151
+msgid "Restore selected snapshot"
+msgstr "Αποκατάσταση του επιλεγμένου στιγμιοτύπου"
+
+#: src/AppConsole.vala:374
+msgid "Restore snapshot"
+msgstr "Αποκατάσταση στιγμιοτύπου"
+
+#: src/Gtk/RestoreFinishBox.vala:96
+msgid "Restored subvolumes will become active after system is restarted."
+msgstr ""
+"Οι αποκατεστημένοι υπο-όγκοι θα ενεργοποιηθούν κατόπιν επανεκκίνησης του "
+"συστήματος."
+
+#: src/Core/Subvolume.vala:220
+msgid "Restored system subvolume"
+msgstr "Ο υπο-όγκος του συστήματος έχει αποκατασταθεί"
+
+#: src/Gtk/RestoreBox.vala:77 src/Gtk/RestoreBox.vala:190
+msgid "Restoring Snapshot..."
+msgstr "Αποκατάσταση Στιγμιοτύπου..."
+
+#: src/Gtk/FinishBox.vala:85
+msgid ""
+"Restoring a snapshot will replace system subvolumes, and system subvolumes "
+"currently in use will be preserved as a new snapshot. If required, this "
+"snapshot can be restored later to 'undo' the restore."
+msgstr ""
+"Η αποκατάσταση ενός στιγμιότυπου θα αντικαταστήσει τους υπο-όγκους του "
+"συστήματος, και οι παρόντες υπο-όγκοι θα διατηρηθούν ως νέο στιγμιότυπο. Εάν "
+"υπάρξει ανάγκη, αυτό το στιγμιότυπο μπορεί να αποκατασταθεί αργότερα για να "
+"«αναιρέσει» την επαναφορά."
+
+#: src/Core/Main.vala:2947
+msgid "Restoring snapshot..."
+msgstr "Αποκατάσταση στιγμιοτύπου..."
+
+#: src/Gtk/FinishBox.vala:88
+msgid ""
+"Restoring snapshots only replaces system files and settings. Non-hidden "
+"files and directories in user home directories will not be touched. This "
+"behaviour can be changed by adding a filter to include these files. Included "
+"files will be backed up when snapshot is created, and replaced when snapshot "
+"is restored."
+msgstr ""
+"Η αποκατάσταση στιγμιότυπων αντικαθιστά μόνο τα αρχεία και τις ρυθμίσεις του "
+"συστήματος. Τα μη-κρυμμένα αρχεία και τα αρχεία χρηστών στο «home»  δε θα "
+"επηρεαστούν. Αυτή η συμπεριφορά μπορεί να τροποποιηθεί προσθέτοντας ένα "
+"φίλτρο για τη συμπερίληψη των αρχείων αυτών. Τα αρχεία αυτά θα αντιγράφονται "
+"σε στιγμιότυπα κατά τη δημιουργία, και θα αντικαθιστώνται κατά την "
+"αποκατάσταση."
+
+#: src/Utility/Device.vala:1936
+#, c-format
+msgid "Revision"
+msgstr "Αναθεώρηση"
+
+#: src/Gtk/RestoreDeviceBox.vala:438
+msgid "Root device not selected"
+msgstr "Δεν έπιλέχθηκε η συσκευή root"
+
+#: src/Gtk/RsyncLogWindow.vala:49
+msgid "Rsync Log Viewer"
+msgstr "Πρόγραμμα προβολής αρχείων καταγραφής Rsync"
+
+#: src/AppGtk.vala:134
+#, c-format
+msgid "Run 'timeshift' for the command-line version of this tool"
+msgstr ""
+"Εκτελέστε την εντολή  'timeshift' για τη χρήση του εργαλείου μέσω τερματικού"
+
+#: src/AppConsole.vala:393
+msgid "Run in non-interactive mode"
+msgstr "Εκτέλεση σε μη-διαδραστική λειτουργία"
+
+#: src/Core/Main.vala:202
+msgid "Running"
+msgstr "Σε εξέλιξη"
+
+#: src/Gtk/FinishBox.vala:95
+msgid ""
+"Save snapshots to an external disk instead of the system disk to guard "
+"against drive failures."
+msgstr ""
+"Αποθήκευση των στιγμιοτύπων σε έναν εξωτερικό δίσκο αντί του δίσκου του "
+"συστήματος για προστασία από βλάβες της μονάδας δίσκου."
+
+#: src/Gtk/FinishBox.vala:97
+msgid ""
+"Saving snapshots to a non-system disk allows you to format and re-install "
+"the OS on the system disk without losing snapshots stored on it. You can "
+"even install another Linux distribution and later roll-back the previous "
+"distribution by restoring a snapshot."
+msgstr ""
+"Η αποθήκευση στιγμιότυπων σε δίσκο εκτός συστήματος σας επιτρέπει να "
+"διαμορφώσετε και να επανεγκαταστήσετε το λειτουργικό σύστημα στο δίσκο "
+"συστήματος χωρίς να χάσετε τα στιγμιότυπα που είναι αποθηκευμένα σε αυτόν. "
+"Μπορείτε ακόμη να εγκαταστήσετε μια άλλη διανομή Linux και αργότερα να "
+"επαναφέρετε την προηγούμενη διανομή επαναφέροντας ένα στιγμιότυπο."
+
+#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+msgid "Saving to device"
+msgstr "Αποθήκευση στη συσκευή"
+
+#: src/Gtk/SettingsWindow.vala:93 src/Gtk/SetupWizardWindow.vala:109
+msgid "Schedule"
+msgstr "Περιοδικά στιγμιότυπα"
+
+#: src/Core/Main.vala:273
+msgid "Scheduled snapshot in progress..."
+msgstr "Περιοδικό στιγμιότυπο σε εξέλιξη..."
+
+#: src/Core/Main.vala:1180 src/Gtk/MainWindow.vala:1020
+#: src/Gtk/ScheduleBox.vala:312
+msgid "Scheduled snapshots are disabled"
+msgstr "Τα περιοδικά στιγμιότυπα είναι απενεργοποιημένα"
+
+#: src/Gtk/FinishBox.vala:78
+msgid "Scheduled snapshots are disabled. It's recommended to enable it."
+msgstr ""
+"Τα περιοδικά στιγμιότυπα είναι απενεργοποιημένα. Προτείνεται η ενεργοποίησή "
+"τους."
+
+#: src/Gtk/ScheduleBox.vala:305
+msgid "Scheduled snapshots are enabled"
+msgstr "Τα περιοδικά στιγμιότυπα είναι ενεργοποιημένα"
+
+#: src/Gtk/FinishBox.vala:75
+msgid ""
+"Scheduled snapshots are enabled. Snapshots will be created automatically for "
+"selected levels."
+msgstr ""
+"Τα περιοδικά στιγμιότυπα είναι ενεργοποιημένα. Θα δημιουργούνται περιοδικά "
+"στιγμιότυπα για τα επιλεγμένα επίπεδα."
+
+#: src/AppConsole.vala:883
+#, c-format
+msgid "Select '%s' device (default = %s)"
+msgstr "Επιλογή συσκευής '%s' (προεπιλογή = %s)"
+
+#: src/Core/SnapshotRepo.vala:510 src/AppConsole.vala:702
+msgid "Select BTRFS system disk with root subvolume (@)"
+msgstr "Επιλογή δίσκου συστήματος BTRFS με υπο-όγκο root(@)"
+
+#: src/AppConsole.vala:1011
+msgid "Select GRUB device"
+msgstr "Επιλογή συσκευής GRUB"
+
+#: src/Gtk/MainWindow.vala:684
+msgid "Select Snapshot"
+msgstr "Επιλογή Στιγμιοτύπου"
+
+#: src/Gtk/ScheduleBox.vala:57
+msgid "Select Snapshot Levels"
+msgstr "Επιλογή Επιπέδου Στιγμιοτύπου"
+
+#: src/Gtk/BackupDeviceBox.vala:56
+msgid "Select Snapshot Location"
+msgstr "Επιλογή Τοποθεσίας Στιγμιοτύπου"
+
+#: src/Gtk/SnapshotBackendBox.vala:62
+msgid "Select Snapshot Type"
+msgstr "Επιλογή Τύπου Στιγμιοτύπου"
+
+#: src/Gtk/DeleteWindow.vala:85
+msgid "Select Snapshots"
+msgstr "Επιλογή Στιγμιοτύπων"
+
+#: src/Gtk/RestoreDeviceBox.vala:61
+msgid "Select Target Device"
+msgstr "Επιλογή  Συσκευής Προορισμού"
+
+#: src/Gtk/BackupDeviceBox.vala:410
+#, c-format
+msgid "Select a partition on this disk"
+msgstr "Επιλογή κατάτμησης από αυτόν το δίσκο"
+
+#: src/Gtk/MainWindow.vala:791
+msgid "Select a single snapshot to restore"
+msgstr "Επιλογή ενός μεμονωμένου στιγμιότυπου για επαναφορά"
+
+#: src/Gtk/RestoreDeviceBox.vala:467
+msgid "Select another device for root file system (/)"
+msgstr "Επιλογή άλλης συσκευής για το root σύστημα αρχείων (/)"
+
+#: src/Core/SnapshotRepo.vala:546 src/Core/SnapshotRepo.vala:575
+msgid "Select another device or free up some space"
+msgstr "Επιλογή άλλης συσκευής ή απελευθέρωση χώρου"
+
+#: src/Gtk/MainWindow.vala:531 src/Gtk/MainWindow.vala:538
+msgid "Select another device to delete snasphots"
+msgstr "Επιλέξτε άλλη συσκευή ή απελευθερώστε χώρο"
+
+#: src/Gtk/MainWindow.vala:463
+msgid "Select another device?"
+msgstr "Επιλογή άλλης συσκευής;"
+
+#: src/Gtk/RestoreExcludeBox.vala:57
+msgid "Select applications to exclude from restore"
+msgstr "Επιλογή εφαρμογών που θα εξαιρεθούν από την επαναφορά"
+
+#: src/AppConsole.vala:685
+msgid "Select backup device"
+msgstr "Επιλογή συσκευής αντιγράφων ασφαλείας"
+
+#: src/Gtk/ExcludeBox.vala:443
+msgid "Select directory"
+msgstr "Επιλογή καταλόγου"
+
+#: src/Gtk/ExcludeBox.vala:416
+msgid "Select file(s)"
+msgstr "Επιλογή αρχείου(-ων)"
+
+#: src/AppConsole.vala:759
+msgid "Select snapshot"
+msgstr "Επιλογή στιγμιοτύπου"
+
+#: src/Gtk/DeleteWindow.vala:336
+msgid "Select snapshots to delete"
+msgstr "Επιλογή στιγμιοτύπων προς διαγραφή"
+
+#: src/Gtk/RestoreDeviceBox.vala:439
+msgid "Select the device for root file system (/)"
+msgstr "Επιλογή της συσκευής για το root σύστημα αρχείων (/)"
+
+#: src/Gtk/RestoreDeviceBox.vala:83
+msgid "Select the devices where files will be restored."
+msgstr "Επιλογή των συσκευών στις οποίες θα γίνει αποκατάσταση των αρχείων."
+
+#: src/Gtk/ScheduleBox.vala:313
+msgid "Select the intervals for creating snapshots"
+msgstr "Επιλογή διαστημάτων για τη δημιουργία στιγμιότυπων"
+
+#: src/Gtk/ExcludeBox.vala:283
+msgid "Select the items to be removed from the list"
+msgstr "Επιλογή των στοιχείων προς αφαίρεση από τη λίστα"
+
+#: src/Core/SnapshotRepo.vala:472
+msgid "Select the snapshot device"
+msgstr "Επιλογή της συσκευής στιγμιότυπων"
+
+#: src/Gtk/MainWindow.vala:784
+msgid "Select the snapshot to restore"
+msgstr "Επιλογή στιγμιότυπου για επαναφορά"
+
+#: src/Gtk/DeleteWindow.vala:87
+msgid "Select the snapshots to be deleted"
+msgstr "Επιλογή στιγμιότυπων προς διαγραφή"
+
+#: src/Gtk/MainWindow.vala:600
+msgid "Select the snapshots to mark for deletion"
+msgstr "Επιλογή στιγμιότυπων προς διαγραφή"
+
+#: src/Gtk/RestoreDeviceBox.vala:79
+msgid "Select the target devices where system will be cloned."
+msgstr "Επιλογή των συσκευών προορισμού όπου θα κλωνοποιηθεί το σύστημα."
+
+#: src/Core/Main.vala:3427
+msgid "Selected default snapshot device"
+msgstr "Επιλέχθηκε η προεπιλεγμένη συσκευή στιγμιότυπου"
+
+#: src/Core/Main.vala:3378 src/Core/Main.vala:3382
+msgid "Selected default snapshot type"
+msgstr "Επιλέχθηκε ο προεπιλεγμένος τύπος στιγμιοτύπου"
+
+#: src/Gtk/BackupDeviceBox.vala:388
+msgid "Selected device does not have BTRFS partition"
+msgstr "Η επιλεγμένη συσκευή δε διαθέτει κατάτμηση BTRFS"
+
+#: src/Gtk/BackupDeviceBox.vala:385
+msgid "Selected device does not have Linux partition"
+msgstr "Η επιλεγμένη συσκευή δε διαθέτει κατάτμηση Linux"
+
+#: src/Core/SnapshotRepo.vala:144
+msgid "Selected snapshot device"
+msgstr "Επιλεγμένη συσκευή στιγμιότυπου"
+
+#: src/Core/SnapshotRepo.vala:509 src/AppConsole.vala:701
+msgid "Selected snapshot device is not a system disk"
+msgstr "Η επιλεγμένη συσκευή στιγμιότυπου δεν είναι δίσκος συστήματος"
+
+#: src/Core/Main.vala:2188
+msgid "Selected snapshot is marked for deletion"
+msgstr "Το επιλεγμένο στιγμιότυπο έχει επισημανθεί προς διαγραφή"
+
+#: src/Gtk/MainWindow.vala:815
+msgid "Selected snapshot is marked for deletion and cannot be restored"
+msgstr ""
+"Το επιλεγμένο στιγμιότυπο έχει επισημανθεί προς διαγραφή και δεν μπορεί να "
+"επαναφερθεί"
+
+#: src/Gtk/UsersBox.vala:234
+msgid ""
+"Selected user has an encrypted home directory. It's not possible to include "
+"only hidden files."
+msgstr ""
+"Ο επιλεγμένος χρήστης έχει κρυπτογραφήσει τον κατάλογό του. Δεν είναι δυνατή "
+"η συμπερίληψη μόνο των κρυφών αρχείων."
+
+#: src/Utility/Device.vala:1935
+#, c-format
+msgid "Serial"
+msgstr "Σειριακή"
+
+#: src/Core/Main.vala:230
+msgid "Session log file"
+msgstr "Αρχείο καταγραφής συνεδρίας"
+
+#: src/AppConsole.vala:370
+msgid "Set snapshot description"
+msgstr "Καθορισμός περιγραφής στιγμιότυπου"
+
+#: src/Gtk/MainWindow.vala:180 src/Gtk/MainWindow.vala:181
+#: src/Gtk/SettingsWindow.vala:56
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+
+#: src/Gtk/MainWindow.vala:191
+msgid "Settings wizard"
+msgstr "Οδηγός ρυθμίσεων"
+
+#: src/Gtk/FinishBox.vala:58
+msgid "Setup Complete"
+msgstr "Η ρύθμιση έχει ολοκληρωθεί"
+
+#: src/Gtk/SetupWizardWindow.vala:64
+msgid "Setup Wizard"
+msgstr "Οδηγός ρυθμίσεων"
+
+#: src/AppConsole.vala:390
+msgid "Show additional debug messages"
+msgstr "Εμφάνιση επιπροσθέτων μηνυμάτων αποσφαλμάτωσης"
+
+#: src/AppConsole.vala:394 src/AppGtk.vala:131
+msgid "Show all options"
+msgstr "Εμφάνιση όλων των ρυθμίσεων"
+
+#: src/Gtk/RestoreExcludeBox.vala:121
+msgid "Show more applications to exclude on the next page"
+msgstr "Εμφάνιση περισσότερων εφαρμογών προς αποκλεισμό στην επόμενη σελίδα"
+
+#: src/AppConsole.vala:391
+msgid "Show rsync output (default)"
+msgstr "Εμφάνιση εξόδου rsync (προεπιλογή)"
+
+#: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
+#: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
+#: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
+#: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:469 src/AppConsole.vala:508
+#, c-format
+msgid "Size"
+msgstr "Μέγεθος"
+
+#: src/Gtk/SnapshotBackendBox.vala:186
+msgid ""
+"Size of BTRFS snapshots are initially zero. As system files gradually change "
+"with time, data gets written to new data blocks which take up disk space "
+"(copy-on-write). Files in the snapshot continue to point to original data "
+"blocks."
+msgstr ""
+"Το μέγεθος των στιγμιότυπων BTRFS αρχικά είναι μηδενικό. Καθώς τα αρχεία του "
+"συστήματος αλλάζουν με το χρόνο, τα δεδομένα εγγράφονται σε νέα μπλοκ "
+"δεδομένων τα οποία καταλαμβάνουν χώρο στο δίσκο (copy-on-write). Τα αρχεία "
+"στο στιγμιότυπο συνεχίζουν να δείχνουν στα αρχικά μπλοκ δεδομένων."
+
+#: src/AppConsole.vala:379
+msgid "Skip GRUB2 reinstall"
+msgstr "Παράλειψη επανεγκατάστασης GRUB2"
+
+#: src/Core/Main.vala:2193 src/Core/SnapshotRepo.vala:631
+#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:94
+#, c-format
+msgid "Snapshot"
+msgstr "Στιγμιότυπο"
+
+#: src/Gtk/MainWindow.vala:548
+#, c-format
+msgid ""
+"Snapshot '%s' is being used by the system and cannot be deleted. Restart the "
+"system to activate the restored snapshot."
+msgstr ""
+"Το στιγμιότυπο '%s' χρησιμοποιείται από το σύστημα και δε δύναται να "
+"διαγραφεί. Επανεκκινήστε το σύστημα για να ενεργοποιήσετε το επαναφερόμενο "
+"στιγμιότυπο."
+
+#: src/Gtk/BackupFinishBox.vala:60
+msgid "Snapshot Created"
+msgstr "Το Στιγμιότυπο Δημιουργήθηκε"
+
+#: src/Gtk/SnapshotListBox.vala:295
+#, c-format
+msgid "Snapshot Levels"
+msgstr "Επίπεδα Στιγμιοτύπων"
+
+#: src/Gtk/MainWindow.vala:751
+msgid "Snapshot deletion in progress..."
+msgstr "Διαγραφή στιγμιότυπου σε εξέλιξη..."
+
+#: src/Core/SnapshotRepo.vala:442
+#, c-format
+msgid "Snapshot device"
+msgstr "Συσκευή στιγμιότυπων"
+
+#: src/Core/SnapshotRepo.vala:478 src/AppConsole.vala:675
+msgid "Snapshot device not available"
+msgstr "Η συσκευή στιγμιότυπων δεν είναι διαθέσιμη"
+
+#: src/Core/SnapshotRepo.vala:471 src/AppConsole.vala:671
+msgid "Snapshot device not selected"
+msgstr "Δεν έχει επιλεγεί συσκευή στιγμιότυπου"
+
+#: src/Core/SnapshotRepo.vala:446
+#, c-format
+msgid "Snapshot location"
+msgstr "Τοποθεσία στιγμιοτύπου"
+
+#: src/Core/Main.vala:1317
+msgid "Snapshot saved successfully"
+msgstr "Το στιγμιότυπο αποθηκεύτηκε επιτυχώς"
+
+#: src/Core/Main.vala:2183
+msgid "Snapshot to restore not specified!"
+msgstr "Δεν έχει καθοριστεί στιγμιότυπο προς επαναφορά!"
+
+#: src/Core/Main.vala:3024
+msgid "Snapshot will become active after system is rebooted."
+msgstr ""
+"Το στιγμιότυπο θα ενεργοποιηθεί μετά την επανεκκίνηση του συστήματος."
+
+#: src/Gtk/DeleteFinishBox.vala:60
+msgid "Snapshot(s) Deleted"
+msgstr "Το(-α) Στιγμιότυπο(-α) Διαγράφηκε(-αν)"
+
+#: src/Gtk/MainWindow.vala:309 src/Gtk/DeleteWindow.vala:89
+msgid "Snapshots"
+msgstr "Στιγμιότυπα"
+
+#: src/Gtk/SnapshotBackendBox.vala:178
+msgid ""
+"Snapshots are created and restored instantly. Snapshot creation is an atomic "
+"transaction at the file system level."
+msgstr ""
+"Τα στιγμιότυπα δημιουργούνται και αποκαθίστανται αμέσως. Η δημιουργία "
+"στιγμιότυπων είναι μια ατομική συναλλαγή σε επίπεδο συστήματος αρχείων."
+
+#: src/Gtk/SnapshotBackendBox.vala:195
+msgid ""
+"Snapshots are created by creating copies of system files using rsync, and "
+"hard-linking unchanged files from previous snapshot."
+msgstr ""
+"Τα στιγμιότυπα δημιουργούνται αντιγράφοντας αρχεία του συστήματος μέσω "
+"rsync, διασυνδέοντας τα αμετάβλητα αρχεία με εκείνα του προηγούμενου "
+"στιγμιοτύπου"
+
+#: src/Gtk/SnapshotBackendBox.vala:176
+msgid ""
+"Snapshots are created using the built-in features of the BTRFS file system."
+msgstr ""
+"Τα στιγμιότυπα δημιουργούνται χρησιμοποιώντας τις ενσωματωμένες δυνατότητες "
+"του συστήματος αρχείων BTRFS."
+
+#: src/Gtk/ScheduleBox.vala:167
+#, c-format
+msgid "Snapshots are not scheduled at fixed times."
+msgstr "Τα στιγμιότυπα δεν είναι προγραμματισμένα σε σταθερό χρόνο"
+
+#: src/Gtk/SnapshotBackendBox.vala:182
+msgid ""
+"Snapshots are perfect, byte-for-byte copies of the system. Nothing is "
+"excluded."
+msgstr ""
+"Τα στιγμιότυπα είναι τέλεια, μπιτ-προς-μπιτ αντίγραφα του συστήματος, Τίποτα "
+"δεν εξαιρείται."
+
+#: src/Gtk/SnapshotBackendBox.vala:180
+msgid ""
+"Snapshots are restored by replacing system subvolumes. Since files are never "
+"copied, deleted or overwritten, there is no risk of data loss. The existing "
+"system is preserved as a new snapshot after restore."
+msgstr ""
+"Τα στιγμιότυπα αποκαθίστανται με αντικατάσταση των υποόγκων του συστήματος. "
+"Δεδομένου ότι τα αρχεία δεν αντιγράφονται, διαγράφονται ή αντικαθίστανται "
+"ποτέ, δεν υπάρχει κίνδυνος απώλειας δεδομένων. Το υπάρχον σύστημα "
+"διατηρείται ως νέο στιγμιότυπο μετά την επαναφορά."
+
+#: src/Gtk/SnapshotBackendBox.vala:184
+msgid ""
+"Snapshots are saved on the same disk from which they are created (system "
+"disk). Storage on other disks is not supported. If system disk fails then "
+"snapshots stored on it will be lost along with the system."
+msgstr ""
+"Τα στιγμιότυπα αποθηκεύονται στον ίδιο δίσκο από τον οποίο δημιουργήθηκαν "
+"(δίσκος συστήματος). Η αποθήκευση σε άλλους δίσκους δεν υποστηρίζεται. Εάν ο "
+"δίσκος συστήματος αποτύχει, τότε τα στιγμιότυπα που είναι αποθηκευμένα σε "
+"αυτόν θα χαθούν μαζί με το σύστημα."
+
+#: src/Gtk/BackupDeviceBox.vala:107
+msgid ""
+"Snapshots are saved to /timeshift on selected partition. Other locations are "
+"not supported."
+msgstr ""
+"Τα στιγμιότυπα αποθηκεύονται στο /timeshift στην επιλεγμένη κατάτμηση. Άλλες "
+"τοποθεσίες δεν υποστηρίζονται."
+
+#: src/Gtk/BackupDeviceBox.vala:99
+msgid ""
+"Snapshots are saved to /timeshift-btrfs on selected partition. Other "
+"locations are not supported."
+msgstr ""
+"Τα στιγμιότυπα αποθηκεύονται στο /timeshift-btrfs στην επιλεγμένη κατάτμηση. "
+"Άλλες τοποθεσίες δεν υποστηρίζονται."
+
+#: src/Gtk/MainWindow.vala:965
+msgid "Snapshots available for restore"
+msgstr "Διαθέσιμα στιγμιότυπα για επαναφορά"
+
+#: src/Gtk/SnapshotBackendBox.vala:199
+msgid ""
+"Snapshots can be saved to any disk formatted with a Linux file system. "
+"Saving snapshots to non-system or external disk allows the system to be "
+"restored even if system disk is damaged or re-formatted."
+msgstr ""
+"Τα στιγμιότυπα δύνανται να αποθηκευτούν σε οποιονδήποτε δίσκο με σύστημα "
+"αρχείων Linux. Η αποθήκευση στιγμιότυπων σε μη-συστημικό ή εξωτερικό δίσκο "
+"επιτρέπει την αποκατάσταση του συστήματος ακόμη και αν ο δίσκος του "
+"συστήματος καταστραφεί ή επαναδιαμορφωθεί."
+
+#: src/AppConsole.vala:289
+msgid "Snapshots cannot be created in Live CD mode"
+msgstr "Δεν είναι δυνατή η δημιουργία στιγμιοτύπων σε λειτουργία Live CD"
+
+#: src/Gtk/MainWindow.vala:1012
+msgid "Snapshots will be created at selected intervals"
+msgstr "Τα στιγμιότυπα θα δημιουργούνται στα επιλεγμένα χρονικά διαστήματα"
+
+#: src/Gtk/ScheduleBox.vala:306
+msgid ""
+"Snapshots will be created at selected intervals if snapshot disk has enough "
+"space (> 1 GB)"
+msgstr ""
+"Τα στιγμιότυπα θα δημιουργούνται στα επιλεγμένα χρονικά διαστήματα αν ο "
+"δίσκος των στιγμιοτύπων διαθέτει αρκετό ελεύθερο χώρο (>1 GB)"
+
+#: src/AppConsole.vala:386
+msgid "Specify backup device (default: config)"
+msgstr "Καθορισμός εφεδρικής συσκευής (προεπιλογή: config)"
+
+#: src/AppConsole.vala:378
+msgid "Specify device for installing GRUB2 bootloader"
+msgstr "Καθορισμός συσκευής για την εγκατάσταση του GRUB2"
+
+#: src/AppConsole.vala:376
+msgid "Specify snapshot to restore"
+msgstr "Καθορισμός στιγμιότυπου για επαναφορά"
+
+#: src/AppConsole.vala:377
+msgid "Specify target device"
+msgstr "Καθορίστε τη συσκευή προορισμού"
+
+#: src/Core/SnapshotRepo.vala:452 src/Core/SnapshotRepo.vala:606
+#: src/Gtk/RsyncLogBox.vala:471
+#, c-format
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: src/Gtk/ScheduleBox.vala:154
+msgid "Stop cron emails for scheduled tasks"
+msgstr "Διακοπή αποστολής email για προγραμματισμένες εργασίες"
+
+#: src/Gtk/RestoreDeviceBox.vala:101
+msgid "Subvolume"
+msgstr "Υπο-όγκος"
+
+#: src/Core/Subvolume.vala:203
+#, c-format
+msgid "Subvolume exists at destination"
+msgstr "Ο υπο-όγκος υπάρχει στον προορισμό"
+
+#: src/Gtk/SnapshotListBox.vala:274
+#, c-format
+msgid "Subvolumes"
+msgstr "Υπο-όγκοι"
+
+#: src/Gtk/ExcludeBox.vala:267 src/Gtk/RestoreWindow.vala:120
+#: src/Gtk/ExcludeAppsBox.vala:134
+msgid "Summary"
+msgstr "Περίληψη"
+
+#: src/AppConsole.vala:388
+msgid "Switch to BTRFS mode (default: config)"
+msgstr "Εναλλαγή σε λειτουργία BTRFS (προεπιλογή: config"
+
+#: src/AppConsole.vala:389
+msgid "Switch to RSYNC mode (default: config)"
+msgstr "Εναλλαγή σε λειτουργία RSYNC (προεπιλογή: config)"
+
+#: src/Core/SnapshotRepo.vala:961
+msgid "Symlinks updated"
+msgstr "Ενημέρωση συμβολικών συνδέσμων"
+
+#: src/Core/Main.vala:2543
+msgid "Syncing file systems..."
+msgstr "Συγχρονισμός συστημάτων αρχείων..."
+
+#: src/Core/Main.vala:1522 src/Core/Main.vala:2713 src/Core/Main.vala:2954
+msgid "Syncing files with rsync..."
+msgstr "Συγχρονισμός αρχείων με το rsync..."
+
+#: src/AppGtk.vala:126
+msgid "Syntax"
+msgstr "Συντακτικό"
+
+#: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:126
+#, c-format
+msgid "System"
+msgstr "Σύστημα"
+
+#: src/Gtk/MainWindow.vala:912
+msgid "System Restore Utility"
+msgstr "Πρόγραμμα Επαναφοράς Συστήματος"
+
+#: src/Gtk/FinishBox.vala:82
+msgid "System can be rolled-back to a previous date by restoring a snapshot."
+msgstr ""
+"Το σύστημα μπορεί να επανέλθει σε προηγούμενη ημερομηνία με την επαναφορά "
+"ενός στιγμιότυπου."
+
+#: src/Core/Main.vala:2406
+msgid "System will reboot after files are restored"
+msgstr "Η συσκευή θα επανεκκινηθεί μετά την αποκατάσταση των αρχείων"
+
+#: src/Core/Main.vala:2356
+msgid "System will reboot after files are restored."
+msgstr "Η συσκευή θα επανεκκινηθεί μετά την αποκατάσταση των αρχείων."
+
+#: src/Core/Main.vala:1253 src/Core/Main.vala:1327
+msgid "Tagged snapshot"
+msgstr "Στιγμιότυπο με ετικέτα"
+
+#: src/Gtk/SnapshotListBox.vala:150 src/AppConsole.vala:438
+msgid "Tags"
+msgstr "Ετικέτες"
+
+#: src/Core/Main.vala:2218
+msgid "Target device is not mounted"
+msgstr "Η συσκευή προορισμού δεν είναι προσαρτημένη"
+
+#: src/Gtk/RestoreDeviceBox.vala:466
+msgid "Target device is same as system device"
+msgstr "Η συσκευή προορισμού είναι ίδια με τη συσκευή του συστήματος"
+
+#: src/Core/Main.vala:2212
+msgid "Target device not specified!"
+msgstr "Δεν έχει επιλεγεί συσκευή προορισμού"
+
+#: src/Gtk/ScheduleBox.vala:156
+msgid ""
+"The cron service sends the output of scheduled tasks as an email to the "
+"current user. Select this option to suppress the emails for cron tasks "
+"created by Timeshift."
+msgstr ""
+"Η υπηρεσία προγραμματισμένων εργασιών στέλνει την έξοδο των "
+"προγραμματισμένων εργασιών ως email στον τρέχοντα χρήστη. Επιλέξτε αυτήν την "
+"επιλογή για να σταματήσετε τα email για προγραμματισμένες εργασίες που "
+"δημιουργήθηκαν από το Timeshift."
+
+#: src/Core/Main.vala:393
+msgid "The system partition has an unsupported subvolume layout."
+msgstr "Η κατάτμηση συστήματος έχει μη υποστηριζόμενη διάταξη υπο-όγκων."
+
+#: src/Core/Main.vala:3616
+msgid "The target partition has an unsupported subvolume layout."
+msgstr "Η κατάτμηση συστήματος έχει μη-υποστηριζόμενη διάταξη υπο-όγκων."
+
+#: src/Gtk/BackupDeviceBox.vala:512
+#, c-format
+msgid "There are no snapshots on this device"
+msgstr "Δεν υπάρχουν στιγμιότυπα στη συσκευή"
+
+#: src/Utility/Device.vala:1380
+msgid "This device is not encrypted"
+msgstr "Η συσκευή δεν είναι κρυπτογραφημένη"
+
+#: src/Core/Main.vala:2372
+msgid ""
+"This software comes without absolutely NO warranty and the author takes no "
+"responsibility for any damage arising from the use of this program."
+msgstr ""
+"Αυτό το λογισμικό παρέχεται χωρίς ΚΑΜΙΑ απολύτως εγγύηση και ο δημιουργός "
+"του δεν αναλαμβάνει καμία ευθύνη για οποιαδήποτε ζημία προκύψει από τη χρήση "
+"αυτού του προγράμματος."
+
+#: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1011
+msgid "Timeshift is active"
+msgstr "Το Timeshift είναι ενεργό"
+
+#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:132
+#: src/Gtk/RsyncLogBox.vala:394
+#, c-format
+msgid "Timestamp"
+msgstr "Χρονικό αποτύπωμα"
+
+#: src/AppConsole.vala:624
+#, c-format
+msgid "To restore with default options, press the ENTER key for all prompts!"
+msgstr ""
+"Για να χρησιμοποιήσετε τις προεπιλεγμένες ρυθμίσεις, πατήστε το πλήκτρο "
+"ENTER για όλες τις προτροπές!"
+
+#: src/Utility/Device.vala:1949 src/Gtk/BackupDeviceBox.vala:190
+#: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:470
+#: src/AppConsole.vala:509
+#, c-format
+msgid "Type"
+msgstr "Τύπος"
+
+#: src/Utility/Device.vala:1948
+#, c-format
+msgid "UUID"
+msgstr "UUID"
+
+#: src/AppGtk.vala:107
+msgid "Unknown option"
+msgstr "Άγνωστη ρύθμιση"
+
+#: src/Core/Main.vala:1235
+msgid "Unknown snapshot type"
+msgstr "Άγνωστος τύπος στιγμιοτύπου"
+
+#: src/Core/Main.vala:1727
+msgid "Unknown value specified for option --tags"
+msgstr "Άγνωστη τιμή για την επιλογή --tags"
+
+#: src/Utility/Device.vala:1391 src/Utility/Device.vala:1507
+#, c-format
+msgid "Unlocked device is mapped to '%s'"
+msgstr "Η ξεκλείδωτη συσκευή έχει χαρτογραφηθεί στο '%s'"
+
+#: src/Utility/Device.vala:1506
+msgid "Unlocked successfully"
+msgstr "Επιτυχία ξεκλειδώματος"
+
+#: src/Utility/Device.vala:1722
+msgid "Unmounting from"
+msgstr "Αποπροσάρτηση από"
+
+#: src/Gtk/SnapshotListBox.vala:198
+msgid "Unshared"
+msgstr "Μη κοινόχρηστο"
+
+#: src/Core/Main.vala:3620 src/Gtk/RestoreDeviceBox.vala:508
+msgid "Unsupported Subvolume Layout"
+msgstr "Μη-υποστηριζόμενη Διάταξη Subvolume"
+
+#: src/Gtk/BootOptionsBox.vala:150
+msgid "Update GRUB menu"
+msgstr "Επικαιροποίηση του μενού GRUB"
+
+#: src/Gtk/BootOptionsBox.vala:135
+msgid "Update initramfs"
+msgstr "Επικαιροποίηση του initramfs"
+
+#: src/Core/Main.vala:2893
+msgid "Updated /etc/crypttab on target device"
+msgstr "Το /etc/crypttab της συσκευής προορισμού επικαιροποιήθηκε"
+
+#: src/Core/Main.vala:2813
+msgid "Updated /etc/fstab on target device"
+msgstr "Το /etc/fstab της συσκευής προορισμού επικαιροποιήθηκε"
+
+#: src/Gtk/BootOptionsBox.vala:152
+msgid ""
+"Updates the GRUB menu entries (recommended). This is safe to run and should "
+"be left selected."
+msgstr ""
+"Επικαιροποιεί τις καταχωρήσεις του μενού GRUB (συνιστάται).Η διαδικασία "
+"είναι ασφαλής και θα πρέπει να παραμείνει επιλεγμένη."
+
+#: src/Core/Main.vala:2526
+msgid "Updating GRUB menu..."
+msgstr "Επικαιροποίηση μενού GRUB..."
+
+#: src/Core/Main.vala:2737
+msgid "Updating bootloader configuration..."
+msgstr "Επικαιροποίηση ρυθμίσεων bootloader..."
+
+#: src/Utility/Device.vala:1956
+#, c-format
+msgid "Used"
+msgstr "Σε χρήση"
+
+#: src/Gtk/SetupWizardWindow.vala:114 src/Gtk/UsersBox.vala:101
+msgid "User"
+msgstr "Χρήστης"
+
+#: src/Gtk/UsersBox.vala:62
+msgid "User Home Directories"
+msgstr "Αρχικοί Κατάλογοι Χρηστών"
+
+#: src/Utility/Device.vala:1461
+msgid "User cancelled the password prompt"
+msgstr "Ο χρήστης ακύρωσε την προτροπή κωδικού πρόσβασης"
+
+#: src/Gtk/UsersBox.vala:66
+msgid ""
+"User home directories are excluded by default unless you enable them here"
+msgstr ""
+"Οι αρχικοί κατάλογοι των χρηστών αποκλείονται από προεπιλογή, εκτός αν τους "
+"ενεργοποιήσετε εδώ"
+
+#: src/Gtk/SettingsWindow.vala:101
+msgid "Users"
+msgstr "Χρήστες"
+
+#: src/Gtk/RestoreWindow.vala:114
+msgid "Users Home"
+msgstr "Αρχικοί Κατάλογοι Χρηστών"
+
+#: src/Utility/Device.vala:1933
+#, c-format
+msgid "Vendor"
+msgstr "Διανομέας"
+
+#: src/Gtk/SnapshotListBox.vala:342
+msgid "View Rsync Log for Create"
+msgstr "Προβολή αρχείου καταγραφής Rsync για τη Δημιουργία"
+
+#: src/Gtk/SnapshotListBox.vala:349
+msgid "View Rsync Log for Restore"
+msgstr "Προβολή αρχείου καταγραφής Rsync για την Επαναφορά"
+
+#: src/Gtk/MainWindow.vala:369
+msgid "View TimeShift Logs"
+msgstr "Προβολή αρχείων καταγραφής TimeShift"
+
+#: src/Core/Main.vala:2267 src/Gtk/RestoreSummaryBox.vala:53
+msgid "Warning"
+msgstr "Προειδοποίηση"
+
+#: src/Gtk/RestoreExcludeBox.vala:61
+msgid "Web Browsers"
+msgstr "Φυλλομετρητές"
+
+#: src/Gtk/SnapshotListBox.vala:300 src/Gtk/ScheduleBox.vala:82
+msgid "Weekly"
+msgstr "Εβδομαδιαίως"
+
+#: src/Core/Main.vala:1138
+msgid "Weekly snapshot failed!"
+msgstr "Αποτυχία λήψης εβδομαδιαίου στιγμιοτύπου!"
+
+#: src/Core/Main.vala:1119
+msgid "Weekly snapshots are enabled"
+msgstr "Τα εβδομαδιαία στιγμιότυπα είναι ενεργά"
+
+#: src/Gtk/DeleteFinishBox.vala:63 src/Gtk/BackupFinishBox.vala:63
+msgid "With Errors"
+msgstr "Με Σφάλματα"
+
+#: src/Gtk/MainWindow.vala:190
+msgid "Wizard"
+msgstr "Οδηγός"
+
+#: src/Utility/Device.vala:1434 src/Utility/Device.vala:1480
+msgid "Wrong password"
+msgstr "Λανθασμένος κωδικός"
+
+#: src/Utility/Gtk/CustomMessageDialog.vala:156
+msgid "Yes"
+msgstr "Ναι"
+
+#: src/Gtk/RestoreFinishBox.vala:98
+msgid ""
+"You can continue working on the current system. After restart, the current "
+"system will be visible as a new snapshot. This snapshot can be restored "
+"later if required, to 'undo' the restore."
+msgstr ""
+"Μπορείτε να συνεχίσετε τις εργασίες σας στο τρέχον σύστημα. Κατόπιν "
+"επανεκκίνησης, το τρέχον σύστημα θα είναι ορατό ως ένα νέο στιγμιότυπο. Αυτό "
+"το στιγμιότυπο μπορεί να επανέλθει αργότερα, αν χρειαστεί, αναιρώντας την "
+"επαναφορά."
+
+#: src/AppConsole.vala:1023
+#, c-format
+msgid "[ENTER = Default (%s), a = Abort]"
+msgstr "[ENTER = Προεπιλογή (%s), a = Ακύρωση]"
+
+#: src/AppConsole.vala:894
+#, c-format
+msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
+msgstr "[ENTER = Προεπιλογή (%s), r = Ριζική συσκευή, a = Ακύρωση]"
+
+#: src/Gtk/RestoreDeviceBox.vala:401
+msgid ""
+"[For Experienced Users] Change these settings if the restored system fails "
+"to boot."
+msgstr ""
+"[Για έμπειρους χρήστες] Αλλάξτε αυτές τις ρυθμίσεις εάν το σύστημα που έχει "
+"αποκατασταθεί δεν μπορεί να εκκινήσει."
+
+#: src/Utility/AppLock.vala:54
+msgid "[Warning] Deleted invalid lock"
+msgstr "[Προειδοποίηση] Διαγραφή άκυρης κλειδαριάς"
+
+#: src/Core/SnapshotRepo.vala:814
+msgid "all"
+msgstr "όλα"
+
+#: src/Core/Main.vala:1655 src/Core/Main.vala:4030 src/Core/Main.vala:4115
+#: src/Core/Subvolume.vala:215
+msgid "btrfs returned an error"
+msgstr "Το btrfs επέστρεψε σφάλμα"
+
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1554
+msgid "complete"
+msgstr "ολοκληρωμένα"
+
+#: src/Utility/CronTab.vala:261
+msgid "crontab file exported"
+msgstr "έγινε εξαγωγή του αρχείου προγραμματισμένων εργασιών"
+
+#: src/Utility/CronTab.vala:244
+msgid "crontab file installed"
+msgstr "έγινε εγκατάσταση του αρχείου προγραμματισμένων εργασιών"
+
+#: src/Core/SnapshotRepo.vala:800
+msgid "incomplete"
+msgstr "μη-ολοκληρωμένα"
+
+#: src/Core/SnapshotRepo.vala:782
+msgid "marked for deletion"
+msgstr "Επισημασμένα προς διαγραφή"
+
+#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+msgid "mounted at path"
+msgstr "προσαρτημένο στη διαδρομή"
+
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1554
+#: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
+#: src/Gtk/DeleteBox.vala:149
+msgid "remaining"
+msgstr "απομένουν"
+
+#: src/Core/Main.vala:1565
+msgid "rsync returned an error"
+msgstr "Το rsync επέστρεψε σφάλμα"
+
+#: src/Core/SnapshotRepo.vala:631 src/Core/SnapshotRepo.vala:684
+#: src/Core/SnapshotRepo.vala:763
+msgid "un-tagged"
+msgstr "χωρίς ετικέτα"
+
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:9
+msgid "Timeshift"
+msgstr "Timeshift"
+
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:10
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:22
+msgid "Run Timeshift as Administrator"
+msgstr "Εκτέλεση του Timeshift ως διαχειριστής"
+
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:21
+msgid "Authentication is required to run Timeshift as Administrator"
+msgstr ""
+"Απαιτείται αυθεντικοποίηση για την εκτέλεση του Timeshift ως διαχειριστής"

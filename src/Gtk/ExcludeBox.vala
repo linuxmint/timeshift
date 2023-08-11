@@ -183,7 +183,7 @@ class ExcludeBox : Gtk.Box{
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter)=>{
 			string pattern;
 			model.get (iter, 0, out pattern, -1);
-			(cell as Gtk.CellRendererText).text =
+			((Gtk.CellRendererText)cell).text =
 				pattern.has_prefix("+ ") ? pattern[2:pattern.length] : pattern;
 		});
 
@@ -489,7 +489,7 @@ class ExcludeBox : Gtk.Box{
 		model.set (iter, 2, include);
 		model.set (iter, 3, !include);
 
-		var adj = treeview.get_hadjustment();
+		var adj = ((Gtk.Scrollable)treeview).get_hadjustment();
 		adj.value = adj.upper;
 	}
 

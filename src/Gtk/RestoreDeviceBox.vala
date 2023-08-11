@@ -200,11 +200,11 @@ class RestoreDeviceBox : Gtk.Box{
 			if (dev != null){
 
 				if (dev.type == "disk"){
-					(cell as Gtk.CellRendererPixbuf).icon_name = IconManager.ICON_HARDDRIVE;
+					((Gtk.CellRendererPixbuf)cell).icon_name = IconManager.ICON_HARDDRIVE;
 				}
 			
-				(cell as Gtk.CellRendererPixbuf).sensitive = (dev.type != "disk");
-				(cell as Gtk.CellRendererPixbuf).visible = (dev.type == "disk");
+				((Gtk.CellRendererPixbuf)cell).sensitive = (dev.type != "disk");
+				((Gtk.CellRendererPixbuf)cell).visible = (dev.type == "disk");
 			}
 		});
 
@@ -237,11 +237,11 @@ class RestoreDeviceBox : Gtk.Box{
 			model.get (iter, 0, out dev, -1);
 
 			if (dev != null){
-				(cell as Gtk.CellRendererText).markup = dev.description_simple_formatted();
-				(cell as Gtk.CellRendererText).sensitive = (dev.type != "disk");
+				((Gtk.CellRendererText)cell).markup = dev.description_simple_formatted();
+				((Gtk.CellRendererText)cell).sensitive = (dev.type != "disk");
 			}
 			else{
-				(cell as Gtk.CellRendererText).markup = _("Keep on Root Device");
+				((Gtk.CellRendererText)cell).markup = _("Keep on Root Device");
 			}
 		});
 		

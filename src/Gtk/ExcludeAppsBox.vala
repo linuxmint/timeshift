@@ -70,7 +70,6 @@ class ExcludeAppsBox : Gtk.Box{
 		treeview = new TreeView();
 		treeview.get_selection().mode = SelectionMode.MULTIPLE;
 		treeview.headers_visible = false;
-		treeview.rules_hint = true;
 		treeview.reorderable = true;
 		treeview.set_tooltip_column(2);
 		//treeview.row_activated.connect(treeview_row_activated);
@@ -101,7 +100,7 @@ class ExcludeAppsBox : Gtk.Box{
 		col.set_cell_data_func(cell_toggle, (cell_layout, cell, model, iter)=>{
 			AppExcludeEntry entry;
 			model.get (iter, 0, out entry, -1);
-			(cell as Gtk.CellRendererToggle).active = entry.enabled;
+			((Gtk.CellRendererToggle)cell).active = entry.enabled;
 		});
 
 		cell_toggle.toggled.connect ((cell_toggle, path) => {
@@ -125,7 +124,7 @@ class ExcludeAppsBox : Gtk.Box{
 			
 			AppExcludeEntry entry;
 			model.get (iter, 0, out entry, -1);
-			(cell as Gtk.CellRendererText).text = entry.name;
+			((Gtk.CellRendererText)cell).text = entry.name;
 		});
 	}
 

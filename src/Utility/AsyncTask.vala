@@ -55,7 +55,10 @@ public abstract class AsyncTask : GLib.Object{
 	
 	// public
 	public AppStatus status;
-	public string status_line = "";
+
+    private string _status_line = "";
+    public GLib.Mutex status_line_mutex;
+
 	public int exit_code = 0;
 	public string error_msg = "";
 	public GLib.Timer timer;
@@ -73,6 +76,32 @@ public abstract class AsyncTask : GLib.Object{
 	public signal void stderr_line_read(string line);
 	public signal void task_complete();
 
+    [CCode(notify = false)]
+    public string status_line
+    {
+        owned get {
+            return _get_status_line();
+        }
+
+        set
+        {
+            status_line_mutex.lock();
+            _status_line = value;
+            status_line_mutex.unlock();
+        }
+    }
+
+    private string _get_status_line() {
+        string ret = "";
+
+        if (status_line_mutex.trylock()) {
+            ret = _status_line;
+            status_line_mutex.unlock();
+        }
+
+        return ret;
+    }
+
 	protected AsyncTask(){
 		
 		working_dir = TEMP_DIR + "/" + timestamp_for_path();
@@ -80,7 +109,8 @@ public abstract class AsyncTask : GLib.Object{
 		log_file = path_combine(working_dir, "task.log");
 
 		//regex = new Gee.HashMap<string,Regex>(); // needs to be initialized again in instance constructor
-		
+        status_line_mutex = GLib.Mutex();
+
 		dir_create(working_dir);
 	}
 	
@@ -144,7 +174,7 @@ public abstract class AsyncTask : GLib.Object{
 
 			try {
 				//start thread for reading output stream
-				Thread.create<void> (read_stdout, true);
+				new Thread<void>.try ("async-task-stdout-reader", () => {read_stdout();});
 			} catch (Error e) {
 				log_error ("AsyncTask.begin():create_thread:read_stdout()");
 				log_error (e.message);
@@ -152,7 +182,7 @@ public abstract class AsyncTask : GLib.Object{
 
 			try {
 				//start thread for reading error stream
-				Thread.create<void> (read_stderr, true);
+				new Thread<void>.try ("async-task-stderr-reader", () => {read_stderr();});
 			} catch (Error e) {
 				log_error ("AsyncTask.begin():create_thread:read_stderr()");
 				log_error (e.message);

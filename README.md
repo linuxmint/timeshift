@@ -2,11 +2,11 @@
 
 Timeshift for Linux is an application that provides functionality similar to the _System Restore_ feature in Windows and the _Time Machine_ tool in Mac OS. Timeshift protects your system by taking incremental snapshots of the file system at regular intervals. These snapshots can be restored at a later date to undo all changes to the system. 
 
-In RSYNC mode, snapshots are taken using [rsync](http://rsync.samba.org/) and [hard-links](http://en.wikipedia.org/wiki/Hard_link). Common files are shared between snapshots which saves disk space. Each snapshot is a full system backup that can be browsed with a file manager.
+In RSYNC mode, snapshots are taken using [rsync](https://rsync.samba.org) and [hard-links](https://en.wikipedia.org/wiki/Hard_link). Common files are shared between snapshots which saves disk space. Each snapshot is a full system backup that can be browsed with a file manager.
 
 In BTRFS mode, snapshots are taken using the in-built features of the BTRFS filesystem. BTRFS snapshots are supported only on BTRFS systems having an Ubuntu-type subvolume layout (with @ and @home subvolumes).
 
-Timeshift is similar to applications like [rsnapshot](http://www.rsnapshot.org/), [BackInTime](https://github.com/bit-team/backintime) and [TimeVault](https://wiki.ubuntu.com/TimeVault) but with different goals. It is designed to protect only system files and settings. User files such as documents, pictures and music are excluded. This ensures that your files remains unchanged when you restore your system to an earlier date. If you need a tool to back up your documents and files please take a look at the excellent [BackInTime](https://github.com/bit-team/backintime) application which is more configurable and provides options for saving user files.  
+Timeshift is similar to applications like [rsnapshot](https://www.rsnapshot.org), [BackInTime](https://github.com/bit-team/backintime) and [TimeVault](https://wiki.ubuntu.com/TimeVault) but with different goals. It is designed to protect only system files and settings. User files such as documents, pictures and music are excluded. This ensures that your files remain unchanged when you restore your system to an earlier date. If you need a tool to back up your documents and files please take a look at the excellent [BackInTime](https://github.com/bit-team/backintime) application which is more configurable and provides options for saving user files.  
 
 ![](images/main_window.png)
 
@@ -35,6 +35,14 @@ Nowadays Timeshift is part of the Xapp project which is a collection of cross-DE
 *   Number of snapshots to retain can be specified for each level
 
 *   Boot snapshots provide an additional level of backup and are created every time the system starts. Boot snapshots are created with a delay of 10 mins so that system startup is not affected.
+
+*   Snapshots are tagged to indicate their time interval:
+    - H: Hourly
+    - D: Daily
+    - W: Weekly
+    - M: Monthly
+    - B: Boot
+    - O: On-demand (Manually created)
 
 ![](images/settings_schedule.png)
 
@@ -103,6 +111,25 @@ You can selectively include items for backup from the ***Settings*** window. Sel
   - **@** may be on BTRFS volume and **/home** may be mounted on non-BTRFS partition
   - If swap files are used they should not be located in **@** or **@home** and could instead be stored in their own subvolume, eg **@swap**
   - Other layouts are not supported
+  - Make sure, that you have selected subvolume *@* or */@* for root. You can check that executing script below, and if output is *OK*, then everything is alright.
+
+    ```shell
+    grep -E '^[^#].+/\s+btrfs' /etc/fstab | \
+    grep -oE 'subvol=[^,]+' | \
+    cut -d= -f2 | \
+    grep -qE '^/?@$' && \
+    echo 'OK' || \
+    echo 'Not OK'
+    ```
+
+  - Default BTRFS subvolume must be /. You can make it using script below.
+
+    ```shell
+    MP="$(mktemp -d)"
+    mount | awk '/on \/ type btrfs/{print $1}' | sudo xargs -I{} mount {} "$MP" && \
+    sudo btrfs subvolume set-default 5 "$MP"; \
+    sudo umount "$MP"
+    ```
 
 - **GRUB2** - Bootloader must be GRUB2. GRUB legacy and other bootloaders are not supported.
 
@@ -141,21 +168,29 @@ sudo dnf update
 sudo dnf install timeshift
 ```
 
+#### Arch
+
+```sh
+sudo pacman -S timeshift
+```
+
 ## Removal
 
 Run the following command in a terminal window:  
 
     sudo apt-get remove timeshift
 
-or  
+or
 
-    sudo timeshift-uninstall
+    sudo dnf remove timeshift
+
+or
+
+    sudo pacman -R timeshift
+
+depending in your package management system.
 
 Remember to delete all snapshots before un-installing. Otherwise the snapshots continue to occupy space on your system.  To delete all snapshots, run the application, select all snapshots from the list (CTRL+A) and click the _Delete_ button on the toolbar. This will delete all snapshots and remove the _/timeshift_ folder in the root directory.     
-
-If you used the installer to install Timeshift, you can remove the installed files with following command:  
-
-    sudo timeshift-uninstall
 
 ## Known Issues & Limitations
 
@@ -187,3 +222,4 @@ You can contribute to this project in various ways:
 - Submitting ideas, and reporting issues in the [tracker](https://github.com/linuxmint/timeshift/issues)
 - Translating this application to other languages in [Launchpad](https://translations.launchpad.net/linuxmint/latest/+translations)
 - Contributing code changes by fixing issues and submitting a pull request (do not modify translations, this is done in Launchpad)
+- To get started with coding, see the [development](/docs/development.md) docs

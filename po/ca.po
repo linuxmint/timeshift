@@ -1,0 +1,2689 @@
+# Catalan translation for timeshift
+# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
+# This file is distributed under the same license as the timeshift package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: timeshift\n"
+"Report-Msgid-Bugs-To: teejee2008@gmail.com\n"
+"POT-Creation-Date: 2023-06-01 11:34+0100\n"
+"PO-Revision-Date: 2023-06-02 22:40+0000\n"
+"Last-Translator: Isidro Pisa <isidro@utils.info>\n"
+"Language-Team: Catalan <ca@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2023-07-07 12:57+0000\n"
+"X-Generator: Launchpad (build 2ac9e3bf4ab511504f8fc651371e24a6a047ba12)\n"
+"Language: ca\n"
+
+#: src/AppConsole.vala:626
+#, c-format
+msgid ""
+"\n"
+"Press ENTER to continue..."
+msgstr ""
+"\n"
+"Premeu RETORN per continuar..."
+
+#: src/Core/SnapshotRepo.vala:556
+#, c-format
+msgid "%d snapshots, %s free"
+msgstr "%d instantànies, %s lliures"
+
+#: src/AppConsole.vala:927
+#, c-format
+msgid "'%s' will be on '%s'"
+msgstr "'%s' serà a '%s'"
+
+#: src/AppConsole.vala:924
+#, c-format
+msgid "'%s' will be on root device"
+msgstr "'%s' estarà sobre el dispositiu arrel"
+
+#: src/Gtk/BootOptionsBox.vala:118
+msgid "(Re)install GRUB2 on:"
+msgstr "(Re)instal·la GRUB2 a:"
+
+#: src/Core/Main.vala:379
+msgid "** Uninstalled Timeshift BTRFS **"
+msgstr "** Desinstal·lat Timeshift BTRFS **"
+
+#: src/Core/Main.vala:3527
+msgid "/ is mapped to device"
+msgstr "/ està mapejat al dispositiu"
+
+#: src/Core/Main.vala:3549
+msgid "/boot is mapped to device"
+msgstr "/boot està mapejat al dispositiu"
+
+#: src/Core/Main.vala:3560
+msgid "/boot/efi is mapped to device"
+msgstr "/boot/efi està mapejat al dispositiu"
+
+#: src/Core/Main.vala:3538
+msgid "/home is mapped to device"
+msgstr "/home està mapejat al dispositiu"
+
+#: src/Gtk/SnapshotListBox.vala:289
+msgid "<b>Comments</b> (double-click to edit)"
+msgstr "<b>Comentaris</b> (doble clic per editar)"
+
+#: src/Gtk/ScheduleBox.vala:168
+msgid ""
+"A maintenance task runs once every hour and creates snapshots as needed."
+msgstr ""
+"Cada hora s'executa una tasca de manteniment i crea instantànies si cal."
+
+#: src/AppConsole.vala:711 src/AppConsole.vala:775 src/AppConsole.vala:907
+#: src/AppConsole.vala:1002 src/AppConsole.vala:1047 src/AppConsole.vala:1088
+#: src/AppConsole.vala:1106
+msgid "Aborted."
+msgstr "Avortat."
+
+#: src/Gtk/MainWindow.vala:375
+msgid "About"
+msgstr "Quant a..."
+
+#: src/Gtk/RsyncLogBox.vala:471
+msgid "Action"
+msgstr "Acció"
+
+#: src/Gtk/ExcludeBox.vala:225
+msgid "Add"
+msgstr "Afegeix"
+
+#: src/Gtk/ExcludeBox.vala:242
+msgid "Add Files"
+msgstr "Afegeix fitxers"
+
+#: src/Gtk/ExcludeBox.vala:248
+msgid "Add Folders"
+msgstr "Afegeix carpetes"
+
+#: src/Gtk/ExcludeBox.vala:225
+msgid "Add custom pattern"
+msgstr "Afegeix patró personalitzat"
+
+#: src/Gtk/ExcludeBox.vala:248
+msgid "Add directories"
+msgstr "Afegeix directoris"
+
+#: src/Gtk/ExcludeBox.vala:242
+msgid "Add files"
+msgstr "Afegeix fitxers"
+
+#: src/AppConsole.vala:371
+msgid "Add tags to snapshot (default: O)"
+msgstr "Afegeix etiquetes a la instantània (defecte: O)"
+
+#: src/Utility/CronTab.vala:312
+msgid "Added cron task"
+msgstr "Tasca cron afegida"
+
+#: src/AppGtk.vala:147
+msgid "Admin Access Required"
+msgstr "Es necessiten drets d'administrador"
+
+#: src/AppGtk.vala:142
+msgid "Admin access is required to backup and restore system files."
+msgstr ""
+"Es requereix accés com a administrador per copiar i restaurar fitxers del "
+"sistema."
+
+#: src/Gtk/RsyncLogBox.vala:363
+msgid "All Files"
+msgstr "Tots els arxius"
+
+#: src/Gtk/SnapshotBackendBox.vala:197
+msgid ""
+"All files are copied when first snapshot is created. Subsequent snapshots "
+"are incremental. Unchanged files will be hard-linked from the previous "
+"snapshot if available."
+msgstr ""
+"La primera vegada que es crea una instantània es copien tots els fitxers. "
+"Les instantànies següents són incrementals. Els fitxers sense canvis es "
+"vinculen amb enllaç fort a la instantània anterior, si està disponible."
+
+#: src/Gtk/ExcludeMessageWindow.vala:129
+msgid "All other files and folders are excluded."
+msgstr "S'han exclòs la resta dels fitxers i carpetes."
+
+#: src/Gtk/RestoreDeviceBox.vala:486
+msgid ""
+"An encrypted device is selected for root file system (/). The boot directory "
+"(/boot) must be mounted on a non-encrypted device for the system to boot "
+"successfully.\n"
+"\n"
+"Either select a non-encrypted device for boot directory or select a non-"
+"encrypted device for root filesystem."
+msgstr ""
+"Heu seleccionat com a arrel del sistema de fitxers (/) un dispositiu xifrat. "
+"El directori d'arrencada (/boot) ha de muntar-se en un dispositiu no xifrat "
+"perquè el sistema arrenqui correctament.\n"
+"\n"
+"Heu de seleccionar un dispositiu no xifrat, bé per al directori d'arrencada "
+"o bé com a arrel del sistema de fitxers."
+
+#: src/Core/Main.vala:265
+msgid "Another instance of Timeshift is creating a snapshot."
+msgstr "Una altra instància de Timeshift està creant una instantània."
+
+#: src/Utility/AppLock.vala:49
+msgid "Another instance of this application is running"
+msgstr "Una altra instància d'aquesta aplicació s'està executant"
+
+#: src/Core/Main.vala:269
+msgid "Another instance of timeshift is currently running!"
+msgstr "Ja s'està executant una altra instància de timeshift!"
+
+#: src/AppConsole.vala:387
+msgid "Answer YES to all confirmation prompts"
+msgstr "Responeu SÍ a totes les peticions de confirmació"
+
+#: src/Core/Main.vala:3364
+msgid "App config loaded"
+msgstr "S'ha carregat la configuració de l'aplicació"
+
+#: src/Core/Main.vala:3252
+msgid "App config saved"
+msgstr "S'ha desat la configuració de l'aplicació"
+
+#: src/AppConsole.vala:107
+msgid "Application needs admin access."
+msgstr "L'aplicació necessita accés d'administrador."
+
+#: src/Core/Main.vala:3704
+msgid "Application will exit"
+msgstr "Es tancarà l'aplicació"
+
+#: src/Core/Main.vala:395
+msgid "Application will exit."
+msgstr "Es tancarà l'aplicació."
+
+#: src/Gtk/MainWindow.vala:345
+msgid "Available"
+msgstr "Disponibles"
+
+#: src/Gtk/SnapshotBackendBox.vala:95
+msgid "BTRFS"
+msgstr "BTRFS"
+
+#: src/Gtk/SnapshotBackendBox.vala:174
+msgid "BTRFS Snapshots"
+msgstr "Instantànies BTRFS"
+
+#: src/Core/Main.vala:2202 src/Core/Main.vala:2206
+msgid "BTRFS device is not mounted"
+msgstr "El dispositiu BTRFS no està muntat"
+
+#: src/Gtk/BackupDeviceBox.vala:98
+msgid ""
+"BTRFS snapshots are saved on system partition. Other partitions are not "
+"supported."
+msgstr ""
+"Les instantànies BTRFS es guarden a la partició del sistema. Altres "
+"particions no són compatibles."
+
+#: src/Gtk/FinishBox.vala:92
+msgid ""
+"BTRFS snapshots are saved on the same disk from which it is created. If the "
+"system disk fails, snapshots will be lost along with the system. Save "
+"snapshots to an external non-system disk in RSYNC mode to guard against disk "
+"failures."
+msgstr ""
+"Les instantànies BTRFS es desen al mateix disc des d'on es creen. Si el disc "
+"del sistema falla, les instantànies es perdran juntament amb el sistema. "
+"Deseu les instantànies en un disc extern no de sistema, en mode RSYNC per "
+"protegir-vos contra fallades de disc."
+
+#: src/Gtk/SetupWizardWindow.vala:94
+msgid "Backend"
+msgstr "Suport"
+
+#: src/Gtk/BackupWindow.vala:92 src/AppConsole.vala:367
+msgid "Backup"
+msgstr "Còpia de seguretat"
+
+#: src/Core/Main.vala:2178
+msgid "Backup Device"
+msgstr "Dispositiu de còpia de seguretat"
+
+#: src/Core/Main.vala:2173
+msgid "Backup device not specified!"
+msgstr "Dispositiu de còpia de seguretat no especificat!"
+
+#: src/Gtk/RestoreExcludeBox.vala:91
+msgid "Bittorrent Clients"
+msgstr "Clients Bittorrent"
+
+#: src/Gtk/SnapshotListBox.vala:297 src/Gtk/ScheduleBox.vala:136
+msgid "Boot"
+msgstr "Arrencada"
+
+#: src/Gtk/RestoreDeviceBox.vala:485
+msgid "Boot device not selected"
+msgstr "Dispositiu d'arrencada no seleccionat"
+
+#: src/Core/Main.vala:1045
+msgid "Boot snapshot failed!"
+msgstr "La instantània de l'arrencada ha fallat!"
+
+#: src/Gtk/ScheduleBox.vala:169
+msgid ""
+"Boot snapshots are created with a delay of 10 minutes after system startup."
+msgstr ""
+"Les instantànies d'arrencada es creen 10 minuts després de l'inici del "
+"sistema."
+
+#: src/Core/Main.vala:1026
+msgid "Boot snapshots are enabled"
+msgstr "Les instantànies de l'arrencada estan habilitades"
+
+#: src/Gtk/BootOptionsWindow.vala:49
+msgid "Bootloader Options"
+msgstr "Opcions del gestor d'arrencada"
+
+#: src/Gtk/RestoreDeviceBox.vala:402
+msgid "Bootloader Options (Advanced)"
+msgstr "Opcions del gestor d'arrencada (avançat)"
+
+#: src/Gtk/MainWindow.vala:170
+msgid "Browse"
+msgstr "Navega"
+
+#: src/Gtk/SnapshotListBox.vala:335
+msgid "Browse Files"
+msgstr "Navega pels fitxers"
+
+#: src/Gtk/MainWindow.vala:171
+msgid "Browse selected snapshot"
+msgstr "Navega per la instantània seleccionada"
+
+#: src/Core/Main.vala:2668
+msgid "Building file list..."
+msgstr "S'està construint la llista de fitxers..."
+
+#: src/Core/Main.vala:1405
+msgid "Calculating required disk space..."
+msgstr "Calculant l'espai de disc necessari..."
+
+#: src/Utility/Gtk/CustomMessageDialog.vala:152 src/Utility/GtkHelper.vala:109
+#: src/Gtk/RestoreWindow.vala:215 src/Gtk/RestoreWindow.vala:224
+#: src/Gtk/BackupWindow.vala:181 src/Gtk/SetupWizardWindow.vala:220
+#: src/Gtk/DeleteWindow.vala:190
+msgid "Cancel"
+msgstr "Cancel·la"
+
+#: src/Gtk/RestoreWindow.vala:230
+msgid "Cancel restore?"
+msgstr "Cancel·lar la restauració?"
+
+#: src/Gtk/RestoreWindow.vala:232
+msgid ""
+"Cancelling the restore process will leave the target system in an "
+"inconsistent state. The system may fail to boot or you may run into various "
+"issues. After cancelling, you need to restore another snapshot, to bring the "
+"system to a consistent state. Click Yes to confirm."
+msgstr ""
+"Cancel·lar el procés de restauració deixarà el sistema destinació en un "
+"estat inconsistent. Pot fallar l'arrencada del sistema o haver-hi d'altres "
+"problemes. Després de cancel·lar, heu de restaurar una altra instantània per "
+"portar el sistema a un estat consistent. Premeu Sí per confirmar-ho."
+
+#: src/Gtk/MainWindow.vala:547
+msgid "Cannot Delete Live Snapshot"
+msgstr "No es pot suprimir una instantània autònoma."
+
+#: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
+#: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
+#: src/Gtk/RsyncLogBox.vala:566 src/Gtk/RsyncLogBox.vala:587
+msgid "Changed"
+msgstr "Canviat"
+
+#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:127
+msgid "Changed items:"
+msgstr "Ítems que han canviat:"
+
+#: src/Gtk/RestoreWindow.vala:104
+msgid "Checking Restore Actions (Dry Run)"
+msgstr "Comprovació de les accions de restauració (execució simulada)"
+
+#: src/Core/Main.vala:2901
+msgid "Checking file systems for errors..."
+msgstr "Comprovació dels sistemes de fitxers per si hi ha cap error..."
+
+#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:130
+#: src/Gtk/RsyncLogBox.vala:390
+#, c-format
+msgid "Checksum"
+msgstr "Suma de verificació"
+
+#: src/Core/Main.vala:2549
+msgid "Cleaning up..."
+msgstr "S'està netejant..."
+
+#: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:88
+msgid "Click to edit. Drag and drop to re-order."
+msgstr "Feu clic per editar. Arrossegueu i deixeu anar per reordenar."
+
+#: src/Gtk/ExcludeBox.vala:59
+msgid "Click to edit. Drag-drop to re-order."
+msgstr "Feu clic per editar. Arrossegueu i deixeu anar per tornar a ordenar."
+
+#: src/Gtk/RestoreWindow.vala:69
+msgid "Clone System"
+msgstr "Clona el sistema"
+
+#: src/Gtk/RestoreFinishBox.vala:68
+msgid "Cloning"
+msgstr "Clonant"
+
+#: src/Core/Main.vala:2951
+msgid "Cloning system..."
+msgstr "Clonació del sistema..."
+
+#: src/Gtk/BootOptionsWindow.vala:106 src/Gtk/RestoreWindow.vala:501
+#: src/Gtk/BackupWindow.vala:172 src/Gtk/RsyncLogBox.vala:266
+#: src/Gtk/DeleteWindow.vala:173
+msgid "Close"
+msgstr "Tanca"
+
+#: src/Gtk/FinishBox.vala:101 src/Gtk/DeleteFinishBox.vala:71
+#: src/Gtk/RestoreFinishBox.vala:106 src/Gtk/BackupFinishBox.vala:70
+msgid "Close window to exit"
+msgstr "Tanca la finestra per sortir"
+
+#: src/Core/Main.vala:364
+msgid "Commands listed below are not available on this system"
+msgstr ""
+"Les ordres llistades a continuació no estan disponibles en aquest sistema"
+
+#: src/Gtk/SnapshotListBox.vala:223
+msgid "Comments (click to edit)"
+msgstr "Comentaris (feu clic per editar)"
+
+#: src/Core/Main.vala:2944 src/Gtk/RestoreBox.vala:74
+#: src/Gtk/RestoreBox.vala:187
+msgid "Comparing Files (Dry Run)..."
+msgstr "Comparant fitxers (execució simulada)..."
+
+#: src/Core/Main.vala:2710
+msgid "Comparing files with rsync..."
+msgstr "Comparant fitxers amb rsync..."
+
+#: src/Gtk/DeleteFinishBox.vala:50 src/Gtk/RestoreFinishBox.vala:50
+#: src/Gtk/RestoreFinishBox.vala:75 src/Gtk/BackupFinishBox.vala:50
+msgid "Completed"
+msgstr "Completat"
+
+#: src/Gtk/RestoreFinishBox.vala:78
+msgid "Completed With Errors"
+msgstr "Completat amb errors"
+
+#: src/Gtk/RestoreWindow.vala:109 src/Gtk/RsyncLogBox.vala:87
+msgid "Confirm Actions"
+msgstr "Confirmar accions"
+
+#: src/AppConsole.vala:1081
+#, c-format
+msgid "Continue with restore? (y/n): "
+msgstr "Continuar amb la restauració? (y/n): "
+
+#: src/AppConsole.vala:847 src/AppConsole.vala:978
+msgid "Could not find device"
+msgstr "No s'ha pogut trobar el dispositiu"
+
+#: src/Utility/Device.vala:1308
+#, c-format
+msgid "Could not find file"
+msgstr "No s'ha pogut trobar el fitxer"
+
+#: src/AppConsole.vala:744
+msgid "Could not find snapshot"
+msgstr "No s'ha pogut trobar la instantània."
+
+#: src/Core/Main.vala:3113
+msgid "Could not find system subvolume"
+msgstr "No s'ha pogut trobar el subvolum de sistema"
+
+#: src/Core/Main.vala:3141
+msgid "Could not find system subvolumes for creating pre-restore snapshot"
+msgstr ""
+"No s'han pogut trobar els subvolums de sistema per crear la instantània de "
+"pre-restauració."
+
+#: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
+#: src/Gtk/RsyncLogBox.vala:570
+#, c-format
+msgid "Create"
+msgstr "Crea"
+
+#: src/Gtk/BackupWindow.vala:62
+msgid "Create Snapshot"
+msgstr "Crea la instantània"
+
+#: src/Gtk/ScheduleBox.vala:136
+msgid "Create one per boot"
+msgstr "Crea'n una en cada arrencada"
+
+#: src/Gtk/ScheduleBox.vala:100
+msgid "Create one per day"
+msgstr "Crea'n una al dia"
+
+#: src/Gtk/ScheduleBox.vala:118
+msgid "Create one per hour"
+msgstr "Crea'n una cada hora"
+
+#: src/Gtk/ScheduleBox.vala:64
+msgid "Create one per month"
+msgstr "Crea'n una cada mes"
+
+#: src/Gtk/ScheduleBox.vala:82
+msgid "Create one per week"
+msgstr "Crea'n una cada setmana"
+
+#: src/AppConsole.vala:369
+msgid "Create snapshot (even if not scheduled)"
+msgstr "Crea la instantània (encara que no estigui programada)"
+
+#: src/AppConsole.vala:368
+msgid "Create snapshot if scheduled"
+msgstr "Crea la instantània si està programada"
+
+#: src/Gtk/MainWindow.vala:141
+msgid "Create snapshot of current system"
+msgstr "Crea una instantània del sistema actual"
+
+#: src/Gtk/MainWindow.vala:1027
+msgid ""
+"Create snapshots manually or enable scheduled snapshots to protect your "
+"system"
+msgstr ""
+"Creeu manualment les instantànies o habiliteu les instantànies programades "
+"per protegir el vostre sistema"
+
+#: src/Gtk/SnapshotBackendBox.vala:96
+msgid "Create snapshots using BTRFS"
+msgstr "Creeu instantànies amb BTRFS"
+
+#: src/Gtk/SnapshotBackendBox.vala:78
+msgid "Create snapshots using RSYNC tool and hard-links"
+msgstr "Crea les instantànies amb l'eina de RSYNC i amb enllaços forts"
+
+#: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
+#: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:570
+#: src/Gtk/RsyncLogBox.vala:591
+#, c-format
+msgid "Created"
+msgstr "Creat"
+
+#: src/Core/Snapshot.vala:430
+msgid "Created control file"
+msgstr "S'ha creat el fitxer de control"
+
+#: src/Utility/TeeJee.FileSystem.vala:268
+msgid "Created directory"
+msgstr "Directori creat"
+
+#: src/Core/Main.vala:3163
+msgid "Created pre-restore snapshot"
+msgstr "Creada una instantània de pre-restauració"
+
+#: src/Core/Main.vala:1660
+msgid "Created subvolume snapshot"
+msgstr "Instantània de subvolum creada"
+
+#: src/Gtk/BackupBox.vala:71
+msgid "Creating Snapshot..."
+msgstr "Creació de la instantània..."
+
+#: src/Core/Main.vala:1598
+msgid "Creating new backup..."
+msgstr "Creació de la còpia de seguretat nova..."
+
+#: src/Core/Main.vala:1444
+msgid "Creating new snapshot..."
+msgstr "Creació de la instantània nova..."
+
+#: src/Core/Main.vala:3091
+msgid "Creating pre-restore snapshot from system subvolumes..."
+msgstr ""
+"Creació de la instantània de pre-restauració dels subvolums de sistema..."
+
+#: src/Core/Main.vala:3703
+msgid "Critical Error"
+msgstr "Error crític"
+
+#: src/Utility/CronTab.vala:136
+msgid "Cron job added"
+msgstr "S'ha afegit el treball de cron"
+
+#: src/Utility/CronTab.vala:217
+msgid "Cron job removed"
+msgstr "S'ha suprimit el treball de cron"
+
+#: src/Utility/CronTab.vala:304
+msgid "Cron task exists"
+msgstr "La tasca cron existeix"
+
+#: src/Gtk/MiscBox.vala:94
+msgid "Custom"
+msgstr "Personalitza"
+
+#: src/Gtk/SnapshotListBox.vala:299 src/Gtk/ScheduleBox.vala:100
+msgid "Daily"
+msgstr "Diari"
+
+#: src/Core/Main.vala:1107
+msgid "Daily snapshot failed!"
+msgstr "Ha fallat la instantània diària!"
+
+#: src/Core/Main.vala:1088
+msgid "Daily snapshots are enabled"
+msgstr "Les instantànies diàries estan habilitades"
+
+#: src/Core/Main.vala:2272
+msgid "Data will be modified on following devices:"
+msgstr "Es modificaran dades en els dispositius següents:"
+
+#: src/Gtk/MiscBox.vala:67
+msgid "Date Format"
+msgstr "Format de data"
+
+#: src/Gtk/SnapshotListBox.vala:321 src/Gtk/MainWindow.vala:160
+#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
+#: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:381
+#, c-format
+msgid "Delete"
+msgstr "Suprimeix"
+
+#: src/Gtk/DeleteWindow.vala:62
+msgid "Delete Snapshots"
+msgstr "Supressió d'instantànies"
+
+#: src/AppConsole.vala:383
+msgid "Delete all snapshots"
+msgstr "Suprimeix totes les instantànies"
+
+#: src/Gtk/MainWindow.vala:161
+msgid "Delete selected snapshot"
+msgstr "Suprimeix la instantània seleccionada"
+
+#: src/AppConsole.vala:382
+msgid "Delete snapshot"
+msgstr "Suprimeix la instantània"
+
+#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
+#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
+#: src/Gtk/RsyncLogBox.vala:595
+#, c-format
+msgid "Deleted"
+msgstr "Suprimit"
+
+#: src/Utility/TeeJee.FileSystem.vala:302
+msgid "Deleted directory"
+msgstr "Directori suprimit"
+
+#: src/Core/Main.vala:3070 src/Core/Main.vala:3074 src/Core/Subvolume.vala:167
+#, c-format
+msgid "Deleted subvolume"
+msgstr "Subvolum suprimit"
+
+#: src/Gtk/DeleteBox.vala:58
+msgid "Deleting Snapshots..."
+msgstr "Supressió d'instantànies..."
+
+#: src/Core/Subvolume.vala:141
+#, c-format
+msgid "Deleting subvolume"
+msgstr "S'està suprimint el subvolum"
+
+#: src/Gtk/RestoreExcludeBox.vala:105
+msgid "Deluge, Transmission"
+msgstr "Deluge, Transmission"
+
+#: src/AppConsole.vala:439 src/AppConsole.vala:555
+msgid "Description"
+msgstr "Descripció"
+
+#: src/Core/Subvolume.vala:181
+#, c-format
+msgid "Destroyed qgroup"
+msgstr "Qgroup destruït"
+
+#: src/Core/Subvolume.vala:171
+#, c-format
+msgid "Destroying qgroup"
+msgstr "Destruint qgroup"
+
+#: src/Core/Main.vala:2275 src/Core/Main.vala:2307
+#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
+#: src/Utility/Device.vala:1942 src/Gtk/RestoreDeviceBox.vala:97
+#: src/AppConsole.vala:467 src/AppConsole.vala:506 src/AppConsole.vala:554
+#, c-format
+msgid "Device"
+msgstr "Dispositiu"
+
+#: src/Utility/Device.vala:1390
+msgid "Device is unlocked"
+msgstr "El dispositiu està desbloquejat"
+
+#: src/Utility/Device.vala:1285 src/Utility/Device.vala:1347
+msgid "Device name is empty!"
+msgstr "El nom de dispositiu és buit!"
+
+#: src/Core/Main.vala:3417 src/Core/SnapshotRepo.vala:479
+#: src/AppConsole.vala:676
+msgid "Device not found"
+msgstr "Dispositiu no trobat"
+
+#: src/Gtk/BackupDeviceBox.vala:97
+#, c-format
+msgid "Devices displayed above have BTRFS file systems."
+msgstr "Els dispositius mostrats a dalt tenen sistemes de fitxers BTRFS."
+
+#: src/Gtk/BackupDeviceBox.vala:104
+#, c-format
+msgid "Devices displayed above have Linux file systems."
+msgstr "Els dispositius mostrats a dalt tenen sistemes de fitxers Linux."
+
+#: src/Gtk/RestoreDeviceBox.vala:84
+msgid "Devices from which snapshot was created are pre-selected."
+msgstr ""
+"Els dispositius des dels quals es va crear la instantània estan "
+"preseleccionats."
+
+#: src/AppConsole.vala:332
+msgid "Devices with Linux file systems"
+msgstr "Dispositius amb sistemes de fitxers de Linux"
+
+#: src/Gtk/BackupDeviceBox.vala:105
+msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
+msgstr ""
+"Els dispositius amb sistemes de fitxers Windows no són compatibles (NTFS, "
+"FAT, etc.)."
+
+#: src/Core/SnapshotRepo.vala:914
+msgid "Directory not found"
+msgstr "Directori no trobat"
+
+#: src/Core/Main.vala:2367 src/Gtk/RestoreSummaryBox.vala:64
+msgid "Disclaimer"
+msgstr "Avís legal"
+
+#: src/Gtk/BackupDeviceBox.vala:127
+msgid "Disk"
+msgstr "Disc"
+
+#: src/Core/Main.vala:242
+msgid "Distribution"
+msgstr "Distribució"
+
+#: src/Gtk/MainWindow.vala:1021
+msgid "Enable scheduled snapshots to protect your system"
+msgstr ""
+"Habiliteu les instantànies programades per protegir el vostre sistema"
+
+#: src/Utility/Device.vala:1454
+msgid "Encrypted Device"
+msgstr "Dispositiu xifrat"
+
+#: src/Gtk/UsersBox.vala:232
+msgid "Encrypted Home Directory"
+msgstr "Directori de l'usuari xifrat"
+
+#: src/AppConsole.vala:897
+#, c-format
+msgid "Enter device name or number"
+msgstr "Introduïu nom o número del dispositiu"
+
+#: src/AppConsole.vala:695 src/AppConsole.vala:1026
+#, c-format
+msgid "Enter device name or number (a=Abort)"
+msgstr "Introduïu el nom o número de dispositiu (a=avorta)"
+
+#: src/Utility/Device.vala:1455
+#, c-format
+msgid "Enter passphrase to unlock '%s'"
+msgstr "Introduïu la contrasenya per desbloquejar '%s'"
+
+#: src/AppConsole.vala:767
+#, c-format
+msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
+msgstr "Introduïu el número d'instantània (a=avorta, p=anterior, n=següent)"
+
+#: src/Gtk/ExcludeBox.vala:231
+msgid "Enter the pattern to exclude (Ex: *.mp3, *.bak)"
+msgstr "Introduïu el patró a excloure (p. ex.: *.mp3, *.bak)"
+
+#: src/Gtk/RestoreDeviceBox.vala:520
+msgid "Error"
+msgstr "Error"
+
+#: src/Gtk/RestoreWindow.vala:481
+msgid "Error running Rsync"
+msgstr "Error en executar Rsync"
+
+#: src/Gtk/BackupWindow.vala:82 src/Gtk/SetupWizardWindow.vala:99
+msgid "Estimate"
+msgstr "Estimat"
+
+#: src/Gtk/EstimateBox.vala:56
+msgid "Estimating System Size..."
+msgstr "Estimació de la mida del sistema..."
+
+#: src/Core/Main.vala:1440
+msgid "Estimating system size..."
+msgstr "Estimació de la mida del sistema..."
+
+#: src/AppConsole.vala:398
+msgid "Examples"
+msgstr "Exemples"
+
+#: src/Gtk/UsersBox.vala:132
+msgid "Exclude All Files"
+msgstr "Exclou tots els fitxers"
+
+#: src/Gtk/RestoreExcludeBox.vala:55 src/Gtk/ExcludeAppsBox.vala:51
+msgid "Exclude Application Settings"
+msgstr "Exclou els ajusts de l'aplicació"
+
+#: src/Gtk/RestoreWindow.vala:99
+msgid "Exclude Apps"
+msgstr "Exclou aplicacions"
+
+#: src/Gtk/ExcludeMessageWindow.vala:70
+msgid "Exclude List"
+msgstr "Llista d'exclusions"
+
+#: src/Gtk/ExcludeListSummaryWindow.vala:49
+msgid "Exclude List Summary"
+msgstr "Resum de la llista d'exclusions"
+
+#: src/Gtk/ExcludeBox.vala:230
+msgid "Exclude Pattern"
+msgstr "Patró d'exclusió"
+
+#: src/Gtk/ExcludeMessageWindow.vala:56
+msgid "Excluded Directories"
+msgstr "Directoris exclosos"
+
+#: src/Core/Main.vala:1728
+msgid "Expected values: O, B, H, D, W, M"
+msgstr "Valors esperats: O, B, H, D, W, M"
+
+#: src/Utility/CronTab.vala:132
+msgid "Failed to add cron job"
+msgstr "Ha fallat l'addició del treball de cron"
+
+#: src/Utility/TeeJee.FileSystem.vala:155
+msgid "Failed to copy file"
+msgstr "Ha fallat la còpia del fitxer"
+
+#: src/Utility/TeeJee.FileSystem.vala:271
+#: src/Utility/TeeJee.FileSystem.vala:280
+msgid "Failed to create directory"
+msgstr "Ha fallat la creació del directori"
+
+#: src/Core/Main.vala:1566
+msgid "Failed to create new snapshot"
+msgstr "Ha fallat la creació de la instantània nova"
+
+#: src/Core/Main.vala:1320
+msgid "Failed to create snapshot"
+msgstr "Ha fallat la creació de la instantània"
+
+#: src/Core/Main.vala:1656
+msgid "Failed to create subvolume snapshot"
+msgstr "Ha fallat la creació de la instantània del subvolum"
+
+#: src/Core/SnapshotRepo.vala:955
+msgid "Failed to create symlinks"
+msgstr "Ha fallat la creació dels enllaços simbòlics"
+
+#: src/Utility/TeeJee.FileSystem.vala:305
+msgid "Failed to delete directory"
+msgstr "Ha fallat la supressió del directori"
+
+#: src/Utility/TeeJee.FileSystem.vala:86
+msgid "Failed to delete file"
+msgstr "Ha fallat la supressió del fitxer"
+
+#: src/Core/Subvolume.vala:153
+msgid "Failed to delete snapshot nested subvolume"
+msgstr "No s'ha pogut suprimir el subvolum niuat de la instantània"
+
+#: src/Core/Subvolume.vala:163
+msgid "Failed to delete snapshot subvolume"
+msgstr "Ha fallat la supressió del subvolum de la instantània"
+
+#: src/Core/SnapshotRepo.vala:981
+msgid "Failed to delete symlinks"
+msgstr "Ha fallat la supressió dels enllaços simbòlics"
+
+#: src/Core/Subvolume.vala:177
+msgid "Failed to destroy qgroup"
+msgstr "No s'ha pogut destruir qgroup"
+
+#: src/Core/Main.vala:3918 src/Core/Main.vala:3924
+msgid "Failed to estimate system size"
+msgstr "Ha fallat el càlcul de la mida del sistema"
+
+#: src/Utility/CronTab.vala:257
+msgid "Failed to export crontab file"
+msgstr "Ha fallat l'exportació del fitxer crontab"
+
+#: src/AppConsole.vala:710 src/AppConsole.vala:774 src/AppConsole.vala:906
+#: src/AppConsole.vala:1001 src/AppConsole.vala:1046 src/AppConsole.vala:1087
+msgid "Failed to get input from user in 3 attempts"
+msgstr "Ha fallat l'obtenció de l'entrada de l'usuari en 3 intents"
+
+#: src/Utility/Device.vala:724
+msgid "Failed to get partition list"
+msgstr "Ha fallat l'obtenció de la llista de particions"
+
+#: src/Core/Main.vala:3500
+msgid "Failed to get partition list."
+msgstr "Ha fallat l'obtenció de la llista de particions."
+
+#: src/Utility/CronTab.vala:240
+msgid "Failed to install crontab file"
+msgstr "Ha fallat la instal·lació del fitxer crontab"
+
+#: src/Gtk/RestoreDeviceBox.vala:521
+msgid "Failed to mount devices"
+msgstr "Ha fallat el muntatge de dispositius"
+
+#: src/Utility/TeeJee.FileSystem.vala:174
+msgid "Failed to move file"
+msgstr "Ha fallat el moviment del fitxer"
+
+#: src/Core/Main.vala:3128
+msgid "Failed to move system subvolume to snapshot directory"
+msgstr ""
+"Ha fallat el moviment del subvolum de sistema al directori de la instantània"
+
+#: src/Core/Main.vala:4031
+msgid "Failed to query subvolume list"
+msgstr "Ha fallat la consulta de la llista de subvolums"
+
+#: src/Core/Main.vala:4116
+msgid "Failed to query subvolume quota"
+msgstr "No s'ha pogut consultar la quota de subvolum"
+
+#: src/Utility/CronTab.vala:50
+msgid "Failed to read cron tab"
+msgstr "Ha fallat la lectura de la fixa de cron"
+
+#: src/Utility/TeeJee.FileSystem.vala:112
+msgid "Failed to read file"
+msgstr "Ha fallat la lectura del fitxer"
+
+#: src/Core/SnapshotRepo.vala:901
+msgid "Failed to remove"
+msgstr "Ha fallat la supressió"
+
+#: src/Utility/CronTab.vala:213
+msgid "Failed to remove cron job"
+msgstr "Ha fallat la supressió del treball de cron"
+
+#: src/Core/Snapshot.vala:530 src/Core/Snapshot.vala:542
+#: src/Core/Snapshot.vala:550
+msgid "Failed to remove snapshot"
+msgstr "Ha fallat la supressió de la instantània"
+
+#: src/Core/Subvolume.vala:216
+msgid "Failed to restore system subvolume"
+msgstr "Ha fallat la restauració del subvolum de sistema"
+
+#: src/Core/Main.vala:1516
+msgid "Failed to save exclude list"
+msgstr "Ha fallat el desament de la llista d'exclusions"
+
+#: src/Utility/Device.vala:1381 src/Utility/Device.vala:1435
+#: src/Utility/Device.vala:1460 src/Utility/Device.vala:1481
+#: src/Utility/Device.vala:1501
+msgid "Failed to unlock device"
+msgstr "Ha fallat el desbloqueig del dispositiu"
+
+#: src/Utility/Device.vala:1733
+msgid "Failed to unmount"
+msgstr "Ha fallat el desmuntatge"
+
+#: src/Core/Main.vala:3704
+msgid "Failed to unmount device!"
+msgstr "Ha fallat el desmuntatge del dispositiu!"
+
+#: src/Utility/TeeJee.FileSystem.vala:139
+msgid "Failed to write file"
+msgstr "Ha fallat l'escriptura del fitxer"
+
+#: src/Gtk/RsyncLogBox.vala:122
+msgid "File (snapshot)"
+msgstr "Fitxer (instantània)"
+
+#: src/Gtk/RsyncLogBox.vala:119
+msgid "File (system)"
+msgstr "Fitxer (sistema)"
+
+#: src/Gtk/ExcludeMessageWindow.vala:97
+msgid "File Pattern"
+msgstr "Patró de fitxer"
+
+#: src/Gtk/BackupBox.vala:83
+msgid "File and directory counts:"
+msgstr "Nombre de fitxers i directoris:"
+
+#: src/Utility/CronTab.vala:225 src/Utility/RsyncTask.vala:298
+#: src/Utility/TeeJee.FileSystem.vala:169
+msgid "File not found"
+msgstr "Fitxer no trobat"
+
+#: src/Gtk/ExcludeListSummaryWindow.vala:62
+msgid ""
+"Files &amp; directories matching the patterns below will be excluded. "
+"Patterns starting with a + will include the item instead of excluding."
+msgstr ""
+"S'exclouran els fitxers i directoris coincidents amb els patrons de sota. "
+"Els patrons que comencin amb + inclouran l'ítem en lloc d'excloure'l."
+
+#: src/Gtk/SnapshotBackendBox.vala:201
+msgid "Files and directories can be excluded to save disk space."
+msgstr "Es poden excloure fitxers i directoris per estalviar espai de disc."
+
+#: src/Gtk/RestoreBox.vala:119
+msgid "Files and directory counts:"
+msgstr "Nombre de fitxers i directoris:"
+
+#: src/Gtk/ExcludeMessageWindow.vala:76
+msgid "Files matching the following patterns will be excluded"
+msgstr "S'exclouran els fitxers que coincideixin amb els patrons següents"
+
+#: src/Utility/Device.vala:1950
+#, c-format
+msgid "Filesystem"
+msgstr "Sistema de fitxers"
+
+#: src/Gtk/RsyncLogBox.vala:302
+msgid "Filter by name or path"
+msgstr "Filtra per nom o camí"
+
+#: src/Gtk/SettingsWindow.vala:103
+msgid "Filters"
+msgstr "Filtres"
+
+#: src/Gtk/BackupWindow.vala:97 src/Gtk/SetupWizardWindow.vala:211
+#: src/Gtk/DeleteWindow.vala:103
+msgid "Finish"
+msgstr "Acaba"
+
+#: src/Gtk/RestoreWindow.vala:130 src/Gtk/SetupWizardWindow.vala:120
+msgid "Finished"
+msgstr "Acabat"
+
+#: src/Gtk/RestoreExcludeBox.vala:78
+msgid "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
+msgstr "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
+
+#: src/Core/SnapshotRepo.vala:583
+msgid "First snapshot requires:"
+msgstr "La primera instantània requereix:"
+
+#: src/Core/Main.vala:3061
+msgid "Found existing pre-restore snapshot"
+msgstr "S'ha trobada una instantània de pre-restauració"
+
+#: src/Gtk/BackupDeviceBox.vala:215
+msgid "Free"
+msgstr "Lliure"
+
+#: src/Core/SnapshotRepo.vala:75 src/Core/SnapshotRepo.vala:145
+msgid "Free space"
+msgstr "Espai lliure"
+
+#: src/AppConsole.vala:1055
+msgid "GRUB Device"
+msgstr "Dispositiu GRUB"
+
+#: src/Gtk/RestoreDeviceBox.vala:497
+msgid "GRUB device not selected"
+msgstr "Dispositiu GRUB no seleccionat"
+
+#: src/AppConsole.vala:1060
+msgid "GRUB will NOT be reinstalled"
+msgstr "NO es reinstal·larà GRUB"
+
+#: src/Core/Main.vala:2509
+msgid "Generating initramfs..."
+msgstr "Generació d'initramfs..."
+
+#: src/AppConsole.vala:385
+msgid "Global"
+msgstr "Global"
+
+#: src/Gtk/BackupBox.vala:100 src/Gtk/RestoreBox.vala:135
+#: src/Gtk/RsyncLogBox.vala:400
+#, c-format
+msgid "Group"
+msgstr "Grup"
+
+#: src/Gtk/SnapshotBackendBox.vala:141
+msgid "Help"
+msgstr "Ajuda"
+
+#: src/Gtk/ExcludeMessageWindow.vala:128
+msgid ""
+"Hidden files and folders are included by default since they contain user-"
+"specific configuration files."
+msgstr ""
+"Per defecte, s'inclouen els fitxers i carpetes ocults, ja que contenen "
+"fitxers de configuració específics de l'usuari."
+
+#: src/Gtk/DeleteWindow.vala:181
+msgid "Hide"
+msgstr "Oculta"
+
+#: src/AppConsole.vala:392
+msgid "Hide rsync output"
+msgstr "Oculta la sortida de rsync"
+
+#: src/Gtk/DeleteWindow.vala:182
+msgid "Hide this window (files will be deleted in background)"
+msgstr "Oculta aquesta finestra (els fitxers se suprimiran en segon pla)"
+
+#: src/Gtk/UsersBox.vala:116
+msgid "Home"
+msgstr "Directori de l'usuari"
+
+#: src/Gtk/ExcludeMessageWindow.vala:115
+msgid "Home Directory"
+msgstr "Directori de l'usuari"
+
+#: src/Gtk/SnapshotListBox.vala:298 src/Gtk/ScheduleBox.vala:118
+msgid "Hourly"
+msgstr "Cada hora"
+
+#: src/Core/Main.vala:1076
+msgid "Hourly snapshot failed!"
+msgstr "Ha fallat la instantània de cada hora!"
+
+#: src/Core/Main.vala:1057
+msgid "Hourly snapshots are enabled"
+msgstr "Les instantànies a cada hora estan habilitades"
+
+#: src/Gtk/RestoreFinishBox.vala:102
+msgid ""
+"If the restored system fails to boot, then boot from the Live CD/USB, "
+"install Timeshift, and try restoring another snapshot."
+msgstr ""
+"Si el sistema restaurat no arrenca, inicieu amb el CD o USB autònom, "
+"instal·leu Timeshift, i intenteu restaurar una altra instantània."
+
+#: src/Core/Main.vala:2373
+msgid ""
+"If these terms are not acceptable to you, please do not proceed beyond this "
+"point!"
+msgstr "Si no accepteu aquests termes, no seguiu endavant!"
+
+#: src/Gtk/ExcludeBox.vala:54
+msgid "Include / Exclude Patterns"
+msgstr "Patrons d'inclusió o d'exclusió"
+
+#: src/Gtk/UsersBox.vala:336
+msgid "Include @home subvolume in backups"
+msgstr "Inclou el subvolum @home a les còpies de seguretat"
+
+#: src/Gtk/UsersBox.vala:262
+msgid "Include All Files"
+msgstr "Inclou tots els fitxers"
+
+#: src/Gtk/UsersBox.vala:190
+msgid "Include Only Hidden Files"
+msgstr "Inclou només fitxers ocults"
+
+#: src/Core/Main.vala:2187
+msgid "Invalid Snapshot"
+msgstr "Instantània no vàlida"
+
+#: src/AppConsole.vala:257
+#, c-format
+msgid "Invalid command line arguments"
+msgstr "Arguments de línia d'ordres no vàlids"
+
+#: src/Gtk/MainWindow.vala:814
+msgid "Invalid snapshot"
+msgstr "Instantània no vàlida"
+
+#: src/Gtk/ExcludeBox.vala:282
+msgid "Items Not Selected"
+msgstr "Ítems no seleccionats"
+
+#: src/Gtk/ScheduleBox.vala:283
+msgid "Keep"
+msgstr "Mantén"
+
+#: src/Gtk/RestoreExcludeBox.vala:112
+msgid ""
+"Keep configuration files for bittorrent clients like Deluge, Transmission, "
+"etc. If un-checked, previous configuration files will be restored from "
+"snapshot."
+msgstr ""
+"Mantén els fitxers de configuració per als clients bittorrent, com ara "
+"Deluge, Transmission, etc. Si desmarqueu aquesta opció, els anteriors "
+"fitxers de configuració es restauraran de la instantània."
+
+#: src/Gtk/RestoreExcludeBox.vala:85
+msgid ""
+"Keep configuration files for web browsers like Firefox and Chrome. If un-"
+"checked, previous configuration files will be restored from snapshot"
+msgstr ""
+"Mantén els fitxers de configuració per als navegadors, com ara Firefox o "
+"Chrome. Si desmarqueu aquesta opció, els anteriors fitxers de configuració "
+"es restauraran de la instantània."
+
+#: src/Gtk/RestoreDeviceBox.vala:244
+msgid "Keep on Root Device"
+msgstr "Mantén sobre el dispositiu arrel"
+
+#: src/Gtk/RestoreDeviceBox.vala:229
+msgid "Keep this mount path on the root filesystem"
+msgstr "Mantén aquest camí de muntatge sobre l'arrel del sistema de fitxers"
+
+#: src/Gtk/SnapshotListBox.vala:523
+msgid "LIVE"
+msgstr "Autònom"
+
+#: src/Utility/Device.vala:1951 src/Gtk/BackupDeviceBox.vala:254
+#: src/AppConsole.vala:471 src/AppConsole.vala:510
+#, c-format
+msgid "Label"
+msgstr "Etiqueta"
+
+#: src/Core/Main.vala:1038
+#, c-format
+msgid "Last boot snapshot is %d hours old"
+msgstr "L'última instantània del boot és de fa %d hores"
+
+#: src/Core/Main.vala:1033
+msgid "Last boot snapshot is older than system start time"
+msgstr ""
+"L'última instantània del boot és anterior a l'hora d'arrencada del sistema"
+
+#: src/Core/Main.vala:1029
+msgid "Last boot snapshot not found"
+msgstr "No s'ha trobat l'última instantània de l'arrencada"
+
+#: src/Core/Main.vala:1100
+#, c-format
+msgid "Last daily snapshot is %d hours old"
+msgstr "L'última instantània diària és de fa %d hores"
+
+#: src/Core/Main.vala:1095
+msgid "Last daily snapshot is more than 1 day old"
+msgstr "L'última instantània diària és de fa més d'1 dia"
+
+#: src/Core/Main.vala:1091
+msgid "Last daily snapshot not found"
+msgstr "No s'ha trobat l'última instantània diària"
+
+#: src/Core/Main.vala:1069
+#, c-format
+msgid "Last hourly snapshot is %d minutes old"
+msgstr "L'última instantània horària és de fa %d minuts"
+
+#: src/Core/Main.vala:1064
+msgid "Last hourly snapshot is more than 1 hour old"
+msgstr "L'última instantània horària és de fa més d'1 hora"
+
+#: src/Core/Main.vala:1060
+msgid "Last hourly snapshot not found"
+msgstr "No s'ha trobat l'última instantània de cada hora"
+
+#: src/Core/Main.vala:1162
+#, c-format
+msgid "Last monthly snapshot is %d days old"
+msgstr "L'última instantània mensual és de fa %d dies"
+
+#: src/Core/Main.vala:1157
+msgid "Last monthly snapshot is more than 1 month old"
+msgstr "L'última instantània mensual és de fa més d'1 mes"
+
+#: src/Core/Main.vala:1153
+msgid "Last monthly snapshot not found"
+msgstr "No s'ha trobat l'última instantània mensual"
+
+#: src/Core/Main.vala:1131
+#, c-format
+msgid "Last weekly snapshot is %d days old"
+msgstr "L'última instantània setmanal és de fa més de %d dies"
+
+#: src/Core/Main.vala:1126
+msgid "Last weekly snapshot is more than 1 week old"
+msgstr "L'última instantània setmanal és de fa més d'1 setmana"
+
+#: src/Core/Main.vala:1122
+msgid "Last weekly snapshot not found"
+msgstr "No s'ha trobat l'última instantània setmanal"
+
+#: src/Gtk/MainWindow.vala:1002
+#, c-format
+msgid "Latest snapshot"
+msgstr "Instantània més recent"
+
+#: src/Core/Main.vala:1505
+#, c-format
+msgid "Linking from snapshot"
+msgstr "Enllaçant des de la instantània"
+
+#: src/AppConsole.vala:363
+msgid "List"
+msgstr "Llista"
+
+#: src/AppConsole.vala:365
+msgid "List devices"
+msgstr "Llista els dispositius"
+
+#: src/AppConsole.vala:364
+msgid "List snapshots"
+msgstr "Llista les instantànies"
+
+#: src/Gtk/MainWindow.vala:953
+msgid "Live USB Mode (Restore Only)"
+msgstr "Mode USB autònom (només restauració)"
+
+#: src/Gtk/SettingsWindow.vala:90 src/Gtk/BackupWindow.vala:87
+#: src/Gtk/SetupWizardWindow.vala:104
+msgid "Location"
+msgstr "Ubicació"
+
+#: src/Gtk/MainWindow.vala:441
+msgid "Main window closed by user"
+msgstr "Finestra principal tancada per l'usuari."
+
+#: src/Gtk/SnapshotListBox.vala:328
+msgid "Mark/Unmark for Deletion"
+msgstr "Marca/Desmarca per a supressió"
+
+#: src/Core/SnapshotRepo.vala:628 src/Core/SnapshotRepo.vala:671
+msgid "Maximum backups exceeded for backup level"
+msgstr "S'ha excedit el màxim de còpies de seguretat d'aquest nivell"
+
+#: src/Gtk/MainWindow.vala:207
+msgid "Menu"
+msgstr "Menú"
+
+#: src/Gtk/SettingsWindow.vala:105
+msgid "Misc"
+msgstr "Misc"
+
+#: src/Core/Main.vala:251
+msgid "Missing Dependencies"
+msgstr "Dependències que falten"
+
+#: src/Core/SnapshotRepo.vala:605
+#, c-format
+msgid "Mode"
+msgstr "Mode"
+
+#: src/Utility/Device.vala:1934
+#, c-format
+msgid "Model"
+msgstr "Model"
+
+#: src/Gtk/SnapshotListBox.vala:301 src/Gtk/ScheduleBox.vala:64
+msgid "Monthly"
+msgstr "Mensual"
+
+#: src/Core/Main.vala:1150
+msgid "Monthly snapshot are enabled"
+msgstr "Les instantànies mensuals estan habilitades"
+
+#: src/Core/Main.vala:1169
+msgid "Monthly snapshot failed!"
+msgstr "Ha fallat la instantània mensual!"
+
+#: src/Core/Main.vala:2274 src/Core/Main.vala:2307
+msgid "Mount"
+msgstr "Munta"
+
+#: src/Core/Main.vala:3135
+msgid "Moved system subvolume to snapshot directory"
+msgstr "S'ha mogut el subvolum de sistema al directori de la instantània"
+
+#: src/Gtk/MainWindow.vala:790
+msgid "Multiple snapshots selected"
+msgstr "Seleccionades múltiples instantànies"
+
+#: src/Gtk/BackupDeviceBox.vala:235 src/Gtk/RsyncLogBox.vala:491
+#: src/AppConsole.vala:437
+msgid "Name"
+msgstr "Nom"
+
+#: src/Gtk/RestoreWindow.vala:201 src/Gtk/BackupWindow.vala:164
+#: src/Gtk/SetupWizardWindow.vala:203 src/Gtk/DeleteWindow.vala:165
+msgid "Next"
+msgstr "Següent"
+
+#: src/Utility/Gtk/CustomMessageDialog.vala:157
+msgid "No"
+msgstr "No"
+
+#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:122
+msgid "No Change"
+msgstr "Sense canvis"
+
+#: src/Gtk/MainWindow.vala:599 src/Gtk/DeleteWindow.vala:335
+msgid "No Snapshots Selected"
+msgstr "No s'ha seleccionat cap instantània"
+
+#: src/Gtk/MainWindow.vala:1026
+msgid "No snapshots available"
+msgstr "No hi ha cap instantània disponible"
+
+#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:970
+#: src/AppConsole.vala:326
+msgid "No snapshots found"
+msgstr "No s'ha trobat cap instantània"
+
+#: src/AppConsole.vala:753
+msgid "No snapshots found on device"
+msgstr "No s'ha trobat cap instantània al dispositiu"
+
+#: src/Gtk/MainWindow.vala:537
+msgid "No snapshots on device"
+msgstr "No hi ha cap instantània al dispositiu"
+
+#: src/Core/SnapshotRepo.vala:581
+msgid "No snapshots on this device"
+msgstr "No hi ha cap instantània en aquest dispositiu"
+
+#: src/Gtk/MainWindow.vala:783
+msgid "No snapshots selected"
+msgstr "No s'ha seleccionat cap instantània"
+
+#: src/Gtk/MainWindow.vala:1003 src/Gtk/MainWindow.vala:1005
+msgid "None"
+msgstr "Cap"
+
+#: src/Core/Subvolume.vala:198
+#, c-format
+msgid "Not Found"
+msgstr "No trobat"
+
+#: src/Core/SnapshotRepo.vala:599
+msgid "Not Selected"
+msgstr "No seleccionat"
+
+#: src/Core/Main.vala:396
+msgid "Not Supported"
+msgstr "No compatible"
+
+#: src/Core/SnapshotRepo.vala:543 src/Core/SnapshotRepo.vala:572
+msgid "Not enough disk space"
+msgstr "No hi ha prou espai de disc"
+
+#: src/Gtk/FinishBox.vala:55 src/AppConsole.vala:409
+msgid "Notes"
+msgstr "Notes"
+
+#: src/Core/Main.vala:1180
+msgid "Nothing to do!"
+msgstr "Res a fer!"
+
+#: src/AppConsole.vala:435 src/AppConsole.vala:465 src/AppConsole.vala:504
+#: src/AppConsole.vala:552
+msgid "Num"
+msgstr "Núm"
+
+#: src/Gtk/ScheduleBox.vala:282
+msgid ""
+"Number of snapshots to keep.\n"
+"Older snapshots will be removed once this limit is exceeded."
+msgstr ""
+"Nombre d'instantànies a mantenir.\n"
+"Les instantànies més antigues se suprimiran un cop se sobrepassi aquest "
+"límit."
+
+#: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:147
+#: src/Utility/Gtk/CustomMessageDialog.vala:151 src/Utility/GtkHelper.vala:108
+#: src/Gtk/SettingsWindow.vala:123 src/Gtk/ExcludeListSummaryWindow.vala:84
+msgid "OK"
+msgstr "D'acord"
+
+#: src/Gtk/SnapshotBackendBox.vala:188
+msgid ""
+"OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout "
+"(@ and @home subvolumes). Other layouts are not supported."
+msgstr ""
+"El sistema operatiu ha d'instal·lar-se en una partició BTRFS amb una "
+"estructura de subvolums de tipus Ubuntu (subvolums @ i @home). Altres "
+"estructures no són compatibles."
+
+#: src/Core/Main.vala:4289
+msgid "Older log files removed"
+msgstr "S'han suprimit els fitxers de registre antics"
+
+#: src/Gtk/MainWindow.vala:1004
+msgid "Oldest snapshot"
+msgstr "Instantània més antiga"
+
+#: src/Gtk/SnapshotListBox.vala:296
+msgid "On demand (manual)"
+msgstr "A petidió (manual)"
+
+#: src/Core/Main.vala:394 src/Core/Main.vala:3617
+#: src/Gtk/RestoreDeviceBox.vala:511
+msgid ""
+"Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
+msgstr ""
+"Actualment només són compatibles les estructures de tipus Ubuntu amb "
+"subvolums @ i @home."
+
+#: src/Gtk/MainWindow.vala:208
+msgid "Open Menu"
+msgstr "Obre el menú"
+
+#: src/Core/Main.vala:3399
+msgid ""
+"Option --snapshot-device should not be specified for creating snapshots in "
+"BTRFS mode"
+msgstr ""
+"L'opció --snapshot-device no s'hauria d'especificar per a la creació "
+"d'instantànies en mode BTRFS"
+
+#: src/AppConsole.vala:361 src/AppGtk.vala:128
+msgid "Options"
+msgstr "Opcions"
+
+#: src/Gtk/RestoreExcludeBox.vala:118
+msgid "Other applications (next page)"
+msgstr "Altres aplicacions (pàgina següent)"
+
+#: src/Gtk/BackupBox.vala:99 src/Gtk/RestoreBox.vala:134
+#: src/Gtk/RsyncLogBox.vala:398
+#, c-format
+msgid "Owner"
+msgstr "Propietari"
+
+#: src/Utility/Device.vala:1946
+#, c-format
+msgid "Parent Device"
+msgstr "Dispositiu pare"
+
+#: src/Core/Main.vala:2638 src/Core/Main.vala:2729 src/Gtk/RsyncLogBox.vala:222
+msgid "Parsing log file..."
+msgstr "Anàlisi del fitxer del registre..."
+
+#: src/Gtk/RestoreDeviceBox.vala:510
+msgid "Partition has an unsupported subvolume layout."
+msgstr "La partició té una estructura de subvolum no compatible."
+
+#: src/Core/SnapshotRepo.vala:604 src/Gtk/RestoreDeviceBox.vala:93
+#, c-format
+msgid "Path"
+msgstr "Camí"
+
+#: src/Gtk/ExcludeBox.vala:166
+msgid "Pattern"
+msgstr "Patró"
+
+#: src/Gtk/BackupBox.vala:98 src/Gtk/RestoreBox.vala:133
+#: src/Gtk/RsyncLogBox.vala:396
+#, c-format
+msgid "Permissions"
+msgstr "Permisos"
+
+#: src/Core/Main.vala:270
+msgid "Please check if you have multiple windows open."
+msgstr "Comproveu si hi teniu diverses finestres obertes."
+
+#: src/Core/Main.vala:2405
+msgid "Please do not interrupt the restore process!"
+msgstr "No interrompeu el procés de restauració!"
+
+#: src/Core/Main.vala:365
+msgid "Please install required packages and try running TimeShift again"
+msgstr "Instal·leu els paquets requerits i executeu TimeShift de nou"
+
+#: src/AppGtk.vala:143
+msgid "Please re-run the application as admin (using 'sudo' or 'su')"
+msgstr ""
+"Executeu de nou l'aplicació com a administrador (usant 'sudo' o 'su')"
+
+#: src/AppConsole.vala:108
+msgid "Please run the application as admin (using 'sudo' or 'su')"
+msgstr "Executeu l'aplicació com a administrador (usant 'sudo' o 'su')"
+
+#: src/Core/Main.vala:2355
+msgid "Please save your work and close all applications."
+msgstr "Deseu el vostre treball i tanqueu totes les aplicacions."
+
+#: src/Gtk/MainWindow.vala:685
+msgid "Please select a snapshot to view the log!"
+msgstr "Seleccioneu una instantània per veure el registre!"
+
+#: src/Gtk/RestoreDeviceBox.vala:498
+msgid "Please select the GRUB device"
+msgstr "Seleccioneu el dispositiu GRUB"
+
+#: src/Core/Main.vala:266
+msgid "Please wait a few minutes and try again."
+msgstr "Espereu uns minuts i torneu a intentar-ho."
+
+#: src/Gtk/MainWindow.vala:752
+msgid "Please wait for snapshots to be deleted."
+msgstr "Espereu que se suprimeixin les instantànies."
+
+#: src/Gtk/EstimateBox.vala:66
+msgid "Please wait..."
+msgstr "Espereu..."
+
+#: src/Gtk/RsyncLogBox.vala:188
+msgid "Populating list..."
+msgstr "Ompliment de la llista..."
+
+#: src/Core/Main.vala:1740 src/Gtk/BackupBox.vala:117
+#: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
+#: src/Gtk/RsyncLogBox.vala:232
+msgid "Preparing..."
+msgstr "Preparació..."
+
+#: src/Gtk/RestoreWindow.vala:193 src/Gtk/BackupWindow.vala:156
+#: src/Gtk/SetupWizardWindow.vala:195 src/Gtk/DeleteWindow.vala:157
+msgid "Previous"
+msgstr "Anterior"
+
+#: src/AppGtk.vala:130
+msgid "Print debug information"
+msgstr "Imprimeix la informació de depuració"
+
+#: src/AppConsole.vala:395 src/AppGtk.vala:132
+msgid "Print version number"
+msgstr "Imprimeix número de versió"
+
+#: src/Core/Main.vala:3979
+msgid "Query completed"
+msgstr "Consulta completada"
+
+#: src/Core/Main.vala:3962
+msgid "Querying subvolume info..."
+msgstr "Consulta de la informació del subvolum..."
+
+#: src/Gtk/SnapshotBackendBox.vala:77
+msgid "RSYNC"
+msgstr "RSYNC"
+
+#: src/Gtk/SnapshotBackendBox.vala:193
+msgid "RSYNC Snapshots"
+msgstr "Instantànies RSYNC"
+
+#: src/Gtk/BootOptionsBox.vala:137
+msgid ""
+"Re-generates initramfs for all installed kernels. This is generally not "
+"needed. Select this only if the restored system fails to boot."
+msgstr ""
+"Regenera initramfs per a tots els nuclis instal·lats. Normalment no cal. "
+"Marqueu això només si el sistema restaurat no arrenca."
+
+#: src/AppConsole.vala:995
+#, c-format
+msgid "Re-install GRUB2 bootloader?"
+msgstr "Reinstal·lar el gestor d'arrencada GRUB2?"
+
+#: src/Core/Main.vala:2468
+msgid "Re-installing GRUB2 bootloader..."
+msgstr "Reinstal·lació del gestor d'arrencada GRUB2..."
+
+#: src/Gtk/BootOptionsBox.vala:120
+msgid "Re-installs the GRUB2 bootloader on the selected device."
+msgstr ""
+"Reinstal·la el gestor d'arrencada GRUB2 en el dispositiu seleccionat."
+
+#: src/Gtk/RsyncLogBox.vala:181
+#, c-format
+msgid "Read %'d of %'d lines..."
+msgstr "Lectura de la línia %'d de %'d..."
+
+#: src/Core/Main.vala:2568
+msgid "Rebooting system..."
+msgstr "Reinici el sistema..."
+
+#: src/Gtk/RestoreExcludeBox.vala:61 src/Gtk/RestoreExcludeBox.vala:91
+#, c-format
+msgid "Recommended"
+msgstr "Recomanat"
+
+#: src/Gtk/BackupDeviceBox.vala:65 src/Gtk/RestoreDeviceBox.vala:70
+msgid "Refresh"
+msgstr "Refresca"
+
+#: src/Gtk/BackupDeviceBox.vala:106
+msgid "Remote and network locations are not supported."
+msgstr "Les ubicacions remotes i de xarxa no són compatibles."
+
+#: src/Gtk/ExcludeBox.vala:262
+msgid "Remove"
+msgstr "Elimina"
+
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1778 src/Core/Main.vala:1789
+#: src/Core/Main.vala:4285 src/Core/SnapshotRepo.vala:907
+#, c-format
+msgid "Removed"
+msgstr "Eliminat"
+
+#: src/Utility/CronTab.vala:340
+msgid "Removed cron task"
+msgstr "Tasca cron eliminada"
+
+#: src/Core/Main.vala:3767
+#, c-format
+msgid "Removed mount directory: '%s'"
+msgstr "Directori de muntatge eliminat: '%s'"
+
+#: src/Core/Snapshot.vala:555
+msgid "Removed snapshot"
+msgstr "Instantània eliminada"
+
+#: src/Core/Snapshot.vala:484
+msgid "Removing"
+msgstr "S'està suprimint"
+
+#: src/Core/Snapshot.vala:521
+msgid "Removing snapshot"
+msgstr "S'està suprimint la instantània"
+
+#: src/Core/SnapshotRepo.vala:763 src/Core/SnapshotRepo.vala:782
+#: src/Core/SnapshotRepo.vala:800 src/Core/SnapshotRepo.vala:814
+#, c-format
+msgid "Removing snapshots"
+msgstr "S'estan suprimint les instantànies"
+
+#: src/Gtk/MainWindow.vala:150 src/Gtk/RestoreWindow.vala:125
+#: src/Gtk/RsyncLogBox.vala:377 src/Gtk/RsyncLogBox.vala:566
+#: src/Gtk/RestoreFinishBox.vala:71 src/AppConsole.vala:373
+msgid "Restore"
+msgstr "Restaura"
+
+#: src/Gtk/UsersBox.vala:325
+msgid "Restore @home subvolume"
+msgstr "Restaura el subvolum @home"
+
+#: src/Gtk/RestoreWindow.vala:89
+msgid "Restore Device"
+msgstr "Restaura dispositiu"
+
+#: src/Gtk/RestoreWindow.vala:94
+msgid "Restore Exclude"
+msgstr "Restaura exclusió"
+
+#: src/Gtk/RestoreWindow.vala:69
+msgid "Restore Snapshot"
+msgstr "Restaura instantània"
+
+#: src/Core/Main.vala:2978 src/Core/Main.vala:3020
+msgid "Restore completed"
+msgstr "Restauració completada"
+
+#: src/Gtk/MainWindow.vala:151
+msgid "Restore selected snapshot"
+msgstr "Restaura la instantània seleccionada"
+
+#: src/AppConsole.vala:374
+msgid "Restore snapshot"
+msgstr "Restaura instantània"
+
+#: src/Gtk/RestoreFinishBox.vala:96
+msgid "Restored subvolumes will become active after system is restarted."
+msgstr ""
+"Els subvolums restaurats s'activaran després de reiniciar el sistema."
+
+#: src/Core/Subvolume.vala:220
+msgid "Restored system subvolume"
+msgstr "Subvolum de sistema restaurat"
+
+#: src/Gtk/RestoreBox.vala:77 src/Gtk/RestoreBox.vala:190
+msgid "Restoring Snapshot..."
+msgstr "Restauració de la instantània..."
+
+#: src/Gtk/FinishBox.vala:85
+msgid ""
+"Restoring a snapshot will replace system subvolumes, and system subvolumes "
+"currently in use will be preserved as a new snapshot. If required, this "
+"snapshot can be restored later to 'undo' the restore."
+msgstr ""
+"La restauració d'una instantània substituirà els subvolums de sistema, i els "
+"subvolums de sistema que estiguin actualment en ús es preservaran com una "
+"nova instantània. Si cal, aquesta instantània pot restaurar-se més endavant "
+"per 'desfer' la restauració."
+
+#: src/Core/Main.vala:2947
+msgid "Restoring snapshot..."
+msgstr "Restauració de la instantània..."
+
+#: src/Gtk/FinishBox.vala:88
+msgid ""
+"Restoring snapshots only replaces system files and settings. Non-hidden "
+"files and directories in user home directories will not be touched. This "
+"behaviour can be changed by adding a filter to include these files. Included "
+"files will be backed up when snapshot is created, and replaced when snapshot "
+"is restored."
+msgstr ""
+"La restauració de les instantànies només substitueix els fitxers i ajusts "
+"del sistema. No es veuran afectats els fitxers i directoris no ocults als "
+"directoris dels usuaris. Aquest comportament es pot canviar amb l'afegiment "
+"d'un filtre per incloure aquests fitxers. Els fitxers inclosos es "
+"resguardaran quan es creï la instantània, i se substituiran quan es restauri "
+"la instantània."
+
+#: src/Utility/Device.vala:1936
+#, c-format
+msgid "Revision"
+msgstr "Revisió"
+
+#: src/Gtk/RestoreDeviceBox.vala:438
+msgid "Root device not selected"
+msgstr "Dispositiu arrel no seleccionat"
+
+#: src/Gtk/RsyncLogWindow.vala:49
+msgid "Rsync Log Viewer"
+msgstr "Visualitzador de registres Rsync"
+
+#: src/AppGtk.vala:134
+#, c-format
+msgid "Run 'timeshift' for the command-line version of this tool"
+msgstr ""
+"Executeu 'timeshift' per usar la versió de línia d'ordres d'aquesta utilitat"
+
+#: src/AppConsole.vala:393
+msgid "Run in non-interactive mode"
+msgstr "Executa en mode no interactiu"
+
+#: src/Core/Main.vala:202
+msgid "Running"
+msgstr "Executant-se"
+
+#: src/Gtk/FinishBox.vala:95
+msgid ""
+"Save snapshots to an external disk instead of the system disk to guard "
+"against drive failures."
+msgstr ""
+"Deseu les instantànies en un disc extern en lloc del disc del sistema per "
+"protegir-vos contra fallades de la unitat."
+
+#: src/Gtk/FinishBox.vala:97
+msgid ""
+"Saving snapshots to a non-system disk allows you to format and re-install "
+"the OS on the system disk without losing snapshots stored on it. You can "
+"even install another Linux distribution and later roll-back the previous "
+"distribution by restoring a snapshot."
+msgstr ""
+"El desament de les instantànies a un disc que no sigui del sistema us permet "
+"formatar i reinstal·lar el sistema operatiu al disc del sistema sense perdre "
+"les instantànies emmagatzemades en aquest disc. Fins i tot podeu instal·lar "
+"una altra distribució de Linux i després revertir la distribució anterior "
+"amb la restauració d'una instantània."
+
+#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+msgid "Saving to device"
+msgstr "Desant en el dispositiu"
+
+#: src/Gtk/SettingsWindow.vala:93 src/Gtk/SetupWizardWindow.vala:109
+msgid "Schedule"
+msgstr "Planifica"
+
+#: src/Core/Main.vala:273
+msgid "Scheduled snapshot in progress..."
+msgstr "Instantània programada en curs..."
+
+#: src/Core/Main.vala:1180 src/Gtk/MainWindow.vala:1020
+#: src/Gtk/ScheduleBox.vala:312
+msgid "Scheduled snapshots are disabled"
+msgstr "Les instantànies programades estan inhabilitades"
+
+#: src/Gtk/FinishBox.vala:78
+msgid "Scheduled snapshots are disabled. It's recommended to enable it."
+msgstr ""
+"Les instantànies programades estan inhabilitades. Es recomana habilitar-les."
+
+#: src/Gtk/ScheduleBox.vala:305
+msgid "Scheduled snapshots are enabled"
+msgstr "Les instantànies programades estan habilitades"
+
+#: src/Gtk/FinishBox.vala:75
+msgid ""
+"Scheduled snapshots are enabled. Snapshots will be created automatically for "
+"selected levels."
+msgstr ""
+"Les instantànies programades estan habilitades. Es crearan automàticament "
+"les instantànies per als nivells seleccionats."
+
+#: src/AppConsole.vala:883
+#, c-format
+msgid "Select '%s' device (default = %s)"
+msgstr "Seleccioneu un dispositiu '%s' (defecte =%s)"
+
+#: src/Core/SnapshotRepo.vala:510 src/AppConsole.vala:702
+msgid "Select BTRFS system disk with root subvolume (@)"
+msgstr "Seleccioneu el disc del sistema BTRFS amb el subvolum arrel (@)"
+
+#: src/AppConsole.vala:1011
+msgid "Select GRUB device"
+msgstr "Seleccioneu dispositiu GRUB"
+
+#: src/Gtk/MainWindow.vala:684
+msgid "Select Snapshot"
+msgstr "Seleccioneu instantània"
+
+#: src/Gtk/ScheduleBox.vala:57
+msgid "Select Snapshot Levels"
+msgstr "Seleccioneu els nivells de les instantànies"
+
+#: src/Gtk/BackupDeviceBox.vala:56
+msgid "Select Snapshot Location"
+msgstr "Seleccioneu la ubicació de la instantània"
+
+#: src/Gtk/SnapshotBackendBox.vala:62
+msgid "Select Snapshot Type"
+msgstr "Seleccioneu el tipus d'instantània"
+
+#: src/Gtk/DeleteWindow.vala:85
+msgid "Select Snapshots"
+msgstr "Seleccioneu instantànies"
+
+#: src/Gtk/RestoreDeviceBox.vala:61
+msgid "Select Target Device"
+msgstr "Seleccioneu dispositiu de destinació"
+
+#: src/Gtk/BackupDeviceBox.vala:410
+#, c-format
+msgid "Select a partition on this disk"
+msgstr "Seleccioneu una partició d'aquest disc"
+
+#: src/Gtk/MainWindow.vala:791
+msgid "Select a single snapshot to restore"
+msgstr "Seleccioneu una sola instantània per restaurar"
+
+#: src/Gtk/RestoreDeviceBox.vala:467
+msgid "Select another device for root file system (/)"
+msgstr ""
+"Seleccioneu un altre dispositiu com a arrel del sistema de fitxers (/)"
+
+#: src/Core/SnapshotRepo.vala:546 src/Core/SnapshotRepo.vala:575
+msgid "Select another device or free up some space"
+msgstr "Seleccioneu un altre dispositiu o allibereu espai"
+
+#: src/Gtk/MainWindow.vala:531 src/Gtk/MainWindow.vala:538
+msgid "Select another device to delete snasphots"
+msgstr "Seleccioneu un altre dispositiu per suprimir instantànies"
+
+#: src/Gtk/MainWindow.vala:463
+msgid "Select another device?"
+msgstr "Seleccionar un altre dispositiu?"
+
+#: src/Gtk/RestoreExcludeBox.vala:57
+msgid "Select applications to exclude from restore"
+msgstr "Seleccioneu les aplicacions a excloure de la restauració"
+
+#: src/AppConsole.vala:685
+msgid "Select backup device"
+msgstr "Seleccioneu el dispositiu de còpia de seguretat"
+
+#: src/Gtk/ExcludeBox.vala:443
+msgid "Select directory"
+msgstr "Seleccioneu el directori"
+
+#: src/Gtk/ExcludeBox.vala:416
+msgid "Select file(s)"
+msgstr "Seleccioneu el(s) fitxer(s)"
+
+#: src/AppConsole.vala:759
+msgid "Select snapshot"
+msgstr "Seleccioneu instantània"
+
+#: src/Gtk/DeleteWindow.vala:336
+msgid "Select snapshots to delete"
+msgstr "Seleccioneu les instantànies a suprimir"
+
+#: src/Gtk/RestoreDeviceBox.vala:439
+msgid "Select the device for root file system (/)"
+msgstr "Seleccioneu el dispositiu per a l'arrel del sistema de fitxers (/)"
+
+#: src/Gtk/RestoreDeviceBox.vala:83
+msgid "Select the devices where files will be restored."
+msgstr "Seleccioneu els dispositius on es restauraran els fitxers."
+
+#: src/Gtk/ScheduleBox.vala:313
+msgid "Select the intervals for creating snapshots"
+msgstr "Seleccioneu els intervals de creació d'instantànies"
+
+#: src/Gtk/ExcludeBox.vala:283
+msgid "Select the items to be removed from the list"
+msgstr "Seleccioneu els ítems a eliminar de la llista"
+
+#: src/Core/SnapshotRepo.vala:472
+msgid "Select the snapshot device"
+msgstr "Seleccioneu el dispositiu d'instantània"
+
+#: src/Gtk/MainWindow.vala:784
+msgid "Select the snapshot to restore"
+msgstr "Seleccioneu la instantània a restaurar"
+
+#: src/Gtk/DeleteWindow.vala:87
+msgid "Select the snapshots to be deleted"
+msgstr "Seleccioneu les instantànies que s'han de suprimir"
+
+#: src/Gtk/MainWindow.vala:600
+msgid "Select the snapshots to mark for deletion"
+msgstr "Seleccioneu les instantànies a marcar per a la supressió"
+
+#: src/Gtk/RestoreDeviceBox.vala:79
+msgid "Select the target devices where system will be cloned."
+msgstr "Seleccioneu els dispositius destí on es clonarà el sistema."
+
+#: src/Core/Main.vala:3427
+msgid "Selected default snapshot device"
+msgstr "Dispositiu d'instantània predeterminat seleccionat"
+
+#: src/Core/Main.vala:3378 src/Core/Main.vala:3382
+msgid "Selected default snapshot type"
+msgstr "Tipus d'instantània predeterminat seleccionat"
+
+#: src/Gtk/BackupDeviceBox.vala:388
+msgid "Selected device does not have BTRFS partition"
+msgstr "El dispositiu seleccionat no té partició BTRFS"
+
+#: src/Gtk/BackupDeviceBox.vala:385
+msgid "Selected device does not have Linux partition"
+msgstr "El dispositiu seleccionat no té partició Linux"
+
+#: src/Core/SnapshotRepo.vala:144
+msgid "Selected snapshot device"
+msgstr "Dispositiu d'instantània seleccionat"
+
+#: src/Core/SnapshotRepo.vala:509 src/AppConsole.vala:701
+msgid "Selected snapshot device is not a system disk"
+msgstr "El dispositiu d'instantània seleccionat no és un disc de sistema"
+
+#: src/Core/Main.vala:2188
+msgid "Selected snapshot is marked for deletion"
+msgstr "La instantània seleccionada està marcada per a la supressió"
+
+#: src/Gtk/MainWindow.vala:815
+msgid "Selected snapshot is marked for deletion and cannot be restored"
+msgstr ""
+"La instantània seleccionada està marcada per a la supressió i no es pot "
+"restaurar"
+
+#: src/Gtk/UsersBox.vala:234
+msgid ""
+"Selected user has an encrypted home directory. It's not possible to include "
+"only hidden files."
+msgstr ""
+"L'usuari seleccionat té un directori d'usuari xifrat. No és possible "
+"incloure només els fitxers ocults."
+
+#: src/Utility/Device.vala:1935
+#, c-format
+msgid "Serial"
+msgstr "Núm. de sèrie"
+
+#: src/Core/Main.vala:230
+msgid "Session log file"
+msgstr "Fitxer de registre de sessió"
+
+#: src/AppConsole.vala:370
+msgid "Set snapshot description"
+msgstr "Estableix descripció de la instantània"
+
+#: src/Gtk/MainWindow.vala:180 src/Gtk/MainWindow.vala:181
+#: src/Gtk/SettingsWindow.vala:56
+msgid "Settings"
+msgstr "Ajusts"
+
+#: src/Gtk/MainWindow.vala:191
+msgid "Settings wizard"
+msgstr "Assistent dels ajusts"
+
+#: src/Gtk/FinishBox.vala:58
+msgid "Setup Complete"
+msgstr "Instal·lació completa"
+
+#: src/Gtk/SetupWizardWindow.vala:64
+msgid "Setup Wizard"
+msgstr "Assistent de configuració"
+
+#: src/AppConsole.vala:390
+msgid "Show additional debug messages"
+msgstr "Mostra missatges de depuració addicionals"
+
+#: src/AppConsole.vala:394 src/AppGtk.vala:131
+msgid "Show all options"
+msgstr "Mostra totes les opcions"
+
+#: src/Gtk/RestoreExcludeBox.vala:121
+msgid "Show more applications to exclude on the next page"
+msgstr "Mostra més aplicacions a excloure a la pàgina següent"
+
+#: src/AppConsole.vala:391
+msgid "Show rsync output (default)"
+msgstr "Mostra la sortida de rsync (defecte)"
+
+#: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
+#: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
+#: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
+#: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:469 src/AppConsole.vala:508
+#, c-format
+msgid "Size"
+msgstr "Mida"
+
+#: src/Gtk/SnapshotBackendBox.vala:186
+msgid ""
+"Size of BTRFS snapshots are initially zero. As system files gradually change "
+"with time, data gets written to new data blocks which take up disk space "
+"(copy-on-write). Files in the snapshot continue to point to original data "
+"blocks."
+msgstr ""
+"La mida de les instantànies BTRFS és inicialment zero. A mesura que els "
+"fitxers del sistema canvien amb el temps, les dades s'escriuen en nous blocs "
+"de dades que ocupen espai en disc (còpia per escriptura). Els fitxers de la "
+"instantània continuen apuntant als blocs de dades originals."
+
+#: src/AppConsole.vala:379
+msgid "Skip GRUB2 reinstall"
+msgstr "Omet la reinstal·lació de GRUB2"
+
+#: src/Core/Main.vala:2193 src/Core/SnapshotRepo.vala:631
+#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:94
+#, c-format
+msgid "Snapshot"
+msgstr "Instantània"
+
+#: src/Gtk/MainWindow.vala:548
+#, c-format
+msgid ""
+"Snapshot '%s' is being used by the system and cannot be deleted. Restart the "
+"system to activate the restored snapshot."
+msgstr ""
+"La instantània '%s' està en ús pel sistema i no es pot suprimir. Reinicieu "
+"el sistema per activar la instantània restaurada."
+
+#: src/Gtk/BackupFinishBox.vala:60
+msgid "Snapshot Created"
+msgstr "Instantània creada"
+
+#: src/Gtk/SnapshotListBox.vala:295
+#, c-format
+msgid "Snapshot Levels"
+msgstr "Nivells d'instantànies"
+
+#: src/Gtk/MainWindow.vala:751
+msgid "Snapshot deletion in progress..."
+msgstr "Supressió d'instantània en curs..."
+
+#: src/Core/SnapshotRepo.vala:442
+#, c-format
+msgid "Snapshot device"
+msgstr "Dispositiu d'instantània"
+
+#: src/Core/SnapshotRepo.vala:478 src/AppConsole.vala:675
+msgid "Snapshot device not available"
+msgstr "Dispositiu d'instantània no disponible"
+
+#: src/Core/SnapshotRepo.vala:471 src/AppConsole.vala:671
+msgid "Snapshot device not selected"
+msgstr "Dispositiu d'instantània no seleccionat"
+
+#: src/Core/SnapshotRepo.vala:446
+#, c-format
+msgid "Snapshot location"
+msgstr "Ubicació d'instantània"
+
+#: src/Core/Main.vala:1317
+msgid "Snapshot saved successfully"
+msgstr "La instantània s'ha desat correctament"
+
+#: src/Core/Main.vala:2183
+msgid "Snapshot to restore not specified!"
+msgstr "No s'ha especificat la instantània a restaurar!"
+
+#: src/Core/Main.vala:3024
+msgid "Snapshot will become active after system is rebooted."
+msgstr "La instantània estarà activa després de reiniciar el sistema."
+
+#: src/Gtk/DeleteFinishBox.vala:60
+msgid "Snapshot(s) Deleted"
+msgstr "Instantània(es) suprimida(es)"
+
+#: src/Gtk/MainWindow.vala:309 src/Gtk/DeleteWindow.vala:89
+msgid "Snapshots"
+msgstr "Instantànies"
+
+#: src/Gtk/SnapshotBackendBox.vala:178
+msgid ""
+"Snapshots are created and restored instantly. Snapshot creation is an atomic "
+"transaction at the file system level."
+msgstr ""
+"Les instantànies es creen i es restauren a l'instant. La creació "
+"d'instantànies és una transacció atòmica a nivell de sistema de fitxers."
+
+#: src/Gtk/SnapshotBackendBox.vala:195
+msgid ""
+"Snapshots are created by creating copies of system files using rsync, and "
+"hard-linking unchanged files from previous snapshot."
+msgstr ""
+"Les instantànies es creen com a còpies dels fitxers del sistema amb rsync i "
+"vinculant  amb enllaços forts els fitxers sense canvis de la instantània "
+"anterior."
+
+#: src/Gtk/SnapshotBackendBox.vala:176
+msgid ""
+"Snapshots are created using the built-in features of the BTRFS file system."
+msgstr ""
+"Les instantànies es creen amb funcions integrades del sistema de fitxers "
+"BTRFS."
+
+#: src/Gtk/ScheduleBox.vala:167
+#, c-format
+msgid "Snapshots are not scheduled at fixed times."
+msgstr "Les instantànies no es programen en hores fixes."
+
+#: src/Gtk/SnapshotBackendBox.vala:182
+msgid ""
+"Snapshots are perfect, byte-for-byte copies of the system. Nothing is "
+"excluded."
+msgstr ""
+"Les instantànies són còpies del sistema perfectes byte a byte. No s'exclou "
+"res."
+
+#: src/Gtk/SnapshotBackendBox.vala:180
+msgid ""
+"Snapshots are restored by replacing system subvolumes. Since files are never "
+"copied, deleted or overwritten, there is no risk of data loss. The existing "
+"system is preserved as a new snapshot after restore."
+msgstr ""
+"Les instantànies es restauren amb la substitució dels subvolums de sistema. "
+"Atès que els fitxers mai es copien, eliminen o sobreescriuen, no hi ha cap "
+"risc de pèrdua de dades. El sistema existent es preserva com una instantània "
+"nova després de la restauració."
+
+#: src/Gtk/SnapshotBackendBox.vala:184
+msgid ""
+"Snapshots are saved on the same disk from which they are created (system "
+"disk). Storage on other disks is not supported. If system disk fails then "
+"snapshots stored on it will be lost along with the system."
+msgstr ""
+"Les instantànies es desen al mateix disc des del qual es creen (disc del "
+"sistema). L'emmagatzematge en altres discos no és compatible. Si falla el "
+"disc del sistema, les instantànies emmagatzemades en ell es perdran "
+"juntament amb el sistema."
+
+#: src/Gtk/BackupDeviceBox.vala:107
+msgid ""
+"Snapshots are saved to /timeshift on selected partition. Other locations are "
+"not supported."
+msgstr ""
+"Les instantànies es guarden a /timeshift a la partició seleccionada. Altres "
+"ubicacions no són compatibles."
+
+#: src/Gtk/BackupDeviceBox.vala:99
+msgid ""
+"Snapshots are saved to /timeshift-btrfs on selected partition. Other "
+"locations are not supported."
+msgstr ""
+"Les instantànies es guarden a /timeshift-btrfs a la partició seleccionada. "
+"Altres ubicacions no són compatibles."
+
+#: src/Gtk/MainWindow.vala:965
+msgid "Snapshots available for restore"
+msgstr "Instantànies disponibles per a la restauració"
+
+#: src/Gtk/SnapshotBackendBox.vala:199
+msgid ""
+"Snapshots can be saved to any disk formatted with a Linux file system. "
+"Saving snapshots to non-system or external disk allows the system to be "
+"restored even if system disk is damaged or re-formatted."
+msgstr ""
+"Les instantànies es poden desar en qualsevol disc formatat amb un sistema de "
+"fitxers Linux. El fet de desar instantànies en discs externs o que no siguin "
+"del sistema permet restaurar el sistema fins i tot si el disc del sistema "
+"resulta danyat o formatat."
+
+#: src/AppConsole.vala:289
+msgid "Snapshots cannot be created in Live CD mode"
+msgstr "No es poden crear instantànies en mode de CD autònom"
+
+#: src/Gtk/MainWindow.vala:1012
+msgid "Snapshots will be created at selected intervals"
+msgstr "Es crearan instantànies en els intervals seleccionats"
+
+#: src/Gtk/ScheduleBox.vala:306
+msgid ""
+"Snapshots will be created at selected intervals if snapshot disk has enough "
+"space (> 1 GB)"
+msgstr ""
+"Es crearan instantànies en els intervals seleccionats si el disc destí té "
+"prou espai (> 1GB)"
+
+#: src/AppConsole.vala:386
+msgid "Specify backup device (default: config)"
+msgstr "Especifiqueu el dispositiu de còpia de seguretat (defecte: config)"
+
+#: src/AppConsole.vala:378
+msgid "Specify device for installing GRUB2 bootloader"
+msgstr ""
+"Especifiqueu el dispositiu per instal·lar el gestor d'arrencada GRUB2"
+
+#: src/AppConsole.vala:376
+msgid "Specify snapshot to restore"
+msgstr "Especifiqueu la instantània a restaurar"
+
+#: src/AppConsole.vala:377
+msgid "Specify target device"
+msgstr "Especifiqueu el dispositiu destí"
+
+#: src/Core/SnapshotRepo.vala:452 src/Core/SnapshotRepo.vala:606
+#: src/Gtk/RsyncLogBox.vala:471
+#, c-format
+msgid "Status"
+msgstr "Estat"
+
+#: src/Gtk/ScheduleBox.vala:154
+msgid "Stop cron emails for scheduled tasks"
+msgstr "Atura els correus electrònics de cron per a les tasques programades"
+
+#: src/Gtk/RestoreDeviceBox.vala:101
+msgid "Subvolume"
+msgstr "Subvolum"
+
+#: src/Core/Subvolume.vala:203
+#, c-format
+msgid "Subvolume exists at destination"
+msgstr "El subvolum existeix a la destinació"
+
+#: src/Gtk/SnapshotListBox.vala:274
+#, c-format
+msgid "Subvolumes"
+msgstr "Subvolums"
+
+#: src/Gtk/ExcludeBox.vala:267 src/Gtk/RestoreWindow.vala:120
+#: src/Gtk/ExcludeAppsBox.vala:134
+msgid "Summary"
+msgstr "Resum"
+
+#: src/AppConsole.vala:388
+msgid "Switch to BTRFS mode (default: config)"
+msgstr "Canvia al mode BTRFS (defecte: config)"
+
+#: src/AppConsole.vala:389
+msgid "Switch to RSYNC mode (default: config)"
+msgstr "Canvia al mode RSYNC (defecte: config)"
+
+#: src/Core/SnapshotRepo.vala:961
+msgid "Symlinks updated"
+msgstr "Symlinks actualitzats"
+
+#: src/Core/Main.vala:2543
+msgid "Syncing file systems..."
+msgstr "Sincronitzant sistemes de fitxers..."
+
+#: src/Core/Main.vala:1522 src/Core/Main.vala:2713 src/Core/Main.vala:2954
+msgid "Syncing files with rsync..."
+msgstr "Sincronitzant fitxers amb rsync..."
+
+#: src/AppGtk.vala:126
+msgid "Syntax"
+msgstr "Sintaxi"
+
+#: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:126
+#, c-format
+msgid "System"
+msgstr "Sistema"
+
+#: src/Gtk/MainWindow.vala:912
+msgid "System Restore Utility"
+msgstr "Utilitat de restauració del sistema"
+
+#: src/Gtk/FinishBox.vala:82
+msgid "System can be rolled-back to a previous date by restoring a snapshot."
+msgstr ""
+"El sistema es pot revertir a una data anterior amb la restauració d'una "
+"instantània."
+
+#: src/Core/Main.vala:2406
+msgid "System will reboot after files are restored"
+msgstr "El sistema es reiniciarà després que es restaurin els fitxers."
+
+#: src/Core/Main.vala:2356
+msgid "System will reboot after files are restored."
+msgstr "El sistema es reiniciarà després que es restaurin els fitxers."
+
+#: src/Core/Main.vala:1253 src/Core/Main.vala:1327
+msgid "Tagged snapshot"
+msgstr "Instantània etiquetada"
+
+#: src/Gtk/SnapshotListBox.vala:150 src/AppConsole.vala:438
+msgid "Tags"
+msgstr "Etiquetes"
+
+#: src/Core/Main.vala:2218
+msgid "Target device is not mounted"
+msgstr "El dispositiu destí no està muntat"
+
+#: src/Gtk/RestoreDeviceBox.vala:466
+msgid "Target device is same as system device"
+msgstr "El dispositiu destí és el mateix que el del sistema"
+
+#: src/Core/Main.vala:2212
+msgid "Target device not specified!"
+msgstr "Dispositiu destí no especificat!"
+
+#: src/Gtk/ScheduleBox.vala:156
+msgid ""
+"The cron service sends the output of scheduled tasks as an email to the "
+"current user. Select this option to suppress the emails for cron tasks "
+"created by Timeshift."
+msgstr ""
+"El servei cron envia per correu a l'usuari actual la sortida de les tasques "
+"programades. Seleccioneu aquesta opció per suprimir els correus de les "
+"tasques cron creades per Timeshift."
+
+#: src/Core/Main.vala:393
+msgid "The system partition has an unsupported subvolume layout."
+msgstr "La partició del sistema té una estructura de subvolum no compatible."
+
+#: src/Core/Main.vala:3616
+msgid "The target partition has an unsupported subvolume layout."
+msgstr ""
+"La partició de destinació té una estructura de subvolum no compatible."
+
+#: src/Gtk/BackupDeviceBox.vala:512
+#, c-format
+msgid "There are no snapshots on this device"
+msgstr "No hi ha cap instantània en aquest dispositiu"
+
+#: src/Utility/Device.vala:1380
+msgid "This device is not encrypted"
+msgstr "Aquest dispositiu no està xifrat"
+
+#: src/Core/Main.vala:2372
+msgid ""
+"This software comes without absolutely NO warranty and the author takes no "
+"responsibility for any damage arising from the use of this program."
+msgstr ""
+"Aquest programari NO té absolutament cap garantia i l'autor no es fa "
+"responsable dels danys derivats de l'ús d'aquest programa."
+
+#: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1011
+msgid "Timeshift is active"
+msgstr "Timeshift està actiu"
+
+#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:132
+#: src/Gtk/RsyncLogBox.vala:394
+#, c-format
+msgid "Timestamp"
+msgstr "Marca de temps"
+
+#: src/AppConsole.vala:624
+#, c-format
+msgid "To restore with default options, press the ENTER key for all prompts!"
+msgstr ""
+"Per restaurar amb les opcions predeterminades, premeu RETORN a totes les "
+"preguntes!"
+
+#: src/Utility/Device.vala:1949 src/Gtk/BackupDeviceBox.vala:190
+#: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:470
+#: src/AppConsole.vala:509
+#, c-format
+msgid "Type"
+msgstr "Tipus"
+
+#: src/Utility/Device.vala:1948
+#, c-format
+msgid "UUID"
+msgstr "UUID"
+
+#: src/AppGtk.vala:107
+msgid "Unknown option"
+msgstr "Opció desconeguda"
+
+#: src/Core/Main.vala:1235
+msgid "Unknown snapshot type"
+msgstr "Instantània de tipus desconegut"
+
+#: src/Core/Main.vala:1727
+msgid "Unknown value specified for option --tags"
+msgstr "Valor desconegut a l'opció --tags"
+
+#: src/Utility/Device.vala:1391 src/Utility/Device.vala:1507
+#, c-format
+msgid "Unlocked device is mapped to '%s'"
+msgstr "El dispositiu desbloquejat està mapejat a '%s'"
+
+#: src/Utility/Device.vala:1506
+msgid "Unlocked successfully"
+msgstr "Desbloquejat amb èxit"
+
+#: src/Utility/Device.vala:1722
+msgid "Unmounting from"
+msgstr "Desmuntant de"
+
+#: src/Gtk/SnapshotListBox.vala:198
+msgid "Unshared"
+msgstr "No compartit"
+
+#: src/Core/Main.vala:3620 src/Gtk/RestoreDeviceBox.vala:508
+msgid "Unsupported Subvolume Layout"
+msgstr "Estructura de subvolum no compatible"
+
+#: src/Gtk/BootOptionsBox.vala:150
+msgid "Update GRUB menu"
+msgstr "Actualitza el menú de GRUB"
+
+#: src/Gtk/BootOptionsBox.vala:135
+msgid "Update initramfs"
+msgstr "Actualitza initramfs"
+
+#: src/Core/Main.vala:2893
+msgid "Updated /etc/crypttab on target device"
+msgstr "S'ha actualitzat /etc/crypttab al dispositiu de destinació"
+
+#: src/Core/Main.vala:2813
+msgid "Updated /etc/fstab on target device"
+msgstr "S'ha actualitzat /etc/fstab al dispositiu de destinació"
+
+#: src/Gtk/BootOptionsBox.vala:152
+msgid ""
+"Updates the GRUB menu entries (recommended). This is safe to run and should "
+"be left selected."
+msgstr ""
+"Actualitza les entrades del menú GRUB (recomanat). Això no és problemàtic i "
+"s'ha de deixar seleccionat."
+
+#: src/Core/Main.vala:2526
+msgid "Updating GRUB menu..."
+msgstr "Actualització del menú de GRUB..."
+
+#: src/Core/Main.vala:2737
+msgid "Updating bootloader configuration..."
+msgstr "Actualització de la configuració del gestor d'arrencada..."
+
+#: src/Utility/Device.vala:1956
+#, c-format
+msgid "Used"
+msgstr "Usat"
+
+#: src/Gtk/SetupWizardWindow.vala:114 src/Gtk/UsersBox.vala:101
+msgid "User"
+msgstr "Usuari"
+
+#: src/Gtk/UsersBox.vala:62
+msgid "User Home Directories"
+msgstr "Directoris dels usuaris"
+
+#: src/Utility/Device.vala:1461
+msgid "User cancelled the password prompt"
+msgstr "L'usuari ha cancel·lat la petició de contrasenya"
+
+#: src/Gtk/UsersBox.vala:66
+msgid ""
+"User home directories are excluded by default unless you enable them here"
+msgstr ""
+"Els directoris dels usuaris s'exclouen per defecte tret que els habiliteu "
+"aquí"
+
+#: src/Gtk/SettingsWindow.vala:101
+msgid "Users"
+msgstr "Usuaris"
+
+#: src/Gtk/RestoreWindow.vala:114
+msgid "Users Home"
+msgstr "Inici dels usuaris"
+
+#: src/Utility/Device.vala:1933
+#, c-format
+msgid "Vendor"
+msgstr "Proveïdor"
+
+#: src/Gtk/SnapshotListBox.vala:342
+msgid "View Rsync Log for Create"
+msgstr "Vegeu el registre de creació de Rsync"
+
+#: src/Gtk/SnapshotListBox.vala:349
+msgid "View Rsync Log for Restore"
+msgstr "Vegeu el registre de restauració de Rsync"
+
+#: src/Gtk/MainWindow.vala:369
+msgid "View TimeShift Logs"
+msgstr "Mostra els registres de TimeShift"
+
+#: src/Core/Main.vala:2267 src/Gtk/RestoreSummaryBox.vala:53
+msgid "Warning"
+msgstr "Avís"
+
+#: src/Gtk/RestoreExcludeBox.vala:61
+msgid "Web Browsers"
+msgstr "Navegadors web"
+
+#: src/Gtk/SnapshotListBox.vala:300 src/Gtk/ScheduleBox.vala:82
+msgid "Weekly"
+msgstr "Setmanal"
+
+#: src/Core/Main.vala:1138
+msgid "Weekly snapshot failed!"
+msgstr "Ha fallat la instantània setmanal!"
+
+#: src/Core/Main.vala:1119
+msgid "Weekly snapshots are enabled"
+msgstr "Les instantànies setmanals estan habilitades"
+
+#: src/Gtk/DeleteFinishBox.vala:63 src/Gtk/BackupFinishBox.vala:63
+msgid "With Errors"
+msgstr "Amb errors"
+
+#: src/Gtk/MainWindow.vala:190
+msgid "Wizard"
+msgstr "Assistent"
+
+#: src/Utility/Device.vala:1434 src/Utility/Device.vala:1480
+msgid "Wrong password"
+msgstr "Contrasenya incorrecta"
+
+#: src/Utility/Gtk/CustomMessageDialog.vala:156
+msgid "Yes"
+msgstr "Sí"
+
+#: src/Gtk/RestoreFinishBox.vala:98
+msgid ""
+"You can continue working on the current system. After restart, the current "
+"system will be visible as a new snapshot. This snapshot can be restored "
+"later if required, to 'undo' the restore."
+msgstr ""
+"Podeu continuar treballant en el sistema actual. Després de reiniciar, el "
+"sistema actual serà visible com una nova instantània. Aquesta instantània es "
+"pot restaurar més tard si cal, per a \"desfer\" la restauració."
+
+#: src/AppConsole.vala:1023
+#, c-format
+msgid "[ENTER = Default (%s), a = Abort]"
+msgstr "[RETORN = predeterminat (%s), a = avorta]"
+
+#: src/AppConsole.vala:894
+#, c-format
+msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
+msgstr "[RETORN = predeterminat (%s), r = dispositiu arrel, a = avorta]"
+
+#: src/Gtk/RestoreDeviceBox.vala:401
+msgid ""
+"[For Experienced Users] Change these settings if the restored system fails "
+"to boot."
+msgstr ""
+"[Per a usuaris experimentats] Canvieu aquestes opcions si el sistema "
+"restaurat no arrenca."
+
+#: src/Utility/AppLock.vala:54
+msgid "[Warning] Deleted invalid lock"
+msgstr "[Avís] Bloqueig no vàlid esborrat"
+
+#: src/Core/SnapshotRepo.vala:814
+msgid "all"
+msgstr "tot"
+
+#: src/Core/Main.vala:1655 src/Core/Main.vala:4030 src/Core/Main.vala:4115
+#: src/Core/Subvolume.vala:215
+msgid "btrfs returned an error"
+msgstr "btrfs ha retornat un error"
+
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1554
+msgid "complete"
+msgstr "complet"
+
+#: src/Utility/CronTab.vala:261
+msgid "crontab file exported"
+msgstr "S'ha exportat el fitxer crontab"
+
+#: src/Utility/CronTab.vala:244
+msgid "crontab file installed"
+msgstr "S'ha instal·lat el fitxer crontab"
+
+#: src/Core/SnapshotRepo.vala:800
+msgid "incomplete"
+msgstr "incomplet"
+
+#: src/Core/SnapshotRepo.vala:782
+msgid "marked for deletion"
+msgstr "marcat per a la supressió"
+
+#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+msgid "mounted at path"
+msgstr "muntat al camí"
+
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1554
+#: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
+#: src/Gtk/DeleteBox.vala:149
+msgid "remaining"
+msgstr "restants"
+
+#: src/Core/Main.vala:1565
+msgid "rsync returned an error"
+msgstr "rsync ha tornat un error"
+
+#: src/Core/SnapshotRepo.vala:631 src/Core/SnapshotRepo.vala:684
+#: src/Core/SnapshotRepo.vala:763
+msgid "un-tagged"
+msgstr "no etiquetada"
+
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:9
+msgid "Timeshift"
+msgstr "Timeshift"
+
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:10
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:22
+msgid "Run Timeshift as Administrator"
+msgstr "Executeu Timeshift com a administrador"
+
+#: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:21
+msgid "Authentication is required to run Timeshift as Administrator"
+msgstr "Es requereix autenticació per executar Timeshift com a administrador"

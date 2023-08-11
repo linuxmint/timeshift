@@ -141,8 +141,8 @@ class BackupBox : Gtk.Box{
 
 		var label = add_label(hbox, text + ":");
 		label.xalign = (float) 1.0;
-		label.margin_left = 12;
-		label.margin_right = 6;
+		label.margin_start = 12;
+		label.margin_end = 6;
 		var text_label = label;
 		
 		if (add_margin_bottom > 0){
@@ -179,7 +179,7 @@ class BackupBox : Gtk.Box{
 
 		try {
 			thread_is_running = true;
-			Thread.create<void> (take_snapshot_thread, true);
+			new Thread<void>.try ("snapshot-taker", () => {take_snapshot_thread();});
 		}
 		catch (Error e) {
 			log_error (e.message);
