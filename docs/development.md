@@ -44,7 +44,7 @@ cd timeshift
 ### Step 3. Build Timeshift
 
 ```bash
-meson setup -C build
+meson setup build
 meson compile -C build 
 ``` 
 
