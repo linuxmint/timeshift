@@ -142,7 +142,11 @@ You can selectively include items for backup from the ***Settings*** window. Sel
 
 ## Installation
 
-#### Debian-based Distributions
+### Building and Installing from Source Code
+
+You can find the exact instructions in the [development](/docs/development.md) docs.
+
+### Debian-based Distributions
 
 Debian, Ubuntu, Linux Mint, Elementary OS, etc.
 
@@ -152,14 +156,8 @@ Install Timeshift from the repositories:
 sudo apt-get update
 sudo apt-get install timeshift
 ```
-Or build and install timeshift from the source code:
-```sh
-sudo apt install make gettext valac libvte-2.91-dev libgee-0.8-dev libjson-glib-dev
-make
-sudo make install
-```
 
-#### Fedora
+### Fedora
 
 Fedora is not fully supported. BTRFS snapshots only support Ubuntu-specific layouts. 
 
@@ -168,7 +166,7 @@ sudo dnf update
 sudo dnf install timeshift
 ```
 
-#### Arch
+### Arch
 
 ```sh
 sudo pacman -S timeshift
@@ -188,7 +186,7 @@ or
 
     sudo pacman -R timeshift
 
-depending in your package management system.
+depending on your package management system.
 
 Remember to delete all snapshots before un-installing. Otherwise the snapshots continue to occupy space on your system.  To delete all snapshots, run the application, select all snapshots from the list (CTRL+A) and click the _Delete_ button on the toolbar. This will delete all snapshots and remove the _/timeshift_ folder in the root directory.     
 
