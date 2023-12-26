@@ -168,6 +168,8 @@ public class Main : GLib.Object{
 	public string encrypted_home_dirs = "";
 	public bool encrypted_home_warning_shown = false;
 
+    private int _live_system = -1;
+
 	public string encrypted_private_dirs = "";
 	public bool encrypted_private_warning_shown = false;
 
@@ -949,10 +951,21 @@ public class Main : GLib.Object{
 		}
 	}
 
-	public bool live_system(){
-		//return true;
-		return (sys_root == null);
-	}
+    public bool live_system(){
+        /* Initialize once block */
+        if (_live_system == -1) {
+            var cmdline = file_read("/proc/cmdline");
+
+            if (cmdline.contains("boot=casper") || cmdline.contains("boot=live")) {
+                log_msg ("Live Session detected, backup is disabled.");
+                _live_system = 1;
+            } else {
+                _live_system = 0;
+            }
+        }
+
+        return (_live_system == 1);
+    }
 
 	// backup
 
