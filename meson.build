@@ -1,6 +1,6 @@
 project(
   'timeshift', 'vala', 'c',
-  version: '23.12.2',
+  version: '24.01.1',
   license : 'GPL-2.0-or-later',
   meson_version: '>= 0.54.0',
   default_options: ['c_std=c99', 'build.c_std=c99'])
