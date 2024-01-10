@@ -316,23 +316,9 @@ class SnapshotListBox : Gtk.Box{
 
 		// menu_file
 		menu_snapshots = new Gtk.Menu();
-
-		// mi_remove
-		var item = new ImageMenuItem.with_label(_("Delete"));
-		item.image = IconManager.lookup_image("edit-delete", 16);
-		item.activate.connect(()=> { delete_selected(); });
-		menu_snapshots.append(item);
-		mi_remove = item;
-		
-		// mi_mark
-		item = new ImageMenuItem.with_label(_("Mark/Unmark for Deletion"));
-		item.image = IconManager.lookup_image("edit-delete", 16);
-		item.activate.connect(()=> { mark_selected(); });
-		menu_snapshots.append(item);
-		mi_mark = item;
 		
 		// mi_browse
-		item = new ImageMenuItem.with_label(_("Browse Files"));
+		var item = new ImageMenuItem.with_label(_("Browse Files"));
         item.image = IconManager.lookup_image(IconManager.GENERIC_ICON_DIRECTORY, 16);
 		item.activate.connect(()=> { browse_selected(); });
 		menu_snapshots.append(item);
@@ -351,6 +337,20 @@ class SnapshotListBox : Gtk.Box{
 		item.activate.connect(()=> { view_snapshot_log(true); });
 		menu_snapshots.append(item);
 		mi_view_log_restore = item;
+
+		// mi_remove
+		item = new ImageMenuItem.with_label(_("Delete"));
+		item.image = IconManager.lookup_image("edit-delete", 16);
+		item.activate.connect(()=> { delete_selected(); });
+		menu_snapshots.append(item);
+		mi_remove = item;
+		
+		// mi_mark
+		item = new ImageMenuItem.with_label(_("Mark/Unmark for Deletion"));
+		item.image = IconManager.lookup_image("edit-delete", 16);
+		item.activate.connect(()=> { mark_selected(); });
+		menu_snapshots.append(item);
+		mi_mark = item;
 		
 		menu_snapshots.show_all();
 
