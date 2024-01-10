@@ -550,7 +550,24 @@ class MainWindow : Gtk.Window{
 				return;
 			}
 		}
-		
+
+		// confirm deletion ------------------
+
+        var confirm_dialog = new Gtk.MessageDialog(
+            this,
+            Gtk.DialogFlags.MODAL,
+            Gtk.MessageType.QUESTION,
+            Gtk.ButtonsType.YES_NO,
+            "Are you sure you want to delete this snapshot?"
+            );
+
+        var confirm_response = confirm_dialog.run();
+        confirm_dialog.destroy();
+
+        if (confirm_response != Gtk.ResponseType.YES) {
+            return;
+        }
+
 		// get selected snapshots
 
 		if (!App.thread_delete_running){
