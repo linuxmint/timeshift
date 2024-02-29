@@ -1,12 +1,12 @@
 # Timeshift
 
-Timeshift for Linux is an application that provides functionality similar to the _System Restore_ feature in Windows and the _Time Machine_ tool in Mac OS. Timeshift protects your system by taking incremental snapshots of the file system at regular intervals. These snapshots can be restored at a later date to undo all changes to the system. 
+Timeshift for Linux is an application that provides functionality similar to the _System Restore_ feature in Windows and the _Time Machine_ tool in Mac OS. Timeshift protects your system by taking incremental snapshots of the file system at regular intervals. These snapshots can be restored at a later date to undo all changes to the system.
 
 In RSYNC mode, snapshots are taken using [rsync](https://rsync.samba.org) and [hard-links](https://en.wikipedia.org/wiki/Hard_link). Common files are shared between snapshots which saves disk space. Each snapshot is a full system backup that can be browsed with a file manager.
 
 In BTRFS mode, snapshots are taken using the in-built features of the BTRFS filesystem. BTRFS snapshots are supported only on BTRFS systems having an Ubuntu-type subvolume layout (with @ and @home subvolumes).
 
-Timeshift is similar to applications like [rsnapshot](https://www.rsnapshot.org), [BackInTime](https://github.com/bit-team/backintime) and [TimeVault](https://wiki.ubuntu.com/TimeVault) but with different goals. It is designed to protect only system files and settings. User files such as documents, pictures and music are excluded. This ensures that your files remain unchanged when you restore your system to an earlier date. If you need a tool to back up your documents and files please take a look at the excellent [BackInTime](https://github.com/bit-team/backintime) application which is more configurable and provides options for saving user files.  
+Timeshift is similar to applications like [rsnapshot](https://www.rsnapshot.org), [BackInTime](https://github.com/bit-team/backintime) and [TimeVault](https://wiki.ubuntu.com/TimeVault) but with different goals. It is designed to protect only system files and settings. User files such as documents, pictures and music are excluded. This ensures that your files remain unchanged when you restore your system to an earlier date. If you need a tool to back up your documents and files please take a look at the excellent [BackInTime](https://github.com/bit-team/backintime) application which is more configurable and provides options for saving user files.
 
 ![](images/main_window.png)
 
@@ -76,9 +76,9 @@ You can selectively include items for backup from the ***Settings*** window. Sel
 *   Applications like rsnapshot rotate a snapshot to the next level by creating a hard-linked copy. Creating a hard-linked copy may seem like a good idea but it is still a waste of disk space, since only files can be hard-linked and not directories. The duplicated directory structure can take up as much as 100 MB of space. Timeshift avoids this wastage by using tags for maintaining backup levels. Each snapshot will have only one copy on disk and is tagged as "daily", "monthly", etc. The snapshot location will have a set of folders for each backup level ("Monthly", "Daily", etc) with symbolic links pointing to the actual snapshots tagged with the level.
 
 ### System Restore
-* Snapshots can be restored by selecting a snapshot from the main window and clicking *Restore* button on the toolbar. 
+* Snapshots can be restored by selecting a snapshot from the main window and clicking *Restore* button on the toolbar.
 
-* Snapshots can be restored either from the running system (online restore) or from another system that has Timeshift installed on it (offline restore). 
+* Snapshots can be restored either from the running system (online restore) or from another system that has Timeshift installed on it (offline restore).
 
 * If the main system is not bootable, then it is possible to boot from an Ubuntu Live CD, install Timeshift on the live system, and restore a snapshot on the main system.
 
@@ -88,7 +88,7 @@ You can selectively include items for backup from the ***Settings*** window. Sel
 
 ### Cross-Distribution Restore
 
-- You can also Timeshift across distributions. Let's say you are currently using Xubuntu and decide to try out Linux Mint. You install Linux Mint on your system and try it out for a week before deciding to go back to Xubuntu. Using Timeshift you can simply restore the last week's snapshot to get your Xubuntu system back. Timeshift will take care of things like reinstalling the bootloader and other details. 
+- You can also Timeshift across distributions. Let's say you are currently using Xubuntu and decide to try out Linux Mint. You install Linux Mint on your system and try it out for a week before deciding to go back to Xubuntu. Using Timeshift you can simply restore the last week's snapshot to get your Xubuntu system back. Timeshift will take care of things like reinstalling the bootloader and other details.
 - Since installing a new linux distribution also formats your root partition you need to save your snapshots on a separate linux partition for this to work.
 - It is recommended to include hidden items in home directory by selecting the option "*Include  Hidden Items*" from *Settings* > *Users*.
 
@@ -150,7 +150,7 @@ You can find the exact instructions in the [development](/docs/development.md) d
 
 Debian, Ubuntu, Linux Mint, Elementary OS, etc.
 
-Install Timeshift from the repositories:  
+Install Timeshift from the repositories:
 
 ```sh
 sudo apt-get update
@@ -159,7 +159,7 @@ sudo apt-get install timeshift
 
 ### Fedora
 
-Fedora is not fully supported. BTRFS snapshots only support Ubuntu-specific layouts. 
+Fedora is not fully supported. BTRFS snapshots only support Ubuntu-specific layouts.
 
 ```sh
 sudo dnf update
@@ -174,7 +174,7 @@ sudo pacman -S timeshift
 
 ## Removal
 
-Run the following command in a terminal window:  
+Run the following command in a terminal window:
 
     sudo apt-get remove timeshift
 
@@ -188,7 +188,7 @@ or
 
 depending on your package management system.
 
-Remember to delete all snapshots before un-installing. Otherwise the snapshots continue to occupy space on your system.  To delete all snapshots, run the application, select all snapshots from the list (CTRL+A) and click the _Delete_ button on the toolbar. This will delete all snapshots and remove the _/timeshift_ folder in the root directory.     
+Remember to delete all snapshots before un-installing. Otherwise the snapshots continue to occupy space on your system.  To delete all snapshots, run the application, select all snapshots from the list (CTRL+A) and click the _Delete_ button on the toolbar. This will delete all snapshots and remove the _/timeshift_ folder in the root directory.
 
 ## Known Issues & Limitations
 
@@ -199,7 +199,7 @@ BTRFS volumes must have an Ubuntu-type layout with **@** and **@home** subvolume
 
 #### Disk Space
 
-Timeshift requires a lot of disk space to keep snapshot data. The device selected as snapshot device must have sufficient free space to store the snapshots that will be created. 
+Timeshift requires a lot of disk space to keep snapshot data. The device selected as snapshot device must have sufficient free space to store the snapshots that will be created.
 
 If the backup device is running out of space, try the following steps:
 
