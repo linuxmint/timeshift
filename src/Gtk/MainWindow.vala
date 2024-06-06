@@ -558,7 +558,7 @@ class MainWindow : Gtk.Window{
             Gtk.DialogFlags.MODAL,
             Gtk.MessageType.QUESTION,
             Gtk.ButtonsType.YES_NO,
-            "Are you sure you want to delete this snapshot?"
+            _("Are you sure you want to delete this snapshot?")
             );
 
         var confirm_response = confirm_dialog.run();
