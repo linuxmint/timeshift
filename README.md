@@ -172,6 +172,14 @@ sudo dnf install timeshift
 sudo pacman -S timeshift
 ```
 
+### ALT
+
+```sh
+su -
+apt-get update
+apt-get install timeshift
+```
+
 ## Removal
 
 Run the following command in a terminal window:  
@@ -185,6 +193,10 @@ or
 or
 
     sudo pacman -R timeshift
+
+or
+
+    su - -c "apt-get remove timeshift"
 
 depending on your package management system.
 
