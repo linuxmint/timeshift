@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2023-06-01 11:34+0100\n"
-"PO-Revision-Date: 2017-10-10 10:48+0000\n"
-"Last-Translator: Hoang Minh Hieu <Unknown>\n"
+"POT-Creation-Date: 2024-06-06 11:53+0100\n"
+"PO-Revision-Date: 2024-06-16 14:00+0000\n"
+"Last-Translator: thieninox <Unknown>\n"
 "Language-Team: Vietnamese <vi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-01-04 14:58+0000\n"
-"X-Generator: Launchpad (build e1eeab5b20e19239bd7d5f36676f7a52988db88b)\n"
+"X-Launchpad-Export-Date: 2024-06-18 17:56+0000\n"
+"X-Generator: Launchpad (build bbfa2351d9d6a9ddfe262109428f7bf5516e65d1)\n"
 
 #: src/AppConsole.vala:626
 #, c-format
@@ -29,7 +29,7 @@ msgstr ""
 #: src/Core/SnapshotRepo.vala:556
 #, c-format
 msgid "%d snapshots, %s free"
-msgstr "%d lần chụp, %s rảnh"
+msgstr "%d bản sao lưu, %s trống"
 
 #: src/AppConsole.vala:927
 #, c-format
@@ -45,92 +45,94 @@ msgstr "%s sẽ ở trong thiết bị gốc"
 msgid "(Re)install GRUB2 on:"
 msgstr "Cài đặt lại GRUB2 trên:"
 
-#: src/Core/Main.vala:379
+#: src/Core/Main.vala:381
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr "** Đã gỡ cài đặt Timeshift BTRF5 **"
 
-#: src/Core/Main.vala:3527
+#: src/Core/Main.vala:3544
 msgid "/ is mapped to device"
 msgstr "/ đã liên kết với thiết bị"
 
-#: src/Core/Main.vala:3549
+#: src/Core/Main.vala:3566
 msgid "/boot is mapped to device"
 msgstr "/boot đã liên kết với thiết bị"
 
-#: src/Core/Main.vala:3560
+#: src/Core/Main.vala:3577
 msgid "/boot/efi is mapped to device"
 msgstr "/boot/efi đã liên kết với thiết bị"
 
-#: src/Core/Main.vala:3538
+#: src/Core/Main.vala:3555
 msgid "/home is mapped to device"
 msgstr "/home đã liên kết với thiết bị"
 
 #: src/Gtk/SnapshotListBox.vala:289
 msgid "<b>Comments</b> (double-click to edit)"
-msgstr ""
+msgstr "<b>Nhận xét</b> (nhấp đúp để sửa)"
 
 #: src/Gtk/ScheduleBox.vala:168
 msgid ""
 "A maintenance task runs once every hour and creates snapshots as needed."
-msgstr ""
+msgstr "Tác vụ bảo trì chạy mỗi giờ một lần và tạo bản sao lưu nếu cần."
 
 #: src/AppConsole.vala:711 src/AppConsole.vala:775 src/AppConsole.vala:907
 #: src/AppConsole.vala:1002 src/AppConsole.vala:1047 src/AppConsole.vala:1088
 #: src/AppConsole.vala:1106
 msgid "Aborted."
-msgstr ""
+msgstr "Đã hủy bỏ."
 
 #: src/Gtk/MainWindow.vala:375
 msgid "About"
-msgstr ""
+msgstr "Thông Tin"
 
 #: src/Gtk/RsyncLogBox.vala:471
 msgid "Action"
-msgstr ""
+msgstr "Hành động"
 
 #: src/Gtk/ExcludeBox.vala:225
 msgid "Add"
-msgstr ""
+msgstr "Thêm"
 
 #: src/Gtk/ExcludeBox.vala:242
 msgid "Add Files"
-msgstr ""
+msgstr "Thêm tập tin"
 
 #: src/Gtk/ExcludeBox.vala:248
 msgid "Add Folders"
-msgstr ""
+msgstr "Thêm thư mục"
 
 #: src/Gtk/ExcludeBox.vala:225
 msgid "Add custom pattern"
-msgstr ""
+msgstr "Thêm mẫu tùy chỉnh"
 
 #: src/Gtk/ExcludeBox.vala:248
 msgid "Add directories"
-msgstr ""
+msgstr "Thêm thư mục"
 
 #: src/Gtk/ExcludeBox.vala:242
 msgid "Add files"
-msgstr ""
+msgstr "Thêm tập tin"
 
 #: src/AppConsole.vala:371
 msgid "Add tags to snapshot (default: O)"
-msgstr ""
+msgstr "Thêm thẻ vào bản sao lưu (mặc định: O)"
 
 #: src/Utility/CronTab.vala:312
 msgid "Added cron task"
-msgstr ""
+msgstr "Đã thêm tác vụ cron"
 
 #: src/AppGtk.vala:147
 msgid "Admin Access Required"
-msgstr ""
+msgstr "Yêu cầu quyền truy cập của quản trị viên"
 
 #: src/AppGtk.vala:142
 msgid "Admin access is required to backup and restore system files."
 msgstr ""
+"Cần có quyền truy cập của quản trị viên để sao lưu và khôi phục các tệp hệ "
+"thống."
 
 #: src/Gtk/RsyncLogBox.vala:363
 msgid "All Files"
-msgstr ""
+msgstr "Tất cả tập tin"
 
 #: src/Gtk/SnapshotBackendBox.vala:197
 msgid ""
@@ -138,10 +140,13 @@ msgid ""
 "are incremental. Unchanged files will be hard-linked from the previous "
 "snapshot if available."
 msgstr ""
+"Tất cả các tập tin được sao chép khi bản sao lưu đầu tiên được tạo. Các bản "
+"sao lưu tiếp theo sẽ tăng dần. Các tệp không thay đổi sẽ được liên kết cứng "
+"từ bản sao lưu trước đó nếu có."
 
 #: src/Gtk/ExcludeMessageWindow.vala:129
 msgid "All other files and folders are excluded."
-msgstr ""
+msgstr "Tất cả các tập tin và thư mục khác đều bị loại trừ."
 
 #: src/Gtk/RestoreDeviceBox.vala:486
 msgid ""
@@ -152,64 +157,76 @@ msgid ""
 "Either select a non-encrypted device for boot directory or select a non-"
 "encrypted device for root filesystem."
 msgstr ""
+"Một thiết bị mã hóa được chọn cho hệ thống tập tin gốc (/). Thư mục khởi "
+"động (/boot) phải được gắn trên thiết bị không được mã hóa để hệ thống khởi "
+"động thành công.\n"
+"\n"
+"Chọn thiết bị không được mã hóa cho thư mục khởi động hoặc chọn thiết bị "
+"không được mã hóa cho hệ thống tập tin gốc."
 
-#: src/Core/Main.vala:265
+#: src/Core/Main.vala:267
 msgid "Another instance of Timeshift is creating a snapshot."
-msgstr ""
+msgstr "Một phiên bản khác của Timeshift là tạo bản sao lưu."
 
 #: src/Utility/AppLock.vala:49
 msgid "Another instance of this application is running"
-msgstr ""
+msgstr "Một phiên bản khác của ứng dụng này đang chạy"
 
-#: src/Core/Main.vala:269
+#: src/Core/Main.vala:271
 msgid "Another instance of timeshift is currently running!"
-msgstr ""
+msgstr "Một phiên bản timeshift khác hiện đang chạy!"
 
 #: src/AppConsole.vala:387
 msgid "Answer YES to all confirmation prompts"
-msgstr ""
+msgstr "Trả lời Đồng Ý cho tất cả lời nhắc xác nhận"
 
-#: src/Core/Main.vala:3364
+#: src/Core/Main.vala:3381
 msgid "App config loaded"
-msgstr ""
+msgstr "Đã tải cấu hình ứng dụng"
 
-#: src/Core/Main.vala:3252
+#: src/Core/Main.vala:3265
 msgid "App config saved"
-msgstr ""
+msgstr "Đã lưu cấu hình ứng dụng"
 
 #: src/AppConsole.vala:107
 msgid "Application needs admin access."
-msgstr ""
+msgstr "Ứng dụng cần quyền truy cập của quản trị viên."
 
-#: src/Core/Main.vala:3704
+#: src/Core/Main.vala:3721
 msgid "Application will exit"
-msgstr ""
+msgstr "Ứng dụng sẽ thoát"
 
-#: src/Core/Main.vala:395
+#: src/Core/Main.vala:397
 msgid "Application will exit."
-msgstr ""
+msgstr "Ứng dụng sẽ thoát."
+
+#: src/Gtk/MainWindow.vala:561
+msgid "Are you sure you want to delete this snapshot?"
+msgstr "Bạn có chắc chắn muốn xóa bản sao lưu này không?"
 
 #: src/Gtk/MainWindow.vala:345
 msgid "Available"
-msgstr ""
+msgstr "Sẵn có"
 
 #: src/Gtk/SnapshotBackendBox.vala:95
 msgid "BTRFS"
-msgstr ""
+msgstr "BTRFS"
 
 #: src/Gtk/SnapshotBackendBox.vala:174
 msgid "BTRFS Snapshots"
-msgstr ""
+msgstr "Bản sao lưu BTRFS"
 
-#: src/Core/Main.vala:2202 src/Core/Main.vala:2206
+#: src/Core/Main.vala:2215 src/Core/Main.vala:2219
 msgid "BTRFS device is not mounted"
-msgstr ""
+msgstr "Thiết bị BTRFS chưa được gắn kết"
 
 #: src/Gtk/BackupDeviceBox.vala:98
 msgid ""
 "BTRFS snapshots are saved on system partition. Other partitions are not "
 "supported."
 msgstr ""
+"Bản sao lưu BTRFS được lưu trên phân vùng hệ thống. Các phân vùng khác không "
+"được hỗ trợ."
 
 #: src/Gtk/FinishBox.vala:92
 msgid ""
@@ -218,86 +235,91 @@ msgid ""
 "snapshots to an external non-system disk in RSYNC mode to guard against disk "
 "failures."
 msgstr ""
+"Bản sao lưu BTRFS được lưu trên cùng một đĩa mà nó được tạo. Nếu đĩa hệ "
+"thống bị lỗi, các bản sao lưu sẽ bị mất cùng với hệ thống. Lưu bản sao lưu "
+"vào ổ đĩa ngoài hệ thống ở chế độ RSYNC để bảo vệ khỏi lỗi ổ đĩa."
 
 #: src/Gtk/SetupWizardWindow.vala:94
 msgid "Backend"
-msgstr ""
+msgstr "Phần phụ trợ"
 
 #: src/Gtk/BackupWindow.vala:92 src/AppConsole.vala:367
 msgid "Backup"
-msgstr ""
+msgstr "Sao lưu"
 
-#: src/Core/Main.vala:2178
+#: src/Core/Main.vala:2191
 msgid "Backup Device"
-msgstr ""
+msgstr "Thiết bị sao lưu"
 
-#: src/Core/Main.vala:2173
+#: src/Core/Main.vala:2186
 msgid "Backup device not specified!"
-msgstr ""
+msgstr "Thiết bị sao lưu không được chỉ định!"
 
 #: src/Gtk/RestoreExcludeBox.vala:91
 msgid "Bittorrent Clients"
-msgstr ""
+msgstr "Phần mềm Bittorrent"
 
 #: src/Gtk/SnapshotListBox.vala:297 src/Gtk/ScheduleBox.vala:136
 msgid "Boot"
-msgstr ""
+msgstr "Khởi động"
 
 #: src/Gtk/RestoreDeviceBox.vala:485
 msgid "Boot device not selected"
-msgstr ""
+msgstr "Thiết bị khởi động không được chọn"
 
-#: src/Core/Main.vala:1045
+#: src/Core/Main.vala:1058
 msgid "Boot snapshot failed!"
-msgstr ""
+msgstr "Bản sao lưu khởi động không thành công!"
 
 #: src/Gtk/ScheduleBox.vala:169
 msgid ""
 "Boot snapshots are created with a delay of 10 minutes after system startup."
 msgstr ""
+"Các bản sao lưu khởi động được tạo ra sau 10 phút kể từ khi hệ thống khởi "
+"động."
 
-#: src/Core/Main.vala:1026
+#: src/Core/Main.vala:1039
 msgid "Boot snapshots are enabled"
-msgstr ""
+msgstr "Bản sao lưu khởi động được bật"
 
 #: src/Gtk/BootOptionsWindow.vala:49
 msgid "Bootloader Options"
-msgstr ""
+msgstr "Tùy chọn bộ nạp khởi động"
 
 #: src/Gtk/RestoreDeviceBox.vala:402
 msgid "Bootloader Options (Advanced)"
-msgstr ""
+msgstr "Tùy chọn bộ nạp khởi động (Nâng cao)"
 
 #: src/Gtk/MainWindow.vala:170
 msgid "Browse"
-msgstr ""
+msgstr "Duyệt"
 
-#: src/Gtk/SnapshotListBox.vala:335
+#: src/Gtk/SnapshotListBox.vala:321
 msgid "Browse Files"
-msgstr ""
+msgstr "Duyệt tập tin"
 
 #: src/Gtk/MainWindow.vala:171
 msgid "Browse selected snapshot"
-msgstr ""
+msgstr "Duyệt bản sao lưu đã chọn"
 
-#: src/Core/Main.vala:2668
+#: src/Core/Main.vala:2681
 msgid "Building file list..."
-msgstr ""
+msgstr "Đang tạo danh sách tập tin..."
 
-#: src/Core/Main.vala:1405
+#: src/Core/Main.vala:1418
 msgid "Calculating required disk space..."
-msgstr ""
+msgstr "Đang tính toán dung lượng đĩa cần thiết..."
 
 #: src/Utility/Gtk/CustomMessageDialog.vala:152 src/Utility/GtkHelper.vala:109
 #: src/Gtk/RestoreWindow.vala:215 src/Gtk/RestoreWindow.vala:224
 #: src/Gtk/BackupWindow.vala:181 src/Gtk/SetupWizardWindow.vala:220
 #: src/Gtk/DeleteWindow.vala:190
 msgid "Cancel"
-msgstr ""
+msgstr "Huỷ"
 
 #: src/Gtk/RestoreWindow.vala:230
 msgid "Cancel restore?"
-msgstr ""
+msgstr "Hủy khôi phục?"
 
 #: src/Gtk/RestoreWindow.vala:232
 msgid ""
@@ -306,392 +328,401 @@ msgid ""
 "issues. After cancelling, you need to restore another snapshot, to bring the "
 "system to a consistent state. Click Yes to confirm."
 msgstr ""
+"Hủy bỏ quá trình khôi phục sẽ khiến hệ thống đích rơi vào trạng thái không "
+"ổn định. Hệ thống có thể không khởi động được hoặc bạn có thể gặp phải các "
+"vấn đề khác nhau. Sau khi hủy, bạn cần khôi phục lại một bản sao lưu khác, "
+"để đưa hệ thống về trạng thái ổn định. Nhấn Có để xác nhận."
 
 #: src/Gtk/MainWindow.vala:547
 msgid "Cannot Delete Live Snapshot"
-msgstr ""
+msgstr "Không thể xóa bản sao lưu đang hoạt động"
 
 #: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
 #: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
 #: src/Gtk/RsyncLogBox.vala:566 src/Gtk/RsyncLogBox.vala:587
 msgid "Changed"
-msgstr ""
+msgstr "Đã thay đổi"
 
 #: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:127
 msgid "Changed items:"
-msgstr ""
+msgstr "Các mục đã thay đổi:"
 
 #: src/Gtk/RestoreWindow.vala:104
 msgid "Checking Restore Actions (Dry Run)"
-msgstr ""
+msgstr "Kiểm tra các hành động khôi phục (Chạy thử)"
 
-#: src/Core/Main.vala:2901
+#: src/Core/Main.vala:2914
 msgid "Checking file systems for errors..."
-msgstr ""
+msgstr "Đang kiểm tra lỗi hệ thống tập tin..."
 
 #: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:130
 #: src/Gtk/RsyncLogBox.vala:390
 #, c-format
 msgid "Checksum"
-msgstr ""
+msgstr "Checksum"
 
-#: src/Core/Main.vala:2549
+#: src/Core/Main.vala:2562
 msgid "Cleaning up..."
-msgstr ""
+msgstr "Đang dọn dẹp..."
 
 #: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:88
 msgid "Click to edit. Drag and drop to re-order."
-msgstr ""
+msgstr "Bấm vào để chỉnh sửa. Kéo và thả để sắp xếp lại."
 
 #: src/Gtk/ExcludeBox.vala:59
 msgid "Click to edit. Drag-drop to re-order."
-msgstr ""
+msgstr "Bấm vào để chỉnh sửa. Kéo-thả để sắp xếp lại."
 
 #: src/Gtk/RestoreWindow.vala:69
 msgid "Clone System"
-msgstr ""
+msgstr "Nhân bản hệ thống"
 
 #: src/Gtk/RestoreFinishBox.vala:68
 msgid "Cloning"
-msgstr ""
+msgstr "Đang nhân bản"
 
-#: src/Core/Main.vala:2951
+#: src/Core/Main.vala:2964
 msgid "Cloning system..."
-msgstr ""
+msgstr "Đang nhân bản hệ thống..."
 
 #: src/Gtk/BootOptionsWindow.vala:106 src/Gtk/RestoreWindow.vala:501
 #: src/Gtk/BackupWindow.vala:172 src/Gtk/RsyncLogBox.vala:266
 #: src/Gtk/DeleteWindow.vala:173
 msgid "Close"
-msgstr ""
+msgstr "Đóng"
 
 #: src/Gtk/FinishBox.vala:101 src/Gtk/DeleteFinishBox.vala:71
 #: src/Gtk/RestoreFinishBox.vala:106 src/Gtk/BackupFinishBox.vala:70
 msgid "Close window to exit"
-msgstr ""
+msgstr "Đóng cửa sổ để thoát"
 
-#: src/Core/Main.vala:364
+#: src/Core/Main.vala:366
 msgid "Commands listed below are not available on this system"
-msgstr ""
+msgstr "Các lệnh dưới đây không có sẵn trên hệ thống này"
 
 #: src/Gtk/SnapshotListBox.vala:223
 msgid "Comments (click to edit)"
-msgstr ""
+msgstr "Bình luận (click để chỉnh sửa)"
 
-#: src/Core/Main.vala:2944 src/Gtk/RestoreBox.vala:74
+#: src/Core/Main.vala:2957 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
 msgid "Comparing Files (Dry Run)..."
-msgstr ""
+msgstr "So sánh các tập tin (Chạy thử)..."
 
-#: src/Core/Main.vala:2710
+#: src/Core/Main.vala:2723
 msgid "Comparing files with rsync..."
-msgstr ""
+msgstr "So sánh các tập tin với rsync..."
 
 #: src/Gtk/DeleteFinishBox.vala:50 src/Gtk/RestoreFinishBox.vala:50
 #: src/Gtk/RestoreFinishBox.vala:75 src/Gtk/BackupFinishBox.vala:50
 msgid "Completed"
-msgstr ""
+msgstr "Hoàn thành"
 
 #: src/Gtk/RestoreFinishBox.vala:78
 msgid "Completed With Errors"
-msgstr ""
+msgstr "Đã hoàn thành nhưng có lỗi"
 
 #: src/Gtk/RestoreWindow.vala:109 src/Gtk/RsyncLogBox.vala:87
 msgid "Confirm Actions"
-msgstr ""
+msgstr "Xác nhận hành động"
 
 #: src/AppConsole.vala:1081
 #, c-format
 msgid "Continue with restore? (y/n): "
-msgstr ""
+msgstr "Tiếp tục khôi phục? (có/không): "
 
 #: src/AppConsole.vala:847 src/AppConsole.vala:978
 msgid "Could not find device"
-msgstr ""
+msgstr "Không thể tìm thấy thiết bị"
 
-#: src/Utility/Device.vala:1308
+#: src/Utility/Device.vala:1330
 #, c-format
 msgid "Could not find file"
-msgstr ""
+msgstr "Không thể tìm thấy tệp"
 
 #: src/AppConsole.vala:744
 msgid "Could not find snapshot"
-msgstr ""
+msgstr "Không thể tìm thấy bản sao lưu"
 
-#: src/Core/Main.vala:3113
+#: src/Core/Main.vala:3126
 msgid "Could not find system subvolume"
-msgstr ""
+msgstr "Không tìm thấy phân vùng con của hệ thống"
 
-#: src/Core/Main.vala:3141
+#: src/Core/Main.vala:3154
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr ""
+"Không thể tìm thấy các phân vùng hệ thống đã tạo bản sao lưu trước khi khôi "
+"phục"
 
 #: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
 #: src/Gtk/RsyncLogBox.vala:570
 #, c-format
 msgid "Create"
-msgstr ""
+msgstr "Tạo mới"
 
 #: src/Gtk/BackupWindow.vala:62
 msgid "Create Snapshot"
-msgstr ""
+msgstr "Tạo Bản sao lưu"
 
 #: src/Gtk/ScheduleBox.vala:136
 msgid "Create one per boot"
-msgstr ""
+msgstr "Tạo mới mỗi lần khởi động"
 
 #: src/Gtk/ScheduleBox.vala:100
 msgid "Create one per day"
-msgstr ""
+msgstr "Tạo mới mỗi ngày"
 
 #: src/Gtk/ScheduleBox.vala:118
 msgid "Create one per hour"
-msgstr ""
+msgstr "Tạo mới mỗi giờ"
 
 #: src/Gtk/ScheduleBox.vala:64
 msgid "Create one per month"
-msgstr ""
+msgstr "Tạo mới mỗi tháng"
 
 #: src/Gtk/ScheduleBox.vala:82
 msgid "Create one per week"
-msgstr ""
+msgstr "Tạo mới mỗi tuần"
 
 #: src/AppConsole.vala:369
 msgid "Create snapshot (even if not scheduled)"
-msgstr ""
+msgstr "Tạo bản sao lưu (ngay cả khi không được lên lịch)"
 
 #: src/AppConsole.vala:368
 msgid "Create snapshot if scheduled"
-msgstr ""
+msgstr "Tạo bản sao lưu nếu được lên lịch"
 
 #: src/Gtk/MainWindow.vala:141
 msgid "Create snapshot of current system"
-msgstr ""
+msgstr "Tạo bản sao lưu của hệ thống hiện tại"
 
-#: src/Gtk/MainWindow.vala:1027
+#: src/Gtk/MainWindow.vala:1044
 msgid ""
 "Create snapshots manually or enable scheduled snapshots to protect your "
 "system"
 msgstr ""
+"Tạo bản sao lưu theo cách thủ công hoặc kích hoạt tạo bản sao lưu theo lịch "
+"để bảo vệ hệ thống của bạn"
 
 #: src/Gtk/SnapshotBackendBox.vala:96
 msgid "Create snapshots using BTRFS"
-msgstr ""
+msgstr "Tạo bản sao lưu bằng BTRFS"
 
 #: src/Gtk/SnapshotBackendBox.vala:78
 msgid "Create snapshots using RSYNC tool and hard-links"
-msgstr ""
+msgstr "Tạo bản sao lưu bằng công cụ RSYNC và liên kết cứng"
 
 #: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
 #: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:570
 #: src/Gtk/RsyncLogBox.vala:591
 #, c-format
 msgid "Created"
-msgstr ""
+msgstr "Đã tạo"
 
 #: src/Core/Snapshot.vala:430
 msgid "Created control file"
-msgstr ""
+msgstr "Đã tạo tập tin điều khiển"
 
 #: src/Utility/TeeJee.FileSystem.vala:268
 msgid "Created directory"
-msgstr ""
+msgstr "Thư mục đã tạo"
 
-#: src/Core/Main.vala:3163
+#: src/Core/Main.vala:3176
 msgid "Created pre-restore snapshot"
-msgstr ""
+msgstr "Đã tạo bản sao lưu trước khi khôi phục"
 
-#: src/Core/Main.vala:1660
+#: src/Core/Main.vala:1673
 msgid "Created subvolume snapshot"
-msgstr ""
+msgstr "Đã tạo ảnh bản sao lưu phân khối"
 
 #: src/Gtk/BackupBox.vala:71
 msgid "Creating Snapshot..."
-msgstr ""
+msgstr "Đang tạo bản sao lưu..."
 
-#: src/Core/Main.vala:1598
+#: src/Core/Main.vala:1611
 msgid "Creating new backup..."
-msgstr ""
+msgstr "Đang tạo bản sao lưu mới..."
 
-#: src/Core/Main.vala:1444
+#: src/Core/Main.vala:1457
 msgid "Creating new snapshot..."
-msgstr ""
+msgstr "Đang tạo bản sao lưu mới..."
 
-#: src/Core/Main.vala:3091
+#: src/Core/Main.vala:3104
 msgid "Creating pre-restore snapshot from system subvolumes..."
-msgstr ""
+msgstr "Tạo bản sao lưu trước khi khôi phục từ các phân khối hệ thống..."
 
-#: src/Core/Main.vala:3703
+#: src/Core/Main.vala:3720
 msgid "Critical Error"
-msgstr ""
+msgstr "Lỗi nghiêm trọng"
 
 #: src/Utility/CronTab.vala:136
 msgid "Cron job added"
-msgstr ""
+msgstr "Đã thêm công việc định kỳ"
 
 #: src/Utility/CronTab.vala:217
 msgid "Cron job removed"
-msgstr ""
+msgstr "Công việc định kỳ đã bị xóa"
 
 #: src/Utility/CronTab.vala:304
 msgid "Cron task exists"
-msgstr ""
+msgstr "Tác vụ định kỳ tồn tại"
 
 #: src/Gtk/MiscBox.vala:94
 msgid "Custom"
-msgstr ""
+msgstr "Tùy chỉnh"
 
 #: src/Gtk/SnapshotListBox.vala:299 src/Gtk/ScheduleBox.vala:100
 msgid "Daily"
-msgstr ""
+msgstr "Hằng ngày"
 
-#: src/Core/Main.vala:1107
+#: src/Core/Main.vala:1120
 msgid "Daily snapshot failed!"
-msgstr ""
+msgstr "Bản sao lưu hàng ngày không thành công!"
 
-#: src/Core/Main.vala:1088
+#: src/Core/Main.vala:1101
 msgid "Daily snapshots are enabled"
-msgstr ""
+msgstr "Bản sao lưu hàng ngày được kích hoạt"
 
-#: src/Core/Main.vala:2272
+#: src/Core/Main.vala:2285
 msgid "Data will be modified on following devices:"
-msgstr ""
+msgstr "Dữ liệu sẽ được sửa đổi trên các thiết bị sau:"
 
 #: src/Gtk/MiscBox.vala:67
 msgid "Date Format"
-msgstr ""
+msgstr "Định dạng ngày"
 
-#: src/Gtk/SnapshotListBox.vala:321 src/Gtk/MainWindow.vala:160
+#: src/Gtk/SnapshotListBox.vala:342 src/Gtk/MainWindow.vala:160
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
 #: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:381
 #, c-format
 msgid "Delete"
-msgstr ""
+msgstr "Xóa"
 
 #: src/Gtk/DeleteWindow.vala:62
 msgid "Delete Snapshots"
-msgstr ""
+msgstr "Xóa bản sao lưu"
 
 #: src/AppConsole.vala:383
 msgid "Delete all snapshots"
-msgstr ""
+msgstr "Xóa tất cả bản sao lưu"
 
 #: src/Gtk/MainWindow.vala:161
 msgid "Delete selected snapshot"
-msgstr ""
+msgstr "Xóa bản sao lưu đã chọn"
 
 #: src/AppConsole.vala:382
 msgid "Delete snapshot"
-msgstr ""
+msgstr "Xóa bản sao lưu"
 
 #: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
 #: src/Gtk/RsyncLogBox.vala:595
 #, c-format
 msgid "Deleted"
-msgstr ""
+msgstr "Đã xóa"
 
 #: src/Utility/TeeJee.FileSystem.vala:302
 msgid "Deleted directory"
-msgstr ""
+msgstr "Thư mục đã xóa"
 
-#: src/Core/Main.vala:3070 src/Core/Main.vala:3074 src/Core/Subvolume.vala:167
+#: src/Core/Main.vala:3083 src/Core/Main.vala:3087 src/Core/Subvolume.vala:167
 #, c-format
 msgid "Deleted subvolume"
-msgstr ""
+msgstr "Đã xóa phân vùng con"
 
 #: src/Gtk/DeleteBox.vala:58
 msgid "Deleting Snapshots..."
-msgstr ""
+msgstr "Đang xóa bản sao lưu"
 
 #: src/Core/Subvolume.vala:141
 #, c-format
 msgid "Deleting subvolume"
-msgstr ""
+msgstr "Xóa âm lượng phân vùng con"
 
 #: src/Gtk/RestoreExcludeBox.vala:105
 msgid "Deluge, Transmission"
-msgstr ""
+msgstr "Deluge, Transmission"
 
 #: src/AppConsole.vala:439 src/AppConsole.vala:555
 msgid "Description"
-msgstr ""
+msgstr "Mô tả"
 
 #: src/Core/Subvolume.vala:181
 #, c-format
 msgid "Destroyed qgroup"
-msgstr ""
+msgstr "Loại bỏ hoàn toàn qgroup"
 
 #: src/Core/Subvolume.vala:171
 #, c-format
 msgid "Destroying qgroup"
-msgstr ""
+msgstr "Đang loại bỏ hoàn toàn qgroup"
 
-#: src/Core/Main.vala:2275 src/Core/Main.vala:2307
+#: src/Core/Main.vala:2288 src/Core/Main.vala:2320
 #: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
-#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
-#: src/Utility/Device.vala:1942 src/Gtk/RestoreDeviceBox.vala:97
+#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1954
+#: src/Utility/Device.vala:1964 src/Gtk/RestoreDeviceBox.vala:97
 #: src/AppConsole.vala:467 src/AppConsole.vala:506 src/AppConsole.vala:554
 #, c-format
 msgid "Device"
-msgstr ""
+msgstr "Thiết bị"
 
-#: src/Utility/Device.vala:1390
+#: src/Utility/Device.vala:1412
 msgid "Device is unlocked"
-msgstr ""
+msgstr "Thiết bị đã được mở khóa"
 
-#: src/Utility/Device.vala:1285 src/Utility/Device.vala:1347
+#: src/Utility/Device.vala:1307 src/Utility/Device.vala:1369
 msgid "Device name is empty!"
-msgstr ""
+msgstr "Tên thiết bị trống!"
 
-#: src/Core/Main.vala:3417 src/Core/SnapshotRepo.vala:479
+#: src/Core/Main.vala:3434 src/Core/SnapshotRepo.vala:479
 #: src/AppConsole.vala:676
 msgid "Device not found"
-msgstr ""
+msgstr "Không tìm thấy thiết bị"
 
 #: src/Gtk/BackupDeviceBox.vala:97
 #, c-format
 msgid "Devices displayed above have BTRFS file systems."
-msgstr ""
+msgstr "Các thiết bị hiển thị ở trên có hệ thống tệp BTRFS."
 
 #: src/Gtk/BackupDeviceBox.vala:104
 #, c-format
 msgid "Devices displayed above have Linux file systems."
-msgstr ""
+msgstr "Các thiết bị hiển thị ở trên có hệ thống tệp Linux."
 
 #: src/Gtk/RestoreDeviceBox.vala:84
 msgid "Devices from which snapshot was created are pre-selected."
-msgstr ""
+msgstr "Các thiết bị tạo bản sao lưu được chọn trước."
 
 #: src/AppConsole.vala:332
 msgid "Devices with Linux file systems"
-msgstr ""
+msgstr "Các thiết bị có hệ thống tệp Linux"
 
 #: src/Gtk/BackupDeviceBox.vala:105
 msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
 msgstr ""
+"Các thiết bị có hệ thống tệp Windows không được hỗ trợ (NTFS, FAT, v.v.)."
 
 #: src/Core/SnapshotRepo.vala:914
 msgid "Directory not found"
-msgstr ""
+msgstr "Không tìm thấy thư mục"
 
-#: src/Core/Main.vala:2367 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Core/Main.vala:2380 src/Gtk/RestoreSummaryBox.vala:64
 msgid "Disclaimer"
 msgstr ""
 
 #: src/Gtk/BackupDeviceBox.vala:127
 msgid "Disk"
-msgstr ""
+msgstr "Ổ đĩa"
 
-#: src/Core/Main.vala:242
+#: src/Core/Main.vala:244
 msgid "Distribution"
 msgstr ""
 
-#: src/Gtk/MainWindow.vala:1021
+#: src/Gtk/MainWindow.vala:1038
 msgid "Enable scheduled snapshots to protect your system"
-msgstr ""
+msgstr "Kích hoạt bản sao lưu theo lịch để bảo vệ hệ thống của bạn"
 
-#: src/Utility/Device.vala:1454
+#: src/Utility/Device.vala:1476
 msgid "Encrypted Device"
 msgstr ""
 
@@ -709,7 +740,7 @@ msgstr ""
 msgid "Enter device name or number (a=Abort)"
 msgstr ""
 
-#: src/Utility/Device.vala:1455
+#: src/Utility/Device.vala:1477
 #, c-format
 msgid "Enter passphrase to unlock '%s'"
 msgstr ""
@@ -717,7 +748,7 @@ msgstr ""
 #: src/AppConsole.vala:767
 #, c-format
 msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
-msgstr ""
+msgstr "Nhập số bản sao lưu (a=Hủy bỏ, p=Trước, n=Tiếp theo)"
 
 #: src/Gtk/ExcludeBox.vala:231
 msgid "Enter the pattern to exclude (Ex: *.mp3, *.bak)"
@@ -739,7 +770,7 @@ msgstr ""
 msgid "Estimating System Size..."
 msgstr ""
 
-#: src/Core/Main.vala:1440
+#: src/Core/Main.vala:1453
 msgid "Estimating system size..."
 msgstr ""
 
@@ -753,7 +784,7 @@ msgstr ""
 
 #: src/Gtk/RestoreExcludeBox.vala:55 src/Gtk/ExcludeAppsBox.vala:51
 msgid "Exclude Application Settings"
-msgstr ""
+msgstr "Loại trừ Cài đặt Ứng dụng"
 
 #: src/Gtk/RestoreWindow.vala:99
 msgid "Exclude Apps"
@@ -775,7 +806,7 @@ msgstr ""
 msgid "Excluded Directories"
 msgstr ""
 
-#: src/Core/Main.vala:1728
+#: src/Core/Main.vala:1741
 msgid "Expected values: O, B, H, D, W, M"
 msgstr ""
 
@@ -792,17 +823,17 @@ msgstr ""
 msgid "Failed to create directory"
 msgstr ""
 
-#: src/Core/Main.vala:1566
+#: src/Core/Main.vala:1579
 msgid "Failed to create new snapshot"
-msgstr ""
+msgstr "Không tạo được bản sao lưu mới"
 
-#: src/Core/Main.vala:1320
+#: src/Core/Main.vala:1333
 msgid "Failed to create snapshot"
-msgstr ""
+msgstr "Không tạo được bản sao lưu"
 
-#: src/Core/Main.vala:1656
+#: src/Core/Main.vala:1669
 msgid "Failed to create subvolume snapshot"
-msgstr ""
+msgstr "Không thể tạo bản sao lưu phân khối"
 
 #: src/Core/SnapshotRepo.vala:955
 msgid "Failed to create symlinks"
@@ -818,11 +849,11 @@ msgstr ""
 
 #: src/Core/Subvolume.vala:153
 msgid "Failed to delete snapshot nested subvolume"
-msgstr ""
+msgstr "Không thể xóa bản sao lưu phân khối lồng nhau"
 
 #: src/Core/Subvolume.vala:163
 msgid "Failed to delete snapshot subvolume"
-msgstr ""
+msgstr "Không thể xóa bản sao lưu phân khối"
 
 #: src/Core/SnapshotRepo.vala:981
 msgid "Failed to delete symlinks"
@@ -832,7 +863,7 @@ msgstr ""
 msgid "Failed to destroy qgroup"
 msgstr ""
 
-#: src/Core/Main.vala:3918 src/Core/Main.vala:3924
+#: src/Core/Main.vala:3935 src/Core/Main.vala:3941
 msgid "Failed to estimate system size"
 msgstr ""
 
@@ -845,11 +876,11 @@ msgstr ""
 msgid "Failed to get input from user in 3 attempts"
 msgstr ""
 
-#: src/Utility/Device.vala:724
+#: src/Utility/Device.vala:746
 msgid "Failed to get partition list"
 msgstr ""
 
-#: src/Core/Main.vala:3500
+#: src/Core/Main.vala:3517
 msgid "Failed to get partition list."
 msgstr ""
 
@@ -865,15 +896,16 @@ msgstr ""
 msgid "Failed to move file"
 msgstr ""
 
-#: src/Core/Main.vala:3128
+#: src/Core/Main.vala:3141
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr ""
+"Đã xảy ra lỗi khi di chuyển phân khối hệ thống đến thư mục bản sao lưu."
 
-#: src/Core/Main.vala:4031
+#: src/Core/Main.vala:4048
 msgid "Failed to query subvolume list"
 msgstr ""
 
-#: src/Core/Main.vala:4116
+#: src/Core/Main.vala:4133
 msgid "Failed to query subvolume quota"
 msgstr ""
 
@@ -896,27 +928,27 @@ msgstr ""
 #: src/Core/Snapshot.vala:530 src/Core/Snapshot.vala:542
 #: src/Core/Snapshot.vala:550
 msgid "Failed to remove snapshot"
-msgstr ""
+msgstr "Không xóa được bản sao lưu"
 
 #: src/Core/Subvolume.vala:216
 msgid "Failed to restore system subvolume"
 msgstr ""
 
-#: src/Core/Main.vala:1516
+#: src/Core/Main.vala:1529
 msgid "Failed to save exclude list"
 msgstr ""
 
-#: src/Utility/Device.vala:1381 src/Utility/Device.vala:1435
-#: src/Utility/Device.vala:1460 src/Utility/Device.vala:1481
-#: src/Utility/Device.vala:1501
+#: src/Utility/Device.vala:1403 src/Utility/Device.vala:1457
+#: src/Utility/Device.vala:1482 src/Utility/Device.vala:1503
+#: src/Utility/Device.vala:1523
 msgid "Failed to unlock device"
 msgstr ""
 
-#: src/Utility/Device.vala:1733
+#: src/Utility/Device.vala:1755
 msgid "Failed to unmount"
 msgstr ""
 
-#: src/Core/Main.vala:3704
+#: src/Core/Main.vala:3721
 msgid "Failed to unmount device!"
 msgstr ""
 
@@ -926,7 +958,7 @@ msgstr ""
 
 #: src/Gtk/RsyncLogBox.vala:122
 msgid "File (snapshot)"
-msgstr ""
+msgstr "Tập tin (bản sao lưu)"
 
 #: src/Gtk/RsyncLogBox.vala:119
 msgid "File (system)"
@@ -963,7 +995,7 @@ msgstr ""
 msgid "Files matching the following patterns will be excluded"
 msgstr ""
 
-#: src/Utility/Device.vala:1950
+#: src/Utility/Device.vala:1972
 #, c-format
 msgid "Filesystem"
 msgstr ""
@@ -991,11 +1023,11 @@ msgstr ""
 
 #: src/Core/SnapshotRepo.vala:583
 msgid "First snapshot requires:"
-msgstr ""
+msgstr "Bản sao lưu đầu tiên yêu cầu:"
 
-#: src/Core/Main.vala:3061
+#: src/Core/Main.vala:3074
 msgid "Found existing pre-restore snapshot"
-msgstr ""
+msgstr "Đã tìm thấy bản sao lưu trước khi khôi phục hiện có"
 
 #: src/Gtk/BackupDeviceBox.vala:215
 msgid "Free"
@@ -1017,7 +1049,7 @@ msgstr ""
 msgid "GRUB will NOT be reinstalled"
 msgstr ""
 
-#: src/Core/Main.vala:2509
+#: src/Core/Main.vala:2522
 msgid "Generating initramfs..."
 msgstr ""
 
@@ -1065,21 +1097,23 @@ msgstr ""
 msgid "Hourly"
 msgstr ""
 
-#: src/Core/Main.vala:1076
+#: src/Core/Main.vala:1089
 msgid "Hourly snapshot failed!"
-msgstr ""
+msgstr "Bản sao lưu hàng giờ không thành công!"
 
-#: src/Core/Main.vala:1057
+#: src/Core/Main.vala:1070
 msgid "Hourly snapshots are enabled"
-msgstr ""
+msgstr "Bản sao lưu hàng giờ được kích hoạt"
 
 #: src/Gtk/RestoreFinishBox.vala:102
 msgid ""
 "If the restored system fails to boot, then boot from the Live CD/USB, "
 "install Timeshift, and try restoring another snapshot."
 msgstr ""
+"Nếu hệ thống được khôi phục không khởi động được, hãy khởi động từ Live "
+"CD/USB, cài đặt Timeshift và thử khôi phục một bản sao lưu khác."
 
-#: src/Core/Main.vala:2373
+#: src/Core/Main.vala:2386
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
@@ -1101,18 +1135,18 @@ msgstr ""
 msgid "Include Only Hidden Files"
 msgstr ""
 
-#: src/Core/Main.vala:2187
+#: src/Core/Main.vala:2200
 msgid "Invalid Snapshot"
-msgstr ""
+msgstr "Bản sao lưu không hợp lệ"
 
 #: src/AppConsole.vala:257
 #, c-format
 msgid "Invalid command line arguments"
 msgstr ""
 
-#: src/Gtk/MainWindow.vala:814
+#: src/Gtk/MainWindow.vala:831
 msgid "Invalid snapshot"
-msgstr ""
+msgstr "Bản sao lưu không hợp lệ"
 
 #: src/Gtk/ExcludeBox.vala:282
 msgid "Items Not Selected"
@@ -1128,12 +1162,17 @@ msgid ""
 "etc. If un-checked, previous configuration files will be restored from "
 "snapshot."
 msgstr ""
+"Giữ các tệp cấu hình cho các máy khách bittorrent như Deluge, Transmission, "
+"v.v. Nếu không chọn, các tệp cấu hình trước đó sẽ được khôi phục từ bản sao "
+"lưu."
 
 #: src/Gtk/RestoreExcludeBox.vala:85
 msgid ""
 "Keep configuration files for web browsers like Firefox and Chrome. If un-"
 "checked, previous configuration files will be restored from snapshot"
 msgstr ""
+"Giữ các tập tin cấu hình cho các trình duyệt web như Firefox và Chrome. Nếu "
+"bỏ chọn, các tập tin cấu hình trước đó sẽ được khôi phục từ bản sao lưu"
 
 #: src/Gtk/RestoreDeviceBox.vala:244
 msgid "Keep on Root Device"
@@ -1147,86 +1186,86 @@ msgstr ""
 msgid "LIVE"
 msgstr ""
 
-#: src/Utility/Device.vala:1951 src/Gtk/BackupDeviceBox.vala:254
+#: src/Utility/Device.vala:1973 src/Gtk/BackupDeviceBox.vala:254
 #: src/AppConsole.vala:471 src/AppConsole.vala:510
 #, c-format
 msgid "Label"
 msgstr ""
 
-#: src/Core/Main.vala:1038
+#: src/Core/Main.vala:1051
 #, c-format
 msgid "Last boot snapshot is %d hours old"
-msgstr ""
+msgstr "Bản sao lưu khởi động cuối cùng cách đây %d giờ"
 
-#: src/Core/Main.vala:1033
+#: src/Core/Main.vala:1046
 msgid "Last boot snapshot is older than system start time"
-msgstr ""
+msgstr "Bản sao lưu khởi động cuối cùng cũ hơn thời gian khởi động hệ thống"
 
-#: src/Core/Main.vala:1029
+#: src/Core/Main.vala:1042
 msgid "Last boot snapshot not found"
-msgstr ""
+msgstr "Không tìm thấy bản sao lưu khởi động cuối cùng"
 
-#: src/Core/Main.vala:1100
+#: src/Core/Main.vala:1113
 #, c-format
 msgid "Last daily snapshot is %d hours old"
-msgstr ""
+msgstr "Bản sao lưu hàng ngày gần đây nhất cách đây %d giờ"
 
-#: src/Core/Main.vala:1095
+#: src/Core/Main.vala:1108
 msgid "Last daily snapshot is more than 1 day old"
-msgstr ""
+msgstr "Bản sao lưu hàng ngày gần đây nhất cách đây hơn 1 ngày"
 
-#: src/Core/Main.vala:1091
+#: src/Core/Main.vala:1104
 msgid "Last daily snapshot not found"
-msgstr ""
+msgstr "Không tìm thấy bản sao lưu hàng ngày cuối cùng"
 
-#: src/Core/Main.vala:1069
+#: src/Core/Main.vala:1082
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
-msgstr ""
+msgstr "Bản sao lưu hàng giờ cuối cùng cách đây %d phút"
 
-#: src/Core/Main.vala:1064
+#: src/Core/Main.vala:1077
 msgid "Last hourly snapshot is more than 1 hour old"
-msgstr ""
+msgstr "Bản sao lưu hàng giờ gần nhất cách đây hơn 1 giờ"
 
-#: src/Core/Main.vala:1060
+#: src/Core/Main.vala:1073
 msgid "Last hourly snapshot not found"
-msgstr ""
+msgstr "Không tìm thấy bản sao lưu hàng giờ cuối cùng"
 
-#: src/Core/Main.vala:1162
+#: src/Core/Main.vala:1175
 #, c-format
 msgid "Last monthly snapshot is %d days old"
-msgstr ""
+msgstr "Bản sao lưu hàng tháng gần đây nhất cách đây %d ngày"
 
-#: src/Core/Main.vala:1157
+#: src/Core/Main.vala:1170
 msgid "Last monthly snapshot is more than 1 month old"
-msgstr ""
+msgstr "Bản sao lưu hàng tháng gần đây nhất cách đây hơn 1 tháng"
 
-#: src/Core/Main.vala:1153
+#: src/Core/Main.vala:1166
 msgid "Last monthly snapshot not found"
-msgstr ""
+msgstr "Không tìm thấy bản sao lưu hàng tháng cuối cùng"
 
-#: src/Core/Main.vala:1131
+#: src/Core/Main.vala:1144
 #, c-format
 msgid "Last weekly snapshot is %d days old"
-msgstr ""
+msgstr "Bản sao lưu hàng tuần gần đây nhất cách đây %d ngày"
 
-#: src/Core/Main.vala:1126
+#: src/Core/Main.vala:1139
 msgid "Last weekly snapshot is more than 1 week old"
-msgstr ""
+msgstr "Bản sao lưu hàng tuần gần đây nhất cách đây hơn 1 tuần"
 
-#: src/Core/Main.vala:1122
+#: src/Core/Main.vala:1135
 msgid "Last weekly snapshot not found"
-msgstr ""
+msgstr "Không tìm thấy bản sao lưu hàng tuần cuối cùng"
 
-#: src/Gtk/MainWindow.vala:1002
+#: src/Gtk/MainWindow.vala:1019
 #, c-format
 msgid "Latest snapshot"
-msgstr ""
+msgstr "Bản sao lưu mới nhất"
 
-#: src/Core/Main.vala:1505
+#: src/Core/Main.vala:1518
 #, c-format
 msgid "Linking from snapshot"
-msgstr ""
+msgstr "Liên kết từ bản sao lưu"
 
 #: src/AppConsole.vala:363
 msgid "List"
@@ -1238,9 +1277,9 @@ msgstr ""
 
 #: src/AppConsole.vala:364
 msgid "List snapshots"
-msgstr ""
+msgstr "Danh sách các bản sao lưu"
 
-#: src/Gtk/MainWindow.vala:953
+#: src/Gtk/MainWindow.vala:970
 msgid "Live USB Mode (Restore Only)"
 msgstr ""
 
@@ -1253,7 +1292,7 @@ msgstr ""
 msgid "Main window closed by user"
 msgstr ""
 
-#: src/Gtk/SnapshotListBox.vala:328
+#: src/Gtk/SnapshotListBox.vala:349
 msgid "Mark/Unmark for Deletion"
 msgstr ""
 
@@ -1263,13 +1302,13 @@ msgstr ""
 
 #: src/Gtk/MainWindow.vala:207
 msgid "Menu"
-msgstr ""
+msgstr "Menu"
 
 #: src/Gtk/SettingsWindow.vala:105
 msgid "Misc"
 msgstr ""
 
-#: src/Core/Main.vala:251
+#: src/Core/Main.vala:253
 msgid "Missing Dependencies"
 msgstr ""
 
@@ -1278,7 +1317,7 @@ msgstr ""
 msgid "Mode"
 msgstr ""
 
-#: src/Utility/Device.vala:1934
+#: src/Utility/Device.vala:1956
 #, c-format
 msgid "Model"
 msgstr ""
@@ -1287,25 +1326,25 @@ msgstr ""
 msgid "Monthly"
 msgstr ""
 
-#: src/Core/Main.vala:1150
+#: src/Core/Main.vala:1163
 msgid "Monthly snapshot are enabled"
-msgstr ""
+msgstr "Bản sao lưu hàng tháng được kích hoạt"
 
-#: src/Core/Main.vala:1169
+#: src/Core/Main.vala:1182
 msgid "Monthly snapshot failed!"
-msgstr ""
+msgstr "Bản sao lưu hàng tháng không thành công!"
 
-#: src/Core/Main.vala:2274 src/Core/Main.vala:2307
+#: src/Core/Main.vala:2287 src/Core/Main.vala:2320
 msgid "Mount"
 msgstr ""
 
-#: src/Core/Main.vala:3135
+#: src/Core/Main.vala:3148
 msgid "Moved system subvolume to snapshot directory"
-msgstr ""
+msgstr "Đã chuyển phân khối hệ thống vào thư mục bản sao lưu"
 
-#: src/Gtk/MainWindow.vala:790
+#: src/Gtk/MainWindow.vala:807
 msgid "Multiple snapshots selected"
-msgstr ""
+msgstr "Đã chọn nhiều bản sao lưu"
 
 #: src/Gtk/BackupDeviceBox.vala:235 src/Gtk/RsyncLogBox.vala:491
 #: src/AppConsole.vala:437
@@ -1325,36 +1364,36 @@ msgstr ""
 msgid "No Change"
 msgstr ""
 
-#: src/Gtk/MainWindow.vala:599 src/Gtk/DeleteWindow.vala:335
+#: src/Gtk/MainWindow.vala:616 src/Gtk/DeleteWindow.vala:335
 msgid "No Snapshots Selected"
-msgstr ""
+msgstr "Không có bản sao lưu nào được chọn"
 
-#: src/Gtk/MainWindow.vala:1026
+#: src/Gtk/MainWindow.vala:1043
 msgid "No snapshots available"
-msgstr ""
+msgstr "Không có bản sao lưu nào"
 
-#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:970
+#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:987
 #: src/AppConsole.vala:326
 msgid "No snapshots found"
-msgstr ""
+msgstr "Không tìm thấy bản sao lưu nào"
 
 #: src/AppConsole.vala:753
 msgid "No snapshots found on device"
-msgstr ""
+msgstr "Không tìm thấy bản sao lưu nào trên thiết bị"
 
 #: src/Gtk/MainWindow.vala:537
 msgid "No snapshots on device"
-msgstr ""
+msgstr "Không có bản sao lưu trên thiết bị"
 
 #: src/Core/SnapshotRepo.vala:581
 msgid "No snapshots on this device"
-msgstr ""
+msgstr "Không có bản sao lưu trên thiết bị này"
 
-#: src/Gtk/MainWindow.vala:783
+#: src/Gtk/MainWindow.vala:800
 msgid "No snapshots selected"
-msgstr ""
+msgstr "Không có bản sao lưu nào được chọn"
 
-#: src/Gtk/MainWindow.vala:1003 src/Gtk/MainWindow.vala:1005
+#: src/Gtk/MainWindow.vala:1020 src/Gtk/MainWindow.vala:1022
 msgid "None"
 msgstr ""
 
@@ -1367,7 +1406,7 @@ msgstr ""
 msgid "Not Selected"
 msgstr ""
 
-#: src/Core/Main.vala:396
+#: src/Core/Main.vala:398
 msgid "Not Supported"
 msgstr ""
 
@@ -1379,7 +1418,7 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-#: src/Core/Main.vala:1180
+#: src/Core/Main.vala:1193
 msgid "Nothing to do!"
 msgstr ""
 
@@ -1393,6 +1432,8 @@ msgid ""
 "Number of snapshots to keep.\n"
 "Older snapshots will be removed once this limit is exceeded."
 msgstr ""
+"Số lượng bản sao lưu cần lưu giữ.\n"
+"Bản sao lưu cũ hơn sẽ bị xóa khi vượt quá giới hạn này."
 
 #: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:147
 #: src/Utility/Gtk/CustomMessageDialog.vala:151 src/Utility/GtkHelper.vala:108
@@ -1406,19 +1447,19 @@ msgid ""
 "(@ and @home subvolumes). Other layouts are not supported."
 msgstr ""
 
-#: src/Core/Main.vala:4289
+#: src/Core/Main.vala:4306
 msgid "Older log files removed"
 msgstr ""
 
-#: src/Gtk/MainWindow.vala:1004
+#: src/Gtk/MainWindow.vala:1021
 msgid "Oldest snapshot"
-msgstr ""
+msgstr "Bản sao lưu cũ nhất"
 
 #: src/Gtk/SnapshotListBox.vala:296
 msgid "On demand (manual)"
 msgstr ""
 
-#: src/Core/Main.vala:394 src/Core/Main.vala:3617
+#: src/Core/Main.vala:396 src/Core/Main.vala:3634
 #: src/Gtk/RestoreDeviceBox.vala:511
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
@@ -1426,13 +1467,15 @@ msgstr ""
 
 #: src/Gtk/MainWindow.vala:208
 msgid "Open Menu"
-msgstr ""
+msgstr "Mở Menu"
 
-#: src/Core/Main.vala:3399
+#: src/Core/Main.vala:3416
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
 msgstr ""
+"Tùy chọn --snapshot-device không nên được chỉ định để tạo bản sao lưu ở chế "
+"độ BTRFS"
 
 #: src/AppConsole.vala:361 src/AppGtk.vala:128
 msgid "Options"
@@ -1448,12 +1491,12 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
-#: src/Utility/Device.vala:1946
+#: src/Utility/Device.vala:1968
 #, c-format
 msgid "Parent Device"
 msgstr ""
 
-#: src/Core/Main.vala:2638 src/Core/Main.vala:2729 src/Gtk/RsyncLogBox.vala:222
+#: src/Core/Main.vala:2651 src/Core/Main.vala:2742 src/Gtk/RsyncLogBox.vala:222
 msgid "Parsing log file..."
 msgstr ""
 
@@ -1476,15 +1519,15 @@ msgstr ""
 msgid "Permissions"
 msgstr ""
 
-#: src/Core/Main.vala:270
+#: src/Core/Main.vala:272
 msgid "Please check if you have multiple windows open."
 msgstr ""
 
-#: src/Core/Main.vala:2405
+#: src/Core/Main.vala:2418
 msgid "Please do not interrupt the restore process!"
 msgstr ""
 
-#: src/Core/Main.vala:365
+#: src/Core/Main.vala:367
 msgid "Please install required packages and try running TimeShift again"
 msgstr ""
 
@@ -1496,25 +1539,25 @@ msgstr ""
 msgid "Please run the application as admin (using 'sudo' or 'su')"
 msgstr ""
 
-#: src/Core/Main.vala:2355
+#: src/Core/Main.vala:2368
 msgid "Please save your work and close all applications."
 msgstr ""
 
-#: src/Gtk/MainWindow.vala:685
+#: src/Gtk/MainWindow.vala:702
 msgid "Please select a snapshot to view the log!"
-msgstr ""
+msgstr "Vui lòng chọn bản sao lưu để xem nhật ký!"
 
 #: src/Gtk/RestoreDeviceBox.vala:498
 msgid "Please select the GRUB device"
 msgstr ""
 
-#: src/Core/Main.vala:266
+#: src/Core/Main.vala:268
 msgid "Please wait a few minutes and try again."
 msgstr ""
 
-#: src/Gtk/MainWindow.vala:752
+#: src/Gtk/MainWindow.vala:769
 msgid "Please wait for snapshots to be deleted."
-msgstr ""
+msgstr "Vui lòng đợi bản sao lưu bị xóa."
 
 #: src/Gtk/EstimateBox.vala:66
 msgid "Please wait..."
@@ -1524,7 +1567,7 @@ msgstr ""
 msgid "Populating list..."
 msgstr ""
 
-#: src/Core/Main.vala:1740 src/Gtk/BackupBox.vala:117
+#: src/Core/Main.vala:1753 src/Gtk/BackupBox.vala:117
 #: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
 #: src/Gtk/RsyncLogBox.vala:232
 msgid "Preparing..."
@@ -1543,11 +1586,11 @@ msgstr ""
 msgid "Print version number"
 msgstr ""
 
-#: src/Core/Main.vala:3979
+#: src/Core/Main.vala:3996
 msgid "Query completed"
 msgstr ""
 
-#: src/Core/Main.vala:3962
+#: src/Core/Main.vala:3979
 msgid "Querying subvolume info..."
 msgstr ""
 
@@ -1557,7 +1600,7 @@ msgstr ""
 
 #: src/Gtk/SnapshotBackendBox.vala:193
 msgid "RSYNC Snapshots"
-msgstr ""
+msgstr "Bản sao lưu RSYNC"
 
 #: src/Gtk/BootOptionsBox.vala:137
 msgid ""
@@ -1570,7 +1613,7 @@ msgstr ""
 msgid "Re-install GRUB2 bootloader?"
 msgstr ""
 
-#: src/Core/Main.vala:2468
+#: src/Core/Main.vala:2481
 msgid "Re-installing GRUB2 bootloader..."
 msgstr ""
 
@@ -1583,7 +1626,7 @@ msgstr ""
 msgid "Read %'d of %'d lines..."
 msgstr ""
 
-#: src/Core/Main.vala:2568
+#: src/Core/Main.vala:2581
 msgid "Rebooting system..."
 msgstr ""
 
@@ -1604,8 +1647,8 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1778 src/Core/Main.vala:1789
-#: src/Core/Main.vala:4285 src/Core/SnapshotRepo.vala:907
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1791 src/Core/Main.vala:1802
+#: src/Core/Main.vala:4302 src/Core/SnapshotRepo.vala:907
 #, c-format
 msgid "Removed"
 msgstr ""
@@ -1614,14 +1657,14 @@ msgstr ""
 msgid "Removed cron task"
 msgstr ""
 
-#: src/Core/Main.vala:3767
+#: src/Core/Main.vala:3784
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr ""
 
 #: src/Core/Snapshot.vala:555
 msgid "Removed snapshot"
-msgstr ""
+msgstr "Đã xóa bản sao lưu"
 
 #: src/Core/Snapshot.vala:484
 msgid "Removing"
@@ -1629,13 +1672,13 @@ msgstr ""
 
 #: src/Core/Snapshot.vala:521
 msgid "Removing snapshot"
-msgstr ""
+msgstr "Đang xóa bản sao lưu"
 
 #: src/Core/SnapshotRepo.vala:763 src/Core/SnapshotRepo.vala:782
 #: src/Core/SnapshotRepo.vala:800 src/Core/SnapshotRepo.vala:814
 #, c-format
 msgid "Removing snapshots"
-msgstr ""
+msgstr "Đang xóa các bản sao lưu"
 
 #: src/Gtk/MainWindow.vala:150 src/Gtk/RestoreWindow.vala:125
 #: src/Gtk/RsyncLogBox.vala:377 src/Gtk/RsyncLogBox.vala:566
@@ -1657,19 +1700,19 @@ msgstr ""
 
 #: src/Gtk/RestoreWindow.vala:69
 msgid "Restore Snapshot"
-msgstr ""
+msgstr "Khôi phục bản sao lưu"
 
-#: src/Core/Main.vala:2978 src/Core/Main.vala:3020
+#: src/Core/Main.vala:2991 src/Core/Main.vala:3033
 msgid "Restore completed"
 msgstr ""
 
 #: src/Gtk/MainWindow.vala:151
 msgid "Restore selected snapshot"
-msgstr ""
+msgstr "Khôi phục bản sao lưu đã chọn"
 
 #: src/AppConsole.vala:374
 msgid "Restore snapshot"
-msgstr ""
+msgstr "Khôi phục bản sao lưu"
 
 #: src/Gtk/RestoreFinishBox.vala:96
 msgid "Restored subvolumes will become active after system is restarted."
@@ -1681,7 +1724,7 @@ msgstr ""
 
 #: src/Gtk/RestoreBox.vala:77 src/Gtk/RestoreBox.vala:190
 msgid "Restoring Snapshot..."
-msgstr ""
+msgstr "Đang khôi phục bản sao lưu..."
 
 #: src/Gtk/FinishBox.vala:85
 msgid ""
@@ -1689,10 +1732,14 @@ msgid ""
 "currently in use will be preserved as a new snapshot. If required, this "
 "snapshot can be restored later to 'undo' the restore."
 msgstr ""
+"Việc khôi phục ảnh chụp nhanh sẽ thay thế các ổ đĩa con hệ thống và các ổ "
+"đĩa con hệ thống hiện đang được sử dụng sẽ được giữ nguyên dưới dạng bản sao "
+"lưu mới. Nếu được yêu cầu, bản sao lưu này có thể được khôi phục sau để "
+"'hoàn tác' quá trình khôi phục."
 
-#: src/Core/Main.vala:2947
+#: src/Core/Main.vala:2960
 msgid "Restoring snapshot..."
-msgstr ""
+msgstr "Đang khôi phục bản sao lưu..."
 
 #: src/Gtk/FinishBox.vala:88
 msgid ""
@@ -1702,8 +1749,13 @@ msgid ""
 "files will be backed up when snapshot is created, and replaced when snapshot "
 "is restored."
 msgstr ""
+"Khôi phục bản sao lưu chỉ thay thế các tệp và cài đặt hệ thống. Các tập tin "
+"và thư mục không bị ẩn trong thư mục chính của người dùng sẽ không bị tác "
+"động. Hành vi này có thể được thay đổi bằng cách thêm bộ lọc để bao gồm các "
+"tệp này. Các tệp đi kèm sẽ được sao lưu khi bản sao lưu được tạo và được "
+"thay thế khi bản sao lưu được khôi phục."
 
-#: src/Utility/Device.vala:1936
+#: src/Utility/Device.vala:1958
 #, c-format
 msgid "Revision"
 msgstr ""
@@ -1725,7 +1777,7 @@ msgstr ""
 msgid "Run in non-interactive mode"
 msgstr ""
 
-#: src/Core/Main.vala:202
+#: src/Core/Main.vala:204
 msgid "Running"
 msgstr ""
 
@@ -1734,6 +1786,7 @@ msgid ""
 "Save snapshots to an external disk instead of the system disk to guard "
 "against drive failures."
 msgstr ""
+"Lưu bản sao lưu vào ổ đĩa ngoài thay vì đĩa hệ thống để đề phòng lỗi ổ đĩa."
 
 #: src/Gtk/FinishBox.vala:97
 msgid ""
@@ -1742,8 +1795,12 @@ msgid ""
 "even install another Linux distribution and later roll-back the previous "
 "distribution by restoring a snapshot."
 msgstr ""
+"Lưu bản sao lưu vào đĩa không phải hệ thống cho phép bạn định dạng và cài "
+"đặt lại hệ điều hành trên đĩa hệ thống mà không làm mất bản sao lưu được lưu "
+"trữ trên đó. Bạn thậm chí có thể cài đặt một bản phân phối Linux khác và sau "
+"đó khôi phục bản phân phối trước đó bằng cách khôi phục bản sao lưu."
 
-#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+#: src/Core/Main.vala:1459 src/Core/Main.vala:1613 src/Core/Main.vala:1615
 msgid "Saving to device"
 msgstr ""
 
@@ -1751,28 +1808,30 @@ msgstr ""
 msgid "Schedule"
 msgstr ""
 
-#: src/Core/Main.vala:273
+#: src/Core/Main.vala:275
 msgid "Scheduled snapshot in progress..."
-msgstr ""
+msgstr "Đang tiến hành sao lưu theo lịch trình..."
 
-#: src/Core/Main.vala:1180 src/Gtk/MainWindow.vala:1020
+#: src/Core/Main.vala:1193 src/Gtk/MainWindow.vala:1037
 #: src/Gtk/ScheduleBox.vala:312
 msgid "Scheduled snapshots are disabled"
-msgstr ""
+msgstr "Bản sao lưu theo lịch trình đang tắt"
 
 #: src/Gtk/FinishBox.vala:78
 msgid "Scheduled snapshots are disabled. It's recommended to enable it."
-msgstr ""
+msgstr "Bản sao lưu theo lịch trình đang tắt. Bạn nên bật nó lại."
 
 #: src/Gtk/ScheduleBox.vala:305
 msgid "Scheduled snapshots are enabled"
-msgstr ""
+msgstr "Bản sao lưu theo lịch trình đang bật"
 
 #: src/Gtk/FinishBox.vala:75
 msgid ""
 "Scheduled snapshots are enabled. Snapshots will be created automatically for "
 "selected levels."
 msgstr ""
+"Bản sao lưu theo lịch trình đang bật. Bản sao lưu sẽ được tạo tự động cho "
+"các cấp độ đã chọn."
 
 #: src/AppConsole.vala:883
 #, c-format
@@ -1787,25 +1846,25 @@ msgstr ""
 msgid "Select GRUB device"
 msgstr ""
 
-#: src/Gtk/MainWindow.vala:684
+#: src/Gtk/MainWindow.vala:701
 msgid "Select Snapshot"
-msgstr ""
+msgstr "Chọn Bản sao lưu"
 
 #: src/Gtk/ScheduleBox.vala:57
 msgid "Select Snapshot Levels"
-msgstr ""
+msgstr "Chọn cấp độ sao lưu"
 
 #: src/Gtk/BackupDeviceBox.vala:56
 msgid "Select Snapshot Location"
-msgstr ""
+msgstr "Chọn vị trí sao lưu"
 
 #: src/Gtk/SnapshotBackendBox.vala:62
 msgid "Select Snapshot Type"
-msgstr ""
+msgstr "Chọn kiểu sao lưu"
 
 #: src/Gtk/DeleteWindow.vala:85
 msgid "Select Snapshots"
-msgstr ""
+msgstr "Chọn bản sao lưu"
 
 #: src/Gtk/RestoreDeviceBox.vala:61
 msgid "Select Target Device"
@@ -1816,9 +1875,9 @@ msgstr ""
 msgid "Select a partition on this disk"
 msgstr ""
 
-#: src/Gtk/MainWindow.vala:791
+#: src/Gtk/MainWindow.vala:808
 msgid "Select a single snapshot to restore"
-msgstr ""
+msgstr "Chọn một bản sao lưu để khôi phục"
 
 #: src/Gtk/RestoreDeviceBox.vala:467
 msgid "Select another device for root file system (/)"
@@ -1854,11 +1913,11 @@ msgstr ""
 
 #: src/AppConsole.vala:759
 msgid "Select snapshot"
-msgstr ""
+msgstr "Chọn bản sao lưu"
 
 #: src/Gtk/DeleteWindow.vala:336
 msgid "Select snapshots to delete"
-msgstr ""
+msgstr "Chọn bản sao lưu để xóa"
 
 #: src/Gtk/RestoreDeviceBox.vala:439
 msgid "Select the device for root file system (/)"
@@ -1870,7 +1929,7 @@ msgstr ""
 
 #: src/Gtk/ScheduleBox.vala:313
 msgid "Select the intervals for creating snapshots"
-msgstr ""
+msgstr "Chọn khoảng thời gian để tạo bản sao lưu"
 
 #: src/Gtk/ExcludeBox.vala:283
 msgid "Select the items to be removed from the list"
@@ -1878,31 +1937,31 @@ msgstr ""
 
 #: src/Core/SnapshotRepo.vala:472
 msgid "Select the snapshot device"
-msgstr ""
+msgstr "Chọn thiết bị sao lưu"
 
-#: src/Gtk/MainWindow.vala:784
+#: src/Gtk/MainWindow.vala:801
 msgid "Select the snapshot to restore"
-msgstr ""
+msgstr "Chọn bản sao lưu để khôi phục"
 
 #: src/Gtk/DeleteWindow.vala:87
 msgid "Select the snapshots to be deleted"
-msgstr ""
+msgstr "Chọn bản sao lưu để xóa"
 
-#: src/Gtk/MainWindow.vala:600
+#: src/Gtk/MainWindow.vala:617
 msgid "Select the snapshots to mark for deletion"
-msgstr ""
+msgstr "Chọn bản sao lưu để đánh dấu xóa"
 
 #: src/Gtk/RestoreDeviceBox.vala:79
 msgid "Select the target devices where system will be cloned."
 msgstr ""
 
-#: src/Core/Main.vala:3427
+#: src/Core/Main.vala:3444
 msgid "Selected default snapshot device"
-msgstr ""
+msgstr "Thiết bị sao lưu mặc định đã chọn"
 
-#: src/Core/Main.vala:3378 src/Core/Main.vala:3382
+#: src/Core/Main.vala:3395 src/Core/Main.vala:3399
 msgid "Selected default snapshot type"
-msgstr ""
+msgstr "Kiểu bản sao lưu mặc định đã chọn"
 
 #: src/Gtk/BackupDeviceBox.vala:388
 msgid "Selected device does not have BTRFS partition"
@@ -1914,19 +1973,19 @@ msgstr ""
 
 #: src/Core/SnapshotRepo.vala:144
 msgid "Selected snapshot device"
-msgstr ""
+msgstr "Thiết bị sao lưu đã chọn"
 
 #: src/Core/SnapshotRepo.vala:509 src/AppConsole.vala:701
 msgid "Selected snapshot device is not a system disk"
-msgstr ""
+msgstr "Thiết bị sao lưu đã chọn không phải là đĩa hệ thống"
 
-#: src/Core/Main.vala:2188
+#: src/Core/Main.vala:2201
 msgid "Selected snapshot is marked for deletion"
-msgstr ""
+msgstr "Bản sao lưu đã chọn được đánh dấu để xóa"
 
-#: src/Gtk/MainWindow.vala:815
+#: src/Gtk/MainWindow.vala:832
 msgid "Selected snapshot is marked for deletion and cannot be restored"
-msgstr ""
+msgstr "Bản sao lưu đã chọn được đánh dấu để xóa và không thể khôi phục"
 
 #: src/Gtk/UsersBox.vala:234
 msgid ""
@@ -1934,27 +1993,27 @@ msgid ""
 "only hidden files."
 msgstr ""
 
-#: src/Utility/Device.vala:1935
+#: src/Utility/Device.vala:1957
 #, c-format
 msgid "Serial"
 msgstr ""
 
-#: src/Core/Main.vala:230
+#: src/Core/Main.vala:232
 msgid "Session log file"
 msgstr ""
 
 #: src/AppConsole.vala:370
 msgid "Set snapshot description"
-msgstr ""
+msgstr "Đặt mô tả bản sao lưu"
 
 #: src/Gtk/MainWindow.vala:180 src/Gtk/MainWindow.vala:181
 #: src/Gtk/SettingsWindow.vala:56
 msgid "Settings"
-msgstr ""
+msgstr "Cài đặt"
 
 #: src/Gtk/MainWindow.vala:191
 msgid "Settings wizard"
-msgstr ""
+msgstr "Trình hướng dẫn cài đặt"
 
 #: src/Gtk/FinishBox.vala:58
 msgid "Setup Complete"
@@ -1980,7 +2039,7 @@ msgstr ""
 msgid "Show rsync output (default)"
 msgstr ""
 
-#: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
+#: src/Utility/Device.vala:1960 src/Utility/Device.vala:1975
 #: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
 #: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
 #: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:469 src/AppConsole.vala:508
@@ -1995,16 +2054,20 @@ msgid ""
 "(copy-on-write). Files in the snapshot continue to point to original data "
 "blocks."
 msgstr ""
+"Kích thước của bản sao lưu BTRFS ban đầu bằng không. Khi các tệp hệ thống "
+"dần dần thay đổi theo thời gian, dữ liệu sẽ được ghi vào các khối dữ liệu "
+"mới chiếm dung lượng ổ đĩa (sao chép khi ghi). Các tệp trong bản sao lưu "
+"tiếp tục trỏ đến các khối dữ liệu gốc."
 
 #: src/AppConsole.vala:379
 msgid "Skip GRUB2 reinstall"
 msgstr ""
 
-#: src/Core/Main.vala:2193 src/Core/SnapshotRepo.vala:631
+#: src/Core/Main.vala:2206 src/Core/SnapshotRepo.vala:631
 #: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:94
 #, c-format
 msgid "Snapshot"
-msgstr ""
+msgstr "Bản sao lưu"
 
 #: src/Gtk/MainWindow.vala:548
 #, c-format
@@ -2012,85 +2075,94 @@ msgid ""
 "Snapshot '%s' is being used by the system and cannot be deleted. Restart the "
 "system to activate the restored snapshot."
 msgstr ""
+"Bản sao lưu '%s' đang được hệ thống sử dụng và không thể xóa được. Khởi động "
+"lại hệ thống để kích hoạt bản sao lưu được khôi phục."
 
 #: src/Gtk/BackupFinishBox.vala:60
 msgid "Snapshot Created"
-msgstr ""
+msgstr "Đã tạo bản sao lưu"
 
 #: src/Gtk/SnapshotListBox.vala:295
 #, c-format
 msgid "Snapshot Levels"
-msgstr ""
+msgstr "Cấp độ sao lưu"
 
-#: src/Gtk/MainWindow.vala:751
+#: src/Gtk/MainWindow.vala:768
 msgid "Snapshot deletion in progress..."
-msgstr ""
+msgstr "Đang xóa bản sao lưu..."
 
 #: src/Core/SnapshotRepo.vala:442
 #, c-format
 msgid "Snapshot device"
-msgstr ""
+msgstr "Thiết bị sao lưu"
 
 #: src/Core/SnapshotRepo.vala:478 src/AppConsole.vala:675
 msgid "Snapshot device not available"
-msgstr ""
+msgstr "Thiết bị sao lưu không có sẵn"
 
 #: src/Core/SnapshotRepo.vala:471 src/AppConsole.vala:671
 msgid "Snapshot device not selected"
-msgstr ""
+msgstr "Thiết bị sao lưu chưa được chọn"
 
 #: src/Core/SnapshotRepo.vala:446
 #, c-format
 msgid "Snapshot location"
-msgstr ""
+msgstr "Vị trí bản sao lưu"
 
-#: src/Core/Main.vala:1317
+#: src/Core/Main.vala:1330
 msgid "Snapshot saved successfully"
-msgstr ""
+msgstr "Đã lưu bản sao lưu thành công"
 
-#: src/Core/Main.vala:2183
+#: src/Core/Main.vala:2196
 msgid "Snapshot to restore not specified!"
-msgstr ""
+msgstr "Bản sao lưu để khôi phục không được chỉ định!"
 
-#: src/Core/Main.vala:3024
+#: src/Core/Main.vala:3037
 msgid "Snapshot will become active after system is rebooted."
-msgstr ""
+msgstr "Bản sao lưu sẽ hoạt động sau khi hệ thống được khởi động lại."
 
 #: src/Gtk/DeleteFinishBox.vala:60
 msgid "Snapshot(s) Deleted"
-msgstr ""
+msgstr "(Các) bản sao lưu đã bị xóa"
 
 #: src/Gtk/MainWindow.vala:309 src/Gtk/DeleteWindow.vala:89
 msgid "Snapshots"
-msgstr ""
+msgstr "Bản sao lưu"
 
 #: src/Gtk/SnapshotBackendBox.vala:178
 msgid ""
 "Snapshots are created and restored instantly. Snapshot creation is an atomic "
 "transaction at the file system level."
 msgstr ""
+"Bản sao lưu được tạo và khôi phục ngay lập tức. Tạo bản sao lưu là một giao "
+"dịch nguyên tử ở cấp hệ thống tệp."
 
 #: src/Gtk/SnapshotBackendBox.vala:195
 msgid ""
 "Snapshots are created by creating copies of system files using rsync, and "
 "hard-linking unchanged files from previous snapshot."
 msgstr ""
+"Bản sao lưu được tạo bằng cách tạo bản sao của tệp hệ thống bằng rsync và "
+"liên kết cứng các tệp không thay đổi từ bản sao lưu trước đó."
 
 #: src/Gtk/SnapshotBackendBox.vala:176
 msgid ""
 "Snapshots are created using the built-in features of the BTRFS file system."
 msgstr ""
+"Bản sao lưu được tạo bằng các tính năng tích hợp của hệ thống tệp BTRFS."
 
 #: src/Gtk/ScheduleBox.vala:167
 #, c-format
 msgid "Snapshots are not scheduled at fixed times."
-msgstr ""
+msgstr "Bản sao lưu không được lên lịch vào những thời điểm cố định."
 
 #: src/Gtk/SnapshotBackendBox.vala:182
 msgid ""
 "Snapshots are perfect, byte-for-byte copies of the system. Nothing is "
 "excluded."
 msgstr ""
+"Bản sao lưu là bản sao hoàn hảo theo từng byte của hệ thống. Không có gì "
+"được loại trừ."
 
 #: src/Gtk/SnapshotBackendBox.vala:180
 msgid ""
@@ -2098,6 +2170,10 @@ msgid ""
 "copied, deleted or overwritten, there is no risk of data loss. The existing "
 "system is preserved as a new snapshot after restore."
 msgstr ""
+"Bản sao lưu được khôi phục bằng cách thay thế các phân vùng hệ thống. Vì các "
+"tập tin không bao giờ bị sao chép, xóa hoặc ghi đè nên không có nguy cơ mất "
+"dữ liệu. Hệ thống hiện tại được lưu giữ dưới dạng bản sao lưu mới sau khi "
+"khôi phục."
 
 #: src/Gtk/SnapshotBackendBox.vala:184
 msgid ""
@@ -2105,22 +2181,29 @@ msgid ""
 "disk). Storage on other disks is not supported. If system disk fails then "
 "snapshots stored on it will be lost along with the system."
 msgstr ""
+"Bản sao lưu được lưu trên cùng một đĩa mà chúng được tạo (đĩa hệ thống). Lưu "
+"trữ trên các đĩa khác không được hỗ trợ. Nếu đĩa hệ thống bị lỗi thì các bản "
+"sao lưu được lưu trên đó sẽ bị mất cùng với hệ thống."
 
 #: src/Gtk/BackupDeviceBox.vala:107
 msgid ""
 "Snapshots are saved to /timeshift on selected partition. Other locations are "
 "not supported."
 msgstr ""
+"Bản sao lưu được lưu vào /timeshift trên phân vùng đã chọn. Các vị trí khác "
+"không được hỗ trợ."
 
 #: src/Gtk/BackupDeviceBox.vala:99
 msgid ""
 "Snapshots are saved to /timeshift-btrfs on selected partition. Other "
 "locations are not supported."
 msgstr ""
+"Bản sao lưu được lưu vào /timeshift-btrfs trên phân vùng đã chọn. Các vị trí "
+"khác không được hỗ trợ."
 
-#: src/Gtk/MainWindow.vala:965
+#: src/Gtk/MainWindow.vala:982
 msgid "Snapshots available for restore"
-msgstr ""
+msgstr "Bản sao lưu có sẵn để khôi phục"
 
 #: src/Gtk/SnapshotBackendBox.vala:199
 msgid ""
@@ -2128,20 +2211,26 @@ msgid ""
 "Saving snapshots to non-system or external disk allows the system to be "
 "restored even if system disk is damaged or re-formatted."
 msgstr ""
+"Bản sao lưu có thể được lưu vào bất kỳ đĩa nào được định dạng bằng hệ thống "
+"tệp Linux. Việc lưu bản sao lưu vào ổ đĩa ngoài hoặc không thuộc hệ thống "
+"cho phép khôi phục hệ thống ngay cả khi đĩa hệ thống bị hỏng hoặc được định "
+"dạng lại."
 
 #: src/AppConsole.vala:289
 msgid "Snapshots cannot be created in Live CD mode"
-msgstr ""
+msgstr "Không thể tạo bản sao lưu ở chế độ Live CD (trực tiếp)"
 
-#: src/Gtk/MainWindow.vala:1012
+#: src/Gtk/MainWindow.vala:1029
 msgid "Snapshots will be created at selected intervals"
-msgstr ""
+msgstr "Bản sao lưu sẽ được tạo theo khoảng thời gian đã chọn"
 
 #: src/Gtk/ScheduleBox.vala:306
 msgid ""
 "Snapshots will be created at selected intervals if snapshot disk has enough "
 "space (> 1 GB)"
 msgstr ""
+"Bản sao lưu sẽ được tạo theo các khoảng thời gian đã chọn nếu ổ đĩa lưu có "
+"đủ dung lượng (> 1 GB)"
 
 #: src/AppConsole.vala:386
 msgid "Specify backup device (default: config)"
@@ -2153,7 +2242,7 @@ msgstr ""
 
 #: src/AppConsole.vala:376
 msgid "Specify snapshot to restore"
-msgstr ""
+msgstr "Chỉ định bản sao lưu để khôi phục"
 
 #: src/AppConsole.vala:377
 msgid "Specify target device"
@@ -2200,11 +2289,11 @@ msgstr ""
 msgid "Symlinks updated"
 msgstr ""
 
-#: src/Core/Main.vala:2543
+#: src/Core/Main.vala:2556
 msgid "Syncing file systems..."
 msgstr ""
 
-#: src/Core/Main.vala:1522 src/Core/Main.vala:2713 src/Core/Main.vala:2954
+#: src/Core/Main.vala:1535 src/Core/Main.vala:2726 src/Core/Main.vala:2967
 msgid "Syncing files with rsync..."
 msgstr ""
 
@@ -2212,36 +2301,38 @@ msgstr ""
 msgid "Syntax"
 msgstr ""
 
-#: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:126
+#: src/Utility/Device.vala:1981 src/Gtk/SnapshotListBox.vala:126
 #, c-format
 msgid "System"
 msgstr ""
 
-#: src/Gtk/MainWindow.vala:912
+#: src/Gtk/MainWindow.vala:929
 msgid "System Restore Utility"
 msgstr ""
 
 #: src/Gtk/FinishBox.vala:82
 msgid "System can be rolled-back to a previous date by restoring a snapshot."
 msgstr ""
+"Hệ thống có thể được khôi phục về ngày trước đó bằng cách khôi phục bản sao "
+"lưu."
 
-#: src/Core/Main.vala:2406
+#: src/Core/Main.vala:2419
 msgid "System will reboot after files are restored"
 msgstr ""
 
-#: src/Core/Main.vala:2356
+#: src/Core/Main.vala:2369
 msgid "System will reboot after files are restored."
 msgstr ""
 
-#: src/Core/Main.vala:1253 src/Core/Main.vala:1327
+#: src/Core/Main.vala:1266 src/Core/Main.vala:1340
 msgid "Tagged snapshot"
-msgstr ""
+msgstr "Bản sao lưu được gắn thẻ"
 
 #: src/Gtk/SnapshotListBox.vala:150 src/AppConsole.vala:438
 msgid "Tags"
 msgstr ""
 
-#: src/Core/Main.vala:2218
+#: src/Core/Main.vala:2231
 msgid "Target device is not mounted"
 msgstr ""
 
@@ -2249,7 +2340,7 @@ msgstr ""
 msgid "Target device is same as system device"
 msgstr ""
 
-#: src/Core/Main.vala:2212
+#: src/Core/Main.vala:2225
 msgid "Target device not specified!"
 msgstr ""
 
@@ -2260,30 +2351,30 @@ msgid ""
 "created by Timeshift."
 msgstr ""
 
-#: src/Core/Main.vala:393
+#: src/Core/Main.vala:395
 msgid "The system partition has an unsupported subvolume layout."
 msgstr ""
 
-#: src/Core/Main.vala:3616
+#: src/Core/Main.vala:3633
 msgid "The target partition has an unsupported subvolume layout."
 msgstr ""
 
 #: src/Gtk/BackupDeviceBox.vala:512
 #, c-format
 msgid "There are no snapshots on this device"
-msgstr ""
+msgstr "Không có bản sao lưu trên thiết bị này"
 
-#: src/Utility/Device.vala:1380
+#: src/Utility/Device.vala:1402
 msgid "This device is not encrypted"
 msgstr ""
 
-#: src/Core/Main.vala:2372
+#: src/Core/Main.vala:2385
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
 msgstr ""
 
-#: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1011
+#: src/Gtk/MainWindow.vala:1017 src/Gtk/MainWindow.vala:1028
 msgid "Timeshift is active"
 msgstr ""
 
@@ -2298,14 +2389,14 @@ msgstr ""
 msgid "To restore with default options, press the ENTER key for all prompts!"
 msgstr ""
 
-#: src/Utility/Device.vala:1949 src/Gtk/BackupDeviceBox.vala:190
+#: src/Utility/Device.vala:1971 src/Gtk/BackupDeviceBox.vala:190
 #: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:470
 #: src/AppConsole.vala:509
 #, c-format
 msgid "Type"
 msgstr ""
 
-#: src/Utility/Device.vala:1948
+#: src/Utility/Device.vala:1970
 #, c-format
 msgid "UUID"
 msgstr ""
@@ -2314,24 +2405,24 @@ msgstr ""
 msgid "Unknown option"
 msgstr ""
 
-#: src/Core/Main.vala:1235
+#: src/Core/Main.vala:1248
 msgid "Unknown snapshot type"
-msgstr ""
+msgstr "Kiểu bản sao lưu không xác định"
 
-#: src/Core/Main.vala:1727
+#: src/Core/Main.vala:1740
 msgid "Unknown value specified for option --tags"
 msgstr ""
 
-#: src/Utility/Device.vala:1391 src/Utility/Device.vala:1507
+#: src/Utility/Device.vala:1413 src/Utility/Device.vala:1529
 #, c-format
 msgid "Unlocked device is mapped to '%s'"
 msgstr ""
 
-#: src/Utility/Device.vala:1506
+#: src/Utility/Device.vala:1528
 msgid "Unlocked successfully"
 msgstr ""
 
-#: src/Utility/Device.vala:1722
+#: src/Utility/Device.vala:1744
 msgid "Unmounting from"
 msgstr ""
 
@@ -2339,23 +2430,23 @@ msgstr ""
 msgid "Unshared"
 msgstr ""
 
-#: src/Core/Main.vala:3620 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Core/Main.vala:3637 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
 msgstr ""
 
 #: src/Gtk/BootOptionsBox.vala:150
 msgid "Update GRUB menu"
-msgstr ""
+msgstr "Cập nhật menu GRUB"
 
 #: src/Gtk/BootOptionsBox.vala:135
 msgid "Update initramfs"
 msgstr ""
 
-#: src/Core/Main.vala:2893
+#: src/Core/Main.vala:2906
 msgid "Updated /etc/crypttab on target device"
 msgstr ""
 
-#: src/Core/Main.vala:2813
+#: src/Core/Main.vala:2826
 msgid "Updated /etc/fstab on target device"
 msgstr ""
 
@@ -2364,16 +2455,18 @@ msgid ""
 "Updates the GRUB menu entries (recommended). This is safe to run and should "
 "be left selected."
 msgstr ""
+"Cập nhật các mục menu GRUB (được khuyến nghị). Điều này là an toàn để chạy "
+"và nên được chọn."
 
-#: src/Core/Main.vala:2526
+#: src/Core/Main.vala:2539
 msgid "Updating GRUB menu..."
-msgstr ""
+msgstr "Đang cập nhật menu GRUB..."
 
-#: src/Core/Main.vala:2737
+#: src/Core/Main.vala:2750
 msgid "Updating bootloader configuration..."
 msgstr ""
 
-#: src/Utility/Device.vala:1956
+#: src/Utility/Device.vala:1978
 #, c-format
 msgid "Used"
 msgstr ""
@@ -2386,7 +2479,7 @@ msgstr ""
 msgid "User Home Directories"
 msgstr ""
 
-#: src/Utility/Device.vala:1461
+#: src/Utility/Device.vala:1483
 msgid "User cancelled the password prompt"
 msgstr ""
 
@@ -2403,16 +2496,16 @@ msgstr ""
 msgid "Users Home"
 msgstr ""
 
-#: src/Utility/Device.vala:1933
+#: src/Utility/Device.vala:1955
 #, c-format
 msgid "Vendor"
 msgstr ""
 
-#: src/Gtk/SnapshotListBox.vala:342
+#: src/Gtk/SnapshotListBox.vala:328
 msgid "View Rsync Log for Create"
 msgstr ""
 
-#: src/Gtk/SnapshotListBox.vala:349
+#: src/Gtk/SnapshotListBox.vala:335
 msgid "View Rsync Log for Restore"
 msgstr ""
 
@@ -2420,7 +2513,7 @@ msgstr ""
 msgid "View TimeShift Logs"
 msgstr ""
 
-#: src/Core/Main.vala:2267 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Core/Main.vala:2280 src/Gtk/RestoreSummaryBox.vala:53
 msgid "Warning"
 msgstr ""
 
@@ -2432,13 +2525,13 @@ msgstr ""
 msgid "Weekly"
 msgstr ""
 
-#: src/Core/Main.vala:1138
+#: src/Core/Main.vala:1151
 msgid "Weekly snapshot failed!"
-msgstr ""
+msgstr "Bản sao lưu hàng tuần không thành công!"
 
-#: src/Core/Main.vala:1119
+#: src/Core/Main.vala:1132
 msgid "Weekly snapshots are enabled"
-msgstr ""
+msgstr "Bản sao lưu hàng tuần được bật"
 
 #: src/Gtk/DeleteFinishBox.vala:63 src/Gtk/BackupFinishBox.vala:63
 msgid "With Errors"
@@ -2448,7 +2541,7 @@ msgstr ""
 msgid "Wizard"
 msgstr ""
 
-#: src/Utility/Device.vala:1434 src/Utility/Device.vala:1480
+#: src/Utility/Device.vala:1456 src/Utility/Device.vala:1502
 msgid "Wrong password"
 msgstr ""
 
@@ -2462,6 +2555,9 @@ msgid ""
 "system will be visible as a new snapshot. This snapshot can be restored "
 "later if required, to 'undo' the restore."
 msgstr ""
+"Bạn có thể tiếp tục làm việc trên hệ thống hiện tại. Sau khi khởi động lại, "
+"hệ thống hiện tại sẽ hoạt động như bản sao lưu mới. Bản sao lưu này có thể "
+"được khôi phục sau nếu được yêu cầu, để 'hoàn tác' việc khôi phục."
 
 #: src/AppConsole.vala:1023
 #, c-format
@@ -2478,6 +2574,8 @@ msgid ""
 "[For Experienced Users] Change these settings if the restored system fails "
 "to boot."
 msgstr ""
+"[Dành cho người dùng có kinh nghiệm] Thay đổi các cài đặt này nếu hệ thống "
+"được khôi phục không khởi động được."
 
 #: src/Utility/AppLock.vala:54
 msgid "[Warning] Deleted invalid lock"
@@ -2487,12 +2585,12 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/Core/Main.vala:1655 src/Core/Main.vala:4030 src/Core/Main.vala:4115
+#: src/Core/Main.vala:1668 src/Core/Main.vala:4047 src/Core/Main.vala:4132
 #: src/Core/Subvolume.vala:215
 msgid "btrfs returned an error"
 msgstr ""
 
-#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1554
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1567
 msgid "complete"
 msgstr ""
 
@@ -2512,17 +2610,17 @@ msgstr ""
 msgid "marked for deletion"
 msgstr ""
 
-#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+#: src/Core/Main.vala:1459 src/Core/Main.vala:1613 src/Core/Main.vala:1615
 msgid "mounted at path"
 msgstr ""
 
-#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1554
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1567
 #: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
 #: src/Gtk/DeleteBox.vala:149
 msgid "remaining"
 msgstr ""
 
-#: src/Core/Main.vala:1565
+#: src/Core/Main.vala:1578
 msgid "rsync returned an error"
 msgstr ""
 

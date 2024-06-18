@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2023-06-01 11:34+0100\n"
-"PO-Revision-Date: 2023-10-29 18:22+0000\n"
+"POT-Creation-Date: 2024-06-06 11:53+0100\n"
+"PO-Revision-Date: 2024-06-07 16:04+0000\n"
 "Last-Translator: Asier Iturralde Sarasola <Unknown>\n"
 "Language-Team: Basque <eu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-01-04 14:58+0000\n"
-"X-Generator: Launchpad (build e1eeab5b20e19239bd7d5f36676f7a52988db88b)\n"
+"X-Launchpad-Export-Date: 2024-06-18 17:56+0000\n"
+"X-Generator: Launchpad (build bbfa2351d9d6a9ddfe262109428f7bf5516e65d1)\n"
 
 #: src/AppConsole.vala:626
 #, c-format
@@ -45,23 +45,23 @@ msgstr "'%s' erroko gailuan egongo da"
 msgid "(Re)install GRUB2 on:"
 msgstr "(Ber)instalatu GRUB2 hemen:"
 
-#: src/Core/Main.vala:379
+#: src/Core/Main.vala:381
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr "** BTRFS desinstalatu da **"
 
-#: src/Core/Main.vala:3527
+#: src/Core/Main.vala:3544
 msgid "/ is mapped to device"
 msgstr "/ gailura mapatuta dago"
 
-#: src/Core/Main.vala:3549
+#: src/Core/Main.vala:3566
 msgid "/boot is mapped to device"
 msgstr "/boot gailura mapatuta dago"
 
-#: src/Core/Main.vala:3560
+#: src/Core/Main.vala:3577
 msgid "/boot/efi is mapped to device"
 msgstr "/boot/efi gailura mapatuta dago"
 
-#: src/Core/Main.vala:3538
+#: src/Core/Main.vala:3555
 msgid "/home is mapped to device"
 msgstr "/home gailura mapatuta dago"
 
@@ -166,7 +166,7 @@ msgstr ""
 "Hautatu enkriptatu gabeko gailu bat abioko direktoriorako edo hautatu "
 "enkriptatu gabeko gailu bat erroko fitxategi-sistemarentzat."
 
-#: src/Core/Main.vala:265
+#: src/Core/Main.vala:267
 msgid "Another instance of Timeshift is creating a snapshot."
 msgstr "Timeshift-en beste instantzia bat argazki bat sortzen ari da."
 
@@ -174,7 +174,7 @@ msgstr "Timeshift-en beste instantzia bat argazki bat sortzen ari da."
 msgid "Another instance of this application is running"
 msgstr "Aplikazio honen beste instantzia bat exekutatzen ari da"
 
-#: src/Core/Main.vala:269
+#: src/Core/Main.vala:271
 msgid "Another instance of timeshift is currently running!"
 msgstr "Timeshift-en beste instantzia bat exekutatzen ari da une honetan!"
 
@@ -182,11 +182,11 @@ msgstr "Timeshift-en beste instantzia bat exekutatzen ari da une honetan!"
 msgid "Answer YES to all confirmation prompts"
 msgstr "Erantzun BAI berrespen gonbit guztietan"
 
-#: src/Core/Main.vala:3364
+#: src/Core/Main.vala:3381
 msgid "App config loaded"
 msgstr "Aplikazioaren konfigurazioa kargatuta"
 
-#: src/Core/Main.vala:3252
+#: src/Core/Main.vala:3265
 msgid "App config saved"
 msgstr "Aplikazioaren konfigurazioa gordeta"
 
@@ -194,13 +194,17 @@ msgstr "Aplikazioaren konfigurazioa gordeta"
 msgid "Application needs admin access."
 msgstr "Aplikazioak administratzaile sarbidea behar du."
 
-#: src/Core/Main.vala:3704
+#: src/Core/Main.vala:3721
 msgid "Application will exit"
 msgstr "Aplikazioa irten egingo da"
 
-#: src/Core/Main.vala:395
+#: src/Core/Main.vala:397
 msgid "Application will exit."
 msgstr "Aplikazioa irten egingo da."
+
+#: src/Gtk/MainWindow.vala:561
+msgid "Are you sure you want to delete this snapshot?"
+msgstr "Ziur zaude argazki hau ezabatu nahi duzula?"
 
 #: src/Gtk/MainWindow.vala:345
 msgid "Available"
@@ -214,7 +218,7 @@ msgstr "BTRFS"
 msgid "BTRFS Snapshots"
 msgstr "BTRFS argazkiak"
 
-#: src/Core/Main.vala:2202 src/Core/Main.vala:2206
+#: src/Core/Main.vala:2215 src/Core/Main.vala:2219
 msgid "BTRFS device is not mounted"
 msgstr "BTRFS gailua ez dago muntatuta"
 
@@ -246,11 +250,11 @@ msgstr "Motorra"
 msgid "Backup"
 msgstr "Babeskopia"
 
-#: src/Core/Main.vala:2178
+#: src/Core/Main.vala:2191
 msgid "Backup Device"
 msgstr "Babeskopia gailua"
 
-#: src/Core/Main.vala:2173
+#: src/Core/Main.vala:2186
 msgid "Backup device not specified!"
 msgstr "Ez da zehaztu babeskopia gailurik"
 
@@ -266,7 +270,7 @@ msgstr "Abioa"
 msgid "Boot device not selected"
 msgstr "Ez da abioko gailurik hautatu"
 
-#: src/Core/Main.vala:1045
+#: src/Core/Main.vala:1058
 msgid "Boot snapshot failed!"
 msgstr "Abioko argazkiak huts egin du"
 
@@ -277,7 +281,7 @@ msgstr ""
 "Abioko argazkiak hamar minutuko atzerapenarekin sortzen dira sistema "
 "abiaraztean"
 
-#: src/Core/Main.vala:1026
+#: src/Core/Main.vala:1039
 msgid "Boot snapshots are enabled"
 msgstr "Abioko argazkiak gaituta daude"
 
@@ -293,7 +297,7 @@ msgstr "Abioko kargatzailearen aukerak (aurreratua)"
 msgid "Browse"
 msgstr "Arakatu"
 
-#: src/Gtk/SnapshotListBox.vala:335
+#: src/Gtk/SnapshotListBox.vala:321
 msgid "Browse Files"
 msgstr "Arakatu fitxategiak"
 
@@ -301,11 +305,11 @@ msgstr "Arakatu fitxategiak"
 msgid "Browse selected snapshot"
 msgstr "Arakatu hautatutako argazkia"
 
-#: src/Core/Main.vala:2668
+#: src/Core/Main.vala:2681
 msgid "Building file list..."
 msgstr "Fitxategi-zerrenda eraikitzen..."
 
-#: src/Core/Main.vala:1405
+#: src/Core/Main.vala:1418
 msgid "Calculating required disk space..."
 msgstr "Beharrezko diskoko lekua kalkulatzen..."
 
@@ -350,7 +354,7 @@ msgstr "Aldatutako elementuak:"
 msgid "Checking Restore Actions (Dry Run)"
 msgstr "Leheneratzeko ekintzak egiaztatzen (proba)"
 
-#: src/Core/Main.vala:2901
+#: src/Core/Main.vala:2914
 msgid "Checking file systems for errors..."
 msgstr "Fitxategi-sistemak egiaztatzen erroreen bila..."
 
@@ -360,7 +364,7 @@ msgstr "Fitxategi-sistemak egiaztatzen erroreen bila..."
 msgid "Checksum"
 msgstr "Kontroleko batura"
 
-#: src/Core/Main.vala:2549
+#: src/Core/Main.vala:2562
 msgid "Cleaning up..."
 msgstr "Garbitzen..."
 
@@ -380,7 +384,7 @@ msgstr "Klonatu sistema"
 msgid "Cloning"
 msgstr "Klonatzen"
 
-#: src/Core/Main.vala:2951
+#: src/Core/Main.vala:2964
 msgid "Cloning system..."
 msgstr "Sistema klonatzen..."
 
@@ -395,7 +399,7 @@ msgstr "Itxi"
 msgid "Close window to exit"
 msgstr "Itxi leihoa irteteko"
 
-#: src/Core/Main.vala:364
+#: src/Core/Main.vala:366
 msgid "Commands listed below are not available on this system"
 msgstr "Behean zerrendatutako komandoak ez daude erabilgarri sistema honetan"
 
@@ -403,12 +407,12 @@ msgstr "Behean zerrendatutako komandoak ez daude erabilgarri sistema honetan"
 msgid "Comments (click to edit)"
 msgstr "Iruzkinak (egin klik editatzeko)"
 
-#: src/Core/Main.vala:2944 src/Gtk/RestoreBox.vala:74
+#: src/Core/Main.vala:2957 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
 msgid "Comparing Files (Dry Run)..."
 msgstr "Fitxategiak konparatzen (proba)..."
 
-#: src/Core/Main.vala:2710
+#: src/Core/Main.vala:2723
 msgid "Comparing files with rsync..."
 msgstr "rsync-ekin fitxategiak konparatzen ..."
 
@@ -434,7 +438,7 @@ msgstr "Leheneratzearekin jarraitu? (y/n): "
 msgid "Could not find device"
 msgstr "Ezin izan da gailua aurkitu"
 
-#: src/Utility/Device.vala:1308
+#: src/Utility/Device.vala:1330
 #, c-format
 msgid "Could not find file"
 msgstr "Ezin izan da fitxategia aurkitu"
@@ -443,11 +447,11 @@ msgstr "Ezin izan da fitxategia aurkitu"
 msgid "Could not find snapshot"
 msgstr "Ezin izan da argazkia aurkitu"
 
-#: src/Core/Main.vala:3113
+#: src/Core/Main.vala:3126
 msgid "Could not find system subvolume"
 msgstr "Ezin izan da sistemaren azpi-bolumena aurkitu"
 
-#: src/Core/Main.vala:3141
+#: src/Core/Main.vala:3154
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr ""
 "Ezin izan dira sistemaren azpi-bolumenak aurkitu leheneratze aurreko "
@@ -495,7 +499,7 @@ msgstr "Sortu argazkia programatuta badago"
 msgid "Create snapshot of current system"
 msgstr "Sortu uneko sistemaren argazkia"
 
-#: src/Gtk/MainWindow.vala:1027
+#: src/Gtk/MainWindow.vala:1044
 msgid ""
 "Create snapshots manually or enable scheduled snapshots to protect your "
 "system"
@@ -526,11 +530,11 @@ msgstr "Kontrol-fitxategia sortuta"
 msgid "Created directory"
 msgstr "Direktorioa sortuta"
 
-#: src/Core/Main.vala:3163
+#: src/Core/Main.vala:3176
 msgid "Created pre-restore snapshot"
 msgstr "Leheneratze aurreko argazkia sortuta"
 
-#: src/Core/Main.vala:1660
+#: src/Core/Main.vala:1673
 msgid "Created subvolume snapshot"
 msgstr "Azpi-bolumen argazkia sortuta"
 
@@ -538,19 +542,19 @@ msgstr "Azpi-bolumen argazkia sortuta"
 msgid "Creating Snapshot..."
 msgstr "Argazkia sortzen..."
 
-#: src/Core/Main.vala:1598
+#: src/Core/Main.vala:1611
 msgid "Creating new backup..."
 msgstr "Babeskopia berria sortzen..."
 
-#: src/Core/Main.vala:1444
+#: src/Core/Main.vala:1457
 msgid "Creating new snapshot..."
 msgstr "Argazki berria sortzen..."
 
-#: src/Core/Main.vala:3091
+#: src/Core/Main.vala:3104
 msgid "Creating pre-restore snapshot from system subvolumes..."
 msgstr "Leheratze aurreko argazkia sortzen sistemaren azpi-bolumenetatik..."
 
-#: src/Core/Main.vala:3703
+#: src/Core/Main.vala:3720
 msgid "Critical Error"
 msgstr "Errore kritikoa"
 
@@ -574,15 +578,15 @@ msgstr "Pertsonalizatua"
 msgid "Daily"
 msgstr "Egunero"
 
-#: src/Core/Main.vala:1107
+#: src/Core/Main.vala:1120
 msgid "Daily snapshot failed!"
 msgstr "Eguneroko argazkiak huts egin du!"
 
-#: src/Core/Main.vala:1088
+#: src/Core/Main.vala:1101
 msgid "Daily snapshots are enabled"
 msgstr "Eguneroko argazkiak gaituta daude"
 
-#: src/Core/Main.vala:2272
+#: src/Core/Main.vala:2285
 msgid "Data will be modified on following devices:"
 msgstr "Datuak aldatuko dira ondorengo gailuetan:"
 
@@ -590,7 +594,7 @@ msgstr "Datuak aldatuko dira ondorengo gailuetan:"
 msgid "Date Format"
 msgstr "Data-formatua"
 
-#: src/Gtk/SnapshotListBox.vala:321 src/Gtk/MainWindow.vala:160
+#: src/Gtk/SnapshotListBox.vala:342 src/Gtk/MainWindow.vala:160
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
 #: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:381
 #, c-format
@@ -624,7 +628,7 @@ msgstr "Ezabatuta"
 msgid "Deleted directory"
 msgstr "Direktorioa ezabatuta"
 
-#: src/Core/Main.vala:3070 src/Core/Main.vala:3074 src/Core/Subvolume.vala:167
+#: src/Core/Main.vala:3083 src/Core/Main.vala:3087 src/Core/Subvolume.vala:167
 #, c-format
 msgid "Deleted subvolume"
 msgstr "Azpi-bolumena ezabatuta"
@@ -656,24 +660,24 @@ msgstr "qgroup suntsitu da"
 msgid "Destroying qgroup"
 msgstr "qgroup suntsitzen"
 
-#: src/Core/Main.vala:2275 src/Core/Main.vala:2307
+#: src/Core/Main.vala:2288 src/Core/Main.vala:2320
 #: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
-#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
-#: src/Utility/Device.vala:1942 src/Gtk/RestoreDeviceBox.vala:97
+#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1954
+#: src/Utility/Device.vala:1964 src/Gtk/RestoreDeviceBox.vala:97
 #: src/AppConsole.vala:467 src/AppConsole.vala:506 src/AppConsole.vala:554
 #, c-format
 msgid "Device"
 msgstr "Gailua"
 
-#: src/Utility/Device.vala:1390
+#: src/Utility/Device.vala:1412
 msgid "Device is unlocked"
 msgstr "Gailua desblokeatuta dago"
 
-#: src/Utility/Device.vala:1285 src/Utility/Device.vala:1347
+#: src/Utility/Device.vala:1307 src/Utility/Device.vala:1369
 msgid "Device name is empty!"
 msgstr "Gailuaren izena hutsik dago!"
 
-#: src/Core/Main.vala:3417 src/Core/SnapshotRepo.vala:479
+#: src/Core/Main.vala:3434 src/Core/SnapshotRepo.vala:479
 #: src/AppConsole.vala:676
 msgid "Device not found"
 msgstr "Ez da gailua aurkitu"
@@ -705,7 +709,7 @@ msgstr ""
 msgid "Directory not found"
 msgstr "Ez da direktorioa aurkitu"
 
-#: src/Core/Main.vala:2367 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Core/Main.vala:2380 src/Gtk/RestoreSummaryBox.vala:64
 msgid "Disclaimer"
 msgstr "Erantzukizun-ukatzea"
 
@@ -713,15 +717,15 @@ msgstr "Erantzukizun-ukatzea"
 msgid "Disk"
 msgstr "Diskoa"
 
-#: src/Core/Main.vala:242
+#: src/Core/Main.vala:244
 msgid "Distribution"
 msgstr "Banaketa"
 
-#: src/Gtk/MainWindow.vala:1021
+#: src/Gtk/MainWindow.vala:1038
 msgid "Enable scheduled snapshots to protect your system"
 msgstr "Gaitu programatutako argazkiak zure sistema babesteko"
 
-#: src/Utility/Device.vala:1454
+#: src/Utility/Device.vala:1476
 msgid "Encrypted Device"
 msgstr "Enkriptatutako gailua"
 
@@ -739,7 +743,7 @@ msgstr "Sartu gailuaren izena edo zenbakia"
 msgid "Enter device name or number (a=Abort)"
 msgstr "Sartu gailuaren izena edo zenbakia (a=Bertan behera utzi)"
 
-#: src/Utility/Device.vala:1455
+#: src/Utility/Device.vala:1477
 #, c-format
 msgid "Enter passphrase to unlock '%s'"
 msgstr "Sartu pasa-esaldia '%s' desblokeatzeko"
@@ -770,7 +774,7 @@ msgstr "Kalkulatu"
 msgid "Estimating System Size..."
 msgstr "Sistemaren tamaina kalkulatzen"
 
-#: src/Core/Main.vala:1440
+#: src/Core/Main.vala:1453
 msgid "Estimating system size..."
 msgstr "Sistemaren tamaina kalkulatzen..."
 
@@ -806,7 +810,7 @@ msgstr "Kanpo uzteko eredua"
 msgid "Excluded Directories"
 msgstr "Kanpo utzitako direktorioak"
 
-#: src/Core/Main.vala:1728
+#: src/Core/Main.vala:1741
 msgid "Expected values: O, B, H, D, W, M"
 msgstr "Esperotako balioak: O, B, H, D, W, M"
 
@@ -823,15 +827,15 @@ msgstr "Huts egin du fitxategia kopiatzean"
 msgid "Failed to create directory"
 msgstr "Huts egin du direktorioa sortzean"
 
-#: src/Core/Main.vala:1566
+#: src/Core/Main.vala:1579
 msgid "Failed to create new snapshot"
 msgstr "Huts egin du argazki berria sortzean"
 
-#: src/Core/Main.vala:1320
+#: src/Core/Main.vala:1333
 msgid "Failed to create snapshot"
 msgstr "Huts egin du argazkia sortzean"
 
-#: src/Core/Main.vala:1656
+#: src/Core/Main.vala:1669
 msgid "Failed to create subvolume snapshot"
 msgstr "Huts egin du azpi-bolumenaren argazkia sortzean"
 
@@ -863,7 +867,7 @@ msgstr "Huts egin du esteka sinbolikoak ezabatzean"
 msgid "Failed to destroy qgroup"
 msgstr "Huts egin du qgroup suntsitzean"
 
-#: src/Core/Main.vala:3918 src/Core/Main.vala:3924
+#: src/Core/Main.vala:3935 src/Core/Main.vala:3941
 msgid "Failed to estimate system size"
 msgstr "Huts egin du sistemaren tamaina kalkulatzean"
 
@@ -877,11 +881,11 @@ msgid "Failed to get input from user in 3 attempts"
 msgstr ""
 "Huts egin du erabiltzailearen sarrera eskuratzen 3 saiakeraren ondoren"
 
-#: src/Utility/Device.vala:724
+#: src/Utility/Device.vala:746
 msgid "Failed to get partition list"
 msgstr "Huts egin du partizio zerrenda eskuratzean"
 
-#: src/Core/Main.vala:3500
+#: src/Core/Main.vala:3517
 msgid "Failed to get partition list."
 msgstr "Huts egin du partizio zerrenda eskuratzean."
 
@@ -897,16 +901,16 @@ msgstr "Huts egin du gailuak muntatzean"
 msgid "Failed to move file"
 msgstr "Huts egin du fitxategia lekuz aldatzean"
 
-#: src/Core/Main.vala:3128
+#: src/Core/Main.vala:3141
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr ""
 "Huts egin du sistemaren azpi-bolumena argazkien direktoriora mugitzean"
 
-#: src/Core/Main.vala:4031
+#: src/Core/Main.vala:4048
 msgid "Failed to query subvolume list"
 msgstr "Huts egin du azpi-bolumenen zerrenda kontsultatzean"
 
-#: src/Core/Main.vala:4116
+#: src/Core/Main.vala:4133
 msgid "Failed to query subvolume quota"
 msgstr "Huts egin du azpi-bolumenen kuota kontsultatzean"
 
@@ -935,21 +939,21 @@ msgstr "Huts egin du argazkia kentzean"
 msgid "Failed to restore system subvolume"
 msgstr "Huts egin du sistemaren azpi-bolumena leheneratzean"
 
-#: src/Core/Main.vala:1516
+#: src/Core/Main.vala:1529
 msgid "Failed to save exclude list"
 msgstr "Huts egin du kanpo utzitakoen zerrenda gordetzean"
 
-#: src/Utility/Device.vala:1381 src/Utility/Device.vala:1435
-#: src/Utility/Device.vala:1460 src/Utility/Device.vala:1481
-#: src/Utility/Device.vala:1501
+#: src/Utility/Device.vala:1403 src/Utility/Device.vala:1457
+#: src/Utility/Device.vala:1482 src/Utility/Device.vala:1503
+#: src/Utility/Device.vala:1523
 msgid "Failed to unlock device"
 msgstr "Huts egin du gailua desblokeatzean"
 
-#: src/Utility/Device.vala:1733
+#: src/Utility/Device.vala:1755
 msgid "Failed to unmount"
 msgstr "Huts egin du desmuntatzean"
 
-#: src/Core/Main.vala:3704
+#: src/Core/Main.vala:3721
 msgid "Failed to unmount device!"
 msgstr "Huts egin du gailua desmuntatzean"
 
@@ -1000,7 +1004,7 @@ msgstr "Fitxategi eta direktorioen kontaketa:"
 msgid "Files matching the following patterns will be excluded"
 msgstr "Ondorengo ereduekin bat datozen fitxategiak kanpo utziko dira"
 
-#: src/Utility/Device.vala:1950
+#: src/Utility/Device.vala:1972
 #, c-format
 msgid "Filesystem"
 msgstr "Fitxategi-sistema"
@@ -1030,7 +1034,7 @@ msgstr "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 msgid "First snapshot requires:"
 msgstr "Lehen argazkiak behar du:"
 
-#: src/Core/Main.vala:3061
+#: src/Core/Main.vala:3074
 msgid "Found existing pre-restore snapshot"
 msgstr "Lehendik dagoen leheneratze aurreko argazkia aurkitu da"
 
@@ -1054,7 +1058,7 @@ msgstr "Ez da GRUB gailua hautatu"
 msgid "GRUB will NOT be reinstalled"
 msgstr "GRUB EZ da berrinstalatuko"
 
-#: src/Core/Main.vala:2509
+#: src/Core/Main.vala:2522
 msgid "Generating initramfs..."
 msgstr "initramfs sortzen..."
 
@@ -1104,11 +1108,11 @@ msgstr "Karpeta nagusia"
 msgid "Hourly"
 msgstr "Orduro"
 
-#: src/Core/Main.vala:1076
+#: src/Core/Main.vala:1089
 msgid "Hourly snapshot failed!"
 msgstr "Orduroko argazkiak huts egin du!"
 
-#: src/Core/Main.vala:1057
+#: src/Core/Main.vala:1070
 msgid "Hourly snapshots are enabled"
 msgstr "Orduroko argazkiak gaituta"
 
@@ -1120,7 +1124,7 @@ msgstr ""
 "Leheneratutako sistemak abiaraztean huts egiten badu, abiarazi Live "
 "CD/USBtik, instalatu Timeshift eta saiatu beste argazki batetik leheneratzen."
 
-#: src/Core/Main.vala:2373
+#: src/Core/Main.vala:2386
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
@@ -1144,7 +1148,7 @@ msgstr "Hartu barne fitxategi guztiak"
 msgid "Include Only Hidden Files"
 msgstr "Hartu barne ezkutuko fitxategiak soilik"
 
-#: src/Core/Main.vala:2187
+#: src/Core/Main.vala:2200
 msgid "Invalid Snapshot"
 msgstr "Argazki baliogabea"
 
@@ -1153,7 +1157,7 @@ msgstr "Argazki baliogabea"
 msgid "Invalid command line arguments"
 msgstr "Komando lerroko argumentu baliogabeak"
 
-#: src/Gtk/MainWindow.vala:814
+#: src/Gtk/MainWindow.vala:831
 msgid "Invalid snapshot"
 msgstr "Argazki baliogabea"
 
@@ -1196,83 +1200,83 @@ msgstr "Mantendu muntatze-bide hau root fitxategi-sisteman"
 msgid "LIVE"
 msgstr "LIVE"
 
-#: src/Utility/Device.vala:1951 src/Gtk/BackupDeviceBox.vala:254
+#: src/Utility/Device.vala:1973 src/Gtk/BackupDeviceBox.vala:254
 #: src/AppConsole.vala:471 src/AppConsole.vala:510
 #, c-format
 msgid "Label"
 msgstr "Etiketa"
 
-#: src/Core/Main.vala:1038
+#: src/Core/Main.vala:1051
 #, c-format
 msgid "Last boot snapshot is %d hours old"
 msgstr "Abioko azken argazkia duela %d ordukoa da"
 
-#: src/Core/Main.vala:1033
+#: src/Core/Main.vala:1046
 msgid "Last boot snapshot is older than system start time"
 msgstr "Abioko azken argazkia sistemaren hasiera-ordua baino zaharragoa da"
 
-#: src/Core/Main.vala:1029
+#: src/Core/Main.vala:1042
 msgid "Last boot snapshot not found"
 msgstr "Ez da abioko azken argazkia aurkitu"
 
-#: src/Core/Main.vala:1100
+#: src/Core/Main.vala:1113
 #, c-format
 msgid "Last daily snapshot is %d hours old"
 msgstr "Eguneroko azken argazkia duela %d ordukoa da"
 
-#: src/Core/Main.vala:1095
+#: src/Core/Main.vala:1108
 msgid "Last daily snapshot is more than 1 day old"
 msgstr "Eguneroko azken argazkia duela egun 1 baino gehiagokoa da"
 
-#: src/Core/Main.vala:1091
+#: src/Core/Main.vala:1104
 msgid "Last daily snapshot not found"
 msgstr "Ez da eguneroko azken argazkia aurkitu"
 
-#: src/Core/Main.vala:1069
+#: src/Core/Main.vala:1082
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
 msgstr "Ordueroko azken argazkia duela %d minutukoa da"
 
-#: src/Core/Main.vala:1064
+#: src/Core/Main.vala:1077
 msgid "Last hourly snapshot is more than 1 hour old"
 msgstr "Ordueroko azken argazkia duela ordubete baino gehiagokoa da"
 
-#: src/Core/Main.vala:1060
+#: src/Core/Main.vala:1073
 msgid "Last hourly snapshot not found"
 msgstr "Ez da ordueroko azken argazkia aurkitu"
 
-#: src/Core/Main.vala:1162
+#: src/Core/Main.vala:1175
 #, c-format
 msgid "Last monthly snapshot is %d days old"
 msgstr "Hilabeteroko azken argazkia duela %d egunekoa da"
 
-#: src/Core/Main.vala:1157
+#: src/Core/Main.vala:1170
 msgid "Last monthly snapshot is more than 1 month old"
 msgstr "Hilabeteroko azken argazkia duela hilabete baino gehiagokoa da"
 
-#: src/Core/Main.vala:1153
+#: src/Core/Main.vala:1166
 msgid "Last monthly snapshot not found"
 msgstr "Ez da hilabeteroko azken argazkia aurkitu"
 
-#: src/Core/Main.vala:1131
+#: src/Core/Main.vala:1144
 #, c-format
 msgid "Last weekly snapshot is %d days old"
 msgstr "Asteroko azken argazkia duela %d egunekoa da"
 
-#: src/Core/Main.vala:1126
+#: src/Core/Main.vala:1139
 msgid "Last weekly snapshot is more than 1 week old"
 msgstr "Asteroko azken argazkia duela astebete baino gehiagokoa da"
 
-#: src/Core/Main.vala:1122
+#: src/Core/Main.vala:1135
 msgid "Last weekly snapshot not found"
 msgstr "Ez da asteroko azken argazkia aurkitu"
 
-#: src/Gtk/MainWindow.vala:1002
+#: src/Gtk/MainWindow.vala:1019
 #, c-format
 msgid "Latest snapshot"
 msgstr "Azken argazkia"
 
-#: src/Core/Main.vala:1505
+#: src/Core/Main.vala:1518
 #, c-format
 msgid "Linking from snapshot"
 msgstr "Argazkitik estekatzen"
@@ -1289,7 +1293,7 @@ msgstr "Zerrendatu gailuak"
 msgid "List snapshots"
 msgstr "Zerrendatu argazkiak"
 
-#: src/Gtk/MainWindow.vala:953
+#: src/Gtk/MainWindow.vala:970
 msgid "Live USB Mode (Restore Only)"
 msgstr "Live USB modua (leheneratzeko soilik)"
 
@@ -1302,7 +1306,7 @@ msgstr "Kokalekua"
 msgid "Main window closed by user"
 msgstr "Erabiltzaileak leiho nagusia itxi du"
 
-#: src/Gtk/SnapshotListBox.vala:328
+#: src/Gtk/SnapshotListBox.vala:349
 msgid "Mark/Unmark for Deletion"
 msgstr "Markatu/Kendu ezabatzeko marka"
 
@@ -1318,7 +1322,7 @@ msgstr "Menua"
 msgid "Misc"
 msgstr "Hainbat"
 
-#: src/Core/Main.vala:251
+#: src/Core/Main.vala:253
 msgid "Missing Dependencies"
 msgstr "Mendekotasunak falta ditu"
 
@@ -1327,7 +1331,7 @@ msgstr "Mendekotasunak falta ditu"
 msgid "Mode"
 msgstr "Modua"
 
-#: src/Utility/Device.vala:1934
+#: src/Utility/Device.vala:1956
 #, c-format
 msgid "Model"
 msgstr "Modeloa"
@@ -1336,23 +1340,23 @@ msgstr "Modeloa"
 msgid "Monthly"
 msgstr "Hilabetero"
 
-#: src/Core/Main.vala:1150
+#: src/Core/Main.vala:1163
 msgid "Monthly snapshot are enabled"
 msgstr "Hilabeteroko argazkiak gaituta daude"
 
-#: src/Core/Main.vala:1169
+#: src/Core/Main.vala:1182
 msgid "Monthly snapshot failed!"
 msgstr "Hilabeteroko argazkiak huts egin du!"
 
-#: src/Core/Main.vala:2274 src/Core/Main.vala:2307
+#: src/Core/Main.vala:2287 src/Core/Main.vala:2320
 msgid "Mount"
 msgstr "Muntatu"
 
-#: src/Core/Main.vala:3135
+#: src/Core/Main.vala:3148
 msgid "Moved system subvolume to snapshot directory"
 msgstr "Sistemaren azpi-bolumena argazkien direktoriora lekuz aldatu da"
 
-#: src/Gtk/MainWindow.vala:790
+#: src/Gtk/MainWindow.vala:807
 msgid "Multiple snapshots selected"
 msgstr "Hainbat argazki hautatuta"
 
@@ -1374,15 +1378,15 @@ msgstr "Ez"
 msgid "No Change"
 msgstr "Aldaketarik ez"
 
-#: src/Gtk/MainWindow.vala:599 src/Gtk/DeleteWindow.vala:335
+#: src/Gtk/MainWindow.vala:616 src/Gtk/DeleteWindow.vala:335
 msgid "No Snapshots Selected"
 msgstr "Ez da argazkirik hautatu"
 
-#: src/Gtk/MainWindow.vala:1026
+#: src/Gtk/MainWindow.vala:1043
 msgid "No snapshots available"
 msgstr "Ez dago argazkirik eskuragarri"
 
-#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:970
+#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:987
 #: src/AppConsole.vala:326
 msgid "No snapshots found"
 msgstr "Ez da argazkirik aurkitu"
@@ -1399,11 +1403,11 @@ msgstr "Ez dago argazkirik gailuan"
 msgid "No snapshots on this device"
 msgstr "Ez dago argazkirik gailu honetan"
 
-#: src/Gtk/MainWindow.vala:783
+#: src/Gtk/MainWindow.vala:800
 msgid "No snapshots selected"
 msgstr "Ez da argazkirik hautatu"
 
-#: src/Gtk/MainWindow.vala:1003 src/Gtk/MainWindow.vala:1005
+#: src/Gtk/MainWindow.vala:1020 src/Gtk/MainWindow.vala:1022
 msgid "None"
 msgstr "Bat ere ez"
 
@@ -1416,7 +1420,7 @@ msgstr "Ez da aurkitu"
 msgid "Not Selected"
 msgstr "Hautatu gabe"
 
-#: src/Core/Main.vala:396
+#: src/Core/Main.vala:398
 msgid "Not Supported"
 msgstr "Ez dago onartuta"
 
@@ -1428,7 +1432,7 @@ msgstr "Ez dago nahikoa leku diskoan"
 msgid "Notes"
 msgstr "Oharrak"
 
-#: src/Core/Main.vala:1180
+#: src/Core/Main.vala:1193
 msgid "Nothing to do!"
 msgstr "Egitekorik ez!"
 
@@ -1460,11 +1464,11 @@ msgstr ""
 "BTRFS partizio batean instalatuta egon behar du. Bestelako diseinuek ez dute "
 "euskarririk."
 
-#: src/Core/Main.vala:4289
+#: src/Core/Main.vala:4306
 msgid "Older log files removed"
 msgstr "Egunkari-fitxategi zaharrak kenduta"
 
-#: src/Gtk/MainWindow.vala:1004
+#: src/Gtk/MainWindow.vala:1021
 msgid "Oldest snapshot"
 msgstr "Argazkirik zaharrena"
 
@@ -1472,7 +1476,7 @@ msgstr "Argazkirik zaharrena"
 msgid "On demand (manual)"
 msgstr "Eskatu ahala (eskuz)"
 
-#: src/Core/Main.vala:394 src/Core/Main.vala:3617
+#: src/Core/Main.vala:396 src/Core/Main.vala:3634
 #: src/Gtk/RestoreDeviceBox.vala:511
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
@@ -1484,7 +1488,7 @@ msgstr ""
 msgid "Open Menu"
 msgstr "Ireki menua"
 
-#: src/Core/Main.vala:3399
+#: src/Core/Main.vala:3416
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
@@ -1505,12 +1509,12 @@ msgstr "Beste aplikazioak (hurrengo orria)"
 msgid "Owner"
 msgstr "Jabea"
 
-#: src/Utility/Device.vala:1946
+#: src/Utility/Device.vala:1968
 #, c-format
 msgid "Parent Device"
 msgstr "Gailu nagusia"
 
-#: src/Core/Main.vala:2638 src/Core/Main.vala:2729 src/Gtk/RsyncLogBox.vala:222
+#: src/Core/Main.vala:2651 src/Core/Main.vala:2742 src/Gtk/RsyncLogBox.vala:222
 msgid "Parsing log file..."
 msgstr "Egunkari-fitxategia analizatzen..."
 
@@ -1533,15 +1537,15 @@ msgstr "Eredua"
 msgid "Permissions"
 msgstr "Baimenak"
 
-#: src/Core/Main.vala:270
+#: src/Core/Main.vala:272
 msgid "Please check if you have multiple windows open."
 msgstr "Egiaztatu ea hainbat leiho dituzun irekita."
 
-#: src/Core/Main.vala:2405
+#: src/Core/Main.vala:2418
 msgid "Please do not interrupt the restore process!"
 msgstr "Ez eten leheneratze prozesua!"
 
-#: src/Core/Main.vala:365
+#: src/Core/Main.vala:367
 msgid "Please install required packages and try running TimeShift again"
 msgstr ""
 "Instalatu beharrezko paketeak eta saiatu TimeShift berriz exekutatzen"
@@ -1557,11 +1561,11 @@ msgid "Please run the application as admin (using 'sudo' or 'su')"
 msgstr ""
 "Exekutatu aplikazioa administratzaile bezala ('sudo' edo 'su' erabiliz)"
 
-#: src/Core/Main.vala:2355
+#: src/Core/Main.vala:2368
 msgid "Please save your work and close all applications."
 msgstr "Gorde zure lana eta itxi aplikazio guztiak."
 
-#: src/Gtk/MainWindow.vala:685
+#: src/Gtk/MainWindow.vala:702
 msgid "Please select a snapshot to view the log!"
 msgstr "Hautatu argazki bat egunkaria ikusteko"
 
@@ -1569,11 +1573,11 @@ msgstr "Hautatu argazki bat egunkaria ikusteko"
 msgid "Please select the GRUB device"
 msgstr "Hautatu GRUB gailua"
 
-#: src/Core/Main.vala:266
+#: src/Core/Main.vala:268
 msgid "Please wait a few minutes and try again."
 msgstr "Mesedez itxaron minutu batzuk eta saiatu berriro."
 
-#: src/Gtk/MainWindow.vala:752
+#: src/Gtk/MainWindow.vala:769
 msgid "Please wait for snapshots to be deleted."
 msgstr "Mesedez itxaron argazkiak ezabatu arte."
 
@@ -1585,7 +1589,7 @@ msgstr "Itxaron..."
 msgid "Populating list..."
 msgstr "Zerrenda osatzen..."
 
-#: src/Core/Main.vala:1740 src/Gtk/BackupBox.vala:117
+#: src/Core/Main.vala:1753 src/Gtk/BackupBox.vala:117
 #: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
 #: src/Gtk/RsyncLogBox.vala:232
 msgid "Preparing..."
@@ -1604,11 +1608,11 @@ msgstr "Inprimatu arazketako informazioa"
 msgid "Print version number"
 msgstr "Inprimatu bertsio zenbakia"
 
-#: src/Core/Main.vala:3979
+#: src/Core/Main.vala:3996
 msgid "Query completed"
 msgstr "Kontsulta osatuta"
 
-#: src/Core/Main.vala:3962
+#: src/Core/Main.vala:3979
 msgid "Querying subvolume info..."
 msgstr "Azpi-bolumenen informazioa kontsultatzen..."
 
@@ -1634,7 +1638,7 @@ msgstr ""
 msgid "Re-install GRUB2 bootloader?"
 msgstr "GRUB2 abioko kargatzailea berrinstalatu?"
 
-#: src/Core/Main.vala:2468
+#: src/Core/Main.vala:2481
 msgid "Re-installing GRUB2 bootloader..."
 msgstr "GRUB2 abioko kargatzailea berrinstalatzen..."
 
@@ -1647,7 +1651,7 @@ msgstr "GRUB2 abioko kargatzailea berrinstalatzen du hautatutako gailuan."
 msgid "Read %'d of %'d lines..."
 msgstr "Irakurri %'d / %'d lerrotik..."
 
-#: src/Core/Main.vala:2568
+#: src/Core/Main.vala:2581
 msgid "Rebooting system..."
 msgstr "Sistema berrabiarazten..."
 
@@ -1668,8 +1672,8 @@ msgstr "Urruneko eta sareko kokalekuek ez dute euskarririk"
 msgid "Remove"
 msgstr "Kendu"
 
-#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1778 src/Core/Main.vala:1789
-#: src/Core/Main.vala:4285 src/Core/SnapshotRepo.vala:907
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1791 src/Core/Main.vala:1802
+#: src/Core/Main.vala:4302 src/Core/SnapshotRepo.vala:907
 #, c-format
 msgid "Removed"
 msgstr "Kenduta"
@@ -1678,7 +1682,7 @@ msgstr "Kenduta"
 msgid "Removed cron task"
 msgstr "cron ataza kenduta"
 
-#: src/Core/Main.vala:3767
+#: src/Core/Main.vala:3784
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr "Muntatze direktorioa kenduta: '%s'"
@@ -1723,7 +1727,7 @@ msgstr "Leheneratu kanpo utzitakoa"
 msgid "Restore Snapshot"
 msgstr "Leheneratu argazkia"
 
-#: src/Core/Main.vala:2978 src/Core/Main.vala:3020
+#: src/Core/Main.vala:2991 src/Core/Main.vala:3033
 msgid "Restore completed"
 msgstr "Leheneratzea osatuta"
 
@@ -1759,7 +1763,7 @@ msgstr ""
 "izanez gero argazki hori leheneratu daiteke beranduago leheneratzea "
 "'desegiteko'."
 
-#: src/Core/Main.vala:2947
+#: src/Core/Main.vala:2960
 msgid "Restoring snapshot..."
 msgstr "Argazkia leheneratzen..."
 
@@ -1778,7 +1782,7 @@ msgstr ""
 "hartutako fitxategien babeskopia egingo da argazkia sortzean eta argazkia "
 "leheneratzean ordezkatuko dira."
 
-#: src/Utility/Device.vala:1936
+#: src/Utility/Device.vala:1958
 #, c-format
 msgid "Revision"
 msgstr "Berrikuspena"
@@ -1801,7 +1805,7 @@ msgstr ""
 msgid "Run in non-interactive mode"
 msgstr "Exekutatu modu ez interaktiboan"
 
-#: src/Core/Main.vala:202
+#: src/Core/Main.vala:204
 msgid "Running"
 msgstr "Exekutatzen"
 
@@ -1825,7 +1829,7 @@ msgstr ""
 "argazkiak gorde gabe. Beste Linux banaketa bat ere instala dezakezu eta "
 "beranduago aurreko banaketa berrezarri argazki bat leheneratuz."
 
-#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+#: src/Core/Main.vala:1459 src/Core/Main.vala:1613 src/Core/Main.vala:1615
 msgid "Saving to device"
 msgstr "Gailura gordetzen"
 
@@ -1833,11 +1837,11 @@ msgstr "Gailura gordetzen"
 msgid "Schedule"
 msgstr "Programazioa"
 
-#: src/Core/Main.vala:273
+#: src/Core/Main.vala:275
 msgid "Scheduled snapshot in progress..."
 msgstr "Programatutako argazkian lanean..."
 
-#: src/Core/Main.vala:1180 src/Gtk/MainWindow.vala:1020
+#: src/Core/Main.vala:1193 src/Gtk/MainWindow.vala:1037
 #: src/Gtk/ScheduleBox.vala:312
 msgid "Scheduled snapshots are disabled"
 msgstr "Programatutako argazkiak desgaituta daude"
@@ -1871,7 +1875,7 @@ msgstr "Hautatu erroko azpi-bolumena (@) duen BTRFS sistemaren diskoa"
 msgid "Select GRUB device"
 msgstr "Hautatu GRUB gailua"
 
-#: src/Gtk/MainWindow.vala:684
+#: src/Gtk/MainWindow.vala:701
 msgid "Select Snapshot"
 msgstr "Hautatu argazkia"
 
@@ -1900,7 +1904,7 @@ msgstr "Hautatu helburuko gailua"
 msgid "Select a partition on this disk"
 msgstr "Hautatu partizio bat disko honetan"
 
-#: src/Gtk/MainWindow.vala:791
+#: src/Gtk/MainWindow.vala:808
 msgid "Select a single snapshot to restore"
 msgstr "Hautatu argazki bakar bat leheneratzeko"
 
@@ -1964,7 +1968,7 @@ msgstr "Hautatu elementuak zerrendatik kentzeko"
 msgid "Select the snapshot device"
 msgstr "Hautatu argazki gailua"
 
-#: src/Gtk/MainWindow.vala:784
+#: src/Gtk/MainWindow.vala:801
 msgid "Select the snapshot to restore"
 msgstr "Hautatu argazkia leheneratzeko"
 
@@ -1972,7 +1976,7 @@ msgstr "Hautatu argazkia leheneratzeko"
 msgid "Select the snapshots to be deleted"
 msgstr "Hautatu argazkiak ezabatzeko"
 
-#: src/Gtk/MainWindow.vala:600
+#: src/Gtk/MainWindow.vala:617
 msgid "Select the snapshots to mark for deletion"
 msgstr "Hautatu argazkiak ezabatzeko markatzeko"
 
@@ -1980,11 +1984,11 @@ msgstr "Hautatu argazkiak ezabatzeko markatzeko"
 msgid "Select the target devices where system will be cloned."
 msgstr "Hautatu ze helburuko gailutan klonatuko den sistema."
 
-#: src/Core/Main.vala:3427
+#: src/Core/Main.vala:3444
 msgid "Selected default snapshot device"
 msgstr "Hautatutako argazki gailu lehenetsia"
 
-#: src/Core/Main.vala:3378 src/Core/Main.vala:3382
+#: src/Core/Main.vala:3395 src/Core/Main.vala:3399
 msgid "Selected default snapshot type"
 msgstr "Hautatutako argazki mota lehenetsia"
 
@@ -2004,11 +2008,11 @@ msgstr "Hautatutako argazki gailua"
 msgid "Selected snapshot device is not a system disk"
 msgstr "Hautatutako argazki gailua ez da sistemaren disko bat"
 
-#: src/Core/Main.vala:2188
+#: src/Core/Main.vala:2201
 msgid "Selected snapshot is marked for deletion"
 msgstr "Hautatutako argazkia ezabatzeko markatuta dago"
 
-#: src/Gtk/MainWindow.vala:815
+#: src/Gtk/MainWindow.vala:832
 msgid "Selected snapshot is marked for deletion and cannot be restored"
 msgstr ""
 "Hautatutako argazkia ezabatzeko markatuta dago eta ezin da leheneratu"
@@ -2021,12 +2025,12 @@ msgstr ""
 "Hautatutako erabiltzaileak enkriptatutako karpeta nagusi bat dauka. Ez da "
 "posible ezkutuko fitxategiak soilik barne hartzea."
 
-#: src/Utility/Device.vala:1935
+#: src/Utility/Device.vala:1957
 #, c-format
 msgid "Serial"
 msgstr "Serie-zenbakia"
 
-#: src/Core/Main.vala:230
+#: src/Core/Main.vala:232
 msgid "Session log file"
 msgstr "Saioaren egunkari-fitxategia"
 
@@ -2067,7 +2071,7 @@ msgstr "Erakutsi kanpo uzteko aplikazio gehiago hurrengo orrian"
 msgid "Show rsync output (default)"
 msgstr "Erakutsi rsync-en irteera (lehenetsia)"
 
-#: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
+#: src/Utility/Device.vala:1960 src/Utility/Device.vala:1975
 #: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
 #: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
 #: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:469 src/AppConsole.vala:508
@@ -2091,7 +2095,7 @@ msgstr ""
 msgid "Skip GRUB2 reinstall"
 msgstr "Saltatu GRUB2 berriz instalatzea"
 
-#: src/Core/Main.vala:2193 src/Core/SnapshotRepo.vala:631
+#: src/Core/Main.vala:2206 src/Core/SnapshotRepo.vala:631
 #: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:94
 #, c-format
 msgid "Snapshot"
@@ -2115,7 +2119,7 @@ msgstr "Argazkia sortuta"
 msgid "Snapshot Levels"
 msgstr "Argazki-mailak"
 
-#: src/Gtk/MainWindow.vala:751
+#: src/Gtk/MainWindow.vala:768
 msgid "Snapshot deletion in progress..."
 msgstr "Argazkia ezabatzen..."
 
@@ -2137,15 +2141,15 @@ msgstr "Argazki gailua ez dago hautatuta"
 msgid "Snapshot location"
 msgstr "Argazki kokalekua"
 
-#: src/Core/Main.vala:1317
+#: src/Core/Main.vala:1330
 msgid "Snapshot saved successfully"
 msgstr "Argazkia behar bezala gorde da"
 
-#: src/Core/Main.vala:2183
+#: src/Core/Main.vala:2196
 msgid "Snapshot to restore not specified!"
 msgstr "Ez da zehaztu leheneratu beharreko argazkia"
 
-#: src/Core/Main.vala:3024
+#: src/Core/Main.vala:3037
 msgid "Snapshot will become active after system is rebooted."
 msgstr "Argazkia aktibo bihurtuko da sistema berrabiarazi ondoren."
 
@@ -2229,7 +2233,7 @@ msgstr ""
 "Argazkiak hautatutako partizioko /timeshift-btrfs karpetan gordetzen dira. "
 "Ez dago beste kokalekuentzako euskarririk."
 
-#: src/Gtk/MainWindow.vala:965
+#: src/Gtk/MainWindow.vala:982
 msgid "Snapshots available for restore"
 msgstr "Leheneratzeko erabilgarri dauden argazkiak"
 
@@ -2248,7 +2252,7 @@ msgstr ""
 msgid "Snapshots cannot be created in Live CD mode"
 msgstr "Argazkiak ezin dira sortu Live CD moduan"
 
-#: src/Gtk/MainWindow.vala:1012
+#: src/Gtk/MainWindow.vala:1029
 msgid "Snapshots will be created at selected intervals"
 msgstr "Argazkiak hautatutako maiztasunarekin sortuko dira"
 
@@ -2317,11 +2321,11 @@ msgstr "Aldatu RSYNC modura (lehenetsia: config)"
 msgid "Symlinks updated"
 msgstr "Esteka sinbolikoak eguneratuta"
 
-#: src/Core/Main.vala:2543
+#: src/Core/Main.vala:2556
 msgid "Syncing file systems..."
 msgstr "Fitxategi-sistemak sinkronizatzen..."
 
-#: src/Core/Main.vala:1522 src/Core/Main.vala:2713 src/Core/Main.vala:2954
+#: src/Core/Main.vala:1535 src/Core/Main.vala:2726 src/Core/Main.vala:2967
 msgid "Syncing files with rsync..."
 msgstr "Fitxategiak rsync-ekin sinkronizatzen..."
 
@@ -2329,12 +2333,12 @@ msgstr "Fitxategiak rsync-ekin sinkronizatzen..."
 msgid "Syntax"
 msgstr "Sintaxia"
 
-#: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:126
+#: src/Utility/Device.vala:1981 src/Gtk/SnapshotListBox.vala:126
 #, c-format
 msgid "System"
 msgstr "Sistema"
 
-#: src/Gtk/MainWindow.vala:912
+#: src/Gtk/MainWindow.vala:929
 msgid "System Restore Utility"
 msgstr "Sistema leheneratzeko tresna"
 
@@ -2343,15 +2347,15 @@ msgid "System can be rolled-back to a previous date by restoring a snapshot."
 msgstr ""
 "Sistema aurreko data bateko egoerara itzuli daiteke argazki bat leheneratuz."
 
-#: src/Core/Main.vala:2406
+#: src/Core/Main.vala:2419
 msgid "System will reboot after files are restored"
 msgstr "Sistema berrabiaraziko da fitxategiak leheneratu ondoren"
 
-#: src/Core/Main.vala:2356
+#: src/Core/Main.vala:2369
 msgid "System will reboot after files are restored."
 msgstr "Sistema berrabiaraziko da fitxategiak leheneratu ondoren."
 
-#: src/Core/Main.vala:1253 src/Core/Main.vala:1327
+#: src/Core/Main.vala:1266 src/Core/Main.vala:1340
 msgid "Tagged snapshot"
 msgstr "Etiketatutako argazkia"
 
@@ -2359,7 +2363,7 @@ msgstr "Etiketatutako argazkia"
 msgid "Tags"
 msgstr "Etiketak"
 
-#: src/Core/Main.vala:2218
+#: src/Core/Main.vala:2231
 msgid "Target device is not mounted"
 msgstr "Helburuko gailua ez dago muntatuta"
 
@@ -2367,7 +2371,7 @@ msgstr "Helburuko gailua ez dago muntatuta"
 msgid "Target device is same as system device"
 msgstr "Helburuko gailua sistemaren gailuaren berdina da"
 
-#: src/Core/Main.vala:2212
+#: src/Core/Main.vala:2225
 msgid "Target device not specified!"
 msgstr "Ez da helburuko gailurik zehaztu!"
 
@@ -2381,12 +2385,12 @@ msgstr ""
 "dio uneko erabiltzaileari. Hautatu aukera hau Timeshift-ek sortutako cron "
 "atazek posta elektronikorik ez bidaltzeko."
 
-#: src/Core/Main.vala:393
+#: src/Core/Main.vala:395
 msgid "The system partition has an unsupported subvolume layout."
 msgstr ""
 "Sistemaren partizioak euskarririk gabeko azpi-bolumen diseinu bat dauka."
 
-#: src/Core/Main.vala:3616
+#: src/Core/Main.vala:3633
 msgid "The target partition has an unsupported subvolume layout."
 msgstr ""
 "Helburuko partizioak euskarririk gabeko azpi-bolumen diseinu bat dauka."
@@ -2396,11 +2400,11 @@ msgstr ""
 msgid "There are no snapshots on this device"
 msgstr "Ez dago argazkirik gailu honetan"
 
-#: src/Utility/Device.vala:1380
+#: src/Utility/Device.vala:1402
 msgid "This device is not encrypted"
 msgstr "Gailu hau ez dago enkriptatuta"
 
-#: src/Core/Main.vala:2372
+#: src/Core/Main.vala:2385
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
@@ -2408,7 +2412,7 @@ msgstr ""
 "Software hau INOLAKO garantiarik gabe banatzen da eta egileak ez du "
 "programaren erabilerak eragin ditzakeen kalteen ardurarik."
 
-#: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1011
+#: src/Gtk/MainWindow.vala:1017 src/Gtk/MainWindow.vala:1028
 msgid "Timeshift is active"
 msgstr "Timeshift aktibo dago"
 
@@ -2424,14 +2428,14 @@ msgid "To restore with default options, press the ENTER key for all prompts!"
 msgstr ""
 "Aukera lehenetsiekin leheneratzeko sakatu ENTER tekla gonbit guztietan"
 
-#: src/Utility/Device.vala:1949 src/Gtk/BackupDeviceBox.vala:190
+#: src/Utility/Device.vala:1971 src/Gtk/BackupDeviceBox.vala:190
 #: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:470
 #: src/AppConsole.vala:509
 #, c-format
 msgid "Type"
 msgstr "Mota"
 
-#: src/Utility/Device.vala:1948
+#: src/Utility/Device.vala:1970
 #, c-format
 msgid "UUID"
 msgstr "UUIDa"
@@ -2440,24 +2444,24 @@ msgstr "UUIDa"
 msgid "Unknown option"
 msgstr "Aukera ezezaguna"
 
-#: src/Core/Main.vala:1235
+#: src/Core/Main.vala:1248
 msgid "Unknown snapshot type"
 msgstr "Argazki mota ezezaguna"
 
-#: src/Core/Main.vala:1727
+#: src/Core/Main.vala:1740
 msgid "Unknown value specified for option --tags"
 msgstr "Balio ezezaguna zehaztu da --tags aukerarentzat"
 
-#: src/Utility/Device.vala:1391 src/Utility/Device.vala:1507
+#: src/Utility/Device.vala:1413 src/Utility/Device.vala:1529
 #, c-format
 msgid "Unlocked device is mapped to '%s'"
 msgstr "Desblokeatutako gailua '%s'(e)ra mapatuta dago"
 
-#: src/Utility/Device.vala:1506
+#: src/Utility/Device.vala:1528
 msgid "Unlocked successfully"
 msgstr "Desblokeatu da"
 
-#: src/Utility/Device.vala:1722
+#: src/Utility/Device.vala:1744
 msgid "Unmounting from"
 msgstr "Hemendik desmuntatzen:"
 
@@ -2465,7 +2469,7 @@ msgstr "Hemendik desmuntatzen:"
 msgid "Unshared"
 msgstr "Partekatzeari utzita"
 
-#: src/Core/Main.vala:3620 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Core/Main.vala:3637 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
 msgstr "Euskarririk gabeko azpi-bolumen diseinua"
 
@@ -2477,11 +2481,11 @@ msgstr "Eguneratu GRUB menua"
 msgid "Update initramfs"
 msgstr "Eguneratu initramfs"
 
-#: src/Core/Main.vala:2893
+#: src/Core/Main.vala:2906
 msgid "Updated /etc/crypttab on target device"
 msgstr "Eguneratu /etc/crypttab helburuko gailuan"
 
-#: src/Core/Main.vala:2813
+#: src/Core/Main.vala:2826
 msgid "Updated /etc/fstab on target device"
 msgstr "Eguneratu /etc/fstab helburuko gailuan"
 
@@ -2493,15 +2497,15 @@ msgstr ""
 "GRUB menuko sarrerak eguneratzen ditu (gomendatua). Hau exekutatzea segurua "
 "da eta hautatuta utzi behar litzateke."
 
-#: src/Core/Main.vala:2526
+#: src/Core/Main.vala:2539
 msgid "Updating GRUB menu..."
 msgstr "GRUB menua eguneratzen..."
 
-#: src/Core/Main.vala:2737
+#: src/Core/Main.vala:2750
 msgid "Updating bootloader configuration..."
 msgstr "Abioko kargatzailearen konfigurazioa eguneratzen..."
 
-#: src/Utility/Device.vala:1956
+#: src/Utility/Device.vala:1978
 #, c-format
 msgid "Used"
 msgstr "Erabilia"
@@ -2514,7 +2518,7 @@ msgstr "Erabiltzailea"
 msgid "User Home Directories"
 msgstr "Erabiltzaileen karpeta nagusiak"
 
-#: src/Utility/Device.vala:1461
+#: src/Utility/Device.vala:1483
 msgid "User cancelled the password prompt"
 msgstr "Erabiltzaileak pasahitz gonbita ezeztatu du"
 
@@ -2533,16 +2537,16 @@ msgstr "Erabiltzaileak"
 msgid "Users Home"
 msgstr "Erabiltzailearen karpeta nagusia"
 
-#: src/Utility/Device.vala:1933
+#: src/Utility/Device.vala:1955
 #, c-format
 msgid "Vendor"
 msgstr "Hornitzailea"
 
-#: src/Gtk/SnapshotListBox.vala:342
+#: src/Gtk/SnapshotListBox.vala:328
 msgid "View Rsync Log for Create"
 msgstr "Ikusi rsync egunkaria sorrerarentzat"
 
-#: src/Gtk/SnapshotListBox.vala:349
+#: src/Gtk/SnapshotListBox.vala:335
 msgid "View Rsync Log for Restore"
 msgstr "Ikusi rsync egunkaria leheneratzearentzat"
 
@@ -2550,7 +2554,7 @@ msgstr "Ikusi rsync egunkaria leheneratzearentzat"
 msgid "View TimeShift Logs"
 msgstr "Ikusi TimeShift egunkariak"
 
-#: src/Core/Main.vala:2267 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Core/Main.vala:2280 src/Gtk/RestoreSummaryBox.vala:53
 msgid "Warning"
 msgstr "Abisua"
 
@@ -2562,11 +2566,11 @@ msgstr "Web-arakatzaileak"
 msgid "Weekly"
 msgstr "Astero"
 
-#: src/Core/Main.vala:1138
+#: src/Core/Main.vala:1151
 msgid "Weekly snapshot failed!"
 msgstr "Asteroko argazkiak huts egin du!"
 
-#: src/Core/Main.vala:1119
+#: src/Core/Main.vala:1132
 msgid "Weekly snapshots are enabled"
 msgstr "Asteroko argazkiak gaituta daude"
 
@@ -2578,7 +2582,7 @@ msgstr "Erroreekin"
 msgid "Wizard"
 msgstr "Morroia"
 
-#: src/Utility/Device.vala:1434 src/Utility/Device.vala:1480
+#: src/Utility/Device.vala:1456 src/Utility/Device.vala:1502
 msgid "Wrong password"
 msgstr "Pasahitz okerra"
 
@@ -2622,12 +2626,12 @@ msgstr "[Abisua] Baliogabeko blokeoa ezabatu da"
 msgid "all"
 msgstr "guztiak"
 
-#: src/Core/Main.vala:1655 src/Core/Main.vala:4030 src/Core/Main.vala:4115
+#: src/Core/Main.vala:1668 src/Core/Main.vala:4047 src/Core/Main.vala:4132
 #: src/Core/Subvolume.vala:215
 msgid "btrfs returned an error"
 msgstr "btrfs-ek errore bat itzuli du"
 
-#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1554
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1567
 msgid "complete"
 msgstr "osatua"
 
@@ -2647,17 +2651,17 @@ msgstr "osatu gabea"
 msgid "marked for deletion"
 msgstr "ezabatzeko markatuta"
 
-#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+#: src/Core/Main.vala:1459 src/Core/Main.vala:1613 src/Core/Main.vala:1615
 msgid "mounted at path"
 msgstr "bidean muntatuta"
 
-#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1554
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1567
 #: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
 #: src/Gtk/DeleteBox.vala:149
 msgid "remaining"
 msgstr "falta dena"
 
-#: src/Core/Main.vala:1565
+#: src/Core/Main.vala:1578
 msgid "rsync returned an error"
 msgstr "rsync-ek errore bat itzuli du"
 

@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: timeshift 1.6\n"
 "Report-Msgid-Bugs-To: teejeetech@gmail.com\n"
-"POT-Creation-Date: 2023-06-01 11:34+0100\n"
+"POT-Creation-Date: 2024-06-06 11:53+0100\n"
 "PO-Revision-Date: 2022-09-05 13:00+0000\n"
 "Last-Translator: أنس <Unknown>\n"
 "Language-Team: anwar AL_iskandrany <anwareleskndrany13@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-01-04 14:58+0000\n"
-"X-Generator: Launchpad (build e1eeab5b20e19239bd7d5f36676f7a52988db88b)\n"
+"X-Launchpad-Export-Date: 2024-06-18 17:56+0000\n"
+"X-Generator: Launchpad (build bbfa2351d9d6a9ddfe262109428f7bf5516e65d1)\n"
 "Language: ar_EG\n"
 
 #: src/AppConsole.vala:626
@@ -41,23 +41,23 @@ msgstr "سيكون '%s' على جهاز الجذر"
 msgid "(Re)install GRUB2 on:"
 msgstr "(إعادة)تثبيت GRUB2 على:"
 
-#: src/Core/Main.vala:379
+#: src/Core/Main.vala:381
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr "** إلغاء تثبيت Timeshift BTRFS **"
 
-#: src/Core/Main.vala:3527
+#: src/Core/Main.vala:3544
 msgid "/ is mapped to device"
 msgstr "/ تم تعيينه على الجهاز"
 
-#: src/Core/Main.vala:3549
+#: src/Core/Main.vala:3566
 msgid "/boot is mapped to device"
 msgstr "/يتم تعيين التمهيد إلى الجهاز"
 
-#: src/Core/Main.vala:3560
+#: src/Core/Main.vala:3577
 msgid "/boot/efi is mapped to device"
 msgstr "/التمهيد/efi يتم تعيينه إلى جهاز"
 
-#: src/Core/Main.vala:3538
+#: src/Core/Main.vala:3555
 msgid "/home is mapped to device"
 msgstr "/يتم تعيين المجلد الرئيسي إلى الجهاز"
 
@@ -157,7 +157,7 @@ msgstr ""
 "إما تحديد جهاز غير مشفرة لدليل التمهيد أو تحديد جهاز غير مشفرة لنظام ملفات "
 "الجذر."
 
-#: src/Core/Main.vala:265
+#: src/Core/Main.vala:267
 msgid "Another instance of Timeshift is creating a snapshot."
 msgstr "مثيل آخر من Timeshift هو إنشاء لقطة."
 
@@ -165,7 +165,7 @@ msgstr "مثيل آخر من Timeshift هو إنشاء لقطة."
 msgid "Another instance of this application is running"
 msgstr "يتم تشغيل مثيل آخر من هذا التطبيق"
 
-#: src/Core/Main.vala:269
+#: src/Core/Main.vala:271
 msgid "Another instance of timeshift is currently running!"
 msgstr "مثيل آخر من timeshift يتم تشغيله حاليا!"
 
@@ -173,11 +173,11 @@ msgstr "مثيل آخر من timeshift يتم تشغيله حاليا!"
 msgid "Answer YES to all confirmation prompts"
 msgstr "أجب بـ نعم على كافة رسائل التأكيد"
 
-#: src/Core/Main.vala:3364
+#: src/Core/Main.vala:3381
 msgid "App config loaded"
 msgstr "تم تحميل تكوين التطبيق"
 
-#: src/Core/Main.vala:3252
+#: src/Core/Main.vala:3265
 msgid "App config saved"
 msgstr "تم حفظ تكوين التطبيق"
 
@@ -185,13 +185,17 @@ msgstr "تم حفظ تكوين التطبيق"
 msgid "Application needs admin access."
 msgstr "يحتاج التطبيق وصول المسئول."
 
-#: src/Core/Main.vala:3704
+#: src/Core/Main.vala:3721
 msgid "Application will exit"
 msgstr "سيتم إنهاء التطبيق"
 
-#: src/Core/Main.vala:395
+#: src/Core/Main.vala:397
 msgid "Application will exit."
 msgstr "سيتم إنهاء التطبيق."
+
+#: src/Gtk/MainWindow.vala:561
+msgid "Are you sure you want to delete this snapshot?"
+msgstr ""
 
 #: src/Gtk/MainWindow.vala:345
 msgid "Available"
@@ -205,7 +209,7 @@ msgstr "BTRFS"
 msgid "BTRFS Snapshots"
 msgstr "لقطات BTRFS"
 
-#: src/Core/Main.vala:2202 src/Core/Main.vala:2206
+#: src/Core/Main.vala:2215 src/Core/Main.vala:2219
 msgid "BTRFS device is not mounted"
 msgstr "لم يتم تحميل جهاز BTRFS"
 
@@ -234,11 +238,11 @@ msgstr "الخلفية"
 msgid "Backup"
 msgstr "النسخ الاحتياطي"
 
-#: src/Core/Main.vala:2178
+#: src/Core/Main.vala:2191
 msgid "Backup Device"
 msgstr "جهاز النسخ الاحتياطي"
 
-#: src/Core/Main.vala:2173
+#: src/Core/Main.vala:2186
 msgid "Backup device not specified!"
 msgstr "لم يتم تحديد جهاز النسخ الاحتياطي!"
 
@@ -254,7 +258,7 @@ msgstr "التمهيد"
 msgid "Boot device not selected"
 msgstr "لم يتم تحديد جهاز التمهيد"
 
-#: src/Core/Main.vala:1045
+#: src/Core/Main.vala:1058
 msgid "Boot snapshot failed!"
 msgstr "لقطة التمهيد فشلت!"
 
@@ -263,7 +267,7 @@ msgid ""
 "Boot snapshots are created with a delay of 10 minutes after system startup."
 msgstr ""
 
-#: src/Core/Main.vala:1026
+#: src/Core/Main.vala:1039
 msgid "Boot snapshots are enabled"
 msgstr "يتم تمكين لقطات التمهيد"
 
@@ -279,7 +283,7 @@ msgstr "خيارات محمل الإقلاع (متقدم)"
 msgid "Browse"
 msgstr "تصفح"
 
-#: src/Gtk/SnapshotListBox.vala:335
+#: src/Gtk/SnapshotListBox.vala:321
 msgid "Browse Files"
 msgstr "تصفح الملفات"
 
@@ -287,11 +291,11 @@ msgstr "تصفح الملفات"
 msgid "Browse selected snapshot"
 msgstr "تصفح اللقطة المحددة"
 
-#: src/Core/Main.vala:2668
+#: src/Core/Main.vala:2681
 msgid "Building file list..."
 msgstr "يتم الآن إنشاء قائمه الملفات..."
 
-#: src/Core/Main.vala:1405
+#: src/Core/Main.vala:1418
 msgid "Calculating required disk space..."
 msgstr "حساب حجم القرص المطلوب..."
 
@@ -335,7 +339,7 @@ msgstr "العناصر التي تغييرت:"
 msgid "Checking Restore Actions (Dry Run)"
 msgstr "فحص إجراءات الاستعادة (محاولة تجريبية)"
 
-#: src/Core/Main.vala:2901
+#: src/Core/Main.vala:2914
 msgid "Checking file systems for errors..."
 msgstr "يتم التحقق من أنظمة الملفات بحثاً عن أخطاء..."
 
@@ -345,7 +349,7 @@ msgstr "يتم التحقق من أنظمة الملفات بحثاً عن أخ�
 msgid "Checksum"
 msgstr "اختباري"
 
-#: src/Core/Main.vala:2549
+#: src/Core/Main.vala:2562
 msgid "Cleaning up..."
 msgstr "تنظيف..."
 
@@ -365,7 +369,7 @@ msgstr "استنساخ النظام"
 msgid "Cloning"
 msgstr "استنساخ"
 
-#: src/Core/Main.vala:2951
+#: src/Core/Main.vala:2964
 msgid "Cloning system..."
 msgstr "استنساخ النظام..."
 
@@ -380,7 +384,7 @@ msgstr "إغلاق"
 msgid "Close window to exit"
 msgstr "إغلاق النافذة للإنهاء"
 
-#: src/Core/Main.vala:364
+#: src/Core/Main.vala:366
 msgid "Commands listed below are not available on this system"
 msgstr "الأوامر المذكورة أدناه غير متوفرة على هذا النظام"
 
@@ -388,12 +392,12 @@ msgstr "الأوامر المذكورة أدناه غير متوفرة على ه
 msgid "Comments (click to edit)"
 msgstr "التعليقات (إضغط للتعديل)"
 
-#: src/Core/Main.vala:2944 src/Gtk/RestoreBox.vala:74
+#: src/Core/Main.vala:2957 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
 msgid "Comparing Files (Dry Run)..."
 msgstr "مقارنة الملفات (محاولة تجريبية)"
 
-#: src/Core/Main.vala:2710
+#: src/Core/Main.vala:2723
 msgid "Comparing files with rsync..."
 msgstr "مقارنة الملفات مع rsync..."
 
@@ -419,7 +423,7 @@ msgstr "متابعه مع الاستعادة؟ (y/n): "
 msgid "Could not find device"
 msgstr "لا يمكن العثور على الجهاز"
 
-#: src/Utility/Device.vala:1308
+#: src/Utility/Device.vala:1330
 #, c-format
 msgid "Could not find file"
 msgstr "لا يمكن العثور على الملف"
@@ -428,11 +432,11 @@ msgstr "لا يمكن العثور على الملف"
 msgid "Could not find snapshot"
 msgstr "لا يمكن العثور على اللقطة"
 
-#: src/Core/Main.vala:3113
+#: src/Core/Main.vala:3126
 msgid "Could not find system subvolume"
 msgstr "لا يمكن العثور على وحده التخزين الفرعية للنظام"
 
-#: src/Core/Main.vala:3141
+#: src/Core/Main.vala:3154
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr ""
 "لا يمكن العثور علي وحدات التخزين الفرعية للنظام لإنشاء لقطه ما قبل الاستعادة"
@@ -479,7 +483,7 @@ msgstr "إنشاء لقطة في حالة الجدولة"
 msgid "Create snapshot of current system"
 msgstr "إنشاء لقطة للنظام الحالي"
 
-#: src/Gtk/MainWindow.vala:1027
+#: src/Gtk/MainWindow.vala:1044
 msgid ""
 "Create snapshots manually or enable scheduled snapshots to protect your "
 "system"
@@ -509,11 +513,11 @@ msgstr "تم إنشاء ملف التحكم"
 msgid "Created directory"
 msgstr "تم إنشاء الدليل"
 
-#: src/Core/Main.vala:3163
+#: src/Core/Main.vala:3176
 msgid "Created pre-restore snapshot"
 msgstr "تم إنشاء لقطة ما قبل الاستعادة"
 
-#: src/Core/Main.vala:1660
+#: src/Core/Main.vala:1673
 msgid "Created subvolume snapshot"
 msgstr "تم إنشاء لقطه وحده التخزين الفرعية"
 
@@ -521,19 +525,19 @@ msgstr "تم إنشاء لقطه وحده التخزين الفرعية"
 msgid "Creating Snapshot..."
 msgstr "جاري إنشاء اللقطة..."
 
-#: src/Core/Main.vala:1598
+#: src/Core/Main.vala:1611
 msgid "Creating new backup..."
 msgstr "جاري إنشاء نسخة احتياطية جديدة..."
 
-#: src/Core/Main.vala:1444
+#: src/Core/Main.vala:1457
 msgid "Creating new snapshot..."
 msgstr "جاري إنشاء لقطة جديدة..."
 
-#: src/Core/Main.vala:3091
+#: src/Core/Main.vala:3104
 msgid "Creating pre-restore snapshot from system subvolumes..."
 msgstr "إنشاء لقطة ما قبل الاستعادة من وحدة التخزين الفرعية للنظام..."
 
-#: src/Core/Main.vala:3703
+#: src/Core/Main.vala:3720
 msgid "Critical Error"
 msgstr "خطأ فادح"
 
@@ -557,15 +561,15 @@ msgstr "مخصّص"
 msgid "Daily"
 msgstr "اليومي"
 
-#: src/Core/Main.vala:1107
+#: src/Core/Main.vala:1120
 msgid "Daily snapshot failed!"
 msgstr "اللقطة اليومية فشلت!"
 
-#: src/Core/Main.vala:1088
+#: src/Core/Main.vala:1101
 msgid "Daily snapshots are enabled"
 msgstr "يتم تمكين اللقطات اليومية"
 
-#: src/Core/Main.vala:2272
+#: src/Core/Main.vala:2285
 msgid "Data will be modified on following devices:"
 msgstr "سيتم تعديل البيانات على الأجهزة التالية:"
 
@@ -573,7 +577,7 @@ msgstr "سيتم تعديل البيانات على الأجهزة التالي�
 msgid "Date Format"
 msgstr "تنسيق التاريخ"
 
-#: src/Gtk/SnapshotListBox.vala:321 src/Gtk/MainWindow.vala:160
+#: src/Gtk/SnapshotListBox.vala:342 src/Gtk/MainWindow.vala:160
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
 #: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:381
 #, c-format
@@ -607,7 +611,7 @@ msgstr "تم الحذف"
 msgid "Deleted directory"
 msgstr "تم حذف الدليل"
 
-#: src/Core/Main.vala:3070 src/Core/Main.vala:3074 src/Core/Subvolume.vala:167
+#: src/Core/Main.vala:3083 src/Core/Main.vala:3087 src/Core/Subvolume.vala:167
 #, c-format
 msgid "Deleted subvolume"
 msgstr "تم حذف وحده التخزين الفرعية"
@@ -639,24 +643,24 @@ msgstr ""
 msgid "Destroying qgroup"
 msgstr ""
 
-#: src/Core/Main.vala:2275 src/Core/Main.vala:2307
+#: src/Core/Main.vala:2288 src/Core/Main.vala:2320
 #: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
-#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
-#: src/Utility/Device.vala:1942 src/Gtk/RestoreDeviceBox.vala:97
+#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1954
+#: src/Utility/Device.vala:1964 src/Gtk/RestoreDeviceBox.vala:97
 #: src/AppConsole.vala:467 src/AppConsole.vala:506 src/AppConsole.vala:554
 #, c-format
 msgid "Device"
 msgstr "الجهاز"
 
-#: src/Utility/Device.vala:1390
+#: src/Utility/Device.vala:1412
 msgid "Device is unlocked"
 msgstr "الجهاز غير مؤمن"
 
-#: src/Utility/Device.vala:1285 src/Utility/Device.vala:1347
+#: src/Utility/Device.vala:1307 src/Utility/Device.vala:1369
 msgid "Device name is empty!"
 msgstr "اسم الجهاز فارغ!"
 
-#: src/Core/Main.vala:3417 src/Core/SnapshotRepo.vala:479
+#: src/Core/Main.vala:3434 src/Core/SnapshotRepo.vala:479
 #: src/AppConsole.vala:676
 msgid "Device not found"
 msgstr "الجهاز غير موجود"
@@ -689,7 +693,7 @@ msgstr ""
 msgid "Directory not found"
 msgstr "الدليل غير موجود"
 
-#: src/Core/Main.vala:2367 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Core/Main.vala:2380 src/Gtk/RestoreSummaryBox.vala:64
 msgid "Disclaimer"
 msgstr "إخلاء المسئولية"
 
@@ -697,15 +701,15 @@ msgstr "إخلاء المسئولية"
 msgid "Disk"
 msgstr "القرص"
 
-#: src/Core/Main.vala:242
+#: src/Core/Main.vala:244
 msgid "Distribution"
 msgstr "التوزيع"
 
-#: src/Gtk/MainWindow.vala:1021
+#: src/Gtk/MainWindow.vala:1038
 msgid "Enable scheduled snapshots to protect your system"
 msgstr "تمكين اللقطات المجدولة لحماية نظامك"
 
-#: src/Utility/Device.vala:1454
+#: src/Utility/Device.vala:1476
 msgid "Encrypted Device"
 msgstr "الجهاز المشفر"
 
@@ -723,7 +727,7 @@ msgstr "أدخل اسم الجهاز أو رقمه"
 msgid "Enter device name or number (a=Abort)"
 msgstr "أدخل اسم الجهاز أو رقمه (a=إجهاض)"
 
-#: src/Utility/Device.vala:1455
+#: src/Utility/Device.vala:1477
 #, c-format
 msgid "Enter passphrase to unlock '%s'"
 msgstr "أدخل عبارة المرور لإلغاء تأمين '%s'"
@@ -753,7 +757,7 @@ msgstr "التقدير"
 msgid "Estimating System Size..."
 msgstr "تقدير حجم النظام..."
 
-#: src/Core/Main.vala:1440
+#: src/Core/Main.vala:1453
 msgid "Estimating system size..."
 msgstr "تقدير حجم النظام..."
 
@@ -789,7 +793,7 @@ msgstr "استبعاد النمط"
 msgid "Excluded Directories"
 msgstr "استبعاد الدلائل"
 
-#: src/Core/Main.vala:1728
+#: src/Core/Main.vala:1741
 msgid "Expected values: O, B, H, D, W, M"
 msgstr "القيم المتوقعة: O ،B ،H ،D ،W ،M"
 
@@ -806,15 +810,15 @@ msgstr "فشل نسخ الملف"
 msgid "Failed to create directory"
 msgstr "فشل إنشاء الدليل"
 
-#: src/Core/Main.vala:1566
+#: src/Core/Main.vala:1579
 msgid "Failed to create new snapshot"
 msgstr "فشل إنشاء لقطة جديدة"
 
-#: src/Core/Main.vala:1320
+#: src/Core/Main.vala:1333
 msgid "Failed to create snapshot"
 msgstr "فشل إنشاء اللقطة"
 
-#: src/Core/Main.vala:1656
+#: src/Core/Main.vala:1669
 msgid "Failed to create subvolume snapshot"
 msgstr "فشل إنشاء لقطه وحده التخزين الفرعية"
 
@@ -846,7 +850,7 @@ msgstr "فشل حذف الروابط الرمزية"
 msgid "Failed to destroy qgroup"
 msgstr ""
 
-#: src/Core/Main.vala:3918 src/Core/Main.vala:3924
+#: src/Core/Main.vala:3935 src/Core/Main.vala:3941
 msgid "Failed to estimate system size"
 msgstr "فشل تقدير حجم النظام"
 
@@ -859,11 +863,11 @@ msgstr "فشل تصدير ملف crontab"
 msgid "Failed to get input from user in 3 attempts"
 msgstr "فشل الحصول على إدخال من المستخدم في 3 محاولات"
 
-#: src/Utility/Device.vala:724
+#: src/Utility/Device.vala:746
 msgid "Failed to get partition list"
 msgstr "فشل الحصول علي قائمه الأقسام"
 
-#: src/Core/Main.vala:3500
+#: src/Core/Main.vala:3517
 msgid "Failed to get partition list."
 msgstr "فشل الحصول علي قائمه الأقسام."
 
@@ -879,15 +883,15 @@ msgstr "فشل تحميل الأجهزة"
 msgid "Failed to move file"
 msgstr "فشل نقل الملف"
 
-#: src/Core/Main.vala:3128
+#: src/Core/Main.vala:3141
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr "فشل نقل وحده التخزين الفرعية للنظام إلى دليل اللقطات"
 
-#: src/Core/Main.vala:4031
+#: src/Core/Main.vala:4048
 msgid "Failed to query subvolume list"
 msgstr "فشل الاستعلام عن قائمه وحدات التخزين الفرعية"
 
-#: src/Core/Main.vala:4116
+#: src/Core/Main.vala:4133
 msgid "Failed to query subvolume quota"
 msgstr ""
 
@@ -916,21 +920,21 @@ msgstr "فشل إزالة اللقطة"
 msgid "Failed to restore system subvolume"
 msgstr "فشل استعاده وحده التخزين الفرعية للنظام"
 
-#: src/Core/Main.vala:1516
+#: src/Core/Main.vala:1529
 msgid "Failed to save exclude list"
 msgstr "فشل حفظ قائمه الاستبعاد"
 
-#: src/Utility/Device.vala:1381 src/Utility/Device.vala:1435
-#: src/Utility/Device.vala:1460 src/Utility/Device.vala:1481
-#: src/Utility/Device.vala:1501
+#: src/Utility/Device.vala:1403 src/Utility/Device.vala:1457
+#: src/Utility/Device.vala:1482 src/Utility/Device.vala:1503
+#: src/Utility/Device.vala:1523
 msgid "Failed to unlock device"
 msgstr "فشل إلغاء تامين الجهاز"
 
-#: src/Utility/Device.vala:1733
+#: src/Utility/Device.vala:1755
 msgid "Failed to unmount"
 msgstr "فشل إلغاء تحميل"
 
-#: src/Core/Main.vala:3704
+#: src/Core/Main.vala:3721
 msgid "Failed to unmount device!"
 msgstr "فشل إلغاء تحميل الجهاز!"
 
@@ -979,7 +983,7 @@ msgstr "أعداد الملفات والدليل:"
 msgid "Files matching the following patterns will be excluded"
 msgstr "سيتم استبعاد الملفات المطابقة للنماذج التالية"
 
-#: src/Utility/Device.vala:1950
+#: src/Utility/Device.vala:1972
 #, c-format
 msgid "Filesystem"
 msgstr "نظام الملفات"
@@ -1009,7 +1013,7 @@ msgstr "فايرفوكس، كروميوم، كروم، أوبرا، Epiphany ،M
 msgid "First snapshot requires:"
 msgstr "اللقطة الأولى تتطلب:"
 
-#: src/Core/Main.vala:3061
+#: src/Core/Main.vala:3074
 msgid "Found existing pre-restore snapshot"
 msgstr "العثور على لقطة ما قبل الاستعادة الموجودة"
 
@@ -1033,7 +1037,7 @@ msgstr "لم يتم تحديد جهاز GRUB"
 msgid "GRUB will NOT be reinstalled"
 msgstr "لن يتم إعادة تثبيت GRUB"
 
-#: src/Core/Main.vala:2509
+#: src/Core/Main.vala:2522
 msgid "Generating initramfs..."
 msgstr "جاري إنشاء initramfs..."
 
@@ -1083,11 +1087,11 @@ msgstr "الدليل الرئيسي"
 msgid "Hourly"
 msgstr "بالساعة"
 
-#: src/Core/Main.vala:1076
+#: src/Core/Main.vala:1089
 msgid "Hourly snapshot failed!"
 msgstr "فشل لقطه الساعة!"
 
-#: src/Core/Main.vala:1057
+#: src/Core/Main.vala:1070
 msgid "Hourly snapshots are enabled"
 msgstr "يتم تمكين اللقطات بالساعة"
 
@@ -1099,7 +1103,7 @@ msgstr ""
 "إذا فشل النظام المستعاد في التمهيد، فقم بالتمهيد المباشر من CD/USB، ثم قم "
 "بتثبيت Timeshift، وحاول استعادة لقطة أخرى."
 
-#: src/Core/Main.vala:2373
+#: src/Core/Main.vala:2386
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
@@ -1122,7 +1126,7 @@ msgstr "ضمّن جميع الملفات."
 msgid "Include Only Hidden Files"
 msgstr "ضمّن فقط الملفات المخفية"
 
-#: src/Core/Main.vala:2187
+#: src/Core/Main.vala:2200
 msgid "Invalid Snapshot"
 msgstr "اللقطة غير صالحة"
 
@@ -1131,7 +1135,7 @@ msgstr "اللقطة غير صالحة"
 msgid "Invalid command line arguments"
 msgstr "متغيرات سطر الأوامر غير صالحة"
 
-#: src/Gtk/MainWindow.vala:814
+#: src/Gtk/MainWindow.vala:831
 msgid "Invalid snapshot"
 msgstr "اللقطة غير صالحة"
 
@@ -1172,83 +1176,83 @@ msgstr "احتفظ بمسار التثبيت هذا على نظام ملفات �
 msgid "LIVE"
 msgstr "المباشر"
 
-#: src/Utility/Device.vala:1951 src/Gtk/BackupDeviceBox.vala:254
+#: src/Utility/Device.vala:1973 src/Gtk/BackupDeviceBox.vala:254
 #: src/AppConsole.vala:471 src/AppConsole.vala:510
 #, c-format
 msgid "Label"
 msgstr "التسمية"
 
-#: src/Core/Main.vala:1038
+#: src/Core/Main.vala:1051
 #, c-format
 msgid "Last boot snapshot is %d hours old"
 msgstr "آخر لقطة من التمهيد أقدم من %d ساعات"
 
-#: src/Core/Main.vala:1033
+#: src/Core/Main.vala:1046
 msgid "Last boot snapshot is older than system start time"
 msgstr "آخر لقطة تمهيد أقدم من وقت بدء النظام"
 
-#: src/Core/Main.vala:1029
+#: src/Core/Main.vala:1042
 msgid "Last boot snapshot not found"
 msgstr "لم يتم العثور على لقطة التمهيد الأخيرة"
 
-#: src/Core/Main.vala:1100
+#: src/Core/Main.vala:1113
 #, c-format
 msgid "Last daily snapshot is %d hours old"
 msgstr "آخر لقطة يومية أقدم من %d ساعات"
 
-#: src/Core/Main.vala:1095
+#: src/Core/Main.vala:1108
 msgid "Last daily snapshot is more than 1 day old"
 msgstr "آخر لقطة يومية أقدم من يوم واحد"
 
-#: src/Core/Main.vala:1091
+#: src/Core/Main.vala:1104
 msgid "Last daily snapshot not found"
 msgstr "لم يتم العثور على آخر لقطة يومية"
 
-#: src/Core/Main.vala:1069
+#: src/Core/Main.vala:1082
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
 msgstr "آخر لقطة بالساعة أقدم من %d دقائق"
 
-#: src/Core/Main.vala:1064
+#: src/Core/Main.vala:1077
 msgid "Last hourly snapshot is more than 1 hour old"
 msgstr "آخر لقطة بالساعة أقدم من ساعة واحدة"
 
-#: src/Core/Main.vala:1060
+#: src/Core/Main.vala:1073
 msgid "Last hourly snapshot not found"
 msgstr "لم يتم العثور على آخر لقطة بالساعة"
 
-#: src/Core/Main.vala:1162
+#: src/Core/Main.vala:1175
 #, c-format
 msgid "Last monthly snapshot is %d days old"
 msgstr "آخر لقطة شهرية أقدم من %d أيام"
 
-#: src/Core/Main.vala:1157
+#: src/Core/Main.vala:1170
 msgid "Last monthly snapshot is more than 1 month old"
 msgstr "آخر لقطة شهرية أقدم من شهر واحد"
 
-#: src/Core/Main.vala:1153
+#: src/Core/Main.vala:1166
 msgid "Last monthly snapshot not found"
 msgstr "لم يتم العثور على آخر لقطة شهرية"
 
-#: src/Core/Main.vala:1131
+#: src/Core/Main.vala:1144
 #, c-format
 msgid "Last weekly snapshot is %d days old"
 msgstr "آخر لقطة أسبوعية أقدم من %d ايام"
 
-#: src/Core/Main.vala:1126
+#: src/Core/Main.vala:1139
 msgid "Last weekly snapshot is more than 1 week old"
 msgstr "آخر لقطة أسبوعية أقدم من أسبوع واحد"
 
-#: src/Core/Main.vala:1122
+#: src/Core/Main.vala:1135
 msgid "Last weekly snapshot not found"
 msgstr "لم يتم العثور على آخر لقطة أسبوعية"
 
-#: src/Gtk/MainWindow.vala:1002
+#: src/Gtk/MainWindow.vala:1019
 #, c-format
 msgid "Latest snapshot"
 msgstr "أحدث لقطة"
 
-#: src/Core/Main.vala:1505
+#: src/Core/Main.vala:1518
 #, c-format
 msgid "Linking from snapshot"
 msgstr "الربط من لقطة"
@@ -1265,7 +1269,7 @@ msgstr "قائمة الأجهزة"
 msgid "List snapshots"
 msgstr "قائمة اللقطات"
 
-#: src/Gtk/MainWindow.vala:953
+#: src/Gtk/MainWindow.vala:970
 msgid "Live USB Mode (Restore Only)"
 msgstr "وضع USB المباشر (استعادة فقط)"
 
@@ -1278,7 +1282,7 @@ msgstr "الموقع"
 msgid "Main window closed by user"
 msgstr "النافذة الرئيسية مغلقة من قبل المستخدم"
 
-#: src/Gtk/SnapshotListBox.vala:328
+#: src/Gtk/SnapshotListBox.vala:349
 msgid "Mark/Unmark for Deletion"
 msgstr ""
 
@@ -1294,7 +1298,7 @@ msgstr "القائمة"
 msgid "Misc"
 msgstr "مُتفرقات"
 
-#: src/Core/Main.vala:251
+#: src/Core/Main.vala:253
 msgid "Missing Dependencies"
 msgstr "التبعيات المفقودة"
 
@@ -1303,7 +1307,7 @@ msgstr "التبعيات المفقودة"
 msgid "Mode"
 msgstr "الوضع"
 
-#: src/Utility/Device.vala:1934
+#: src/Utility/Device.vala:1956
 #, c-format
 msgid "Model"
 msgstr "الطراز"
@@ -1312,23 +1316,23 @@ msgstr "الطراز"
 msgid "Monthly"
 msgstr "الشهري"
 
-#: src/Core/Main.vala:1150
+#: src/Core/Main.vala:1163
 msgid "Monthly snapshot are enabled"
 msgstr "يتم تمكين اللقطة الشهرية"
 
-#: src/Core/Main.vala:1169
+#: src/Core/Main.vala:1182
 msgid "Monthly snapshot failed!"
 msgstr "اللقطات الشهرية فشلت!"
 
-#: src/Core/Main.vala:2274 src/Core/Main.vala:2307
+#: src/Core/Main.vala:2287 src/Core/Main.vala:2320
 msgid "Mount"
 msgstr "تحميل"
 
-#: src/Core/Main.vala:3135
+#: src/Core/Main.vala:3148
 msgid "Moved system subvolume to snapshot directory"
 msgstr "تم نقل وحده التخزين الفرعية للنظام إلى دليل اللقطات"
 
-#: src/Gtk/MainWindow.vala:790
+#: src/Gtk/MainWindow.vala:807
 msgid "Multiple snapshots selected"
 msgstr "تم تحديد لقطات متعددة"
 
@@ -1350,15 +1354,15 @@ msgstr "لا"
 msgid "No Change"
 msgstr "بدون تغيير"
 
-#: src/Gtk/MainWindow.vala:599 src/Gtk/DeleteWindow.vala:335
+#: src/Gtk/MainWindow.vala:616 src/Gtk/DeleteWindow.vala:335
 msgid "No Snapshots Selected"
 msgstr "لا توجد لقطات محددة"
 
-#: src/Gtk/MainWindow.vala:1026
+#: src/Gtk/MainWindow.vala:1043
 msgid "No snapshots available"
 msgstr "لا توجد لقطات متاحة"
 
-#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:970
+#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:987
 #: src/AppConsole.vala:326
 msgid "No snapshots found"
 msgstr "لم يتم العثور على لقطات"
@@ -1375,11 +1379,11 @@ msgstr "لا توجد لقطات على الجهاز"
 msgid "No snapshots on this device"
 msgstr "لا توجد لقطات على هذا الجهاز"
 
-#: src/Gtk/MainWindow.vala:783
+#: src/Gtk/MainWindow.vala:800
 msgid "No snapshots selected"
 msgstr "لا توجد لقطات محددة"
 
-#: src/Gtk/MainWindow.vala:1003 src/Gtk/MainWindow.vala:1005
+#: src/Gtk/MainWindow.vala:1020 src/Gtk/MainWindow.vala:1022
 msgid "None"
 msgstr "لا شيء"
 
@@ -1392,7 +1396,7 @@ msgstr "غير موجود"
 msgid "Not Selected"
 msgstr "غير محددة"
 
-#: src/Core/Main.vala:396
+#: src/Core/Main.vala:398
 msgid "Not Supported"
 msgstr "غير مدعوم"
 
@@ -1404,7 +1408,7 @@ msgstr "مساحة القرص غير كافيه"
 msgid "Notes"
 msgstr "ملاحظات"
 
-#: src/Core/Main.vala:1180
+#: src/Core/Main.vala:1193
 msgid "Nothing to do!"
 msgstr "لا شيء لتفعله!"
 
@@ -1435,11 +1439,11 @@ msgstr ""
 "يجب أن يتم تثبيت نظام التشغيل على قسم BTRFS مع نوع Ubuntu تخطيط subbolume (@ "
 "ووحدة التخزين الفرعية home@). التنسيقات الأخرى غير مدعومة."
 
-#: src/Core/Main.vala:4289
+#: src/Core/Main.vala:4306
 msgid "Older log files removed"
 msgstr "تم إزالة أقدم ملفات السجل"
 
-#: src/Gtk/MainWindow.vala:1004
+#: src/Gtk/MainWindow.vala:1021
 msgid "Oldest snapshot"
 msgstr "اقدم لقطة"
 
@@ -1447,7 +1451,7 @@ msgstr "اقدم لقطة"
 msgid "On demand (manual)"
 msgstr ""
 
-#: src/Core/Main.vala:394 src/Core/Main.vala:3617
+#: src/Core/Main.vala:396 src/Core/Main.vala:3634
 #: src/Gtk/RestoreDeviceBox.vala:511
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
@@ -1458,7 +1462,7 @@ msgstr ""
 msgid "Open Menu"
 msgstr "فتح القائمة"
 
-#: src/Core/Main.vala:3399
+#: src/Core/Main.vala:3416
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
@@ -1478,12 +1482,12 @@ msgstr "تطبيقات أخرى (الصفحة التالية)"
 msgid "Owner"
 msgstr "المالك"
 
-#: src/Utility/Device.vala:1946
+#: src/Utility/Device.vala:1968
 #, c-format
 msgid "Parent Device"
 msgstr "الجهاز الأصل"
 
-#: src/Core/Main.vala:2638 src/Core/Main.vala:2729 src/Gtk/RsyncLogBox.vala:222
+#: src/Core/Main.vala:2651 src/Core/Main.vala:2742 src/Gtk/RsyncLogBox.vala:222
 msgid "Parsing log file..."
 msgstr "تحليل ملف السجل..."
 
@@ -1506,15 +1510,15 @@ msgstr "النمط"
 msgid "Permissions"
 msgstr "الأذونات"
 
-#: src/Core/Main.vala:270
+#: src/Core/Main.vala:272
 msgid "Please check if you have multiple windows open."
 msgstr "يرجى التحقق مما إذا كان لديك نوافذ متعددة مفتوحة."
 
-#: src/Core/Main.vala:2405
+#: src/Core/Main.vala:2418
 msgid "Please do not interrupt the restore process!"
 msgstr "من فضلك لا تقاطع عملية الاستعادة!"
 
-#: src/Core/Main.vala:365
+#: src/Core/Main.vala:367
 msgid "Please install required packages and try running TimeShift again"
 msgstr "الرجاء تثبيت الحزم المطلوبة ومحاولة تشغيل TimeShift مرة أخرى"
 
@@ -1526,11 +1530,11 @@ msgstr "يرجى إعادة تشغيل التطبيق كمسئول (باستخد
 msgid "Please run the application as admin (using 'sudo' or 'su')"
 msgstr "يرجى تشغيل التطبيق كمسئول (باستخدام 'sudo' أو 'su')"
 
-#: src/Core/Main.vala:2355
+#: src/Core/Main.vala:2368
 msgid "Please save your work and close all applications."
 msgstr "يرجى حفظ عملك وإغلاق جميع التطبيقات."
 
-#: src/Gtk/MainWindow.vala:685
+#: src/Gtk/MainWindow.vala:702
 msgid "Please select a snapshot to view the log!"
 msgstr "يرجى تحديد لقطة لعرض السجل!"
 
@@ -1538,11 +1542,11 @@ msgstr "يرجى تحديد لقطة لعرض السجل!"
 msgid "Please select the GRUB device"
 msgstr "يرجى تحديد جهاز GRUB"
 
-#: src/Core/Main.vala:266
+#: src/Core/Main.vala:268
 msgid "Please wait a few minutes and try again."
 msgstr "يرجى الانتظار بضع دقائق وحاول مرة أخرى."
 
-#: src/Gtk/MainWindow.vala:752
+#: src/Gtk/MainWindow.vala:769
 msgid "Please wait for snapshots to be deleted."
 msgstr "يرجى الانتظار حتى يتم حذف اللقطات."
 
@@ -1554,7 +1558,7 @@ msgstr "يرجى الانتظار..."
 msgid "Populating list..."
 msgstr "جاري ملء القائمة..."
 
-#: src/Core/Main.vala:1740 src/Gtk/BackupBox.vala:117
+#: src/Core/Main.vala:1753 src/Gtk/BackupBox.vala:117
 #: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
 #: src/Gtk/RsyncLogBox.vala:232
 msgid "Preparing..."
@@ -1573,11 +1577,11 @@ msgstr "طباعة معلومات التصحيح"
 msgid "Print version number"
 msgstr ""
 
-#: src/Core/Main.vala:3979
+#: src/Core/Main.vala:3996
 msgid "Query completed"
 msgstr "اكتمل الاستعلام"
 
-#: src/Core/Main.vala:3962
+#: src/Core/Main.vala:3979
 msgid "Querying subvolume info..."
 msgstr "يتم الآن الاستعلام عن معلومات وحدة التخزين الفرعية..."
 
@@ -1602,7 +1606,7 @@ msgstr ""
 msgid "Re-install GRUB2 bootloader?"
 msgstr "أعاده تثبيت GRUB2 محمل الإقلاع؟"
 
-#: src/Core/Main.vala:2468
+#: src/Core/Main.vala:2481
 msgid "Re-installing GRUB2 bootloader..."
 msgstr "جاري إعادة تثبيت GRUB2 محمل الإقلاع..."
 
@@ -1615,7 +1619,7 @@ msgstr "إعادة تثبيت GRUB2 محمل الإقلاع على الجهاز 
 msgid "Read %'d of %'d lines..."
 msgstr "قراءة %'d من %'d خطوط..."
 
-#: src/Core/Main.vala:2568
+#: src/Core/Main.vala:2581
 msgid "Rebooting system..."
 msgstr "جاري إعادة تمهيد النظام..."
 
@@ -1636,8 +1640,8 @@ msgstr "مواقع الشبكات والمواقع البعيدة غير مدع�
 msgid "Remove"
 msgstr "إزالة"
 
-#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1778 src/Core/Main.vala:1789
-#: src/Core/Main.vala:4285 src/Core/SnapshotRepo.vala:907
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1791 src/Core/Main.vala:1802
+#: src/Core/Main.vala:4302 src/Core/SnapshotRepo.vala:907
 #, c-format
 msgid "Removed"
 msgstr "تم الإزالة"
@@ -1646,7 +1650,7 @@ msgstr "تم الإزالة"
 msgid "Removed cron task"
 msgstr "تم إزالة مهمة cron"
 
-#: src/Core/Main.vala:3767
+#: src/Core/Main.vala:3784
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr "تم إزاله دليل التحميل: '%s'"
@@ -1691,7 +1695,7 @@ msgstr "استبعاد الاستعادة"
 msgid "Restore Snapshot"
 msgstr "استعادة اللقطات"
 
-#: src/Core/Main.vala:2978 src/Core/Main.vala:3020
+#: src/Core/Main.vala:2991 src/Core/Main.vala:3033
 msgid "Restore completed"
 msgstr "اكتملت الاستعادة"
 
@@ -1725,7 +1729,7 @@ msgstr ""
 "بوحدات التخزين الفرعية للنظام المستخدمة حاليا كلقطه جديده. إذا لزم الأمر، "
 "يمكن استعاده هذه اللقطة فيما بعد إلى 'تراجع' عن الاستعادة."
 
-#: src/Core/Main.vala:2947
+#: src/Core/Main.vala:2960
 msgid "Restoring snapshot..."
 msgstr "جاري استعادة اللقطة..."
 
@@ -1742,7 +1746,7 @@ msgstr ""
 "فلتر لتضمين هذه الملفات. سيتم نسخ الملفات المضمنة احتياطيا عند إنشاء اللقطة، "
 "واستبدالها عند استعاده اللقطة."
 
-#: src/Utility/Device.vala:1936
+#: src/Utility/Device.vala:1958
 #, c-format
 msgid "Revision"
 msgstr "المراجعة"
@@ -1764,7 +1768,7 @@ msgstr "تشغيل 'timeshift' لإصدار سطر الأوامر من هذه ا
 msgid "Run in non-interactive mode"
 msgstr "تشغيل في وضع غير تبادلي"
 
-#: src/Core/Main.vala:202
+#: src/Core/Main.vala:204
 msgid "Running"
 msgstr "تشغيل"
 
@@ -1786,7 +1790,7 @@ msgstr ""
 "قرص النظام دون فقد اللقطات المخزنة عليه. يمكنك حتى تثبيت توزيعة Linux أخرى "
 "والتراجع في وقت لاحق عن التوزيعة السابقة عن طريق استعادة اللقطة."
 
-#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+#: src/Core/Main.vala:1459 src/Core/Main.vala:1613 src/Core/Main.vala:1615
 msgid "Saving to device"
 msgstr "الحفظ إلى الجهاز"
 
@@ -1794,11 +1798,11 @@ msgstr "الحفظ إلى الجهاز"
 msgid "Schedule"
 msgstr "الجدولة"
 
-#: src/Core/Main.vala:273
+#: src/Core/Main.vala:275
 msgid "Scheduled snapshot in progress..."
 msgstr "اللقطة المجدولة قيد التقدم..."
 
-#: src/Core/Main.vala:1180 src/Gtk/MainWindow.vala:1020
+#: src/Core/Main.vala:1193 src/Gtk/MainWindow.vala:1037
 #: src/Gtk/ScheduleBox.vala:312
 msgid "Scheduled snapshots are disabled"
 msgstr "تم تعطيل اللقطات المجدولة"
@@ -1831,7 +1835,7 @@ msgstr "تحديد قرص نظام BTRFS مع وحده التخزين الفرع
 msgid "Select GRUB device"
 msgstr "تحديد جهاز GRUB"
 
-#: src/Gtk/MainWindow.vala:684
+#: src/Gtk/MainWindow.vala:701
 msgid "Select Snapshot"
 msgstr "تحديد اللقطة"
 
@@ -1860,7 +1864,7 @@ msgstr "تحديد الجهاز الهدف"
 msgid "Select a partition on this disk"
 msgstr "تحديد قسم على هذا القرص"
 
-#: src/Gtk/MainWindow.vala:791
+#: src/Gtk/MainWindow.vala:808
 msgid "Select a single snapshot to restore"
 msgstr "تحديد لقطة واحدة للاستعادة"
 
@@ -1924,7 +1928,7 @@ msgstr "تحديد العناصر المراد إزالتها من القائم�
 msgid "Select the snapshot device"
 msgstr "تحديد جهاز اللقطة"
 
-#: src/Gtk/MainWindow.vala:784
+#: src/Gtk/MainWindow.vala:801
 msgid "Select the snapshot to restore"
 msgstr "تحديد اللقطة للاستعادة"
 
@@ -1932,7 +1936,7 @@ msgstr "تحديد اللقطة للاستعادة"
 msgid "Select the snapshots to be deleted"
 msgstr "تحديد اللقطات المراد حذفها"
 
-#: src/Gtk/MainWindow.vala:600
+#: src/Gtk/MainWindow.vala:617
 msgid "Select the snapshots to mark for deletion"
 msgstr "تحديد اللقطات لتعليمها للحذف"
 
@@ -1940,11 +1944,11 @@ msgstr "تحديد اللقطات لتعليمها للحذف"
 msgid "Select the target devices where system will be cloned."
 msgstr "تحديد الأجهزة المستهدفة حيث سيتم استنساخ النظام."
 
-#: src/Core/Main.vala:3427
+#: src/Core/Main.vala:3444
 msgid "Selected default snapshot device"
 msgstr "جهاز اللقطة الافتراضي المحدد"
 
-#: src/Core/Main.vala:3378 src/Core/Main.vala:3382
+#: src/Core/Main.vala:3395 src/Core/Main.vala:3399
 msgid "Selected default snapshot type"
 msgstr "نوع اللقطة الافتراضية المحددة"
 
@@ -1964,11 +1968,11 @@ msgstr "جهاز اللقطة المحدد"
 msgid "Selected snapshot device is not a system disk"
 msgstr "جهاز اللقطة المحدد ليس قرص نظام"
 
-#: src/Core/Main.vala:2188
+#: src/Core/Main.vala:2201
 msgid "Selected snapshot is marked for deletion"
 msgstr "تعليم اللقطة المحددة للحذف"
 
-#: src/Gtk/MainWindow.vala:815
+#: src/Gtk/MainWindow.vala:832
 msgid "Selected snapshot is marked for deletion and cannot be restored"
 msgstr "تم وضع علامة على اللقطة المحددة للحذف ولا يمكن استعادتها"
 
@@ -1979,12 +1983,12 @@ msgid ""
 msgstr ""
 "المستخدم المحدد لديه دليل رئيسي مشفر. لا يمكن تضمين الملفات المخفية فقط."
 
-#: src/Utility/Device.vala:1935
+#: src/Utility/Device.vala:1957
 #, c-format
 msgid "Serial"
 msgstr "المسلسل"
 
-#: src/Core/Main.vala:230
+#: src/Core/Main.vala:232
 msgid "Session log file"
 msgstr "ملف سجل الجلسة"
 
@@ -2025,7 +2029,7 @@ msgstr "عرض المزيد من التطبيقات لاستبعادها في ا
 msgid "Show rsync output (default)"
 msgstr "عرض إخراج rsync (افتراضي)"
 
-#: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
+#: src/Utility/Device.vala:1960 src/Utility/Device.vala:1975
 #: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
 #: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
 #: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:469 src/AppConsole.vala:508
@@ -2049,7 +2053,7 @@ msgstr ""
 msgid "Skip GRUB2 reinstall"
 msgstr "تخطي إعادة تثبيت GRUB2"
 
-#: src/Core/Main.vala:2193 src/Core/SnapshotRepo.vala:631
+#: src/Core/Main.vala:2206 src/Core/SnapshotRepo.vala:631
 #: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:94
 #, c-format
 msgid "Snapshot"
@@ -2073,7 +2077,7 @@ msgstr "تم إنشاء اللقطة"
 msgid "Snapshot Levels"
 msgstr ""
 
-#: src/Gtk/MainWindow.vala:751
+#: src/Gtk/MainWindow.vala:768
 msgid "Snapshot deletion in progress..."
 msgstr "حذف اللقطة قيد التقدم..."
 
@@ -2095,15 +2099,15 @@ msgstr "لم يتم تحديد جهاز اللقطة"
 msgid "Snapshot location"
 msgstr "موقع اللقطة"
 
-#: src/Core/Main.vala:1317
+#: src/Core/Main.vala:1330
 msgid "Snapshot saved successfully"
 msgstr "تم حفظ اللقطة بنجاح"
 
-#: src/Core/Main.vala:2183
+#: src/Core/Main.vala:2196
 msgid "Snapshot to restore not specified!"
 msgstr "لم يتم تحديد لقطة للاستعادة!"
 
-#: src/Core/Main.vala:3024
+#: src/Core/Main.vala:3037
 msgid "Snapshot will become active after system is rebooted."
 msgstr "ستصبح اللقطة نشطة بعد إعاده تمهيد النظام."
 
@@ -2179,7 +2183,7 @@ msgid ""
 "locations are not supported."
 msgstr ""
 
-#: src/Gtk/MainWindow.vala:965
+#: src/Gtk/MainWindow.vala:982
 msgid "Snapshots available for restore"
 msgstr "اللقطات المتاحة للاستعادة"
 
@@ -2197,7 +2201,7 @@ msgstr ""
 msgid "Snapshots cannot be created in Live CD mode"
 msgstr "لا يمكن إنشاء اللقطات في وضع CD المباشر"
 
-#: src/Gtk/MainWindow.vala:1012
+#: src/Gtk/MainWindow.vala:1029
 msgid "Snapshots will be created at selected intervals"
 msgstr "سيتم إنشاء اللقطات في فترات زمنية محددة"
 
@@ -2266,11 +2270,11 @@ msgstr "التبديل إلى وضع RSYNC (الافتراضي: التكوين)"
 msgid "Symlinks updated"
 msgstr "الروابط الرمزية محدثة"
 
-#: src/Core/Main.vala:2543
+#: src/Core/Main.vala:2556
 msgid "Syncing file systems..."
 msgstr "مزامنة أنظمة الملفات..."
 
-#: src/Core/Main.vala:1522 src/Core/Main.vala:2713 src/Core/Main.vala:2954
+#: src/Core/Main.vala:1535 src/Core/Main.vala:2726 src/Core/Main.vala:2967
 msgid "Syncing files with rsync..."
 msgstr ""
 
@@ -2278,12 +2282,12 @@ msgstr ""
 msgid "Syntax"
 msgstr "Syntax"
 
-#: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:126
+#: src/Utility/Device.vala:1981 src/Gtk/SnapshotListBox.vala:126
 #, c-format
 msgid "System"
 msgstr "النظام"
 
-#: src/Gtk/MainWindow.vala:912
+#: src/Gtk/MainWindow.vala:929
 msgid "System Restore Utility"
 msgstr "أداه استعاده النظام"
 
@@ -2291,15 +2295,15 @@ msgstr "أداه استعاده النظام"
 msgid "System can be rolled-back to a previous date by restoring a snapshot."
 msgstr "يمكن إرجاع النظام إلى تاريخ سابق عن طريق استعادة لقطة."
 
-#: src/Core/Main.vala:2406
+#: src/Core/Main.vala:2419
 msgid "System will reboot after files are restored"
 msgstr "سيتم إعادة تمهيد النظام بعد استعادة الملفات"
 
-#: src/Core/Main.vala:2356
+#: src/Core/Main.vala:2369
 msgid "System will reboot after files are restored."
 msgstr "سيتم إعادة تمهيد النظام بعد استعادة الملفات."
 
-#: src/Core/Main.vala:1253 src/Core/Main.vala:1327
+#: src/Core/Main.vala:1266 src/Core/Main.vala:1340
 msgid "Tagged snapshot"
 msgstr "لقطة معلمه"
 
@@ -2307,7 +2311,7 @@ msgstr "لقطة معلمه"
 msgid "Tags"
 msgstr "العلامات"
 
-#: src/Core/Main.vala:2218
+#: src/Core/Main.vala:2231
 msgid "Target device is not mounted"
 msgstr "لم يتم تحميل الجهاز الهدف"
 
@@ -2315,7 +2319,7 @@ msgstr "لم يتم تحميل الجهاز الهدف"
 msgid "Target device is same as system device"
 msgstr "الجهاز الهدف هو نفسه جهاز النظام"
 
-#: src/Core/Main.vala:2212
+#: src/Core/Main.vala:2225
 msgid "Target device not specified!"
 msgstr "لم يتم تحديد الجهاز الهدف!"
 
@@ -2329,11 +2333,11 @@ msgstr ""
 "الحالي. حدد هذا الخيار لمنع رسائل البريد الإلكتروني الخاصة بمهام cron التي "
 "أنشأها Timeshift."
 
-#: src/Core/Main.vala:393
+#: src/Core/Main.vala:395
 msgid "The system partition has an unsupported subvolume layout."
 msgstr "يحتوي قسم النظام على تخطيط وحده تخزين فرعيه غير معتمد."
 
-#: src/Core/Main.vala:3616
+#: src/Core/Main.vala:3633
 msgid "The target partition has an unsupported subvolume layout."
 msgstr "يحتوي القسم الهدف على تخطيط وحده تخزين فرعيه غير معتمد."
 
@@ -2342,11 +2346,11 @@ msgstr "يحتوي القسم الهدف على تخطيط وحده تخزين �
 msgid "There are no snapshots on this device"
 msgstr "لا توجد لقطات على هذا الجهاز"
 
-#: src/Utility/Device.vala:1380
+#: src/Utility/Device.vala:1402
 msgid "This device is not encrypted"
 msgstr "هذا الجهاز غير مشفر"
 
-#: src/Core/Main.vala:2372
+#: src/Core/Main.vala:2385
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
@@ -2354,7 +2358,7 @@ msgstr ""
 "يأتي هذا البرنامج بدون أي ضمان على الإطلاق ولا يتحمل المؤلف أية مسؤولية عن "
 "أي ضرر ينشأ عن استخدام هذا البرنامج."
 
-#: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1011
+#: src/Gtk/MainWindow.vala:1017 src/Gtk/MainWindow.vala:1028
 msgid "Timeshift is active"
 msgstr "Timeshift نشط"
 
@@ -2369,14 +2373,14 @@ msgstr "الطابع الزمني"
 msgid "To restore with default options, press the ENTER key for all prompts!"
 msgstr "لاستعاده الخيارات الافتراضية، اضغط المفتاح ENTER لكافة المطالبات!"
 
-#: src/Utility/Device.vala:1949 src/Gtk/BackupDeviceBox.vala:190
+#: src/Utility/Device.vala:1971 src/Gtk/BackupDeviceBox.vala:190
 #: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:470
 #: src/AppConsole.vala:509
 #, c-format
 msgid "Type"
 msgstr "النوع"
 
-#: src/Utility/Device.vala:1948
+#: src/Utility/Device.vala:1970
 #, c-format
 msgid "UUID"
 msgstr "UUID"
@@ -2385,24 +2389,24 @@ msgstr "UUID"
 msgid "Unknown option"
 msgstr "خيار غير معروف"
 
-#: src/Core/Main.vala:1235
+#: src/Core/Main.vala:1248
 msgid "Unknown snapshot type"
 msgstr "نوع اللقطة غير معروف"
 
-#: src/Core/Main.vala:1727
+#: src/Core/Main.vala:1740
 msgid "Unknown value specified for option --tags"
 msgstr "قيمة محددة غير معروفة للخيار --العلامات"
 
-#: src/Utility/Device.vala:1391 src/Utility/Device.vala:1507
+#: src/Utility/Device.vala:1413 src/Utility/Device.vala:1529
 #, c-format
 msgid "Unlocked device is mapped to '%s'"
 msgstr "تم تعيين الجهاز غير المؤمن إلى '%s'"
 
-#: src/Utility/Device.vala:1506
+#: src/Utility/Device.vala:1528
 msgid "Unlocked successfully"
 msgstr "تم إلغاء التأمين بنجاح"
 
-#: src/Utility/Device.vala:1722
+#: src/Utility/Device.vala:1744
 msgid "Unmounting from"
 msgstr "إلغاء التحميل من"
 
@@ -2410,7 +2414,7 @@ msgstr "إلغاء التحميل من"
 msgid "Unshared"
 msgstr ""
 
-#: src/Core/Main.vala:3620 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Core/Main.vala:3637 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
 msgstr "تخطيط وحده تخزين فرعيه غير معتمده"
 
@@ -2422,11 +2426,11 @@ msgstr "تحديث قائمة GRUB"
 msgid "Update initramfs"
 msgstr "تحديث initramfs"
 
-#: src/Core/Main.vala:2893
+#: src/Core/Main.vala:2906
 msgid "Updated /etc/crypttab on target device"
 msgstr "تحديث /etc/crypttab على الجهاز الهدف"
 
-#: src/Core/Main.vala:2813
+#: src/Core/Main.vala:2826
 msgid "Updated /etc/fstab on target device"
 msgstr "تحديث /etc/fstab على الجهاز الهدف"
 
@@ -2436,15 +2440,15 @@ msgid ""
 "be left selected."
 msgstr "تحديث إدخالات قائمة GRUB (مستحسن). هذا آمن للتشغيل ويجب تركه محدداً."
 
-#: src/Core/Main.vala:2526
+#: src/Core/Main.vala:2539
 msgid "Updating GRUB menu..."
 msgstr "جاري تحديث قائمة GRUB..."
 
-#: src/Core/Main.vala:2737
+#: src/Core/Main.vala:2750
 msgid "Updating bootloader configuration..."
 msgstr "جارٍ تحديث تكوين محمل الإقلاع..."
 
-#: src/Utility/Device.vala:1956
+#: src/Utility/Device.vala:1978
 #, c-format
 msgid "Used"
 msgstr "المستخدمة"
@@ -2457,7 +2461,7 @@ msgstr "المستخدم"
 msgid "User Home Directories"
 msgstr "دليل المستخدم الرئيسي"
 
-#: src/Utility/Device.vala:1461
+#: src/Utility/Device.vala:1483
 msgid "User cancelled the password prompt"
 msgstr "المستخدم ألغى المطالبه بكلمه المرور"
 
@@ -2474,16 +2478,16 @@ msgstr "المستخدمين"
 msgid "Users Home"
 msgstr "منزل المستخدمين"
 
-#: src/Utility/Device.vala:1933
+#: src/Utility/Device.vala:1955
 #, c-format
 msgid "Vendor"
 msgstr "البائع"
 
-#: src/Gtk/SnapshotListBox.vala:342
+#: src/Gtk/SnapshotListBox.vala:328
 msgid "View Rsync Log for Create"
 msgstr "معاينة سجل Rsync للإنشاء"
 
-#: src/Gtk/SnapshotListBox.vala:349
+#: src/Gtk/SnapshotListBox.vala:335
 msgid "View Rsync Log for Restore"
 msgstr "معاينة سجل Rsync للاستعادة"
 
@@ -2491,7 +2495,7 @@ msgstr "معاينة سجل Rsync للاستعادة"
 msgid "View TimeShift Logs"
 msgstr "عرض سجلات TimeShift"
 
-#: src/Core/Main.vala:2267 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Core/Main.vala:2280 src/Gtk/RestoreSummaryBox.vala:53
 msgid "Warning"
 msgstr "تحذير"
 
@@ -2503,11 +2507,11 @@ msgstr "متصفحات الإنترنت"
 msgid "Weekly"
 msgstr "أسبوعي"
 
-#: src/Core/Main.vala:1138
+#: src/Core/Main.vala:1151
 msgid "Weekly snapshot failed!"
 msgstr "فشلت اللقطة الأسبوعية!"
 
-#: src/Core/Main.vala:1119
+#: src/Core/Main.vala:1132
 msgid "Weekly snapshots are enabled"
 msgstr "يتم تمكين اللقطات الأسبوعية"
 
@@ -2519,7 +2523,7 @@ msgstr "مع أخطاء"
 msgid "Wizard"
 msgstr "المعالج"
 
-#: src/Utility/Device.vala:1434 src/Utility/Device.vala:1480
+#: src/Utility/Device.vala:1456 src/Utility/Device.vala:1502
 msgid "Wrong password"
 msgstr "كلمة المرور خاطئة"
 
@@ -2562,12 +2566,12 @@ msgstr "[تحذير] تم حذف تامين غير صالح"
 msgid "all"
 msgstr "الكل"
 
-#: src/Core/Main.vala:1655 src/Core/Main.vala:4030 src/Core/Main.vala:4115
+#: src/Core/Main.vala:1668 src/Core/Main.vala:4047 src/Core/Main.vala:4132
 #: src/Core/Subvolume.vala:215
 msgid "btrfs returned an error"
 msgstr "تم إرجاع btrfs بخطأ"
 
-#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1554
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1567
 msgid "complete"
 msgstr "اكتمل"
 
@@ -2587,17 +2591,17 @@ msgstr "غير مكتمل"
 msgid "marked for deletion"
 msgstr "معلمة للحذف"
 
-#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+#: src/Core/Main.vala:1459 src/Core/Main.vala:1613 src/Core/Main.vala:1615
 msgid "mounted at path"
 msgstr "مسار المحملة"
 
-#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1554
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1567
 #: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
 #: src/Gtk/DeleteBox.vala:149
 msgid "remaining"
 msgstr "المتبقية"
 
-#: src/Core/Main.vala:1565
+#: src/Core/Main.vala:1578
 msgid "rsync returned an error"
 msgstr "تم إرجاع rsync بخطأ"
 

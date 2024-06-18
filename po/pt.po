@@ -1,22 +1,21 @@
-# Portuguese translation for linuxmint
+# Portuguese translation for linuxmint timeshift
 # Copyright (c) 2017 Rosetta Contributors and Canonical Ltd 2017
-# This file is distributed under the same license as the linuxmint package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
-# Hugo Carvalho <hugokarvalho@hotmail.com>, 2019, 2020, 2021, 2022.
+# This file is distributed under the same license as the linuxmint timeshift package.
+# Hugo Carvalho <hugokarvalho@hotmail.com>, 2019, 2020, 2021, 2022, 2023, 2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2023-06-01 11:34+0100\n"
-"PO-Revision-Date: 2023-06-01 22:51+0000\n"
+"POT-Creation-Date: 2024-06-06 11:53+0100\n"
+"PO-Revision-Date: 2024-06-06 18:42+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-01-04 14:58+0000\n"
-"X-Generator: Launchpad (build e1eeab5b20e19239bd7d5f36676f7a52988db88b)\n"
+"X-Launchpad-Export-Date: 2024-06-18 17:56+0000\n"
+"X-Generator: Launchpad (build bbfa2351d9d6a9ddfe262109428f7bf5516e65d1)\n"
 "Language: pt\n"
 
 #: src/AppConsole.vala:626
@@ -47,23 +46,23 @@ msgstr "'%s' estará no dispositivo root"
 msgid "(Re)install GRUB2 on:"
 msgstr "(Re)instalar o GRUB2 em:"
 
-#: src/Core/Main.vala:379
+#: src/Core/Main.vala:381
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr "** Timeshift BTRFS desinstalado **"
 
-#: src/Core/Main.vala:3527
+#: src/Core/Main.vala:3544
 msgid "/ is mapped to device"
 msgstr "/ foi mapeado para o dispositivo"
 
-#: src/Core/Main.vala:3549
+#: src/Core/Main.vala:3566
 msgid "/boot is mapped to device"
 msgstr "/boot foi mapeado para o dispositivo"
 
-#: src/Core/Main.vala:3560
+#: src/Core/Main.vala:3577
 msgid "/boot/efi is mapped to device"
 msgstr "/boot/efi foi mapeado para o dispositivo"
 
-#: src/Core/Main.vala:3538
+#: src/Core/Main.vala:3555
 msgid "/home is mapped to device"
 msgstr "/home foi mapeado para o dispositivo"
 
@@ -144,10 +143,9 @@ msgid ""
 "are incremental. Unchanged files will be hard-linked from the previous "
 "snapshot if available."
 msgstr ""
-"Todos os ficheiros são copiados quando o primeiro backup é criado. Os "
-"ficheiros de segurança subsequentes são incrementais. Os ficheiros "
-"inalterados serão vinculados de forma rígida a partir da cópia de segurança "
-"anterior, caso esteja disponível."
+"Todos os ficheiros são copiados quando a primeira cópia é criada. As cópias "
+"subsequentes são incrementais. Os ficheiros inalterados serão vinculados de "
+"forma rígida a partir da cópia de segurança anterior, caso esteja disponível."
 
 #: src/Gtk/ExcludeMessageWindow.vala:129
 msgid "All other files and folders are excluded."
@@ -169,7 +167,7 @@ msgstr ""
 "Selecione um dispositivo sem encriptação para o arranque ou para o sistema "
 "de ficheiros root."
 
-#: src/Core/Main.vala:265
+#: src/Core/Main.vala:267
 msgid "Another instance of Timeshift is creating a snapshot."
 msgstr "Outra instância do Timeshift está a criar uma cópia de segurança."
 
@@ -177,7 +175,7 @@ msgstr "Outra instância do Timeshift está a criar uma cópia de segurança."
 msgid "Another instance of this application is running"
 msgstr "Outra instância desta aplicação está a ser executada"
 
-#: src/Core/Main.vala:269
+#: src/Core/Main.vala:271
 msgid "Another instance of timeshift is currently running!"
 msgstr "Outra instância do Timeshift está a ser executada!"
 
@@ -185,11 +183,11 @@ msgstr "Outra instância do Timeshift está a ser executada!"
 msgid "Answer YES to all confirmation prompts"
 msgstr "Responda SIM a todos os avisos de confirmação"
 
-#: src/Core/Main.vala:3364
+#: src/Core/Main.vala:3381
 msgid "App config loaded"
 msgstr "Configuração do programa carregadas"
 
-#: src/Core/Main.vala:3252
+#: src/Core/Main.vala:3265
 msgid "App config saved"
 msgstr "Configurações do programa guardadas"
 
@@ -197,13 +195,17 @@ msgstr "Configurações do programa guardadas"
 msgid "Application needs admin access."
 msgstr "O programa precisa de acesso de administrador."
 
-#: src/Core/Main.vala:3704
+#: src/Core/Main.vala:3721
 msgid "Application will exit"
 msgstr "A aplicação vai terminar"
 
-#: src/Core/Main.vala:395
+#: src/Core/Main.vala:397
 msgid "Application will exit."
 msgstr "A aplicação vai terminar."
+
+#: src/Gtk/MainWindow.vala:561
+msgid "Are you sure you want to delete this snapshot?"
+msgstr "Tem a certeza de que pretende eliminar esta cópia?"
 
 #: src/Gtk/MainWindow.vala:345
 msgid "Available"
@@ -217,7 +219,7 @@ msgstr "BTRFS"
 msgid "BTRFS Snapshots"
 msgstr "Cópias de segurança BTRFS"
 
-#: src/Core/Main.vala:2202 src/Core/Main.vala:2206
+#: src/Core/Main.vala:2215 src/Core/Main.vala:2219
 msgid "BTRFS device is not mounted"
 msgstr "Dispositivo BTRFS não está montado"
 
@@ -226,8 +228,8 @@ msgid ""
 "BTRFS snapshots are saved on system partition. Other partitions are not "
 "supported."
 msgstr ""
-"As cópias BTRFS são guardadas na partição de sistema. Outras partições não "
-"são suportadas."
+"As cópias de segurança BTRFS são guardadas na partição de sistema. Outras "
+"partições não são suportadas."
 
 #: src/Gtk/FinishBox.vala:92
 msgid ""
@@ -236,10 +238,10 @@ msgid ""
 "snapshots to an external non-system disk in RSYNC mode to guard against disk "
 "failures."
 msgstr ""
-"As cópias de segurança do BTRFS são guardadas no mesmo disco em que ele é "
-"criado. Se o disco do sistema falhar, as cópias serão perdidos com o "
-"sistema. Guarde cópias de segurança num disco externo que não seja de "
-"sistema, no modo RSYNC, para proteger contra falhas de disco."
+"As cópias de segurança BTRFS são guardadas no mesmo disco a partir do qual "
+"foram criadas. Se o disco do sistema falhar, as cópias serão perdidas "
+"juntamente com o sistema. Guarde cópias de segurança num disco externo que "
+"não seja do sistema, no modo RSYNC, para proteger contra falhas de disco."
 
 #: src/Gtk/SetupWizardWindow.vala:94
 msgid "Backend"
@@ -249,11 +251,11 @@ msgstr "Backend"
 msgid "Backup"
 msgstr "Cópia de Segurança"
 
-#: src/Core/Main.vala:2178
+#: src/Core/Main.vala:2191
 msgid "Backup Device"
 msgstr "Dispositivo de cópia de segurança"
 
-#: src/Core/Main.vala:2173
+#: src/Core/Main.vala:2186
 msgid "Backup device not specified!"
 msgstr "Dispositivo de cópia de segurança não especificado!"
 
@@ -269,7 +271,7 @@ msgstr "Arranque"
 msgid "Boot device not selected"
 msgstr "Dispositivo de arranque não selecionado"
 
-#: src/Core/Main.vala:1045
+#: src/Core/Main.vala:1058
 msgid "Boot snapshot failed!"
 msgstr "Falha ao arrancar pela cópia!"
 
@@ -280,9 +282,9 @@ msgstr ""
 "As cópias de arranque são criadas com um atraso de 10 minutos após o início "
 "do sistema."
 
-#: src/Core/Main.vala:1026
+#: src/Core/Main.vala:1039
 msgid "Boot snapshots are enabled"
-msgstr "Cópias do arranque estão ativas"
+msgstr "As cópias do arranque estão ativadas"
 
 #: src/Gtk/BootOptionsWindow.vala:49
 msgid "Bootloader Options"
@@ -296,7 +298,7 @@ msgstr "Opções do carregador de arranque (Avançado)"
 msgid "Browse"
 msgstr "Procurar"
 
-#: src/Gtk/SnapshotListBox.vala:335
+#: src/Gtk/SnapshotListBox.vala:321
 msgid "Browse Files"
 msgstr "Procurar ficheiros"
 
@@ -304,11 +306,11 @@ msgstr "Procurar ficheiros"
 msgid "Browse selected snapshot"
 msgstr "Procurar cópia de segurança selecionada"
 
-#: src/Core/Main.vala:2668
+#: src/Core/Main.vala:2681
 msgid "Building file list..."
 msgstr "A criar lista de ficheiros..."
 
-#: src/Core/Main.vala:1405
+#: src/Core/Main.vala:1418
 msgid "Calculating required disk space..."
 msgstr "A calcular o espaço necessário em disco..."
 
@@ -333,7 +335,7 @@ msgstr ""
 "Cancelar o processo de restauro deixará o sistema de destino num estado "
 "inconsistente. O sistema pode falhar ao iniciar ou pode executar nas com "
 "vários problemas. Após o cancelamento, precisará de restaurar outra cópia de "
-"segurança, para trazer o sistema para um estado consistente. Carregue em Sim "
+"segurança, para trazer o sistema para um estado consistente. Clique em Sim "
 "para confirmar."
 
 #: src/Gtk/MainWindow.vala:547
@@ -354,7 +356,7 @@ msgstr "Items alterados:"
 msgid "Checking Restore Actions (Dry Run)"
 msgstr "A verificar ações de restauro (Dry Run)"
 
-#: src/Core/Main.vala:2901
+#: src/Core/Main.vala:2914
 msgid "Checking file systems for errors..."
 msgstr "A procurar erros nos sistemas de ficheiros..."
 
@@ -364,7 +366,7 @@ msgstr "A procurar erros nos sistemas de ficheiros..."
 msgid "Checksum"
 msgstr "Código de Validação"
 
-#: src/Core/Main.vala:2549
+#: src/Core/Main.vala:2562
 msgid "Cleaning up..."
 msgstr "A limpar..."
 
@@ -384,7 +386,7 @@ msgstr "Clonar o sistema"
 msgid "Cloning"
 msgstr "A clonar"
 
-#: src/Core/Main.vala:2951
+#: src/Core/Main.vala:2964
 msgid "Cloning system..."
 msgstr "A clonar o sistema..."
 
@@ -399,7 +401,7 @@ msgstr "Fechar"
 msgid "Close window to exit"
 msgstr "Fechar a janela para sair"
 
-#: src/Core/Main.vala:364
+#: src/Core/Main.vala:366
 msgid "Commands listed below are not available on this system"
 msgstr "Comandos listados abaixo não disponiveis neste sistema"
 
@@ -407,12 +409,12 @@ msgstr "Comandos listados abaixo não disponiveis neste sistema"
 msgid "Comments (click to edit)"
 msgstr "Comentários (clique para editar)"
 
-#: src/Core/Main.vala:2944 src/Gtk/RestoreBox.vala:74
+#: src/Core/Main.vala:2957 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
 msgid "Comparing Files (Dry Run)..."
 msgstr "Comparação de ficheiros (Dry Run)..."
 
-#: src/Core/Main.vala:2710
+#: src/Core/Main.vala:2723
 msgid "Comparing files with rsync..."
 msgstr "A sincronizar ficheiros com rsync..."
 
@@ -438,7 +440,7 @@ msgstr "Continuar com a recuperação? (y/n) "
 msgid "Could not find device"
 msgstr "Dispositivo não encontrado"
 
-#: src/Utility/Device.vala:1308
+#: src/Utility/Device.vala:1330
 #, c-format
 msgid "Could not find file"
 msgstr "Ficheiro não encontrado"
@@ -447,15 +449,15 @@ msgstr "Ficheiro não encontrado"
 msgid "Could not find snapshot"
 msgstr "Não foi possível encontrar a cópia de segurança"
 
-#: src/Core/Main.vala:3113
+#: src/Core/Main.vala:3126
 msgid "Could not find system subvolume"
 msgstr "Não foi possível encontrar o subvolume do sistema"
 
-#: src/Core/Main.vala:3141
+#: src/Core/Main.vala:3154
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr ""
-"Não foi possível encontrar subvolumes do sistema para criar cópias de "
-"segurança pré-restauração"
+"Não foi possível encontrar subvolumes do sistema para criar uma cópia de "
+"segurança de pré-restauro"
 
 #: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
 #: src/Gtk/RsyncLogBox.vala:570
@@ -465,7 +467,7 @@ msgstr "Criar"
 
 #: src/Gtk/BackupWindow.vala:62
 msgid "Create Snapshot"
-msgstr "Criar Backup"
+msgstr "Criar cópia"
 
 #: src/Gtk/ScheduleBox.vala:136
 msgid "Create one per boot"
@@ -489,23 +491,23 @@ msgstr "Criar um por semana"
 
 #: src/AppConsole.vala:369
 msgid "Create snapshot (even if not scheduled)"
-msgstr "Criar cópia de segurança (mesmo se não programada)"
+msgstr "Criar cópia de segurança (mesmo que não esteja programada)"
 
 #: src/AppConsole.vala:368
 msgid "Create snapshot if scheduled"
-msgstr "Criar cópia de segurança se agendada"
+msgstr "Criar cópia de segurança se programada"
 
 #: src/Gtk/MainWindow.vala:141
 msgid "Create snapshot of current system"
 msgstr "Criar cópia de segurança do sistema atual"
 
-#: src/Gtk/MainWindow.vala:1027
+#: src/Gtk/MainWindow.vala:1044
 msgid ""
 "Create snapshots manually or enable scheduled snapshots to protect your "
 "system"
 msgstr ""
-"Criar cópia de segurança manualmente ou ativar cópias de segurança agendadas "
-"para proteger o seu sistema"
+"Criar cópia de segurança manualmente ou ativar cópias de segurança "
+"programadas para proteger o seu sistema"
 
 #: src/Gtk/SnapshotBackendBox.vala:96
 msgid "Create snapshots using BTRFS"
@@ -513,7 +515,7 @@ msgstr "Criar cópias de segurança utilizando o BTRFS"
 
 #: src/Gtk/SnapshotBackendBox.vala:78
 msgid "Create snapshots using RSYNC tool and hard-links"
-msgstr "Criar cópias de segurança utilizando a ferramenta RSYNC e hardlinks"
+msgstr "Criar cópias de segurança utilizando a ferramenta RSYNC e hard-links"
 
 #: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
 #: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:570
@@ -530,32 +532,33 @@ msgstr "Ficheiro de controlo criado"
 msgid "Created directory"
 msgstr "Diretório criado"
 
-#: src/Core/Main.vala:3163
+#: src/Core/Main.vala:3176
 msgid "Created pre-restore snapshot"
-msgstr "Criada cópia de segurança pré-restauração"
+msgstr "Criada cópia de segurança de pré-restauro"
 
-#: src/Core/Main.vala:1660
+#: src/Core/Main.vala:1673
 msgid "Created subvolume snapshot"
 msgstr "Cópia de segurança de subvolume criada"
 
 #: src/Gtk/BackupBox.vala:71
 msgid "Creating Snapshot..."
-msgstr "A Criar Cópia..."
+msgstr "A criar cópia..."
 
-#: src/Core/Main.vala:1598
+#: src/Core/Main.vala:1611
 msgid "Creating new backup..."
 msgstr "A criar uma nova cópia..."
 
-#: src/Core/Main.vala:1444
+#: src/Core/Main.vala:1457
 msgid "Creating new snapshot..."
-msgstr "A criar uma nova cópia instantânea..."
+msgstr "A criar uma nova cópia de segurança..."
 
-#: src/Core/Main.vala:3091
+#: src/Core/Main.vala:3104
 msgid "Creating pre-restore snapshot from system subvolumes..."
 msgstr ""
-"A criar cópia de segurança pré-restauração de subvolumes de sistema..."
+"A criar cópia de segurança de pré-restauro a partir de subvolumes do "
+"sistema..."
 
-#: src/Core/Main.vala:3703
+#: src/Core/Main.vala:3720
 msgid "Critical Error"
 msgstr "Erro Crítico"
 
@@ -579,15 +582,15 @@ msgstr "Personalizado"
 msgid "Daily"
 msgstr "Diário"
 
-#: src/Core/Main.vala:1107
+#: src/Core/Main.vala:1120
 msgid "Daily snapshot failed!"
 msgstr "Ocorreu um erro na cópia diária!"
 
-#: src/Core/Main.vala:1088
+#: src/Core/Main.vala:1101
 msgid "Daily snapshots are enabled"
-msgstr "As cópias diárias estão ativas"
+msgstr "As cópias diárias estão ativadas"
 
-#: src/Core/Main.vala:2272
+#: src/Core/Main.vala:2285
 msgid "Data will be modified on following devices:"
 msgstr "Os dados serão modificados nos seguintes dispositivos:"
 
@@ -595,7 +598,7 @@ msgstr "Os dados serão modificados nos seguintes dispositivos:"
 msgid "Date Format"
 msgstr "Formato da data"
 
-#: src/Gtk/SnapshotListBox.vala:321 src/Gtk/MainWindow.vala:160
+#: src/Gtk/SnapshotListBox.vala:342 src/Gtk/MainWindow.vala:160
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
 #: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:381
 #, c-format
@@ -604,7 +607,7 @@ msgstr "Eliminar"
 
 #: src/Gtk/DeleteWindow.vala:62
 msgid "Delete Snapshots"
-msgstr "Eliminar cópias de segurança"
+msgstr "Eliminar Cópias de segurança"
 
 #: src/AppConsole.vala:383
 msgid "Delete all snapshots"
@@ -616,7 +619,7 @@ msgstr "Eliminar cópia de segurança selecionada"
 
 #: src/AppConsole.vala:382
 msgid "Delete snapshot"
-msgstr "Eliminar a cópia"
+msgstr "Eliminar cópia de segurança"
 
 #: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
@@ -629,7 +632,7 @@ msgstr "Eliminada"
 msgid "Deleted directory"
 msgstr "Diretório eliminado"
 
-#: src/Core/Main.vala:3070 src/Core/Main.vala:3074 src/Core/Subvolume.vala:167
+#: src/Core/Main.vala:3083 src/Core/Main.vala:3087 src/Core/Subvolume.vala:167
 #, c-format
 msgid "Deleted subvolume"
 msgstr "Subvolume eliminado"
@@ -661,24 +664,24 @@ msgstr "qgroup destruído"
 msgid "Destroying qgroup"
 msgstr "A destruir qgroup"
 
-#: src/Core/Main.vala:2275 src/Core/Main.vala:2307
+#: src/Core/Main.vala:2288 src/Core/Main.vala:2320
 #: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
-#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1932
-#: src/Utility/Device.vala:1942 src/Gtk/RestoreDeviceBox.vala:97
+#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1954
+#: src/Utility/Device.vala:1964 src/Gtk/RestoreDeviceBox.vala:97
 #: src/AppConsole.vala:467 src/AppConsole.vala:506 src/AppConsole.vala:554
 #, c-format
 msgid "Device"
 msgstr "Dispositivo"
 
-#: src/Utility/Device.vala:1390
+#: src/Utility/Device.vala:1412
 msgid "Device is unlocked"
 msgstr "O dispositivo está desbloqueado"
 
-#: src/Utility/Device.vala:1285 src/Utility/Device.vala:1347
+#: src/Utility/Device.vala:1307 src/Utility/Device.vala:1369
 msgid "Device name is empty!"
 msgstr "O nome do dispositivo está em branco!"
 
-#: src/Core/Main.vala:3417 src/Core/SnapshotRepo.vala:479
+#: src/Core/Main.vala:3434 src/Core/SnapshotRepo.vala:479
 #: src/AppConsole.vala:676
 msgid "Device not found"
 msgstr "Dispositivo não encontrado"
@@ -713,7 +716,7 @@ msgstr ""
 msgid "Directory not found"
 msgstr "Diretório não encontrado"
 
-#: src/Core/Main.vala:2367 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Core/Main.vala:2380 src/Gtk/RestoreSummaryBox.vala:64
 msgid "Disclaimer"
 msgstr "Aviso legal"
 
@@ -721,15 +724,15 @@ msgstr "Aviso legal"
 msgid "Disk"
 msgstr "Disco"
 
-#: src/Core/Main.vala:242
+#: src/Core/Main.vala:244
 msgid "Distribution"
 msgstr "Distribuição"
 
-#: src/Gtk/MainWindow.vala:1021
+#: src/Gtk/MainWindow.vala:1038
 msgid "Enable scheduled snapshots to protect your system"
-msgstr "Ativar cópia de segurança agendadas para proteger o seu sistema"
+msgstr "Ativar cópias de segurança programadas para proteger o seu sistema"
 
-#: src/Utility/Device.vala:1454
+#: src/Utility/Device.vala:1476
 msgid "Encrypted Device"
 msgstr "Dispositivo encriptado"
 
@@ -747,7 +750,7 @@ msgstr "Introduza o nome ou número do dispositivo"
 msgid "Enter device name or number (a=Abort)"
 msgstr "Introduza o nome ou número do dispositivo (a=Abortar)"
 
-#: src/Utility/Device.vala:1455
+#: src/Utility/Device.vala:1477
 #, c-format
 msgid "Enter passphrase to unlock '%s'"
 msgstr "Introduza a passe para desbloquear '%s'"
@@ -777,7 +780,7 @@ msgstr "Estimativa"
 msgid "Estimating System Size..."
 msgstr "A estimar o tamanho do sistema..."
 
-#: src/Core/Main.vala:1440
+#: src/Core/Main.vala:1453
 msgid "Estimating system size..."
 msgstr "A estimar o tamanho do sistema..."
 
@@ -813,7 +816,7 @@ msgstr "Excluir Padrão"
 msgid "Excluded Directories"
 msgstr "Diretórios excluídos"
 
-#: src/Core/Main.vala:1728
+#: src/Core/Main.vala:1741
 msgid "Expected values: O, B, H, D, W, M"
 msgstr "Valores esperados: O, B, H, D, W, M"
 
@@ -830,15 +833,15 @@ msgstr "Falha ao copiar ficheiro"
 msgid "Failed to create directory"
 msgstr "Falha ao criar o diretório"
 
-#: src/Core/Main.vala:1566
+#: src/Core/Main.vala:1579
 msgid "Failed to create new snapshot"
 msgstr "Falha ao criar nova cópia de segurança"
 
-#: src/Core/Main.vala:1320
+#: src/Core/Main.vala:1333
 msgid "Failed to create snapshot"
 msgstr "Falha ao criar cópia de segurança"
 
-#: src/Core/Main.vala:1656
+#: src/Core/Main.vala:1669
 msgid "Failed to create subvolume snapshot"
 msgstr "Falha ao criar a cópia de segurança do subvolume"
 
@@ -870,7 +873,7 @@ msgstr "Falha ao eliminar ligações simbólicas"
 msgid "Failed to destroy qgroup"
 msgstr "Falha ao destruir qgroup"
 
-#: src/Core/Main.vala:3918 src/Core/Main.vala:3924
+#: src/Core/Main.vala:3935 src/Core/Main.vala:3941
 msgid "Failed to estimate system size"
 msgstr "Falha ao estimar o tamanho do sistema"
 
@@ -883,11 +886,11 @@ msgstr "Falha ao exportar o ficheiro crontab"
 msgid "Failed to get input from user in 3 attempts"
 msgstr "Falha ao obter em 3 tentativas a entrada do utilizar"
 
-#: src/Utility/Device.vala:724
+#: src/Utility/Device.vala:746
 msgid "Failed to get partition list"
 msgstr "Falha ao obter a lista de partições"
 
-#: src/Core/Main.vala:3500
+#: src/Core/Main.vala:3517
 msgid "Failed to get partition list."
 msgstr "Falha ao obter a lista de partições."
 
@@ -903,17 +906,17 @@ msgstr "Falha ao montar dispositivos"
 msgid "Failed to move file"
 msgstr "Falha ao mover ficheiro"
 
-#: src/Core/Main.vala:3128
+#: src/Core/Main.vala:3141
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr ""
 "Falha ao mover o subvolume do sistema para o diretório das cópias de "
 "segurança"
 
-#: src/Core/Main.vala:4031
+#: src/Core/Main.vala:4048
 msgid "Failed to query subvolume list"
 msgstr "Falha ao consultar a lista de subvolume"
 
-#: src/Core/Main.vala:4116
+#: src/Core/Main.vala:4133
 msgid "Failed to query subvolume quota"
 msgstr "Falha ao consultar a quota do subvolume"
 
@@ -942,21 +945,21 @@ msgstr "Falha ao remover a cópia de segurança"
 msgid "Failed to restore system subvolume"
 msgstr "Falha ao restaurar o subvolume do sistema"
 
-#: src/Core/Main.vala:1516
+#: src/Core/Main.vala:1529
 msgid "Failed to save exclude list"
 msgstr "Falha ao guardar a lista de exclusão"
 
-#: src/Utility/Device.vala:1381 src/Utility/Device.vala:1435
-#: src/Utility/Device.vala:1460 src/Utility/Device.vala:1481
-#: src/Utility/Device.vala:1501
+#: src/Utility/Device.vala:1403 src/Utility/Device.vala:1457
+#: src/Utility/Device.vala:1482 src/Utility/Device.vala:1503
+#: src/Utility/Device.vala:1523
 msgid "Failed to unlock device"
 msgstr "Falha ao desbloquear dispositivo"
 
-#: src/Utility/Device.vala:1733
+#: src/Utility/Device.vala:1755
 msgid "Failed to unmount"
 msgstr "Falha ao desmontar"
 
-#: src/Core/Main.vala:3704
+#: src/Core/Main.vala:3721
 msgid "Failed to unmount device!"
 msgstr "Falha ao desmontar dispositivo!"
 
@@ -1006,7 +1009,7 @@ msgstr "Contagem de ficheiros e diretórios:"
 msgid "Files matching the following patterns will be excluded"
 msgstr "Os ficheiros correspondentes aos seguintes padrões serão excluídos"
 
-#: src/Utility/Device.vala:1950
+#: src/Utility/Device.vala:1972
 #, c-format
 msgid "Filesystem"
 msgstr "Sistema de ficheiros"
@@ -1036,9 +1039,9 @@ msgstr "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 msgid "First snapshot requires:"
 msgstr "Primeira cópia requer:"
 
-#: src/Core/Main.vala:3061
+#: src/Core/Main.vala:3074
 msgid "Found existing pre-restore snapshot"
-msgstr "Encontrado a cópia de pré-restauração existente"
+msgstr "Encontrado a cópia de pré-restauro existente"
 
 #: src/Gtk/BackupDeviceBox.vala:215
 msgid "Free"
@@ -1060,7 +1063,7 @@ msgstr "Dispositivo GRUB não selecionado"
 msgid "GRUB will NOT be reinstalled"
 msgstr "GRUB não será reinstalado"
 
-#: src/Core/Main.vala:2509
+#: src/Core/Main.vala:2522
 msgid "Generating initramfs..."
 msgstr "A criar initramfs..."
 
@@ -1110,11 +1113,11 @@ msgstr "Pasta pessoal"
 msgid "Hourly"
 msgstr "Horário"
 
-#: src/Core/Main.vala:1076
+#: src/Core/Main.vala:1089
 msgid "Hourly snapshot failed!"
 msgstr "Ocorreu um erro na cópia horária!"
 
-#: src/Core/Main.vala:1057
+#: src/Core/Main.vala:1070
 msgid "Hourly snapshots are enabled"
 msgstr "As cópias de segurança horárias estão ativas"
 
@@ -1126,7 +1129,7 @@ msgstr ""
 "Se o sistema restaurado falhar ao arrancar, inicie-o com um CDs/USB, instale "
 "Timeshift e tente restaurar outra cópia de segurança."
 
-#: src/Core/Main.vala:2373
+#: src/Core/Main.vala:2386
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
@@ -1149,7 +1152,7 @@ msgstr "Incluir todos os ficheiros"
 msgid "Include Only Hidden Files"
 msgstr "Incluir apenas os ficheiros ocultos"
 
-#: src/Core/Main.vala:2187
+#: src/Core/Main.vala:2200
 msgid "Invalid Snapshot"
 msgstr "Cópia inválida"
 
@@ -1158,7 +1161,7 @@ msgstr "Cópia inválida"
 msgid "Invalid command line arguments"
 msgstr "Argumentos da linha de comando inválidos"
 
-#: src/Gtk/MainWindow.vala:814
+#: src/Gtk/MainWindow.vala:831
 msgid "Invalid snapshot"
 msgstr "Cópia de segurança inválida"
 
@@ -1201,85 +1204,85 @@ msgstr "Manter esse caminho de montagem no sistema de ficheiros do root"
 msgid "LIVE"
 msgstr "LIVE"
 
-#: src/Utility/Device.vala:1951 src/Gtk/BackupDeviceBox.vala:254
+#: src/Utility/Device.vala:1973 src/Gtk/BackupDeviceBox.vala:254
 #: src/AppConsole.vala:471 src/AppConsole.vala:510
 #, c-format
 msgid "Label"
 msgstr "Etiqueta"
 
-#: src/Core/Main.vala:1038
+#: src/Core/Main.vala:1051
 #, c-format
 msgid "Last boot snapshot is %d hours old"
 msgstr "A última cópia de segurança de arranque tem %d horas"
 
-#: src/Core/Main.vala:1033
+#: src/Core/Main.vala:1046
 msgid "Last boot snapshot is older than system start time"
 msgstr ""
 "A última cópia de segurança de arranque é mais antiga que a hora de início "
 "do sistema"
 
-#: src/Core/Main.vala:1029
+#: src/Core/Main.vala:1042
 msgid "Last boot snapshot not found"
 msgstr "Última cópia de segurança de arranque não encontrada"
 
-#: src/Core/Main.vala:1100
+#: src/Core/Main.vala:1113
 #, c-format
 msgid "Last daily snapshot is %d hours old"
 msgstr "Última cópia de segurança diária tem %d horas"
 
-#: src/Core/Main.vala:1095
+#: src/Core/Main.vala:1108
 msgid "Last daily snapshot is more than 1 day old"
 msgstr "Última cópia de segurança diária tem mais de 1 dia"
 
-#: src/Core/Main.vala:1091
+#: src/Core/Main.vala:1104
 msgid "Last daily snapshot not found"
 msgstr "Última cópia de segurança diária não encontrada"
 
-#: src/Core/Main.vala:1069
+#: src/Core/Main.vala:1082
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
 msgstr "Última cópia de segurança horária tem %d minutos"
 
-#: src/Core/Main.vala:1064
+#: src/Core/Main.vala:1077
 msgid "Last hourly snapshot is more than 1 hour old"
 msgstr "Última cópia de segurança horária tem mais de uma 1 hora"
 
-#: src/Core/Main.vala:1060
+#: src/Core/Main.vala:1073
 msgid "Last hourly snapshot not found"
 msgstr "A última cópia de segurança horária não foi encontrado"
 
-#: src/Core/Main.vala:1162
+#: src/Core/Main.vala:1175
 #, c-format
 msgid "Last monthly snapshot is %d days old"
 msgstr "A última cópia de segurança mensal tem %d dias"
 
-#: src/Core/Main.vala:1157
+#: src/Core/Main.vala:1170
 msgid "Last monthly snapshot is more than 1 month old"
 msgstr "Última cópia de segurança mensal tem mais de 1 mês"
 
-#: src/Core/Main.vala:1153
+#: src/Core/Main.vala:1166
 msgid "Last monthly snapshot not found"
 msgstr "Última cópia de segurança mensal não encontrada"
 
-#: src/Core/Main.vala:1131
+#: src/Core/Main.vala:1144
 #, c-format
 msgid "Last weekly snapshot is %d days old"
 msgstr "Última cópia de segurança semanal tem %d dias"
 
-#: src/Core/Main.vala:1126
+#: src/Core/Main.vala:1139
 msgid "Last weekly snapshot is more than 1 week old"
 msgstr "Última cópia de segurança semanal tem mais de 1 semana"
 
-#: src/Core/Main.vala:1122
+#: src/Core/Main.vala:1135
 msgid "Last weekly snapshot not found"
 msgstr "Última cópia de segurança semanal não encontrada"
 
-#: src/Gtk/MainWindow.vala:1002
+#: src/Gtk/MainWindow.vala:1019
 #, c-format
 msgid "Latest snapshot"
 msgstr "Última cópia"
 
-#: src/Core/Main.vala:1505
+#: src/Core/Main.vala:1518
 #, c-format
 msgid "Linking from snapshot"
 msgstr "Criar ligação à cópia"
@@ -1296,7 +1299,7 @@ msgstr "Listar dispositivos"
 msgid "List snapshots"
 msgstr "Listar cópias de segurança"
 
-#: src/Gtk/MainWindow.vala:953
+#: src/Gtk/MainWindow.vala:970
 msgid "Live USB Mode (Restore Only)"
 msgstr "Modo Live USB (Somente para Restauração)"
 
@@ -1309,7 +1312,7 @@ msgstr "Localização"
 msgid "Main window closed by user"
 msgstr "Janela principal fechada pelo utilizador"
 
-#: src/Gtk/SnapshotListBox.vala:328
+#: src/Gtk/SnapshotListBox.vala:349
 msgid "Mark/Unmark for Deletion"
 msgstr "Marcar/Desmarcar para eliminação"
 
@@ -1327,7 +1330,7 @@ msgstr "Menu"
 msgid "Misc"
 msgstr "Diversos"
 
-#: src/Core/Main.vala:251
+#: src/Core/Main.vala:253
 msgid "Missing Dependencies"
 msgstr "Dependências em Falta"
 
@@ -1336,7 +1339,7 @@ msgstr "Dependências em Falta"
 msgid "Mode"
 msgstr "Modo"
 
-#: src/Utility/Device.vala:1934
+#: src/Utility/Device.vala:1956
 #, c-format
 msgid "Model"
 msgstr "Modelo"
@@ -1345,23 +1348,23 @@ msgstr "Modelo"
 msgid "Monthly"
 msgstr "Mensal"
 
-#: src/Core/Main.vala:1150
+#: src/Core/Main.vala:1163
 msgid "Monthly snapshot are enabled"
 msgstr "Cópias de Segurança Mensais estão ativas"
 
-#: src/Core/Main.vala:1169
+#: src/Core/Main.vala:1182
 msgid "Monthly snapshot failed!"
 msgstr "Cópias de segurança mensal falhou!"
 
-#: src/Core/Main.vala:2274 src/Core/Main.vala:2307
+#: src/Core/Main.vala:2287 src/Core/Main.vala:2320
 msgid "Mount"
 msgstr "Montar"
 
-#: src/Core/Main.vala:3135
+#: src/Core/Main.vala:3148
 msgid "Moved system subvolume to snapshot directory"
 msgstr "Subvolume de sistema movido para o diretório das cópias de segurança"
 
-#: src/Gtk/MainWindow.vala:790
+#: src/Gtk/MainWindow.vala:807
 msgid "Multiple snapshots selected"
 msgstr "Várias cópias de segurança selecionadas"
 
@@ -1383,15 +1386,15 @@ msgstr "Não"
 msgid "No Change"
 msgstr "Nenhuma alteração"
 
-#: src/Gtk/MainWindow.vala:599 src/Gtk/DeleteWindow.vala:335
+#: src/Gtk/MainWindow.vala:616 src/Gtk/DeleteWindow.vala:335
 msgid "No Snapshots Selected"
 msgstr "Nenhuma cópia selecionada"
 
-#: src/Gtk/MainWindow.vala:1026
+#: src/Gtk/MainWindow.vala:1043
 msgid "No snapshots available"
 msgstr "Nenhuma cópia disponível"
 
-#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:970
+#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:987
 #: src/AppConsole.vala:326
 msgid "No snapshots found"
 msgstr "Nenhuma cópia encontrada"
@@ -1408,11 +1411,11 @@ msgstr "Nenhuma cópia de segurança no dispositivo"
 msgid "No snapshots on this device"
 msgstr "Nenhuma cópia de segurança neste dispositivo"
 
-#: src/Gtk/MainWindow.vala:783
+#: src/Gtk/MainWindow.vala:800
 msgid "No snapshots selected"
 msgstr "Nenhuma cópia de segurança selecionada"
 
-#: src/Gtk/MainWindow.vala:1003 src/Gtk/MainWindow.vala:1005
+#: src/Gtk/MainWindow.vala:1020 src/Gtk/MainWindow.vala:1022
 msgid "None"
 msgstr "Nenhum"
 
@@ -1425,7 +1428,7 @@ msgstr "Não encontrado"
 msgid "Not Selected"
 msgstr "Não selecionado"
 
-#: src/Core/Main.vala:396
+#: src/Core/Main.vala:398
 msgid "Not Supported"
 msgstr "Não suportado"
 
@@ -1437,7 +1440,7 @@ msgstr "Espaço em disco insuficiente"
 msgid "Notes"
 msgstr "Notas"
 
-#: src/Core/Main.vala:1180
+#: src/Core/Main.vala:1193
 msgid "Nothing to do!"
 msgstr "Nada a fazer!"
 
@@ -1469,11 +1472,11 @@ msgstr ""
 "O sistema deve ser instalado numa partição BTRFS com disposição do subvolume "
 "do tipo Ubuntu (subvolumes @ e @home). Outras disposições não são suportadas."
 
-#: src/Core/Main.vala:4289
+#: src/Core/Main.vala:4306
 msgid "Older log files removed"
 msgstr "Ficheiros de registo mais antigos removidos"
 
-#: src/Gtk/MainWindow.vala:1004
+#: src/Gtk/MainWindow.vala:1021
 msgid "Oldest snapshot"
 msgstr "Cópias antigas"
 
@@ -1481,7 +1484,7 @@ msgstr "Cópias antigas"
 msgid "On demand (manual)"
 msgstr "A pedido (manual)"
 
-#: src/Core/Main.vala:394 src/Core/Main.vala:3617
+#: src/Core/Main.vala:396 src/Core/Main.vala:3634
 #: src/Gtk/RestoreDeviceBox.vala:511
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
@@ -1493,7 +1496,7 @@ msgstr ""
 msgid "Open Menu"
 msgstr "Abrir Menu"
 
-#: src/Core/Main.vala:3399
+#: src/Core/Main.vala:3416
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
@@ -1515,12 +1518,12 @@ msgstr "Outra aplicação (próxima página)"
 msgid "Owner"
 msgstr "Dono"
 
-#: src/Utility/Device.vala:1946
+#: src/Utility/Device.vala:1968
 #, c-format
 msgid "Parent Device"
 msgstr "Dispositivo principal"
 
-#: src/Core/Main.vala:2638 src/Core/Main.vala:2729 src/Gtk/RsyncLogBox.vala:222
+#: src/Core/Main.vala:2651 src/Core/Main.vala:2742 src/Gtk/RsyncLogBox.vala:222
 msgid "Parsing log file..."
 msgstr "A analisar o ficheiro de registo..."
 
@@ -1543,15 +1546,15 @@ msgstr "Padrão"
 msgid "Permissions"
 msgstr "Permissões"
 
-#: src/Core/Main.vala:270
+#: src/Core/Main.vala:272
 msgid "Please check if you have multiple windows open."
 msgstr "Verificar se tem várias janelas abertas."
 
-#: src/Core/Main.vala:2405
+#: src/Core/Main.vala:2418
 msgid "Please do not interrupt the restore process!"
 msgstr "Não interromper o processo de restauro!"
 
-#: src/Core/Main.vala:365
+#: src/Core/Main.vala:367
 msgid "Please install required packages and try running TimeShift again"
 msgstr ""
 "Instalar os pacotes necessários e tente executar novamente o TimeShift"
@@ -1565,11 +1568,11 @@ msgstr ""
 msgid "Please run the application as admin (using 'sudo' or 'su')"
 msgstr "Executar o programa como administrador (utilizando 'sudo' ou 'su')"
 
-#: src/Core/Main.vala:2355
+#: src/Core/Main.vala:2368
 msgid "Please save your work and close all applications."
 msgstr "Guardar o seu trabalho e fechar todos os programas."
 
-#: src/Gtk/MainWindow.vala:685
+#: src/Gtk/MainWindow.vala:702
 msgid "Please select a snapshot to view the log!"
 msgstr "Selecionar uma cópia para ver o registo!"
 
@@ -1577,11 +1580,11 @@ msgstr "Selecionar uma cópia para ver o registo!"
 msgid "Please select the GRUB device"
 msgstr "Selecionar o dispositivo de GRUB"
 
-#: src/Core/Main.vala:266
+#: src/Core/Main.vala:268
 msgid "Please wait a few minutes and try again."
 msgstr "Aguarde alguns minutos e tente novamente."
 
-#: src/Gtk/MainWindow.vala:752
+#: src/Gtk/MainWindow.vala:769
 msgid "Please wait for snapshots to be deleted."
 msgstr "Aguarde que as cópias sejam eliminadas."
 
@@ -1593,7 +1596,7 @@ msgstr "Aguarde..."
 msgid "Populating list..."
 msgstr "A preencher a lista..."
 
-#: src/Core/Main.vala:1740 src/Gtk/BackupBox.vala:117
+#: src/Core/Main.vala:1753 src/Gtk/BackupBox.vala:117
 #: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
 #: src/Gtk/RsyncLogBox.vala:232
 msgid "Preparing..."
@@ -1612,11 +1615,11 @@ msgstr "Imprimir informação sobre os erros"
 msgid "Print version number"
 msgstr "Exibir número da versão"
 
-#: src/Core/Main.vala:3979
+#: src/Core/Main.vala:3996
 msgid "Query completed"
 msgstr "Análise concluída"
 
-#: src/Core/Main.vala:3962
+#: src/Core/Main.vala:3979
 msgid "Querying subvolume info..."
 msgstr "A analisar informação do subvolume..."
 
@@ -1641,7 +1644,7 @@ msgstr ""
 msgid "Re-install GRUB2 bootloader?"
 msgstr "Reinstalar bootloader GRUB2?"
 
-#: src/Core/Main.vala:2468
+#: src/Core/Main.vala:2481
 msgid "Re-installing GRUB2 bootloader..."
 msgstr "A reinstalar o carregador de arranque GRUB2..."
 
@@ -1654,7 +1657,7 @@ msgstr "Reinstala o carregador de arranque GRUB2 no dispositivo selecionado."
 msgid "Read %'d of %'d lines..."
 msgstr "A ler %'d of %'d linhas..."
 
-#: src/Core/Main.vala:2568
+#: src/Core/Main.vala:2581
 msgid "Rebooting system..."
 msgstr "A reiniciar o sistema..."
 
@@ -1675,8 +1678,8 @@ msgstr "Os locais remotos e de rede não são suportados."
 msgid "Remove"
 msgstr "Remover"
 
-#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1778 src/Core/Main.vala:1789
-#: src/Core/Main.vala:4285 src/Core/SnapshotRepo.vala:907
+#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1791 src/Core/Main.vala:1802
+#: src/Core/Main.vala:4302 src/Core/SnapshotRepo.vala:907
 #, c-format
 msgid "Removed"
 msgstr "Removida"
@@ -1685,7 +1688,7 @@ msgstr "Removida"
 msgid "Removed cron task"
 msgstr "Tarefa cron removida"
 
-#: src/Core/Main.vala:3767
+#: src/Core/Main.vala:3784
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr "Removido diretório de montagem: '%s'"
@@ -1730,7 +1733,7 @@ msgstr "Excluir do Restauro"
 msgid "Restore Snapshot"
 msgstr "Restaurar Cópia"
 
-#: src/Core/Main.vala:2978 src/Core/Main.vala:3020
+#: src/Core/Main.vala:2991 src/Core/Main.vala:3033
 msgid "Restore completed"
 msgstr "Restauro concluído"
 
@@ -1766,7 +1769,7 @@ msgstr ""
 "segurança. Se necessário, esta cópia pode ser restaurada mais tarde para "
 "reverter a restauração."
 
-#: src/Core/Main.vala:2947
+#: src/Core/Main.vala:2960
 msgid "Restoring snapshot..."
 msgstr "A restaurar imagem..."
 
@@ -1785,7 +1788,7 @@ msgstr ""
 "serão copiados quando a cópia for criada e substituída quando a cópia for "
 "restaurada."
 
-#: src/Utility/Device.vala:1936
+#: src/Utility/Device.vala:1958
 #, c-format
 msgid "Revision"
 msgstr "Versão"
@@ -1808,7 +1811,7 @@ msgstr ""
 msgid "Run in non-interactive mode"
 msgstr "Executar em modo não-interativo"
 
-#: src/Core/Main.vala:202
+#: src/Core/Main.vala:204
 msgid "Running"
 msgstr "Em execução"
 
@@ -1832,7 +1835,7 @@ msgstr ""
 "Pode até instalar outra distribuição Linux e depois reverter para a "
 "distribuição anterior restaurando uma cópia de segurança."
 
-#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+#: src/Core/Main.vala:1459 src/Core/Main.vala:1613 src/Core/Main.vala:1615
 msgid "Saving to device"
 msgstr "A guardar no dispositivo"
 
@@ -1840,11 +1843,11 @@ msgstr "A guardar no dispositivo"
 msgid "Schedule"
 msgstr "Agendar"
 
-#: src/Core/Main.vala:273
+#: src/Core/Main.vala:275
 msgid "Scheduled snapshot in progress..."
 msgstr "Cópia de segurança agendada em curso ..."
 
-#: src/Core/Main.vala:1180 src/Gtk/MainWindow.vala:1020
+#: src/Core/Main.vala:1193 src/Gtk/MainWindow.vala:1037
 #: src/Gtk/ScheduleBox.vala:312
 msgid "Scheduled snapshots are disabled"
 msgstr "Cópias de segurança agendadas estão desativadas"
@@ -1879,7 +1882,7 @@ msgstr "Selecione o disco do sistema BTRFS com subvolume root (@)"
 msgid "Select GRUB device"
 msgstr "Selecionar dispositivo GRUB"
 
-#: src/Gtk/MainWindow.vala:684
+#: src/Gtk/MainWindow.vala:701
 msgid "Select Snapshot"
 msgstr "Selecionar cópia de segurança"
 
@@ -1908,7 +1911,7 @@ msgstr "Selecionar dispositivo de destino"
 msgid "Select a partition on this disk"
 msgstr "Selecionar uma partição neste disco"
 
-#: src/Gtk/MainWindow.vala:791
+#: src/Gtk/MainWindow.vala:808
 msgid "Select a single snapshot to restore"
 msgstr "Selecionar uma única cópia de segurança a restaurar"
 
@@ -1972,7 +1975,7 @@ msgstr "Selecionar os itens a remover da lista"
 msgid "Select the snapshot device"
 msgstr "Selecionar o dispositivo com cópias de segurança"
 
-#: src/Gtk/MainWindow.vala:784
+#: src/Gtk/MainWindow.vala:801
 msgid "Select the snapshot to restore"
 msgstr "Selecionar a cópia de segurança a restaurar"
 
@@ -1980,7 +1983,7 @@ msgstr "Selecionar a cópia de segurança a restaurar"
 msgid "Select the snapshots to be deleted"
 msgstr "Selecionar a cópia de segurança a eliminar"
 
-#: src/Gtk/MainWindow.vala:600
+#: src/Gtk/MainWindow.vala:617
 msgid "Select the snapshots to mark for deletion"
 msgstr "Selecione as cópias de segurança a serem marcadas para exclusão"
 
@@ -1988,11 +1991,11 @@ msgstr "Selecione as cópias de segurança a serem marcadas para exclusão"
 msgid "Select the target devices where system will be cloned."
 msgstr "Selecione os dispositivos de destino onde o sistema será clonado."
 
-#: src/Core/Main.vala:3427
+#: src/Core/Main.vala:3444
 msgid "Selected default snapshot device"
 msgstr "Dispositivo de cópia de segurança padrão selecionado"
 
-#: src/Core/Main.vala:3378 src/Core/Main.vala:3382
+#: src/Core/Main.vala:3395 src/Core/Main.vala:3399
 msgid "Selected default snapshot type"
 msgstr "Tipo de cópia de segurança padrão selecionada"
 
@@ -2013,11 +2016,11 @@ msgid "Selected snapshot device is not a system disk"
 msgstr ""
 "O dispositivo de cópia de segurança selecionado não é um disco do sistema"
 
-#: src/Core/Main.vala:2188
+#: src/Core/Main.vala:2201
 msgid "Selected snapshot is marked for deletion"
 msgstr "A cópia de segurança selecionada está marcada para exclusão"
 
-#: src/Gtk/MainWindow.vala:815
+#: src/Gtk/MainWindow.vala:832
 msgid "Selected snapshot is marked for deletion and cannot be restored"
 msgstr ""
 "A cópia de segurança selecionada está marcada para exclusão e não pode ser "
@@ -2031,12 +2034,12 @@ msgstr ""
 "O utilizador selecionado encriptou a pasta pessoal. Não é possível incluir "
 "apenas ficheiros ocultos."
 
-#: src/Utility/Device.vala:1935
+#: src/Utility/Device.vala:1957
 #, c-format
 msgid "Serial"
 msgstr "Número de série"
 
-#: src/Core/Main.vala:230
+#: src/Core/Main.vala:232
 msgid "Session log file"
 msgstr "Ficheiro de registo da sessão"
 
@@ -2077,7 +2080,7 @@ msgstr "Mostrar mais programas a serem excluídos na próxima página"
 msgid "Show rsync output (default)"
 msgstr "Mostrar saída rsync (padrão)"
 
-#: src/Utility/Device.vala:1938 src/Utility/Device.vala:1953
+#: src/Utility/Device.vala:1960 src/Utility/Device.vala:1975
 #: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
 #: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
 #: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:469 src/AppConsole.vala:508
@@ -2102,7 +2105,7 @@ msgstr ""
 msgid "Skip GRUB2 reinstall"
 msgstr "Avançar reinstalação do GRUB2"
 
-#: src/Core/Main.vala:2193 src/Core/SnapshotRepo.vala:631
+#: src/Core/Main.vala:2206 src/Core/SnapshotRepo.vala:631
 #: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:94
 #, c-format
 msgid "Snapshot"
@@ -2126,7 +2129,7 @@ msgstr "Cópia de Segurança Criada"
 msgid "Snapshot Levels"
 msgstr "Níveis de cópia de segurança"
 
-#: src/Gtk/MainWindow.vala:751
+#: src/Gtk/MainWindow.vala:768
 msgid "Snapshot deletion in progress..."
 msgstr "Exclusão da cópia de segurança em progresso..."
 
@@ -2148,15 +2151,15 @@ msgstr "Nenhum dispositivo de cópia de segurança selecionado"
 msgid "Snapshot location"
 msgstr "Localização da cópia de segurança"
 
-#: src/Core/Main.vala:1317
+#: src/Core/Main.vala:1330
 msgid "Snapshot saved successfully"
 msgstr "Cópia de Segurança guardada com sucesso"
 
-#: src/Core/Main.vala:2183
+#: src/Core/Main.vala:2196
 msgid "Snapshot to restore not specified!"
 msgstr "Cópia de segurança a restaurar não especificada!"
 
-#: src/Core/Main.vala:3024
+#: src/Core/Main.vala:3037
 msgid "Snapshot will become active after system is rebooted."
 msgstr "A cópia de segurança ficará ativa após o reinício do sistema."
 
@@ -2244,7 +2247,7 @@ msgstr ""
 "As cópias são guardadas em /timeshift-btrfs na partição selecionada. Outros "
 "locais não são suportados."
 
-#: src/Gtk/MainWindow.vala:965
+#: src/Gtk/MainWindow.vala:982
 msgid "Snapshots available for restore"
 msgstr "Cópias de segurança disponíveis para restauro"
 
@@ -2263,7 +2266,7 @@ msgstr ""
 msgid "Snapshots cannot be created in Live CD mode"
 msgstr "As cópias de segurança não podem ser criadas no modo Live CD"
 
-#: src/Gtk/MainWindow.vala:1012
+#: src/Gtk/MainWindow.vala:1029
 msgid "Snapshots will be created at selected intervals"
 msgstr "As cópias de segurança serão criadas em intervalos selecionados"
 
@@ -2332,11 +2335,11 @@ msgstr "Mudar para o modo RSYNC (default: config)"
 msgid "Symlinks updated"
 msgstr "Ligações simbólicas atualizadas"
 
-#: src/Core/Main.vala:2543
+#: src/Core/Main.vala:2556
 msgid "Syncing file systems..."
 msgstr "A sincronizar sistemas de ficheiros..."
 
-#: src/Core/Main.vala:1522 src/Core/Main.vala:2713 src/Core/Main.vala:2954
+#: src/Core/Main.vala:1535 src/Core/Main.vala:2726 src/Core/Main.vala:2967
 msgid "Syncing files with rsync..."
 msgstr "A sincronizar ficheiros com rsync..."
 
@@ -2344,12 +2347,12 @@ msgstr "A sincronizar ficheiros com rsync..."
 msgid "Syntax"
 msgstr "Sintaxe"
 
-#: src/Utility/Device.vala:1959 src/Gtk/SnapshotListBox.vala:126
+#: src/Utility/Device.vala:1981 src/Gtk/SnapshotListBox.vala:126
 #, c-format
 msgid "System"
 msgstr "Sistema"
 
-#: src/Gtk/MainWindow.vala:912
+#: src/Gtk/MainWindow.vala:929
 msgid "System Restore Utility"
 msgstr "Utilitário de Restauração do Sistema"
 
@@ -2359,15 +2362,15 @@ msgstr ""
 "O sistema pode ser revertido para uma data anterior restaurando uma cópia de "
 "segurança."
 
-#: src/Core/Main.vala:2406
+#: src/Core/Main.vala:2419
 msgid "System will reboot after files are restored"
 msgstr "Sistema será reiniciado depois de os ficheiros serem restaurados"
 
-#: src/Core/Main.vala:2356
+#: src/Core/Main.vala:2369
 msgid "System will reboot after files are restored."
 msgstr "O sistema será reinicializado após a restauração dos ficheiros."
 
-#: src/Core/Main.vala:1253 src/Core/Main.vala:1327
+#: src/Core/Main.vala:1266 src/Core/Main.vala:1340
 msgid "Tagged snapshot"
 msgstr "Cópia de segurança com marcador"
 
@@ -2375,7 +2378,7 @@ msgstr "Cópia de segurança com marcador"
 msgid "Tags"
 msgstr "Marcadores"
 
-#: src/Core/Main.vala:2218
+#: src/Core/Main.vala:2231
 msgid "Target device is not mounted"
 msgstr "Dispositivo de destino não está montado"
 
@@ -2383,7 +2386,7 @@ msgstr "Dispositivo de destino não está montado"
 msgid "Target device is same as system device"
 msgstr "Dispositivo de destino é igual ao dispositivo do sistema"
 
-#: src/Core/Main.vala:2212
+#: src/Core/Main.vala:2225
 msgid "Target device not specified!"
 msgstr "Dispositivo de destino não especificado!"
 
@@ -2397,11 +2400,11 @@ msgstr ""
 "utilizador atual. Selecione esta opção para suprimir os emails das tarefas "
 "criadas no cron pelo Timeshift."
 
-#: src/Core/Main.vala:393
+#: src/Core/Main.vala:395
 msgid "The system partition has an unsupported subvolume layout."
 msgstr "A partição do sistema tem uma disposição de subvolume não suportada."
 
-#: src/Core/Main.vala:3616
+#: src/Core/Main.vala:3633
 msgid "The target partition has an unsupported subvolume layout."
 msgstr "A partição de destino tem uma disposição de subvolume não suportada."
 
@@ -2410,11 +2413,11 @@ msgstr "A partição de destino tem uma disposição de subvolume não suportada
 msgid "There are no snapshots on this device"
 msgstr "Não há cópias de segurança neste dispositivo"
 
-#: src/Utility/Device.vala:1380
+#: src/Utility/Device.vala:1402
 msgid "This device is not encrypted"
 msgstr "Este dispositivo não está encriptado"
 
-#: src/Core/Main.vala:2372
+#: src/Core/Main.vala:2385
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
@@ -2422,7 +2425,7 @@ msgstr ""
 "Este software vem sem nenhuma  garantia e o autor não assume nenhuma "
 "responsabilidade por quaisquer danos decorrentes do uso deste programa."
 
-#: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1011
+#: src/Gtk/MainWindow.vala:1017 src/Gtk/MainWindow.vala:1028
 msgid "Timeshift is active"
 msgstr "TimeShift está ativo"
 
@@ -2439,14 +2442,14 @@ msgstr ""
 "Para restaurar com as opções padrão, pressione a tecla ENTER para todos os "
 "prompts!"
 
-#: src/Utility/Device.vala:1949 src/Gtk/BackupDeviceBox.vala:190
+#: src/Utility/Device.vala:1971 src/Gtk/BackupDeviceBox.vala:190
 #: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:470
 #: src/AppConsole.vala:509
 #, c-format
 msgid "Type"
 msgstr "Tipo"
 
-#: src/Utility/Device.vala:1948
+#: src/Utility/Device.vala:1970
 #, c-format
 msgid "UUID"
 msgstr "UUID"
@@ -2455,24 +2458,24 @@ msgstr "UUID"
 msgid "Unknown option"
 msgstr "Opção desconhecida"
 
-#: src/Core/Main.vala:1235
+#: src/Core/Main.vala:1248
 msgid "Unknown snapshot type"
 msgstr "Tipo de cópia de segurança desconhecida"
 
-#: src/Core/Main.vala:1727
+#: src/Core/Main.vala:1740
 msgid "Unknown value specified for option --tags"
 msgstr "Valor desconhecido especificado para a opção --tags"
 
-#: src/Utility/Device.vala:1391 src/Utility/Device.vala:1507
+#: src/Utility/Device.vala:1413 src/Utility/Device.vala:1529
 #, c-format
 msgid "Unlocked device is mapped to '%s'"
 msgstr "O dispositivo desbloqueado é mapeado em '%s'"
 
-#: src/Utility/Device.vala:1506
+#: src/Utility/Device.vala:1528
 msgid "Unlocked successfully"
 msgstr "Desbloqueado com sucesso"
 
-#: src/Utility/Device.vala:1722
+#: src/Utility/Device.vala:1744
 msgid "Unmounting from"
 msgstr "A desmontar de"
 
@@ -2480,7 +2483,7 @@ msgstr "A desmontar de"
 msgid "Unshared"
 msgstr "Não partilhado"
 
-#: src/Core/Main.vala:3620 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Core/Main.vala:3637 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
 msgstr "Disposição de Subvolume Não Suportada"
 
@@ -2492,11 +2495,11 @@ msgstr "Atualizar menu GRUB"
 msgid "Update initramfs"
 msgstr "Atualizar initramfs"
 
-#: src/Core/Main.vala:2893
+#: src/Core/Main.vala:2906
 msgid "Updated /etc/crypttab on target device"
 msgstr "Atualizar /etc/crypttab no dispositivo alvo"
 
-#: src/Core/Main.vala:2813
+#: src/Core/Main.vala:2826
 msgid "Updated /etc/fstab on target device"
 msgstr "/etc/fstab atualizado no dispositivo de destino"
 
@@ -2508,15 +2511,15 @@ msgstr ""
 "Atualizar as entradas do menu GRUB (recomendado). Isto é seguro executar e "
 "deve ser deixado selecionado."
 
-#: src/Core/Main.vala:2526
+#: src/Core/Main.vala:2539
 msgid "Updating GRUB menu..."
 msgstr "A atualizar o menu GRUB..."
 
-#: src/Core/Main.vala:2737
+#: src/Core/Main.vala:2750
 msgid "Updating bootloader configuration..."
 msgstr "A atualizar  a configuração do bootloader..."
 
-#: src/Utility/Device.vala:1956
+#: src/Utility/Device.vala:1978
 #, c-format
 msgid "Used"
 msgstr "Utilizado"
@@ -2529,7 +2532,7 @@ msgstr "Utilizador"
 msgid "User Home Directories"
 msgstr "Pastas pessoais do utilizador"
 
-#: src/Utility/Device.vala:1461
+#: src/Utility/Device.vala:1483
 msgid "User cancelled the password prompt"
 msgstr "O utilizador cancelou a solicitação de palavra-passe"
 
@@ -2548,16 +2551,16 @@ msgstr "Utilizadores"
 msgid "Users Home"
 msgstr "Pasta pessoal dos utilizadores"
 
-#: src/Utility/Device.vala:1933
+#: src/Utility/Device.vala:1955
 #, c-format
 msgid "Vendor"
 msgstr "Fabricante"
 
-#: src/Gtk/SnapshotListBox.vala:342
+#: src/Gtk/SnapshotListBox.vala:328
 msgid "View Rsync Log for Create"
 msgstr "Ver registo Rsync para criar"
 
-#: src/Gtk/SnapshotListBox.vala:349
+#: src/Gtk/SnapshotListBox.vala:335
 msgid "View Rsync Log for Restore"
 msgstr "Ver registo Rsync para restaurar"
 
@@ -2565,7 +2568,7 @@ msgstr "Ver registo Rsync para restaurar"
 msgid "View TimeShift Logs"
 msgstr "Ver registos do TimeShift"
 
-#: src/Core/Main.vala:2267 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Core/Main.vala:2280 src/Gtk/RestoreSummaryBox.vala:53
 msgid "Warning"
 msgstr "Aviso"
 
@@ -2577,11 +2580,11 @@ msgstr "Navegadores da Internet"
 msgid "Weekly"
 msgstr "Semanalmente"
 
-#: src/Core/Main.vala:1138
+#: src/Core/Main.vala:1151
 msgid "Weekly snapshot failed!"
 msgstr "Ocorreu um erro na cópia de segurança semanal!"
 
-#: src/Core/Main.vala:1119
+#: src/Core/Main.vala:1132
 msgid "Weekly snapshots are enabled"
 msgstr "As cópias de segurança semanais estão ativadas"
 
@@ -2593,7 +2596,7 @@ msgstr "Com erros"
 msgid "Wizard"
 msgstr "Assistente"
 
-#: src/Utility/Device.vala:1434 src/Utility/Device.vala:1480
+#: src/Utility/Device.vala:1456 src/Utility/Device.vala:1502
 msgid "Wrong password"
 msgstr "Palavra-passe incorreta"
 
@@ -2638,12 +2641,12 @@ msgstr "[Aviso] Eliminado bloqueio inválido"
 msgid "all"
 msgstr "tudo"
 
-#: src/Core/Main.vala:1655 src/Core/Main.vala:4030 src/Core/Main.vala:4115
+#: src/Core/Main.vala:1668 src/Core/Main.vala:4047 src/Core/Main.vala:4132
 #: src/Core/Subvolume.vala:215
 msgid "btrfs returned an error"
 msgstr "o btrfs devolveu um erro"
 
-#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1554
+#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1567
 msgid "complete"
 msgstr "concluído"
 
@@ -2663,17 +2666,17 @@ msgstr "incompleto"
 msgid "marked for deletion"
 msgstr "selecionado para eliminação"
 
-#: src/Core/Main.vala:1446 src/Core/Main.vala:1600 src/Core/Main.vala:1602
+#: src/Core/Main.vala:1459 src/Core/Main.vala:1613 src/Core/Main.vala:1615
 msgid "mounted at path"
 msgstr "montado no caminho"
 
-#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1554
+#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1567
 #: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
 #: src/Gtk/DeleteBox.vala:149
 msgid "remaining"
 msgstr "restante"
 
-#: src/Core/Main.vala:1565
+#: src/Core/Main.vala:1578
 msgid "rsync returned an error"
 msgstr "o rsync devolveu um erro"
 
