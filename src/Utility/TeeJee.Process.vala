@@ -272,23 +272,6 @@ namespace TeeJee.ProcessHelper{
 		}
 	}
 
-	// dep: pidof, TODO: Rewrite using /proc
-	public int get_pid_by_name (string name){
-
-		/* Get the process ID for a process with given name */
-
-		string std_out, std_err;
-		exec_sync("pidof \"%s\"".printf(name), out std_out, out std_err);
-		
-		if (std_out != null){
-			string[] arr = std_out.split ("\n");
-			if (arr.length > 0){
-				return int.parse (arr[0]);
-			}
-		}
-
-		return -1;
-	}
 
 	// dep: ps TODO: Rewrite using /proc
 	public bool process_is_running(long pid){
