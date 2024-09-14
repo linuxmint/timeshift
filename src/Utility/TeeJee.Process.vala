@@ -272,27 +272,14 @@ namespace TeeJee.ProcessHelper{
 		}
 	}
 
-
-	// dep: ps TODO: Rewrite using /proc
-	public bool process_is_running(long pid){
-
-		/* Checks if given process is running */
-
-		string cmd = "";
-		string std_out;
-		string std_err;
-		int ret_val;
-
-		try{
-			cmd = "ps --pid %ld".printf(pid);
-			Process.spawn_command_line_sync(cmd, out std_out, out std_err, out ret_val);
-		}
-		catch (Error e) {
-			log_error (e.message);
-			return false;
-		}
-
-		return (ret_val == 0);
+	// return the name of the executeable of a given pid or self if pid is <= 0
+	// returns an empty string on error or if the pid could not be found
+	public string get_process_exe_name(long pid = -1){
+		string pidStr = (pid <= 0 ? "self" : pid.to_string());
+		string path = "/proc/%s/exe".printf(pidStr);
+		char[] buf = new char[4096];
+		Posix.readlink(path, buf);
+		return GLib.Path.get_basename((string) buf);
 	}
 
 	// dep: ps TODO: Rewrite using /proc
