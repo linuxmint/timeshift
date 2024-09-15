@@ -88,12 +88,28 @@ namespace TeeJee.FileSystem{
 	    }
 	}
 
-	public int64 file_line_count (string file_path){
-		/* Count number of lines in text file */
-		string cmd = "wc -l '%s'".printf(escape_single_quote(file_path));
-		string std_out, std_err;
-		exec_sync(cmd, out std_out, out std_err);
-		return long.parse(std_out.split("\t")[0]);
+	public int64? file_line_count (string file_path){
+		/* Count number of lines in text file returns null on error */
+
+		try {
+			long line_nums = 0;
+			char symbol;
+
+			File file = File.new_for_path(file_path);
+			FileInputStream inStream = file.read();
+			BufferedInputStream bis = new BufferedInputStream.sized(inStream,  (size_t) (1 * MiB));
+			while((symbol = (char) bis.read_byte()) != -1) {
+				if(symbol == '\n') {
+					line_nums ++;
+				}
+			}
+			bis.close();
+			return line_nums;
+		} catch(Error e) {
+			log_error (e.message);
+			log_error(_("Failed to read file") + ": %s".printf(file_path));
+		}
+		return null;
 	}
 
 	public string? file_read (string file_path){

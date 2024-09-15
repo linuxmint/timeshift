@@ -3922,12 +3922,7 @@ public class Main : GLib.Object{
 				ret_val = exec_script_sync(cmd, out std_out, out std_err);
 				if (ret_val == 0){
 					required_space = long.parse(std_out.replace(",","").strip());
-
-					cmd = "wc -l '%s'".printf(escape_single_quote(file_log));
-					ret_val = exec_script_sync(cmd, out std_out, out std_err);
-					if (ret_val == 0){
-						file_count = long.parse(std_out.split(" ")[0].strip());
-					}
+					file_count = file_line_count(file_log) ?? 0;
 					
 					thr_success = true;
 				}
