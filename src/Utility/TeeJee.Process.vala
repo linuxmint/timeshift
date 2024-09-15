@@ -272,7 +272,7 @@ namespace TeeJee.ProcessHelper{
 		}
 	}
 
-	// return the name of the executeable of a given pid or self if pid is <= 0
+	// return the name of the executable of a given pid or self if pid is <= 0
 	// returns an empty string on error or if the pid could not be found
 	public string get_process_exe_name(long pid = -1){
 		string pidStr = (pid <= 0 ? "self" : pid.to_string());
@@ -282,30 +282,63 @@ namespace TeeJee.ProcessHelper{
 		return GLib.Path.get_basename((string) buf);
 	}
 
-	// dep: ps TODO: Rewrite using /proc
-	public int[] get_process_children (Pid parent_pid){
+	public Pid[] get_process_children (Pid parent_pid){
 
-		/* Returns the list of child processes spawned by given process */
+		/* Returns the list of child processes owned by a given process */
 
-		string std_out, std_err;
-		exec_sync("ps --ppid %d".printf(parent_pid), out std_out, out std_err);
+		// no explicit check for the existence of /proc/ as this might be a time-of-check-time-of-use bug.
+		File procfs = File.new_for_path("/proc/");
 
-		int pid;
-		int[] procList = {};
-		string[] arr;
+		try {
+			FileEnumerator enumerator = procfs.enumerate_children(FileAttribute.STANDARD_NAME, FileQueryInfoFlags.NOFOLLOW_SYMLINKS);
+			FileInfo info;
+			Pid[] childList = {};
+			while ((info = enumerator.next_file()) != null) {
+				if(info.get_file_type() != FileType.DIRECTORY) {
+					// only interested in directories
+					continue;
+				}
 
-		foreach (string line in std_out.split ("\n")){
-			arr = line.strip().split (" ");
-			if (arr.length < 1) { continue; }
+				string name = info.get_name();
 
-			pid = 0;
-			pid = int.parse (arr[0]);
+				uint64 pid;
+				if(!uint64.try_parse(name, out pid)) {
+					// make sure to not access any other directories that may be present in /proc for some reason
+					continue;
+				}
 
-			if (pid != 0){
-				procList += pid;
+				string? fileCont = file_read("/proc/%s/stat".printf(name));
+				if(fileCont == null) {
+					// stat file of pid might not be readable (because of permissions or the process died since we got its pid)
+					continue;
+				}
+
+				// the format of the stat file is documented in man 5 proc
+				// it begging is: pid (comm) status ppid ...
+
+				// the process name could contain a space or ) and confuse the parsing.
+				// so we make sure to take the last ) and only parse the stuff after that.
+				int index = fileCont.last_index_of_char(')');
+				string parseline = fileCont.substring(index);
+				string[] split = parseline.split(" ", 4); // we are not interested in the part after ppid so just leave it a big string
+				if(split.length != 4) {
+					// format of stat file is not matching - should never happen
+					log_error("can not parse state of %ld".printf((long) pid));
+					continue;
+				}
+
+				uint64 ppid = uint64.parse(split[2]);
+				if(ppid != 0 && ppid == parent_pid) {
+					// the process is a child of the target parent process
+					childList += (Pid) pid;
+				}
 			}
+			return childList;
+		} catch (Error e) {
+			log_error(e.message);
+			log_error(_("Failed to get child processes of %ld").printf(parent_pid));
 		}
-		return procList;
+		return {};
 	}
 
 	// manage process ---------------------------------
@@ -334,12 +367,12 @@ namespace TeeJee.ProcessHelper{
 		/* Sends a signal to a process and its children (optional). */
 		
 		// get the childs before sending the signal, as the childs might not be accessible afterwards
-		int[] child_pids = get_process_children (process_pid);
+		Pid[] child_pids = get_process_children (process_pid);
 		Posix.kill (process_pid, sig);
 		 
 		 if (children){
-			foreach (long pid in child_pids){
-				Posix.kill ((Pid) pid, sig);
+			foreach (Pid pid in child_pids){
+				Posix.kill (pid, sig);
 			}
 		}
 	}
