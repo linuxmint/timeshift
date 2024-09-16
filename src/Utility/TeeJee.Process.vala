@@ -312,37 +312,34 @@ namespace TeeJee.ProcessHelper{
 	
 	public void process_quit(Pid process_pid, bool killChildren = true){
 
-		/* Kills specified process and its children (optional).
+		/* Terminates specified process and its children (optional).
 		 * Sends signal SIGTERM to the process to allow it to quit gracefully.
 		 * */
 
-		int[] child_pids = get_process_children (process_pid);
-		Posix.kill (process_pid, Posix.Signal.TERM);
-
-		if (killChildren){
-			Pid childPid;
-			foreach (long pid in child_pids){
-				childPid = (Pid) pid;
-				Posix.kill (childPid, Posix.Signal.TERM);
-			}
-		}
+		process_send_signal(process_pid, Posix.Signal.TERM, killChildren);
 	}
 	
-	public void process_kill(Pid process_pid, bool killChildren = true){
+	public void process_kill(Pid process_pid, bool killChildren = true) {
 
 		/* Kills specified process and its children (optional).
 		 * Sends signal SIGKILL to the process to kill it forcefully.
 		 * It is recommended to use the function process_quit() instead.
 		 * */
 		
-		int[] child_pids = get_process_children (process_pid);
-		Posix.kill (process_pid, Posix.Signal.KILL);
+		process_send_signal(process_pid, Posix.Signal.KILL, killChildren);
+	}
 
-		if (killChildren){
-			Pid childPid;
+	public void process_send_signal(Pid process_pid, Posix.Signal sig, bool children = true) {
+
+		/* Sends a signal to a process and its children (optional). */
+		
+		// get the childs before sending the signal, as the childs might not be accessible afterwards
+		int[] child_pids = get_process_children (process_pid);
+		Posix.kill (process_pid, sig);
+		 
+		 if (children){
 			foreach (long pid in child_pids){
-				childPid = (Pid) pid;
-				Posix.kill (childPid, Posix.Signal.KILL);
+				Posix.kill ((Pid) pid, sig);
 			}
 		}
 	}
