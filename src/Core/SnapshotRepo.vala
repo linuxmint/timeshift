@@ -882,46 +882,48 @@ public class SnapshotRepo : GLib.Object{
 		return thr_success;
 	}
 
+	public static bool delete_directory_recursive(string dir) {
+		File f = File.new_for_path(dir);
+		if(f.query_exists()) {
+			try {
+				FileEnumerator enumerator = f.enumerate_children(FileAttribute.STANDARD_NAME, FileQueryInfoFlags.NOFOLLOW_SYMLINKS);
+				FileInfo info;
+				while ((info = enumerator.next_file()) != null) {
+					string name = info.get_name();
+					if(info.get_file_type() == FileType.DIRECTORY) {
+
+						// ignore . and ..
+						if(name == "." || name == "..") {
+							continue;
+						}
+
+						if(!delete_directory_recursive(dir + "/" + name)) {
+							return false;
+						}
+					} else {
+						File file = File.new_for_path(dir + "/" + name);
+						file.delete();
+					}
+				}
+				f.delete();
+			} catch(Error err) {
+				log_error("Can not enumerate folder '%s'".printf(dir));
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private void delete_directory_thread(){
-		string cmd = "";
-		string std_out;
-		string std_err;
-		int ret_val;
+		thr_success = delete_directory_recursive(thr_args1);
 
-		try{
-			var f = File.new_for_path(thr_args1);
-			if(f.query_exists()){
-				cmd = "rm -rf \"%s\"".printf(thr_args1);
-
-				if (LOG_COMMANDS) { log_debug(cmd); }
-
-				Process.spawn_command_line_sync(cmd, out std_out, out std_err, out ret_val);
-
-				if (ret_val != 0){
-					log_error(_("Failed to remove") + ": '%s'".printf(thr_args1));
-					thr_success = false;
-					thr_running = false;
-					return;
-				}
-				else{
-					log_msg(_("Removed") + ": '%s'".printf(thr_args1));
-					thr_success = true;
-					thr_running = false;
-					return;
-				}
-			}
-			else{
-				log_error(_("Directory not found") + ": '%s'".printf(thr_args1));
-				thr_success = true;
-				thr_running = false;
-			}
+		if (thr_success) {
+			log_msg(_("Removed") + ": '%s'".printf(thr_args1));
+		} else{
+			log_error(_("Failed to remove") + ": '%s'".printf(thr_args1));
 		}
-		catch(Error e){
-			log_error (e.message);
-			thr_success = false;
-			thr_running = false;
-			return;
-		}
+
+		thr_running = false;
 	}
 
 	// symlinks ----------------------------------------
