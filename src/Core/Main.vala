@@ -206,7 +206,7 @@ public class Main : GLib.Object{
 		}
 
 		check_and_remove_timeshift_btrfs();
-		
+
 		// init log ------------------
 
 		try {
@@ -4375,17 +4375,19 @@ public class Main : GLib.Object{
 			
 							string cmd = "umount '%s'".printf(escape_single_quote(mdir2));
 							int retval = exec_sync(cmd);
-							
-							string cmd2 = "rmdir '%s'".printf(escape_single_quote(mdir2));
-							int retval2 = exec_sync(cmd2);
-							
-							if (retval2 != 0){
+
+							if (retval != 0){
 								log_debug("E: Failed to unmount");
 								log_debug("Ret=%d".printf(retval));
 								//ignore
 							}
 							else{
 								log_debug("Unmounted successfully");
+							}
+
+							// delete directory
+							if(!dir_empty_delete(mdir2)) {
+								log_debug("E: Failed to delete %s".printf(mdir2));
 							}
 						}
 					}

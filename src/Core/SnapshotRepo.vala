@@ -882,40 +882,8 @@ public class SnapshotRepo : GLib.Object{
 		return thr_success;
 	}
 
-	public static bool delete_directory_recursive(string dir) {
-		File f = File.new_for_path(dir);
-		if(f.query_exists()) {
-			try {
-				FileEnumerator enumerator = f.enumerate_children(FileAttribute.STANDARD_NAME, FileQueryInfoFlags.NOFOLLOW_SYMLINKS);
-				FileInfo info;
-				while ((info = enumerator.next_file()) != null) {
-					string name = info.get_name();
-					if(info.get_file_type() == FileType.DIRECTORY) {
-
-						// ignore . and ..
-						if(name == "." || name == "..") {
-							continue;
-						}
-
-						if(!delete_directory_recursive(dir + "/" + name)) {
-							return false;
-						}
-					} else {
-						File file = File.new_for_path(dir + "/" + name);
-						file.delete();
-					}
-				}
-				f.delete();
-			} catch(Error err) {
-				log_error("Can not enumerate folder '%s'".printf(dir));
-				return false;
-			}
-		}
-		return true;
-	}
-
 	private void delete_directory_thread(){
-		thr_success = delete_directory_recursive(thr_args1);
+		thr_success = TeeJee.FileSystem.dir_delete_recursive(thr_args1);
 
 		if (thr_success) {
 			log_msg(_("Removed") + ": '%s'".printf(thr_args1));
@@ -964,32 +932,18 @@ public class SnapshotRepo : GLib.Object{
 	}
 
 	public void cleanup_symlink_dir(string tag){
-		string cmd = "";
-		string std_out;
-		string std_err;
-		int ret_val;
-
 		try{
 			string path = "%s-%s".printf(snapshots_path, tag);
-			var f = File.new_for_path(path);
-			if (f.query_exists()){
-				cmd = "rm -rf \"%s\"".printf(path + "/");
-
-				if (LOG_COMMANDS) { log_debug(cmd); }
-
-				Process.spawn_command_line_sync(cmd, out std_out, out std_err, out ret_val);
-				if (ret_val != 0){
-					log_error (std_err);
-					log_error(_("Failed to delete symlinks") + ": 'snapshots-%s'".printf(tag));
-					return;
-				}
+			if(!TeeJee.FileSystem.dir_delete_recursive(path)) {
+				log_error(_("Failed to delete symlinks") + ": '%s'".printf(path));
 			}
 
+			File f = File.new_for_path(path);
 			f.make_directory_with_parents();
 		}
 		catch (Error e) {
-	        log_error (e.message);
-	    }
+			log_error (e.message);
+		}
 	}
 
 }
