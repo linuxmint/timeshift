@@ -69,7 +69,7 @@ public class DeleteFileTask : AsyncTask{
 			log_error (e.message);
 		}
 	}
-	
+
 	public void prepare() {
 		string script_text = build_script();
 		log_debug(script_text);
@@ -113,13 +113,10 @@ public class DeleteFileTask : AsyncTask{
 			cmd += " '%s/'".printf(escape_single_quote(dest_path));
 		}
 		else{
-			cmd += "rm";
+			cmd += "rm -rf";
 
 			if (verbose){
-				cmd += " -rfv";
-			}
-			else{
-				cmd += " -rf";
+				cmd += "v";
 			}
 
 			cmd += " '%s'".printf(escape_single_quote(dest_path));
