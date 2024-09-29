@@ -705,6 +705,17 @@ public class Main : GLib.Object{
 		
 		var list = new Gee.ArrayList<string>();
 
+		// add user entries from current setting
+		// user entry is first since rsync prioritizes the first
+		// inclusion/exclusion patterns seen
+		//  -------------------------------------------------------
+		
+		foreach(string path in exclude_list_user){
+			if (!list.contains(path)){
+				list.add(path);
+			}
+		}
+
 		// add default entries ---------------------------
 		
 		foreach(string path in exclude_list_default){
@@ -780,14 +791,6 @@ public class Main : GLib.Object{
 			}
 		}
 
-		// add user entries from current settings ----------
-		
-		foreach(string path in exclude_list_user){
-			if (!list.contains(path)){
-				list.add(path);
-			}
-		}
-
 		// add common entries for excluding home folders for all users --------
 		
 		foreach(string path in exclude_list_home){
@@ -812,6 +815,31 @@ public class Main : GLib.Object{
 		
 		exclude_list_restore.clear();
 		
+		//add user entries from current settings
+		//user entry is first since rsync prioritizes the first
+		//inclusion/exclusion patterns seen
+		foreach(string path in exclude_list_user){
+
+			// skip include filters for restore
+			if (path.strip().has_prefix("+")){ continue; }
+	
+			if (!exclude_list_restore.contains(path) && !exclude_list_home.contains(path)){
+				exclude_list_restore.add(path);
+			}
+		}
+
+		//add user entries from snapshot exclude list
+		if (snapshot_to_restore != null){
+			string list_file = path_combine(snapshot_to_restore.path, "exclude.list");
+			if (file_exists(list_file)){
+				foreach(string path in file_read(list_file).split("\n")){
+					if (!exclude_list_restore.contains(path) && !exclude_list_home.contains(path)){
+						exclude_list_restore.add(path);
+					}
+				}
+			}
+		}
+
 		//add default entries
 		foreach(string path in exclude_list_default){
 			if (!exclude_list_restore.contains(path)){
@@ -834,29 +862,6 @@ public class Main : GLib.Object{
 				foreach(var pattern in entry.patterns){
 					if (!exclude_list_restore.contains(pattern)){
 						exclude_list_restore.add(pattern);
-					}
-				}
-			}
-		}
-
-		//add user entries from current settings
-		foreach(string path in exclude_list_user){
-
-			// skip include filters for restore
-			if (path.strip().has_prefix("+")){ continue; }
-			
-			if (!exclude_list_restore.contains(path) && !exclude_list_home.contains(path)){
-				exclude_list_restore.add(path);
-			}
-		}
-
-		//add user entries from snapshot exclude list
-		if (snapshot_to_restore != null){
-			string list_file = path_combine(snapshot_to_restore.path, "exclude.list");
-			if (file_exists(list_file)){
-				foreach(string path in file_read(list_file).split("\n")){
-					if (!exclude_list_restore.contains(path) && !exclude_list_home.contains(path)){
-						exclude_list_restore.add(path);
 					}
 				}
 			}
