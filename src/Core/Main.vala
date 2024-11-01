@@ -3760,7 +3760,7 @@ public class Main : GLib.Object{
 						return false;
 					}
 					else{
-						Device.mount(dev_unlocked.uuid, mnt_btrfs, "", true);
+						Device.mount(dev_unlocked.uuid, mnt_btrfs, "subvolid=0", true);
 					}
 				}
 				else{
@@ -3768,7 +3768,7 @@ public class Main : GLib.Object{
 				}
 			}
 			else{
-				Device.mount(dev.uuid, mnt_btrfs, "", true);
+				Device.mount(dev.uuid, mnt_btrfs, "subvolid=0", true);
 			}
 		}
 
