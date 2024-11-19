@@ -3202,7 +3202,7 @@ public class Main : GLib.Object{
 		else{
 			// retain values for next run
 			config.set_string_member("backup_device_uuid", backup_uuid);
-			config.set_string_member("parent_device_uuid", backup_parent_uuid); 
+			config.set_string_member("parent_device_uuid", backup_parent_uuid);
 		}
 
 		config.set_string_member("do_first_run", false.to_string());
@@ -3298,8 +3298,10 @@ public class Main : GLib.Object{
 		} catch (Error e) {
 	        log_error (e.message);
 	    }
-        var node = parser.get_root();
-        var config = node.get_object();
+		Json.Node? node = parser.get_root();
+
+		// make sure object is always set
+		Json.Object config = node?.get_object() ?? new Json.Object();
 
 		bool do_first_run = json_get_bool(config, "do_first_run", false); // false as default
 
@@ -3308,7 +3310,7 @@ public class Main : GLib.Object{
 		if (do_first_run){
 			set_first_run_flag();
 		}
-		
+
 		if (config.has_member("include_btrfs_home")){
 			include_btrfs_home_for_backup = json_get_bool(config, "include_btrfs_home", include_btrfs_home_for_backup);
 		}
@@ -3325,7 +3327,7 @@ public class Main : GLib.Object{
 		
 		backup_uuid = json_get_string(config,"backup_device_uuid", backup_uuid);
 		backup_parent_uuid = json_get_string(config,"parent_device_uuid", backup_parent_uuid);
-		
+
         this.schedule_monthly = json_get_bool(config,"schedule_monthly",schedule_monthly);
 		this.schedule_weekly = json_get_bool(config,"schedule_weekly",schedule_weekly);
 		this.schedule_daily = json_get_bool(config,"schedule_daily",schedule_daily);
