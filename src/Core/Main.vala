@@ -1655,7 +1655,7 @@ public class Main : GLib.Object{
 				dst_path = dst_path.replace("/@home/@home", "/@home");
 			}
 			
-			string cmd = "btrfs subvolume snapshot '%s' '%s' '%s' \n".printf(btrfs_readonly ? "-r" : "", src_path, dst_path);
+			string cmd = "btrfs subvolume snapshot %s '%s' '%s' \n".printf(btrfs_readonly ? "-r" : "", src_path, dst_path);
 			
 			if (LOG_COMMANDS) { log_debug(cmd); }
 

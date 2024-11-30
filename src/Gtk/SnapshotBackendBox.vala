@@ -122,7 +122,7 @@ class SnapshotBackendBox : Gtk.Box{
 				opt_btrfs_readonly = opt;
 
 				opt_btrfs_readonly.toggled.connect(()=>{
-					App.btrfs_readonly = true;
+					App.btrfs_readonly = opt_btrfs_readonly.active;
 				});
 		} else {
 			if (opt_btrfs_readonly != null){
