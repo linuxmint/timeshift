@@ -667,48 +667,4 @@ public class RsyncLogBox : Gtk.Box {
 			return (item.file_status == status_filter);
 		}
 	}
-
-	private void exclude_selected_items(){
-		var list = new Gee.ArrayList<string>();
-		foreach(var pattern in App.exclude_list_user){
-			list.add(pattern);
-		}
-		App.exclude_list_user.clear();
-
-		// TODO: medium: exclude selected items: not working
-		
-		// add include list
-		TreeIter iter;
-		var store = (Gtk.ListStore) treeview.model;
-		bool iterExists = store.get_iter_first (out iter);
-		while (iterExists) {
-			FileItem item;
-			store.get (iter, 0, out item);
-
-			string pattern = item.file_path;
-
-			if (item.file_type == FileType.DIRECTORY){
-				pattern = "%s/***".printf(pattern);
-			}
-			else{
-				//pattern = "%s/***".printf(pattern);
-			}
-			
-			if (!App.exclude_list_user.contains(pattern)
-				&& !App.exclude_list_default.contains(pattern)
-				&& !App.exclude_list_home.contains(pattern)){
-				
-				list.add(pattern);
-			}
-			
-			iterExists = store.iter_next (ref iter);
-		}
-
-		App.exclude_list_user = list;
-
-		log_debug("exclude_selected_items()");
-		foreach(var item in App.exclude_list_user){
-			log_debug(item);
-		}
-	}
 }
