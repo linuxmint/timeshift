@@ -49,7 +49,7 @@ namespace TeeJee.ProcessHelper{
 
 			TEMP_DIR = tempPlace + "/timeshift-" + random_string();
 			dir_create(TEMP_DIR);
-			chmod(TEMP_DIR, "0750");
+			Posix.chmod(TEMP_DIR, 0750);
 			exec_script_sync("echo 'ok'",out std_out,out std_err, true);
 
 			if ((std_out == null) || (std_out.strip() != "ok")){
@@ -223,7 +223,7 @@ namespace TeeJee.ProcessHelper{
 		script.append ("echo ${exitCode} > status\n");
 
 		if ((sh_path == null) || (sh_path.length == 0)){
-			sh_path = get_temp_file_path() + ".sh";
+			sh_path = get_temp_file_path();
 		}
 
 		try{
@@ -238,7 +238,7 @@ namespace TeeJee.ProcessHelper{
 			data_stream.close();
 
 			// set execute permission
-			chmod (sh_path, "u+x");
+			Posix.chmod (sh_path, 0744);
 
 			return sh_path;
 		}
@@ -259,32 +259,10 @@ namespace TeeJee.ProcessHelper{
 	}
 
 	// find process -------------------------------
-	
-	// dep: which
-	public string get_cmd_path (string cmd_tool){
 
-		/* Returns the full path to a command */
-
-		try {
-			int exitCode;
-			string stdout, stderr;
-			Process.spawn_command_line_sync("which " + cmd_tool, out stdout, out stderr, out exitCode);
-	        return stdout;
-		}
-		catch (Error e){
-	        log_error (e.message);
-	        return "";
-	    }
-	}
-
-	public bool cmd_exists(string cmd_tool){
-		string path = get_cmd_path (cmd_tool);
-		if ((path == null) || (path.length == 0)){
-			return false;
-		}
-		else{
-			return true;
-		}
+	public static bool cmd_exists(string cmd_tool){
+		string? path = Environment.find_program_in_path(cmd_tool);
+		return (path != null) && (path.length > 0);
 	}
 
 	// return the name of the executable of a given pid or self if pid is <= 0

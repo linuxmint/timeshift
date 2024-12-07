@@ -164,9 +164,8 @@ namespace TeeJee.System{
 
 	// open -----------------------------
 
-	public bool xdg_open (string file, string user = ""){
-		string path = get_cmd_path ("xdg-open");
-		if ((path != null) && (path != "")){
+	public static bool xdg_open (string file, string user = ""){
+		if (cmd_exists("xdg-open")){
 			string cmd = "xdg-open '%s'".printf(escape_single_quote(file));
 			if (user.length > 0){
 				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY ".printf(user) + cmd;
@@ -189,38 +188,36 @@ namespace TeeJee.System{
 		We will first try using xdg-open and then check for specific file managers if it fails.
 		*/
 
-		string path;
-		int status;
-		
-		if (xdg_open_try_first){
+		bool xdgAvailable = cmd_exists("xdg-open");
+		string escaped_dir_path = escape_single_quote(dir_path);
+		int status = -1;
+
+		if (xdg_open_try_first && xdgAvailable){
 			//try using xdg-open
-			path = get_cmd_path ("xdg-open");
-			if ((path != null)&&(path != "")){
-				string cmd = "xdg-open '%s'".printf(escape_single_quote(dir_path));
-				status = exec_script_async (cmd);
-				return (status == 0);
-			}
+			string cmd = "xdg-open '%s'".printf(escaped_dir_path);
+			status = exec_script_async (cmd);
+			return (status == 0);
 		}
 
 		foreach(string app_name in
 			new string[]{ "nemo", "nautilus", "thunar", "io.elementary.files", "pantheon-files", "marlin", "dolphin" }){
-				
-			path = get_cmd_path (app_name);
-			if ((path != null)&&(path != "")){
-				string cmd = "%s '%s'".printf(app_name, escape_single_quote(dir_path));
-				status = exec_script_async (cmd);
-				return (status == 0);
+			if(!cmd_exists(app_name)) {
+				continue;
+			}
+
+			string cmd = "%s '%s'".printf(app_name, escaped_dir_path);
+			status = exec_script_async (cmd);
+
+			if(status == 0) {
+				return true;
 			}
 		}
 
-		if (xdg_open_try_first == false){
+		if (!xdg_open_try_first && xdgAvailable){
 			//try using xdg-open
-			path = get_cmd_path ("xdg-open");
-			if ((path != null)&&(path != "")){
-				string cmd = "xdg-open '%s'".printf(escape_single_quote(dir_path));
-				status = exec_script_async (cmd);
-				return (status == 0);
-			}
+			string cmd = "xdg-open '%s'".printf(escaped_dir_path);
+			status = exec_script_async (cmd);
+			return (status == 0);
 		}
 
 		return false;
