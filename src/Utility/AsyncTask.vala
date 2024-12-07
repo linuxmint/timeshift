@@ -394,9 +394,7 @@ public abstract class AsyncTask : GLib.Object{
 		if (status == AppStatus.RUNNING) {
 			process_set_priority (child_pid, prio);
 
-			Pid sub_child_pid;
-			foreach (long pid in get_process_children (child_pid)) {
-				sub_child_pid = (Pid) pid;
+			foreach (Pid sub_child_pid in get_process_children (child_pid)) {
 				process_set_priority (sub_child_pid, prio);
 			}
 		}
