@@ -306,7 +306,7 @@ public class CronTab : GLib.Object {
 		}
 
 		file_write(file_path, sh);
-		chown(file_path, "root", "root");
+		Posix.chown(file_path, 0, 0); // chown to root:root
 		Posix.chmod(file_path, 0644);
 
 		log_msg(_("Added cron task") + ": %s".printf(file_path));
