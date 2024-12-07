@@ -56,16 +56,15 @@ public class OSDNotify : GLib.Object {
 		long seconds = 9999;
 		
 		if (dt_last_notification != null){
-			
 			DateTime dt_end = new DateTime.now_local();
 			TimeSpan elapsed = dt_end.difference(dt_last_notification);
 			seconds = (long)(elapsed * 1.0 / TimeSpan.SECOND);
 		}
 
 		if (seconds > NOTIFICATION_INTERVAL){
-			
-			if (cmd_exists("notify-send")){
-				
+
+			if (is_supported()){
+
 				string desktop_entry = "timeshift-gtk";
 				string hint = "string:desktop-entry:%s".printf(desktop_entry);
 
@@ -82,9 +81,6 @@ public class OSDNotify : GLib.Object {
 	}
 
 	public static bool is_supported(){
-		
-		string path = get_cmd_path("notify-send");
-		
-		return (path != null) && (path.length > 0);
+		return cmd_exists("notify-send");
 	}
 }
