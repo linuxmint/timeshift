@@ -370,44 +370,6 @@ class ExcludeBox : Gtk.Box{
 		save_changes();
 	}
 
-	private void add_folder_contents_clicked(){
-
-		var list = browse_folder();
-
-		if (list.length() > 0){
-			foreach(string item in list){
-
-				string pattern = item;
-				
-				if (!pattern.has_suffix("/**")){
-					pattern = "%s/**".printf(pattern);
-				}
-
-				/*
-				NOTE:
-				
-				+ <dir>/** will include the directory along with the contents
-				+ <dir>/ will include only the directory without the contents
-				
-				<dir>/** will exclude the directory contents but include the empty directory
-				<dir>/ will exclude the directory along with the contents
-				*/
-				
-				if (!App.exclude_list_user.contains(pattern)){
-					App.exclude_list_user.add(pattern);
-					treeview_add_item(treeview, pattern);
-					log_debug("contents: %s".printf(pattern));
-					Main.first_snapshot_size = 0; //re-calculate
-				}
-				else{
-					log_debug("exclude_list_user contains: %s".printf(pattern));
-				}
-			}
-		}
-
-		save_changes();
-	}
-	
 	private SList<string> browse_files(){
 
 		var list = new SList<string>();
@@ -506,25 +468,6 @@ class ExcludeBox : Gtk.Box{
 		model.set (iter, 3, !include);
 	}
 
-	private void cell_exclude_text_edited(string path, string new_text) {
-			
-		string old_pattern;
-		string new_pattern;
-
-		TreeIter iter;
-		var model = (Gtk.ListStore) treeview.model;
-		model.get_iter_from_string (out iter, path);
-		model.get (iter, 0, out old_pattern, -1);
-
-		if (old_pattern.has_prefix("+ ")){
-			new_pattern = "+ " + new_text;
-		}
-		else{
-			new_pattern = new_text;
-		}
-		model.set (iter, 0, new_pattern);
-	}
-
 	public void save_changes(){
 
 		App.exclude_list_user.clear();
@@ -540,7 +483,7 @@ class ExcludeBox : Gtk.Box{
 			if (!App.exclude_list_user.contains(pattern)
 				&& !App.exclude_list_default.contains(pattern)
 				&& !App.exclude_list_home.contains(pattern)){
-				
+
 				App.exclude_list_user.add(pattern);
 			}
 			

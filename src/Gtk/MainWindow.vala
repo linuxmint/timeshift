@@ -405,19 +405,6 @@ class MainWindow : Gtk.Window{
 
 		return menu_item;
 	}
-	
-	private Gtk.MenuItem create_menu_item_separator(){
-			
-		var menu_item = new Gtk.MenuItem();
-		menu_item.sensitive = false;
-		
-		var box = new Gtk.Box(Orientation.HORIZONTAL, 3);
-		menu_item.add(box);
-
-		box.add(new Gtk.Separator(Gtk.Orientation.HORIZONTAL));
-				
-		return menu_item;
-	}
 
 	private bool refresh_all(){
 
@@ -745,16 +732,6 @@ class MainWindow : Gtk.Window{
 		}
 		
 		App.mirror_system = false;
-		restore();
-	}
-
-	private void btn_clone_clicked(){
-		
-		if (check_if_deletion_running()){
-			return;
-		}
-		
-		App.mirror_system = true;
 		restore();
 	}
 
