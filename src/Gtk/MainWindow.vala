@@ -450,9 +450,7 @@ class MainWindow : Gtk.Window{
 				var msg = _("Select another device?");
 				
 				var type = Gtk.MessageType.ERROR;
-				var buttons_type = Gtk.ButtonsType.YES_NO;
-				
-				var dlg = new CustomMessageDialog(title, msg, type, this, buttons_type);
+				var dlg = new CustomMessageDialog(title, msg, type, this, Gtk.ButtonsType.YES_NO);
 				var response = dlg.run();
 				dlg.destroy();
 				
