@@ -475,11 +475,4 @@ namespace TeeJee.FileSystem{
 		
 		return file_path.replace("'","'\\''");
 	}
-	
-	// dep: chmod
-	public int chmod(string file, string permission){
-
-		string cmd = "chmod %s '%s'".printf(permission, escape_single_quote(file));
-		return exec_sync (cmd, null, null);
-	}
 }

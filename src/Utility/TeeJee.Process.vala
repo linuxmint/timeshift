@@ -39,7 +39,7 @@ namespace TeeJee.ProcessHelper{
 
 		TEMP_DIR = Environment.get_tmp_dir() + "/" + random_string();
 		dir_create(TEMP_DIR);
-		chmod(TEMP_DIR, "0750");
+		Posix.chmod(TEMP_DIR, 0750);
 		
 		exec_script_sync("echo 'ok'",out std_out,out std_err, true);
 		
@@ -47,7 +47,7 @@ namespace TeeJee.ProcessHelper{
 			
 			TEMP_DIR = Environment.get_home_dir() + "/.temp/" + random_string();
 			dir_create(TEMP_DIR);
-			chmod(TEMP_DIR, "0750");
+			Posix.chmod(TEMP_DIR, 0750);
 		}
 
 		//log_debug("TEMP_DIR=" + TEMP_DIR);
@@ -208,7 +208,7 @@ namespace TeeJee.ProcessHelper{
 		script.append ("echo ${exitCode} > status\n");
 
 		if ((sh_path == null) || (sh_path.length == 0)){
-			sh_path = get_temp_file_path() + ".sh";
+			sh_path = get_temp_file_path();
 		}
 
 		try{
@@ -223,7 +223,7 @@ namespace TeeJee.ProcessHelper{
 			data_stream.close();
 
 			// set execute permission
-			chmod (sh_path, "u+x");
+			Posix.chmod (sh_path, 0744);
 
 			return sh_path;
 		}
