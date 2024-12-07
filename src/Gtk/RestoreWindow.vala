@@ -230,11 +230,8 @@ class RestoreWindow : Gtk.Window{
 				var title = _("Cancel restore?");
 					
 				var msg = _("Cancelling the restore process will leave the target system in an inconsistent state. The system may fail to boot or you may run into various issues. After cancelling, you need to restore another snapshot, to bring the system to a consistent state. Click Yes to confirm.");
-				
-				var type = Gtk.MessageType.ERROR;
-				var buttons_type = Gtk.ButtonsType.YES_NO;
-				
-				var dlg = new CustomMessageDialog(title, msg, type, this, buttons_type);
+
+				var dlg = new CustomMessageDialog(title, msg, Gtk.MessageType.ERROR, this, Gtk.ButtonsType.YES_NO);
 				var response = dlg.run();
 				dlg.destroy();
 				
