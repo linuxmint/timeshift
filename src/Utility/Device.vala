@@ -1627,13 +1627,13 @@ public class Device : GLib.Object{
 		unmount(mount_point);
 
 		// mount the device -------------------
-		
 		if (mount_options.length > 0){
 			cmd = "mount -o %s \"%s\" \"%s\"".printf(mount_options, device, mount_point);
 		}
 		else{
 			cmd = "mount \"%s\" \"%s\"".printf(device, mount_point);
 		}
+		log_debug("mount command: %s".printf(cmd));
 
 		ret_val = exec_sync(cmd, out std_out, out std_err);
 
