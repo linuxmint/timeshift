@@ -1693,6 +1693,16 @@ public class Main : GLib.Object{
 
 		set_tags(snapshot); // set_tags() will update the control file
 		
+		// Perform any post-backup actions
+		log_debug("Running post-backup tasks...");
+		
+		string sh = "if [ -d \"/etc/timeshift/backup-hooks.d\" ]; then \n";
+		sh += "  run-parts --verbose /etc/timeshift/backup-hooks.d \n";
+		sh += "fi \n";
+		exec_script_sync(sh, null, null, false, false, false, true);
+
+		log_debug("Finished running post-backup tasks...");
+
 		return snapshot;
 	}
 
@@ -3032,6 +3042,16 @@ public class Main : GLib.Object{
 
 		log_msg(_("Restore completed"));
 		thr_success = true;
+
+		// Perform any post-restore actions
+		log_debug("Running post-restore tasks...");
+
+		string sh += "if [ -d \"/etc/timeshift/restore-hooks.d\" ]; then \n";
+		sh += "  run-parts --verbose /etc/timeshift/restore-hooks.d \n";
+		sh += "fi \n";
+
+		exec_script_sync(sh, null, null, false, false, false, true);
+		log_debug("Finished running post-restore tasks...");
 		
 		if (restore_current_system){
 			log_msg(_("Snapshot will become active after system is rebooted."));
