@@ -3046,7 +3046,7 @@ public class Main : GLib.Object{
 		// Perform any post-restore actions
 		log_debug("Running post-restore tasks...");
 
-		string sh += "if [ -d \"/etc/timeshift/restore-hooks.d\" ]; then \n";
+		string sh = "if [ -d \"/etc/timeshift/restore-hooks.d\" ]; then \n";
 		sh += "  run-parts --verbose /etc/timeshift/restore-hooks.d \n";
 		sh += "fi \n";
 
