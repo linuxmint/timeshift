@@ -1697,7 +1697,8 @@ public class Main : GLib.Object{
 		log_debug("Running post-backup tasks...");
 		
 		string sh = "test -d \"/etc/timeshift/backup-hooks.d\" &&" +
-		"  run-parts --verbose /etc/timeshift/backup-hooks.d";
+		" export TS_SNAPSHOT_PATH=\"" + snapshot_path + "\" &&" + 
+		" run-parts --verbose /etc/timeshift/backup-hooks.d";
 		exec_script_sync(sh, null, null, false, false, false, true);
 
 		log_debug("Finished running post-backup tasks...");
