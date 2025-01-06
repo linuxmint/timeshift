@@ -3046,9 +3046,11 @@ public class Main : GLib.Object{
 		log_debug("Running post-restore tasks...");
 
 		string sh = "test -d \"/etc/timeshift/restore-hooks.d\" &&" +
-		"  run-parts --verbose /etc/timeshift/restore-hooks.d";
+		" export TS_SNAPSHOT_PATH=\"" + snapshot_to_restore.path + "\" &&" + 
+		" run-parts --verbose /etc/timeshift/restore-hooks.d";
 
 		exec_script_sync(sh, null, null, false, false, false, true);
+
 		log_debug("Finished running post-restore tasks...");
 		
 		if (restore_current_system){
