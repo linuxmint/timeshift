@@ -1696,7 +1696,7 @@ public class Main : GLib.Object{
 		// Perform any post-backup actions
 		log_debug("Running post-backup tasks...");
 		
-		string sh = "test -d \"/etc/timeshift/backup-hooks.d\" &&"
+		string sh = "test -d \"/etc/timeshift/backup-hooks.d\" &&" +
 		"  run-parts --verbose /etc/timeshift/backup-hooks.d";
 		exec_script_sync(sh, null, null, false, false, false, true);
 
@@ -3045,7 +3045,7 @@ public class Main : GLib.Object{
 		// Perform any post-restore actions
 		log_debug("Running post-restore tasks...");
 
-		string sh = "test -d \"/etc/timeshift/restore-hooks.d\" &&"
+		string sh = "test -d \"/etc/timeshift/restore-hooks.d\" &&" +
 		"  run-parts --verbose /etc/timeshift/restore-hooks.d";
 
 		exec_script_sync(sh, null, null, false, false, false, true);
