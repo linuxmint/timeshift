@@ -179,6 +179,7 @@ public class AppConsole : GLib.Object {
 
 				case "--scripted":
 					App.cmd_scripted = true;
+					App.cmd_confirm = true;
 					break;
 
 				case "--yes":
@@ -619,13 +620,15 @@ public class AppConsole : GLib.Object {
 
 		select_snapshot_for_restore();
 		
-		stdout.printf("\n\n");
-		log_msg(string.nfill(78, '*'));
-		stdout.printf(_("To restore with default options, press the ENTER key for all prompts!") + "\n");
-		log_msg(string.nfill(78, '*'));
-		stdout.printf(_("\nPress ENTER to continue..."));
-		stdout.flush();
-		stdin.read_line();
+		if (!App.cmd_scripted) {
+			stdout.printf("\n\n");
+			log_msg(string.nfill(78, '*'));
+			stdout.printf(_("To restore with default options, press the ENTER key for all prompts!") + "\n");
+			log_msg(string.nfill(78, '*'));
+			stdout.printf(_("\nPress ENTER to continue..."));
+			stdout.flush();
+			stdin.read_line();
+		}
 
 		init_mounts();
 		
@@ -755,6 +758,12 @@ public class AppConsole : GLib.Object {
 				return null;
 			}
 
+			if (App.cmd_scripted){
+				log_error(_("No snapshots selected. Use --snapshot to specify snapshots"));
+				App.exit_app(1);
+				return null;
+			}
+
 			log_msg("");
 			log_msg(_("Select snapshot") + ":\n");
 			list_snapshots(true);
@@ -877,6 +886,14 @@ public class AppConsole : GLib.Object {
 				}
 			}
 
+			if (App.cmd_scripted){
+				dev = Device.get_device_by_name(default_device);
+				if (dev == null){
+					log_error(_("Failed to get device by name %s").printf(default_device));
+					App.exit_app(1);
+				}
+			}
+
 			//prompt user for device
 			if (dev == null){
 				log_msg("");
@@ -987,20 +1004,29 @@ public class AppConsole : GLib.Object {
 		else {
 			if ((App.cmd_skip_grub == false) && (App.reinstall_grub2 == false)){
 				log_msg("");
-
-				int attempts = 0;
-				while ((App.cmd_skip_grub == false) && (App.reinstall_grub2 == false)){
-					attempts++;
-					if (attempts > 3) { break; }
-					stdout.printf(_("Re-install GRUB2 bootloader?") + (grub_reinstall_default ? " (recommended)" : "") + " (y/n): ");
-					stdout.flush();
-					read_stdin_grub_install(grub_reinstall_default);
+				
+				if (App.cmd_scripted) {
+					App.reinstall_grub2 = grub_reinstall_default;
 				}
+				else if (App.cmd_confirm){ 
+					// suppose that it would be as user would typed 'y' in read_stdin_grub_install
+					App.reinstall_grub2 = true;
+				}
+				else {
+					int attempts = 0;
+					while ((App.cmd_skip_grub == false) && (App.reinstall_grub2 == false)){
+						attempts++;
+						if (attempts > 3) { break; }
+						stdout.printf(_("Re-install GRUB2 bootloader?") + (grub_reinstall_default ? " (recommended)" : "") + " (y/n): ");
+						stdout.flush();
+						read_stdin_grub_install(grub_reinstall_default);
+					}
 
-				if ((App.cmd_skip_grub == false) && (App.reinstall_grub2 == false)){
-					log_error(_("Failed to get input from user in 3 attempts"));
-					log_msg(_("Aborted."));
-					App.exit_app(0);
+					if ((App.cmd_skip_grub == false) && (App.reinstall_grub2 == false)){
+						log_error(_("Failed to get input from user in 3 attempts"));
+						log_msg(_("Aborted."));
+						App.exit_app(0);
+					}
 				}
 			}
 		}
@@ -1012,41 +1038,51 @@ public class AppConsole : GLib.Object {
 			var device_list = list_grub_devices();
 			log_msg("");
 
-			int attempts = 0;
-			while (App.grub_device.length == 0){
-				
-				attempts++;
-				if (attempts > 3) { break; }
+			Device dev = null;
 
-				if (grub_device_default.length > 0){
-					stdout.printf("" +
-						_("[ENTER = Default (%s), a = Abort]").printf(grub_device_default) + "\n\n");
+			if (App.cmd_scripted){
+				dev = Device.get_device_by_name(grub_device_default);
+				if (dev == null){
+					log_error(_("Failed to get grub device by name %s").printf(grub_device_default));
+					App.exit_app(1);
 				}
+			}
+			else {
+				int attempts = 0;
+				while (App.grub_device.length == 0){
+					attempts++;
+					if (attempts > 3) { break; }
 
-				stdout.printf(_("Enter device name or number (a=Abort)") + ": ");
-				stdout.flush();
-
-				// TODO: provide option for default boot device
-
-				var list = new Gee.ArrayList<Device>();
-				foreach(var pi in App.partitions){
-					if (pi.has_linux_filesystem()){
-						list.add(pi);
+					if (grub_device_default.length > 0){
+						stdout.printf("" +
+							_("[ENTER = Default (%s), a = Abort]").printf(grub_device_default) + "\n\n");
 					}
-				}
-				
-				Device dev = read_stdin_device(device_list, grub_device_default);
-				if (dev != null) { App.grub_device = dev.device; }
-			}
-			
-			log_msg("");
 
-			if (App.grub_device.length == 0){
-				
-				log_error(_("Failed to get input from user in 3 attempts"));
-				log_msg(_("Aborted."));
-				App.exit_app(0);
+					stdout.printf(_("Enter device name or number (a=Abort)") + ": ");
+					stdout.flush();
+
+					var list = new Gee.ArrayList<Device>();
+					foreach(var pi in App.partitions){
+						if (pi.has_linux_filesystem()){
+							list.add(pi);
+						}
+					}
+					
+					dev = read_stdin_device(device_list, grub_device_default);
+					if (dev != null) { continue; }
+				}
+
+				if (dev == null){
+					
+					log_error(_("Failed to get input from user in 3 attempts"));
+					log_msg(_("Aborted."));
+					App.exit_app(0);
+				}
 			}
+
+			if (dev != null) { App.grub_device = dev.device; }
+
+			log_msg("");
 		}
 
 		if ((App.reinstall_grub2) && (App.grub_device.length > 0)){
