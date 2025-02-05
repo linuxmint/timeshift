@@ -48,6 +48,6 @@ if enable_man
 endif
 
 install_data(
-  sources: 'debian/timeshift.appdata.xml',
+  sources: 'debian/com.linuxmint.timeshift.metainfo.xml',
   install_dir: join_paths(get_option('datadir'), 'metainfo')
 )
