@@ -164,10 +164,23 @@ public class Subvolume : GLib.Object{
 			return false;
 		}
 
+        log_debug("Waiting on btrfs to finish deleting...");
+        while (exec_sync("btrfs subvolume sync %s".printf(mount_path), out std_out, out std_err) != 0) {
+            log_debug("Still waiting for btrfs to finish deleting... %s".printf(std_err));
+            sleep(1000);
+        }
+
 		log_msg("%s: %s (Id:%ld)\n".printf(_("Deleted subvolume"), name, id));
 
 		if (App.btrfs_qgroups_enabled) {
 			if ((id > 0) && (repo != null)){
+
+                log_debug("Rescanning quotas...");
+                while (exec_sync("btrfs quota rescan %s".printf(mount_path), out std_out, out std_err) != 0) {
+                    log_debug("Still rescanning quotas... %s".printf(std_err));
+                    sleep(1000);
+                }
+
 				log_msg("%s: 0/%ld".printf(_("Destroying qgroup"), id));
 
 				cmd = "btrfs qgroup destroy 0/%ld '%s'".printf(id, repo.mount_paths[name]);
@@ -179,6 +192,19 @@ public class Subvolume : GLib.Object{
 				}
 
 				log_msg("%s: 0/%ld\n".printf(_("Destroyed qgroup"), id));
+
+                log_debug("Rescanning quotas (post)...");
+                while (exec_sync("btrfs quota rescan %s".printf(mount_path), out std_out, out std_err) != 0) {
+                    log_debug("Still rescanning quotas (post)... %s".printf(std_err));
+                    sleep(1000);
+                }
+
+                log_debug("Final sync (post)...");
+                while (exec_sync("btrfs subvolume sync %s".printf(mount_path), out std_out, out std_err) != 0) {
+                    log_debug("Still syncing (post)... %s".printf(std_err));
+                    sleep(1000);
+                }
+
 			}
 		}
 
