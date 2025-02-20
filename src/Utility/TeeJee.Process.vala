@@ -37,20 +37,19 @@ namespace TeeJee.ProcessHelper{
     public static void init_tmp(string subdir_name){
 		string std_out, std_err;
 
-		TEMP_DIR = Environment.get_tmp_dir() + "/" + random_string();
+		TEMP_DIR = Environment.get_tmp_dir() + "/timeshift-" + random_string();
 		dir_create(TEMP_DIR);
 		chmod(TEMP_DIR, "0750");
 		
 		exec_script_sync("echo 'ok'",out std_out,out std_err, true);
 		
 		if ((std_out == null) || (std_out.strip() != "ok")){
-			
-			TEMP_DIR = Environment.get_home_dir() + "/.temp/" + random_string();
+			dir_delete(TEMP_DIR);
+
+			TEMP_DIR = Environment.get_home_dir() + "/.temp/timeshift-" + random_string();
 			dir_create(TEMP_DIR);
 			chmod(TEMP_DIR, "0750");
 		}
-
-		//log_debug("TEMP_DIR=" + TEMP_DIR);
 	}
 
 	public int exec_sync (string cmd, out string? std_out = null, out string? std_err = null){
