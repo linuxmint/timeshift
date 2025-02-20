@@ -45,7 +45,7 @@ public class AppLock : GLib.Object {
 				lock_message = txt.split(";")[1].strip();
 				long pid = long.parse(process_id);
 
-				if (process_is_running(pid)){
+				if (get_process_exe_name(pid).contains("timeshift")){
 					log_msg(_("Another instance of this application is running")
 						+ " (PID=%ld)".printf(pid));
 					return false;
