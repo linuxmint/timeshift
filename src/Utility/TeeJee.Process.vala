@@ -37,18 +37,27 @@ namespace TeeJee.ProcessHelper{
     public static void init_tmp(string subdir_name){
 		string std_out, std_err;
 
-		TEMP_DIR = Environment.get_tmp_dir() + "/timeshift-" + random_string();
-		dir_create(TEMP_DIR);
-		chmod(TEMP_DIR, "0750");
-		
-		exec_script_sync("echo 'ok'",out std_out,out std_err, true);
-		
-		if ((std_out == null) || (std_out.strip() != "ok")){
-			dir_delete(TEMP_DIR);
+		// a list of folders where temp files could be stored
+		string[] tempPlaces = {
+			Environment.get_tmp_dir(), // system temp dir
+			"/var/tmp", // another system temp dir, if the first one failed, this one is likely to fail too
+			Environment.get_home_dir() + "/.temp", // user temp dir
+			"/dev/shm", // shared memory
+		};
 
-			TEMP_DIR = Environment.get_home_dir() + "/.temp/timeshift-" + random_string();
+		foreach (string tempPlace in tempPlaces) {
+			TEMP_DIR = tempPlace + "/timeshift-" + random_string();
 			dir_create(TEMP_DIR);
 			chmod(TEMP_DIR, "0750");
+			exec_script_sync("echo 'ok'",out std_out,out std_err, true);
+
+			if ((std_out == null) || (std_out.strip() != "ok")){
+				// this dir does not work for some reason - probably no disk space
+				dir_delete(TEMP_DIR);
+			} else {
+				// script worked - we have found a tempdir to use
+				return;
+			}
 		}
 	}
 
@@ -80,7 +89,12 @@ namespace TeeJee.ProcessHelper{
 		 * std_out, std_err can be null. Output will be written to terminal if null.
 		 * */
 
-		string sh_file = save_bash_script_temp(script, null, true, supress_errors);
+		string? sh_file = save_bash_script_temp(script, null, true, supress_errors);
+		if (sh_file == null) {
+			// saving the script failed
+			return -1;
+		}
+
 		string sh_file_admin = "";
 		
 		if (run_as_admin){
