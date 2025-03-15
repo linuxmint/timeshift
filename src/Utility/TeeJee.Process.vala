@@ -34,7 +34,7 @@ namespace TeeJee.ProcessHelper{
 
 	// execute process ---------------------------------
 	
-    public static void init_tmp(string subdir_name){
+    public static void init_tmp(){
 		string std_out, std_err;
 
 		// a list of folders where temp files could be stored
