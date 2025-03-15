@@ -35,7 +35,6 @@ namespace TeeJee.ProcessHelper{
 	// execute process ---------------------------------
 	
     public static void init_tmp(){
-		string std_out, std_err;
 
 		// a list of folders where temp files could be stored
 		string[] tempPlaces = {
@@ -46,6 +45,8 @@ namespace TeeJee.ProcessHelper{
 		};
 
 		foreach (string tempPlace in tempPlaces) {
+			string std_out, std_err;
+
 			TEMP_DIR = tempPlace + "/timeshift-" + random_string();
 			dir_create(TEMP_DIR);
 			chmod(TEMP_DIR, "0750");
@@ -59,6 +60,8 @@ namespace TeeJee.ProcessHelper{
 				return;
 			}
 		}
+
+		stderr.printf("No usable temp directory was found!\n");
 	}
 
 	public int exec_sync (string cmd, out string? std_out = null, out string? std_err = null){
