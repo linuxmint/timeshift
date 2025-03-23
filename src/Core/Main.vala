@@ -1702,6 +1702,9 @@ public class Main : GLib.Object{
 		
 		foreach(string tag in cmd_tags.split(",")){
 			switch(tag.strip().up()){
+			case "O":
+				snapshot.add_tag("ondemand");
+				break;
 			case "B":
 				snapshot.add_tag("boot");
 				break;
@@ -1730,6 +1733,7 @@ public class Main : GLib.Object{
 	public void validate_cmd_tags(){
 		foreach(string tag in cmd_tags.split(",")){
 			switch(tag.strip().up()){
+			case "O":
 			case "B":
 			case "H":
 			case "D":
