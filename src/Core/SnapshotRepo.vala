@@ -260,7 +260,11 @@ public class SnapshotRepo : GLib.Object{
 		}
 
 		// mount
-		bool ok = Device.mount(dev.uuid, path_to_mount, ""); // TODO: check if already mounted
+		var mount_options = "";
+		if (btrfs_mode){
+			mount_options = "subvolid=0";
+		}
+		bool ok = Device.mount(dev.uuid, path_to_mount, mount_options); // TODO: check if already mounted
 		
 		if (ok){
 			return path_to_mount;
