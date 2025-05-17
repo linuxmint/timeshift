@@ -18,7 +18,7 @@ Homepage: https://github.com/linuxmint/timeshift
 
 Package: timeshift
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, rsync, btrfs-progs | btrfs-tools
+Depends: ${shlibs:Depends}, ${misc:Depends}, rsync, debianutils, btrfs-progs | btrfs-tools
 Replaces: timeshift-btrfs
 Description: System restore utility
  Timeshift is a system restore utility which takes snapshots
