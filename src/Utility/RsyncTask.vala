@@ -289,7 +289,7 @@ public class RsyncTask : AsyncTask{
 		log_debug("log_file = %s".printf(log_file));
 
 		prg_count = 0;
-		prg_count_total = file_line_count(log_file);
+		prg_count_total = file_line_count(log_file) ?? 0;
 
 		try {
 			string line;
