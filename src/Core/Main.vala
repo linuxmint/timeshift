@@ -206,7 +206,7 @@ public class Main : GLib.Object{
 		}
 
 		check_and_remove_timeshift_btrfs();
-		
+
 		// init log ------------------
 
 		try {
@@ -3928,12 +3928,7 @@ public class Main : GLib.Object{
 				ret_val = exec_script_sync(cmd, out std_out, out std_err);
 				if (ret_val == 0){
 					required_space = long.parse(std_out.replace(",","").strip());
-
-					cmd = "wc -l '%s'".printf(escape_single_quote(file_log));
-					ret_val = exec_script_sync(cmd, out std_out, out std_err);
-					if (ret_val == 0){
-						file_count = long.parse(std_out.split(" ")[0].strip());
-					}
+					file_count = file_line_count(file_log) ?? 0;
 					
 					thr_success = true;
 				}
@@ -4386,17 +4381,19 @@ public class Main : GLib.Object{
 			
 							string cmd = "umount '%s'".printf(escape_single_quote(mdir2));
 							int retval = exec_sync(cmd);
-							
-							string cmd2 = "rmdir '%s'".printf(escape_single_quote(mdir2));
-							int retval2 = exec_sync(cmd2);
-							
-							if (retval2 != 0){
+
+							if (retval != 0){
 								log_debug("E: Failed to unmount");
 								log_debug("Ret=%d".printf(retval));
 								//ignore
 							}
 							else{
 								log_debug("Unmounted successfully");
+							}
+
+							// delete directory
+							if(!dir_empty_delete(mdir2)) {
+								log_debug("E: Failed to delete %s".printf(mdir2));
 							}
 						}
 					}
