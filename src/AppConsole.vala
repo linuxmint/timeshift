@@ -211,6 +211,10 @@ public class AppConsole : GLib.Object {
 					App.validate_cmd_tags();
 					break;
 
+				case "--config":
+					App.cmd_config = args[++k];
+					break;
+
 				case "--debug":
 					LOG_COMMANDS = true;
 					LOG_DEBUG = true;
@@ -367,6 +371,7 @@ public class AppConsole : GLib.Object {
 		msg += _("Backup") + ":\n";
 		msg += "  --check                    " + _("Create snapshot if scheduled") + "\n";
 		msg += "  --create                   " + _("Create snapshot (even if not scheduled)") + "\n";
+		msg += "  --config                   " + _("Specify the config json") + "\n";
 		msg += "  --comments <string>        " + _("Set snapshot description") + "\n";
 		msg += "  --tags {O,B,H,D,W,M}       " + _("Add tags to snapshot (default: O)") + "\n";;
 		msg += "\n";
