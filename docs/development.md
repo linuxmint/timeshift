@@ -69,19 +69,9 @@ sudo ninja uninstall
 tar czvf ../timeshift_24.02.1.orig.tar.gz --exclude='*.git' --exclude='.gitignore' --exclude='build' --exclude='*.swp' --exclude='*.orig' --exclude='*.rej' --exclude='*.bak' --exclude='*.gz' --exclude='*.xz' --exclude='*.bz2' --exclude='*.lzma' --exclude='debian' --exclude='archlinux' *
 ```
 
-#### Add changelog
-```
-timeshift (24.02.1-1) unstable; urgency=medium
-
-  * 24.02.1-1 unstable minor bug fixes
-
- -- Jiang Meng <jay@jay-PC>  Sun, 18 Aug 2024 20:51:22 +0800
-```
-
 #### Commit your code & merge to the source tree
 ```bash
 git commit -a -m "fixed issues"
-dpkg-source --commit
 ```
 
 #### Package
