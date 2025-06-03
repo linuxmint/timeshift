@@ -63,18 +63,8 @@ sudo ninja uninstall
 ```
 
 ### Step 5. Build the debian package
-
-#### Package source code
-```bash
-tar czvf ../timeshift_24.02.1.orig.tar.gz --exclude='*.git' --exclude='.gitignore' --exclude='build' --exclude='*.swp' --exclude='*.orig' --exclude='*.rej' --exclude='*.bak' --exclude='*.gz' --exclude='*.xz' --exclude='*.bz2' --exclude='*.lzma' --exclude='debian' --exclude='archlinux' *
-```
-
-#### Commit your code & merge to the source tree
-```bash
-git commit -a -m "fixed issues"
-```
-
 #### Package
 ```bash
+sudo apt install debhelper-compat=10
 dpkg-buildpackage -us -uc
 ```
