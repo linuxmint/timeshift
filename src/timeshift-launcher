@@ -2,29 +2,32 @@
 
 app_command='timeshift-gtk'
 
-if [ "$(id -u)" -eq 0 ]; then
+if [[ "$(id -u)" -eq 0 ]]; then
 	# user is admin
-	${app_command}
+	exec "${app_command}" "$@"
 else
 	# user is not admin
 	if echo $- | grep "i" >/dev/null 2>&1; then
 		# script is running in interactive mode
-		su - -c "${app_command}"
+		exec su - -c "${app_command}" "$@"
 	else
 		# script is running in non-interactive mode
-		if [ "$XDG_SESSION_TYPE" = "wayland" ] ; then
-			xhost +SI:localuser:root
-			pkexec ${app_command}
-			xhost -SI:localuser:root
-			xhost
-		elif command -v pkexec >/dev/null 2>&1; then
-			pkexec ${app_command}
+		if command -v pkexec >/dev/null 2>&1; then
+			env_array=("GTK_THEME=${GTK_THEME}")
+
+			if [[ "${XDG_SESSION_TYPE}" == "wayland" ]]; then
+				env_array+=("WAYLAND_DISPLAY=${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}" "XDG_RUNTIME_DIR=/run/user/0")
+			else
+				env_array+=("DISPLAY=${DISPLAY}" "XAUTHORITY=${XAUTHORITY}")
+			fi
+
+			exec pkexec env "${env_array[@]}" "${app_command}" "$@"
 		elif command -v sudo >/dev/null 2>&1; then
-			x-terminal-emulator -e "sudo ${app_command}"
+			exec sudo -E "${app_command}" "$@"
 		elif command -v su >/dev/null 2>&1; then
-			x-terminal-emulator -e "su - -c '${app_command}'"
+			exec su - -c "${app_command}" "$@"
 		else
-			x-terminal-emulator -e "echo 'Command must be run as root user: ${app_command}'"
+			echo "Command must be run as root user: ${app_command}"
 		fi
 	fi
 fi
