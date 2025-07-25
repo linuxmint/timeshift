@@ -140,7 +140,8 @@ public class Subvolume : GLib.Object{
 
 		log_msg("%s: %s (Id:%ld)".printf(_("Deleting subvolume"), name, id));
 
-		string options = App.use_option_raw ? "--commit-after" : "";
+		// always remove subvolumes recursively, this does not affect performance
+		string options = App.use_option_raw ? "--commit-after" : "" + " --recursive";
 		
 		subpath = path_combine(path, name);
 		if (dir_exists(subpath)) { // there is a nested subvol to remove first
