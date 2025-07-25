@@ -887,55 +887,20 @@ public class SnapshotRepo : GLib.Object{
 	}
 
 	private void delete_directory_thread(){
-		string cmd = "";
-		string std_out;
-		string std_err;
-		int ret_val;
+		thr_success = TeeJee.FileSystem.dir_delete_recursive(thr_args1);
 
-		try{
-			var f = File.new_for_path(thr_args1);
-			if(f.query_exists()){
-				cmd = "rm -rf \"%s\"".printf(thr_args1);
-
-				if (LOG_COMMANDS) { log_debug(cmd); }
-
-				Process.spawn_command_line_sync(cmd, out std_out, out std_err, out ret_val);
-
-				if (ret_val != 0){
-					log_error(_("Failed to remove") + ": '%s'".printf(thr_args1));
-					thr_success = false;
-					thr_running = false;
-					return;
-				}
-				else{
-					log_msg(_("Removed") + ": '%s'".printf(thr_args1));
-					thr_success = true;
-					thr_running = false;
-					return;
-				}
-			}
-			else{
-				log_error(_("Directory not found") + ": '%s'".printf(thr_args1));
-				thr_success = true;
-				thr_running = false;
-			}
+		if (thr_success) {
+			log_msg(_("Removed") + ": '%s'".printf(thr_args1));
+		} else{
+			log_error(_("Failed to remove") + ": '%s'".printf(thr_args1));
 		}
-		catch(Error e){
-			log_error (e.message);
-			thr_success = false;
-			thr_running = false;
-			return;
-		}
+
+		thr_running = false;
 	}
 
 	// symlinks ----------------------------------------
 	
 	public void create_symlinks(){
-		string cmd = "";
-		string std_out;
-		string std_err;
-		int ret_val;
-
 		cleanup_symlink_dir("boot");
 		cleanup_symlink_dir("hourly");
 		cleanup_symlink_dir("daily");
@@ -943,21 +908,19 @@ public class SnapshotRepo : GLib.Object{
 		cleanup_symlink_dir("monthly");
 		cleanup_symlink_dir("ondemand");
 
-		string path;
 
-		foreach(var bak in snapshots){
-			foreach(string tag in bak.tags){
-				
-				path = "%s-%s".printf(snapshots_path, tag);
-				cmd = "ln --symbolic \"../snapshots/%s\" -t \"%s\"".printf(bak.name, path);
-
-				if (LOG_COMMANDS) { log_debug(cmd); }
-
-				ret_val = exec_sync(cmd, out std_out, out std_err);
-				if (ret_val != 0){
-					log_error (std_err);
-					log_error(_("Failed to create symlinks") + ": snapshots-%s".printf(tag));
-					return;
+		foreach(Snapshot bak in snapshots){
+			foreach(string tag in bak.tags) {
+				string linkTarget = "%s-%s/%s".printf(snapshots_path, tag, bak.name);
+				string linkValue = "../snapshots/" + bak.name;
+				try {
+					File f = File.new_for_path(linkTarget);
+					if (!f.make_symbolic_link(linkValue)) {
+						log_error(_("Failed to create symlinks") + ": %s".printf(linkTarget));
+					}
+				} catch(Error e) {
+					log_debug(e.message);
+					log_error(_("Failed to create symlinks") + ": %s".printf(linkTarget));
 				}
 			}
 		}
@@ -966,32 +929,18 @@ public class SnapshotRepo : GLib.Object{
 	}
 
 	public void cleanup_symlink_dir(string tag){
-		string cmd = "";
-		string std_out;
-		string std_err;
-		int ret_val;
-
 		try{
 			string path = "%s-%s".printf(snapshots_path, tag);
-			var f = File.new_for_path(path);
-			if (f.query_exists()){
-				cmd = "rm -rf \"%s\"".printf(path + "/");
-
-				if (LOG_COMMANDS) { log_debug(cmd); }
-
-				Process.spawn_command_line_sync(cmd, out std_out, out std_err, out ret_val);
-				if (ret_val != 0){
-					log_error (std_err);
-					log_error(_("Failed to delete symlinks") + ": 'snapshots-%s'".printf(tag));
-					return;
-				}
+			if(!TeeJee.FileSystem.dir_delete_recursive(path)) {
+				log_error(_("Failed to delete symlinks") + ": '%s'".printf(path));
 			}
 
+			File f = File.new_for_path(path);
 			f.make_directory_with_parents();
 		}
 		catch (Error e) {
-	        log_error (e.message);
-	    }
+			log_error (e.message);
+		}
 	}
 
 }
