@@ -76,7 +76,7 @@ public class AppConsole : GLib.Object {
 		}
 
 		LOG_ENABLE = false;
-		init_tmp(AppShortName);
+		init_tmp();
 		LOG_ENABLE = true;
 		
 		check_if_admin();
