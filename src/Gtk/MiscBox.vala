@@ -131,9 +131,6 @@ class MiscBox : Gtk.Box{
 			bool selected = combo.get_active_iter(out iter_active);
 			if (!selected){ return; }
 			
-			TreeIter iter_combo;
-			var store = (Gtk.ListStore) combo.model;
-
 			string txt;
 			model.get (iter_active, 0, out txt, -1);
 
