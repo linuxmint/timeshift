@@ -528,22 +528,8 @@ public class RsyncTask : AsyncTask{
 		return true;
 	}
 
-	protected override void finish_task(){
-		
-		if ((status != AppStatus.CANCELLED) && (status != AppStatus.PASSWORD_REQUIRED)) {
-			status = AppStatus.FINISHED;
-		}
-
+	protected override void finish_task() {
 		file_write(rsync_log_file + "-changes", log.str);
 	}
 
-	public int read_status(){
-		var status_file = working_dir + "/status";
-		var f = File.new_for_path(status_file);
-		if (f.query_exists()){
-			var txt = file_read(status_file);
-			return int.parse(txt);
-		}
-		return -1;
-	}
 }
