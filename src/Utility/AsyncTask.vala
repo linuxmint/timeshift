@@ -49,8 +49,6 @@ public abstract class AsyncTask : GLib.Object{
 	protected string script_file = "";
 	protected string working_dir = "";
 
-	public bool background_mode = false;
-	
 	// public
 	public AppStatus status = AppStatus.NOT_STARTED;
 
@@ -58,16 +56,12 @@ public abstract class AsyncTask : GLib.Object{
     public GLib.Mutex status_line_mutex;
 
 	public int exit_code = 0;
-	public string error_msg = "";
 	public GLib.Timer timer;
 	private double timerOffset = 0.0; // milliseconds to be added to the current timer - this is to compensate for pauses (timer restarts)
 	public double progress = 0.0;
 	public double percent = 0.0;
 	public int64 prg_count = 0;
 	public int64 prg_count_total = 0;
-	public int64 prg_bytes = 0;
-	public int64 prg_bytes_total = 0;
-	public string eta = "";
 
 	// signals
 	public signal void stdout_line_read(string line);
@@ -126,9 +120,7 @@ public abstract class AsyncTask : GLib.Object{
 		finish_called = false;
 
 		prg_count = 0;
-		prg_bytes = 0;
-		error_msg = "";
-		
+
 		string[] spawn_args = new string[1];
 		spawn_args[0] = script_file;
 		
@@ -150,8 +142,6 @@ public abstract class AsyncTask : GLib.Object{
 			    out input_fd,
 			    out output_fd,
 			    out error_fd);
-
-			set_priority();
 
 			log_debug("AsyncTask: child_pid: %d".printf(child_pid));
 			
@@ -234,8 +224,6 @@ public abstract class AsyncTask : GLib.Object{
 			err_line = dis_err.read_line (null);
 			while (err_line != null) {
 				if (err_line.length > 0){
-					error_msg += "%s\n".printf(err_line);
-					
 					parse_stderr_line(err_line);
 					stderr_line_read(err_line); //signal
 				}
@@ -387,30 +375,6 @@ public abstract class AsyncTask : GLib.Object{
 			this.timer.start();
 
 			log_debug("process_resumed: %d  ".printf(this.child_pid));
-		}
-	}
-
-	public void set_priority() {
-		
-		if (background_mode){
-			set_priority_value(5);
-		}
-		else{
-			set_priority_value(0);
-		}
-	}
-
-	public void set_priority_value(int prio) {
-		
-		Pid app_pid = Posix.getpid();
-		process_set_priority (app_pid, prio);
-
-		if (status == AppStatus.RUNNING) {
-			process_set_priority (child_pid, prio);
-
-			foreach (Pid sub_child_pid in get_process_children (child_pid)) {
-				process_set_priority (sub_child_pid, prio);
-			}
 		}
 	}
 
