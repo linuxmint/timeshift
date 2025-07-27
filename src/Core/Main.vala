@@ -228,7 +228,7 @@ public class Main : GLib.Object{
 				file.delete ();
 			}
 
-			dos_log = new DataOutputStream (file.create(FileCreateFlags.REPLACE_DESTINATION));
+			TeeJee.Logging.dos_log = new DataOutputStream (file.create(FileCreateFlags.REPLACE_DESTINATION));
 			if (LOG_DEBUG || gui_mode){
 				log_debug(_("Session log file") + ": %s".printf(log_file));
 			}

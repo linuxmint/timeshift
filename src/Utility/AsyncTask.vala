@@ -156,9 +156,9 @@ public abstract class AsyncTask : GLib.Object{
 			log_debug("AsyncTask: child_pid: %d".printf(child_pid));
 			
 			// create stream readers
-			UnixOutputStream uos_in = new UnixOutputStream(input_fd, false);
-			UnixInputStream uis_out = new UnixInputStream(output_fd, false);
-			UnixInputStream uis_err = new UnixInputStream(error_fd, false);
+			UnixOutputStream uos_in = new UnixOutputStream(input_fd, true);
+			UnixInputStream uis_out = new UnixInputStream(output_fd, true);
+			UnixInputStream uis_err = new UnixInputStream(error_fd, true);
 			dos_in = new DataOutputStream(uos_in);
 			dis_out = new DataInputStream(uis_out);
 			dis_err = new DataInputStream(uis_err);
@@ -167,16 +167,16 @@ public abstract class AsyncTask : GLib.Object{
 
 			try {
 				//start thread for reading output stream
-				new Thread<void>.try ("async-task-stdout-reader", () => {read_stdout();});
-			} catch (Error e) {
+				new Thread<void>.try ("async-task-stdout-reader", read_stdout);
+			} catch (GLib.Error e) {
 				log_error ("AsyncTask.begin():create_thread:read_stdout()");
 				log_error (e.message);
 			}
 
 			try {
 				//start thread for reading error stream
-				new Thread<void>.try ("async-task-stderr-reader", () => {read_stderr();});
-			} catch (Error e) {
+				new Thread<void>.try ("async-task-stderr-reader", read_stderr);
+			} catch (GLib.Error e) {
 				log_error ("AsyncTask.begin():create_thread:read_stderr()");
 				log_error (e.message);
 			}
@@ -208,12 +208,13 @@ public abstract class AsyncTask : GLib.Object{
 			stdout_is_open = false;
 
 			// dispose stdout
-			if ((dis_out != null) && !dis_out.is_closed()){
-				dis_out.close();
+			try {
+				if (dis_out != null) {
+					dis_out.close();
+				}
 			}
-			//dis_out.close();
+			catch (GLib.Error ignored) {}
 			dis_out = null;
-			GLib.FileUtils.close(output_fd);
 
 			// check if complete
 			if (!stdout_is_open && !stderr_is_open){
@@ -244,12 +245,13 @@ public abstract class AsyncTask : GLib.Object{
 			stderr_is_open = false;
 
 			// dispose stderr
-			if ((dis_err != null) && !dis_err.is_closed()){
-				dis_err.close(); 
+			try {
+				if (dis_err != null) {
+					dis_err.close();
+				}
 			}
-			//dis_err.close();
+			catch (GLib.Error ignored) {}
 			dis_err = null;
-			GLib.FileUtils.close(error_fd);
 
 			// check if complete
 			if (!stdout_is_open && !stderr_is_open){
@@ -297,18 +299,14 @@ public abstract class AsyncTask : GLib.Object{
 		
 		// dispose stdin
 		try{
-			if ((dos_in != null) && !dos_in.is_closed() && !dos_in.is_closing()){
+			if (dos_in != null) {
 				dos_in.close();
 			}
 		}
-		catch(Error e){
+		catch(GLib.IOError e) {
 			// ignore
-			//log_error ("AsyncTask.finish(): dos_in.close()");
-			//log_error (e.message);
 		}
-		
 		dos_in = null;
-		GLib.FileUtils.close(input_fd);
 
 		// dispose child process
 		Process.close_pid(child_pid); //required on Windows, doesn't do anything on Unix
