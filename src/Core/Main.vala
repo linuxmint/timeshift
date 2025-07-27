@@ -102,9 +102,6 @@ public class Main : GLib.Object{
 	//global vars for controlling threads
 	public bool thr_success = false;
 	
-	public bool thread_estimate_running = false;
-	public bool thread_estimate_success = false;
-	
 	public bool thread_restore_running = false;
 	public bool thread_restore_success = false;
 
@@ -981,7 +978,8 @@ public class Main : GLib.Object{
 	}
 
 
-	public bool save_exclude_list_for_backup(string output_path){
+	// returns the file path on success, null on failure
+	private string? save_exclude_list_for_backup(string output_path){
 
 		log_debug("Main: save_exclude_list_for_backup()");
 		
@@ -995,7 +993,10 @@ public class Main : GLib.Object{
 		}
 		
 		string list_file = path_combine(output_path, "exclude.list");
-		return file_write(list_file, txt);
+		if (file_write(list_file, txt)) {
+			return list_file;
+		}
+		return null;
 	}
 
 	public bool save_exclude_list_for_restore(string output_path){
@@ -1507,11 +1508,9 @@ public class Main : GLib.Object{
 
 		// save exclude list ----------------
 
-		bool ok = save_exclude_list_for_backup(snapshot_path);
-		
-		string exclude_from_file = path_combine(snapshot_path, "exclude.list");
+		string? exclude_from_file = save_exclude_list_for_backup(snapshot_path);
 
-		if (!ok){
+		if (null == exclude_from_file){
 			log_error("Failed to save exclude list");
 			return 0;
 		}
@@ -1622,11 +1621,9 @@ public class Main : GLib.Object{
 
 		// save exclude list ----------------
 
-		bool ok = save_exclude_list_for_backup(snapshot_path);
-		
-		string exclude_from_file = path_combine(snapshot_path, "exclude.list");
+		string? exclude_from_file = save_exclude_list_for_backup(snapshot_path);
 
-		if (!ok){
+		if (null == exclude_from_file){
 			log_error(_("Failed to save exclude list"));
 			return null;
 		}
@@ -1653,7 +1650,7 @@ public class Main : GLib.Object{
 		task.delete_extra = true;
 		task.delete_excluded = true;
 		task.delete_after = false;
-			
+
 		if (app_mode.length > 0){
 			// console mode
 			task.io_nice = true;
@@ -1674,7 +1671,7 @@ public class Main : GLib.Object{
 
 		stdout.printf("\r");
 		stdout.flush();
-		
+
 		if (task.total_size == 0){
 			log_error(_("rsync returned an error"));
 			log_error(_("Failed to create new snapshot"));
@@ -3980,8 +3977,9 @@ public class Main : GLib.Object{
 
 		return ok;
 	}
-	
-	public uint64 estimate_system_size(){
+
+	public delegate void progressCallback();
+	public uint64 estimate_system_size(progressCallback? callback = null) {
 
 		log_debug("estimate_system_size()");
 		
@@ -3992,19 +3990,38 @@ public class Main : GLib.Object{
 			return 0;
 		}
 
-		try {
-			thread_estimate_running = true;
-			thr_success = false;
-			new Thread<void>.try ("estimate-system-size", () => {estimate_system_size_thread();});
-		} catch (Error e) {
-			thread_estimate_running = false;
-			thr_success = false;
-			log_error (e.message);
+		// create a RsyncTask in dry_run mode to estimate the amount of work needed to do
+		string dir_empty = path_combine(TEMP_DIR, "empty");
+		dir_create(dir_empty);
+
+		task = new RsyncTask();
+
+		task.dest_path = dir_empty;
+		task.exclude_from_file = save_exclude_list_for_backup(TEMP_DIR) ?? "";;
+
+		task.delete_extra = true;
+		task.delete_excluded = true;
+		task.delete_after = false;
+
+		if (app_mode.length > 0){
+			// console mode
+			task.io_nice = true;
 		}
 
-		while (thread_estimate_running){
-			gtk_do_events ();
-			Thread.usleep((ulong) GLib.TimeSpan.MILLISECOND * 100);
+		task.dry_run = true;
+
+		task.execute();
+
+		while (task.status == AppStatus.RUNNING){
+			Thread.usleep((ulong) GLib.TimeSpan.MILLISECOND * 16); // ~60fps
+			if(callback != null) callback();
+			gtk_do_events();
+		}
+
+		Main.first_snapshot_size = task.total_size;
+		Main.first_snapshot_count = task.count_created;
+		if ((task.total_size == 0) && (sys_root != null)) {
+			Main.first_snapshot_size = sys_root.used_bytes;
 		}
 
 		save_app_config();
@@ -4012,85 +4029,6 @@ public class Main : GLib.Object{
 		log_debug("estimate_system_size(): ok");
 		
 		return Main.first_snapshot_size;
-	}
-
-	public void estimate_system_size_thread(){
-		thread_estimate_running = true;
-
-		string cmd = "";
-		string std_out;
-		string std_err;
-		int ret_val;
-		uint64 required_space = 0;
-		int64 file_count = 0;
-
-		try{
-
-			log_debug("Using temp dir '%s'".printf(TEMP_DIR));
-
-			string file_exclude_list = path_combine(TEMP_DIR, "exclude.list");
-			var f = File.new_for_path(file_exclude_list);
-			if (f.query_exists()){
-				f.delete();
-			}
-
-			string file_log = path_combine(TEMP_DIR, "rsync.log");
-			f = File.new_for_path(file_log);
-			if (f.query_exists()){
-				f.delete();
-			}
-
-			string dir_empty = path_combine(TEMP_DIR, "empty");
-			f = File.new_for_path(dir_empty);
-			if (!f.query_exists()){
-				dir_create(dir_empty);
-			}
-
-			save_exclude_list_for_backup(TEMP_DIR);
-
-			cmd  = "export LC_ALL=C.UTF-8 ; rsync -ai --delete --numeric-ids --relative --stats --dry-run --delete-excluded --exclude-from='%s' /. '%s' &> '%s'".printf(file_exclude_list, dir_empty, file_log);
-
-			log_debug(cmd);
-			ret_val = exec_script_sync(cmd, out std_out, out std_err);
-
-			if (file_exists(file_log)){
-				cmd = "cat '%s' | awk '/Total file size/ {print $4}'".printf(file_log);
-				ret_val = exec_script_sync(cmd, out std_out, out std_err);
-				if (ret_val == 0){
-					required_space = long.parse(std_out.replace(",","").strip());
-					file_count = file_line_count(file_log) ?? 0;
-					
-					thr_success = true;
-				}
-				else{
-					log_error (_("Failed to estimate system size"));
-					log_error (std_err);
-					thr_success = false;
-				}
-			}
-			else{
-				log_error (_("Failed to estimate system size"));
-				log_error (std_err);
-				log_error (std_out);
-				thr_success = false;
-			}
-		}
-		catch(Error e){
-			log_error (e.message);
-			thr_success = false;
-		}
-
-		if ((required_space == 0) && (sys_root != null)){
-			required_space = sys_root.used_bytes;
-		}
-
-		Main.first_snapshot_size = required_space;
-		Main.first_snapshot_count = file_count;
-
-		log_debug("First snapshot size: %s".printf(format_file_size(required_space)));
-		log_debug("File count: %lld".printf(first_snapshot_count));
-
-		thread_estimate_running = false;
 	}
 
 	// btrfs

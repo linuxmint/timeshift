@@ -41,8 +41,6 @@ class EstimateBox : Gtk.Box{
 	private Gtk.ProgressBar progressbar;
 	private Gtk.Window parent_window;
 	
-	private bool thread_is_running = false;
-
 	public EstimateBox (Gtk.Window _parent_window) {
 
 		log_debug("EstimateBox: EstimateBox()");
@@ -70,62 +68,33 @@ class EstimateBox : Gtk.Box{
 
 		//progressbar
 		progressbar = new Gtk.ProgressBar();
+		progressbar.pulse_step = 0.01;
 		//progressbar.set_size_request(-1,25);
-		//progressbar.pulse_step = 0.1;
 		add (progressbar);
 
 		log_debug("EstimateBox: EstimateBox(): exit");
     }
 
-	public void estimate_system_size(){
+	public void estimate_system_size() {
 
 		if (Main.first_snapshot_size > 0){
 			log_debug("EstimateBox: size > 0");
 			return;
 		}
-		
-		progressbar.fraction = 0.0;
 
 		// start the estimation if not already running
-		if (!App.thread_estimate_running){
 
-			log_debug("EstimateBox: thread started");
-			
-			try {
-				thread_is_running = true;
-				new Thread<void>.try ("estimate-system-size", () => {estimate_system_size_thread();});
-			}
-			catch (Error e) {
-				thread_is_running = false;
-				log_error (e.message);
-			}
-		}
-
-		// wait for completion and increment progressbar
-		while (thread_is_running){
-			
-			if (progressbar.fraction < 98.0){
-				
-				progressbar.fraction += 0.005;
-
-				#if XAPP
-				XApp.set_window_progress(parent_window, (int)(progressbar.fraction * 100.0));
-				#endif
-			}
-			
-			gtk_do_events();
-			sleep(100);
-		}
+		log_debug("EstimateBox: thread started");
 
 		#if XAPP
-		XApp.set_window_progress(parent_window, 0);
+		XApp.set_window_progress_pulse(parent_window, true);
 		#endif
-	}
+		progressbar.pulse();
 
-	private void estimate_system_size_thread(){
-		
-		App.estimate_system_size();
-		log_debug("EstimateBox: thread finished");
-		thread_is_running = false;
+		App.estimate_system_size(progressbar.pulse);
+
+		#if XAPP
+		XApp.set_window_progress_pulse(parent_window, false);
+		#endif
 	}
 }
