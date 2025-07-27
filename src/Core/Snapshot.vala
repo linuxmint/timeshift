@@ -226,8 +226,10 @@ public class Snapshot : GLib.Object{
 			app_version = json_get_string(config,"app-version","");
 			file_count = (int64) json_get_uint64(config,"file_count",file_count);
 			live = json_get_bool(config,"live",false);
+			string type = config.get_string_member_with_default("type", "rsync");
 
-			distro = LinuxDistro.get_dist_info(path_combine(path, "localhost"));
+			string extension = (type == "btrfs") ? "@" : "localhost";
+			distro = LinuxDistro.get_dist_info(path_combine(path, extension));
 
 			//log_debug("repo.mount_path: %s".printf(repo.mount_path));
 
