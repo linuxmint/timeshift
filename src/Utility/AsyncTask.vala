@@ -48,7 +48,6 @@ public abstract class AsyncTask : GLib.Object{
 
 	protected string script_file = "";
 	protected string working_dir = "";
-	protected string log_file = "";
 
 	public bool background_mode = false;
 	
@@ -104,7 +103,6 @@ public abstract class AsyncTask : GLib.Object{
 	protected AsyncTask(){
 		working_dir = TEMP_DIR + "/" + timestamp_for_path();
 		script_file = path_combine(working_dir, "script.sh");
-		log_file = path_combine(working_dir, "task.log");
 
         status_line_mutex = GLib.Mutex();
 
@@ -126,7 +124,7 @@ public abstract class AsyncTask : GLib.Object{
 		
 		bool has_started = true;
 		finish_called = false;
-		
+
 		prg_count = 0;
 		prg_bytes = 0;
 		error_msg = "";
@@ -166,16 +164,6 @@ public abstract class AsyncTask : GLib.Object{
 			dis_err = new DataInputStream(uis_err);
 			dis_out.newline_type = DataStreamNewlineType.ANY;
 			dis_err.newline_type = DataStreamNewlineType.ANY;
-
-			// create log file
-			if (log_file.length > 0){
-				var file = File.new_for_path(log_file);
-				if (file.query_exists()){
-					file.delete();
-				}
-				var file_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
-				dos_log = new DataOutputStream (file_stream);
-			}
 
 			try {
 				//start thread for reading output stream
@@ -324,19 +312,6 @@ public abstract class AsyncTask : GLib.Object{
 
 		// dispose child process
 		Process.close_pid(child_pid); //required on Windows, doesn't do anything on Unix
-
-		try{
-			// dispose log
-			if ((dos_log != null) && !dos_log.is_closed() && !dos_log.is_closing()){
-				dos_log.close();
-			}
-			dos_log = null;
-		}
-		catch (Error e) {
-			// error can be ignored
-			// dos_log is closed automatically when the last reference is set to null
-			// there may be pending operations which may throw an error
-		}
 
 		read_exit_code();
 		
