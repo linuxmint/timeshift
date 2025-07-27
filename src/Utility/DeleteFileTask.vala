@@ -144,18 +144,10 @@ public class DeleteFileTask : AsyncTask{
 	}
 
 	public override void parse_stdout_line(string out_line){
-		if (is_terminated) {
-			return;
-		}
-		
 		update_progress_parse_console_output(out_line);
 	}
 	
 	public override void parse_stderr_line(string err_line){
-		if (is_terminated) {
-			return;
-		}
-		
 		update_progress_parse_console_output(err_line);
 	}
 

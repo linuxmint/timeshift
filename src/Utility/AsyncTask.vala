@@ -36,7 +36,6 @@ public abstract class AsyncTask : GLib.Object{
 	private DataInputStream dis_out = null;
 	private DataInputStream dis_err = null;
 	protected DataOutputStream dos_log = null;
-	protected bool is_terminated = false;
 
 	private bool stdout_is_open = false;
 	private bool stderr_is_open = false;
@@ -116,7 +115,6 @@ public abstract class AsyncTask : GLib.Object{
 		status = AppStatus.RUNNING;
 		
 		bool has_started = true;
-		is_terminated = false;
 		finish_called = false;
 		
 		prg_count = 0;
@@ -202,7 +200,7 @@ public abstract class AsyncTask : GLib.Object{
 			out_line = dis_out.read_line (null);
 			while (out_line != null) {
 				//log_msg("O: " + out_line);
-				if (!is_terminated && (out_line.length > 0)){
+				if (out_line.length > 0) {
 					parse_stdout_line(out_line);
 					stdout_line_read(out_line); //signal
 				}
@@ -236,7 +234,7 @@ public abstract class AsyncTask : GLib.Object{
 			
 			err_line = dis_err.read_line (null);
 			while (err_line != null) {
-				if (!is_terminated && (err_line.length > 0)){
+				if (err_line.length > 0){
 					error_msg += "%s\n".printf(err_line);
 					
 					parse_stderr_line(err_line);
@@ -531,18 +529,10 @@ public class RsyncTask : AsyncTask{
 	}
 
 	public override void parse_stdout_line(string out_line){
-		if (is_terminated) {
-			return;
-		}
-		
 		update_progress_parse_console_output(out_line);
 	}
 	
 	public override void parse_stderr_line(string err_line){
-		if (is_terminated) {
-			return;
-		}
-		
 		update_progress_parse_console_output(err_line);
 	}
 
