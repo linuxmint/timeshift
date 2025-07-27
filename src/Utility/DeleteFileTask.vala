@@ -70,18 +70,14 @@ public class DeleteFileTask : AsyncTask{
 		}
 	}
 
-	public void prepare() {
-		string script_text = build_script();
-		log_debug(script_text);
-		save_bash_script_temp(script_text, script_file);
-
-		log_debug("RsyncTask:prepare(): saved: %s".printf(script_file));
+	public override void prepare() {
+		base.prepare();
 
 		status_line_count = 0;
 		total_size = 0;
 	}
 
-	private string build_script() {
+	protected override string build_script() {
 		var cmd = "";
 
 		if (io_nice){
@@ -126,22 +122,6 @@ public class DeleteFileTask : AsyncTask{
 	}
 
 	// execution ----------------------------
-
-	public void execute() {
-
-		status = AppStatus.RUNNING;
-		
-		log_debug("RsyncTask:execute()");
-		
-		prepare();
-
-		begin();
-
-		if (status == AppStatus.RUNNING){
-			
-			
-		}
-	}
 
 	public override void parse_stdout_line(string out_line){
 		update_progress_parse_console_output(out_line);

@@ -110,9 +110,18 @@ public abstract class AsyncTask : GLib.Object{
 
 		dir_create(working_dir);
 	}
-	
-	public bool begin(){
 
+	public virtual void prepare() {
+		string script_text = build_script();
+		log_debug(script_text);
+		save_bash_script_temp(script_text, script_file);
+
+		log_debug("AsyncTask:prepare(): saved: %s".printf(script_file));
+	}
+
+	protected abstract string build_script();
+	
+	protected virtual bool begin() {
 		status = AppStatus.RUNNING;
 		
 		bool has_started = true;
@@ -279,6 +288,12 @@ public abstract class AsyncTask : GLib.Object{
 			log_error (e.message);
 		}
 	}
+
+	public virtual void execute() {
+		log_debug("AsyncTask:execute()");
+		prepare();
+		begin();
+	}
 	
 	protected abstract void parse_stdout_line(string out_line);
 	
@@ -358,7 +373,6 @@ public abstract class AsyncTask : GLib.Object{
 	}
 
 	public bool is_running(){
-		
 		return (status == AppStatus.RUNNING);
 	}
 	
@@ -507,15 +521,8 @@ public class RsyncTask : AsyncTask{
 		script_file = _script_file;
 		log_file = _log_file;
 	}
-	
-	public void prepare() {
-		string script_text = build_script();
-		save_bash_script_temp(script_text, script_file);
-	}
 
-	private string build_script() {
-		var script = new StringBuilder();
-
+	protected override string build_script() {
 		var cmd = "rsync -ai";
 
 		if (verbose){
@@ -549,22 +556,10 @@ public class RsyncTask : AsyncTask{
 		
 		//cmd += " /. \"%s\"".printf(sync_path + "/localhost/");
 
-		return script.str;
+		return cmd;
 	}
 	 
 	// execution ----------------------------
-
-	public void execute() {
-
-		prepare();
-
-		begin();
-
-		if (status == AppStatus.RUNNING){
-			
-			
-		}
-	}
 
 	public override void parse_stdout_line(string out_line){
 		update_progress_parse_console_output(out_line);
