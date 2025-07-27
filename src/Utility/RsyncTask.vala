@@ -256,7 +256,7 @@ public class RsyncTask : AsyncTask{
 		source_path = remove_trailing_slash(source_path);
 		
 		dest_path = remove_trailing_slash(dest_path);
-		
+
 		cmd += " '%s/'".printf(escape_single_quote(source_path));
 
 		cmd += " '%s/'".printf(escape_single_quote(dest_path));
@@ -524,7 +524,9 @@ public class RsyncTask : AsyncTask{
 	}
 
 	protected override void finish_task() {
-		file_write(rsync_log_file + "-changes", log.str);
+		if (0 < rsync_log_file.length) {
+			file_write(rsync_log_file + "-changes", log.str);
+		}
 	}
 
 }
