@@ -342,7 +342,8 @@ public abstract class AsyncTask : GLib.Object{
 		task_complete(); //signal
 	}
 
-	protected abstract void finish_task();
+	// can be overloaded by subclasses, that wish to do special stuff during finish
+	protected virtual void finish_task() {}
 
 	protected int read_exit_code(){
 		
@@ -579,22 +580,6 @@ public class RsyncTask : AsyncTask{
 		}
 
 		return true;
-	}
-
-	protected override void finish_task(){
-		if ((status != AppStatus.CANCELLED) && (status != AppStatus.PASSWORD_REQUIRED)) {
-			status = AppStatus.FINISHED;
-		}
-	}
-
-	public int read_status(){
-		var status_file = working_dir + "/status";
-		var f = File.new_for_path(status_file);
-		if (f.query_exists()){
-			var txt = file_read(status_file);
-			return int.parse(txt);
-		}
-		return -1;
 	}
 }
 */
