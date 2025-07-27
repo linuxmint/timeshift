@@ -136,7 +136,7 @@ public class RsyncTask : AsyncTask{
 
 			regex_list["log-unchanged"] = new Regex(
 				"""[0-9\/]+ [0-9:.]+ \[[0-9]+\] ([.h])([.fdLDS])[ ]{9} (.*)""");
-				
+
 			regex_list["total-size"] = new Regex(
 				"""total size is ([0-9,]+)[ \t]+speedup is [0-9.]+""");
 
@@ -146,13 +146,8 @@ public class RsyncTask : AsyncTask{
 		}
 	}
 	
-	public void prepare() {
-		string script_text = build_script();
-		
-		log_debug(script_text);
-		
-		save_bash_script_temp(script_text, script_file);
-		log_debug("RsyncTask:prepare(): saved: %s".printf(script_file));
+	public override void prepare() {
+		base.prepare();
 
 		//status_lines = new GLib.Queue<string>();
 		status_line_count = 0;
@@ -172,7 +167,7 @@ public class RsyncTask : AsyncTask{
 		log = new StringBuilder();
 	}
 
-	private string build_script() {
+	protected override string build_script() {
 		
 		var cmd = "export LC_ALL=C.UTF-8\n";
 
@@ -419,21 +414,6 @@ public class RsyncTask : AsyncTask{
 	}
 	
 	// execution ----------------------------
-
-	public void execute() {
-		
-		log_debug("RsyncTask:execute()");
-		
-		prepare();
-
-		/*log_debug(string.nfill(70,'='));
-		log_debug(script_file);
-		log_debug(string.nfill(70,'='));
-		log_debug(file_read(script_file));
-		log_debug(string.nfill(70,'='));*/
-		
-		begin();
-	}
 
 	public override void parse_stdout_line(string out_line){
 		update_progress_parse_console_output(out_line);
