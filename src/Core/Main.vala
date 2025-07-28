@@ -3518,10 +3518,6 @@ public class Main : GLib.Object{
 			if ((repo != null) && (repo.device != null) && (pi.uuid == repo.device.uuid)){
 				repo.device = pi;
 			}
-			
-			if (pi.is_mounted){
-				pi.dist_info = LinuxDistro.get_dist_info(pi.mount_points[0].mount_point).full_name();
-			}
 		}
 		
 		if (partitions.size == 0){
