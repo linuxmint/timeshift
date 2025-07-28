@@ -352,7 +352,7 @@ public class Main : GLib.Object{
 
 		log_debug("Main: check_dependencies()");
 		
-		string[] dependencies = { "rsync","/sbin/blkid","df","mount","umount","fuser","crontab","cp","rm","touch","ln","sync","which"}; //"shutdown","chroot",
+		string[] dependencies = { "rsync","/sbin/blkid","df","mount","umount","fuser","crontab","cp","rm","touch","ln","sync","which", "run-parts"}; //"shutdown","chroot",
 
 		string path;
 		foreach(string cmd_tool in dependencies){
@@ -1698,6 +1698,16 @@ public class Main : GLib.Object{
 
 		set_tags(snapshot); // set_tags() will update the control file
 		
+		// Perform any post-backup actions
+		log_debug("Running post-backup tasks...");
+		
+		string sh = "test -d \"/etc/timeshift/backup-hooks.d\" &&" +
+		" export TS_SNAPSHOT_PATH=\"" + snapshot_path + "\" &&" + 
+		" run-parts --verbose /etc/timeshift/backup-hooks.d";
+		exec_script_sync(sh, null, null, false, false, false, true);
+
+		log_debug("Finished running post-backup tasks...");
+
 		return snapshot;
 	}
 
@@ -3041,6 +3051,17 @@ public class Main : GLib.Object{
 
 		log_msg(_("Restore completed"));
 		thr_success = true;
+
+		// Perform any post-restore actions
+		log_debug("Running post-restore tasks...");
+
+		string sh = "test -d \"/etc/timeshift/restore-hooks.d\" &&" +
+		" export TS_SNAPSHOT_PATH=\"" + snapshot_to_restore.path + "\" &&" + 
+		" run-parts --verbose /etc/timeshift/restore-hooks.d";
+
+		exec_script_sync(sh, null, null, false, false, false, true);
+
+		log_debug("Finished running post-restore tasks...");
 		
 		if (restore_current_system){
 			log_msg(_("Snapshot will become active after system is rebooted."));
