@@ -433,11 +433,6 @@ public class RsyncTask : AsyncTask{
 		log_debug(string.nfill(70,'='));*/
 		
 		begin();
-
-		if (status == AppStatus.RUNNING){
-			
-			
-		}
 	}
 
 	public override void parse_stdout_line(string out_line){

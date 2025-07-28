@@ -32,19 +32,19 @@ public abstract class AsyncTask : GLib.Object{
 	
 	private string err_line = "";
 	private string out_line = "";
-	private DataOutputStream dos_in;
-	private DataInputStream dis_out;
-	private DataInputStream dis_err;
-	protected DataOutputStream dos_log;
+	private DataOutputStream dos_in = null;
+	private DataInputStream dis_out = null;
+	private DataInputStream dis_err = null;
+	protected DataOutputStream dos_log = null;
 	protected bool is_terminated = false;
 
 	private bool stdout_is_open = false;
 	private bool stderr_is_open = false;
-	
-	protected Pid child_pid;
-	private int input_fd;
-	private int output_fd;
-	private int error_fd;
+
+	protected Pid child_pid = 0;
+	private int input_fd = -1;
+	private int output_fd = -1;
+	private int error_fd = -1;
 	private bool finish_called = false;
 
 	protected string script_file = "";
@@ -54,7 +54,7 @@ public abstract class AsyncTask : GLib.Object{
 	public bool background_mode = false;
 	
 	// public
-	public AppStatus status;
+	public AppStatus status = AppStatus.NOT_STARTED;
 
     private string _status_line = "";
     public GLib.Mutex status_line_mutex;
@@ -69,8 +69,7 @@ public abstract class AsyncTask : GLib.Object{
 	public int64 prg_bytes = 0;
 	public int64 prg_bytes_total = 0;
 	public string eta = "";
-	//public bool is_running = false;
-	
+
 	// signals
 	public signal void stdout_line_read(string line);
 	public signal void stderr_line_read(string line);
@@ -103,12 +102,10 @@ public abstract class AsyncTask : GLib.Object{
     }
 
 	protected AsyncTask(){
-		
 		working_dir = TEMP_DIR + "/" + timestamp_for_path();
 		script_file = path_combine(working_dir, "script.sh");
 		log_file = path_combine(working_dir, "task.log");
 
-		//regex = new Gee.HashMap<string,Regex>(); // needs to be initialized again in instance constructor
         status_line_mutex = GLib.Mutex();
 
 		dir_create(working_dir);
@@ -368,12 +365,14 @@ public abstract class AsyncTask : GLib.Object{
 	// public actions --------------
 
 	public void stop(AppStatus status_to_update = AppStatus.CANCELLED) {
-		
 		status = status_to_update;
-		
-		process_quit(child_pid);
-		
-		log_debug("process_quit: %d".printf(child_pid));
+
+		if(0 != child_pid) {
+			process_quit(child_pid);
+			child_pid = 0;
+
+			log_debug("process_quit: %d".printf(child_pid));
+		}
 	}
 
 	public void set_priority() {
