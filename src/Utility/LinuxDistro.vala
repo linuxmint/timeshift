@@ -36,7 +36,6 @@ public class LinuxDistro : GLib.Object{
 	public string codename = "";
 
 	public LinuxDistro(){
-		
 		dist_id = "";
 		description = "";
 		release = "";
@@ -62,93 +61,86 @@ public class LinuxDistro : GLib.Object{
 		/* Returns information about the Linux distribution
 		 * installed at the given root path */
 
+
+		/*
+		try to read from /etc/lsb-release
+		example content:
+
+		DISTRIB_ID=Ubuntu
+		DISTRIB_RELEASE=13.04
+		DISTRIB_CODENAME=raring
+		DISTRIB_DESCRIPTION="Ubuntu 13.04"
+		*/
+		LinuxDistro? info = read_info_file(root_path + "/etc/lsb-release");
+		if(info != null) {
+			return info;
+		}
+
+		/*
+		fallback to /etc/os-release
+		example content:
+
+		NAME="Ubuntu"
+		VERSION="13.04, Raring Ringtail"
+		ID=ubuntu
+		ID_LIKE=debian
+		PRETTY_NAME="Ubuntu 13.04"
+		VERSION_ID="13.04"
+		HOME_URL="http://www.ubuntu.com/"
+		SUPPORT_URL="http://help.ubuntu.com/"
+		BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"
+		*/
+		return read_info_file(root_path + "/etc/os-release") ?? new LinuxDistro();
+	}
+
+	// read a generic info file like /etc/os-release or /etc/lsb-release
+	private static LinuxDistro? read_info_file(string file_path) {
+		string? dist_file_cont = file_read(file_path);
+		if(dist_file_cont == null || dist_file_cont.length == 0) {
+			return null;
+		}
+
 		LinuxDistro info = new LinuxDistro();
+		string[] lines = dist_file_cont.split("\n");
 
-		string dist_file = root_path + "/etc/lsb-release";
-		var f = File.new_for_path(dist_file);
-		if (f.query_exists()){
+		foreach(string line in lines){
+			// split for 3 to detect if there are to many
+			string[] linesplit = line.split("=", 3);
 
-			/*
-				DISTRIB_ID=Ubuntu
-				DISTRIB_RELEASE=13.04
-				DISTRIB_CODENAME=raring
-				DISTRIB_DESCRIPTION="Ubuntu 13.04"
-			*/
+			if (linesplit.length != 2){ continue; }
 
-			foreach(string line in file_read(dist_file).split("\n")){
+			string key = linesplit[0].strip();
+			string val = linesplit[1].strip();
 
-				if (line.split("=").length != 2){ continue; }
+			// removing leading "
+			if (val.has_prefix("\"")) {
+				val = val[1:val.length];
+			}
 
-				string key = line.split("=")[0].strip();
-				string val = line.split("=")[1].strip();
+			// remove trailing "
+			if (val.has_suffix("\"")) {
+				val = val[0:val.length-1];
+			}
 
-				if (val.has_prefix("\"")){
-					val = val[1:val.length];
-				}
-
-				if (val.has_suffix("\"")){
-					val = val[0:val.length-1];
-				}
-
-				switch (key){
-					case "DISTRIB_ID":
-						info.dist_id = val;
-						break;
-					case "DISTRIB_RELEASE":
-						info.release = val;
-						break;
-					case "DISTRIB_CODENAME":
-						info.codename = val;
-						break;
-					case "DISTRIB_DESCRIPTION":
-						info.description = val;
-						break;
-				}
+			switch (key) {
+				case "ID":
+				case "DISTRIB_ID":
+					info.dist_id = val;
+					break;
+				case "VERSION_ID":
+				case "DISTRIB_RELEASE":
+					info.release = val;
+					break;
+				case "VERSION_CODENAME":
+				case "DISTRIB_CODENAME":
+					info.codename = val;
+					break;
+				case "PRETTY_NAME":
+				case "DISTRIB_DESCRIPTION":
+					info.description = val;
+					break;
 			}
 		}
-		else{
-
-			dist_file = root_path + "/etc/os-release";
-			f = File.new_for_path(dist_file);
-			if (f.query_exists()){
-
-				/*
-					NAME="Ubuntu"
-					VERSION="13.04, Raring Ringtail"
-					ID=ubuntu
-					ID_LIKE=debian
-					PRETTY_NAME="Ubuntu 13.04"
-					VERSION_ID="13.04"
-					HOME_URL="http://www.ubuntu.com/"
-					SUPPORT_URL="http://help.ubuntu.com/"
-					BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"
-				*/
-
-				foreach(string line in file_read(dist_file).split("\n")){
-
-					if (line.split("=").length != 2){ continue; }
-
-					string key = line.split("=")[0].strip();
-					string val = line.split("=")[1].strip();
-
-					switch (key){
-						case "ID":
-							info.dist_id = val;
-							break;
-						case "VERSION_ID":
-							info.release = val;
-							break;
-						//case "DISTRIB_CODENAME":
-							//info.codename = val;
-							//break;
-						case "PRETTY_NAME":
-							info.description = val;
-							break;
-					}
-				}
-			}
-		}
-
 		return info;
 	}
 
@@ -156,7 +148,7 @@ public class LinuxDistro : GLib.Object{
 		
 		owned get{
 			
-			if (dist_id in "fedora rhel rocky centos almalinux"){
+			if (dist_id.down() in "fedora rhel rocky centos almalinux"){
 				return "redhat";
 			}
 			else if (dist_id.down().contains("manjaro") || dist_id.down().contains("arch")){
