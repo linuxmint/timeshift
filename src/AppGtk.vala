@@ -102,6 +102,9 @@ public class AppGtk : GLib.Object {
 			case "--debug":
 				LOG_DEBUG = true;
 				break;
+			case "--config":
+				App.cmd_config = args[++k];
+				break;
 			default:
 				//unknown option - show help and exit
 				log_error(_("Unknown option") + ": %s".printf(args[k]));

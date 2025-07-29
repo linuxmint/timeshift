@@ -148,6 +148,7 @@ public class Main : GLib.Object{
 	public string cmd_target_device = "";
 	public string cmd_backup_device = "";
 	public string cmd_snapshot = "";
+	public string cmd_config = "";
 	public bool cmd_confirm = false;
 	public bool cmd_verbose = true;
 	public bool cmd_scripted = false;
@@ -295,7 +296,7 @@ public class Main : GLib.Object{
 		string local_exec = args[0];
 		string local_conf = app_path + "/timeshift.json";
 		string local_share = app_path + "/share";
-
+		log_msg("cmd_config" + ": " + cmd_config);
 		var f_local_exec = File.new_for_path(local_exec);
 		if (f_local_exec.query_exists()){
 
@@ -312,6 +313,10 @@ public class Main : GLib.Object{
 		else{
 			//timeshift is running from system directory - update app_path
 			this.app_path = get_cmd_path("timeshift");
+		}
+		var f_config_path = File.new_for_path(cmd_config);
+		if (f_config_path.query_exists()){
+			this.app_conf_path = cmd_config;
 		}
 
 		// initialize lists -----------------
@@ -491,6 +496,9 @@ public class Main : GLib.Object{
 				case "--list-devices":
 					app_mode = "list-devices";
 					break;
+				case "--config":
+					cmd_config = args[++k];
+					break;
 			}
 		}
 	}
@@ -602,6 +610,7 @@ public class Main : GLib.Object{
 			if (entry.mount_point.has_prefix("/srv")){ continue; }
 			if (entry.mount_point.has_prefix("/sys")){ continue; }
 			if (entry.mount_point.has_prefix("/system")){ continue; }
+			if (entry.mount_point.has_prefix("/work")){ continue; }
 			if (entry.mount_point.has_prefix("/tmp")){ continue; }
 			if (entry.mount_point.has_prefix("/usr")){ continue; }
 			if (entry.mount_point.has_prefix("/var")){ continue; }
