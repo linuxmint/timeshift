@@ -339,7 +339,7 @@ namespace TeeJee.FileSystem{
 				}
 				f.delete();
 			} catch(Error err) {
-				log_error(_("Can not enumerate folder %s").printf(dir));
+				log_error("Can not enumerate folder %s".printf(dir));
 				return false;
 			}
 		}

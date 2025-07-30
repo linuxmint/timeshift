@@ -759,7 +759,7 @@ public class AppConsole : GLib.Object {
 			}
 
 			if (App.cmd_scripted){
-				log_error(_("No snapshots selected. Use --snapshot to specify snapshots"));
+				log_error("No snapshots selected. Use --snapshot to specify snapshots");
 				App.exit_app(1);
 				return null;
 			}
@@ -889,7 +889,7 @@ public class AppConsole : GLib.Object {
 			if (App.cmd_scripted){
 				dev = Device.get_device_by_name(default_device);
 				if (dev == null){
-					log_error(_("Failed to get device by name %s").printf(default_device));
+					log_error("Failed to get device by name %s".printf(default_device));
 					App.exit_app(1);
 				}
 			}
@@ -1043,7 +1043,7 @@ public class AppConsole : GLib.Object {
 			if (App.cmd_scripted){
 				dev = Device.get_device_by_name(grub_device_default);
 				if (dev == null){
-					log_error(_("Failed to get grub device by name %s").printf(grub_device_default));
+					log_error("Failed to get grub device by name %s".printf(grub_device_default));
 					App.exit_app(1);
 				}
 			}

@@ -351,7 +351,7 @@ namespace TeeJee.ProcessHelper{
 			return childList;
 		} catch (Error e) {
 			log_error(e.message);
-			log_error(_("Failed to get child processes of %ld").printf(parent_pid));
+			log_error("Failed to get child processes of %ld".printf(parent_pid));
 		}
 		return {};
 	}
