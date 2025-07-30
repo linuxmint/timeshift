@@ -1,3 +1,51 @@
+timeshift (25.07.1) zara; urgency=medium
+
+  [ Michael Webster ]
+  * Subvolume.vala: (btrfs) Wait for async file operations to complete.
+
+  [ Pierre Carru ]
+  * Btrfs: support default subvolid!=0 (#334)
+
+  [ entith ]
+  * Allow explicitly setting ondemand tag from CLI (#399)
+
+  [ suve ]
+  * AppStream metadata fixes (#391)
+
+  [ Yannis Gerlach ]
+  * Remove dependencies to external binarys (#333)
+
+  [ snwbrds2922 ]
+  * Add user settings before defaults (#342)
+
+  [ Yannis Gerlach ]
+  * query the correct root path on btrfs (#377)
+  * add "timeshift" to the tempdir names (#395)
+  * refactor LinuxDistro (#376)
+
+  [ Michael Webster ]
+  * Main.vala: Don't check for distro name on every device.
+
+  [ mwoz123 ]
+  * BTRFS custom hooks (#381)
+
+  [ Shyliuli ]
+  * Specify the environment variables named DISPLAY and XAUTHORITY (#384)
+
+  [ TechManWalker ]
+  * Always delete brfs volumes recursively (#423)
+
+  [ Yannis Gerlach ]
+  * only kill a task if its pid is set (#427)
+
+  [ Nikita Stelmashenko ]
+  * Add full non-interactive mode (#388)
+
+  [ Clement Lefebvre ]
+  * l10n: Update POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 30 Jul 2025 16:42:06 +0200
+
 timeshift (24.06.6) xia; urgency=medium
 
   * l10n: Update translations
