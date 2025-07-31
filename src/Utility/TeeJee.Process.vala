@@ -292,9 +292,14 @@ namespace TeeJee.ProcessHelper{
 	public string get_process_exe_name(long pid = -1){
 		string pidStr = (pid <= 0 ? "self" : pid.to_string());
 		string path = "/proc/%s/exe".printf(pidStr);
-		char[] buf = new char[4096];
-		Posix.readlink(path, buf);
-		return GLib.Path.get_basename((string) buf);
+        string link;
+        try {
+            link = GLib.FileUtils.read_link(path);
+        } catch (Error e) {
+            return "";
+        }
+
+        return GLib.Path.get_basename(link);
 	}
 
 	public Pid[] get_process_children (Pid parent_pid){
