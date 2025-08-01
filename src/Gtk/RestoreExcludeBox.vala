@@ -131,9 +131,4 @@ class RestoreExcludeBox : Gtk.Box{
 		chk_web.toggled();
 		chk_torrent.toggled();
 	}
-
-	public bool show_all_apps(){
-		
-		return chk_other.active;
-	}	
 }
