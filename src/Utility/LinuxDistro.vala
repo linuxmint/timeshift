@@ -95,8 +95,14 @@ public class LinuxDistro : GLib.Object{
 
 	// read a generic info file like /etc/os-release or /etc/lsb-release
 	private static LinuxDistro? read_info_file(string file_path) {
-		string? dist_file_cont = file_read(file_path);
-		if(dist_file_cont == null || dist_file_cont.length == 0) {
+		string dist_file_cont;
+		try {
+			GLib.FileUtils.get_contents(file_path, out dist_file_cont);
+		} catch (Error e) {
+			return null;
+		}
+		
+		if(dist_file_cont.length == 0) {
 			return null;
 		}
 
