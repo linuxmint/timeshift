@@ -61,6 +61,8 @@ public class LinuxDistro : GLib.Object{
 		/* Returns information about the Linux distribution
 		 * installed at the given root path */
 
+		string lsb_release_path = root_path + "/etc/lsb-release";
+		string os_release_path = root_path + "/etc/os-release";
 
 		/*
 		try to read from /etc/lsb-release
@@ -71,9 +73,11 @@ public class LinuxDistro : GLib.Object{
 		DISTRIB_CODENAME=raring
 		DISTRIB_DESCRIPTION="Ubuntu 13.04"
 		*/
-		LinuxDistro? info = read_info_file(root_path + "/etc/lsb-release");
-		if(info != null) {
-			return info;
+		if (file_exists(lsb_release_path)) {
+			LinuxDistro? info = read_info_file(lsb_release_path);
+			if(info != null) {
+				return info;
+			}
 		}
 
 		/*
@@ -90,7 +94,16 @@ public class LinuxDistro : GLib.Object{
 		SUPPORT_URL="http://help.ubuntu.com/"
 		BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"
 		*/
-		return read_info_file(root_path + "/etc/os-release") ?? new LinuxDistro();
+		if (file_exists(os_release_path)) {
+			LinuxDistro? info = read_info_file(os_release_path);
+			if(info != null) {
+				return info;
+			}
+		}
+
+		// Log error only if both files are missing
+		log_error("Failed to find distribution info files: %s and %s".printf(lsb_release_path, os_release_path));
+		return new LinuxDistro();
 	}
 
 	// read a generic info file like /etc/os-release or /etc/lsb-release
