@@ -427,33 +427,4 @@ class UsersBox : Gtk.Box{
 
 		exclude_box.refresh_treeview();
 	}
-
-	public void save_changes(){
-
-		//App.exclude_list_user.clear();
-
-		// add include patterns from treeview
-		/*TreeIter iter;
-		var store = (Gtk.ListStore) treeview.model;
-		bool iterExists = store.get_iter_first (out iter);
-		while (iterExists) {
-			string pattern;
-			store.get(iter, 0, out pattern);
-
-			if (!App.exclude_list_user.contains(pattern)
-				&& !App.exclude_list_default.contains(pattern)
-				&& !App.exclude_list_home.contains(pattern)){
-				
-				App.exclude_list_user.add(pattern);
-			}
-			
-			iterExists = store.iter_next(ref iter);
-		}*/
-
-		log_debug("save_changes(): exclude_list_user:");
-		foreach(var item in App.exclude_list_user){
-			log_debug(item);
-		}
-		log_debug("");
-	}
 }
