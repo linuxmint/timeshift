@@ -30,6 +30,21 @@ using TeeJee.Misc;
 
 public class RsyncTask : AsyncTask{
 
+	private enum RegexType {
+		Status,
+		Created,
+		LogCreated,
+		Deleted,
+		LogDeleted,
+		Modified,
+		LogModified,
+		Unchanged,
+		LogUnchanged,
+		TotalSize,
+
+		Count
+	}
+
 	// settings
 	public bool delete_extra = true;
 	public bool delete_after = false;
@@ -46,7 +61,7 @@ public class RsyncTask : AsyncTask{
 	public bool dry_run = false;
 
 	// regex
-	private Gee.HashMap<string, Regex> regex_list;
+	private Regex[] regex_list = null;
 
 	// status
 	public GLib.Queue<string> status_lines;
@@ -76,7 +91,7 @@ public class RsyncTask : AsyncTask{
 			return; // already initialized
 		}
 		
-		regex_list = new Gee.HashMap<string,Regex>();
+		regex_list = new Regex[RegexType.Count];
 
 		/*
 		2018/02/03 16:53:46 [2419] >f..t...... boot/grub/grubenv
@@ -110,34 +125,34 @@ public class RsyncTask : AsyncTask{
 		
 		try {
 			//Example: status=-1
-			regex_list["status"] = new Regex(
+			regex_list[RegexType.Status] = new Regex(
 				"""([<>ch.*])([.fdLDS])(c|\+|\.| )(s|\+|\.| )(t|\+|\.| )(p|\+|\.| )(o|\+|\.| )(g|\+|\.| )(u|\+|\.| )(a|\+|\.| )(x|\+|\.| ) (.*)""");
 
-			regex_list["created"] = new Regex(
+			regex_list[RegexType.Created] = new Regex(
 				"""([<>ch.*])([.fdLDS])[+]{9} (.*)""");
 
-			regex_list["log-created"] = new Regex(
+			regex_list[RegexType.LogCreated] = new Regex(
 				"""[0-9\/]+ [0-9:.]+ \[[0-9]+\] ([<>ch.*])([.fdLDS])[+]{9} (.*)""");
 				
-			regex_list["deleted"] = new Regex(
+			regex_list[RegexType.Deleted] = new Regex(
 				"""\*deleting[ \t]+(.*)""");
 
-			regex_list["log-deleted"] = new Regex(
+			regex_list[RegexType.LogDeleted] = new Regex(
 				"""[0-9\/]+ [0-9:.]+ \[[0-9]+\] \*deleting[ \t]+(.*)""");
 
-			regex_list["modified"] = new Regex(
+			regex_list[RegexType.Modified] = new Regex(
 				"""([<>ch.])([.fdLDS])(c|\+|\.| )(s|\+|\.| )(t|\+|\.| )(p|\+|\.| )(o|\+|\.| )(g|\+|\.| )(u|\+|\.| )(a|\+|\.| )(x|\+|\.) (.*)""");
 
-			regex_list["log-modified"] = new Regex(
+			regex_list[RegexType.LogModified] = new Regex(
 				"""[0-9\/]+ [0-9:.]+ \[[0-9]+\] ([<>ch.])([.fdLDS])(c|\+|\.| )(s|\+|\.| )(t|\+|\.| )(p|\+|\.| )(o|\+|\.| )(g|\+|\.| )(u|\+|\.| )(a|\+|\.| )(x|\+|\.) (.*)""");
 
-			regex_list["unchanged"] = new Regex(
+			regex_list[RegexType.Unchanged] = new Regex(
 				"""([.h])([.fdLDS])[ ]{9} (.*)""");
 
-			regex_list["log-unchanged"] = new Regex(
+			regex_list[RegexType.LogUnchanged] = new Regex(
 				"""[0-9\/]+ [0-9:.]+ \[[0-9]+\] ([.h])([.fdLDS])[ ]{9} (.*)""");
-				
-			regex_list["total-size"] = new Regex(
+
+			regex_list[RegexType.TotalSize] = new Regex(
 				"""total size is ([0-9,]+)[ \t]+speedup is [0-9.]+""");
 
 		}
@@ -146,13 +161,8 @@ public class RsyncTask : AsyncTask{
 		}
 	}
 	
-	public void prepare() {
-		string script_text = build_script();
-		
-		log_debug(script_text);
-		
-		save_bash_script_temp(script_text, script_file);
-		log_debug("RsyncTask:prepare(): saved: %s".printf(script_file));
+	public override void prepare() {
+		base.prepare();
 
 		//status_lines = new GLib.Queue<string>();
 		status_line_count = 0;
@@ -172,7 +182,7 @@ public class RsyncTask : AsyncTask{
 		log = new StringBuilder();
 	}
 
-	private string build_script() {
+	protected override string build_script() {
 		
 		var cmd = "export LC_ALL=C.UTF-8\n";
 
@@ -246,7 +256,7 @@ public class RsyncTask : AsyncTask{
 		source_path = remove_trailing_slash(source_path);
 		
 		dest_path = remove_trailing_slash(dest_path);
-		
+
 		cmd += " '%s/'".printf(escape_single_quote(source_path));
 
 		cmd += " '%s/'".printf(escape_single_quote(dest_path));
@@ -316,8 +326,8 @@ public class RsyncTask : AsyncTask{
 				item_path = "";
 				
 				MatchInfo match;
-				if (regex_list["created"].match(line, 0, out match)
-					|| regex_list["log-created"].match(line, 0, out match)) {
+				if (regex_list[RegexType.Created].match(line, 0, out match)
+					|| regex_list[RegexType.LogCreated].match(line, 0, out match)) {
 
 					if (dos_changes != null){
 						dos_changes.put_string("%s\n".printf(line));
@@ -335,8 +345,8 @@ public class RsyncTask : AsyncTask{
 					}*/
 					item_status = "created";
 				}
-				else if (regex_list["log-deleted"].match(line, 0, out match)
-					|| regex_list["deleted"].match(line, 0, out match)) {
+				else if (regex_list[RegexType.LogDeleted].match(line, 0, out match)
+					|| regex_list[RegexType.Deleted].match(line, 0, out match)) {
 					
 					//log_debug("matched: deleted:%s".printf(line));
 
@@ -348,8 +358,8 @@ public class RsyncTask : AsyncTask{
 					//item_type = item_path.has_suffix("/") ? FileType.DIRECTORY : FileType.REGULAR;
 					item_status = "deleted";
 				}
-				else if (regex_list["modified"].match(line, 0, out match)
-					|| regex_list["log-modified"].match(line, 0, out match)) {
+				else if (regex_list[RegexType.Modified].match(line, 0, out match)
+					|| regex_list[RegexType.LogModified].match(line, 0, out match)) {
 
 					//log_debug("matched: modified:%s".printf(line));
 
@@ -385,7 +395,7 @@ public class RsyncTask : AsyncTask{
 						item_status = "group";
 					}
 				}
-				else if (regex_list["log-unchanged"].match(line, 0, out match)) {
+				else if (regex_list[RegexType.LogUnchanged].match(line, 0, out match)) {
 					// ignore
 				}
 				else{
@@ -420,34 +430,11 @@ public class RsyncTask : AsyncTask{
 	
 	// execution ----------------------------
 
-	public void execute() {
-		
-		log_debug("RsyncTask:execute()");
-		
-		prepare();
-
-		/*log_debug(string.nfill(70,'='));
-		log_debug(script_file);
-		log_debug(string.nfill(70,'='));
-		log_debug(file_read(script_file));
-		log_debug(string.nfill(70,'='));*/
-		
-		begin();
-	}
-
 	public override void parse_stdout_line(string out_line){
-		if (is_terminated) {
-			return;
-		}
-		
 		update_progress_parse_console_output(out_line);
 	}
 	
 	public override void parse_stderr_line(string err_line){
-		if (is_terminated) {
-			return;
-		}
-		
 		update_progress_parse_console_output(err_line);
 	}
 
@@ -464,7 +451,7 @@ public class RsyncTask : AsyncTask{
 		}
 		
 		//MatchInfo match;
-		//if (regex_list["status"].match(line, 0, out match)) {
+		//if (regex_list[RegexType.Status].match(line, 0, out match)) {
 		//	status_line = match.fetch(12);
 
 			//status_lines.push_tail(status_line);
@@ -473,7 +460,7 @@ public class RsyncTask : AsyncTask{
 			//}
 		//}
 		MatchInfo match;
-		if (regex_list["created"].match(line, 0, out match)) {
+		if (regex_list[RegexType.Created].match(line, 0, out match)) {
 
 			//log_debug("matched: created:%s".printf(line));
 			
@@ -481,7 +468,7 @@ public class RsyncTask : AsyncTask{
 			status_line = match.fetch(3).split(" -> ")[0].strip();
 			log.append(line + "\n");
 		}
-		else if (regex_list["deleted"].match(line, 0, out match)) {
+		else if (regex_list[RegexType.Deleted].match(line, 0, out match)) {
 			
 			//log_debug("matched: deleted:%s".printf(line));
 
@@ -489,14 +476,14 @@ public class RsyncTask : AsyncTask{
 			status_line = match.fetch(1).split(" -> ")[0].strip();
 			log.append(line + "\n");
 		}
-		else if (regex_list["unchanged"].match(line, 0, out match)) {
+		else if (regex_list[RegexType.Unchanged].match(line, 0, out match)) {
 			
 			//log_debug("matched: unchanged:%s".printf(line));
 
 			count_unchanged++;
 			status_line = match.fetch(3).split(" -> ")[0].strip();
 		}
-		else if (regex_list["modified"].match(line, 0, out match)) {
+		else if (regex_list[RegexType.Modified].match(line, 0, out match)) {
 
 			//log_debug("matched: modified:%s".printf(line));
 
@@ -526,7 +513,7 @@ public class RsyncTask : AsyncTask{
 				count_unchanged++;
 			}
 		}
-		else if (regex_list["total-size"].match(line, 0, out match)) {
+		else if (regex_list[RegexType.TotalSize].match(line, 0, out match)) {
 			total_size = int64.parse(match.fetch(1).replace(",",""));
 		}
 		else{
@@ -536,22 +523,10 @@ public class RsyncTask : AsyncTask{
 		return true;
 	}
 
-	protected override void finish_task(){
-		
-		if ((status != AppStatus.CANCELLED) && (status != AppStatus.PASSWORD_REQUIRED)) {
-			status = AppStatus.FINISHED;
+	protected override void finish_task() {
+		if (0 < rsync_log_file.length) {
+			file_write(rsync_log_file + "-changes", log.str);
 		}
-
-		file_write(rsync_log_file + "-changes", log.str);
 	}
 
-	public int read_status(){
-		var status_file = working_dir + "/status";
-		var f = File.new_for_path(status_file);
-		if (f.query_exists()){
-			var txt = file_read(status_file);
-			return int.parse(txt);
-		}
-		return -1;
-	}
 }
