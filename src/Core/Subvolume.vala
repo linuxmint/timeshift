@@ -141,8 +141,12 @@ public class Subvolume : GLib.Object{
 		log_msg("%s: %s (Id:%ld)".printf(_("Deleting subvolume"), name, id));
 
 		// always remove subvolumes recursively, this does not affect performance
-		string options = App.use_option_raw ? "--commit-after" : "" + " --recursive";
-		
+		string options = App.use_option_raw ? "--commit-after" : "";
+
+        if (Main.btrfs_version__can_recursive_delete) {
+            options += " --recursive";
+        }
+
 		subpath = path_combine(path, name);
 		if (dir_exists(subpath)) { // there is a nested subvol to remove first
 			cmd = "btrfs subvolume delete %s '%s'".printf(options, subpath);
