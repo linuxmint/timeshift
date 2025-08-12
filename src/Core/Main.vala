@@ -52,6 +52,7 @@ public class Main : GLib.Object{
 	public bool btrfs_mode = true;
 	public bool include_btrfs_home_for_backup = false;
 	public bool include_btrfs_home_for_restore = false;
+    public static bool btrfs_version__can_recursive_delete = false;
 	
 	public bool stop_cron_emails = true;
 	
@@ -256,6 +257,8 @@ public class Main : GLib.Object{
 			exit_app(1);
 		}
 
+        check_btrfs_version_capabilities();
+
 		// check and create lock ----------------------------
 
 		app_lock = new AppLock();
@@ -372,6 +375,82 @@ public class Main : GLib.Object{
 			return true;
 		}
 	}
+
+    public void check_btrfs_version_capabilities() {
+        string stdout;
+        string stderr;
+        int exit_status;
+        int[] version = new int[5];
+
+        while (true) {
+            try {
+                GLib.Process.spawn_command_line_sync(
+                    "btrfs --version",
+                    out stdout,
+                    out stderr,
+                    out exit_status
+                );
+            } catch (GLib.Error e) {
+                log_debug("Failed to run btrfs command. Is btrfs-progs installed?");
+                return;
+            }
+
+            log_debug("Checking btrfs-progs version and determining capabilities...");
+
+            if (exit_status != 0) {
+                log_error("btrfs command failed with exit code %d: %s".printf(exit_status, stderr));
+                break;
+            }
+
+            string[] lines = stdout.strip().split("\n");
+            if (lines.length == 0) {
+                log_error("No output from btrfs --version");
+                break;
+            }
+
+            string version_line = null;
+            foreach (string line in lines) {
+                if (line.contains("btrfs-progs")) {
+                    version_line = line;
+                    break;
+                }
+            }
+
+            if (version_line == null) {
+                log_error("Could not find btrfs-progs version line in output");
+                break;
+            }
+
+            string version_prefix = "btrfs-progs v";
+            int prefix_index = version_line.index_of(version_prefix);
+            if (prefix_index == -1) {
+                log_error("Could not detect version");
+                break;
+            }
+
+            string version_string = version_line.substring(prefix_index + version_prefix.length);
+            string[] version_parts = version_string.split(".");
+
+            if (version_parts.length < 2) {
+                log_error("No version components found in: %s".printf(version_string));
+                break;
+            }
+
+            // version = new int[version_parts.length];
+            for (int i = 0; i < version_parts.length; i++) {
+                version[i] = int.parse(version_parts[i].strip());
+            }
+
+            break;
+        }
+
+        // --------------------------------- Capabilities
+
+        btrfs_version__can_recursive_delete = version[0] > 6 || (version[0] == 6 && version[1] >= 12);
+
+        log_debug("-- btrfs-progs version %d.%d.x".printf(version[0], version[1]));
+        log_debug("-- btrfs subvolume recursive delete: %s".printf(btrfs_version__can_recursive_delete ? "supported" : "not supported"));
+    }
 
 	public void check_and_remove_timeshift_btrfs(){
 		
