@@ -68,19 +68,14 @@ public class RsyncSpaceCheckTask : AsyncTask{
 		}
 	}
 	
-	public void prepare() {
-		string script_text = build_script();
-		
-		log_debug(script_text);
-		
-		save_bash_script_temp(script_text, script_file);
-		log_debug("RsyncSpaceCheckTask:prepare(): saved: %s".printf(script_file));
+	public override void prepare() {
+		base.prepare();
 
 		total_size = 0;
         status_line_count = 0;
 	}
 
-	private string build_script() {
+	protected override string build_script() {
 		var cmd = "export LC_ALL=C.UTF-8\n";
 
 		cmd += "rsync -aii";
@@ -143,27 +138,11 @@ public class RsyncSpaceCheckTask : AsyncTask{
 
 	// execution ----------------------------
 
-	public void execute() {
-		
-		log_debug("RsyncSpaceCheckTask:execute()");
-		
-		prepare();
-		begin();
-	}
-
 	public override void parse_stdout_line(string out_line){
-		if (is_terminated) {
-			return;
-		}
-		
 		update_progress_parse_console_output(out_line);
 	}
 	
 	public override void parse_stderr_line(string err_line){
-		if (is_terminated) {
-			return;
-		}
-		
 		update_progress_parse_console_output(err_line);
 	}
 
@@ -189,21 +168,5 @@ public class RsyncSpaceCheckTask : AsyncTask{
 		}
 
 		return true;
-	}
-
-	protected override void finish_task(){
-		if ((status != AppStatus.CANCELLED) && (status != AppStatus.PASSWORD_REQUIRED)) {
-			status = AppStatus.FINISHED;
-		}
-	}
-
-	public int read_status(){
-		var status_file = working_dir + "/status";
-		var f = File.new_for_path(status_file);
-		if (f.query_exists()){
-			var txt = file_read(status_file);
-			return int.parse(txt);
-		}
-		return -1;
 	}
 }
