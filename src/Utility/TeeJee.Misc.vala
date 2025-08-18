@@ -107,19 +107,4 @@ namespace TeeJee.Misc {
 
 		return random;
 	}
-	
-	internal string regex_replace(string expression, string text, string replacement){
-
-		try 
-		{
-			Regex? regex = null;
-			regex = new Regex(expression, 0);
-			return regex.replace(text, text.length, 0, replacement);
-		}
-		catch (Error e) 
-		{
-			log_error (e.message);
-			return text;
-		}
-	}
 }
