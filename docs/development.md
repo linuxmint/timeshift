@@ -21,7 +21,6 @@ sudo apt install meson \
 help2man \
 gettext \
 valac \
-scdoc \
 libvala-dev \
 libvte-2.91-dev \
 libgee-0.8-dev \
