@@ -2,7 +2,7 @@ project(
   'timeshift',
   'vala',
   'c',
-  version : '24.06.7',
+  version : '25.07.7',
   license : 'GPL-2.0-or-later',
   meson_version : '>= 0.54.0',
   default_options : ['c_std=c99', 'build.c_std=c99']
@@ -48,6 +48,6 @@ if enable_man
 endif
 
 install_data(
-  sources: 'debian/timeshift.appdata.xml',
+  sources: 'debian/com.linuxmint.timeshift.metainfo.xml',
   install_dir: join_paths(get_option('datadir'), 'metainfo')
 )

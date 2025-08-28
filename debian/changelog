@@ -1,8 +1,100 @@
-timeshift (24.06.7) xia; urgency=medium
+timeshift (25.07.8) xia; urgency=medium
 
   * Added supported for multiple configuration files
 
  -- Jiang Meng(Jay) <jiangmang.1992@163.com>  Tue, 03 Jun 2025 23:15:15 +0000
+
+timeshift (25.07.7) zara; urgency=medium
+
+  * l10n: Update translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 26 Aug 2025 18:02:04 +0200
+
+timeshift (25.07.6) zara; urgency=medium
+
+  [ Michael Webster ]
+  * Add startup check of btrfs-progs version to determine capabilities.
+  * Main.vala: Improve readability of btrfs-progs version check.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 26 Aug 2025 16:42:22 +0200
+
+timeshift (25.07.5) zara; urgency=medium
+
+  [ Ukang'a Dickson ]
+  * Error if both lsb_release n os_release are missing (#431)
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 06 Aug 2025 18:06:36 +0200
+
+timeshift (25.07.4) zara; urgency=medium
+
+  [ Michael Webster ]
+  * TeeJee.Process.vala: Use GLib read_link instead of Posix readlink.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 31 Jul 2025 16:40:41 +0200
+
+timeshift (25.07.3) zara; urgency=medium
+
+  * l10n: Update translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 31 Jul 2025 12:32:57 +0200
+
+timeshift (25.07.2) zara; urgency=medium
+
+  [ Michael Webster ]
+  * Don't flag new log messages for translations.
+
+  [ Clement Lefebvre ]
+  * l10n: Update POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 30 Jul 2025 16:49:20 +0200
+
+timeshift (25.07.1) zara; urgency=medium
+
+  [ Michael Webster ]
+  * Subvolume.vala: (btrfs) Wait for async file operations to complete.
+
+  [ Pierre Carru ]
+  * Btrfs: support default subvolid!=0 (#334)
+
+  [ entith ]
+  * Allow explicitly setting ondemand tag from CLI (#399)
+
+  [ suve ]
+  * AppStream metadata fixes (#391)
+
+  [ Yannis Gerlach ]
+  * Remove dependencies to external binarys (#333)
+
+  [ snwbrds2922 ]
+  * Add user settings before defaults (#342)
+
+  [ Yannis Gerlach ]
+  * query the correct root path on btrfs (#377)
+  * add "timeshift" to the tempdir names (#395)
+  * refactor LinuxDistro (#376)
+
+  [ Michael Webster ]
+  * Main.vala: Don't check for distro name on every device.
+
+  [ mwoz123 ]
+  * BTRFS custom hooks (#381)
+
+  [ Shyliuli ]
+  * Specify the environment variables named DISPLAY and XAUTHORITY (#384)
+
+  [ TechManWalker ]
+  * Always delete brfs volumes recursively (#423)
+
+  [ Yannis Gerlach ]
+  * only kill a task if its pid is set (#427)
+
+  [ Nikita Stelmashenko ]
+  * Add full non-interactive mode (#388)
+
+  [ Clement Lefebvre ]
+  * l10n: Update POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 30 Jul 2025 16:42:06 +0200
 
 timeshift (24.06.6) xia; urgency=medium
 

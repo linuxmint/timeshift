@@ -52,6 +52,7 @@ public class Main : GLib.Object{
 	public bool btrfs_mode = true;
 	public bool include_btrfs_home_for_backup = false;
 	public bool include_btrfs_home_for_restore = false;
+    public static bool btrfs_version__can_recursive_delete = false;
 	
 	public bool stop_cron_emails = true;
 	
@@ -207,7 +208,7 @@ public class Main : GLib.Object{
 		}
 
 		check_and_remove_timeshift_btrfs();
-		
+
 		// init log ------------------
 
 		try {
@@ -256,6 +257,8 @@ public class Main : GLib.Object{
 			}
 			exit_app(1);
 		}
+
+        check_btrfs_version_capabilities();
 
 		// check and create lock ----------------------------
 
@@ -357,7 +360,7 @@ public class Main : GLib.Object{
 
 		log_debug("Main: check_dependencies()");
 		
-		string[] dependencies = { "rsync","/sbin/blkid","df","mount","umount","fuser","crontab","cp","rm","touch","ln","sync","which"}; //"shutdown","chroot",
+		string[] dependencies = { "rsync","/sbin/blkid","df","mount","umount","fuser","crontab","cp","rm","touch","ln","sync","which", "run-parts"}; //"shutdown","chroot",
 
 		string path;
 		foreach(string cmd_tool in dependencies){
@@ -377,6 +380,85 @@ public class Main : GLib.Object{
 			return true;
 		}
 	}
+
+    private int[]? get_btrfs_version_array () {
+        string stdout;
+        string stderr;
+        int exit_status;
+
+        try {
+            GLib.Process.spawn_command_line_sync(
+                "btrfs --version",
+                out stdout,
+                out stderr,
+                out exit_status
+            );
+        } catch (GLib.Error e) {
+            log_debug("Failed to run btrfs command. Is btrfs-progs installed?");
+            return null;
+        }
+
+        log_debug("Checking btrfs-progs version and determining capabilities...");
+
+        if (exit_status != 0) {
+            log_error("btrfs command failed with exit code %d: %s".printf(exit_status, stderr));
+            return null;
+        }
+
+        string[] lines = stdout.strip().split("\n");
+        if (lines.length == 0) {
+            log_error("No output from btrfs --version");
+            return null;
+        }
+
+        string version_line = null;
+        foreach (string line in lines) {
+            if (line.contains("btrfs-progs")) {
+                version_line = line;
+                break;
+            }
+        }
+
+        if (version_line == null) {
+            log_error("Could not find btrfs-progs version line in output");
+            return null;
+        }
+
+        string version_prefix = "btrfs-progs v";
+        int prefix_index = version_line.index_of(version_prefix);
+        if (prefix_index == -1) {
+            log_error("Could not detect version");
+            return null;
+        }
+
+        string version_string = version_line.substring(prefix_index + version_prefix.length);
+        string[] version_parts = version_string.split(".");
+
+        if (version_parts.length < 2) {
+            log_error("No version components found in: %s".printf(version_string));
+            return null;
+        }
+
+        int[] version = new int[5];
+
+        // version = new int[version_parts.length];
+        for (int i = 0; i < version_parts.length; i++) {
+            version[i] = int.parse(version_parts[i].strip());
+        }
+
+        return version;
+    }
+
+    public void check_btrfs_version_capabilities() {
+        var version = get_btrfs_version_array();
+
+        if (version != null) {
+            btrfs_version__can_recursive_delete = version[0] > 6 || (version[0] == 6 && version[1] >= 12);
+            log_debug("-- btrfs-progs version %d.%d.x".printf(version[0], version[1]));
+        }
+
+        log_debug("-- btrfs subvolume recursive delete: %s".printf(btrfs_version__can_recursive_delete ? "supported" : "not supported"));
+    }
 
 	public void check_and_remove_timeshift_btrfs(){
 		
@@ -714,6 +796,17 @@ public class Main : GLib.Object{
 		
 		var list = new Gee.ArrayList<string>();
 
+		// add user entries from current setting
+		// user entry is first since rsync prioritizes the first
+		// inclusion/exclusion patterns seen
+		//  -------------------------------------------------------
+		
+		foreach(string path in exclude_list_user){
+			if (!list.contains(path)){
+				list.add(path);
+			}
+		}
+
 		// add default entries ---------------------------
 		
 		foreach(string path in exclude_list_default){
@@ -789,14 +882,6 @@ public class Main : GLib.Object{
 			}
 		}
 
-		// add user entries from current settings ----------
-		
-		foreach(string path in exclude_list_user){
-			if (!list.contains(path)){
-				list.add(path);
-			}
-		}
-
 		// add common entries for excluding home folders for all users --------
 		
 		foreach(string path in exclude_list_home){
@@ -821,6 +906,31 @@ public class Main : GLib.Object{
 		
 		exclude_list_restore.clear();
 		
+		//add user entries from current settings
+		//user entry is first since rsync prioritizes the first
+		//inclusion/exclusion patterns seen
+		foreach(string path in exclude_list_user){
+
+			// skip include filters for restore
+			if (path.strip().has_prefix("+")){ continue; }
+	
+			if (!exclude_list_restore.contains(path) && !exclude_list_home.contains(path)){
+				exclude_list_restore.add(path);
+			}
+		}
+
+		//add user entries from snapshot exclude list
+		if (snapshot_to_restore != null){
+			string list_file = path_combine(snapshot_to_restore.path, "exclude.list");
+			if (file_exists(list_file)){
+				foreach(string path in file_read(list_file).split("\n")){
+					if (!exclude_list_restore.contains(path) && !exclude_list_home.contains(path)){
+						exclude_list_restore.add(path);
+					}
+				}
+			}
+		}
+
 		//add default entries
 		foreach(string path in exclude_list_default){
 			if (!exclude_list_restore.contains(path)){
@@ -843,29 +953,6 @@ public class Main : GLib.Object{
 				foreach(var pattern in entry.patterns){
 					if (!exclude_list_restore.contains(pattern)){
 						exclude_list_restore.add(pattern);
-					}
-				}
-			}
-		}
-
-		//add user entries from current settings
-		foreach(string path in exclude_list_user){
-
-			// skip include filters for restore
-			if (path.strip().has_prefix("+")){ continue; }
-			
-			if (!exclude_list_restore.contains(path) && !exclude_list_home.contains(path)){
-				exclude_list_restore.add(path);
-			}
-		}
-
-		//add user entries from snapshot exclude list
-		if (snapshot_to_restore != null){
-			string list_file = path_combine(snapshot_to_restore.path, "exclude.list");
-			if (file_exists(list_file)){
-				foreach(string path in file_read(list_file).split("\n")){
-					if (!exclude_list_restore.contains(path) && !exclude_list_home.contains(path)){
-						exclude_list_restore.add(path);
 					}
 				}
 			}
@@ -1702,6 +1789,16 @@ public class Main : GLib.Object{
 
 		set_tags(snapshot); // set_tags() will update the control file
 		
+		// Perform any post-backup actions
+		log_debug("Running post-backup tasks...");
+		
+		string sh = "test -d \"/etc/timeshift/backup-hooks.d\" &&" +
+		" export TS_SNAPSHOT_PATH=\"" + snapshot_path + "\" &&" + 
+		" run-parts --verbose /etc/timeshift/backup-hooks.d";
+		exec_script_sync(sh, null, null, false, false, false, true);
+
+		log_debug("Finished running post-backup tasks...");
+
 		return snapshot;
 	}
 
@@ -3045,6 +3142,17 @@ public class Main : GLib.Object{
 
 		log_msg(_("Restore completed"));
 		thr_success = true;
+
+		// Perform any post-restore actions
+		log_debug("Running post-restore tasks...");
+
+		string sh = "test -d \"/etc/timeshift/restore-hooks.d\" &&" +
+		" export TS_SNAPSHOT_PATH=\"" + snapshot_to_restore.path + "\" &&" + 
+		" run-parts --verbose /etc/timeshift/restore-hooks.d";
+
+		exec_script_sync(sh, null, null, false, false, false, true);
+
+		log_debug("Finished running post-restore tasks...");
 		
 		if (restore_current_system){
 			log_msg(_("Snapshot will become active after system is rebooted."));
@@ -3522,10 +3630,6 @@ public class Main : GLib.Object{
 			if ((repo != null) && (repo.device != null) && (pi.uuid == repo.device.uuid)){
 				repo.device = pi;
 			}
-			
-			if (pi.is_mounted){
-				pi.dist_info = LinuxDistro.get_dist_info(pi.mount_points[0].mount_point).full_name();
-			}
 		}
 		
 		if (partitions.size == 0){
@@ -3937,12 +4041,7 @@ public class Main : GLib.Object{
 				ret_val = exec_script_sync(cmd, out std_out, out std_err);
 				if (ret_val == 0){
 					required_space = long.parse(std_out.replace(",","").strip());
-
-					cmd = "wc -l '%s'".printf(escape_single_quote(file_log));
-					ret_val = exec_script_sync(cmd, out std_out, out std_err);
-					if (ret_val == 0){
-						file_count = long.parse(std_out.split(" ")[0].strip());
-					}
+					file_count = file_line_count(file_log) ?? 0;
 					
 					thr_success = true;
 				}
@@ -4395,17 +4494,19 @@ public class Main : GLib.Object{
 			
 							string cmd = "umount '%s'".printf(escape_single_quote(mdir2));
 							int retval = exec_sync(cmd);
-							
-							string cmd2 = "rmdir '%s'".printf(escape_single_quote(mdir2));
-							int retval2 = exec_sync(cmd2);
-							
-							if (retval2 != 0){
+
+							if (retval != 0){
 								log_debug("E: Failed to unmount");
 								log_debug("Ret=%d".printf(retval));
 								//ignore
 							}
 							else{
 								log_debug("Unmounted successfully");
+							}
+
+							// delete directory
+							if(!dir_empty_delete(mdir2)) {
+								log_debug("E: Failed to delete %s".printf(mdir2));
 							}
 						}
 					}

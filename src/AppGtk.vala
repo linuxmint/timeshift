@@ -70,7 +70,7 @@ public class AppGtk : GLib.Object {
 
 		GTK_INITIALIZED = true;
 
-		init_tmp(AppShortName);
+		init_tmp();
 
 		check_if_admin();
 

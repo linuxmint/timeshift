@@ -34,23 +34,34 @@ namespace TeeJee.ProcessHelper{
 
 	// execute process ---------------------------------
 	
-    public static void init_tmp(string subdir_name){
-		string std_out, std_err;
+    public static void init_tmp(){
 
-		TEMP_DIR = Environment.get_tmp_dir() + "/" + random_string();
-		dir_create(TEMP_DIR);
-		chmod(TEMP_DIR, "0750");
-		
-		exec_script_sync("echo 'ok'",out std_out,out std_err, true);
-		
-		if ((std_out == null) || (std_out.strip() != "ok")){
-			
-			TEMP_DIR = Environment.get_home_dir() + "/.temp/" + random_string();
+		// a list of folders where temp files could be stored
+		string[] tempPlaces = {
+			Environment.get_tmp_dir(), // system temp dir
+			"/var/tmp", // another system temp dir, if the first one failed, this one is likely to fail too
+			Environment.get_home_dir() + "/.temp", // user temp dir
+			"/dev/shm", // shared memory
+		};
+
+		foreach (string tempPlace in tempPlaces) {
+			string std_out, std_err;
+
+			TEMP_DIR = tempPlace + "/timeshift-" + random_string();
 			dir_create(TEMP_DIR);
 			chmod(TEMP_DIR, "0750");
+			exec_script_sync("echo 'ok'",out std_out,out std_err, true);
+
+			if ((std_out == null) || (std_out.strip() != "ok")){
+				// this dir does not work for some reason - probably no disk space
+				dir_delete(TEMP_DIR);
+			} else {
+				// script worked - we have found a tempdir to use
+				return;
+			}
 		}
 
-		//log_debug("TEMP_DIR=" + TEMP_DIR);
+		stderr.printf("No usable temp directory was found!\n");
 	}
 
 	public int exec_sync (string cmd, out string? std_out = null, out string? std_err = null){
@@ -81,7 +92,12 @@ namespace TeeJee.ProcessHelper{
 		 * std_out, std_err can be null. Output will be written to terminal if null.
 		 * */
 
-		string sh_file = save_bash_script_temp(script, null, true, supress_errors);
+		string? sh_file = save_bash_script_temp(script, null, true, supress_errors);
+		if (sh_file == null) {
+			// saving the script failed
+			return -1;
+		}
+
 		string sh_file_admin = "";
 		
 		if (run_as_admin){
@@ -204,7 +220,6 @@ namespace TeeJee.ProcessHelper{
 		script.append ("\n");
 		script.append ("%s\n".printf(commands));
 		script.append ("\n\nexitCode=$?\n");
-		script.append ("echo ${exitCode} > ${exitCode}\n");
 		script.append ("echo ${exitCode} > status\n");
 
 		if ((sh_path == null) || (sh_path.length == 0)){
@@ -272,107 +287,112 @@ namespace TeeJee.ProcessHelper{
 		}
 	}
 
-	// dep: pidof, TODO: Rewrite using /proc
-	public int get_pid_by_name (string name){
+	// return the name of the executable of a given pid or self if pid is <= 0
+	// returns an empty string on error or if the pid could not be found
+	public string get_process_exe_name(long pid = -1){
+		string pidStr = (pid <= 0 ? "self" : pid.to_string());
+		string path = "/proc/%s/exe".printf(pidStr);
+        string link;
+        try {
+            link = GLib.FileUtils.read_link(path);
+        } catch (Error e) {
+            return "";
+        }
 
-		/* Get the process ID for a process with given name */
-
-		string std_out, std_err;
-		exec_sync("pidof \"%s\"".printf(name), out std_out, out std_err);
-		
-		if (std_out != null){
-			string[] arr = std_out.split ("\n");
-			if (arr.length > 0){
-				return int.parse (arr[0]);
-			}
-		}
-
-		return -1;
+        return GLib.Path.get_basename(link);
 	}
 
-	// dep: ps TODO: Rewrite using /proc
-	public bool process_is_running(long pid){
+	public Pid[] get_process_children (Pid parent_pid){
 
-		/* Checks if given process is running */
+		/* Returns the list of child processes owned by a given process */
 
-		string cmd = "";
-		string std_out;
-		string std_err;
-		int ret_val;
+		// no explicit check for the existence of /proc/ as this might be a time-of-check-time-of-use bug.
+		File procfs = File.new_for_path("/proc/");
 
-		try{
-			cmd = "ps --pid %ld".printf(pid);
-			Process.spawn_command_line_sync(cmd, out std_out, out std_err, out ret_val);
-		}
-		catch (Error e) {
-			log_error (e.message);
-			return false;
-		}
+		try {
+			FileEnumerator enumerator = procfs.enumerate_children(FileAttribute.STANDARD_NAME, FileQueryInfoFlags.NOFOLLOW_SYMLINKS);
+			FileInfo info;
+			Pid[] childList = {};
+			while ((info = enumerator.next_file()) != null) {
+				if(info.get_file_type() != FileType.DIRECTORY) {
+					// only interested in directories
+					continue;
+				}
 
-		return (ret_val == 0);
-	}
+				string name = info.get_name();
 
-	// dep: ps TODO: Rewrite using /proc
-	public int[] get_process_children (Pid parent_pid){
+				uint64 pid;
+				if(!uint64.try_parse(name, out pid)) {
+					// make sure to not access any other directories that may be present in /proc for some reason
+					continue;
+				}
 
-		/* Returns the list of child processes spawned by given process */
+				string? fileCont = file_read("/proc/%s/stat".printf(name));
+				if(fileCont == null) {
+					// stat file of pid might not be readable (because of permissions or the process died since we got its pid)
+					continue;
+				}
 
-		string std_out, std_err;
-		exec_sync("ps --ppid %d".printf(parent_pid), out std_out, out std_err);
+				// the format of the stat file is documented in man 5 proc
+				// it begging is: pid (comm) status ppid ...
 
-		int pid;
-		int[] procList = {};
-		string[] arr;
+				// the process name could contain a space or ) and confuse the parsing.
+				// so we make sure to take the last ) and only parse the stuff after that.
+				int index = fileCont.last_index_of_char(')');
+				string parseline = fileCont.substring(index);
+				string[] split = parseline.split(" ", 4); // we are not interested in the part after ppid so just leave it a big string
+				if(split.length != 4) {
+					// format of stat file is not matching - should never happen
+					log_error("can not parse state of %ld".printf((long) pid));
+					continue;
+				}
 
-		foreach (string line in std_out.split ("\n")){
-			arr = line.strip().split (" ");
-			if (arr.length < 1) { continue; }
-
-			pid = 0;
-			pid = int.parse (arr[0]);
-
-			if (pid != 0){
-				procList += pid;
+				uint64 ppid = uint64.parse(split[2]);
+				if(ppid != 0 && ppid == parent_pid) {
+					// the process is a child of the target parent process
+					childList += (Pid) pid;
+				}
 			}
+			return childList;
+		} catch (Error e) {
+			log_error(e.message);
+			log_error("Failed to get child processes of %ld".printf(parent_pid));
 		}
-		return procList;
+		return {};
 	}
 
 	// manage process ---------------------------------
 	
 	public void process_quit(Pid process_pid, bool killChildren = true){
 
-		/* Kills specified process and its children (optional).
+		/* Terminates specified process and its children (optional).
 		 * Sends signal SIGTERM to the process to allow it to quit gracefully.
 		 * */
 
-		int[] child_pids = get_process_children (process_pid);
-		Posix.kill (process_pid, Posix.Signal.TERM);
-
-		if (killChildren){
-			Pid childPid;
-			foreach (long pid in child_pids){
-				childPid = (Pid) pid;
-				Posix.kill (childPid, Posix.Signal.TERM);
-			}
-		}
+		process_send_signal(process_pid, Posix.Signal.TERM, killChildren);
 	}
 	
-	public void process_kill(Pid process_pid, bool killChildren = true){
+	public void process_kill(Pid process_pid, bool killChildren = true) {
 
 		/* Kills specified process and its children (optional).
 		 * Sends signal SIGKILL to the process to kill it forcefully.
 		 * It is recommended to use the function process_quit() instead.
 		 * */
 		
-		int[] child_pids = get_process_children (process_pid);
-		Posix.kill (process_pid, Posix.Signal.KILL);
+		process_send_signal(process_pid, Posix.Signal.KILL, killChildren);
+	}
 
-		if (killChildren){
-			Pid childPid;
-			foreach (long pid in child_pids){
-				childPid = (Pid) pid;
-				Posix.kill (childPid, Posix.Signal.KILL);
+	public void process_send_signal(Pid process_pid, Posix.Signal sig, bool children = true) {
+
+		/* Sends a signal to a process and its children (optional). */
+		
+		// get the childs before sending the signal, as the childs might not be accessible afterwards
+		Pid[] child_pids = get_process_children (process_pid);
+		Posix.kill (process_pid, sig);
+		 
+		 if (children){
+			foreach (Pid pid in child_pids){
+				Posix.kill (pid, sig);
 			}
 		}
 	}

@@ -7,18 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: timeshift\n"
 "Report-Msgid-Bugs-To: teejee2008@gmail.com\n"
-"POT-Creation-Date: 2024-06-06 11:53+0100\n"
+"POT-Creation-Date: 2025-07-30 16:49+0200\n"
 "PO-Revision-Date: 2024-10-13 09:02+0000\n"
 "Last-Translator: Alexey Fedorov <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2025-01-06 12:00+0000\n"
-"X-Generator: Launchpad (build 6394e03793719e8d73f5a60b5439440e693c92f1)\n"
+"X-Launchpad-Export-Date: 2025-08-26 15:24+0000\n"
+"X-Generator: Launchpad (build 919009172d854f2b8e4e8262db447f12f11d25eb)\n"
 "Language: ru\n"
 
-#: src/AppConsole.vala:626
+#: src/AppConsole.vala:628
 #, c-format
 msgid ""
 "\n"
@@ -27,17 +27,17 @@ msgstr ""
 "\n"
 "Нажмите клавишу ввода для продолжения..."
 
-#: src/Core/SnapshotRepo.vala:556
+#: src/Core/SnapshotRepo.vala:560
 #, c-format
 msgid "%d snapshots, %s free"
 msgstr "%d снимков, %s свободно"
 
-#: src/AppConsole.vala:927
+#: src/AppConsole.vala:944
 #, c-format
 msgid "'%s' will be on '%s'"
 msgstr "«%s» будет размещён на «%s»"
 
-#: src/AppConsole.vala:924
+#: src/AppConsole.vala:941
 #, c-format
 msgid "'%s' will be on root device"
 msgstr "«%s» будет размещён на корневом устройстве"
@@ -50,19 +50,19 @@ msgstr "(Пере)установить GRUB2 на:"
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr "** Timeshift BTRFS удалён **"
 
-#: src/Core/Main.vala:3544
+#: src/Core/Main.vala:3572
 msgid "/ is mapped to device"
 msgstr "/ привязано к устройству"
 
-#: src/Core/Main.vala:3566
+#: src/Core/Main.vala:3594
 msgid "/boot is mapped to device"
 msgstr "/boot привязано к устройству"
 
-#: src/Core/Main.vala:3577
+#: src/Core/Main.vala:3605
 msgid "/boot/efi is mapped to device"
 msgstr "/boot/efi привязано к устройству"
 
-#: src/Core/Main.vala:3555
+#: src/Core/Main.vala:3583
 msgid "/home is mapped to device"
 msgstr "/home привязано к устройству"
 
@@ -77,9 +77,9 @@ msgstr ""
 "Задача обслуживания запускается раз в час и создаёт снимки по мере "
 "необходимости."
 
-#: src/AppConsole.vala:711 src/AppConsole.vala:775 src/AppConsole.vala:907
-#: src/AppConsole.vala:1002 src/AppConsole.vala:1047 src/AppConsole.vala:1088
-#: src/AppConsole.vala:1106
+#: src/AppConsole.vala:714 src/AppConsole.vala:784 src/AppConsole.vala:924
+#: src/AppConsole.vala:1027 src/AppConsole.vala:1078 src/AppConsole.vala:1124
+#: src/AppConsole.vala:1142
 msgid "Aborted."
 msgstr "Прервано."
 
@@ -115,7 +115,7 @@ msgstr "Добавить папки"
 msgid "Add files"
 msgstr "Добавить файлы"
 
-#: src/AppConsole.vala:371
+#: src/AppConsole.vala:372
 msgid "Add tags to snapshot (default: O)"
 msgstr "Добавить метки к снимку (по умолчанию: O)"
 
@@ -179,15 +179,15 @@ msgstr "Запущена другая копия приложения"
 msgid "Another instance of timeshift is currently running!"
 msgstr "Другая копия TimeShift работает в настоящее время!"
 
-#: src/AppConsole.vala:387
+#: src/AppConsole.vala:388
 msgid "Answer YES to all confirmation prompts"
 msgstr "Отвечать «ДА» для всех запросов на подтверждение"
 
-#: src/Core/Main.vala:3381
+#: src/Core/Main.vala:3413
 msgid "App config loaded"
 msgstr "Настройки приложения загружены"
 
-#: src/Core/Main.vala:3265
+#: src/Core/Main.vala:3295
 msgid "App config saved"
 msgstr "Настройки приложения сохранены"
 
@@ -195,7 +195,7 @@ msgstr "Настройки приложения сохранены"
 msgid "Application needs admin access."
 msgstr "Для работы приложения требуются права администратора."
 
-#: src/Core/Main.vala:3721
+#: src/Core/Main.vala:3749
 msgid "Application will exit"
 msgstr "Будет произведено завершение работы приложения"
 
@@ -219,7 +219,7 @@ msgstr "BTRFS"
 msgid "BTRFS Snapshots"
 msgstr "Снимки BTRFS"
 
-#: src/Core/Main.vala:2215 src/Core/Main.vala:2219
+#: src/Core/Main.vala:2234 src/Core/Main.vala:2238
 msgid "BTRFS device is not mounted"
 msgstr "Устройство BTRFS не смонтировано"
 
@@ -247,15 +247,15 @@ msgstr ""
 msgid "Backend"
 msgstr "Обработчик"
 
-#: src/Gtk/BackupWindow.vala:92 src/AppConsole.vala:367
+#: src/Gtk/BackupWindow.vala:92 src/AppConsole.vala:368
 msgid "Backup"
 msgstr "Резервное копирование"
 
-#: src/Core/Main.vala:2191
+#: src/Core/Main.vala:2210
 msgid "Backup Device"
 msgstr "Устройство для резервного копирования"
 
-#: src/Core/Main.vala:2186
+#: src/Core/Main.vala:2205
 msgid "Backup device not specified!"
 msgstr "Устройство резервного копирования не задано!"
 
@@ -271,7 +271,7 @@ msgstr "При запуске"
 msgid "Boot device not selected"
 msgstr "Загрузочное устройство не выбрано"
 
-#: src/Core/Main.vala:1058
+#: src/Core/Main.vala:1063
 msgid "Boot snapshot failed!"
 msgstr "Ошибка создания снимка при загрузке!"
 
@@ -281,7 +281,7 @@ msgid ""
 msgstr ""
 "Загрузочные снимки создаются с задержкой 10 минут после запуска системы."
 
-#: src/Core/Main.vala:1039
+#: src/Core/Main.vala:1044
 msgid "Boot snapshots are enabled"
 msgstr "Создание снимков при загрузке включено"
 
@@ -305,11 +305,11 @@ msgstr "Обзор файлов"
 msgid "Browse selected snapshot"
 msgstr "Обзор выбранных снимков"
 
-#: src/Core/Main.vala:2681
+#: src/Core/Main.vala:2700
 msgid "Building file list..."
 msgstr "Построение списка файлов..."
 
-#: src/Core/Main.vala:1418
+#: src/Core/Main.vala:1423
 msgid "Calculating required disk space..."
 msgstr "Подсчёт требуемого пространства на накопителе..."
 
@@ -355,7 +355,7 @@ msgstr "Изменённые объекты:"
 msgid "Checking Restore Actions (Dry Run)"
 msgstr "Проверка действий по восстановлению (Пробный прогон)"
 
-#: src/Core/Main.vala:2914
+#: src/Core/Main.vala:2933
 msgid "Checking file systems for errors..."
 msgstr "Проверка файловой системы на наличие ошибок..."
 
@@ -365,7 +365,7 @@ msgstr "Проверка файловой системы на наличие о�
 msgid "Checksum"
 msgstr "Контрольная сумма"
 
-#: src/Core/Main.vala:2562
+#: src/Core/Main.vala:2581
 msgid "Cleaning up..."
 msgstr "Очистка..."
 
@@ -385,7 +385,7 @@ msgstr "Клонировать систему"
 msgid "Cloning"
 msgstr "Клонирование"
 
-#: src/Core/Main.vala:2964
+#: src/Core/Main.vala:2983
 msgid "Cloning system..."
 msgstr "Клонирование системы..."
 
@@ -408,12 +408,12 @@ msgstr "Команды, перечисленные ниже, недоступн�
 msgid "Comments (click to edit)"
 msgstr "Комментарии (нажмите для изменения)"
 
-#: src/Core/Main.vala:2957 src/Gtk/RestoreBox.vala:74
+#: src/Core/Main.vala:2976 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
 msgid "Comparing Files (Dry Run)..."
 msgstr "Сравнение файлов (Пробный прогон)..."
 
-#: src/Core/Main.vala:2723
+#: src/Core/Main.vala:2742
 msgid "Comparing files with rsync..."
 msgstr "Сравнение файлов с помощью rsync..."
 
@@ -430,12 +430,12 @@ msgstr "Выполнено с ошибками"
 msgid "Confirm Actions"
 msgstr "Подтвердить действия"
 
-#: src/AppConsole.vala:1081
+#: src/AppConsole.vala:1117
 #, c-format
 msgid "Continue with restore? (y/n): "
 msgstr "Продолжить восстановление? (y/n): "
 
-#: src/AppConsole.vala:847 src/AppConsole.vala:978
+#: src/AppConsole.vala:856 src/AppConsole.vala:995
 msgid "Could not find device"
 msgstr "Не удалось найти устройство"
 
@@ -444,15 +444,15 @@ msgstr "Не удалось найти устройство"
 msgid "Could not find file"
 msgstr "Не удалось найти файл"
 
-#: src/AppConsole.vala:744
+#: src/AppConsole.vala:747
 msgid "Could not find snapshot"
 msgstr "Не удалось найти снимок"
 
-#: src/Core/Main.vala:3126
+#: src/Core/Main.vala:3156
 msgid "Could not find system subvolume"
 msgstr "Не удалось найти системный подраздел"
 
-#: src/Core/Main.vala:3154
+#: src/Core/Main.vala:3184
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr ""
 "Не удалось найти системные подразделы для создания снимка до восстановления"
@@ -487,11 +487,11 @@ msgstr "Создавать каждый месяц"
 msgid "Create one per week"
 msgstr "Создавать каждую неделю"
 
-#: src/AppConsole.vala:369
+#: src/AppConsole.vala:370
 msgid "Create snapshot (even if not scheduled)"
 msgstr "Создать снимок (даже если не назначено)"
 
-#: src/AppConsole.vala:368
+#: src/AppConsole.vala:369
 msgid "Create snapshot if scheduled"
 msgstr "Создать снимок если назначено"
 
@@ -522,19 +522,19 @@ msgstr "Создавать снимки с помощью инструмента
 msgid "Created"
 msgstr "Создано"
 
-#: src/Core/Snapshot.vala:430
+#: src/Core/Snapshot.vala:432
 msgid "Created control file"
 msgstr "Контрольный файл создан"
 
-#: src/Utility/TeeJee.FileSystem.vala:268
+#: src/Utility/TeeJee.FileSystem.vala:284
 msgid "Created directory"
 msgstr "Папка создана"
 
-#: src/Core/Main.vala:3176
+#: src/Core/Main.vala:3206
 msgid "Created pre-restore snapshot"
 msgstr "Снимок до восстановления создан"
 
-#: src/Core/Main.vala:1673
+#: src/Core/Main.vala:1678
 msgid "Created subvolume snapshot"
 msgstr "Снимок подраздела создан"
 
@@ -542,19 +542,19 @@ msgstr "Снимок подраздела создан"
 msgid "Creating Snapshot..."
 msgstr "Создание снимка..."
 
-#: src/Core/Main.vala:1611
+#: src/Core/Main.vala:1616
 msgid "Creating new backup..."
 msgstr "Создание новой резервной копии..."
 
-#: src/Core/Main.vala:1457
+#: src/Core/Main.vala:1462
 msgid "Creating new snapshot..."
 msgstr "Создание нового снимка..."
 
-#: src/Core/Main.vala:3104
+#: src/Core/Main.vala:3134
 msgid "Creating pre-restore snapshot from system subvolumes..."
 msgstr "Создание снимка до восстановления для системных подразделов..."
 
-#: src/Core/Main.vala:3720
+#: src/Core/Main.vala:3748
 msgid "Critical Error"
 msgstr "Критическая ошибка"
 
@@ -578,15 +578,15 @@ msgstr "Пользовательский"
 msgid "Daily"
 msgstr "Ежедневно"
 
-#: src/Core/Main.vala:1120
+#: src/Core/Main.vala:1125
 msgid "Daily snapshot failed!"
 msgstr "Не удалось создать ежедневный снимок!"
 
-#: src/Core/Main.vala:1101
+#: src/Core/Main.vala:1106
 msgid "Daily snapshots are enabled"
 msgstr "Создание ежедневных снимков включено"
 
-#: src/Core/Main.vala:2285
+#: src/Core/Main.vala:2304
 msgid "Data will be modified on following devices:"
 msgstr "Данные будут изменены на следующих устройствах:"
 
@@ -596,7 +596,7 @@ msgstr "Формат даты"
 
 #: src/Gtk/SnapshotListBox.vala:342 src/Gtk/MainWindow.vala:160
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
-#: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:381
+#: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:382
 #, c-format
 msgid "Delete"
 msgstr "Удалить"
@@ -605,7 +605,7 @@ msgstr "Удалить"
 msgid "Delete Snapshots"
 msgstr "Удалить снимки"
 
-#: src/AppConsole.vala:383
+#: src/AppConsole.vala:384
 msgid "Delete all snapshots"
 msgstr "Удалить все снимки"
 
@@ -613,7 +613,7 @@ msgstr "Удалить все снимки"
 msgid "Delete selected snapshot"
 msgstr "Удалить выбранный снимок"
 
-#: src/AppConsole.vala:382
+#: src/AppConsole.vala:383
 msgid "Delete snapshot"
 msgstr "Удалить снимок"
 
@@ -624,11 +624,11 @@ msgstr "Удалить снимок"
 msgid "Deleted"
 msgstr "Удалено"
 
-#: src/Utility/TeeJee.FileSystem.vala:302
+#: src/Utility/TeeJee.FileSystem.vala:357
 msgid "Deleted directory"
 msgstr "Папка удалена"
 
-#: src/Core/Main.vala:3083 src/Core/Main.vala:3087 src/Core/Subvolume.vala:167
+#: src/Core/Main.vala:3113 src/Core/Main.vala:3117 src/Core/Subvolume.vala:174
 #, c-format
 msgid "Deleted subvolume"
 msgstr "Подраздел удалён"
@@ -646,25 +646,25 @@ msgstr "Удаление подраздела"
 msgid "Deluge, Transmission"
 msgstr "Deluge, Transmission"
 
-#: src/AppConsole.vala:439 src/AppConsole.vala:555
+#: src/AppConsole.vala:440 src/AppConsole.vala:556
 msgid "Description"
 msgstr "Описание"
 
-#: src/Core/Subvolume.vala:181
+#: src/Core/Subvolume.vala:195
 #, c-format
 msgid "Destroyed qgroup"
 msgstr "Уничтоженная qgroup"
 
-#: src/Core/Subvolume.vala:171
+#: src/Core/Subvolume.vala:185
 #, c-format
 msgid "Destroying qgroup"
 msgstr "Уничтожение qgroup"
 
-#: src/Core/Main.vala:2288 src/Core/Main.vala:2320
-#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:599
-#: src/Core/SnapshotRepo.vala:602 src/Utility/Device.vala:1954
+#: src/Core/Main.vala:2307 src/Core/Main.vala:2339
+#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:603
+#: src/Core/SnapshotRepo.vala:606 src/Utility/Device.vala:1954
 #: src/Utility/Device.vala:1964 src/Gtk/RestoreDeviceBox.vala:97
-#: src/AppConsole.vala:467 src/AppConsole.vala:506 src/AppConsole.vala:554
+#: src/AppConsole.vala:468 src/AppConsole.vala:507 src/AppConsole.vala:555
 #, c-format
 msgid "Device"
 msgstr "Устройство"
@@ -677,8 +677,8 @@ msgstr "Устройство разблокировано"
 msgid "Device name is empty!"
 msgstr "Имя устройства пустое!"
 
-#: src/Core/Main.vala:3434 src/Core/SnapshotRepo.vala:479
-#: src/AppConsole.vala:676
+#: src/Core/Main.vala:3466 src/Core/SnapshotRepo.vala:483
+#: src/AppConsole.vala:679
 msgid "Device not found"
 msgstr "Устройство не найдено"
 
@@ -696,7 +696,7 @@ msgstr "Показанные выше устройства содержат фа
 msgid "Devices from which snapshot was created are pre-selected."
 msgstr "Устройства, с которых был создан снимок, выбраны по умолчанию."
 
-#: src/AppConsole.vala:332
+#: src/AppConsole.vala:333
 msgid "Devices with Linux file systems"
 msgstr "Устройства с файловыми системами Linux"
 
@@ -706,11 +706,7 @@ msgstr ""
 "Устройства с файловыми системами Windows (NTFS, FAT и т.п.) не "
 "поддерживаются."
 
-#: src/Core/SnapshotRepo.vala:914
-msgid "Directory not found"
-msgstr "Папка не найдена"
-
-#: src/Core/Main.vala:2380 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Core/Main.vala:2399 src/Gtk/RestoreSummaryBox.vala:64
 msgid "Disclaimer"
 msgstr "Отказ от ответственности"
 
@@ -734,12 +730,12 @@ msgstr "Зашифрованное устройство"
 msgid "Encrypted Home Directory"
 msgstr "Домашняя папка зашифрована"
 
-#: src/AppConsole.vala:897
+#: src/AppConsole.vala:914
 #, c-format
 msgid "Enter device name or number"
 msgstr "Введите имя или номер устройства"
 
-#: src/AppConsole.vala:695 src/AppConsole.vala:1026
+#: src/AppConsole.vala:698 src/AppConsole.vala:1061
 #, c-format
 msgid "Enter device name or number (a=Abort)"
 msgstr "Введите имя или номер устройства (a=Сброс)"
@@ -749,7 +745,7 @@ msgstr "Введите имя или номер устройства (a=Сбро
 msgid "Enter passphrase to unlock '%s'"
 msgstr "Введите пароль для разблокировки «%s»"
 
-#: src/AppConsole.vala:767
+#: src/AppConsole.vala:776
 #, c-format
 msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
 msgstr "Введите номер снимка (a=Сброс, p=Предыдущий, n=Следующий)"
@@ -774,11 +770,11 @@ msgstr "Оценка"
 msgid "Estimating System Size..."
 msgstr "Оценка размера системы..."
 
-#: src/Core/Main.vala:1453
+#: src/Core/Main.vala:1458
 msgid "Estimating system size..."
 msgstr "Оценка размера системы..."
 
-#: src/AppConsole.vala:398
+#: src/AppConsole.vala:399
 msgid "Examples"
 msgstr "Примеры"
 
@@ -810,7 +806,7 @@ msgstr "Шаблон для исключения"
 msgid "Excluded Directories"
 msgstr "Исключённые папки"
 
-#: src/Core/Main.vala:1741
+#: src/Core/Main.vala:1760
 msgid "Expected values: O, B, H, D, W, M"
 msgstr "Ожидаются значения: O, B, H, D, W, M"
 
@@ -818,32 +814,32 @@ msgstr "Ожидаются значения: O, B, H, D, W, M"
 msgid "Failed to add cron job"
 msgstr "Не удалось добавить задание cron"
 
-#: src/Utility/TeeJee.FileSystem.vala:155
+#: src/Utility/TeeJee.FileSystem.vala:171
 msgid "Failed to copy file"
 msgstr "Не удалось скопировать файл"
 
-#: src/Utility/TeeJee.FileSystem.vala:271
-#: src/Utility/TeeJee.FileSystem.vala:280
+#: src/Utility/TeeJee.FileSystem.vala:287
+#: src/Utility/TeeJee.FileSystem.vala:296
 msgid "Failed to create directory"
 msgstr "Не удалось создать папку"
 
-#: src/Core/Main.vala:1579
+#: src/Core/Main.vala:1584
 msgid "Failed to create new snapshot"
 msgstr "Не удалось создать новый снимок"
 
-#: src/Core/Main.vala:1333
+#: src/Core/Main.vala:1338
 msgid "Failed to create snapshot"
 msgstr "Не удалось создать снимок"
 
-#: src/Core/Main.vala:1669
+#: src/Core/Main.vala:1674
 msgid "Failed to create subvolume snapshot"
 msgstr "Не удалось создать снимок подраздела"
 
-#: src/Core/SnapshotRepo.vala:955
+#: src/Core/SnapshotRepo.vala:919 src/Core/SnapshotRepo.vala:923
 msgid "Failed to create symlinks"
 msgstr "Не удалось создать символические ссылки"
 
-#: src/Utility/TeeJee.FileSystem.vala:305
+#: src/Utility/TeeJee.FileSystem.vala:360
 msgid "Failed to delete directory"
 msgstr "Не удалось удалить папку"
 
@@ -851,23 +847,23 @@ msgstr "Не удалось удалить папку"
 msgid "Failed to delete file"
 msgstr "Не удалось удалить файл"
 
-#: src/Core/Subvolume.vala:153
+#: src/Core/Subvolume.vala:154
 msgid "Failed to delete snapshot nested subvolume"
 msgstr "Не удалось удалить вложенный подраздел снимка"
 
-#: src/Core/Subvolume.vala:163
+#: src/Core/Subvolume.vala:164
 msgid "Failed to delete snapshot subvolume"
 msgstr "Не удалось удалить снимок подраздела"
 
-#: src/Core/SnapshotRepo.vala:981
+#: src/Core/SnapshotRepo.vala:935
 msgid "Failed to delete symlinks"
 msgstr "Не удалось удалить символические ссылки"
 
-#: src/Core/Subvolume.vala:177
+#: src/Core/Subvolume.vala:191
 msgid "Failed to destroy qgroup"
 msgstr "Не удалось уничножить qgroup"
 
-#: src/Core/Main.vala:3935 src/Core/Main.vala:3941
+#: src/Core/Main.vala:3958 src/Core/Main.vala:3964
 msgid "Failed to estimate system size"
 msgstr "Не удалось оценить размер системы"
 
@@ -875,8 +871,8 @@ msgstr "Не удалось оценить размер системы"
 msgid "Failed to export crontab file"
 msgstr "Не удалось экспортировать файл crontab"
 
-#: src/AppConsole.vala:710 src/AppConsole.vala:774 src/AppConsole.vala:906
-#: src/AppConsole.vala:1001 src/AppConsole.vala:1046 src/AppConsole.vala:1087
+#: src/AppConsole.vala:713 src/AppConsole.vala:783 src/AppConsole.vala:923
+#: src/AppConsole.vala:1026 src/AppConsole.vala:1077 src/AppConsole.vala:1123
 msgid "Failed to get input from user in 3 attempts"
 msgstr "Не удалось получить ответ от пользователя в течение 3-х попыток"
 
@@ -884,7 +880,7 @@ msgstr "Не удалось получить ответ от пользоват�
 msgid "Failed to get partition list"
 msgstr "Не удалось получить список разделов"
 
-#: src/Core/Main.vala:3517
+#: src/Core/Main.vala:3545
 msgid "Failed to get partition list."
 msgstr "Не удалось получить список разделов."
 
@@ -896,19 +892,19 @@ msgstr "Не удалось установить файл crontab"
 msgid "Failed to mount devices"
 msgstr "Не удалось смонтировать устройства"
 
-#: src/Utility/TeeJee.FileSystem.vala:174
+#: src/Utility/TeeJee.FileSystem.vala:190
 msgid "Failed to move file"
 msgstr "Не удалось переместить файл"
 
-#: src/Core/Main.vala:3141
+#: src/Core/Main.vala:3171
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr "Не удалось переместить системный подраздел в папку снимков"
 
-#: src/Core/Main.vala:4048
+#: src/Core/Main.vala:4071
 msgid "Failed to query subvolume list"
 msgstr "Не удалось запросить список подразделов"
 
-#: src/Core/Main.vala:4133
+#: src/Core/Main.vala:4156
 msgid "Failed to query subvolume quota"
 msgstr "Не удалось запросить квоту подраздела"
 
@@ -916,11 +912,12 @@ msgstr "Не удалось запросить квоту подраздела"
 msgid "Failed to read cron tab"
 msgstr "Не удалось прочитать файл crontab"
 
-#: src/Utility/TeeJee.FileSystem.vala:112
+#: src/Utility/TeeJee.FileSystem.vala:110
+#: src/Utility/TeeJee.FileSystem.vala:128
 msgid "Failed to read file"
 msgstr "Не удалось прочитать файл"
 
-#: src/Core/SnapshotRepo.vala:901
+#: src/Core/SnapshotRepo.vala:895
 msgid "Failed to remove"
 msgstr "Не удалось удалить"
 
@@ -928,16 +925,16 @@ msgstr "Не удалось удалить"
 msgid "Failed to remove cron job"
 msgstr "Не удалось удалить задание cron"
 
-#: src/Core/Snapshot.vala:530 src/Core/Snapshot.vala:542
-#: src/Core/Snapshot.vala:550
+#: src/Core/Snapshot.vala:532 src/Core/Snapshot.vala:544
+#: src/Core/Snapshot.vala:552
 msgid "Failed to remove snapshot"
 msgstr "Не удалось удалить снимок"
 
-#: src/Core/Subvolume.vala:216
+#: src/Core/Subvolume.vala:243
 msgid "Failed to restore system subvolume"
 msgstr "Не удалось восстановить системный подраздел"
 
-#: src/Core/Main.vala:1529
+#: src/Core/Main.vala:1534
 msgid "Failed to save exclude list"
 msgstr "Не удалось сохранить список исключений"
 
@@ -951,11 +948,11 @@ msgstr "Не удалось разблокировать устройство"
 msgid "Failed to unmount"
 msgstr "Не удалось размонтировать"
 
-#: src/Core/Main.vala:3721
+#: src/Core/Main.vala:3749
 msgid "Failed to unmount device!"
 msgstr "Не удалось размонтировать устройство!"
 
-#: src/Utility/TeeJee.FileSystem.vala:139
+#: src/Utility/TeeJee.FileSystem.vala:155
 msgid "Failed to write file"
 msgstr "Не удалось записать файл"
 
@@ -976,7 +973,7 @@ msgid "File and directory counts:"
 msgstr "Количество файлов и папок:"
 
 #: src/Utility/CronTab.vala:225 src/Utility/RsyncTask.vala:298
-#: src/Utility/TeeJee.FileSystem.vala:169
+#: src/Utility/TeeJee.FileSystem.vala:185
 msgid "File not found"
 msgstr "Файл не найден"
 
@@ -1028,11 +1025,11 @@ msgstr "Завершено"
 msgid "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 msgstr "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 
-#: src/Core/SnapshotRepo.vala:583
+#: src/Core/SnapshotRepo.vala:587
 msgid "First snapshot requires:"
 msgstr "Для первого снимка требуется:"
 
-#: src/Core/Main.vala:3074
+#: src/Core/Main.vala:3104
 msgid "Found existing pre-restore snapshot"
 msgstr "Найден существующий снимок до восстановления"
 
@@ -1044,7 +1041,7 @@ msgstr "Свободно"
 msgid "Free space"
 msgstr "Свободное место"
 
-#: src/AppConsole.vala:1055
+#: src/AppConsole.vala:1091
 msgid "GRUB Device"
 msgstr "Устройство GRUB"
 
@@ -1052,15 +1049,15 @@ msgstr "Устройство GRUB"
 msgid "GRUB device not selected"
 msgstr "Устройство GRUB не выбрано"
 
-#: src/AppConsole.vala:1060
+#: src/AppConsole.vala:1096
 msgid "GRUB will NOT be reinstalled"
 msgstr "GRUB НЕ будет переустановлен"
 
-#: src/Core/Main.vala:2522
+#: src/Core/Main.vala:2541
 msgid "Generating initramfs..."
 msgstr "Создание initramfs..."
 
-#: src/AppConsole.vala:385
+#: src/AppConsole.vala:386
 msgid "Global"
 msgstr "Общие"
 
@@ -1086,7 +1083,7 @@ msgstr ""
 msgid "Hide"
 msgstr "Скрыть"
 
-#: src/AppConsole.vala:392
+#: src/AppConsole.vala:393
 msgid "Hide rsync output"
 msgstr "Скрыть вывод rsync"
 
@@ -1106,11 +1103,11 @@ msgstr "Домашняя папка"
 msgid "Hourly"
 msgstr "Ежечасно"
 
-#: src/Core/Main.vala:1089
+#: src/Core/Main.vala:1094
 msgid "Hourly snapshot failed!"
 msgstr "Создание ежечасного снимка не удалось!"
 
-#: src/Core/Main.vala:1070
+#: src/Core/Main.vala:1075
 msgid "Hourly snapshots are enabled"
 msgstr "Создание ежечасных снимков включено"
 
@@ -1123,7 +1120,7 @@ msgstr ""
 "носителя CD/USB, установите Timeshift, и попробуйте восстановить другой "
 "снимок."
 
-#: src/Core/Main.vala:2386
+#: src/Core/Main.vala:2405
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
@@ -1147,11 +1144,11 @@ msgstr "Включить все файлы"
 msgid "Include Only Hidden Files"
 msgstr "Включить только скрытые файлы"
 
-#: src/Core/Main.vala:2200
+#: src/Core/Main.vala:2219
 msgid "Invalid Snapshot"
 msgstr "Недействительный снимок"
 
-#: src/AppConsole.vala:257
+#: src/AppConsole.vala:258
 #, c-format
 msgid "Invalid command line arguments"
 msgstr "Недействительные аргументы командной строки"
@@ -1199,74 +1196,74 @@ msgid "LIVE"
 msgstr "РАБОЧИЙ"
 
 #: src/Utility/Device.vala:1973 src/Gtk/BackupDeviceBox.vala:254
-#: src/AppConsole.vala:471 src/AppConsole.vala:510
+#: src/AppConsole.vala:472 src/AppConsole.vala:511
 #, c-format
 msgid "Label"
 msgstr "Метка"
 
-#: src/Core/Main.vala:1051
+#: src/Core/Main.vala:1056
 #, c-format
 msgid "Last boot snapshot is %d hours old"
 msgstr "Последний загрузочный снимок создан %d часов назад"
 
-#: src/Core/Main.vala:1046
+#: src/Core/Main.vala:1051
 msgid "Last boot snapshot is older than system start time"
 msgstr ""
 "Последний загрузочный снимок создан до времени последнего запуска системы"
 
-#: src/Core/Main.vala:1042
+#: src/Core/Main.vala:1047
 msgid "Last boot snapshot not found"
 msgstr "Последний загрузочный снимок не найден"
 
-#: src/Core/Main.vala:1113
+#: src/Core/Main.vala:1118
 #, c-format
 msgid "Last daily snapshot is %d hours old"
 msgstr "Последний ежедневный снимок создан %d часов назад"
 
-#: src/Core/Main.vala:1108
+#: src/Core/Main.vala:1113
 msgid "Last daily snapshot is more than 1 day old"
 msgstr "Последний ежедневный снимок создан более 1 дня назад"
 
-#: src/Core/Main.vala:1104
+#: src/Core/Main.vala:1109
 msgid "Last daily snapshot not found"
 msgstr "Последний ежедневный снимок не найден"
 
-#: src/Core/Main.vala:1082
+#: src/Core/Main.vala:1087
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
 msgstr "Последний ежечасный снимок создан более %d минут назад"
 
-#: src/Core/Main.vala:1077
+#: src/Core/Main.vala:1082
 msgid "Last hourly snapshot is more than 1 hour old"
 msgstr "Последний ежечасный снимок создан более 1 часа назад"
 
-#: src/Core/Main.vala:1073
+#: src/Core/Main.vala:1078
 msgid "Last hourly snapshot not found"
 msgstr "Последний ежечасный снимок не найден"
 
-#: src/Core/Main.vala:1175
+#: src/Core/Main.vala:1180
 #, c-format
 msgid "Last monthly snapshot is %d days old"
 msgstr "Последний ежемесячный снимок создан более %d дней назад"
 
-#: src/Core/Main.vala:1170
+#: src/Core/Main.vala:1175
 msgid "Last monthly snapshot is more than 1 month old"
 msgstr "Последний ежемесячный снимок создан более 1 месяца назад"
 
-#: src/Core/Main.vala:1166
+#: src/Core/Main.vala:1171
 msgid "Last monthly snapshot not found"
 msgstr "Последний ежемесячный снимок не найден"
 
-#: src/Core/Main.vala:1144
+#: src/Core/Main.vala:1149
 #, c-format
 msgid "Last weekly snapshot is %d days old"
 msgstr "Последний еженедельный снимок создан более %d дней назад"
 
-#: src/Core/Main.vala:1139
+#: src/Core/Main.vala:1144
 msgid "Last weekly snapshot is more than 1 week old"
 msgstr "Последний еженедельный снимок создан более 1 недели назад"
 
-#: src/Core/Main.vala:1135
+#: src/Core/Main.vala:1140
 msgid "Last weekly snapshot not found"
 msgstr "Последний еженедельный снимок не найден"
 
@@ -1275,20 +1272,20 @@ msgstr "Последний еженедельный снимок не найде
 msgid "Latest snapshot"
 msgstr "Последний снимок"
 
-#: src/Core/Main.vala:1518
+#: src/Core/Main.vala:1523
 #, c-format
 msgid "Linking from snapshot"
 msgstr "Связи со снимком"
 
-#: src/AppConsole.vala:363
+#: src/AppConsole.vala:364
 msgid "List"
 msgstr "Список"
 
-#: src/AppConsole.vala:365
+#: src/AppConsole.vala:366
 msgid "List devices"
 msgstr "Список устройств"
 
-#: src/AppConsole.vala:364
+#: src/AppConsole.vala:365
 msgid "List snapshots"
 msgstr "Список снимков"
 
@@ -1309,7 +1306,7 @@ msgstr "Главное окно закрыто пользователем"
 msgid "Mark/Unmark for Deletion"
 msgstr "Отметить/снять отметку для удаления"
 
-#: src/Core/SnapshotRepo.vala:628 src/Core/SnapshotRepo.vala:671
+#: src/Core/SnapshotRepo.vala:632 src/Core/SnapshotRepo.vala:675
 msgid "Maximum backups exceeded for backup level"
 msgstr ""
 "Для уровня резервного копирования превышено предельное количество резервных "
@@ -1327,7 +1324,7 @@ msgstr "Прочее"
 msgid "Missing Dependencies"
 msgstr "Зависимости отсутствуют"
 
-#: src/Core/SnapshotRepo.vala:605
+#: src/Core/SnapshotRepo.vala:609
 #, c-format
 msgid "Mode"
 msgstr "Режим"
@@ -1341,19 +1338,19 @@ msgstr "Модель"
 msgid "Monthly"
 msgstr "Ежемесячно"
 
-#: src/Core/Main.vala:1163
+#: src/Core/Main.vala:1168
 msgid "Monthly snapshot are enabled"
 msgstr "Создание ежемесячных снимков включено"
 
-#: src/Core/Main.vala:1182
+#: src/Core/Main.vala:1187
 msgid "Monthly snapshot failed!"
 msgstr "Создание ежемесячного снимка не удалось!"
 
-#: src/Core/Main.vala:2287 src/Core/Main.vala:2320
+#: src/Core/Main.vala:2306 src/Core/Main.vala:2339
 msgid "Mount"
 msgstr "Монтировать"
 
-#: src/Core/Main.vala:3148
+#: src/Core/Main.vala:3178
 msgid "Moved system subvolume to snapshot directory"
 msgstr "Системный подраздел перемещён в папку снимков"
 
@@ -1362,7 +1359,7 @@ msgid "Multiple snapshots selected"
 msgstr "Выбрано несколько снимков"
 
 #: src/Gtk/BackupDeviceBox.vala:235 src/Gtk/RsyncLogBox.vala:491
-#: src/AppConsole.vala:437
+#: src/AppConsole.vala:438
 msgid "Name"
 msgstr "Название"
 
@@ -1387,12 +1384,12 @@ msgstr "Нет выбранных снимков"
 msgid "No snapshots available"
 msgstr "Нет доступных снимков"
 
-#: src/Core/SnapshotRepo.vala:830 src/Gtk/MainWindow.vala:987
-#: src/AppConsole.vala:326
+#: src/Core/SnapshotRepo.vala:834 src/Gtk/MainWindow.vala:987
+#: src/AppConsole.vala:327
 msgid "No snapshots found"
 msgstr "Снимки не найдены"
 
-#: src/AppConsole.vala:753
+#: src/AppConsole.vala:756
 msgid "No snapshots found on device"
 msgstr "Снимки на этом устройстве не найдены"
 
@@ -1400,7 +1397,7 @@ msgstr "Снимки на этом устройстве не найдены"
 msgid "No snapshots on device"
 msgstr "Нет снимков на устройстве"
 
-#: src/Core/SnapshotRepo.vala:581
+#: src/Core/SnapshotRepo.vala:585
 msgid "No snapshots on this device"
 msgstr "Нет снимков на этом устройстве"
 
@@ -1412,12 +1409,12 @@ msgstr "Нет выбранных снимков"
 msgid "None"
 msgstr "Нет"
 
-#: src/Core/Subvolume.vala:198
+#: src/Core/Subvolume.vala:225
 #, c-format
 msgid "Not Found"
 msgstr "Не найдено"
 
-#: src/Core/SnapshotRepo.vala:599
+#: src/Core/SnapshotRepo.vala:603
 msgid "Not Selected"
 msgstr "Не выбрано"
 
@@ -1425,20 +1422,20 @@ msgstr "Не выбрано"
 msgid "Not Supported"
 msgstr "Не поддерживается"
 
-#: src/Core/SnapshotRepo.vala:543 src/Core/SnapshotRepo.vala:572
+#: src/Core/SnapshotRepo.vala:547 src/Core/SnapshotRepo.vala:576
 msgid "Not enough disk space"
 msgstr "Недостаточно места на накопителе"
 
-#: src/Gtk/FinishBox.vala:55 src/AppConsole.vala:409
+#: src/Gtk/FinishBox.vala:55 src/AppConsole.vala:410
 msgid "Notes"
 msgstr "Примечания"
 
-#: src/Core/Main.vala:1193
+#: src/Core/Main.vala:1198
 msgid "Nothing to do!"
 msgstr "Нет задач для выполнения!"
 
-#: src/AppConsole.vala:435 src/AppConsole.vala:465 src/AppConsole.vala:504
-#: src/AppConsole.vala:552
+#: src/AppConsole.vala:436 src/AppConsole.vala:466 src/AppConsole.vala:505
+#: src/AppConsole.vala:553
 msgid "Num"
 msgstr "Номер"
 
@@ -1450,7 +1447,7 @@ msgstr ""
 "Количество снимков для хранения.\n"
 "Старые снимки будут удаляться при исчерпании лимита."
 
-#: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:147
+#: src/Core/SnapshotRepo.vala:558 src/Utility/Gtk/CustomMessageDialog.vala:147
 #: src/Utility/Gtk/CustomMessageDialog.vala:151 src/Utility/GtkHelper.vala:108
 #: src/Gtk/SettingsWindow.vala:123 src/Gtk/ExcludeListSummaryWindow.vala:84
 msgid "OK"
@@ -1464,7 +1461,7 @@ msgstr ""
 "ОС должна быть установлена на раздел с BTRFS с разбивкой на подразделы типа "
 "Ubuntu (@ и @home подразделы). Другие виды разбивок не поддерживаются."
 
-#: src/Core/Main.vala:4306
+#: src/Core/Main.vala:4329
 msgid "Older log files removed"
 msgstr "Устаревшие файлы журналов удалены"
 
@@ -1476,7 +1473,7 @@ msgstr "Старейший снимок"
 msgid "On demand (manual)"
 msgstr "По запросу (вручную)"
 
-#: src/Core/Main.vala:396 src/Core/Main.vala:3634
+#: src/Core/Main.vala:396 src/Core/Main.vala:3662
 #: src/Gtk/RestoreDeviceBox.vala:511
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
@@ -1487,7 +1484,7 @@ msgstr ""
 msgid "Open Menu"
 msgstr "Открыть меню"
 
-#: src/Core/Main.vala:3416
+#: src/Core/Main.vala:3448
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
@@ -1495,7 +1492,7 @@ msgstr ""
 "Ключ «--snapshot-device» не должен указываться для создания снимков в режиме "
 "BTRFS"
 
-#: src/AppConsole.vala:361 src/AppGtk.vala:128
+#: src/AppConsole.vala:362 src/AppGtk.vala:128
 msgid "Options"
 msgstr "Настройки"
 
@@ -1514,7 +1511,7 @@ msgstr "Владелец"
 msgid "Parent Device"
 msgstr "Вышестоящее устройство"
 
-#: src/Core/Main.vala:2651 src/Core/Main.vala:2742 src/Gtk/RsyncLogBox.vala:222
+#: src/Core/Main.vala:2670 src/Core/Main.vala:2761 src/Gtk/RsyncLogBox.vala:222
 msgid "Parsing log file..."
 msgstr "Разбор файла журнала..."
 
@@ -1522,7 +1519,7 @@ msgstr "Разбор файла журнала..."
 msgid "Partition has an unsupported subvolume layout."
 msgstr "Раздел имеет неподдерживаемую разбивку на подразделы."
 
-#: src/Core/SnapshotRepo.vala:604 src/Gtk/RestoreDeviceBox.vala:93
+#: src/Core/SnapshotRepo.vala:608 src/Gtk/RestoreDeviceBox.vala:93
 #, c-format
 msgid "Path"
 msgstr "Путь"
@@ -1541,7 +1538,7 @@ msgstr "Права"
 msgid "Please check if you have multiple windows open."
 msgstr "Проверьте, открыто ли у вас несколько окон."
 
-#: src/Core/Main.vala:2418
+#: src/Core/Main.vala:2437
 msgid "Please do not interrupt the restore process!"
 msgstr "Не прерывайте восстановление!"
 
@@ -1559,7 +1556,7 @@ msgid "Please run the application as admin (using 'sudo' or 'su')"
 msgstr ""
 "Запустите приложение от имени администратора (используя «sudo» или «su»)"
 
-#: src/Core/Main.vala:2368
+#: src/Core/Main.vala:2387
 msgid "Please save your work and close all applications."
 msgstr "Сохраните все открытые файлы и закройте все приложения."
 
@@ -1587,7 +1584,7 @@ msgstr "Пожалуйста, подождите..."
 msgid "Populating list..."
 msgstr "Заполнение списка..."
 
-#: src/Core/Main.vala:1753 src/Gtk/BackupBox.vala:117
+#: src/Core/Main.vala:1772 src/Gtk/BackupBox.vala:117
 #: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
 #: src/Gtk/RsyncLogBox.vala:232
 msgid "Preparing..."
@@ -1602,15 +1599,15 @@ msgstr "Назад"
 msgid "Print debug information"
 msgstr "Выводить отладочные сведения"
 
-#: src/AppConsole.vala:395 src/AppGtk.vala:132
+#: src/AppConsole.vala:396 src/AppGtk.vala:132
 msgid "Print version number"
 msgstr "Вывести номер версии"
 
-#: src/Core/Main.vala:3996
+#: src/Core/Main.vala:4019
 msgid "Query completed"
 msgstr "Запрос завершён"
 
-#: src/Core/Main.vala:3979
+#: src/Core/Main.vala:4002
 msgid "Querying subvolume info..."
 msgstr "Запрос информации о подразделах..."
 
@@ -1631,12 +1628,12 @@ msgstr ""
 "необходимости. Выберите это, если восстановленная система не может "
 "загрузиться."
 
-#: src/AppConsole.vala:995
+#: src/AppConsole.vala:1020
 #, c-format
 msgid "Re-install GRUB2 bootloader?"
 msgstr "Переустановить загрузчик GRUB2?"
 
-#: src/Core/Main.vala:2481
+#: src/Core/Main.vala:2500
 msgid "Re-installing GRUB2 bootloader..."
 msgstr "Переустановка загрузчика GRUB2..."
 
@@ -1649,7 +1646,7 @@ msgstr "Переустанавливает загрузчик GRUB2 на выб�
 msgid "Read %'d of %'d lines..."
 msgstr "Чтение %'d из %'d строк..."
 
-#: src/Core/Main.vala:2581
+#: src/Core/Main.vala:2600
 msgid "Rebooting system..."
 msgstr "Перезагрузка системы..."
 
@@ -1670,8 +1667,8 @@ msgstr "Удалённые и сетевые расположения не по�
 msgid "Remove"
 msgstr "Удалить"
 
-#: src/Core/Snapshot.vala:509 src/Core/Main.vala:1791 src/Core/Main.vala:1802
-#: src/Core/Main.vala:4302 src/Core/SnapshotRepo.vala:907
+#: src/Core/Snapshot.vala:511 src/Core/Main.vala:1810 src/Core/Main.vala:1821
+#: src/Core/Main.vala:4325 src/Core/SnapshotRepo.vala:893
 #, c-format
 msgid "Removed"
 msgstr "Удалено"
@@ -1680,32 +1677,32 @@ msgstr "Удалено"
 msgid "Removed cron task"
 msgstr "Задание cron удалено"
 
-#: src/Core/Main.vala:3784
+#: src/Core/Main.vala:3812
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr "Удалена смонтированная папка : «%s»"
 
-#: src/Core/Snapshot.vala:555
+#: src/Core/Snapshot.vala:557
 msgid "Removed snapshot"
 msgstr "Снимок удалён"
 
-#: src/Core/Snapshot.vala:484
+#: src/Core/Snapshot.vala:486
 msgid "Removing"
 msgstr "Удаляется"
 
-#: src/Core/Snapshot.vala:521
+#: src/Core/Snapshot.vala:523
 msgid "Removing snapshot"
 msgstr "Удаление снимка"
 
-#: src/Core/SnapshotRepo.vala:763 src/Core/SnapshotRepo.vala:782
-#: src/Core/SnapshotRepo.vala:800 src/Core/SnapshotRepo.vala:814
+#: src/Core/SnapshotRepo.vala:767 src/Core/SnapshotRepo.vala:786
+#: src/Core/SnapshotRepo.vala:804 src/Core/SnapshotRepo.vala:818
 #, c-format
 msgid "Removing snapshots"
 msgstr "Удаление снимков"
 
 #: src/Gtk/MainWindow.vala:150 src/Gtk/RestoreWindow.vala:125
 #: src/Gtk/RsyncLogBox.vala:377 src/Gtk/RsyncLogBox.vala:566
-#: src/Gtk/RestoreFinishBox.vala:71 src/AppConsole.vala:373
+#: src/Gtk/RestoreFinishBox.vala:71 src/AppConsole.vala:374
 msgid "Restore"
 msgstr "Восстановить"
 
@@ -1725,7 +1722,7 @@ msgstr "Восстановить исключения"
 msgid "Restore Snapshot"
 msgstr "Восстановить снимок"
 
-#: src/Core/Main.vala:2991 src/Core/Main.vala:3033
+#: src/Core/Main.vala:3010 src/Core/Main.vala:3052
 msgid "Restore completed"
 msgstr "Восстановление завершено"
 
@@ -1733,7 +1730,7 @@ msgstr "Восстановление завершено"
 msgid "Restore selected snapshot"
 msgstr "Восстановить выделенный снимок"
 
-#: src/AppConsole.vala:374
+#: src/AppConsole.vala:375
 msgid "Restore snapshot"
 msgstr "Восстановить снимок"
 
@@ -1742,7 +1739,7 @@ msgid "Restored subvolumes will become active after system is restarted."
 msgstr ""
 "Восстановленные подразделы станут активными после перезагрузки системы."
 
-#: src/Core/Subvolume.vala:220
+#: src/Core/Subvolume.vala:247
 msgid "Restored system subvolume"
 msgstr "Системный подраздел восстановлен"
 
@@ -1761,7 +1758,7 @@ msgstr ""
 "необходимости этот снимок можно восстановить позже, выполнив «отмену» "
 "восстановления."
 
-#: src/Core/Main.vala:2960
+#: src/Core/Main.vala:2979
 msgid "Restoring snapshot..."
 msgstr "Восстановление снимка..."
 
@@ -1799,7 +1796,7 @@ msgstr ""
 "Введите «timeshift» в командной строке, чтобы запустить приложение в "
 "строчном виде"
 
-#: src/AppConsole.vala:393
+#: src/AppConsole.vala:394
 msgid "Run in non-interactive mode"
 msgstr "Запустить в фоновом режиме"
 
@@ -1827,7 +1824,7 @@ msgstr ""
 "даже можете установить другую сборку линукса, а затем вернуть предыдущую "
 "сборку, восстановив снимок."
 
-#: src/Core/Main.vala:1459 src/Core/Main.vala:1613 src/Core/Main.vala:1615
+#: src/Core/Main.vala:1464 src/Core/Main.vala:1618 src/Core/Main.vala:1620
 msgid "Saving to device"
 msgstr "Сохранение на устройство"
 
@@ -1839,7 +1836,7 @@ msgstr "Расписание"
 msgid "Scheduled snapshot in progress..."
 msgstr "Выполняется создание снимка по расписанию..."
 
-#: src/Core/Main.vala:1193 src/Gtk/MainWindow.vala:1037
+#: src/Core/Main.vala:1198 src/Gtk/MainWindow.vala:1037
 #: src/Gtk/ScheduleBox.vala:312
 msgid "Scheduled snapshots are disabled"
 msgstr "Создание снимков по расписанию выключено"
@@ -1862,16 +1859,16 @@ msgstr ""
 "Создание снимков по расписанию включено. Снимки будут создаваться "
 "автоматически на выбранных уровнях."
 
-#: src/AppConsole.vala:883
+#: src/AppConsole.vala:900
 #, c-format
 msgid "Select '%s' device (default = %s)"
 msgstr "Выберите устройство «%s»  (по умолчанию = %s)"
 
-#: src/Core/SnapshotRepo.vala:510 src/AppConsole.vala:702
+#: src/Core/SnapshotRepo.vala:514 src/AppConsole.vala:705
 msgid "Select BTRFS system disk with root subvolume (@)"
 msgstr "Выберите системный накопитель с BTRFS с корневым подразделом (@)"
 
-#: src/AppConsole.vala:1011
+#: src/AppConsole.vala:1037
 msgid "Select GRUB device"
 msgstr "Выберите устройство GRUB"
 
@@ -1912,7 +1909,7 @@ msgstr "Выберите один снимок для восстановлени
 msgid "Select another device for root file system (/)"
 msgstr "Выберите другое устройство для корневой файловой системы (/)"
 
-#: src/Core/SnapshotRepo.vala:546 src/Core/SnapshotRepo.vala:575
+#: src/Core/SnapshotRepo.vala:550 src/Core/SnapshotRepo.vala:579
 msgid "Select another device or free up some space"
 msgstr "Выберите другое устройство или освободите место"
 
@@ -1928,7 +1925,7 @@ msgstr "Выбрать другое устройство?"
 msgid "Select applications to exclude from restore"
 msgstr "Выберите приложения для исключения при восстановлении"
 
-#: src/AppConsole.vala:685
+#: src/AppConsole.vala:688
 msgid "Select backup device"
 msgstr "Выберите устройство для резервных копий"
 
@@ -1940,7 +1937,7 @@ msgstr "Выберите папку"
 msgid "Select file(s)"
 msgstr "Выберите файл(ы)"
 
-#: src/AppConsole.vala:759
+#: src/AppConsole.vala:768
 msgid "Select snapshot"
 msgstr "Выберите снимок"
 
@@ -1964,7 +1961,7 @@ msgstr "Выберите промежутки создания снимков"
 msgid "Select the items to be removed from the list"
 msgstr "Выберите элементы для удаления из списка"
 
-#: src/Core/SnapshotRepo.vala:472
+#: src/Core/SnapshotRepo.vala:476
 msgid "Select the snapshot device"
 msgstr "Выберите устройство для снимка"
 
@@ -1984,11 +1981,11 @@ msgstr "Выберите снимки для пометки на удалени�
 msgid "Select the target devices where system will be cloned."
 msgstr "Выберите целевое устройство для клонирования системы."
 
-#: src/Core/Main.vala:3444
+#: src/Core/Main.vala:3476
 msgid "Selected default snapshot device"
 msgstr "Выберите устройство для снимков по умолчанию"
 
-#: src/Core/Main.vala:3395 src/Core/Main.vala:3399
+#: src/Core/Main.vala:3427 src/Core/Main.vala:3431
 msgid "Selected default snapshot type"
 msgstr "Выберите тип снимка по умолчанию"
 
@@ -2004,11 +2001,11 @@ msgstr "Выбранное устройство не содержит разде
 msgid "Selected snapshot device"
 msgstr "Устройство для снимка выбрано"
 
-#: src/Core/SnapshotRepo.vala:509 src/AppConsole.vala:701
+#: src/Core/SnapshotRepo.vala:513 src/AppConsole.vala:704
 msgid "Selected snapshot device is not a system disk"
 msgstr "Выбранное устройство для снимка не является системным накопителем"
 
-#: src/Core/Main.vala:2201
+#: src/Core/Main.vala:2220
 msgid "Selected snapshot is marked for deletion"
 msgstr "Выбранный снимок отмечен для удаления"
 
@@ -2033,7 +2030,7 @@ msgstr "Серийный номер"
 msgid "Session log file"
 msgstr "Файл журнала сессии"
 
-#: src/AppConsole.vala:370
+#: src/AppConsole.vala:371
 msgid "Set snapshot description"
 msgstr "Задать описание снимка"
 
@@ -2054,11 +2051,11 @@ msgstr "Установка завершена"
 msgid "Setup Wizard"
 msgstr "Мастер установки"
 
-#: src/AppConsole.vala:390
+#: src/AppConsole.vala:391
 msgid "Show additional debug messages"
 msgstr "Показать дополнительные отладочные сообщения"
 
-#: src/AppConsole.vala:394 src/AppGtk.vala:131
+#: src/AppConsole.vala:395 src/AppGtk.vala:131
 msgid "Show all options"
 msgstr "Показать все параметры"
 
@@ -2066,14 +2063,14 @@ msgstr "Показать все параметры"
 msgid "Show more applications to exclude on the next page"
 msgstr "Показать больше программ для исключения на следующей странице"
 
-#: src/AppConsole.vala:391
+#: src/AppConsole.vala:392
 msgid "Show rsync output (default)"
 msgstr "Показать вывод rsync (по умолчанию)"
 
 #: src/Utility/Device.vala:1960 src/Utility/Device.vala:1975
 #: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
 #: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
-#: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:469 src/AppConsole.vala:508
+#: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:470 src/AppConsole.vala:509
 #, c-format
 msgid "Size"
 msgstr "Размер"
@@ -2090,12 +2087,12 @@ msgstr ""
 "которые занимают пространство на накопителе (копирование при записи). Файлы "
 "в снимке продолжают указывать на исходные блоки данных."
 
-#: src/AppConsole.vala:379
+#: src/AppConsole.vala:380
 msgid "Skip GRUB2 reinstall"
 msgstr "Пропустить переустановку GRUB2"
 
-#: src/Core/Main.vala:2206 src/Core/SnapshotRepo.vala:631
-#: src/Core/SnapshotRepo.vala:684 src/Gtk/SnapshotListBox.vala:94
+#: src/Core/Main.vala:2225 src/Core/SnapshotRepo.vala:635
+#: src/Core/SnapshotRepo.vala:688 src/Gtk/SnapshotListBox.vala:94
 #, c-format
 msgid "Snapshot"
 msgstr "Снимок"
@@ -2122,33 +2119,33 @@ msgstr "Уровни снимков"
 msgid "Snapshot deletion in progress..."
 msgstr "Выполняется удаление снимка..."
 
-#: src/Core/SnapshotRepo.vala:442
+#: src/Core/SnapshotRepo.vala:446
 #, c-format
 msgid "Snapshot device"
 msgstr "Устройство для снимка"
 
-#: src/Core/SnapshotRepo.vala:478 src/AppConsole.vala:675
+#: src/Core/SnapshotRepo.vala:482 src/AppConsole.vala:678
 msgid "Snapshot device not available"
 msgstr "Устройство для снимка не доступно"
 
-#: src/Core/SnapshotRepo.vala:471 src/AppConsole.vala:671
+#: src/Core/SnapshotRepo.vala:475 src/AppConsole.vala:674
 msgid "Snapshot device not selected"
 msgstr "Устройство для снимка не выбрано"
 
-#: src/Core/SnapshotRepo.vala:446
+#: src/Core/SnapshotRepo.vala:450
 #, c-format
 msgid "Snapshot location"
 msgstr "Расположение снимка"
 
-#: src/Core/Main.vala:1330
+#: src/Core/Main.vala:1335
 msgid "Snapshot saved successfully"
 msgstr "Снимок успешно сохранён"
 
-#: src/Core/Main.vala:2196
+#: src/Core/Main.vala:2215
 msgid "Snapshot to restore not specified!"
 msgstr "Снимок для восстановления не задан!"
 
-#: src/Core/Main.vala:3037
+#: src/Core/Main.vala:3067
 msgid "Snapshot will become active after system is rebooted."
 msgstr "Снимок станет активным после перезагрузки системы."
 
@@ -2248,7 +2245,7 @@ msgstr ""
 "позволяет восстановить систему, даже если системный накопитель повреждён или "
 "переформатирован."
 
-#: src/AppConsole.vala:289
+#: src/AppConsole.vala:290
 msgid "Snapshots cannot be created in Live CD mode"
 msgstr "Снимки не могут быть созданы в режиме загрузки с компакт-диска"
 
@@ -2264,23 +2261,23 @@ msgstr ""
 "Снимки будут создаваться с выбранными промежутками, если на накопителе со "
 "снимком достаточно места (> 1 ГБ)"
 
-#: src/AppConsole.vala:386
+#: src/AppConsole.vala:387
 msgid "Specify backup device (default: config)"
 msgstr "Укажите устройство для резервного копирования (по умолчанию: config)"
 
-#: src/AppConsole.vala:378
+#: src/AppConsole.vala:379
 msgid "Specify device for installing GRUB2 bootloader"
 msgstr "Укажите устройство для установки загрузчика GRUB2"
 
-#: src/AppConsole.vala:376
+#: src/AppConsole.vala:377
 msgid "Specify snapshot to restore"
 msgstr "Укажите снимок для восстановления"
 
-#: src/AppConsole.vala:377
+#: src/AppConsole.vala:378
 msgid "Specify target device"
 msgstr "Укажите целевое устройство"
 
-#: src/Core/SnapshotRepo.vala:452 src/Core/SnapshotRepo.vala:606
+#: src/Core/SnapshotRepo.vala:456 src/Core/SnapshotRepo.vala:610
 #: src/Gtk/RsyncLogBox.vala:471
 #, c-format
 msgid "Status"
@@ -2294,7 +2291,7 @@ msgstr "Остановить отправку писем через cron для 
 msgid "Subvolume"
 msgstr "Подраздел"
 
-#: src/Core/Subvolume.vala:203
+#: src/Core/Subvolume.vala:230
 #, c-format
 msgid "Subvolume exists at destination"
 msgstr "Подраздел существует в месте назначения"
@@ -2309,23 +2306,23 @@ msgstr "Подразделы"
 msgid "Summary"
 msgstr "Итог"
 
-#: src/AppConsole.vala:388
+#: src/AppConsole.vala:389
 msgid "Switch to BTRFS mode (default: config)"
 msgstr "Переключиться в режим BTRFS (по умолчанию: config)"
 
-#: src/AppConsole.vala:389
+#: src/AppConsole.vala:390
 msgid "Switch to RSYNC mode (default: config)"
 msgstr "Переключиться в режим RSYNC (по умолчанию: config)"
 
-#: src/Core/SnapshotRepo.vala:961
+#: src/Core/SnapshotRepo.vala:928
 msgid "Symlinks updated"
 msgstr "Символические ссылки обновлены"
 
-#: src/Core/Main.vala:2556
+#: src/Core/Main.vala:2575
 msgid "Syncing file systems..."
 msgstr "Синхронизация файловых систем..."
 
-#: src/Core/Main.vala:1535 src/Core/Main.vala:2726 src/Core/Main.vala:2967
+#: src/Core/Main.vala:1540 src/Core/Main.vala:2745 src/Core/Main.vala:2986
 msgid "Syncing files with rsync..."
 msgstr "Синхронизация файлов с помощью rsync..."
 
@@ -2348,23 +2345,23 @@ msgstr ""
 "Система не может быть возвращена в состояние на предыдущую дату путём "
 "восстановления снимка."
 
-#: src/Core/Main.vala:2419
+#: src/Core/Main.vala:2438
 msgid "System will reboot after files are restored"
 msgstr "Система будет перезагружена после восстановления файлов"
 
-#: src/Core/Main.vala:2369
+#: src/Core/Main.vala:2388
 msgid "System will reboot after files are restored."
 msgstr "Система будет перезагружена после восстановления файлов."
 
-#: src/Core/Main.vala:1266 src/Core/Main.vala:1340
+#: src/Core/Main.vala:1271 src/Core/Main.vala:1345
 msgid "Tagged snapshot"
 msgstr "Помеченный снимок"
 
-#: src/Gtk/SnapshotListBox.vala:150 src/AppConsole.vala:438
+#: src/Gtk/SnapshotListBox.vala:150 src/AppConsole.vala:439
 msgid "Tags"
 msgstr "Метки"
 
-#: src/Core/Main.vala:2231
+#: src/Core/Main.vala:2250
 msgid "Target device is not mounted"
 msgstr "Целевое устройство не смонтировано"
 
@@ -2372,7 +2369,7 @@ msgstr "Целевое устройство не смонтировано"
 msgid "Target device is same as system device"
 msgstr "Целевое устройство является системным"
 
-#: src/Core/Main.vala:2225
+#: src/Core/Main.vala:2244
 msgid "Target device not specified!"
 msgstr "Целевое устройство не задано!"
 
@@ -2390,7 +2387,7 @@ msgstr ""
 msgid "The system partition has an unsupported subvolume layout."
 msgstr "Системный раздел имеет неподдерживаемую разбивку на подразделы."
 
-#: src/Core/Main.vala:3633
+#: src/Core/Main.vala:3661
 msgid "The target partition has an unsupported subvolume layout."
 msgstr "Целевой раздел имеет неподдерживаемую разбивку на подразделы."
 
@@ -2403,7 +2400,7 @@ msgstr "На этом устройстве нет снимков"
 msgid "This device is not encrypted"
 msgstr "Это устройство не зашифровано"
 
-#: src/Core/Main.vala:2385
+#: src/Core/Main.vala:2404
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
@@ -2422,7 +2419,7 @@ msgstr "Timeshift активен"
 msgid "Timestamp"
 msgstr "Метка времени"
 
-#: src/AppConsole.vala:624
+#: src/AppConsole.vala:626
 #, c-format
 msgid "To restore with default options, press the ENTER key for all prompts!"
 msgstr ""
@@ -2430,8 +2427,8 @@ msgstr ""
 "запросы!"
 
 #: src/Utility/Device.vala:1971 src/Gtk/BackupDeviceBox.vala:190
-#: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:470
-#: src/AppConsole.vala:509
+#: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:471
+#: src/AppConsole.vala:510
 #, c-format
 msgid "Type"
 msgstr "Тип"
@@ -2445,11 +2442,11 @@ msgstr "UUID"
 msgid "Unknown option"
 msgstr "Неизвестный параметр"
 
-#: src/Core/Main.vala:1248
+#: src/Core/Main.vala:1253
 msgid "Unknown snapshot type"
 msgstr "Неизвестный тип снимка"
 
-#: src/Core/Main.vala:1740
+#: src/Core/Main.vala:1759
 msgid "Unknown value specified for option --tags"
 msgstr "Для ключа --tags указано неизвестное значение"
 
@@ -2470,7 +2467,7 @@ msgstr "Размонтировано с"
 msgid "Unshared"
 msgstr "Неразделяемый"
 
-#: src/Core/Main.vala:3637 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Core/Main.vala:3665 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
 msgstr "Разбивка на подразделы не поддерживается"
 
@@ -2482,11 +2479,11 @@ msgstr "Обновить меню GRUB"
 msgid "Update initramfs"
 msgstr "Обновить initramfs"
 
-#: src/Core/Main.vala:2906
+#: src/Core/Main.vala:2925
 msgid "Updated /etc/crypttab on target device"
 msgstr "Файл /etc/crypttab обновлён на целевом устройстве"
 
-#: src/Core/Main.vala:2826
+#: src/Core/Main.vala:2845
 msgid "Updated /etc/fstab on target device"
 msgstr "Файл /etc/fstab обновлён на целевом устройстве"
 
@@ -2498,11 +2495,11 @@ msgstr ""
 "Обновляет пункты меню GRUB (желательно). Это безопасно для запуска и должно "
 "быть оставлено выбранным."
 
-#: src/Core/Main.vala:2539
+#: src/Core/Main.vala:2558
 msgid "Updating GRUB menu..."
 msgstr "Обновление меню GRUB..."
 
-#: src/Core/Main.vala:2750
+#: src/Core/Main.vala:2769
 msgid "Updating bootloader configuration..."
 msgstr "Обновление конфигурации загрузчика..."
 
@@ -2554,7 +2551,7 @@ msgstr "Просмотр отчёта Rsync для восстановления"
 msgid "View TimeShift Logs"
 msgstr "Просмотреть журналы TimeShift"
 
-#: src/Core/Main.vala:2280 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Core/Main.vala:2299 src/Gtk/RestoreSummaryBox.vala:53
 msgid "Warning"
 msgstr "Внимание"
 
@@ -2566,11 +2563,11 @@ msgstr "Обозреватели сети"
 msgid "Weekly"
 msgstr "Еженедельно"
 
-#: src/Core/Main.vala:1151
+#: src/Core/Main.vala:1156
 msgid "Weekly snapshot failed!"
 msgstr "Создание еженедельного снимка не удалось!"
 
-#: src/Core/Main.vala:1132
+#: src/Core/Main.vala:1137
 msgid "Weekly snapshots are enabled"
 msgstr "Создание еженедельных снимков включено"
 
@@ -2600,12 +2597,12 @@ msgstr ""
 "система будет видна в виде нового снимка. Этот снимок можно восстановить "
 "позже, если потребуется, чтобы «отменить» восстановление."
 
-#: src/AppConsole.vala:1023
+#: src/AppConsole.vala:1058
 #, c-format
 msgid "[ENTER = Default (%s), a = Abort]"
 msgstr "[ENTER = По умолчанию (%s), a = Прервать]"
 
-#: src/AppConsole.vala:894
+#: src/AppConsole.vala:911
 #, c-format
 msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
 msgstr "[ENTER = По умолчанию (%s), r = Корневое устройство, a = Прервать]"
@@ -2622,16 +2619,16 @@ msgstr ""
 msgid "[Warning] Deleted invalid lock"
 msgstr "[Внимание] Удалена неправильная блокировка"
 
-#: src/Core/SnapshotRepo.vala:814
+#: src/Core/SnapshotRepo.vala:818
 msgid "all"
 msgstr "все"
 
-#: src/Core/Main.vala:1668 src/Core/Main.vala:4047 src/Core/Main.vala:4132
-#: src/Core/Subvolume.vala:215
+#: src/Core/Main.vala:1673 src/Core/Main.vala:4070 src/Core/Main.vala:4155
+#: src/Core/Subvolume.vala:242
 msgid "btrfs returned an error"
 msgstr "btrfs вернуло ошибку"
 
-#: src/Core/Snapshot.vala:500 src/Core/Main.vala:1567
+#: src/Core/Snapshot.vala:502 src/Core/Main.vala:1572
 msgid "complete"
 msgstr "завершено"
 
@@ -2643,30 +2640,30 @@ msgstr "Файл crontab экспортирован"
 msgid "crontab file installed"
 msgstr "Файл crontab установлен"
 
-#: src/Core/SnapshotRepo.vala:800
+#: src/Core/SnapshotRepo.vala:804
 msgid "incomplete"
 msgstr "неполный"
 
-#: src/Core/SnapshotRepo.vala:782
+#: src/Core/SnapshotRepo.vala:786
 msgid "marked for deletion"
 msgstr "отмечено для удаления"
 
-#: src/Core/Main.vala:1459 src/Core/Main.vala:1613 src/Core/Main.vala:1615
+#: src/Core/Main.vala:1464 src/Core/Main.vala:1618 src/Core/Main.vala:1620
 msgid "mounted at path"
 msgstr "смонтировано на путь"
 
-#: src/Core/Snapshot.vala:501 src/Core/Main.vala:1567
+#: src/Core/Snapshot.vala:503 src/Core/Main.vala:1572
 #: src/Gtk/BackupBox.vala:255 src/Gtk/RestoreBox.vala:237
 #: src/Gtk/DeleteBox.vala:149
 msgid "remaining"
 msgstr "осталось"
 
-#: src/Core/Main.vala:1578
+#: src/Core/Main.vala:1583
 msgid "rsync returned an error"
 msgstr "rsync вернуло ошибку"
 
-#: src/Core/SnapshotRepo.vala:631 src/Core/SnapshotRepo.vala:684
-#: src/Core/SnapshotRepo.vala:763
+#: src/Core/SnapshotRepo.vala:635 src/Core/SnapshotRepo.vala:688
+#: src/Core/SnapshotRepo.vala:767
 msgid "un-tagged"
 msgstr "не помечено"
 

@@ -88,12 +88,28 @@ namespace TeeJee.FileSystem{
 	    }
 	}
 
-	public int64 file_line_count (string file_path){
-		/* Count number of lines in text file */
-		string cmd = "wc -l '%s'".printf(escape_single_quote(file_path));
-		string std_out, std_err;
-		exec_sync(cmd, out std_out, out std_err);
-		return long.parse(std_out.split("\t")[0]);
+	public int64? file_line_count (string file_path){
+		/* Count number of lines in text file returns null on error */
+
+		try {
+			long line_nums = 0;
+			char symbol;
+
+			File file = File.new_for_path(file_path);
+			FileInputStream inStream = file.read();
+			BufferedInputStream bis = new BufferedInputStream.sized(inStream,  (size_t) (1 * MiB));
+			while((symbol = (char) bis.read_byte()) != -1) {
+				if(symbol == '\n') {
+					line_nums ++;
+				}
+			}
+			bis.close();
+			return line_nums;
+		} catch(Error e) {
+			log_error (e.message);
+			log_error(_("Failed to read file") + ": %s".printf(file_path));
+		}
+		return null;
 	}
 
 	public string? file_read (string file_path){
@@ -282,33 +298,70 @@ namespace TeeJee.FileSystem{
 		}
 	}
 
-	public bool dir_delete (string dir_path, bool show_message = false){
-		
-		/* Recursively deletes directory along with contents */
-		
-		if (!dir_exists(dir_path)){
-			return true;
+	// delete an empty directory
+	public static bool dir_empty_delete(string path) {
+		File dirf = File.new_for_path(path);
+		try {
+			if (dirf.query_file_type(FileQueryInfoFlags.NONE) == FileType.DIRECTORY) {
+				return dirf.delete(); // only succeeds, if the dir is empty
+			}
+		} catch(Error ioe) {
+			if(ioe.matches(IOError.quark(), IOError.NOT_FOUND)) {
+				// directory does not exist
+				return true;
+			}
 		}
-		
-		string cmd = "rm -rf '%s'".printf(escape_single_quote(dir_path));
-		
-		log_debug(cmd);
-		
-		string std_out, std_err;
-		int status = exec_sync(cmd, out std_out, out std_err);
-		
+		return false;
+	}
+
+	public static bool dir_delete_recursive(string dir) {
+		File f = File.new_for_path(dir);
+		if(f.query_exists()) {
+			try {
+				FileEnumerator enumerator = f.enumerate_children(FileAttribute.STANDARD_NAME, FileQueryInfoFlags.NOFOLLOW_SYMLINKS);
+				FileInfo info;
+				while ((info = enumerator.next_file()) != null) {
+					string name = info.get_name();
+					if(info.get_file_type() == FileType.DIRECTORY) {
+
+						// ignore . and ..
+						if(name == "." || name == "..") {
+							continue;
+						}
+
+						if(!dir_delete_recursive(dir + "/" + name)) {
+							return false;
+						}
+					} else {
+						File file = File.new_for_path(dir + "/" + name);
+						file.delete();
+					}
+				}
+				f.delete();
+			} catch(Error err) {
+				log_error("Can not enumerate folder %s".printf(dir));
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static bool dir_delete(string dir_path, bool show_message = false) {
+
+		/* Recursively deletes directory along with contents */
+
+		bool status = dir_delete_recursive(dir_path);
+
 		if (show_message){
-			if (status == 0){
+			if (status){
 				log_msg(_("Deleted directory") + ": %s".printf(dir_path));
 			}
 			else{
 				log_error(_("Failed to delete directory") + ": %s".printf(dir_path));
-				log_error(std_out);
-				log_error(std_err);
 			}
 		}
-		
-		return (status == 0);
+
+		return status;
 	}
 
 	public bool dir_is_empty (string dir_path){
@@ -320,7 +373,7 @@ namespace TeeJee.FileSystem{
 			var dir = File.parse_name (dir_path);
 			if (dir.query_exists()) {
 				FileInfo info;
-				var enu = dir.enumerate_children ("%s".printf(FileAttribute.STANDARD_NAME), 0);
+				var enu = dir.enumerate_children (FileAttribute.STANDARD_NAME, 0);
 				while ((info = enu.next_file()) != null) {
 					is_empty = false;
 					break;
