@@ -110,10 +110,6 @@ timeshift_gtk = executable('timeshift-gtk',
 )
 
 install_data(
-  sources : 'timeshift-gtk-env',
-  install_dir : get_option('bindir')
-)
-install_data(
   sources : 'timeshift-launcher',
   install_dir : get_option('bindir')
 )
