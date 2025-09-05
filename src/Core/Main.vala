@@ -314,7 +314,7 @@ public class Main : GLib.Object{
 		}
 		else{
 			//timeshift is running from system directory - update app_path
-			this.app_path = get_cmd_path("timeshift");
+			this.app_path = Environment.find_program_in_path("timeshift");
 		}
 
 		// initialize lists -----------------
@@ -350,17 +350,13 @@ public class Main : GLib.Object{
 	}
 
 	public bool check_dependencies(out string msg){
-		
-		msg = "";
-
 		log_debug("Main: check_dependencies()");
 		
-		string[] dependencies = { "rsync","/sbin/blkid","df","mount","umount","fuser","crontab","cp","rm","touch","ln","sync","which", "run-parts"}; //"shutdown","chroot",
+		string[] dependencies = { "rsync","/sbin/blkid","df","mount","umount","fuser","crontab","cp","rm","touch","ln","sync", "run-parts"}; //"shutdown","chroot",
 
-		string path;
+		msg = "";
 		foreach(string cmd_tool in dependencies){
-			path = get_cmd_path (cmd_tool);
-			if ((path == null) || (path.length == 0)){
+			if(!cmd_exists(cmd_tool)) {
 				msg += " * " + cmd_tool + "\n";
 			}
 		}

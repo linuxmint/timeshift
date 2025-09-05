@@ -143,9 +143,18 @@ public class CustomMessageDialog : Gtk.Dialog {
 		// actions -------------------------
 		
 		switch(buttons_type){
+		case Gtk.ButtonsType.NONE: break;
 		case Gtk.ButtonsType.OK:
 			btn_ok = (Gtk.Button) add_button (_("OK"), Gtk.ResponseType.OK);
 			btn_ok.grab_focus();
+			break;
+		case Gtk.ButtonsType.CLOSE:
+			btn_cancel = (Gtk.Button) add_button (_("Close"), Gtk.ResponseType.CLOSE);
+			btn_cancel.grab_focus();
+			break;
+		case Gtk.ButtonsType.CANCEL:
+			btn_cancel = (Gtk.Button) add_button (_("Cancel"), Gtk.ResponseType.CANCEL);
+			btn_cancel.grab_focus();
 			break;
 		case Gtk.ButtonsType.OK_CANCEL:
 			btn_ok = (Gtk.Button) add_button (_("OK"), Gtk.ResponseType.OK);
@@ -157,7 +166,6 @@ public class CustomMessageDialog : Gtk.Dialog {
 			btn_no = (Gtk.Button) add_button (_("No"), Gtk.ResponseType.NO);
 			btn_yes.grab_focus();
 			break;
-			
 		}
 	}
 }
