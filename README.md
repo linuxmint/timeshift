@@ -1,12 +1,12 @@
 # Timeshift
 
-Timeshift for Linux is an application that provides functionality similar to the _System Restore_ feature in Windows and the _Time Machine_ tool in Mac OS. Timeshift protects your system by taking incremental snapshots of the file system at regular intervals. These snapshots can be restored at a later date to undo all changes to the system. 
+Timeshift is an application for Linux that protects your system by taking incremental snapshots of the file system at regular intervals. These snapshots can be restored at a later date to undo all changes to the system. 
 
 In RSYNC mode, snapshots are taken using [rsync](https://rsync.samba.org) and [hard-links](https://en.wikipedia.org/wiki/Hard_link). Common files are shared between snapshots which saves disk space. Each snapshot is a full system backup that can be browsed with a file manager.
 
 In BTRFS mode, snapshots are taken using the in-built features of the BTRFS filesystem. BTRFS snapshots are supported only on BTRFS systems having an Ubuntu-type subvolume layout (with @ and @home subvolumes).
 
-Timeshift is similar to applications like [rsnapshot](https://www.rsnapshot.org), [BackInTime](https://github.com/bit-team/backintime) and [TimeVault](https://wiki.ubuntu.com/TimeVault) but with different goals. It is designed to protect only system files and settings. User files such as documents, pictures and music are excluded. This ensures that your files remain unchanged when you restore your system to an earlier date. If you need a tool to back up your documents and files please take a look at the excellent [BackInTime](https://github.com/bit-team/backintime) application which is more configurable and provides options for saving user files.  
+Timeshift is designed to protect only system files and settings. User files such as documents, pictures and music are excluded. This ensures that your files remain unchanged when you restore your system to an earlier date.
 
 ![](images/main_window.png)
 
@@ -14,9 +14,9 @@ Timeshift is similar to applications like [rsnapshot](https://www.rsnapshot.org)
 
 Timeshift was originally developed and maintained by [Tony George](https://teejeetech.com/).
 
-His original repository is still available on [Github](https://github.com/teejee2008/timeshift).
+His original repository is still available on [GitHub](https://github.com/teejee2008/timeshift).
 
-Nowadays Timeshift is part of the Xapp project which is a collection of cross-DE and cross-distributions applications which are maintained by [Linux Mint](https://www.linuxmint.com).
+Nowadays Timeshift is part of the Xapp project which is a collection of cross-desktop and cross-distributions applications which are maintained by [Linux Mint](https://www.linuxmint.com).
 
 ## Features
 
@@ -88,8 +88,8 @@ You can selectively include items for backup from the ***Settings*** window. Sel
 
 ### Cross-Distribution Restore
 
-- You can also Timeshift across distributions. Let's say you are currently using Xubuntu and decide to try out Linux Mint. You install Linux Mint on your system and try it out for a week before deciding to go back to Xubuntu. Using Timeshift you can simply restore the last week's snapshot to get your Xubuntu system back. Timeshift will take care of things like reinstalling the bootloader and other details. 
-- Since installing a new linux distribution also formats your root partition you need to save your snapshots on a separate linux partition for this to work.
+- You can also Timeshift across distributions. Timeshift will take care of things like reinstalling the bootloader and other details. 
+- Since installing a new Linux distribution also formats your root partition you need to save your snapshots on a separate Linux partition for this to work.
 - It is recommended to include hidden items in home directory by selecting the option "*Include  Hidden Items*" from *Settings* > *Users*.
 
 ### Post Restore Hooks
@@ -98,13 +98,13 @@ You can selectively include items for backup from the ***Settings*** window. Sel
 
 ## Supported System Configurations
 
-- **Normal** - OS installed on non-encrypted partitions
+- **Normal** - Operating system installed on non-encrypted partitions
 
-- **LUKS Encrypted** - OS installed on LUKS-encrypted partitions
+- **LUKS Encrypted** - Operating system installed on LUKS-encrypted partitions
 
-- **LVM2** - OS installed on LVM2 volumes (with or without LUKS)
+- **LVM2** - Operating system installed on LVM2 volumes (with or without LUKS)
 
-- **BTRFS** - OS installed on BTRFS volumes (with or without LUKS)
+- **BTRFS** - Operating system installed on BTRFS volumes (with or without LUKS)
 
   - Only Ubuntu-type layouts with **@** and **@home** subvolumes are supported
   - **@** and **@home** subvolumes may be on same or different BTRFS volumes
@@ -149,7 +149,7 @@ You can find the exact instructions in the [development](/docs/development.md) d
 
 ### Debian-based Distributions
 
-Debian, Ubuntu, Linux Mint, Elementary OS, etc.
+Debian, Ubuntu, Linux Mint, elementary OS, etc.
 
 Install Timeshift from the repositories:  
 
