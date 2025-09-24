@@ -1069,7 +1069,7 @@ public class AppConsole : GLib.Object {
 					}
 					
 					dev = read_stdin_device(device_list, grub_device_default);
-					if (dev != null) { continue; }
+					if (dev != null) { break; }
 				}
 
 				if (dev == null){
