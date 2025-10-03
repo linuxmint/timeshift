@@ -169,16 +169,16 @@ public class Subvolume : GLib.Object{
 			return false;
 		}
 
-        log_debug("Waiting on btrfs to finish deleting...");
-        while (exec_sync("btrfs subvolume sync %s".printf(mount_path), out std_out, out std_err) != 0) {
-            log_debug("Still waiting for btrfs to finish deleting... %s".printf(std_err));
-            sleep(1000);
-        }
-
 		log_msg("%s: %s (Id:%ld)\n".printf(_("Deleted subvolume"), name, id));
 
 		if (App.btrfs_qgroups_enabled) {
 			if ((id > 0) && (repo != null)){
+
+				log_debug("Waiting on btrfs to finish deleting...");
+				while (exec_sync("btrfs subvolume sync %s".printf(mount_path), out std_out, out std_err) != 0) {
+					log_debug("Still waiting for btrfs to finish deleting... %s".printf(std_err));
+					sleep(1000);
+				}
 
                 log_debug("Rescanning quotas...");
                 while (exec_sync("btrfs quota rescan %s".printf(mount_path), out std_out, out std_err) != 0) {
@@ -193,7 +193,9 @@ public class Subvolume : GLib.Object{
 				ret_val = exec_sync(cmd, out std_out, out std_err);
 				if (ret_val != 0){
 					log_error(_("Failed to destroy qgroup") + ": '0/%ld'".printf(id));
-					return false;
+
+					// the subvolume is gone now. So this can be called a success.
+					return true;
 				}
 
 				log_msg("%s: 0/%ld\n".printf(_("Destroyed qgroup"), id));
