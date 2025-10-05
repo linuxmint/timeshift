@@ -908,6 +908,9 @@ class MainWindow : Gtk.Window{
 		dialog.set_license_type(Gtk.License.GPL_2_0);
 		dialog.set_website_label("https://github.com/linuxmint/timeshift");
 		dialog.set_website("https://github.com/linuxmint/timeshift");
+
+		// this overwrites the default behaviour of About Dialog
+		dialog.activate_link.connect(TeeJee.System.xdg_open);
 		dialog.run();
 		dialog.destroy();
 	}
