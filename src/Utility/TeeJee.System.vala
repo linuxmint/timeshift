@@ -65,69 +65,9 @@ namespace TeeJee.System{
 		return euid;
 	}
 	
-	public string get_username(){
-
-		// returns actual username of current user (even for applications executed with sudo and pkexec)
-		
-		return get_username_from_uid(get_user_id());
-	}
-
-	public string get_username_effective(){
-
-		// returns effective user id ('root' for applications executed with sudo and pkexec)
-		
-		return get_username_from_uid(get_user_id_effective());
-	}
-
-	public int get_user_id_from_username(string username){
-		
-		// check local user accounts in /etc/passwd -------------------
-
-		foreach(var line in file_read("/etc/passwd").split("\n")){
-			
-			var arr = line.split(":");
-			
-			if ((arr.length >= 3) && (arr[0] == username)){
-				
-				return int.parse(arr[2]);
-			}
-		}
-
-		// not found --------------------
-		
-		log_error("UserId not found for userName: %s".printf(username));
-
-		return -1;
-	}
-
 	public string? get_username_from_uid(int user_id){
 		unowned Posix.Passwd? pw = Posix.getpwuid(user_id);
 		return pw?.pw_name;
-	}
-
-	public string get_user_home(string username = get_username()){
-
-		// check local user accounts in /etc/passwd -------------------
-		
-		foreach(var line in file_read("/etc/passwd").split("\n")){
-			
-			var arr = line.split(":");
-			
-			if ((arr.length >= 6) && (arr[0] == username)){
-
-				return arr[5];
-			}
-		}
-
-		// not found --------------------
-
-		log_error("Home directory not found for user: %s".printf(username));
-
-		return "";
-	}
-
-	public string get_user_home_effective(){
-		return get_user_home(get_username_effective());
 	}
 
 	// system ------------------------------------
