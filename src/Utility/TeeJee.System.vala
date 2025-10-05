@@ -46,28 +46,23 @@ namespace TeeJee.System{
 			return int.parse(pkexec_uid);
 		}
 
-		string sudo_user = GLib.Environment.get_variable("SUDO_USER");
+		string sudo_user = GLib.Environment.get_variable("SUDO_UID");
 
 		if (sudo_user != null){
-			return get_user_id_from_username(sudo_user);
+			return int.parse(sudo_user);
 		}
 
 		return get_user_id_effective(); // normal user
 	}
 
+	private int euid = -1; // cache for get_user_id_effective (its never going to change)
 	public int get_user_id_effective(){
-		
 		// returns effective user id (0 for applications executed with sudo and pkexec)
-
-		int uid = -1;
-		string cmd = "id -u";
-		string std_out, std_err;
-		exec_sync(cmd, out std_out, out std_err);
-		if ((std_out != null) && (std_out.length > 0)){
-			uid = int.parse(std_out);
+		if (euid < 0) {
+			euid = (int) Posix.geteuid();
 		}
 
-		return uid;
+		return euid;
 	}
 	
 	public string get_username(){
@@ -105,25 +100,9 @@ namespace TeeJee.System{
 		return -1;
 	}
 
-	public string get_username_from_uid(int user_id){
-
-		// check local user accounts in /etc/passwd -------------------
-		
-		foreach(var line in file_read("/etc/passwd").split("\n")){
-			
-			var arr = line.split(":");
-			
-			if ((arr.length >= 3) && (arr[2] == user_id.to_string())){
-				
-				return arr[0];
-			}
-		}
-
-		// not found --------------------
-		
-		log_error("Username not found for uid: %d".printf(user_id));
-
-		return "";
+	public string? get_username_from_uid(int user_id){
+		unowned Posix.Passwd? pw = Posix.getpwuid(user_id);
+		return pw?.pw_name;
 	}
 
 	public string get_user_home(string username = get_username()){
