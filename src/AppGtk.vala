@@ -66,6 +66,8 @@ public class AppGtk : GLib.Object {
 			}
 		}
 
+		Main.copy_env();
+
 		Gtk.init(ref args);
 
 		GTK_INITIALIZED = true;

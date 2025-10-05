@@ -302,6 +302,71 @@ namespace TeeJee.ProcessHelper{
         return GLib.Path.get_basename(link);
 	}
 
+	// get the parent pid of process or self
+	public Pid get_process_parent(Pid process = -1) {
+		string pidStr = (process <= 0 ? "self" : process.to_string());
+		string path = "/proc/%s/stat".printf(pidStr);
+		string stats = file_read(path);
+		string details = stats.split(")", 2)[1];
+		string[] splitted = details.split(" ", 3);
+		if(splitted.length == 3) {
+			return int.parse(splitted[2]);
+		}
+
+		log_debug("can not parse process stat %s".printf(stats));
+		return -1;
+	}
+
+	// get the effective user pid of an process
+	// returns -1 on error
+	public int get_euid_of_process(Pid process) {
+		GLib.File file = GLib.File.new_for_path("/proc/%d".printf(process));
+		try {
+			GLib.FileInfo info = file.query_info(FileAttribute.UNIX_UID, GLib.FileQueryInfoFlags.NONE);
+			return (int) info.get_attribute_uint32(FileAttribute.UNIX_UID);
+		} catch(GLib.Error e) {
+			log_debug("failed to fetch user of process %i %s".printf(process, e.message));
+		}
+		return -1;
+	}
+
+	// find the first parent process, that is owned by the user and not root
+	public Pid get_user_process() {
+		Pid ppid = -1;
+		int targetUser = TeeJee.System.get_user_id();
+		int user = 0;
+
+		do {
+			ppid = get_process_parent(ppid);
+			user = get_euid_of_process (ppid);
+		} while(user != targetUser && ppid > 1);
+		if(user == targetUser) {
+			return ppid;
+		}
+		return -1;
+	}
+
+	// get the env of an process
+	public string[]? get_process_env(Pid pid) {
+		if(pid < 1) {
+			return null;
+		}
+		return file_read_array("/proc/%i/environ".printf(pid), '\0');
+	}
+
+	// get the value of name in env if it exists or return default_value
+	public string? get_env(string[] env, string name, string? default_value = null) {
+		foreach(string env_var in env) {
+			string[] splitted = env_var.split("=", 2);
+			if(splitted[0] == name) {
+				if (splitted.length == 2) {
+					return splitted[1];
+				}
+			}
+		}
+		return default_value;
+	}
+
 	public Pid[] get_process_children (Pid parent_pid){
 
 		/* Returns the list of child processes owned by a given process */
