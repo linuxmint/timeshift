@@ -148,15 +148,22 @@ public class Subvolume : GLib.Object{
         }
 
 		subpath = path_combine(path, name);
-		if (dir_exists(subpath)) { // there is a nested subvol to remove first
-			cmd = "btrfs subvolume delete %s '%s'".printf(options, subpath);
-			log_debug("Deleting nested subvolume in snapshot");
-			log_debug(cmd);
-			ret_val = exec_sync(cmd, out std_out, out std_err);
-			if (ret_val != 0){
-				log_error(std_err);
-				log_error(_("Failed to delete snapshot nested subvolume") + ": '%s'".printf(path));
-				return false;
+		if (dir_exists(subpath)) { // possible nested subvolume present, verify before deleting
+			int rc_show = exec_sync("btrfs subvolume show '%s'".printf(subpath), out std_out, out std_err);
+			if (rc_show == 0) {
+				// confirmed nested btrfs subvolume, delete it first
+				cmd = "btrfs subvolume delete %s '%s'".printf(options, subpath);
+				log_debug("Deleting nested subvolume in snapshot");
+				log_debug(cmd);
+				ret_val = exec_sync(cmd, out std_out, out std_err);
+				if (ret_val != 0){
+					log_error(std_err);
+					log_error(_("Failed to delete snapshot nested subvolume") + ": '%s'".printf(subpath));
+					return false;
+				}
+			} else {
+				// path exists but is not a btrfs subvolume, skip nested removal
+				log_debug("Nested path exists but is not a btrfs subvolume, skipping: %s".printf(subpath));
 			}
 		}
 		
