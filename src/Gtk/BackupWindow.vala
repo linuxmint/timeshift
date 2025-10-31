@@ -48,6 +48,7 @@ class BackupWindow : Gtk.Window{
 	private Gtk.Button btn_prev;
 	private Gtk.Button btn_next;
 	private Gtk.Button btn_cancel;
+	private Gtk.Button btn_pause;
 	private Gtk.Button btn_close;
 
 	private uint tmr_init;
@@ -188,6 +189,23 @@ class BackupWindow : Gtk.Window{
 			this.destroy(); // TODO: Show error page
 		});
 
+		// pause
+
+		btn_pause = add_button(bbox, _("Pause"), "", size_group, null);
+		btn_pause.clicked.connect(() => {
+			if (App.task != null){
+				if(AppStatus.PAUSED == App.task.status) {
+					App.task.resume();
+					this.backup_box.resume();
+					this.btn_pause.set_label(_("Pause"));
+				} else {
+					App.task.pause();
+					this.backup_box.pause();
+					this.btn_pause.set_label(_("Resume"));
+				}
+			}
+		});
+
 		action_buttons_set_no_show_all(true);
 	}
 
@@ -197,6 +215,7 @@ class BackupWindow : Gtk.Window{
 		btn_next.no_show_all = val;
 		btn_close.no_show_all = val;
 		btn_cancel.no_show_all = val;
+		btn_pause.no_show_all = val;
 	}
 	
 
@@ -274,17 +293,25 @@ class BackupWindow : Gtk.Window{
 		
 		switch(notebook.page){
 		case Tabs.ESTIMATE:
+			btn_prev.hide();
+			btn_next.hide();
+			btn_close.hide();
+			btn_cancel.show();
+			btn_pause.hide();
+			break;
 		case Tabs.BACKUP:
 			btn_prev.hide();
 			btn_next.hide();
 			btn_close.hide();
 			btn_cancel.show();
+			btn_pause.show();
 			break;
 		case Tabs.BACKUP_DEVICE:
 			btn_prev.show();
 			btn_next.show();
 			btn_close.show();
 			btn_cancel.hide();
+			btn_pause.hide();
 			btn_prev.sensitive = false;
 			btn_next.sensitive = true;
 			btn_close.sensitive = true;
@@ -295,6 +322,7 @@ class BackupWindow : Gtk.Window{
 			btn_close.show();
 			btn_close.sensitive = true;
 			btn_cancel.hide();
+			btn_pause.hide();
 			break;
 		}
 

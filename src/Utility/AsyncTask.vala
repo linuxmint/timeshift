@@ -62,6 +62,7 @@ public abstract class AsyncTask : GLib.Object{
 	public int exit_code = 0;
 	public string error_msg = "";
 	public GLib.Timer timer;
+	private double timerOffset = 0.0; // milliseconds to be added to the current timer - this is to compensate for pauses (timer restarts)
 	public double progress = 0.0;
 	public double percent = 0.0;
 	public int64 prg_count = 0;
@@ -371,7 +372,35 @@ public abstract class AsyncTask : GLib.Object{
 			process_quit(child_pid);
 			child_pid = 0;
 
-			log_debug("process_quit: %d".printf(child_pid));
+			log_debug("process_quit: %d  ".printf(child_pid));
+		}
+	}
+
+	public void pause(AppStatus status_to_update = AppStatus.PAUSED) {
+		status = status_to_update;
+
+		if(0 != child_pid) {
+			TeeJee.ProcessHelper.process_send_signal(this.child_pid, Posix.Signal.STOP, true);
+
+			// "pause" timer
+			this.timerOffset += TeeJee.System.timer_elapsed(this.timer, true);
+
+			log_debug("process_paused: %d  ".printf(this.child_pid));
+		}
+	}
+
+	// unpause (continue) the task
+	public void resume(AppStatus status_to_update = AppStatus.RUNNING) {
+		status = status_to_update;
+
+		if(0 != child_pid) {
+			TeeJee.ProcessHelper.process_send_signal(this.child_pid, Posix.Signal.CONT, true);
+
+			// restart timer
+			this.timer = new GLib.Timer();
+			this.timer.start();
+
+			log_debug("process_resumed: %d  ".printf(this.child_pid));
 		}
 	}
 
@@ -399,22 +428,30 @@ public abstract class AsyncTask : GLib.Object{
 		}
 	}
 
+	private double elapsed {
+		get {
+			double elapsed = timerOffset;
+			if(this.status != AppStatus.PAUSED) {
+				elapsed += TeeJee.System.timer_elapsed(timer);
+			}
+			return elapsed;
+		}
+	}
+
 	public string stat_time_elapsed{
 		owned get{
-			long elapsed = (long) timer_elapsed(timer);
-			return format_duration(elapsed);
+			return TeeJee.Misc.format_duration(this.elapsed);
 		}
 	}
 
 	public string stat_time_remaining{
 		owned get{
-			if (progress > 0){
-				long elapsed = (long) timer_elapsed(timer);
-				long remaining = (long)((elapsed / progress) * (1.0 - progress));
+			if (this.progress > 0){
+				double remaining = ((this.elapsed / this.progress) * (1.0 - this.progress));
 				if (remaining < 0){
 					remaining = 0;
 				}
-				return format_duration(remaining);
+				return TeeJee.Misc.format_duration(remaining);
 			}
 			else{
 				return "???";

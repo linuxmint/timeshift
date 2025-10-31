@@ -1647,7 +1647,7 @@ public class Main : GLib.Object{
 
 		task.execute();
 
-		while (task.status == AppStatus.RUNNING){
+		while (this.task.status == AppStatus.RUNNING || this.task.status == AppStatus.PAUSED){
 			sleep(1000);
 			gtk_do_events();
 
