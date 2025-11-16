@@ -90,19 +90,7 @@ namespace TeeJee.System{
 
 		string cmd = "xdg-open '%s'".printf(escape_single_quote(file));
 
-		// find correct user
-		int uid = get_user_id();
-		if(uid > 0) {
-			// non root
-			string? user = get_username_from_uid(uid);
-			if(user != null) {
-				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS ".printf(user) + cmd;
-			}
-		}
-
-		log_debug(cmd);
-		int status = exec_script_async(cmd);
-		return (status == 0);
+		return exec_user_async(cmd) == 0;
 	}
 
 	public bool exo_open_folder (string dir_path, bool xdg_open_try_first = true){
