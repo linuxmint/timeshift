@@ -1690,6 +1690,9 @@ public class Main : GLib.Object{
 
 		set_tags(snapshot); // set_tags() will update the control file
 
+		// Perform any post-backup actions
+		this.run_post_backup_hooks(snapshot_path);
+
 		return snapshot;
 	}
 
@@ -1781,16 +1784,25 @@ public class Main : GLib.Object{
 		set_tags(snapshot); // set_tags() will update the control file
 		
 		// Perform any post-backup actions
-		log_debug("Running post-backup tasks...");
-		
-		string sh = "test -d \"/etc/timeshift/backup-hooks.d\" &&" +
-		" export TS_SNAPSHOT_PATH=\"" + snapshot_path + "\" &&" + 
-		" run-parts --verbose /etc/timeshift/backup-hooks.d";
-		exec_script_sync(sh, null, null, false, false, false, true);
-
-		log_debug("Finished running post-backup tasks...");
+		this.run_post_backup_hooks(snapshot_path);
 
 		return snapshot;
+	}
+
+	private void run_post_backup_hooks(string snapshot_path) {
+		const string backuphooksdir = "/etc/timeshift/backup-hooks.d";
+		FileType fileType = File.new_for_path(backuphooksdir).query_file_type(FileQueryInfoFlags.NONE);
+		if(fileType == FileType.DIRECTORY) {
+			log_debug("Running post-backup tasks...");
+
+			string sh = "export TS_SNAPSHOT_PATH=\"" + snapshot_path + "\" &&" +
+				" run-parts --verbose \"%s\"".printf(backuphooksdir);
+			exec_script_sync(sh, null, null, false, false, false, true);
+
+			log_debug("Finished running post-backup tasks...");
+		} else {
+			log_debug("Backup hooks skipped, because %s does not exist".printf(backuphooksdir));
+		}
 	}
 
 	private void set_tags(Snapshot snapshot){
