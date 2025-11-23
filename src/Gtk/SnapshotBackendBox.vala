@@ -37,6 +37,10 @@ class SnapshotBackendBox : Gtk.Box{
 	private Gtk.RadioButton opt_rsync;
 	private Gtk.RadioButton opt_btrfs;
 	private Gtk.Label lbl_description;
+	private Gtk.Label lbl_root_subvol_name;
+	private Gtk.Label lbl_home_subvol_name;
+	private Gtk.Entry entry_root_subvol;
+	private Gtk.Entry entry_home_subvol;
 	private Gtk.Window parent_window;
 	
 	public signal void type_changed();
@@ -97,6 +101,32 @@ class SnapshotBackendBox : Gtk.Box{
 		hbox.add (opt);
 		opt_btrfs = opt;
 
+		// root subvolume name layout
+		var vbox_root = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+		hbox.add(vbox_root);
+
+		lbl_root_subvol_name = new Gtk.Label(_("Root subvolume name:"));
+		lbl_root_subvol_name.xalign = (float) 0.0;
+		vbox_root.add (lbl_root_subvol_name);
+
+		entry_root_subvol = new Gtk.Entry();
+		entry_root_subvol.text = App.root_subvolume_name;
+		//entry_root_subvol.hexpand = true;
+		vbox_root.add(entry_root_subvol);
+
+		// home subvolume name layout
+		var vbox_home = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+		hbox.add(vbox_home);
+
+		lbl_home_subvol_name = new Gtk.Label(_("Home subvolume name:"));
+		lbl_home_subvol_name.xalign = (float) 0.0;
+		vbox_home.add (lbl_home_subvol_name);
+
+		entry_home_subvol = new Gtk.Entry();
+		entry_home_subvol.text = App.home_subvolume_name;
+		//entry_home_subvol.hexpand = true;
+		vbox_home.add(entry_home_subvol);
+
         if (!check_for_btrfs_tools()) {
             opt.sensitive = false;
             opt_rsync.active = true;
@@ -109,6 +139,18 @@ class SnapshotBackendBox : Gtk.Box{
 				type_changed();
 				update_description();
 			}
+		});
+
+		entry_root_subvol.focus_out_event.connect((entry1, event1) => {
+			App.root_subvolume_name = entry_root_subvol.text;
+			log_debug("saved root_subvolume_name: %s".printf(App.root_subvolume_name));
+			return false;
+		});
+
+		entry_home_subvol.focus_out_event.connect((entry1, event1) => {
+			App.home_subvolume_name = entry_home_subvol.text;
+			log_debug("saved home_subvolume_name: %s".printf(App.home_subvolume_name));
+			return false;
 		});
 	}
 
