@@ -2005,7 +2005,7 @@ public class Main : GLib.Object{
 	public bool restore_current_system{
 		get {
 			if ((sys_root != null) &&
-				((dst_root.device == sys_root.device) || (dst_root.uuid == sys_root.uuid))){
+				((dst_root != null && dst_root.device == sys_root.device) || (dst_root != null && dst_root.uuid == sys_root.uuid))){
 					
 				return true;
 			}
