@@ -131,7 +131,17 @@ class BackupBox : Gtk.Box{
 		lbl_status.max_width_chars = 45;
 		lbl_status.margin_bottom = 6;
 	}
-	
+
+	public void pause() {
+		this.spinner.active = false;
+		this.lbl_msg.set_label(_("Paused"));
+	}
+
+	public void resume() {
+		this.spinner.active = true;
+		this.lbl_msg.set_label("");
+	}
+
 	private Gtk.Label add_count_label(Gtk.Box box, string text,
 		ref Gtk.SizeGroup? sg_label, ref Gtk.SizeGroup? sg_value,
 		int add_margin_bottom = 0){
@@ -264,7 +274,11 @@ class BackupBox : Gtk.Box{
 					#endif
 				}
 
-				lbl_msg.label = escape_html(App.progress_text);
+				if(App.task.status == AppStatus.PAUSED) {
+					lbl_msg.label = _("Paused");
+				} else {
+					lbl_msg.label = escape_html(App.progress_text);
+				}
 
 				if (!checking)
 				{

@@ -35,12 +35,9 @@ using TeeJee.Misc;
 class BootOptionsWindow : Gtk.Window{
 	
 	private Gtk.Box vbox_main;
-	private Gtk.ButtonBox bbox_action;
 	private BootOptionsBox boot_options_box;
 
 	private uint tmr_init;
-	private int def_width = 450;
-	private int def_height = 500;
 
 	public BootOptionsWindow() {
 

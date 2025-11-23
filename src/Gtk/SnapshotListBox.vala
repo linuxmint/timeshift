@@ -237,8 +237,10 @@ class SnapshotListBox : Gtk.Box{
 			var model = (Gtk.ListStore) treeview.model;
 			model.get_iter_from_string (out iter, path);
 			model.get (iter, 0, out bak, -1);
-			bak.description = new_text;
-			bak.update_control_file();
+			if (bak.description != new_text) {
+				bak.description = new_text;
+				bak.update_control_file();
+			}
 		});
 
 		var col_buffer = new TreeViewColumn();
