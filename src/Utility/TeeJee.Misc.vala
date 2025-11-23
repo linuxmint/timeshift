@@ -75,7 +75,7 @@ namespace TeeJee.Misc {
 
 	// string formatting -------------------------------------------------
 
-	public string format_duration (long millis){
+	public string format_duration (double millis){
 
 		/* Converts time in milliseconds to format '00:00:00.0' */
 
