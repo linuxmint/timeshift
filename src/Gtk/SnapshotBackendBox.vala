@@ -37,8 +37,8 @@ class SnapshotBackendBox : Gtk.Box{
 	private Gtk.RadioButton opt_rsync;
 	private Gtk.RadioButton opt_btrfs;
 	private Gtk.Label lbl_description;
-	private Gtk.Label lbl_root_subvol_name;
-	private Gtk.Label lbl_home_subvol_name;
+	private Gtk.Box hbox_subvolume_root;
+	private Gtk.Box hbox_subvolume_home;
 	private Gtk.Entry entry_root_subvol;
 	private Gtk.Entry entry_home_subvol;
 	private Gtk.Window parent_window;
@@ -86,6 +86,8 @@ class SnapshotBackendBox : Gtk.Box{
 		opt_rsync.toggled.connect(()=>{
 			if (opt_rsync.active){
 				App.btrfs_mode = false;
+				hbox_subvolume_root.visible = false;
+				hbox_subvolume_home.visible = false;
 				Main.first_snapshot_size = 0;
 				init_backend();
 				type_changed();
@@ -101,31 +103,7 @@ class SnapshotBackendBox : Gtk.Box{
 		hbox.add (opt);
 		opt_btrfs = opt;
 
-		// root subvolume name layout
-		var vbox_root = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		hbox.add(vbox_root);
-
-		lbl_root_subvol_name = new Gtk.Label(_("Root subvolume name:"));
-		lbl_root_subvol_name.xalign = (float) 0.0;
-		vbox_root.add (lbl_root_subvol_name);
-
-		entry_root_subvol = new Gtk.Entry();
-		entry_root_subvol.text = App.root_subvolume_name;
-		//entry_root_subvol.hexpand = true;
-		vbox_root.add(entry_root_subvol);
-
-		// home subvolume name layout
-		var vbox_home = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		hbox.add(vbox_home);
-
-		lbl_home_subvol_name = new Gtk.Label(_("Home subvolume name:"));
-		lbl_home_subvol_name.xalign = (float) 0.0;
-		vbox_home.add (lbl_home_subvol_name);
-
-		entry_home_subvol = new Gtk.Entry();
-		entry_home_subvol.text = App.home_subvolume_name;
-		//entry_home_subvol.hexpand = true;
-		vbox_home.add(entry_home_subvol);
+		add_opt_btrfs_subvolume_names(hbox);
 
         if (!check_for_btrfs_tools()) {
             opt.sensitive = false;
@@ -135,11 +113,46 @@ class SnapshotBackendBox : Gtk.Box{
 		opt_btrfs.toggled.connect(()=>{
 			if (opt_btrfs.active){
 				App.btrfs_mode = true;
+				hbox_subvolume_root.visible = true;
+				hbox_subvolume_home.visible = true;
 				init_backend();
 				type_changed();
 				update_description();
 			}
 		});
+	}
+
+	private void add_opt_btrfs_subvolume_names(Gtk.Box hbox){
+		var sg_title = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
+		var sg_edit = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
+
+		// root subvolume name layout
+		hbox_subvolume_root = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+		hbox.add(hbox_subvolume_root);
+
+		var lbl_root_subvol_name = new Gtk.Label(_("Root subvolume:"));
+		lbl_root_subvol_name.xalign = (float) 0.0;
+		hbox_subvolume_root.add (lbl_root_subvol_name);
+		sg_title.add_widget(lbl_root_subvol_name);
+
+		entry_root_subvol = new Gtk.Entry();
+		entry_root_subvol.text = App.root_subvolume_name;
+		hbox_subvolume_root.add(entry_root_subvol);
+		sg_edit.add_widget(entry_root_subvol);
+
+		// home subvolume name layout
+		hbox_subvolume_home = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+		hbox.add(hbox_subvolume_home);
+
+		var lbl_home_subvol_name = new Gtk.Label(_("Home subvolume:"));
+		lbl_home_subvol_name.xalign = (float) 0.0;
+		hbox_subvolume_home.add (lbl_home_subvol_name);
+		sg_title.add_widget(lbl_home_subvol_name);
+
+		entry_home_subvol = new Gtk.Entry();
+		entry_home_subvol.text = App.home_subvolume_name;
+		hbox_subvolume_home.add(entry_home_subvol);
+		sg_edit.add_widget(entry_home_subvol);
 
 		entry_root_subvol.focus_out_event.connect((entry1, event1) => {
 			App.root_subvolume_name = entry_root_subvol.text;
