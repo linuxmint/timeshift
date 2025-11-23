@@ -3997,7 +3997,7 @@ public class Main : GLib.Object{
 		task = new RsyncTask();
 
 		task.dest_path = dir_empty;
-		task.exclude_from_file = save_exclude_list_for_backup(TEMP_DIR) ?? "";;
+		task.exclude_from_file = save_exclude_list_for_backup(TEMP_DIR) ?? "";
 
 		task.delete_extra = true;
 		task.delete_excluded = true;
@@ -4014,7 +4014,7 @@ public class Main : GLib.Object{
 
 		while (task.status == AppStatus.RUNNING){
 			Thread.usleep((ulong) GLib.TimeSpan.MILLISECOND * 16); // ~60fps
-			if(callback != null) callback();
+			if (callback != null) callback();
 			gtk_do_events();
 		}
 
