@@ -36,7 +36,6 @@ public abstract class AsyncTask : GLib.Object{
 	private DataInputStream dis_out = null;
 	private DataInputStream dis_err = null;
 	protected DataOutputStream dos_log = null;
-	protected bool is_terminated = false;
 
 	private bool stdout_is_open = false;
 	private bool stderr_is_open = false;
@@ -49,10 +48,7 @@ public abstract class AsyncTask : GLib.Object{
 
 	protected string script_file = "";
 	protected string working_dir = "";
-	protected string log_file = "";
 
-	public bool background_mode = false;
-	
 	// public
 	public AppStatus status = AppStatus.NOT_STARTED;
 
@@ -60,16 +56,12 @@ public abstract class AsyncTask : GLib.Object{
     public GLib.Mutex status_line_mutex;
 
 	public int exit_code = 0;
-	public string error_msg = "";
 	public GLib.Timer timer;
 	private double timerOffset = 0.0; // milliseconds to be added to the current timer - this is to compensate for pauses (timer restarts)
 	public double progress = 0.0;
 	public double percent = 0.0;
 	public int64 prg_count = 0;
 	public int64 prg_count_total = 0;
-	public int64 prg_bytes = 0;
-	public int64 prg_bytes_total = 0;
-	public string eta = "";
 
 	// signals
 	public signal void stdout_line_read(string line);
@@ -105,25 +97,30 @@ public abstract class AsyncTask : GLib.Object{
 	protected AsyncTask(){
 		working_dir = TEMP_DIR + "/" + timestamp_for_path();
 		script_file = path_combine(working_dir, "script.sh");
-		log_file = path_combine(working_dir, "task.log");
 
         status_line_mutex = GLib.Mutex();
 
 		dir_create(working_dir);
 	}
-	
-	public bool begin(){
 
+	public virtual void prepare() {
+		string script_text = build_script();
+		log_debug(script_text);
+		save_bash_script_temp(script_text, script_file);
+
+		log_debug("AsyncTask:prepare(): saved: %s".printf(script_file));
+	}
+
+	protected abstract string build_script();
+	
+	protected virtual bool begin() {
 		status = AppStatus.RUNNING;
 		
 		bool has_started = true;
-		is_terminated = false;
 		finish_called = false;
-		
+
 		prg_count = 0;
-		prg_bytes = 0;
-		error_msg = "";
-		
+
 		string[] spawn_args = new string[1];
 		spawn_args[0] = script_file;
 		
@@ -146,42 +143,30 @@ public abstract class AsyncTask : GLib.Object{
 			    out output_fd,
 			    out error_fd);
 
-			set_priority();
-
 			log_debug("AsyncTask: child_pid: %d".printf(child_pid));
 			
 			// create stream readers
-			UnixOutputStream uos_in = new UnixOutputStream(input_fd, false);
-			UnixInputStream uis_out = new UnixInputStream(output_fd, false);
-			UnixInputStream uis_err = new UnixInputStream(error_fd, false);
+			UnixOutputStream uos_in = new UnixOutputStream(input_fd, true);
+			UnixInputStream uis_out = new UnixInputStream(output_fd, true);
+			UnixInputStream uis_err = new UnixInputStream(error_fd, true);
 			dos_in = new DataOutputStream(uos_in);
 			dis_out = new DataInputStream(uis_out);
 			dis_err = new DataInputStream(uis_err);
 			dis_out.newline_type = DataStreamNewlineType.ANY;
 			dis_err.newline_type = DataStreamNewlineType.ANY;
 
-			// create log file
-			if (log_file.length > 0){
-				var file = File.new_for_path(log_file);
-				if (file.query_exists()){
-					file.delete();
-				}
-				var file_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
-				dos_log = new DataOutputStream (file_stream);
-			}
-
 			try {
 				//start thread for reading output stream
-				new Thread<void>.try ("async-task-stdout-reader", () => {read_stdout();});
-			} catch (Error e) {
+				new Thread<void>.try ("async-task-stdout-reader", read_stdout);
+			} catch (GLib.Error e) {
 				log_error ("AsyncTask.begin():create_thread:read_stdout()");
 				log_error (e.message);
 			}
 
 			try {
 				//start thread for reading error stream
-				new Thread<void>.try ("async-task-stderr-reader", () => {read_stderr();});
-			} catch (Error e) {
+				new Thread<void>.try ("async-task-stderr-reader", read_stderr);
+			} catch (GLib.Error e) {
 				log_error ("AsyncTask.begin():create_thread:read_stderr()");
 				log_error (e.message);
 			}
@@ -203,7 +188,7 @@ public abstract class AsyncTask : GLib.Object{
 			out_line = dis_out.read_line (null);
 			while (out_line != null) {
 				//log_msg("O: " + out_line);
-				if (!is_terminated && (out_line.length > 0)){
+				if (out_line.length > 0) {
 					parse_stdout_line(out_line);
 					stdout_line_read(out_line); //signal
 				}
@@ -213,12 +198,13 @@ public abstract class AsyncTask : GLib.Object{
 			stdout_is_open = false;
 
 			// dispose stdout
-			if ((dis_out != null) && !dis_out.is_closed()){
-				dis_out.close();
+			try {
+				if (dis_out != null) {
+					dis_out.close();
+				}
 			}
-			//dis_out.close();
+			catch (GLib.Error ignored) {}
 			dis_out = null;
-			GLib.FileUtils.close(output_fd);
 
 			// check if complete
 			if (!stdout_is_open && !stderr_is_open){
@@ -237,9 +223,7 @@ public abstract class AsyncTask : GLib.Object{
 			
 			err_line = dis_err.read_line (null);
 			while (err_line != null) {
-				if (!is_terminated && (err_line.length > 0)){
-					error_msg += "%s\n".printf(err_line);
-					
+				if (err_line.length > 0){
 					parse_stderr_line(err_line);
 					stderr_line_read(err_line); //signal
 				}
@@ -249,12 +233,13 @@ public abstract class AsyncTask : GLib.Object{
 			stderr_is_open = false;
 
 			// dispose stderr
-			if ((dis_err != null) && !dis_err.is_closed()){
-				dis_err.close(); 
+			try {
+				if (dis_err != null) {
+					dis_err.close();
+				}
 			}
-			//dis_err.close();
+			catch (GLib.Error ignored) {}
 			dis_err = null;
-			GLib.FileUtils.close(error_fd);
 
 			// check if complete
 			if (!stdout_is_open && !stderr_is_open){
@@ -281,6 +266,12 @@ public abstract class AsyncTask : GLib.Object{
 			log_error (e.message);
 		}
 	}
+
+	public virtual void execute() {
+		log_debug("AsyncTask:execute()");
+		prepare();
+		begin();
+	}
 	
 	protected abstract void parse_stdout_line(string out_line);
 	
@@ -296,34 +287,17 @@ public abstract class AsyncTask : GLib.Object{
 		
 		// dispose stdin
 		try{
-			if ((dos_in != null) && !dos_in.is_closed() && !dos_in.is_closing()){
+			if (dos_in != null) {
 				dos_in.close();
 			}
 		}
-		catch(Error e){
+		catch(GLib.IOError e) {
 			// ignore
-			//log_error ("AsyncTask.finish(): dos_in.close()");
-			//log_error (e.message);
 		}
-		
 		dos_in = null;
-		GLib.FileUtils.close(input_fd);
 
 		// dispose child process
 		Process.close_pid(child_pid); //required on Windows, doesn't do anything on Unix
-
-		try{
-			// dispose log
-			if ((dos_log != null) && !dos_log.is_closed() && !dos_log.is_closing()){
-				dos_log.close();
-			}
-			dos_log = null;
-		}
-		catch (Error e) {
-			// error can be ignored
-			// dos_log is closed automatically when the last reference is set to null
-			// there may be pending operations which may throw an error
-		}
 
 		read_exit_code();
 		
@@ -344,7 +318,8 @@ public abstract class AsyncTask : GLib.Object{
 		task_complete(); //signal
 	}
 
-	protected abstract void finish_task();
+	// can be overloaded by subclasses, that wish to do special stuff during finish
+	protected virtual void finish_task() {}
 
 	protected int read_exit_code(){
 		
@@ -359,7 +334,6 @@ public abstract class AsyncTask : GLib.Object{
 	}
 
 	public bool is_running(){
-		
 		return (status == AppStatus.RUNNING);
 	}
 	
@@ -401,30 +375,6 @@ public abstract class AsyncTask : GLib.Object{
 			this.timer.start();
 
 			log_debug("process_resumed: %d  ".printf(this.child_pid));
-		}
-	}
-
-	public void set_priority() {
-		
-		if (background_mode){
-			set_priority_value(5);
-		}
-		else{
-			set_priority_value(0);
-		}
-	}
-
-	public void set_priority_value(int prio) {
-		
-		Pid app_pid = Posix.getpid();
-		process_set_priority (app_pid, prio);
-
-		if (status == AppStatus.RUNNING) {
-			process_set_priority (child_pid, prio);
-
-			foreach (Pid sub_child_pid in get_process_children (child_pid)) {
-				process_set_priority (sub_child_pid, prio);
-			}
 		}
 	}
 
@@ -508,15 +458,8 @@ public class RsyncTask : AsyncTask{
 		script_file = _script_file;
 		log_file = _log_file;
 	}
-	
-	public void prepare() {
-		string script_text = build_script();
-		save_bash_script_temp(script_text, script_file);
-	}
 
-	private string build_script() {
-		var script = new StringBuilder();
-
+	protected override string build_script() {
 		var cmd = "rsync -ai";
 
 		if (verbose){
@@ -550,36 +493,16 @@ public class RsyncTask : AsyncTask{
 		
 		//cmd += " /. \"%s\"".printf(sync_path + "/localhost/");
 
-		return script.str;
+		return cmd;
 	}
 	 
 	// execution ----------------------------
 
-	public void execute() {
-
-		prepare();
-
-		begin();
-
-		if (status == AppStatus.RUNNING){
-			
-			
-		}
-	}
-
 	public override void parse_stdout_line(string out_line){
-		if (is_terminated) {
-			return;
-		}
-		
 		update_progress_parse_console_output(out_line);
 	}
 	
 	public override void parse_stderr_line(string err_line){
-		if (is_terminated) {
-			return;
-		}
-		
 		update_progress_parse_console_output(err_line);
 	}
 
@@ -589,22 +512,6 @@ public class RsyncTask : AsyncTask{
 		}
 
 		return true;
-	}
-
-	protected override void finish_task(){
-		if ((status != AppStatus.CANCELLED) && (status != AppStatus.PASSWORD_REQUIRED)) {
-			status = AppStatus.FINISHED;
-		}
-	}
-
-	public int read_status(){
-		var status_file = working_dir + "/status";
-		var f = File.new_for_path(status_file);
-		if (f.query_exists()){
-			var txt = file_read(status_file);
-			return int.parse(txt);
-		}
-		return -1;
 	}
 }
 */
