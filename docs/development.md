@@ -21,6 +21,7 @@ sudo apt install meson \
 help2man \
 gettext \
 valac \
+libvala-dev \
 libvte-2.91-dev \
 libgee-0.8-dev \
 libjson-glib-dev \
@@ -50,6 +51,19 @@ meson compile -C build
 
 ### Step 4. Install Timeshift
 
+Install
 ```bash
 sudo meson install -C build
+```
+Uninstall
+```
+cd build
+sudo ninja uninstall
+```
+
+### Step 5. Build the debian package
+#### Package
+```bash
+sudo apt install debhelper-compat=10
+dpkg-buildpackage -us -uc
 ```
