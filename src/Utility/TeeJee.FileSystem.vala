@@ -131,6 +131,37 @@ namespace TeeJee.FileSystem{
 	    return null;
 	}
 
+	// read a file with a delimiter into an array
+	// this function is not very optimized so avoid using it for large files
+	public string[]? file_read_array(string file_path, char delimiter = '\n'){
+		try{
+			uint8[] content;
+			GLib.FileUtils.get_data(file_path, out content);
+
+			// count elements
+			string[] parsed = {""};
+			int element = 0;
+			foreach (uint8 byte in content) {
+				// create a new element
+				if(byte == delimiter) {
+					element ++;
+					parsed += "";
+					continue;
+				}
+
+				parsed[element] += ((char) byte).to_string();
+			}
+
+			return parsed;
+		}
+		catch (Error e){
+			log_error (e.message);
+			log_error(_("Failed to read file") + ": %s".printf(file_path));
+		}
+
+		return null;
+	}
+
 	public bool file_write (string file_path, string contents){
 
 		/* Write text to file */
