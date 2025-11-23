@@ -4176,7 +4176,7 @@ public class Main : GLib.Object{
 
 		// Early out when configured subvolume name != actual.
 		if(sys_subvolumes[root_subvolume_name] == null || sys_subvolumes[home_subvolume_name] == null)
-			return;
+			return false;
 		
 		string cmd = "";
 		string std_out;
