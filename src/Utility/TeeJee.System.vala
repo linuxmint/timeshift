@@ -46,109 +46,28 @@ namespace TeeJee.System{
 			return int.parse(pkexec_uid);
 		}
 
-		string sudo_user = GLib.Environment.get_variable("SUDO_USER");
+		string sudo_user = GLib.Environment.get_variable("SUDO_UID");
 
 		if (sudo_user != null){
-			return get_user_id_from_username(sudo_user);
+			return int.parse(sudo_user);
 		}
 
 		return get_user_id_effective(); // normal user
 	}
 
+	private int euid = -1; // cache for get_user_id_effective (its never going to change)
 	public int get_user_id_effective(){
-		
 		// returns effective user id (0 for applications executed with sudo and pkexec)
-
-		int uid = -1;
-		string cmd = "id -u";
-		string std_out, std_err;
-		exec_sync(cmd, out std_out, out std_err);
-		if ((std_out != null) && (std_out.length > 0)){
-			uid = int.parse(std_out);
+		if (euid < 0) {
+			euid = (int) Posix.geteuid();
 		}
 
-		return uid;
+		return euid;
 	}
 	
-	public string get_username(){
-
-		// returns actual username of current user (even for applications executed with sudo and pkexec)
-		
-		return get_username_from_uid(get_user_id());
-	}
-
-	public string get_username_effective(){
-
-		// returns effective user id ('root' for applications executed with sudo and pkexec)
-		
-		return get_username_from_uid(get_user_id_effective());
-	}
-
-	public int get_user_id_from_username(string username){
-		
-		// check local user accounts in /etc/passwd -------------------
-
-		foreach(var line in file_read("/etc/passwd").split("\n")){
-			
-			var arr = line.split(":");
-			
-			if ((arr.length >= 3) && (arr[0] == username)){
-				
-				return int.parse(arr[2]);
-			}
-		}
-
-		// not found --------------------
-		
-		log_error("UserId not found for userName: %s".printf(username));
-
-		return -1;
-	}
-
-	public string get_username_from_uid(int user_id){
-
-		// check local user accounts in /etc/passwd -------------------
-		
-		foreach(var line in file_read("/etc/passwd").split("\n")){
-			
-			var arr = line.split(":");
-			
-			if ((arr.length >= 3) && (arr[2] == user_id.to_string())){
-				
-				return arr[0];
-			}
-		}
-
-		// not found --------------------
-		
-		log_error("Username not found for uid: %d".printf(user_id));
-
-		return "";
-	}
-
-	public string get_user_home(string username = get_username()){
-
-		// check local user accounts in /etc/passwd -------------------
-		
-		foreach(var line in file_read("/etc/passwd").split("\n")){
-			
-			var arr = line.split(":");
-			
-			if ((arr.length >= 6) && (arr[0] == username)){
-
-				return arr[5];
-			}
-		}
-
-		// not found --------------------
-
-		log_error("Home directory not found for user: %s".printf(username));
-
-		return "";
-	}
-
-	public string get_user_home_effective(){
-		return get_user_home(get_username_effective());
+	public string? get_username_from_uid(int user_id){
+		unowned Posix.Passwd? pw = Posix.getpwuid(user_id);
+		return pw?.pw_name;
 	}
 
 	// system ------------------------------------
@@ -164,17 +83,26 @@ namespace TeeJee.System{
 
 	// open -----------------------------
 
-	public static bool xdg_open (string file, string user = ""){
-		if (cmd_exists("xdg-open")){
-			string cmd = "xdg-open '%s'".printf(escape_single_quote(file));
-			if (user.length > 0){
-				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY ".printf(user) + cmd;
-			}
-			log_debug(cmd);
-			int status = exec_script_async(cmd);
-			return (status == 0);
+	public static bool xdg_open (string file){
+		if (!TeeJee.ProcessHelper.cmd_exists("xdg-open")) {
+			return false;
 		}
-		return false;
+
+		string cmd = "xdg-open '%s'".printf(escape_single_quote(file));
+
+		// find correct user
+		int uid = get_user_id();
+		if(uid > 0) {
+			// non root
+			string? user = get_username_from_uid(uid);
+			if(user != null) {
+				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS ".printf(user) + cmd;
+			}
+		}
+
+		log_debug(cmd);
+		int status = exec_script_async(cmd);
+		return (status == 0);
 	}
 
 	public bool exo_open_folder (string dir_path, bool xdg_open_try_first = true){
