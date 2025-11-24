@@ -121,7 +121,7 @@ class SnapshotBackendBox : Gtk.Box{
 	}
 
 	private Gtk.ComboBox create_btrfs_subvolume_selection(string label, string value,
-		string[] possibleValues, Gtk.Box hbox, Gtk.SizeGroup sg_title, Gtk.SizeGroup sg_edit) {
+		string[,] possibleValues, Gtk.Box hbox, Gtk.SizeGroup sg_label, Gtk.SizeGroup sg_combo) {
 		// root subvolume name layout
 		var hbox_subvolume = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		hbox.add(hbox_subvolume);
@@ -129,27 +129,32 @@ class SnapshotBackendBox : Gtk.Box{
 		var lbl_subvol_name = new Gtk.Label(_(@"$label subvolume:"));
 		lbl_subvol_name.xalign = (float) 0.0;
 		hbox_subvolume.add(lbl_subvol_name);
-		sg_title.add_widget(lbl_subvol_name);
+		sg_label.add_widget(lbl_subvol_name);
 
-		Gtk.ListStore list_store = new Gtk.ListStore (1, typeof (string));
+		Gtk.ListStore list_store = new Gtk.ListStore (2, typeof (string), typeof (string));
 		Gtk.TreeIter strore_iter;
-		int index = 0;
 		int active = -1;
-		foreach(var curr in possibleValues){
+		for (int idx = 0; idx < possibleValues.length[0]; idx++) {
 			list_store.append(out strore_iter);
-			list_store.set(strore_iter, 0, curr);
+			list_store.set(strore_iter, 0, possibleValues[idx, 0], 1, possibleValues[idx, 1]);
 
-			if (curr == value) active = index;
-			index++;
+			// Find out value in the options
+			if (possibleValues[idx, 0] == value) active = idx;
 		}
 
 		Gtk.ComboBox combo_subvol = new Gtk.ComboBox.with_model (list_store);
 		hbox_subvolume.add (combo_subvol);
-		sg_edit.add_widget(combo_subvol);
+		sg_combo.add_widget(combo_subvol);
 
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText ();
 		combo_subvol.pack_start (renderer, true);
 		combo_subvol.add_attribute (renderer, "text", 0);
+
+		renderer = new Gtk.CellRendererText ();
+		combo_subvol.pack_start (renderer, true);
+		combo_subvol.add_attribute (renderer, "text", 1);
+
+		// Set active index
 		combo_subvol.active = active;
 
 		combo_subvol.changed.connect (() => {
@@ -166,22 +171,22 @@ class SnapshotBackendBox : Gtk.Box{
 	}
 
 	private void add_opt_btrfs_subvolume_names(Gtk.Box hbox){
-		var sg_title = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-		var sg_edit = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
+		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
+		var sg_combo = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 
 		combo_root_subvol = create_btrfs_subvolume_selection("Root",
-			App.root_subvolume_name, new string[]{
-				"@",
-				"@rootfs",
-				"root"
-			}, hbox, sg_title, sg_edit);
+			App.root_subvolume_name, new string[,]{
+				{"@", "Ubuntu"},
+				{"@rootfs", "Debian"},
+				{"root", "Fedora"}
+			}, hbox, sg_label, sg_combo);
 
 		combo_home_subvol = create_btrfs_subvolume_selection("Home",
-			App.home_subvolume_name, new string[]{
-				"@home",
-				"@homefs",
-				"home"
-			}, hbox, sg_title, sg_edit);
+			App.home_subvolume_name, new string[,]{
+				{"@home", "Ubuntu"},
+				{"@homefs", "Debian"},
+				{"home", "Fedora"}
+			}, hbox, sg_label, sg_combo);
 	}
 
 	private bool check_for_btrfs_tools() {
