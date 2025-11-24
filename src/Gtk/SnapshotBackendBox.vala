@@ -185,7 +185,7 @@ class SnapshotBackendBox : Gtk.Box{
 			list_store.get_value (iter, 1, out val2);
 			App.home_subvolume_name = (string) val2;
 
-			//print("Selected layout: %s %s\n", (string) val1, (string) val2);
+			init_backend();
 		});
 	}
 
