@@ -99,7 +99,7 @@ class SnapshotBackendBox : Gtk.Box{
 		hbox.add (opt);
 		opt_btrfs = opt;
 
-		add_opt_btrfs_subvolume_names(hbox);
+		create_btrfs_subvolume_selection(hbox);
 
         if (!check_for_btrfs_tools()) {
             opt.sensitive = false;
@@ -117,17 +117,32 @@ class SnapshotBackendBox : Gtk.Box{
 		});
 	}
 
-	private Gtk.ComboBox create_btrfs_subvolume_selection(string[] value,
-		string[,] possibleValues, Gtk.Box hbox, Gtk.SizeGroup sg_label,
-		Gtk.SizeGroup sg_combo) {
-		// root subvolume name layout
+	private void create_btrfs_subvolume_selection(Gtk.Box hbox) {
+
+		// subvolume layout
 		var hbox_subvolume = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		hbox.add(hbox_subvolume);
+
+		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
+		var sg_combo = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 
 		var lbl_subvol_name = new Gtk.Label(_("Subvolume layout:"));
 		lbl_subvol_name.xalign = (float) 0.0;
 		hbox_subvolume.add(lbl_subvol_name);
 		sg_label.add_widget(lbl_subvol_name);
+
+		// Combobox
+		var layout = new string[]{
+			App.root_subvolume_name,
+			App.home_subvolume_name
+		};
+		
+		var possible_layouts = new string[,]{
+			//{"", "", "Custom"}, // TODO?
+			{"@", "@home", "Ubuntu (@, @home)"},
+			{"@rootfs", "@homefs", "Debian (@rootfs, @homefs)"},
+			{"root", "home", "Fedora (root, home)"}
+		};
 
 		Gtk.ListStore list_store = new Gtk.ListStore (3,
 			typeof (string),
@@ -135,32 +150,32 @@ class SnapshotBackendBox : Gtk.Box{
 			typeof (string));
 		Gtk.TreeIter strore_iter;
 		int active = -1;
-		for (int idx = 0; idx < possibleValues.length[0]; idx++) {
+		for (int idx = 0; idx < possible_layouts.length[0]; idx++) {
 			list_store.append(out strore_iter);
 			list_store.set(strore_iter,
-				0, possibleValues[idx, 0],
-				1, possibleValues[idx, 1],
-				2, possibleValues[idx, 2]);
+				0, possible_layouts[idx, 0],
+				1, possible_layouts[idx, 1],
+				2, possible_layouts[idx, 2]);
 
-			// Find out value in the options
-			if (possibleValues[idx, 0] == value[0] &&
-				possibleValues[idx, 1] == value[1]) active = idx;
+			// Find our layout in the options
+			if (possible_layouts[idx, 0] == layout[0] &&
+				possible_layouts[idx, 1] == layout[1]) active = idx;
 		}
 
-		Gtk.ComboBox combo_subvol = new Gtk.ComboBox.with_model (list_store);
-		hbox_subvolume.add (combo_subvol);
-		sg_combo.add_widget(combo_subvol);
+		combo_subvol_layout = new Gtk.ComboBox.with_model (list_store);
+		hbox_subvolume.add (combo_subvol_layout);
+		sg_combo.add_widget(combo_subvol_layout);
 
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText ();
-		combo_subvol.pack_start (renderer, true);
-		combo_subvol.add_attribute (renderer, "text", 2);
+		combo_subvol_layout.pack_start (renderer, true);
+		combo_subvol_layout.add_attribute (renderer, "text", 2);
 
 		// Set active index
-		combo_subvol.active = active;
+		combo_subvol_layout.active = active;
 
-		combo_subvol.changed.connect (() => {
+		combo_subvol_layout.changed.connect (() => {
 			Gtk.TreeIter iter;
-			combo_subvol.get_active_iter (out iter);
+			combo_subvol_layout.get_active_iter (out iter);
 
 			Value val1;
 			list_store.get_value (iter, 0, out val1);
@@ -172,24 +187,6 @@ class SnapshotBackendBox : Gtk.Box{
 
 			//print("Selected layout: %s %s\n", (string) val1, (string) val2);
 		});
-
-		return combo_subvol;
-	}
-
-	private void add_opt_btrfs_subvolume_names(Gtk.Box hbox){
-		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-		var sg_combo = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-
-		combo_subvol_layout = create_btrfs_subvolume_selection(
-			new string[]{
-				App.root_subvolume_name,
-				App.home_subvolume_name
-			}, new string[,]{
-				//{"", "", "Custom"}, // TODO?
-				{"@", "@home", "Ubuntu (@, @home)"},
-				{"@rootfs", "@homefs", "Debian (@rootfs, @homefs)"},
-				{"root", "home", "Fedora (root, home)"}
-			}, hbox, sg_label, sg_combo);
 	}
 
 	private bool check_for_btrfs_tools() {
