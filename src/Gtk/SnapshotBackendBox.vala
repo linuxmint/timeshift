@@ -37,10 +37,8 @@ class SnapshotBackendBox : Gtk.Box{
 	private Gtk.RadioButton opt_rsync;
 	private Gtk.RadioButton opt_btrfs;
 	private Gtk.Label lbl_description;
-	private Gtk.Box hbox_subvolume_root;
-	private Gtk.Box hbox_subvolume_home;
-	private Gtk.Entry entry_root_subvol;
-	private Gtk.Entry entry_home_subvol;
+	private Gtk.ComboBox combo_root_subvol;
+	private Gtk.ComboBox combo_home_subvol;
 	private Gtk.Window parent_window;
 	
 	public signal void type_changed();
@@ -86,8 +84,8 @@ class SnapshotBackendBox : Gtk.Box{
 		opt_rsync.toggled.connect(()=>{
 			if (opt_rsync.active){
 				App.btrfs_mode = false;
-				hbox_subvolume_root.visible = false;
-				hbox_subvolume_home.visible = false;
+				combo_root_subvol.sensitive = false;
+				combo_home_subvol.sensitive = false;
 				Main.first_snapshot_size = 0;
 				init_backend();
 				type_changed();
@@ -113,8 +111,8 @@ class SnapshotBackendBox : Gtk.Box{
 		opt_btrfs.toggled.connect(()=>{
 			if (opt_btrfs.active){
 				App.btrfs_mode = true;
-				hbox_subvolume_root.visible = true;
-				hbox_subvolume_home.visible = true;
+				combo_root_subvol.sensitive = true;
+				combo_home_subvol.sensitive = true;
 				init_backend();
 				type_changed();
 				update_description();
@@ -122,49 +120,68 @@ class SnapshotBackendBox : Gtk.Box{
 		});
 	}
 
+	private Gtk.ComboBox create_btrfs_subvolume_selection(string label, string value,
+		string[] possibleValues, Gtk.Box hbox, Gtk.SizeGroup sg_title, Gtk.SizeGroup sg_edit) {
+		// root subvolume name layout
+		var hbox_subvolume = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+		hbox.add(hbox_subvolume);
+
+		var lbl_subvol_name = new Gtk.Label(_(@"$label subvolume:"));
+		lbl_subvol_name.xalign = (float) 0.0;
+		hbox_subvolume.add(lbl_subvol_name);
+		sg_title.add_widget(lbl_subvol_name);
+
+		Gtk.ListStore list_store = new Gtk.ListStore (1, typeof (string));
+		Gtk.TreeIter strore_iter;
+		int index = 0;
+		int active = -1;
+		foreach(var curr in possibleValues){
+			list_store.append(out strore_iter);
+			list_store.set(strore_iter, 0, curr);
+
+			if (curr == value) active = index;
+			index++;
+		}
+
+		Gtk.ComboBox combo_subvol = new Gtk.ComboBox.with_model (list_store);
+		hbox_subvolume.add (combo_subvol);
+		sg_edit.add_widget(combo_subvol);
+
+		Gtk.CellRendererText renderer = new Gtk.CellRendererText ();
+		combo_subvol.pack_start (renderer, true);
+		combo_subvol.add_attribute (renderer, "text", 0);
+		combo_subvol.active = active;
+
+		combo_subvol.changed.connect (() => {
+			Value val;
+			Gtk.TreeIter iter;
+			combo_subvol.get_active_iter (out iter);
+			list_store.get_value (iter, 0, out val);
+			// Note: this could probably be improved
+			if (label == "Root") App.root_subvolume_name = (string) val;
+			else App.home_subvolume_name = (string) val;
+		});
+
+		return combo_subvol;
+	}
+
 	private void add_opt_btrfs_subvolume_names(Gtk.Box hbox){
 		var sg_title = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		var sg_edit = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 
-		// root subvolume name layout
-		hbox_subvolume_root = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		hbox.add(hbox_subvolume_root);
+		combo_root_subvol = create_btrfs_subvolume_selection("Root",
+			App.root_subvolume_name, new string[]{
+				"@",
+				"@rootfs",
+				"root"
+			}, hbox, sg_title, sg_edit);
 
-		var lbl_root_subvol_name = new Gtk.Label(_("Root subvolume:"));
-		lbl_root_subvol_name.xalign = (float) 0.0;
-		hbox_subvolume_root.add (lbl_root_subvol_name);
-		sg_title.add_widget(lbl_root_subvol_name);
-
-		entry_root_subvol = new Gtk.Entry();
-		entry_root_subvol.text = App.root_subvolume_name;
-		hbox_subvolume_root.add(entry_root_subvol);
-		sg_edit.add_widget(entry_root_subvol);
-
-		// home subvolume name layout
-		hbox_subvolume_home = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		hbox.add(hbox_subvolume_home);
-
-		var lbl_home_subvol_name = new Gtk.Label(_("Home subvolume:"));
-		lbl_home_subvol_name.xalign = (float) 0.0;
-		hbox_subvolume_home.add (lbl_home_subvol_name);
-		sg_title.add_widget(lbl_home_subvol_name);
-
-		entry_home_subvol = new Gtk.Entry();
-		entry_home_subvol.text = App.home_subvolume_name;
-		hbox_subvolume_home.add(entry_home_subvol);
-		sg_edit.add_widget(entry_home_subvol);
-
-		entry_root_subvol.focus_out_event.connect((entry1, event1) => {
-			App.root_subvolume_name = entry_root_subvol.text;
-			log_debug("saved root_subvolume_name: %s".printf(App.root_subvolume_name));
-			return false;
-		});
-
-		entry_home_subvol.focus_out_event.connect((entry1, event1) => {
-			App.home_subvolume_name = entry_home_subvol.text;
-			log_debug("saved home_subvolume_name: %s".printf(App.home_subvolume_name));
-			return false;
-		});
+		combo_home_subvol = create_btrfs_subvolume_selection("Home",
+			App.home_subvolume_name, new string[]{
+				"@home",
+				"@homefs",
+				"home"
+			}, hbox, sg_title, sg_edit);
 	}
 
 	private bool check_for_btrfs_tools() {
