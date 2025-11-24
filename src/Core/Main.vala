@@ -295,6 +295,22 @@ public class Main : GLib.Object{
 		this.app_conf_path_old = "/etc/timeshift.json";
 		this.app_conf_path_default = GLib.Path.build_path (GLib.Path.DIR_SEPARATOR_S, Constants.SYSCONFDIR, "timeshift", "default.json");
 		//sys_root and sys_home will be initialized by update_partition_list()
+
+		// Detect subvolume names based on distro id.
+		// Only has effect when timeshift is opened the first time,
+		// otherwise the setting is overwritten by loading the config.
+		if (this.current_distro.dist_id.down() == "fedora") {
+			this.root_subvolume_name = "root";
+			this.home_subvolume_name = "home";
+		}
+		else if (this.current_distro.dist_id.down() == "debian") {
+			this.root_subvolume_name = "@rootfs";
+			this.home_subvolume_name = "@homefs";
+		}
+		else { //if (this.current_distro.dist_id.down() == "ubuntu")
+			this.root_subvolume_name = "@";
+			this.home_subvolume_name = "@home";
+		}
 		
 		// check if running locally ------------------------
 
