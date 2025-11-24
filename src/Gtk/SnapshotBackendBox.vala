@@ -186,6 +186,7 @@ class SnapshotBackendBox : Gtk.Box{
 			App.home_subvolume_name = (string) val2;
 
 			init_backend();
+			type_changed();
 		});
 	}
 
