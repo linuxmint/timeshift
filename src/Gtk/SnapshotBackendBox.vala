@@ -37,8 +37,7 @@ class SnapshotBackendBox : Gtk.Box{
 	private Gtk.RadioButton opt_rsync;
 	private Gtk.RadioButton opt_btrfs;
 	private Gtk.Label lbl_description;
-	private Gtk.ComboBox combo_root_subvol;
-	private Gtk.ComboBox combo_home_subvol;
+	private Gtk.ComboBox combo_subvol_layout;
 	private Gtk.Window parent_window;
 	
 	public signal void type_changed();
@@ -84,8 +83,7 @@ class SnapshotBackendBox : Gtk.Box{
 		opt_rsync.toggled.connect(()=>{
 			if (opt_rsync.active){
 				App.btrfs_mode = false;
-				combo_root_subvol.sensitive = false;
-				combo_home_subvol.sensitive = false;
+				combo_subvol_layout.sensitive = false;
 				Main.first_snapshot_size = 0;
 				init_backend();
 				type_changed();
@@ -111,8 +109,7 @@ class SnapshotBackendBox : Gtk.Box{
 		opt_btrfs.toggled.connect(()=>{
 			if (opt_btrfs.active){
 				App.btrfs_mode = true;
-				combo_root_subvol.sensitive = true;
-				combo_home_subvol.sensitive = true;
+				combo_subvol_layout.sensitive = true;
 				init_backend();
 				type_changed();
 				update_description();
@@ -120,26 +117,34 @@ class SnapshotBackendBox : Gtk.Box{
 		});
 	}
 
-	private Gtk.ComboBox create_btrfs_subvolume_selection(string label, string value,
-		string[,] possibleValues, Gtk.Box hbox, Gtk.SizeGroup sg_label, Gtk.SizeGroup sg_combo) {
+	private Gtk.ComboBox create_btrfs_subvolume_selection(string[] value,
+		string[,] possibleValues, Gtk.Box hbox, Gtk.SizeGroup sg_label,
+		Gtk.SizeGroup sg_combo) {
 		// root subvolume name layout
 		var hbox_subvolume = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		hbox.add(hbox_subvolume);
 
-		var lbl_subvol_name = new Gtk.Label(_(@"$label subvolume:"));
+		var lbl_subvol_name = new Gtk.Label(_("Subvolume layout:"));
 		lbl_subvol_name.xalign = (float) 0.0;
 		hbox_subvolume.add(lbl_subvol_name);
 		sg_label.add_widget(lbl_subvol_name);
 
-		Gtk.ListStore list_store = new Gtk.ListStore (2, typeof (string), typeof (string));
+		Gtk.ListStore list_store = new Gtk.ListStore (3,
+			typeof (string),
+			typeof (string),
+			typeof (string));
 		Gtk.TreeIter strore_iter;
 		int active = -1;
 		for (int idx = 0; idx < possibleValues.length[0]; idx++) {
 			list_store.append(out strore_iter);
-			list_store.set(strore_iter, 0, possibleValues[idx, 0], 1, possibleValues[idx, 1]);
+			list_store.set(strore_iter,
+				0, possibleValues[idx, 0],
+				1, possibleValues[idx, 1],
+				2, possibleValues[idx, 2]);
 
 			// Find out value in the options
-			if (possibleValues[idx, 0] == value) active = idx;
+			if (possibleValues[idx, 0] == value[0] &&
+				possibleValues[idx, 1] == value[1]) active = idx;
 		}
 
 		Gtk.ComboBox combo_subvol = new Gtk.ComboBox.with_model (list_store);
@@ -148,23 +153,24 @@ class SnapshotBackendBox : Gtk.Box{
 
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText ();
 		combo_subvol.pack_start (renderer, true);
-		combo_subvol.add_attribute (renderer, "text", 0);
-
-		renderer = new Gtk.CellRendererText ();
-		combo_subvol.pack_start (renderer, true);
-		combo_subvol.add_attribute (renderer, "text", 1);
+		combo_subvol.add_attribute (renderer, "text", 2);
 
 		// Set active index
 		combo_subvol.active = active;
 
 		combo_subvol.changed.connect (() => {
-			Value val;
 			Gtk.TreeIter iter;
 			combo_subvol.get_active_iter (out iter);
-			list_store.get_value (iter, 0, out val);
-			// Note: this could probably be improved
-			if (label == "Root") App.root_subvolume_name = (string) val;
-			else App.home_subvolume_name = (string) val;
+
+			Value val1;
+			list_store.get_value (iter, 0, out val1);
+			App.root_subvolume_name = (string) val1;
+
+			Value val2;
+			list_store.get_value (iter, 1, out val2);
+			App.home_subvolume_name = (string) val2;
+
+			//print("Selected layout: %s %s\n", (string) val1, (string) val2);
 		});
 
 		return combo_subvol;
@@ -174,18 +180,15 @@ class SnapshotBackendBox : Gtk.Box{
 		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		var sg_combo = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 
-		combo_root_subvol = create_btrfs_subvolume_selection("Root",
-			App.root_subvolume_name, new string[,]{
-				{"@", "Ubuntu"},
-				{"@rootfs", "Debian"},
-				{"root", "Fedora"}
-			}, hbox, sg_label, sg_combo);
-
-		combo_home_subvol = create_btrfs_subvolume_selection("Home",
-			App.home_subvolume_name, new string[,]{
-				{"@home", "Ubuntu"},
-				{"@homefs", "Debian"},
-				{"home", "Fedora"}
+		combo_subvol_layout = create_btrfs_subvolume_selection(
+			new string[]{
+				App.root_subvolume_name,
+				App.home_subvolume_name
+			}, new string[,]{
+				//{"", "", "Custom"}, // TODO?
+				{"@", "@home", "Ubuntu (@, @home)"},
+				{"@rootfs", "@homefs", "Debian (@rootfs, @homefs)"},
+				{"root", "home", "Fedora (root, home)"}
 			}, hbox, sg_label, sg_combo);
 	}
 
