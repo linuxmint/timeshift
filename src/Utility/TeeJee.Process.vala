@@ -204,6 +204,7 @@ namespace TeeJee.ProcessHelper{
 
 	/**
 		executes a command as the "normal" unprivileged user async
+		may execute the command as root if the user could not be determined or the name could not be resolved
 	 */
 	public static int exec_user_async(string command) {
 		// find correct user

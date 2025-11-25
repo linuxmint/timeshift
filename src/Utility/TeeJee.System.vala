@@ -67,7 +67,11 @@ namespace TeeJee.System{
 	
 	public string? get_username_from_uid(int user_id){
 		unowned Posix.Passwd? pw = Posix.getpwuid(user_id);
-		return pw?.pw_name;
+		string? outvalue = pw?.pw_name;
+		if(null == outvalue) {
+			log_error("Could not get username for uid %d".printf(user_id));
+		}
+		return outvalue;
 	}
 
 	// system ------------------------------------
