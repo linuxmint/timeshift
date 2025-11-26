@@ -67,7 +67,11 @@ namespace TeeJee.System{
 	
 	public string? get_username_from_uid(int user_id){
 		unowned Posix.Passwd? pw = Posix.getpwuid(user_id);
-		return pw?.pw_name;
+		string? outvalue = pw?.pw_name;
+		if(null == outvalue) {
+			log_error("Could not get username for uid %d".printf(user_id));
+		}
+		return outvalue;
 	}
 
 	// system ------------------------------------
@@ -90,19 +94,7 @@ namespace TeeJee.System{
 
 		string cmd = "xdg-open '%s'".printf(escape_single_quote(file));
 
-		// find correct user
-		int uid = get_user_id();
-		if(uid > 0) {
-			// non root
-			string? user = get_username_from_uid(uid);
-			if(user != null) {
-				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS ".printf(user) + cmd;
-			}
-		}
-
-		log_debug(cmd);
-		int status = exec_script_async(cmd);
-		return (status == 0);
+		return exec_user_async(cmd) == 0;
 	}
 
 	public bool exo_open_folder (string dir_path, bool xdg_open_try_first = true){
