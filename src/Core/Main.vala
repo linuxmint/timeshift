@@ -378,12 +378,21 @@ public class Main : GLib.Object{
 		}
 
 		// copy all required enviroment vars from the user to this process
-		string[] targets = {"DISPLAY", "XAUTHORITY", "DBUS_SESSION_BUS_ADDRESS"};
+		string[] targets = {"GTK_THEME", "DISPLAY", "XAUTHORITY", "DBUS_SESSION_BUS_ADDRESS"};
 		foreach (string target in targets) {
 			string user_var = TeeJee.ProcessHelper.get_env(user_env, target);
 			if(user_var != null) {
 				GLib.Environment.set_variable(target, user_var, true);
 			}
+		}
+
+		string xdg_runtime_dir = TeeJee.ProcessHelper.get_env(user_env, "XDG_RUNTIME_DIR");
+		string wayland_display = TeeJee.ProcessHelper.get_env(user_env, "WAYLAND_DISPLAY");
+
+		if (wayland_display != null && xdg_runtime_dir != null) {
+			string path = "%s/%s".printf(xdg_runtime_dir, wayland_display);
+			GLib.Environment.set_variable("WAYLAND_DISPLAY", path, true);
+			GLib.Environment.set_variable("XDG_RUNTIME_DIR", "/run/user/0", true);
 		}
 	}
 
