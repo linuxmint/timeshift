@@ -12,9 +12,7 @@ else
 		su - -c "${app_command}"
 	else
 		# script is running in non-interactive mode
-		if [ "$XDG_SESSION_TYPE" = "wayland" ] ; then
-			pkexec "${app_command}"
-		elif command -v pkexec >/dev/null 2>&1; then
+		if command -v pkexec >/dev/null 2>&1; then
 			pkexec "${app_command}"
 		elif command -v sudo >/dev/null 2>&1; then
 			x-terminal-emulator -e "sudo ${app_command}"

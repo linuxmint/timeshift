@@ -370,7 +370,7 @@ public class Main : GLib.Object{
 	}
 
 	// copy env from the spawning parent to this
-	public static void copy_env() {
+	public static void setup_env() {
 		Pid user_pid = TeeJee.ProcessHelper.get_user_process();
 		string[]? user_env = TeeJee.ProcessHelper.get_process_env(user_pid);
 		if(user_env == null) {
