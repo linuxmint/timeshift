@@ -302,7 +302,8 @@ public class Main : GLib.Object{
 		}
 		else if (this.current_distro.dist_id.down() == "debian") {
 			this.root_subvolume_name = "@rootfs";
-			this.home_subvolume_name = "@homefs";
+			this.home_subvolume_name = "";
+			this.include_btrfs_home_for_backup = false;
 		}
 		else { //if (this.current_distro.dist_id.down() == "ubuntu")
 			this.root_subvolume_name = "@";

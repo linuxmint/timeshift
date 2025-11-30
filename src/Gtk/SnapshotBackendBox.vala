@@ -140,7 +140,7 @@ class SnapshotBackendBox : Gtk.Box{
 		var possible_layouts = new string[,]{
 			//{"", "", "Custom"}, // TODO?
 			{"@", "@home", "Ubuntu (@, @home)"},
-			{"@rootfs", "@homefs", "Debian (@rootfs, @homefs)"},
+			{"@rootfs", "", "Debian (@rootfs)"},
 			{"root", "home", "Fedora (root, home)"}
 		};
 
@@ -184,6 +184,10 @@ class SnapshotBackendBox : Gtk.Box{
 			Value val2;
 			list_store.get_value (iter, 1, out val2);
 			App.home_subvolume_name = (string) val2;
+
+			// If home subolume name is empty, do not backup home.
+			if (App.home_subvolume_name == "")
+				App.include_btrfs_home_for_backup = false;
 
 			init_backend();
 			type_changed();
