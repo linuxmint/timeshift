@@ -202,6 +202,26 @@ namespace TeeJee.ProcessHelper{
 	    }
 	}
 
+	/**
+		executes a command as the "normal" unprivileged user async
+		may execute the command as root if the user could not be determined or the name could not be resolved
+	 */
+	public static int exec_user_async(string command) {
+		// find correct user
+		int uid = TeeJee.System.get_user_id();
+		string cmd = command;
+		if(uid > 0) {
+			// non root
+			string? user = TeeJee.System.get_username_from_uid(uid);
+			if(user != null) {
+				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS ".printf(user) + cmd;
+			}
+		}
+
+		log_debug(cmd);
+		return TeeJee.ProcessHelper.exec_script_async(cmd);
+	}
+
 	public string? save_bash_script_temp (string commands, string? script_path = null,
 		bool force_locale = true, bool supress_errors = false){
 

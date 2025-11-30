@@ -75,7 +75,7 @@ public class AppConsole : GLib.Object {
 			return 0;
 		}
 
-		Main.copy_env();
+		Main.setup_env();
 
 		LOG_ENABLE = false;
 		init_tmp();

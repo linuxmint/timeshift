@@ -390,7 +390,7 @@ public class Main : GLib.Object{
 	}
 
 	// copy env from the spawning parent to this
-	public static void copy_env() {
+	public static void setup_env() {
 		Pid user_pid = TeeJee.ProcessHelper.get_user_process();
 		string[]? user_env = TeeJee.ProcessHelper.get_process_env(user_pid);
 		if(user_env == null) {
@@ -398,12 +398,21 @@ public class Main : GLib.Object{
 		}
 
 		// copy all required enviroment vars from the user to this process
-		string[] targets = {"DISPLAY", "XAUTHORITY", "DBUS_SESSION_BUS_ADDRESS"};
+		string[] targets = {"GTK_THEME", "DISPLAY", "XAUTHORITY", "DBUS_SESSION_BUS_ADDRESS"};
 		foreach (string target in targets) {
 			string user_var = TeeJee.ProcessHelper.get_env(user_env, target);
 			if(user_var != null) {
 				GLib.Environment.set_variable(target, user_var, true);
 			}
+		}
+
+		string xdg_runtime_dir = TeeJee.ProcessHelper.get_env(user_env, "XDG_RUNTIME_DIR");
+		string wayland_display = TeeJee.ProcessHelper.get_env(user_env, "WAYLAND_DISPLAY");
+
+		if (wayland_display != null && xdg_runtime_dir != null) {
+			string path = "%s/%s".printf(xdg_runtime_dir, wayland_display);
+			GLib.Environment.set_variable("WAYLAND_DISPLAY", path, true);
+			GLib.Environment.set_variable("XDG_RUNTIME_DIR", "/run/user/0", true);
 		}
 	}
 
@@ -3023,11 +3032,19 @@ public class Main : GLib.Object{
 		// check and add entries for mapped devices which are encrypted
 		
 		foreach(var mnt in mount_list){
-			if ((mnt.device != null) && (mnt.device.parent != null) && (mnt.device.is_on_encrypted_partition())){
-				
+			if ((mnt.device != null) && (mnt.device.parent != null)
+				&& ((mnt.device.is_on_encrypted_partition())
+					|| ((mnt.device.parent.parent != null) &&
+						(mnt.device.parent.is_on_encrypted_partition())))){
+
+				// We could be either directly on LUKS or on LVM-on-LUKS,
+				// so be sure to get the top-level LUKS UUID.
+				var crypt_parent = (mnt.device.is_on_encrypted_partition()) ?
+					mnt.device.parent.uuid : mnt.device.parent.parent.uuid;
+
 				// find existing
 				var entry = CryptTabEntry.find_entry_by_uuid(
-					crypttab_list, mnt.device.parent.uuid);
+					crypttab_list, crypt_parent);
 
 				// add if missing
 				if (entry == null){
@@ -3036,8 +3053,8 @@ public class Main : GLib.Object{
 				}
 				
 				// set custom values
-				entry.device_uuid = mnt.device.parent.uuid;
-				entry.mapped_name = "luks-%s".printf(mnt.device.parent.uuid);
+				entry.device_uuid = crypt_parent;
+				entry.mapped_name = "luks-%s".printf(crypt_parent);
 				entry.keyfile = "none";
 				entry.options = "luks,nofail";
 			}
