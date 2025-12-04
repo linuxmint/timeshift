@@ -193,19 +193,30 @@ public class Subvolume : GLib.Object{
                     sleep(1000);
                 }
 
-				log_msg("%s: 0/%ld".printf(_("Destroying qgroup"), id));
-
-				cmd = "btrfs qgroup destroy 0/%ld '%s'".printf(id, repo.mount_paths[name]);
+				// Check if qgroup still exists before trying to destroy it.
+				// The qgroup may have been auto-destroyed when the subvolume was deleted.
+				string qgroup_id = "0/%ld".printf(id);
+				cmd = "btrfs qgroup show -f '%s'".printf(repo.mount_paths[name]);
 				log_debug(cmd);
 				ret_val = exec_sync(cmd, out std_out, out std_err);
-				if (ret_val != 0){
-					log_error(_("Failed to destroy qgroup") + ": '0/%ld'".printf(id));
 
-					// the subvolume is gone now. So this can be called a success.
-					return true;
+				bool qgroup_exists = (ret_val == 0) && (std_out.contains(qgroup_id));
+
+				if (!qgroup_exists) {
+					log_debug("Qgroup %s already removed (auto-destroyed with subvolume)".printf(qgroup_id));
+				} else {
+					log_msg("%s: %s".printf(_("Destroying qgroup"), qgroup_id));
+
+					cmd = "btrfs qgroup destroy %s '%s'".printf(qgroup_id, repo.mount_paths[name]);
+					log_debug(cmd);
+					ret_val = exec_sync(cmd, out std_out, out std_err);
+					if (ret_val != 0){
+						// Qgroup may have been destroyed between our check and destroy attempt
+						log_debug("Qgroup %s could not be destroyed (likely already removed): %s".printf(qgroup_id, std_err));
+					} else {
+						log_msg("%s: %s\n".printf(_("Destroyed qgroup"), qgroup_id));
+					}
 				}
-
-				log_msg("%s: 0/%ld\n".printf(_("Destroyed qgroup"), id));
 
                 log_debug("Rescanning quotas (post)...");
                 while (exec_sync("btrfs quota rescan %s".printf(mount_path), out std_out, out std_err) != 0) {
