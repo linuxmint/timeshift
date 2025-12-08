@@ -4145,10 +4145,6 @@ public class Main : GLib.Object{
 	public bool query_subvolume_id(string subvol_name){
 
 		log_debug("query_subvolume_id():%s".printf(subvol_name));
-
-		// Early out when configured subvolume name != actual.
-		if (!sys_subvolumes.has_key(root_subvolume_name) || !sys_subvolumes.has_key(home_subvolume_name))
-			return false;
 		
 		string cmd = "";
 		string std_out;
@@ -4179,7 +4175,10 @@ public class Main : GLib.Object{
 
 			Subvolume subvol = null;
 
-			if ((sys_subvolumes.size > 0) && line.has_suffix(sys_subvolumes[root_subvolume_name].path.replace(repo.mount_paths[root_subvolume_name] + "/"," "))){
+			if ((sys_subvolumes.size > 0)
+				&& sys_subvolumes.has_key(root_subvolume_name)
+				&& line.has_suffix(sys_subvolumes[root_subvolume_name].path.replace(repo.mount_paths[root_subvolume_name] + "/"," "))){
+					
 				subvol = sys_subvolumes[root_subvolume_name];
 			}
 			else if ((sys_subvolumes.size > 0)
