@@ -149,11 +149,11 @@ class SnapshotBackendBox : Gtk.Box{
 			typeof (string),
 			typeof (string),
 			typeof (string));
-		Gtk.TreeIter strore_iter;
+		Gtk.TreeIter store_iter;
 		int active = -1;
 		for (int idx = 0; idx < possible_layouts.length[0]; idx++) {
-			list_store.append(out strore_iter);
-			list_store.set(strore_iter,
+			list_store.append(out store_iter);
+			list_store.set(store_iter,
 				0, possible_layouts[idx, 0],
 				1, possible_layouts[idx, 1],
 				2, possible_layouts[idx, 2]);
