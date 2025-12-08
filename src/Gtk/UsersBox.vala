@@ -358,8 +358,7 @@ class UsersBox : Gtk.Box{
 			box_btrfs.set_no_show_all(false);
 			box_btrfs.show_all();
 
-			if (App.home_subvolume_name == "") chk_include_btrfs_home.sensitive = false;
-			else chk_include_btrfs_home.sensitive = true;
+			chk_include_btrfs_home.sensitive = (App.home_subvolume_name != "");
 			
 			if (restore_mode){
 				chk_include_btrfs_home.active = App.include_btrfs_home_for_restore;
