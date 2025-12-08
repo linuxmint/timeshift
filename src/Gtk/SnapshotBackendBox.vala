@@ -262,9 +262,7 @@ class SnapshotBackendBox : Gtk.Box{
 	}
 
 	public void update_custom_subvol_name_visibility() {
-		if(combo_subvol_layout.active == 0)
-			vbox_subvolume_custom.visible = true;
-		else vbox_subvolume_custom.visible = false;
+		vbox_subvolume_custom.visible = (combo_subvol_layout.active == 0);
 	}
 
 	private bool check_for_btrfs_tools() {
