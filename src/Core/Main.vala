@@ -4147,7 +4147,7 @@ public class Main : GLib.Object{
 		log_debug("query_subvolume_id():%s".printf(subvol_name));
 
 		// Early out when configured subvolume name != actual.
-		if(sys_subvolumes[root_subvolume_name] == null || sys_subvolumes[home_subvolume_name] == null)
+		if (!sys_subvolumes.has_key(root_subvolume_name) || !sys_subvolumes.has_key(home_subvolume_name))
 			return false;
 		
 		string cmd = "";
