@@ -760,6 +760,13 @@ class MainWindow : Gtk.Window{
 
 
 	private void restore(){
+
+		ui_sensitive(false);
+
+		if (App.btrfs_mode && (App.check_btrfs_layout_system(this) == false)){
+			ui_sensitive(true);
+			return;
+		}
 		
 		TreeIter iter;
 		TreeSelection sel;
@@ -827,6 +834,7 @@ class MainWindow : Gtk.Window{
 			App.dry_run = false;
 			App.repo.load_snapshots();
 			refresh_all();
+			ui_sensitive(true);
 		});
 	}
 

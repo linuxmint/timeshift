@@ -515,7 +515,7 @@ public class Main : GLib.Object{
 
 		if (!supported){
 			string msg = _("The system partition has an unsupported subvolume layout.") + " ";
-			msg += _("Only ubuntu-type layouts with @ and @home subvolumes are currently supported.") + "\n\n";
+			msg += _("Please mak sure you configured the subvolume layout correctly.") + "\n\n";
 			msg += _("Application will exit.") + "\n\n";
 			string title = _("Not Supported");
 			
@@ -524,6 +524,7 @@ public class Main : GLib.Object{
 				gtk_messagebox(title, msg, win, true);
 			}
 			else{
+				msg += _("Application will exit.") + "\n\n";
 				log_error(msg);
 			}
 		}
@@ -2319,6 +2320,10 @@ public class Main : GLib.Object{
 	public bool restore_snapshot(Gtk.Window? parent_win){
 
 		log_debug("Main: restore_snapshot()");
+
+		if (btrfs_mode && (check_btrfs_layout_system() == false)){
+			return false;
+		}
 		
 		parent_window = parent_win;
 
@@ -4176,12 +4181,14 @@ public class Main : GLib.Object{
 			Subvolume subvol = null;
 
 			if ((sys_subvolumes.size > 0)
+				&& (root_subvolume_name != "")
 				&& sys_subvolumes.has_key(root_subvolume_name)
 				&& line.has_suffix(sys_subvolumes[root_subvolume_name].path.replace(repo.mount_paths[root_subvolume_name] + "/"," "))){
-					
+
 				subvol = sys_subvolumes[root_subvolume_name];
 			}
 			else if ((sys_subvolumes.size > 0)
+				&& (home_subvolume_name != "")
 				&& sys_subvolumes.has_key(home_subvolume_name)
 				&& line.has_suffix(sys_subvolumes[home_subvolume_name].path.replace(repo.mount_paths[home_subvolume_name] + "/"," "))){
 					
