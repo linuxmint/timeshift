@@ -516,7 +516,6 @@ public class Main : GLib.Object{
 		if (!supported){
 			string msg = _("The system partition has an unsupported subvolume layout.") + " ";
 			msg += _("Please mak sure you configured the subvolume layout correctly.") + "\n\n";
-			msg += _("Application will exit.") + "\n\n";
 			string title = _("Not Supported");
 			
 			if (app_mode == ""){
@@ -4277,11 +4276,15 @@ public class Main : GLib.Object{
 
 			Subvolume subvol = null;
 
-			if ((sys_subvolumes.size > 0) && (sys_subvolumes[root_subvolume_name].id == subvol_id)){
+			if ((sys_subvolumes.size > 0)
+				&& (root_subvolume_name != "")
+				&& sys_subvolumes.has_key(root_subvolume_name)
+				&& (sys_subvolumes[root_subvolume_name].id == subvol_id)){
 
 				subvol = sys_subvolumes[root_subvolume_name];
 			}
 			else if ((sys_subvolumes.size > 0)
+				&& (home_subvolume_name != "")
 				&& sys_subvolumes.has_key(home_subvolume_name)
 				&& (sys_subvolumes[home_subvolume_name].id == subvol_id)){
 
