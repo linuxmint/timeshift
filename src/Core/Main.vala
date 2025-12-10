@@ -2319,11 +2319,11 @@ public class Main : GLib.Object{
 	public bool restore_snapshot(Gtk.Window? parent_win){
 
 		log_debug("Main: restore_snapshot()");
-
+		
 		if (btrfs_mode && (check_btrfs_layout_system() == false)){
 			return false;
 		}
-		
+
 		parent_window = parent_win;
 
 		// remove mount points which will remain on root fs
@@ -4146,9 +4146,21 @@ public class Main : GLib.Object{
 		return ok;
 	}
 	
+	/**
+	 * Queries the subvolume ID of a given subvolume by name.
+	 *
+	 * Subvolumes are listed by using ``btrfs subvolume list``.
+	 * This function has a sideeffect, assigning the ID to the subvolume found in
+	 * ``sys_subvolumes`` or ``repo.snapshots``.
+	 *
+	 * @return true if the subvolume was found.
+	 */
 	public bool query_subvolume_id(string subvol_name){
 
 		log_debug("query_subvolume_id():%s".printf(subvol_name));
+
+		// Early out when subvol_name is empty.
+		if (subvol_name == "") return false;
 		
 		string cmd = "";
 		string std_out;
@@ -4179,6 +4191,7 @@ public class Main : GLib.Object{
 
 			Subvolume subvol = null;
 
+			// Is the subvolume we are trying to ID the root subvolume?
 			if ((sys_subvolumes.size > 0)
 				&& (root_subvolume_name != "")
 				&& sys_subvolumes.has_key(root_subvolume_name)
@@ -4186,6 +4199,7 @@ public class Main : GLib.Object{
 
 				subvol = sys_subvolumes[root_subvolume_name];
 			}
+			// Or is it the home subvolume?
 			else if ((sys_subvolumes.size > 0)
 				&& (home_subvolume_name != "")
 				&& sys_subvolumes.has_key(home_subvolume_name)
@@ -4193,6 +4207,7 @@ public class Main : GLib.Object{
 					
 				subvol = sys_subvolumes[home_subvolume_name];
 			}
+			// Otherwise, can we find the subvolume in snapshts?
 			else {
 				foreach(var bak in repo.snapshots){
 					foreach(var sub in bak.subvolumes.values){
@@ -4204,6 +4219,7 @@ public class Main : GLib.Object{
 				}
 			}
 
+			// Assign the subvolume ID to the found subvolume.
 			if (subvol != null){
 				subvol.id = long.parse(parts[1]);
 			}
