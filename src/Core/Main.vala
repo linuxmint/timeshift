@@ -4149,17 +4149,17 @@ public class Main : GLib.Object{
 	/**
 	 * Queries the subvolume ID of a given subvolume by name.
 	 *
-	 * Subvolumes are listed by using ``btrfs subvolume list``.
-	 * This function has a sideeffect, assigning the ID to the subvolume found in
-	 * ``sys_subvolumes`` or ``repo.snapshots``.
+	 * Subvolumes are listed using ``btrfs subvolume list``.
+	 * This assigns the ID to the subvolume found in ``sys_subvolumes`` or
+	 * ``repo.snapshots``.
 	 *
-	 * @return true if the subvolume was found.
+	 * @return true if no error occured.
 	 */
 	public bool query_subvolume_id(string subvol_name){
 
 		log_debug("query_subvolume_id():%s".printf(subvol_name));
 
-		// Early out when subvol_name is empty.
+		// Check validity of arguments, querying empty string is an error.
 		if (subvol_name == "") return false;
 		
 		string cmd = "";
@@ -4236,8 +4236,20 @@ public class Main : GLib.Object{
 		return ok;
 	}
 
+	/**
+	 * Queries the subvolume quotas of a given subvolume by name.
+	 *
+	 * Subvolumes qoatas are listed using ``btrfs qgroup show``.
+	 * This function assigns the quotas to the subvolume found in ``sys_subvolumes``
+	 * or ``repo.snapshots``.
+	 *
+	 * @return true if no error occured.
+	 */
 	public bool query_subvolume_quota(string subvol_name){
 		log_debug("query_subvolume_quota():%s".printf(subvol_name));
+
+		// Check validity of arguments, querying empty string is an error.
+		if (subvol_name == "") return false;
 
 		string cmd = "";
 		string std_out;
@@ -4292,6 +4304,7 @@ public class Main : GLib.Object{
 
 			Subvolume subvol = null;
 
+			// Is the subvolume we are trying to get quotas for the root subvolume?
 			if ((sys_subvolumes.size > 0)
 				&& (root_subvolume_name != "")
 				&& sys_subvolumes.has_key(root_subvolume_name)
@@ -4299,6 +4312,7 @@ public class Main : GLib.Object{
 
 				subvol = sys_subvolumes[root_subvolume_name];
 			}
+			// Or is it the home subvolume?
 			else if ((sys_subvolumes.size > 0)
 				&& (home_subvolume_name != "")
 				&& sys_subvolumes.has_key(home_subvolume_name)
@@ -4306,6 +4320,7 @@ public class Main : GLib.Object{
 
 				subvol = sys_subvolumes[home_subvolume_name];
 			}
+			// Otherwise, can we find the subvolume in snapshts?
 			else {
 				foreach(var bak in repo.snapshots){
 					foreach(var sub in bak.subvolumes.values){
@@ -4316,6 +4331,7 @@ public class Main : GLib.Object{
 				}
 			}
 
+			// Assign the subvolume quotas to the found subvolume.
 			if (subvol != null){
 				int part_num = -1;
 				foreach(string part in parts){
