@@ -118,6 +118,9 @@ class SnapshotBackendBox : Gtk.Box{
 		});
 	}
 
+	/**
+	 * Creates BTRFS subvolume selection UI
+	 */
 	private void create_btrfs_subvolume_selection(Gtk.Box vbox) {
 
 		// subvolume layout
@@ -208,6 +211,9 @@ class SnapshotBackendBox : Gtk.Box{
 				App.home_subvolume_name = (string) val2;
 
 				// If home subvolume name is empty, do not backup home.
+				// Unfortunately, due to how the settings and wizard dialogs work
+				// (changing the settings immediately), this might opaquely change
+				// the setting for the user to not include home subvolume in backups.
 				if (App.home_subvolume_name == "")
 					App.include_btrfs_home_for_backup = false;
 			}
