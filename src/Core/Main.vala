@@ -1659,11 +1659,7 @@ public class Main : GLib.Object{
 		task.delete_extra = true;
 		task.delete_excluded = true;
 		task.delete_after = false;
-
-		if (app_mode.length > 0){
-			// console mode
-			task.io_nice = true;
-		}
+		task.io_nice = (app_mode.length > 0);
 
 		task.execute();
 
@@ -4020,10 +4016,7 @@ public class Main : GLib.Object{
 		task.delete_excluded = true;
 		task.delete_after = false;
 
-		if (app_mode.length > 0){
-			// console mode
-			task.io_nice = true;
-		}
+		task.io_nice = (app_mode.length > 0);
 
 		task.dry_run = true;
 
