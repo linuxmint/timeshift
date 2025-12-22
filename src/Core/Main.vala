@@ -95,6 +95,11 @@ public class Main : GLib.Object{
 	public int count_hourly = 6;
 	public int count_boot = 5;
 
+	// pause snapshots - use snapshots_paused to query this
+	private string pause_snapshots_this_boot = ""; // if the string contains the current /proc/sys/kernel/random/boot_id: enabled; else: disabled
+	private long pause_snapshots_until = 0; // unix time until snapshots are allowed again
+
+	// empty in "gui mode" contains mode in "cli mode"
 	public string app_mode = "";
 
 	public bool dry_run = false;
@@ -1083,7 +1088,13 @@ public class Main : GLib.Object{
 	public bool create_snapshot (bool is_ondemand, Gtk.Window? parent_win){
 
 		log_debug("Main: create_snapshot()");
-		
+
+		// in scripted mode and snapshots paused
+		if(App.cmd_scripted && this.snapshots_paused) {
+			log_msg("Main: snapshots are currently paused");
+			return false;
+		}
+
 		bool status = true;
 		bool update_symlinks = false;
 
@@ -3396,6 +3407,12 @@ public class Main : GLib.Object{
 		}
 		config.set_array_member("exclude-apps",arr);
 
+		if(this.pause_snapshots_until > 0) {
+			config.set_string_member("pause_snapshots", this.pause_snapshots_until.to_string());
+		} else if(this.pause_snapshots_this_boot.length > 0) {
+			config.set_string_member("pause_snapshots", this.pause_snapshots_this_boot);
+		}
+
 		var json = new Json.Generator();
 		json.pretty = true;
 		json.indent = 2;
@@ -3527,8 +3544,42 @@ public class Main : GLib.Object{
 			}
 		}
 
+		string pause_snapshots = config.get_string_member_with_default("pause_snapshots", "");
+		long pause_snapshots_long = 0;
+		if(long.try_parse(pause_snapshots, out pause_snapshots_long)) {
+			this.pause_snapshots_until = pause_snapshots_long;
+			this.pause_snapshots_this_boot = "";
+		} else {
+			this.pause_snapshots_until = 0;
+
+			// read current boot_id
+			if(TeeJee.System.get_current_boot_id() == pause_snapshots) {
+				this.pause_snapshots_this_boot = pause_snapshots;
+			} else {
+				this.pause_snapshots_this_boot = "";
+			}
+		}
+
 		if ((app_mode == "")||(LOG_DEBUG)){
 			log_msg(_("App config loaded") + ": %s".printf(this.app_conf_path));
+		}
+	}
+
+	/**
+		Are snapshots currently paused?
+	 */
+	public bool snapshots_paused {
+		get {
+			// paused until given time
+			bool isTimePaused = this.pause_snapshots_until > (GLib.get_real_time() / 1000000);
+			if(!isTimePaused) {
+				this.pause_snapshots_until = 0;
+			}
+
+			// paused until reboot
+			bool bootPaused = this.pause_snapshots_this_boot.length > 0;
+
+			return isTimePaused || bootPaused;
 		}
 	}
 
