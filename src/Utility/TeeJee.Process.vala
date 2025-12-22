@@ -367,7 +367,9 @@ namespace TeeJee.ProcessHelper{
 
 	public Pid[] get_process_children (Pid parent_pid){
 
-		/* Returns the list of child processes owned by a given process */
+		/* Returns the list of child processes owned by a given process
+		   This does not contain grand children
+		*/
 
 		// no explicit check for the existence of /proc/ as this might be a time-of-check-time-of-use bug.
 		File procfs = File.new_for_path("/proc/");
@@ -489,5 +491,20 @@ namespace TeeJee.ProcessHelper{
 		/* Set low priority for process */
 
 		process_set_priority (procID, 5);
+	}
+
+	/*
+		Wrapper for the ioprio_set syscall (has no libc wrapper)
+		see: man 2 ioprio_set
+
+		pid may be 0 (self)
+		prio shall be constructed using IoPrio.prioValue
+	 */
+	public static bool ioprio_set(Pid pid, int prio) {
+		bool success = 0 == IoPrio.syscall(IoPrio.SYS_ioprio_set, IoPrio.IOPRIO_WHO_PROCESS, pid, prio);
+		if(!success) {
+			log_debug("ioprio failed with errno: %i".printf(Posix.errno));
+		}
+		return success;
 	}
 }
