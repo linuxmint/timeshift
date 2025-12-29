@@ -41,7 +41,7 @@ public class Snapshot : GLib.Object{
 	public string app_version = "";
 	public string description = "";
 	public int64 file_count = 0;
-	public Gee.ArrayList<string> tags;
+	public Tags tags;
 	public Gee.ArrayList<string> exclude_list;
 	public Gee.HashMap<string,Subvolume> subvolumes;
 	public Gee.ArrayList<FsTabEntry> fstab_list;
@@ -73,7 +73,7 @@ public class Snapshot : GLib.Object{
 			repo = _repo;
 			
 			date = new DateTime.from_unix_utc(0);
-			tags = new Gee.ArrayList<string>();
+			tags = 0;
 			exclude_list = new Gee.ArrayList<string>();
 			fstab_list = new Gee.ArrayList<FsTabEntry>();
 			delete_file_task = new DeleteFileTask();
@@ -139,17 +139,15 @@ public class Snapshot : GLib.Object{
 	public string taglist{
 		owned get{
 			string str = "";
-			foreach(string tag in tags){
-				str += " " + tag;
+			foreach(Tags? tag in tags) {
+				str += " " + tag.name();
 			}
 			return str.strip();
 		}
 		set{
-			tags.clear();
+			this.tags = 0;
 			foreach(string tag in value.split(" ")){
-				if (!tags.contains(tag.strip())){
-					tags.add(tag.strip());
-				}
+				this.tags |= Tags.parse(tag);
 			}
 		}
 	}
@@ -157,32 +155,29 @@ public class Snapshot : GLib.Object{
 	public string taglist_short{
 		owned get{
 			string str = "";
-			foreach(string tag in tags){
-				str += " " + tag.replace("ondemand","O").replace("boot","B").replace("hourly","H").replace("daily","D").replace("weekly","W").replace("monthly","M");
+			foreach(Tags? tag in this.tags){
+				str += " " + tag.letter().to_string();
 			}
 			return str.strip();
 		}
 	}
 
-	public void add_tag(string tag){
-		
-		if (!tags.contains(tag.strip())){
-			tags.add(tag.strip());
+	public void add_tag(Tags tag){
+		if (!(tag in this.tags)){
+			this.tags |= tag;
 			update_control_file();
 		}
 	}
 
-	public void remove_tag(string tag){
-		
-		if (tags.contains(tag.strip())){
-			tags.remove(tag.strip());
+	public void remove_tag(Tags tag){
+		if (tag in this.tags){
+			this.tags ^= tag;
 			update_control_file();
 		}
 	}
 
-	public bool has_tag(string tag){
-		
-		return tags.contains(tag.strip());
+	public bool has_tag(Tags tag){
+		return tag in this.tags;
 	}
 
 	// control files

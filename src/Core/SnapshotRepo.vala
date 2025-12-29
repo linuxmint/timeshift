@@ -373,30 +373,27 @@ public class SnapshotRepo : GLib.Object{
 
 	// get tagged snapshots ----------------------------------
 	
-	public Gee.ArrayList<Snapshot?> get_snapshots_by_tag(string tag = ""){
+	public Gee.ArrayList<Snapshot> get_snapshots_by_tag(Tags tag = 0){
 		
-		var list = new Gee.ArrayList<Snapshot?>();
+		var list = new Gee.ArrayList<Snapshot>();
 
 		foreach(Snapshot bak in snapshots){
-			if (bak.valid && (tag.length == 0) || bak.has_tag(tag)){
+			if (bak.valid && (tag == 0) || bak.has_tag(tag)){
 				list.add(bak);
 			}
 		}
-		list.sort((a,b) => {
-			Snapshot t1 = (Snapshot) a;
-			Snapshot t2 = (Snapshot) b;
-			return (t1.date.compare(t2.date));
-		});
+		list.sort((a, b) =>
+			a.date.compare(b.date)
+		);
 
 		return list;
 	}
 
-	public Snapshot? get_latest_snapshot(string tag, string sys_uuid){
-		
-		var list = get_snapshots_by_tag(tag);
+	public Snapshot? get_latest_snapshot(Tags tag, string sys_uuid){
+		Gee.ArrayList<Snapshot> list = get_snapshots_by_tag(tag);
 		
 		for(int i = list.size - 1; i >= 0; i--){
-			var bak = list[i];
+			Snapshot bak = list[i];
 			if (bak.sys_uuid == sys_uuid){
 				return bak;
 			}
@@ -405,12 +402,11 @@ public class SnapshotRepo : GLib.Object{
 		return null;
 	}
 
-	public Snapshot? get_oldest_snapshot(string tag, string sys_uuid){
-		
-		var list = get_snapshots_by_tag(tag);
+	public Snapshot? get_oldest_snapshot(Tags tag, string sys_uuid){
+		Gee.ArrayList<Snapshot> list = get_snapshots_by_tag(tag);
 
 		for(int i = 0; i < list.size; i++){
-			var bak = list[i];
+			Snapshot bak = list[i];
 			if (bak.sys_uuid == sys_uuid){
 				return bak;
 			}
@@ -622,45 +618,46 @@ public class SnapshotRepo : GLib.Object{
 		last_snapshot_failed_space = false;
 		DateTime now = new DateTime.now_local();
 		DateTime dt_limit;
-		int count_limit;
 		
 		// remove tags from older backups - boot ---------------
 
-		var list = get_snapshots_by_tag("boot");
+		Gee.ArrayList<Snapshot> list = get_snapshots_by_tag(Tags.Boot);
 
 		if (list.size > App.count_boot){
 			log_msg(_("Maximum backups exceeded for backup level") + " '%s'".printf("boot"));
 			while (list.size > App.count_boot){
-				list[0].remove_tag("boot");
+				list[0].remove_tag(Tags.Boot);
 				log_msg(_("Snapshot") + " '%s' ".printf(list[0].name) + _("un-tagged") + " '%s'".printf("boot"));
-				list = get_snapshots_by_tag("boot");
+				list = get_snapshots_by_tag(Tags.Boot);
 			}
 		}
 
 		// remove tags from older backups - hourly, daily, weekly, monthly ---------
 
-		string[] levels = { "hourly","daily","weekly","monthly" };
+		Tags levels = Tags.Hourly | Tags.Daily | Tags.Weekly | Tags.Monthly;
 
-		foreach(string level in levels){
+		foreach(Tags? level in levels){
 			
 			list = get_snapshots_by_tag(level);
 
 			if (list.size == 0) { continue; }
 
+			int count_limit;
+
 			switch (level){
-				case "hourly":
+				case Tags.Hourly:
 					dt_limit = now.add_hours(-1 * App.count_hourly);
 					count_limit = App.count_hourly;
 					break;
-				case "daily":
+				case Tags.Daily:
 					dt_limit = now.add_days(-1 * App.count_daily);
 					count_limit = App.count_daily;
 					break;
-				case "weekly":
+				case Tags.Weekly:
 					dt_limit = now.add_weeks(-1 * App.count_weekly);
 					count_limit = App.count_weekly;
 					break;
-				case "monthly":
+				case Tags.Monthly:
 					dt_limit = now.add_months(-1 * App.count_monthly);
 					count_limit = App.count_monthly;
 					break;
@@ -670,12 +667,11 @@ public class SnapshotRepo : GLib.Object{
 					break;
 			}
 
-			if (list.size > count_limit){
+			int snaps_count = list.size;
+			if (snaps_count > count_limit){
 
-				log_msg(_("Maximum backups exceeded for backup level") + " '%s'".printf(level));
+				log_msg(_("Maximum backups exceeded for backup level") + " '%s'".printf(level.name()));
 
-				int snaps_count = list.size;
-				
 				foreach(var snap in list){
 
 					if (snap.description.strip().length > 0){ continue; } // don't delete snapshots with comments
@@ -685,7 +681,7 @@ public class SnapshotRepo : GLib.Object{
 						snap.remove_tag(level);
 						snaps_count--;
 					
-						log_msg(_("Snapshot") + " '%s' ".printf(list[0].name) + _("un-tagged") + " '%s'".printf(level));
+						log_msg(_("Snapshot") + " '%s' ".printf(list[0].name) + _("un-tagged") + " '%s'".printf(level.name()));
 					}
 				}
 			}
@@ -760,8 +756,9 @@ public class SnapshotRepo : GLib.Object{
 		
 		bool show_msg = true;
 
+		// delete untagged snapshots
 		foreach(Snapshot bak in snapshots){
-			if (bak.tags.size == 0){
+			if (bak.tags == 0){
 
 				if (show_msg){
 					log_msg("%s (%s):".printf(_("Removing snapshots"), _("un-tagged")));
@@ -901,17 +898,13 @@ public class SnapshotRepo : GLib.Object{
 	// symlinks ----------------------------------------
 	
 	public void create_symlinks(){
-		cleanup_symlink_dir("boot");
-		cleanup_symlink_dir("hourly");
-		cleanup_symlink_dir("daily");
-		cleanup_symlink_dir("weekly");
-		cleanup_symlink_dir("monthly");
-		cleanup_symlink_dir("ondemand");
-
+		foreach(Tags? tag in Tags.All) {
+			cleanup_symlink_dir(tag.name());
+		}
 
 		foreach(Snapshot bak in snapshots){
-			foreach(string tag in bak.tags) {
-				string linkTarget = "%s-%s/%s".printf(snapshots_path, tag, bak.name);
+			foreach(Tags? tag in bak.tags) {
+				string linkTarget = "%s-%s/%s".printf(snapshots_path, tag.name(), bak.name);
 				string linkValue = "../snapshots/" + bak.name;
 				try {
 					File f = File.new_for_path(linkTarget);
