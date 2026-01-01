@@ -259,6 +259,7 @@ public class AppConsole : GLib.Object {
 					log_error("%s: %s".printf(
 						_("Invalid command line arguments"), args[k]), true);
 					log_error("Run 'timeshift --help' to list all available options");
+                    App.app_mode = "abort";
 					App.exit_app(1);
 					break;
 			}

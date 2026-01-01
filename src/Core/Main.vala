@@ -3375,7 +3375,7 @@ public class Main : GLib.Object{
 		config.set_string_member("count_hourly", count_hourly.to_string());
 		config.set_string_member("count_boot", count_boot.to_string());
 
-		if (repo.has_snapshots())
+		if (repo.available() && repo.has_snapshots())
 		{
 			config.set_string_member("snapshot_size", first_snapshot_size.to_string());
 			config.set_string_member("snapshot_count", first_snapshot_count.to_string());
