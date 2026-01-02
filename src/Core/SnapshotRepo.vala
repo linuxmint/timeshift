@@ -193,31 +193,31 @@ public class SnapshotRepo : GLib.Object{
 		}
 
 		// rsync
-		mount_paths["@"] = "";
-		mount_paths["@home"] = "";
+		mount_paths[App.root_subvolume_name] = "";
+		mount_paths[App.home_subvolume_name] = "";
 			
 		if (btrfs_mode){
 			
-			mount_paths["@"] = mount_path;
-			mount_paths["@home"] = mount_path; //default
+			mount_paths[App.root_subvolume_name] = mount_path;
+			mount_paths[App.home_subvolume_name] = mount_path; //default
 			device_home = device; //default
 			
 			// mount @home if on different disk -------
 		
-			var repo_subvolumes = Subvolume.detect_subvolumes_for_system_by_path(path_combine(mount_path,"@"), this, parent_window);
+			var repo_subvolumes = Subvolume.detect_subvolumes_for_system_by_path(path_combine(mount_path,App.root_subvolume_name), this, parent_window);
 			
-			if (repo_subvolumes.has_key("@home")){
+			if (repo_subvolumes.has_key(App.home_subvolume_name)){
 				
-				var subvol = repo_subvolumes["@home"];
+				var subvol = repo_subvolumes[App.home_subvolume_name];
 				
 				if (subvol.device_uuid != device.uuid){
 					
 					// @home is on a separate device
 					device_home = subvol.get_device();
 					
-					mount_paths["@home"] = unlock_and_mount_device(device_home, App.mount_point_app + "/backup-home");
+					mount_paths[App.home_subvolume_name] = unlock_and_mount_device(device_home, App.mount_point_app + "/backup-home");
 					
-					if (mount_paths["@home"].length == 0){
+					if (mount_paths[App.home_subvolume_name].length == 0){
 						return false;
 					}
 				}
@@ -505,7 +505,7 @@ public class SnapshotRepo : GLib.Object{
 		
 		log_debug("SnapshotRepo: has_btrfs_system()");
 
-		var root_path = path_combine(mount_paths["@"],"@");
+		var root_path = path_combine(mount_paths[App.root_subvolume_name],App.root_subvolume_name);
 		log_debug("root_path=%s".printf(root_path));
 		log_debug("btrfs_mode=%s".printf(btrfs_mode.to_string()));
 		if (btrfs_mode){
