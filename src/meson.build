@@ -95,18 +95,25 @@ sources_app_gtk = files([
   'AppGtk.vala',
 ])
 
+vala_opts = [
+  '--vapidir=' + meson.current_source_dir() / 'vapi',
+  '--pkg', 'ioprio'
+]
+
 timeshift = executable('timeshift',
   sources_app_console + sources_core + sources_utility,
   config_header,
   dependencies: dependencies,
-  install: true
+  install: true,
+  vala_args: vala_opts
 )
 
 timeshift_gtk = executable('timeshift-gtk',
   sources_app_gtk + sources_core + sources_utility + sources_gtk,
   config_header,
   dependencies: dependencies,
-  install: true
+  install: true,
+  vala_args: vala_opts
 )
 
 install_data(

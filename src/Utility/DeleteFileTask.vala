@@ -33,7 +33,6 @@ public class DeleteFileTask : AsyncTask{
 	// settings
 	public string dest_path = "";
 	public bool verbose = true;
-	public bool io_nice = true;
 	public bool use_rsync = false;
 
 	//private
@@ -79,10 +78,6 @@ public class DeleteFileTask : AsyncTask{
 
 	protected override string build_script() {
 		var cmd = "";
-
-		if (io_nice){
-			//cmd += "ionice -c2 -n7 ";
-		}
 
 		if (use_rsync){
 

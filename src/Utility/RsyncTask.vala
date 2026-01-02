@@ -57,7 +57,6 @@ public class RsyncTask : AsyncTask{
 	public string source_path = "";
 	public string dest_path = "";
 	public bool verbose = true;
-	public bool io_nice = true;
 	public bool dry_run = false;
 
 	// regex
@@ -185,10 +184,6 @@ public class RsyncTask : AsyncTask{
 	protected override string build_script() {
 		
 		var cmd = "export LC_ALL=C.UTF-8\n";
-
-		if (io_nice){
-			//cmd += "ionice -c2 -n7 ";
-		}
 
 		cmd += "rsync -aii";
 
