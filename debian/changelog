@@ -1,3 +1,63 @@
+timeshift (25.12.2) zena; urgency=medium
+
+  [ Michael Webster ]
+  * TeeJee.FileSystem.vala: Remove any existing destination file before attempting to write.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 23 Dec 2025 12:34:23 +0000
+
+timeshift (25.12.1) zena; urgency=medium
+
+  * l10n: Update translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 12 Dec 2025 17:03:55 +0000
+
+timeshift (25.12.0) zena; urgency=medium
+
+  [ Yannis Gerlach ]
+  * improve issue template (#478)
+  * trigger backup hooks after rsync snapshots (#470)
+
+  [ Yupeng Chen ]
+  * Subvolume: Enhance nested subvolume deletion verification process (#467)
+
+  [ Jeroen Derks ]
+  * Update Main.vala function restore_current_system check that dst_root is not null (#386)
+
+  [ Yannis Gerlach ]
+  * improve retrieving of session related environment variables (#460)
+  * Do not fail all subvolumes if one failed to remove a qgroup; only sync if qgroups are going to be deleted (#458)
+  * add button to pause rsync snapshots (#469)
+
+  [ ygerlach ]
+  * remove dependency to which, chmod and chown
+  * remove unused code; fix compiler warnings; only update control file if changed
+
+  [ Yannis Gerlach ]
+  * Simplify `AsyncTask` code and use `RsyncTask` to estimate Snapshot size (#428)
+  * Fix about links (#459)
+  * Fix notify (#475)
+
+  [ Integral ]
+  * fix: replace XWayland backend with Wayland in Wayland sessions (#414)
+    (Closes: #387)
+
+  [ Michael Webster ]
+  * timeshift-launcher: Remove wayland check, rename copy_env() to setup_env().
+
+  [ Bryan Fink ]
+  * add lvm-on-luks partition to crypttab (#398)
+
+  [ Zachary Fogg ]
+  * Check if qgroup exists before attempting to destroy it (#484)
+
+  [ YuShi ]
+  * fix: the continue loop error in the device selection logic (#456)
+
+  [ Clement Lefebvre ]
+  * l10n: Update POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 10 Dec 2025 15:01:36 +0000
+
 timeshift (25.07.7) zara; urgency=medium
 
   * l10n: Update translations

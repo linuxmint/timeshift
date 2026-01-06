@@ -171,7 +171,11 @@ namespace TeeJee.FileSystem{
 			dir_create(file_parent(file_path));
 			
 			var file = File.new_for_path (file_path);
-			var file_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
+			if (file.query_exists ()) {
+				file.delete ();
+			}
+
+			var file_stream = file.create (FileCreateFlags.NONE);
 			var data_stream = new DataOutputStream (file_stream);
 			data_stream.put_string (contents);
 			data_stream.close();
