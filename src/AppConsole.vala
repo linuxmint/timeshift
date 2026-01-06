@@ -618,6 +618,12 @@ public class AppConsole : GLib.Object {
 	
 	private bool restore_snapshot(){
 
+		// It's also called by App.restore_snapshot, but might leave some temp directories
+		// if layout is unsupported and not checked before.
+		if (App.btrfs_mode && (App.check_btrfs_layout_system() == false)){
+			return false;
+		}
+
 		select_snapshot_device(true);
 
 		select_snapshot_for_restore();
@@ -1354,6 +1360,10 @@ public class AppConsole : GLib.Object {
 
 	public bool delete_snapshot(){
 
+		if (App.btrfs_mode && (App.check_btrfs_layout_system() == false)){
+			return false;
+		}
+
 		select_snapshot_device(true);
 
 		select_snapshot_for_deletion();
@@ -1366,6 +1376,10 @@ public class AppConsole : GLib.Object {
 	}
 
 	public bool delete_all_snapshots(){
+
+		if (App.btrfs_mode && (App.check_btrfs_layout_system() == false)){
+			return false;
+		}
 		
 		select_snapshot_device(true);
 		
