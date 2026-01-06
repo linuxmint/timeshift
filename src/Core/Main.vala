@@ -503,34 +503,85 @@ public class Main : GLib.Object{
 			log_msg(_("** Uninstalled Timeshift BTRFS **"));
 		}
 	}
+
+	/*
+	 * Checks if root_subvolume_name and home_subvolume_name are configured to valid values.
+	 *
+	 * @return False if the config is invalid.
+	 */
+	public bool check_btrfs_system_config(out string title, out string msg) {
+
+		log_debug("check_btrfs_system_config()");
+
+		// If the root subvolume is configured to an empty string, the config is invalid.
+		if(root_subvolume_name == "") {
+			title = _("Root subvolume configuration is invalid");
+			msg = _("Root subvolume name is empty, make sure to select a valid subvolume layout.");
+			return false;
+		}
+
+		// If the home subvolume is configured to an empty string and home backup is
+		// enabbled, the config is invalid.
+		if (include_btrfs_home_for_backup && home_subvolume_name == "") {
+			title = _("Home subvolume configuration is invalid");
+			msg = _("Home backups are enabled home subvolume name is empty, make sure to select a valid subvolume layout.");
+			return false;
+		}
+
+		// If sys_subvolumes does not contain a subvolume for root_subvolume_name,
+		// the config is invalid.
+		if (!sys_subvolumes.has_key(root_subvolume_name)) {
+			title = _("Root subvolume configuration is invalid");
+			msg = _("The configured root subvolume does not exist") + " (" + root_subvolume_name + ").";
+			return false;
+		}
+		
+		// If home backups are enbaled and sys_subvolumes does not contain a subvolume
+		// for home_subvolume_name, the config is invalid.
+		if (include_btrfs_home_for_backup && !sys_subvolumes.has_key(home_subvolume_name)) {
+			title = _("Home subvolume configuration is invalid");
+			msg = _("Home backups are enabled and the configured home subvolume does not exist") + " (" + home_subvolume_name + ").";
+			return false;
+		}
+
+		return true;
+	}
 	
-	public bool check_btrfs_layout_system(Gtk.Window? win = null){
+	/*
+	 * Calls check_btrfs_system_config and displays an error message to the user
+	 *
+	 * @return False if the config is invalid.
+	 */
+	public bool check_btrfs_layout_system(Gtk.Window? win = null) {
 
 		log_debug("check_btrfs_layout_system()");
 
-		bool supported = sys_subvolumes.has_key(root_subvolume_name);
-		if (include_btrfs_home_for_backup){
-			supported =  supported && sys_subvolumes.has_key(home_subvolume_name);
-		}
-
-		if (!supported){
-			string msg = _("The system partition has an unsupported subvolume layout.") + " ";
-			msg += _("Please mak sure you configured the subvolume layout correctly.") + "\n\n";
-			string title = _("Not Supported");
-			
+		// Checking for failure conditions
+		string title;
+		string msg;
+		if(!check_btrfs_system_config(out title, out msg)) {
 			if (app_mode == ""){
 				gtk_set_busy(false, win);
 				gtk_messagebox(title, msg, win, true);
 			}
 			else{
-				msg += _("Application will exit.") + "\n\n";
-				log_error(msg);
+				msg += "\n\n" + _("Application will exit.") + "\n\n";
+				log_error(title + "\n\n" + msg);
 			}
+
+			return false;
 		}
 
-		return supported;
+		return true;
 	}
 
+	/*
+	 * Checks if the root and home devices are btrfs filesystems and does some
+	 * further checking if the device fs contains the requested suvolume names
+	 * with check_btrfs_volume().
+	 *
+	 * @return True if the layout is supported.
+	 */
 	public bool check_btrfs_layout(Device? dev_root, Device? dev_home, bool unlock){
 		
 		bool supported = true; // keep true for non-btrfs systems
@@ -541,18 +592,18 @@ public class Main : GLib.Object{
 
 				if (dev_home != dev_root){
 					
-					supported = supported && check_btrfs_volume(dev_root, root_subvolume_name, unlock);
+					supported = supported && check_btrfs_volume(dev_root, {root_subvolume_name}, unlock);
 
 					if (include_btrfs_home_for_backup){
-						supported = supported && check_btrfs_volume(dev_home, home_subvolume_name, unlock);
+						supported = supported && check_btrfs_volume(dev_home, {home_subvolume_name}, unlock);
 					}
 				}
 				else{
 					if (include_btrfs_home_for_backup){
-						supported = supported && check_btrfs_volume(dev_root, "@,@home", unlock);
+						supported = supported && check_btrfs_volume(dev_root, {root_subvolume_name, home_subvolume_name}, unlock);
 					}
 					else{
-						supported = supported && check_btrfs_volume(dev_root, root_subvolume_name, unlock);
+						supported = supported && check_btrfs_volume(dev_root, {root_subvolume_name}, unlock);
 					}
 				}
 			}
@@ -3914,9 +3965,18 @@ public class Main : GLib.Object{
 		return repo.status_code;
 	}
 
-	public bool check_btrfs_volume(Device dev, string subvol_names, bool unlock){
+	/*
+	 * Checks if device has subvolumes listed in subvol_names.
+	 * Mounts the device if it's not mounted. Device is unmounted in the end.
+	 *
+	 * @return True if device has subvolumes.
+	 */
+	public bool check_btrfs_volume(Device dev, string[] subvol_names, bool unlock){
 
-		log_debug("check_btrfs_volume():%s".printf(subvol_names));
+		log_debug("check_btrfs_volume()");
+		foreach(string subvol_name in subvol_names) {
+			log_debug("-- " + subvol_name);
+		}
 		
 		string mnt_btrfs = mount_point_app + "/btrfs";
 		dir_create(mnt_btrfs);
@@ -3936,7 +3996,7 @@ public class Main : GLib.Object{
 				
 					if (dev_unlocked == null){
 						log_debug("device is null");
-						log_debug("SnapshotRepo: check_btrfs_volume(): exit");
+						log_debug("Main: check_btrfs_volume(): exit");
 						return false;
 					}
 					else{
@@ -3954,7 +4014,7 @@ public class Main : GLib.Object{
 
 		bool supported = true;
 
-		foreach(string subvol_name in subvol_names.split(",")){
+		foreach(string subvol_name in subvol_names){
 			supported = supported && dir_exists(path_combine(mnt_btrfs,subvol_name));
 		}
 
@@ -4013,7 +4073,7 @@ public class Main : GLib.Object{
 		if (dev.has_children()) { return false; }
 		
 		if (btrfs_mode && ((dev.fstype == "btrfs")||(dev.fstype == "luks"))){
-			if (check_btrfs_volume(dev, root_subvolume_name, unlock)){
+			if (check_btrfs_volume(dev, {root_subvolume_name}, unlock)){
 				return true;
 			}
 		}
@@ -4157,7 +4217,7 @@ public class Main : GLib.Object{
 	 */
 	public bool query_subvolume_id(string subvol_name){
 
-		log_debug("query_subvolume_id():%s".printf(subvol_name));
+		log_debug("query_subvolume_id(): \"%s\"".printf(subvol_name));
 
 		// Check validity of arguments, querying empty string is an error.
 		if (subvol_name == "") return false;
@@ -4246,7 +4306,7 @@ public class Main : GLib.Object{
 	 * @return true if no error occured.
 	 */
 	public bool query_subvolume_quota(string subvol_name){
-		log_debug("query_subvolume_quota():%s".printf(subvol_name));
+		log_debug("query_subvolume_quota(): \"%s\"".printf(subvol_name));
 
 		// Check validity of arguments, querying empty string is an error.
 		if (subvol_name == "") return false;
