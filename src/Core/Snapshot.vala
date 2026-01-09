@@ -321,7 +321,7 @@ public class Snapshot : GLib.Object{
 		string fstab_path = path_combine(path, "/localhost/etc/fstab");
 		
 		if (btrfs_mode){
-			fstab_path = path_combine(path, "/@/etc/fstab");
+			fstab_path = path_combine(path, @"/$(App.root_subvolume_name)/etc/fstab");
 		}
 		
 		fstab_list = FsTabEntry.read_file(fstab_path);
@@ -332,7 +332,7 @@ public class Snapshot : GLib.Object{
 		string crypttab_path = path_combine(path, "/localhost/etc/crypttab");
 		
 		if (btrfs_mode){
-			crypttab_path = path_combine(path, "/@/etc/crypttab");
+			crypttab_path = path_combine(path, @"/$(App.root_subvolume_name)/etc/crypttab");
 		}
 		
 		cryttab_list = CryptTabEntry.read_file(crypttab_path);
@@ -439,7 +439,7 @@ public class Snapshot : GLib.Object{
 	
 	public bool has_subvolumes(){
 		foreach(FsTabEntry en in fstab_list){
-			if (en.options.contains("subvol=@")){
+			if (en.options.contains("subvol=" + App.root_subvolume_name)){
 				return true;
 			}
 		}

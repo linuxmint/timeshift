@@ -1828,11 +1828,13 @@ public class Main : GLib.Object{
 			string dst_path = path_combine(snapshot_path, subvol_name);
 
 			// Dirty hack to fix the nested subvilumes issue (cause of issue is unknown)
-			if (dst_path.has_suffix("/@/@")){
-				dst_path = dst_path.replace("/@/@", "/@");
+			string nested_root_subvol = @"/$(root_subvolume_name)/$(root_subvolume_name)";
+			string nested_home_subvol = @"/$(home_subvolume_name)/$(home_subvolume_name)";
+			if (dst_path.has_suffix(nested_root_subvol)){
+				dst_path = dst_path.replace(nested_root_subvol, @"/$(root_subvolume_name)");
 			}
-			else if (dst_path.has_suffix("/@home/@home")){
-				dst_path = dst_path.replace("/@home/@home", "/@home");
+			else if (dst_path.has_suffix(nested_home_subvol)){
+				dst_path = dst_path.replace(nested_home_subvol, @"/$(home_subvolume_name)");
 			}
 			
 			string cmd = "btrfs subvolume snapshot '%s' '%s' \n".printf(src_path, dst_path);
@@ -2420,11 +2422,11 @@ public class Main : GLib.Object{
 
 		if (btrfs_mode){
 			if (repo.mount_paths[root_subvolume_name].length == 0){
-				log_error(_("BTRFS device is not mounted") + ": @");
+				log_error(_("BTRFS device is not mounted") + ": " + root_subvolume_name);
 				return false;
 			}
 			if (include_btrfs_home_for_restore && (repo.mount_paths[home_subvolume_name].length == 0)){
-				log_error(_("BTRFS device is not mounted") + ": @home");
+				log_error(_("BTRFS device is not mounted") + ": " + home_subvolume_name);
 				return false;
 			}
 		}
@@ -3281,9 +3283,9 @@ public class Main : GLib.Object{
 		string snapshot_path = "";
 		
 		/* Note:
-		 * The @ and @home subvolumes need to be backed-up only if they are in use by the system.
+		 * The root and home subvolumes need to be backed-up only if they are in use by the system.
 		 * If user restores a snapshot and then tries to restore another snapshot before the next reboot
-		 * then the @ and @home subvolumes are the ones that were previously restored and need to be deleted.
+		 * then the root and home subvolumes are the ones that were previously restored and need to be deleted.
 		 * */
 
 		bool create_pre_restore_backup = false;
@@ -3307,11 +3309,11 @@ public class Main : GLib.Object{
 				//delete system subvolumes
 				if (sys_subvolumes.has_key(root_subvolume_name) && snapshot_to_restore.subvolumes.has_key(root_subvolume_name)){
 					sys_subvolumes[root_subvolume_name].remove();
-					log_msg(_("Deleted subvolume") + ": @");
+					log_msg(_("Deleted subvolume") + ": " + root_subvolume_name);
 				}
 				if (include_btrfs_home_for_restore && sys_subvolumes.has_key(home_subvolume_name) && snapshot_to_restore.subvolumes.has_key(home_subvolume_name)){
 					sys_subvolumes[home_subvolume_name].remove();
-					log_msg(_("Deleted subvolume") + ": @home");
+					log_msg(_("Deleted subvolume") + ": " + home_subvolume_name);
 				}
 
 				//update description for pre-restore backup
@@ -3911,11 +3913,11 @@ public class Main : GLib.Object{
 			
 			if (mnt.device.fstype == "btrfs"){
 				if (mnt.mount_point == "/"){
-					mount_options = "subvol=@";
+					mount_options = "subvol=" + root_subvolume_name;
 				}
 				if (include_btrfs_home_for_restore){
 					if (mnt.mount_point == "/home"){
-						mount_options = "subvol=@home";
+						mount_options = "subvol=" + home_subvolume_name;
 					}
 				}
 			}
