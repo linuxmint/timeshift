@@ -191,33 +191,33 @@ public class SnapshotRepo : GLib.Object{
 		if (mount_path.length == 0){
 			return false;
 		}
-
-		// rsync
-		mount_paths["@"] = "";
-		mount_paths["@home"] = "";
 			
 		if (btrfs_mode){
-			
-			mount_paths["@"] = mount_path;
-			mount_paths["@home"] = mount_path; //default
+
+			if (App.root_subvolume_name == "") return false;
+
+			// Don't add mount paths if root_subvolume_name or home_subvolume_name are empty.
+			// We don't add default values either anymore, because it could lead us to bugs.
+			mount_paths[App.root_subvolume_name] = mount_path;
+			if (App.home_subvolume_name != "") mount_paths[App.home_subvolume_name] = mount_path;
 			device_home = device; //default
 			
 			// mount @home if on different disk -------
 		
-			var repo_subvolumes = Subvolume.detect_subvolumes_for_system_by_path(path_combine(mount_path,"@"), this, parent_window);
+			var repo_subvolumes = Subvolume.detect_subvolumes_for_system_by_path(path_combine(mount_path,App.root_subvolume_name), this, parent_window);
 			
-			if (repo_subvolumes.has_key("@home")){
+			if (App.home_subvolume_name != "" && repo_subvolumes.has_key(App.home_subvolume_name)){
 				
-				var subvol = repo_subvolumes["@home"];
+				var subvol = repo_subvolumes[App.home_subvolume_name];
 				
 				if (subvol.device_uuid != device.uuid){
 					
 					// @home is on a separate device
 					device_home = subvol.get_device();
 					
-					mount_paths["@home"] = unlock_and_mount_device(device_home, App.mount_point_app + "/backup-home");
+					mount_paths[App.home_subvolume_name] = unlock_and_mount_device(device_home, App.mount_point_app + "/backup-home");
 					
-					if (mount_paths["@home"].length == 0){
+					if (mount_paths[App.home_subvolume_name].length == 0){
 						return false;
 					}
 				}
@@ -469,51 +469,96 @@ public class SnapshotRepo : GLib.Object{
 		
 		//log_debug("checking selected device");
 
+		// Snapshot repo is available if the config is valid.
+		bool ok = check_config(out status_message, out status_details, out status_code);
+
+		if (ok){
+			log_debug(status_message);
+			log_debug("is_available: ok");
+		} else {
+			log_debug(status_message);
+			log_debug("is_available: false");
+		}
+
+		return ok;
+	}
+
+	/*
+	 * Validates the btrfs config and displays an appropriate error message for the user.
+	 * It's a little convoluted because it needs to catch any misconfiguration leading
+	 * to error states.
+	 */
+	private bool check_config(out string title, out string msg, out SnapshotLocationStatus code){
+		
+		log_debug("SnapshotRepo: check_btrfs_config()");
+
+		log_debug("btrfs_mode=%s".printf(btrfs_mode.to_string()));
+
 		if (device == null){
 			if (App.backup_uuid == null || App.backup_uuid.length == 0){
 				log_debug("device is null");
-				status_message = _("Snapshot device not selected");
-				status_details = _("Select the snapshot device");
-				status_code = SnapshotLocationStatus.NOT_SELECTED;
-				log_debug("is_available: false");
+				title = _("Snapshot device not selected");
+				msg = _("Select the snapshot device");
+				code = SnapshotLocationStatus.NOT_SELECTED;
 				return false;
 			}
 			else{
-				status_message = _("Snapshot device not available");
-				status_details = _("Device not found") + ": UUID='%s'".printf(App.backup_uuid);
-				status_code = SnapshotLocationStatus.NOT_AVAILABLE;
-				log_debug("is_available: false");
+				title = _("Snapshot device not available");
+				msg = _("Device not found") + ": UUID='%s'".printf(App.backup_uuid);
+				code = SnapshotLocationStatus.NOT_AVAILABLE;
 				return false;
 			}
 		}
-		else{
-			if (btrfs_mode){
-				bool ok = has_btrfs_system();
-				if (ok){
-					log_debug("is_available: ok");
-				}
-				return ok;
-			}
-			else{
-				log_debug("is_available: ok");
-				return true;
-			}
-		}
-	}
 
-	public bool has_btrfs_system(){
-		
-		log_debug("SnapshotRepo: has_btrfs_system()");
+		if (btrfs_mode) {
+			// Run the btrfs checks from Main.check_btrfs_system_config.
+			if (!App.check_btrfs_system_config(out title, out msg)) {
+				code = SnapshotLocationStatus.NO_BTRFS_SYSTEM;
+				return false;
+			}
 
-		var root_path = path_combine(mount_paths["@"],"@");
-		log_debug("root_path=%s".printf(root_path));
-		log_debug("btrfs_mode=%s".printf(btrfs_mode.to_string()));
-		if (btrfs_mode){
-			if (!dir_exists(root_path)){
-				status_message = _("Selected snapshot device is not a system disk");
-				status_details = _("Select BTRFS system disk with root subvolume (@)");
-				status_code = SnapshotLocationStatus.NO_BTRFS_SYSTEM;
-				log_debug(status_message);
+			// Run some additional checks, these cases are unlikely to come up,
+			// but they could point to bugs in SnapshotRepo code or any other
+			// code related to configuring the system layout.
+			// Bear with me, even though it seems confusing at first...
+
+			// Check the home subvolume configuration.
+			// home_path can be null if mount_paths[App.home_subvolume_name] doesn't exist.
+			var home_path = path_combine(mount_paths[App.home_subvolume_name], App.home_subvolume_name);
+			var home_subvolume_configured = App.home_subvolume_name != "";
+			var has_home_mount_path = mount_paths.has_key(App.home_subvolume_name);
+			
+			log_debug("home_path=%s".printf(home_path));
+			log_debug("home_subvolume_configured=%s".printf(home_subvolume_configured.to_string()));
+			log_debug("has_home_mount_path=%s".printf(has_home_mount_path.to_string()));
+
+			// If home_subvolume_configured and the directory does not exists, the
+			// configuration is invalid.
+			if (!has_home_mount_path || (home_subvolume_configured && !dir_exists(home_path))) {
+				title = _("Home subvolume configuration is invalid");
+				msg = _("Home subvolume is configured but the path does not exist") + " (" + App.home_subvolume_name + ")";
+				code = SnapshotLocationStatus.NO_BTRFS_SYSTEM;
+				return false;
+			}
+
+			// Further check root subvolume configuration.
+			// We already know App.root_subvolume_name is not empty, but we still need to check if
+			// the key exists (it might not if there is no mount path associated to it).
+			var has_root_mount_path = mount_paths.has_key(App.root_subvolume_name);
+			// root_path can still be null if has_root_mount_path is false.
+			var root_path = path_combine(mount_paths[App.root_subvolume_name], App.root_subvolume_name);
+
+			log_debug("root_path=%s".printf(root_path));
+			log_debug("has_root_mount_path=%s".printf(has_root_mount_path.to_string()));
+
+			// If we don't have a mount_path for root, or root_path is null, or the root_path
+			// directory doesn't exist, the configuration is invalid.
+			// Technically, we don't need to explicitly check root_path here, it's implied by
+			// !has_root_mount_path.
+			if (!has_root_mount_path || !dir_exists(root_path)){
+				title = _("Root subvolume configuration is invalid");
+				msg = _("Root subvolume is configured but the path does not exist. Select BTRFS system disk with root subvolume ") + " (" + App.home_subvolume_name + ")";
+				code = SnapshotLocationStatus.NO_BTRFS_SYSTEM;
 				return false;
 			}
 		}

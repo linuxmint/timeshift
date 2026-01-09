@@ -53,6 +53,9 @@ public class Main : GLib.Object{
 	public bool include_btrfs_home_for_backup = false;
 	public bool include_btrfs_home_for_restore = false;
     public static bool btrfs_version__can_recursive_delete = false;
+
+	public string root_subvolume_name = "@";
+	public string home_subvolume_name = "@home";
 	
 	public bool stop_cron_emails = true;
 	
@@ -289,6 +292,23 @@ public class Main : GLib.Object{
 		this.app_conf_path_old = "/etc/timeshift.json";
 		this.app_conf_path_default = GLib.Path.build_path (GLib.Path.DIR_SEPARATOR_S, Constants.SYSCONFDIR, "timeshift", "default.json");
 		//sys_root and sys_home will be initialized by update_partition_list()
+
+		// Detect subvolume names based on distro id.
+		// Only has effect when timeshift is opened the first time,
+		// otherwise the setting is overwritten by loading the config.
+		if (this.current_distro.dist_id.down() == "fedora") {
+			this.root_subvolume_name = "root";
+			this.home_subvolume_name = "home";
+		}
+		else if (this.current_distro.dist_id.down() == "debian") {
+			this.root_subvolume_name = "@rootfs";
+			this.home_subvolume_name = "";
+			this.include_btrfs_home_for_backup = false;
+		}
+		else { //if (this.current_distro.dist_id.down() == "ubuntu")
+			this.root_subvolume_name = "@";
+			this.home_subvolume_name = "@home";
+		}
 		
 		// check if running locally ------------------------
 
@@ -483,34 +503,85 @@ public class Main : GLib.Object{
 			log_msg(_("** Uninstalled Timeshift BTRFS **"));
 		}
 	}
+
+	/*
+	 * Checks if root_subvolume_name and home_subvolume_name are configured to valid values.
+	 *
+	 * @return False if the config is invalid.
+	 */
+	public bool check_btrfs_system_config(out string title, out string msg) {
+
+		log_debug("check_btrfs_system_config()");
+
+		// If the root subvolume is configured to an empty string, the config is invalid.
+		if(root_subvolume_name == "") {
+			title = _("Root subvolume configuration is invalid");
+			msg = _("Root subvolume name is empty, make sure to select a valid subvolume layout.");
+			return false;
+		}
+
+		// If the home subvolume is configured to an empty string and home backup is
+		// enabbled, the config is invalid.
+		if (include_btrfs_home_for_backup && home_subvolume_name == "") {
+			title = _("Home subvolume configuration is invalid");
+			msg = _("Home backups are enabled home subvolume name is empty, make sure to select a valid subvolume layout.");
+			return false;
+		}
+
+		// If sys_subvolumes does not contain a subvolume for root_subvolume_name,
+		// the config is invalid.
+		if (!sys_subvolumes.has_key(root_subvolume_name)) {
+			title = _("Root subvolume configuration is invalid");
+			msg = _("The configured root subvolume does not exist") + " (" + root_subvolume_name + ").";
+			return false;
+		}
+		
+		// If home backups are enbaled and sys_subvolumes does not contain a subvolume
+		// for home_subvolume_name, the config is invalid.
+		if (include_btrfs_home_for_backup && !sys_subvolumes.has_key(home_subvolume_name)) {
+			title = _("Home subvolume configuration is invalid");
+			msg = _("Home backups are enabled and the configured home subvolume does not exist") + " (" + home_subvolume_name + ").";
+			return false;
+		}
+
+		return true;
+	}
 	
-	public bool check_btrfs_layout_system(Gtk.Window? win = null){
+	/*
+	 * Calls check_btrfs_system_config and displays an error message to the user
+	 *
+	 * @return False if the config is invalid.
+	 */
+	public bool check_btrfs_layout_system(Gtk.Window? win = null) {
 
 		log_debug("check_btrfs_layout_system()");
 
-		bool supported = sys_subvolumes.has_key("@");
-		if (include_btrfs_home_for_backup){
-			supported =  supported && sys_subvolumes.has_key("@home");
-		}
-
-		if (!supported){
-			string msg = _("The system partition has an unsupported subvolume layout.") + " ";
-			msg += _("Only ubuntu-type layouts with @ and @home subvolumes are currently supported.") + "\n\n";
-			msg += _("Application will exit.") + "\n\n";
-			string title = _("Not Supported");
-			
+		// Checking for failure conditions
+		string title;
+		string msg;
+		if(!check_btrfs_system_config(out title, out msg)) {
 			if (app_mode == ""){
 				gtk_set_busy(false, win);
 				gtk_messagebox(title, msg, win, true);
 			}
 			else{
-				log_error(msg);
+				msg += "\n\n" + _("Application will exit.") + "\n\n";
+				log_error(title + "\n\n" + msg);
 			}
+
+			return false;
 		}
 
-		return supported;
+		return true;
 	}
 
+	/*
+	 * Checks if the root and home devices are btrfs filesystems and does some
+	 * further checking if the device fs contains the requested suvolume names
+	 * with check_btrfs_volume().
+	 *
+	 * @return True if the layout is supported.
+	 */
 	public bool check_btrfs_layout(Device? dev_root, Device? dev_home, bool unlock){
 		
 		bool supported = true; // keep true for non-btrfs systems
@@ -521,18 +592,18 @@ public class Main : GLib.Object{
 
 				if (dev_home != dev_root){
 					
-					supported = supported && check_btrfs_volume(dev_root, "@", unlock);
+					supported = supported && check_btrfs_volume(dev_root, {root_subvolume_name}, unlock);
 
 					if (include_btrfs_home_for_backup){
-						supported = supported && check_btrfs_volume(dev_home, "@home", unlock);
+						supported = supported && check_btrfs_volume(dev_home, {home_subvolume_name}, unlock);
 					}
 				}
 				else{
 					if (include_btrfs_home_for_backup){
-						supported = supported && check_btrfs_volume(dev_root, "@,@home", unlock);
+						supported = supported && check_btrfs_volume(dev_root, {root_subvolume_name, home_subvolume_name}, unlock);
 					}
 					else{
-						supported = supported && check_btrfs_volume(dev_root, "@", unlock);
+						supported = supported && check_btrfs_volume(dev_root, {root_subvolume_name}, unlock);
 					}
 				}
 			}
@@ -1720,9 +1791,9 @@ public class Main : GLib.Object{
 
 		log_msg(_("Creating new backup...") + "(BTRFS)");
 
-		log_msg(_("Saving to device") + ": %s".printf(repo.device.device) + ", " + _("mounted at path") + ": %s".printf(repo.mount_paths["@"]));
+		log_msg(_("Saving to device") + ": %s".printf(repo.device.device) + ", " + _("mounted at path") + ": %s".printf(repo.mount_paths[root_subvolume_name]));
 		if ((repo.device_home != null) && (repo.device_home.uuid != repo.device.uuid)){
-			log_msg(_("Saving to device") + ": %s".printf(repo.device_home.device) + ", " + _("mounted at path") + ": %s".printf(repo.mount_paths["@home"]));
+			log_msg(_("Saving to device") + ": %s".printf(repo.device_home.device) + ", " + _("mounted at path") + ": %s".printf(repo.mount_paths[home_subvolume_name]));
 		}
 
 		// take new backup ---------------------------------
@@ -1739,11 +1810,11 @@ public class Main : GLib.Object{
 		
 		// create subvolume snapshots
 
-		var subvol_names = new string[] { "@" };
+		var subvol_names = new string[] { root_subvolume_name };
 		
 		if (include_btrfs_home_for_backup){
 			
-			subvol_names = new string[] { "@","@home" };
+			subvol_names = new string[] { root_subvolume_name,home_subvolume_name };
 		}
 		
 		foreach(var subvol_name in subvol_names){
@@ -1757,11 +1828,13 @@ public class Main : GLib.Object{
 			string dst_path = path_combine(snapshot_path, subvol_name);
 
 			// Dirty hack to fix the nested subvilumes issue (cause of issue is unknown)
-			if (dst_path.has_suffix("/@/@")){
-				dst_path = dst_path.replace("/@/@", "/@");
+			string nested_root_subvol = @"/$(root_subvolume_name)/$(root_subvolume_name)";
+			string nested_home_subvol = @"/$(home_subvolume_name)/$(home_subvolume_name)";
+			if (dst_path.has_suffix(nested_root_subvol)){
+				dst_path = dst_path.replace(nested_root_subvol, @"/$(root_subvolume_name)");
 			}
-			else if (dst_path.has_suffix("/@home/@home")){
-				dst_path = dst_path.replace("/@home/@home", "/@home");
+			else if (dst_path.has_suffix(nested_home_subvol)){
+				dst_path = dst_path.replace(nested_home_subvol, @"/$(home_subvolume_name)");
 			}
 			
 			string cmd = "btrfs subvolume snapshot '%s' '%s' \n".printf(src_path, dst_path);
@@ -1786,7 +1859,7 @@ public class Main : GLib.Object{
 
 		//log_msg(_("Writing control file..."));
 
-		snapshot_path = path_combine(repo.mount_paths["@"], "timeshift-btrfs/snapshots/%s".printf(snapshot_name));
+		snapshot_path = path_combine(repo.mount_paths[root_subvolume_name], "timeshift-btrfs/snapshots/%s".printf(snapshot_name));
 
 		string initial_tags = (tag == "ondemand") ? "" : tag;
 		
@@ -2300,6 +2373,10 @@ public class Main : GLib.Object{
 
 		log_debug("Main: restore_snapshot()");
 		
+		if (btrfs_mode && (check_btrfs_layout_system() == false)){
+			return false;
+		}
+
 		parent_window = parent_win;
 
 		// remove mount points which will remain on root fs
@@ -2344,12 +2421,12 @@ public class Main : GLib.Object{
 		// final check - check if target root device is mounted
 
 		if (btrfs_mode){
-			if (repo.mount_paths["@"].length == 0){
-				log_error(_("BTRFS device is not mounted") + ": @");
+			if (repo.mount_paths[root_subvolume_name].length == 0){
+				log_error(_("BTRFS device is not mounted") + ": " + root_subvolume_name);
 				return false;
 			}
-			if (include_btrfs_home_for_restore && (repo.mount_paths["@home"].length == 0)){
-				log_error(_("BTRFS device is not mounted") + ": @home");
+			if (include_btrfs_home_for_restore && (repo.mount_paths[home_subvolume_name].length == 0)){
+				log_error(_("BTRFS device is not mounted") + ": " + home_subvolume_name);
 				return false;
 			}
 		}
@@ -2430,7 +2507,7 @@ public class Main : GLib.Object{
 				
 				if (!App.snapshot_to_restore.subvolumes.has_key(entry.subvolume_name())){ continue; }
 
-				if ((entry.subvolume_name() == "@home") && !include_btrfs_home_for_restore){ continue; }
+				if ((entry.subvolume_name() == home_subvolume_name) && !include_btrfs_home_for_restore){ continue; }
 			}
 			
 			string dev_name = entry.device.full_name_with_parent;
@@ -2466,7 +2543,7 @@ public class Main : GLib.Object{
 				
 				if (!App.snapshot_to_restore.subvolumes.has_key(entry.subvolume_name())){ continue; }
 
-				if ((entry.subvolume_name() == "@home") && !include_btrfs_home_for_restore){ continue; }
+				if ((entry.subvolume_name() == home_subvolume_name) && !include_btrfs_home_for_restore){ continue; }
 			}
 			
 			string dev_name = entry.device.full_name_with_parent;
@@ -3166,7 +3243,7 @@ public class Main : GLib.Object{
 
 		foreach(var subvol in snapshot_to_restore.subvolumes.values){
 
-			if ((subvol.name == "@home") && !include_btrfs_home_for_restore){ continue; }
+			if ((subvol.name == home_subvolume_name) && !include_btrfs_home_for_restore){ continue; }
 			
 			subvol.restore();
 		}
@@ -3206,9 +3283,9 @@ public class Main : GLib.Object{
 		string snapshot_path = "";
 		
 		/* Note:
-		 * The @ and @home subvolumes need to be backed-up only if they are in use by the system.
+		 * The root and home subvolumes need to be backed-up only if they are in use by the system.
 		 * If user restores a snapshot and then tries to restore another snapshot before the next reboot
-		 * then the @ and @home subvolumes are the ones that were previously restored and need to be deleted.
+		 * then the root and home subvolumes are the ones that were previously restored and need to be deleted.
 		 * */
 
 		bool create_pre_restore_backup = false;
@@ -3230,13 +3307,13 @@ public class Main : GLib.Object{
 
 			if (found){
 				//delete system subvolumes
-				if (sys_subvolumes.has_key("@") && snapshot_to_restore.subvolumes.has_key("@")){
-					sys_subvolumes["@"].remove();
-					log_msg(_("Deleted subvolume") + ": @");
+				if (sys_subvolumes.has_key(root_subvolume_name) && snapshot_to_restore.subvolumes.has_key(root_subvolume_name)){
+					sys_subvolumes[root_subvolume_name].remove();
+					log_msg(_("Deleted subvolume") + ": " + root_subvolume_name);
 				}
-				if (include_btrfs_home_for_restore && sys_subvolumes.has_key("@home") && snapshot_to_restore.subvolumes.has_key("@home")){
-					sys_subvolumes["@home"].remove();
-					log_msg(_("Deleted subvolume") + ": @home");
+				if (include_btrfs_home_for_restore && sys_subvolumes.has_key(home_subvolume_name) && snapshot_to_restore.subvolumes.has_key(home_subvolume_name)){
+					sys_subvolumes[home_subvolume_name].remove();
+					log_msg(_("Deleted subvolume") + ": " + home_subvolume_name);
 				}
 
 				//update description for pre-restore backup
@@ -3263,9 +3340,9 @@ public class Main : GLib.Object{
 
 			var subvol_list = new Gee.ArrayList<Subvolume>();
 
-			var subvol_names = new string[] { "@" };
+			var subvol_names = new string[] { root_subvolume_name };
 			if (include_btrfs_home_for_restore){
-				subvol_names = new string[] { "@","@home" };
+				subvol_names = new string[] { root_subvolume_name,home_subvolume_name };
 			}
 			
 			foreach(string subvol_name in subvol_names){
@@ -3294,7 +3371,7 @@ public class Main : GLib.Object{
 					return false;
 				}
 				else{
-					var subvol_dev = (subvol_name == "@") ? repo.device : repo.device_home;
+					var subvol_dev = (subvol_name == root_subvolume_name) ? repo.device : repo.device_home;
 					subvol_list.add(new Subvolume(subvol_name, dst_path, subvol_dev.uuid, repo));
 					
 					log_msg(_("Moved system subvolume to snapshot directory") + ": %s".printf(subvol_name));
@@ -3308,11 +3385,11 @@ public class Main : GLib.Object{
 			else{
 				// write control file -----------
 
-				snapshot_path = path_combine(repo.mount_paths["@"], "timeshift-btrfs/snapshots/%s".printf(snapshot_name));
+				snapshot_path = path_combine(repo.mount_paths[root_subvolume_name], "timeshift-btrfs/snapshots/%s".printf(snapshot_name));
 				
 				var snap = Snapshot.write_control_file(
 					snapshot_path, dt_created, repo.device.uuid,
-					LinuxDistro.get_dist_info(path_combine(snapshot_path,"@")).full_name(),
+					LinuxDistro.get_dist_info(path_combine(snapshot_path,root_subvolume_name)).full_name(),
 					"ondemand", "", 0, true, false, repo);
 
 				snap.description = "Before restoring '%s'".printf(snapshot_to_restore.date_formatted);
@@ -3356,6 +3433,9 @@ public class Main : GLib.Object{
 			config.set_string_member("backup_device_uuid", backup_uuid);
 			config.set_string_member("parent_device_uuid", backup_parent_uuid);
 		}
+
+		config.set_string_member("root_subvolume_name", root_subvolume_name);
+		config.set_string_member("home_subvolume_name", home_subvolume_name);
 
 		config.set_string_member("do_first_run", false.to_string());
 		config.set_string_member("btrfs_mode", btrfs_mode.to_string());
@@ -3476,6 +3556,9 @@ public class Main : GLib.Object{
 		if (cmd_btrfs_mode != null){
 			btrfs_mode = cmd_btrfs_mode; //override
 		}
+
+		root_subvolume_name = json_get_string(config,"root_subvolume_name", root_subvolume_name);
+		home_subvolume_name = json_get_string(config,"home_subvolume_name", home_subvolume_name);
 		
 		backup_uuid = json_get_string(config,"backup_device_uuid", backup_uuid);
 		backup_parent_uuid = json_get_string(config,"parent_device_uuid", backup_parent_uuid);
@@ -3544,7 +3627,7 @@ public class Main : GLib.Object{
 
 		// load some defaults for first-run based on user's system type
 		
-		bool supported = sys_subvolumes.has_key("@") && cmd_exists("btrfs"); // && sys_subvolumes.has_key("@home")
+		bool supported = sys_subvolumes.has_key(root_subvolume_name) && cmd_exists("btrfs"); // && sys_subvolumes.has_key(home_subvolume_name)
 		if (supported || (cmd_btrfs_mode == true)){
 			log_msg(_("Selected default snapshot type") + ": %s".printf("BTRFS"));
 			btrfs_mode = true;
@@ -3830,11 +3913,11 @@ public class Main : GLib.Object{
 			
 			if (mnt.device.fstype == "btrfs"){
 				if (mnt.mount_point == "/"){
-					mount_options = "subvol=@";
+					mount_options = "subvol=" + root_subvolume_name;
 				}
 				if (include_btrfs_home_for_restore){
 					if (mnt.mount_point == "/home"){
-						mount_options = "subvol=@home";
+						mount_options = "subvol=" + home_subvolume_name;
 					}
 				}
 			}
@@ -3884,9 +3967,18 @@ public class Main : GLib.Object{
 		return repo.status_code;
 	}
 
-	public bool check_btrfs_volume(Device dev, string subvol_names, bool unlock){
+	/*
+	 * Checks if device has subvolumes listed in subvol_names.
+	 * Mounts the device if it's not mounted. Device is unmounted in the end.
+	 *
+	 * @return True if device has subvolumes.
+	 */
+	public bool check_btrfs_volume(Device dev, string[] subvol_names, bool unlock){
 
-		log_debug("check_btrfs_volume():%s".printf(subvol_names));
+		log_debug("check_btrfs_volume()");
+		foreach(string subvol_name in subvol_names) {
+			log_debug("-- " + subvol_name);
+		}
 		
 		string mnt_btrfs = mount_point_app + "/btrfs";
 		dir_create(mnt_btrfs);
@@ -3906,7 +3998,7 @@ public class Main : GLib.Object{
 				
 					if (dev_unlocked == null){
 						log_debug("device is null");
-						log_debug("SnapshotRepo: check_btrfs_volume(): exit");
+						log_debug("Main: check_btrfs_volume(): exit");
 						return false;
 					}
 					else{
@@ -3924,7 +4016,7 @@ public class Main : GLib.Object{
 
 		bool supported = true;
 
-		foreach(string subvol_name in subvol_names.split(",")){
+		foreach(string subvol_name in subvol_names){
 			supported = supported && dir_exists(path_combine(mnt_btrfs,subvol_name));
 		}
 
@@ -3959,8 +4051,8 @@ public class Main : GLib.Object{
 		update_partitions();
 
 		// In BTRFS mode, select the system disk if system disk is BTRFS
-		if (btrfs_mode && sys_subvolumes.has_key("@")){
-			var subvol_root = sys_subvolumes["@"];
+		if (btrfs_mode && sys_subvolumes.has_key(root_subvolume_name)){
+			var subvol_root = sys_subvolumes[root_subvolume_name];
 			repo = new SnapshotRepo.from_device(subvol_root.get_device(), parent_win, btrfs_mode);
 			return;
 		}
@@ -3983,7 +4075,7 @@ public class Main : GLib.Object{
 		if (dev.has_children()) { return false; }
 		
 		if (btrfs_mode && ((dev.fstype == "btrfs")||(dev.fstype == "luks"))){
-			if (check_btrfs_volume(dev, "@", unlock)){
+			if (check_btrfs_volume(dev, {root_subvolume_name}, unlock)){
 				return true;
 			}
 		}
@@ -4109,16 +4201,28 @@ public class Main : GLib.Object{
 	}
 
 	public bool query_subvolume_ids(){
-		bool ok = query_subvolume_id("@");
+		bool ok = query_subvolume_id(root_subvolume_name);
 		if ((repo.device_home != null) && (repo.device.uuid != repo.device_home.uuid)){
-			ok = ok && query_subvolume_id("@home");
+			ok = ok && query_subvolume_id(home_subvolume_name);
 		}
 		return ok;
 	}
 	
+	/**
+	 * Queries the subvolume ID of a given subvolume by name.
+	 *
+	 * Subvolumes are listed using ``btrfs subvolume list``.
+	 * This assigns the ID to the subvolume found in ``sys_subvolumes`` or
+	 * ``repo.snapshots``.
+	 *
+	 * @return true if no error occured.
+	 */
 	public bool query_subvolume_id(string subvol_name){
 
-		log_debug("query_subvolume_id():%s".printf(subvol_name));
+		log_debug("query_subvolume_id(): \"%s\"".printf(subvol_name));
+
+		// Check validity of arguments, querying empty string is an error.
+		if (subvol_name == "") return false;
 		
 		string cmd = "";
 		string std_out;
@@ -4149,15 +4253,23 @@ public class Main : GLib.Object{
 
 			Subvolume subvol = null;
 
-			if ((sys_subvolumes.size > 0) && line.has_suffix(sys_subvolumes["@"].path.replace(repo.mount_paths["@"] + "/"," "))){
-				subvol = sys_subvolumes["@"];
+			// Is the subvolume we are trying to ID the root subvolume?
+			if ((sys_subvolumes.size > 0)
+				&& (root_subvolume_name != "")
+				&& sys_subvolumes.has_key(root_subvolume_name)
+				&& line.has_suffix(sys_subvolumes[root_subvolume_name].path.replace(repo.mount_paths[root_subvolume_name] + "/"," "))){
+
+				subvol = sys_subvolumes[root_subvolume_name];
 			}
+			// Or is it the home subvolume?
 			else if ((sys_subvolumes.size > 0)
-				&& sys_subvolumes.has_key("@home")
-				&& line.has_suffix(sys_subvolumes["@home"].path.replace(repo.mount_paths["@home"] + "/"," "))){
+				&& (home_subvolume_name != "")
+				&& sys_subvolumes.has_key(home_subvolume_name)
+				&& line.has_suffix(sys_subvolumes[home_subvolume_name].path.replace(repo.mount_paths[home_subvolume_name] + "/"," "))){
 					
-				subvol = sys_subvolumes["@home"];
+				subvol = sys_subvolumes[home_subvolume_name];
 			}
+			// Otherwise, can we find the subvolume in snapshts?
 			else {
 				foreach(var bak in repo.snapshots){
 					foreach(var sub in bak.subvolumes.values){
@@ -4169,6 +4281,7 @@ public class Main : GLib.Object{
 				}
 			}
 
+			// Assign the subvolume ID to the found subvolume.
 			if (subvol != null){
 				subvol.id = long.parse(parts[1]);
 			}
@@ -4178,15 +4291,27 @@ public class Main : GLib.Object{
 	}
 
 	public bool query_subvolume_quotas(){
-		bool ok = query_subvolume_quota("@");
+		bool ok = query_subvolume_quota(root_subvolume_name);
 		if (repo.device.uuid != repo.device_home.uuid){
-			ok = ok && query_subvolume_quota("@home");
+			ok = ok && query_subvolume_quota(home_subvolume_name);
 		}
 		return ok;
 	}
 
+	/**
+	 * Queries the subvolume quotas of a given subvolume by name.
+	 *
+	 * Subvolumes qoatas are listed using ``btrfs qgroup show``.
+	 * This function assigns the quotas to the subvolume found in ``sys_subvolumes``
+	 * or ``repo.snapshots``.
+	 *
+	 * @return true if no error occured.
+	 */
 	public bool query_subvolume_quota(string subvol_name){
-		log_debug("query_subvolume_quota():%s".printf(subvol_name));
+		log_debug("query_subvolume_quota(): \"%s\"".printf(subvol_name));
+
+		// Check validity of arguments, querying empty string is an error.
+		if (subvol_name == "") return false;
 
 		string cmd = "";
 		string std_out;
@@ -4241,16 +4366,23 @@ public class Main : GLib.Object{
 
 			Subvolume subvol = null;
 
-			if ((sys_subvolumes.size > 0) && (sys_subvolumes["@"].id == subvol_id)){
+			// Is the subvolume we are trying to get quotas for the root subvolume?
+			if ((sys_subvolumes.size > 0)
+				&& (root_subvolume_name != "")
+				&& sys_subvolumes.has_key(root_subvolume_name)
+				&& (sys_subvolumes[root_subvolume_name].id == subvol_id)){
 
-				subvol = sys_subvolumes["@"];
+				subvol = sys_subvolumes[root_subvolume_name];
 			}
+			// Or is it the home subvolume?
 			else if ((sys_subvolumes.size > 0)
-				&& sys_subvolumes.has_key("@home")
-				&& (sys_subvolumes["@home"].id == subvol_id)){
+				&& (home_subvolume_name != "")
+				&& sys_subvolumes.has_key(home_subvolume_name)
+				&& (sys_subvolumes[home_subvolume_name].id == subvol_id)){
 
-				subvol = sys_subvolumes["@home"];
+				subvol = sys_subvolumes[home_subvolume_name];
 			}
+			// Otherwise, can we find the subvolume in snapshts?
 			else {
 				foreach(var bak in repo.snapshots){
 					foreach(var sub in bak.subvolumes.values){
@@ -4261,6 +4393,7 @@ public class Main : GLib.Object{
 				}
 			}
 
+			// Assign the subvolume quotas to the found subvolume.
 			if (subvol != null){
 				int part_num = -1;
 				foreach(string part in parts){
