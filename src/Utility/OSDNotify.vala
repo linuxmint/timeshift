@@ -71,7 +71,7 @@ public class OSDNotify : GLib.Object {
 				string s = "notify-send -t %d -u %s -i %s \"%s\" \"%s\" -h %s".printf(
 					durationMillis, urgency, "gtk-dialog-" + dialog_type, title, message, hint);
 				
-				retVal = TeeJee.ProcessHelper.exec_user_async(s);
+				retVal = TeeJee.ProcessHelper.exec_notify_async(s);
 				
 				dt_last_notification = new DateTime.now_local();
 			}

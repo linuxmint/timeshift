@@ -202,6 +202,39 @@ namespace TeeJee.ProcessHelper{
 	    }
 	}
 
+	public int notify_async (string script){
+		/**
+		 * Execute notify-send asynchronously.
+		 * Commands are written to a temporary bash script and executed.
+		 * Return value indicates if script was started successfully.
+		 */
+
+		try {
+
+			string scriptfile = save_bash_notify_temp (script);
+
+			string[] argv = new string[1];
+			argv[0] = scriptfile;
+
+			string[] env = Environ.get();
+
+			Pid child_pid;
+			Process.spawn_async_with_pipes(
+			    TEMP_DIR, //working dir
+			    argv, //argv
+			    env, //environment
+			    SpawnFlags.SEARCH_PATH,
+			    null,
+			    out child_pid);
+
+			return 0;
+		}
+		catch (Error e){
+	        log_error (e.message);
+	        return 1;
+	    }
+	}
+
 	/**
 		executes a command as the "normal" unprivileged user async
 		may execute the command as root if the user could not be determined or the name could not be resolved
@@ -220,6 +253,26 @@ namespace TeeJee.ProcessHelper{
 
 		log_debug(cmd);
 		return TeeJee.ProcessHelper.exec_script_async(cmd);
+	}
+
+	/**
+		Even if notify-send fails to execute or its exit code cannot be read, it does not pose a major problem.
+		Therefore, writing to the status file is disabled.
+	 */
+	public static int exec_notify_async(string command) {
+		// find correct user
+		int uid = TeeJee.System.get_user_id();
+		string cmd = command;
+		if(uid > 0) {
+			// non root
+			string? user = TeeJee.System.get_username_from_uid(uid);
+			if(user != null) {
+				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS ".printf(user) + cmd;
+			}
+		}
+
+		log_debug(cmd);
+		return TeeJee.ProcessHelper.notify_async(cmd);
 	}
 
 	public string? save_bash_script_temp (string commands, string? script_path = null,
@@ -241,6 +294,54 @@ namespace TeeJee.ProcessHelper{
 		script.append ("%s\n".printf(commands));
 		script.append ("\n\nexitCode=$?\n");
 		script.append ("echo ${exitCode} > status\n");
+
+		if ((sh_path == null) || (sh_path.length == 0)){
+			sh_path = get_temp_file_path();
+		}
+
+		try{
+			//write script file
+			var file = File.new_for_path (sh_path);
+			if (file.query_exists ()) {
+				file.delete ();
+			}
+			var file_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
+			var data_stream = new DataOutputStream (file_stream);
+			data_stream.put_string (script.str);
+			data_stream.close();
+
+			// set execute permission
+			Posix.chmod (sh_path, 0744);
+
+			return sh_path;
+		}
+		catch (Error e) {
+			if (!supress_errors){
+				log_error (e.message);
+			}
+		}
+
+		return null;
+	}
+
+	public string? save_bash_notify_temp (string commands, string? script_path = null,
+		bool force_locale = true, bool supress_errors = false){
+
+		string sh_path = script_path;
+
+		/* Creates a temporary bash script with given commands
+		 * Returns the script file path */
+
+		var script = new StringBuilder();
+		script.append ("#!/usr/bin/env bash\n");
+		script.append ("\n");
+		if (force_locale){
+			script.append("LANG=C\n");
+			script.append("LC_ALL=C.UTF-8\n");
+		}
+		script.append ("\n");
+		script.append ("%s\n".printf(commands));
+		script.append ("\n\nexitCode=$?\n");
 
 		if ((sh_path == null) || (sh_path.length == 0)){
 			sh_path = get_temp_file_path();
