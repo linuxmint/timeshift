@@ -50,6 +50,7 @@ public class Main : GLib.Object{
 	public string backup_parent_uuid = "";
 
 	public bool btrfs_mode = true;
+	public bool btrfs_readonly = true;
 	public bool include_btrfs_home_for_backup = false;
 	public bool include_btrfs_home_for_restore = false;
     public static bool btrfs_version__can_recursive_delete = false;
@@ -1764,7 +1765,7 @@ public class Main : GLib.Object{
 				dst_path = dst_path.replace("/@home/@home", "/@home");
 			}
 			
-			string cmd = "btrfs subvolume snapshot '%s' '%s' \n".printf(src_path, dst_path);
+			string cmd = "btrfs subvolume snapshot %s '%s' '%s' \n".printf(btrfs_readonly ? "-r" : "", src_path, dst_path);
 			
 			if (LOG_COMMANDS) { log_debug(cmd); }
 
@@ -1793,7 +1794,7 @@ public class Main : GLib.Object{
 		// write control file
 		var snapshot = Snapshot.write_control_file(
 			snapshot_path, dt_created, sys_uuid, current_distro.full_name(),
-			initial_tags, cmd_comments, 0, true, false, repo);
+			initial_tags, btrfs_readonly ? "ReadOnly" : cmd_comments, 0, true, false, repo);
 
 		// write subvolume info
 		foreach(var subvol in sys_subvolumes.values){
@@ -3359,6 +3360,7 @@ public class Main : GLib.Object{
 
 		config.set_string_member("do_first_run", false.to_string());
 		config.set_string_member("btrfs_mode", btrfs_mode.to_string());
+		config.set_string_member("btrfs_readonly", btrfs_readonly.to_string());
 		config.set_string_member("include_btrfs_home_for_backup", include_btrfs_home_for_backup.to_string());
 		config.set_string_member("include_btrfs_home_for_restore", include_btrfs_home_for_restore.to_string());
 		config.set_string_member("stop_cron_emails", stop_cron_emails.to_string());
@@ -3458,6 +3460,8 @@ public class Main : GLib.Object{
 		bool do_first_run = json_get_bool(config, "do_first_run", false); // false as default
 
 		btrfs_mode = json_get_bool(config, "btrfs_mode", false); // false as default
+
+		btrfs_readonly = json_get_bool(config, "btrfs_readonly", true); // true as default
 		
 		if (do_first_run){
 			set_first_run_flag();
