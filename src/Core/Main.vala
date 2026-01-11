@@ -97,7 +97,7 @@ public class Main : GLib.Object{
 
 	// pause snapshots - use snapshots_paused to query this
 	private string pause_snapshots_this_boot = ""; // if the string contains the current /proc/sys/kernel/random/boot_id: enabled; else: disabled
-	private long pause_snapshots_until = 0; // unix time until snapshots are allowed again
+	private long pause_snapshots_until = 0; // unix time until snapshots are allowed again [s]
 
 	// empty in "gui mode" contains mode in "cli mode"
 	public string app_mode = "";
@@ -3581,6 +3581,24 @@ public class Main : GLib.Object{
 
 			return isTimePaused || bootPaused;
 		}
+	}
+
+	public void pause_snapshots_for(int time_in_s) {
+		this.pause_snapshots_until = (long) (GLib.get_real_time() / 1000000) + time_in_s;
+		this.pause_snapshots_this_boot = "";
+		this.save_app_config();
+	}
+
+	public void pause_snapshots_for_this_boot() {
+		this.pause_snapshots_until = 0;
+		this.pause_snapshots_this_boot = TeeJee.System.get_current_boot_id();
+		this.save_app_config();
+	}
+
+	public void unpause_snapshots() {
+		this.pause_snapshots_until = 0;
+		this.pause_snapshots_this_boot = "";
+		this.save_app_config();
 	}
 
 	public void set_first_run_flag(){
