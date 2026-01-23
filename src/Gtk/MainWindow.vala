@@ -513,14 +513,14 @@ class MainWindow : Gtk.Window{
 		if (!App.repo.available()){
 			gtk_messagebox(
 				App.repo.status_message,
-				_("Select another device to delete snasphots"),
+				_("Select another device to delete snapshots"),
 				this, false);
 			return;
 		}
 		else if (!App.repo.has_snapshots()){
 			gtk_messagebox(
 				_("No snapshots on device"),
-				_("Select another device to delete snasphots"),
+				_("Select another device to delete snapshots"),
 				this, false);
 			return;
 		}
