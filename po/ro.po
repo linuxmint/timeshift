@@ -1,4 +1,4 @@
-# Romanian translation for linuxmint
+# English (United Kingdom) translation for linuxmint
 # Copyright (c) 2017 Rosetta Contributors and Canonical Ltd 2017
 # This file is distributed under the same license as the linuxmint package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
@@ -6,17 +6,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-10 14:42+0000\n"
-"PO-Revision-Date: 2024-07-12 14:41+0000\n"
-"Last-Translator: Vladm <Unknown>\n"
-"Language-Team: Romanian <ro@li.org>\n"
+"PO-Revision-Date: 2026-01-29 01:23+0200\n"
+"Last-Translator: Nicolae Fericitu\n"
+"Language-Team: Romanian\n"
+"Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2026-01-08 15:43+0000\n"
-"X-Generator: Launchpad (build 99c00f518760bdd50fc6e353e7736d2fff8fba4a)\n"
-"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
 
 #: src/AppConsole.vala:630
 #, c-format
@@ -40,49 +39,48 @@ msgstr "'%s' va fi pe '%s'"
 #: src/AppConsole.vala:943
 #, c-format
 msgid "'%s' will be on root device"
-msgstr "'%s' va fi pe dispozitivul root"
+msgstr "'%s' va fi pe dispozitivul rădăcină (root)"
 
 #: src/Gtk/BootOptionsBox.vala:118
 msgid "(Re)install GRUB2 on:"
-msgstr "(Re)instalează GRUB2 pe:"
+msgstr "Reinstalează GRUB2 pe:"
 
 #: src/Core/Main.vala:483
 msgid "** Uninstalled Timeshift BTRFS **"
-msgstr "** Dezinstalat Timeshift BTRFS **"
+msgstr "** Timeshift BTRFS dezinstalat **"
 
 #: src/Core/Main.vala:3694
 msgid "/ is mapped to device"
-msgstr "/ e mapat la dispozitiv"
+msgstr "/ este mapat la dispozitiv"
 
 #: src/Core/Main.vala:3716
 msgid "/boot is mapped to device"
-msgstr "/boot e mapat la dispozitiv"
+msgstr "/boot este mapat la dispozitiv"
 
 #: src/Core/Main.vala:3727
 msgid "/boot/efi is mapped to device"
-msgstr "/boot/efi e mapat la dispozitiv"
+msgstr "/boot/efi este mapat la dispozitiv"
 
 #: src/Core/Main.vala:3705
 msgid "/home is mapped to device"
-msgstr "/home e mapat la dispozitiv"
+msgstr "/home este mapat la dispozitiv"
 
 #: src/Gtk/SnapshotListBox.vala:291
 msgid "<b>Comments</b> (double-click to edit)"
-msgstr "<b>Comentarii</b> (dublu-clic pentru editare)"
+msgstr "<b>Comentarii</b> (dublu clic pentru editare)"
 
 #: src/Gtk/ScheduleBox.vala:168
 msgid ""
 "A maintenance task runs once every hour and creates snapshots as needed."
 msgstr ""
-"O sarcină de întreținere se execută o dată pe oră și creează instantanee "
-"după \r\n"
+"O sarcină de întreținere rulează o dată pe oră și creează instantanee după "
 "cum este necesar."
 
 #: src/AppConsole.vala:716 src/AppConsole.vala:786 src/AppConsole.vala:926
 #: src/AppConsole.vala:1029 src/AppConsole.vala:1080 src/AppConsole.vala:1126
 #: src/AppConsole.vala:1144
 msgid "Aborted."
-msgstr "Abandonat."
+msgstr "Anulat."
 
 #: src/Gtk/MainWindow.vala:375
 msgid "About"
@@ -106,7 +104,7 @@ msgstr "Adaugă dosare"
 
 #: src/Gtk/ExcludeBox.vala:225
 msgid "Add custom pattern"
-msgstr "Adaugă un model personalizat"
+msgstr "Adaugă model personalizat"
 
 #: src/Gtk/ExcludeBox.vala:248
 msgid "Add directories"
@@ -122,17 +120,17 @@ msgstr "Adaugă etichete la instantaneu (implicit: O)"
 
 #: src/Utility/CronTab.vala:312
 msgid "Added cron task"
-msgstr "Sarcină cron adăugată"
+msgstr "Sarcina cron a fost adăugată"
 
 #: src/AppGtk.vala:149
 msgid "Admin Access Required"
-msgstr "Acces de administrator necesar"
+msgstr "Este necesar acces de administrator"
 
 #: src/AppGtk.vala:144
 msgid "Admin access is required to backup and restore system files."
 msgstr ""
-"Accesul de administrator este necesar pentru salvarea și restaurarea "
-"fișierelor de sistem."
+"Accesul de administrator este necesar pentru a face backup și a restaura "
+"fișierele de sistem."
 
 #: src/Gtk/RsyncLogBox.vala:363
 msgid "All Files"
@@ -144,9 +142,9 @@ msgid ""
 "are incremental. Unchanged files will be hard-linked from the previous "
 "snapshot if available."
 msgstr ""
-"Toate fișierele sunt copiate când se crează primul instantaneu. "
-"Instantaneele următoare sunt incrementale. Fișierele nemodificate vor fi "
-"hard-linked din instantaneele precedente dacă acestea există."
+"Toate fișierele sunt copiate la crearea primului instantaneu. Instantaneele "
+"ulterioare sunt incrementale. Fișierele neschimbate vor fi legate fizic "
+"(hard-linked) de la instantaneul anterior, dacă este disponibil."
 
 #: src/Gtk/ExcludeMessageWindow.vala:129
 msgid "All other files and folders are excluded."
@@ -161,16 +159,16 @@ msgid ""
 "Either select a non-encrypted device for boot directory or select a non-"
 "encrypted device for root filesystem."
 msgstr ""
-"Este selectat un dispozitiv criptat pentru sistemul de fișiere root (/). "
-"Directorul boot (/boot) trebuie montat pe un dispozitiv necriptat pentru ca "
-"sistemul să pornească cu succes.\n"
+"Un dispozitiv criptat este selectat pentru sistemul de fișiere rădăcină "
+"(root) (/). Directorul de pornire (/boot) trebuie montat pe un dispozitiv "
+"necriptat pentru ca sistemul să pornească cu succes.\n"
 "\n"
-"Fie selectați un dispozitiv necriptat pentru directorul boot ori selectați "
-"un dispozitiv necriptat pentru sistemul de fișiere root."
+"Selectează fie un dispozitiv necriptat pentru directorul de pornire, fie un "
+"dispozitiv necriptat pentru sistemul de fișiere rădăcină."
 
 #: src/Core/Main.vala:267
 msgid "Another instance of Timeshift is creating a snapshot."
-msgstr "O altă instanță a Timeshift creează deja un instantaneu."
+msgstr "O altă instanță a Timeshift creează un instantaneu."
 
 #: src/Utility/AppLock.vala:49
 msgid "Another instance of this application is running"
@@ -178,11 +176,11 @@ msgstr "O altă instanță a acestei aplicații rulează deja"
 
 #: src/Core/Main.vala:271
 msgid "Another instance of timeshift is currently running!"
-msgstr "O altă instanță a Timeshift rulează deja!"
+msgstr "O altă instanță a Timeshift rulează în prezent!"
 
 #: src/AppConsole.vala:390
 msgid "Answer YES to all confirmation prompts"
-msgstr "Răspunde cu DA la toate cererile de confirmare"
+msgstr "Răspunde DA la toate solicitările de confirmare"
 
 #: src/Core/Main.vala:3535
 msgid "App config loaded"
@@ -206,7 +204,7 @@ msgstr "Aplicația se va închide."
 
 #: src/Gtk/MainWindow.vala:546
 msgid "Are you sure you want to delete this snapshot?"
-msgstr "Sigur vrei să ștergi instantaneul?"
+msgstr "Sigur vrei să ștergi acest instantaneu?"
 
 #: src/Gtk/MainWindow.vala:345
 msgid "Available"
@@ -230,8 +228,7 @@ msgid ""
 "supported."
 msgstr ""
 "Instantaneele BTRFS sunt salvate pe partiția de sistem. Alte partiții nu "
-"sunt \r\n"
-"acceptate."
+"sunt acceptate."
 
 #: src/Gtk/FinishBox.vala:92
 msgid ""
@@ -240,10 +237,10 @@ msgid ""
 "snapshots to an external non-system disk in RSYNC mode to guard against disk "
 "failures."
 msgstr ""
-"Instantaneele BTRFS sunt salvate pe același disc după care sunt create. Dacă "
-"discul de sistem eșuează, instantaneele se vor pierde odată cu sistemul. "
-"Salvează instantaneele pe un disc extern, non-sistem, în modul RSYNC, pentru "
-"a te proteja în caz de defecțiune a discului."
+"Instantaneele BTRFS sunt salvate pe același disc de pe care sunt create. "
+"Dacă discul de sistem cedează, instantaneele se vor pierde odată cu "
+"sistemul. Salvează instantaneele pe un disc extern care nu este de sistem, "
+"în modul RSYNC, pentru a te proteja împotriva defecțiunilor discului."
 
 #: src/Gtk/SetupWizardWindow.vala:94
 msgid "Backend"
@@ -259,19 +256,19 @@ msgstr "Dispozitiv de backup"
 
 #: src/Core/Main.vala:2319
 msgid "Backup device not specified!"
-msgstr "Dispozitivul de backup nu e specificat!"
+msgstr "Dispozitivul de backup nu este specificat!"
 
 #: src/Gtk/RestoreExcludeBox.vala:91
 msgid "Bittorrent Clients"
-msgstr "Clienți bittorrent"
+msgstr "Clienți BitTorrent"
 
 #: src/Gtk/SnapshotListBox.vala:299 src/Gtk/ScheduleBox.vala:136
 msgid "Boot"
-msgstr "Boot"
+msgstr "Pornire"
 
 #: src/Gtk/RestoreDeviceBox.vala:485
 msgid "Boot device not selected"
-msgstr "Dispozitivul pentru boot nu a fost selectat"
+msgstr "Dispozitivul de pornire nu este selectat"
 
 #: src/Core/Main.vala:1169
 msgid "Boot snapshot failed!"
@@ -290,19 +287,19 @@ msgstr "Instantaneele de pornire sunt activate"
 
 #: src/Gtk/BootOptionsWindow.vala:46
 msgid "Bootloader Options"
-msgstr "Opțiuni pentru bootloader"
+msgstr "Opțiuni bootloader"
 
 #: src/Gtk/RestoreDeviceBox.vala:402
 msgid "Bootloader Options (Advanced)"
-msgstr "Opțiuni bootloader (Avansat)"
+msgstr "Opțiuni bootloader (avansate)"
 
 #: src/Gtk/MainWindow.vala:170
 msgid "Browse"
-msgstr "Răsfoire"
+msgstr "Răsfoiește"
 
 #: src/Gtk/SnapshotListBox.vala:323
 msgid "Browse Files"
-msgstr "Răsfoiește fișiere"
+msgstr "Răsfoiește fișierele"
 
 #: src/Gtk/MainWindow.vala:171
 msgid "Browse selected snapshot"
@@ -310,11 +307,11 @@ msgstr "Răsfoiește instantaneul selectat"
 
 #: src/Core/Main.vala:2814
 msgid "Building file list..."
-msgstr "Se construiește lista de fișiere..."
+msgstr "Se generează lista de fișiere..."
 
 #: src/Core/Main.vala:1527
 msgid "Calculating required disk space..."
-msgstr "Se calculează spațiul pe disc necesar..."
+msgstr "Se calculează spațiul necesar pe disc..."
 
 #: src/Utility/Gtk/CustomMessageDialog.vala:156
 #: src/Utility/Gtk/CustomMessageDialog.vala:161 src/Utility/GtkHelper.vala:93
@@ -335,15 +332,15 @@ msgid ""
 "issues. After cancelling, you need to restore another snapshot, to bring the "
 "system to a consistent state. Click Yes to confirm."
 msgstr ""
-"Anularea procesului de restaurare va lăsa sistemul țintă într-un stadiu "
-"nepotrivit. E posibil ca sistemul să eșueze la pornire sau să vă confruntați "
-"cu diverse probleme. După anulare e nevoie să restaurați un alt instantaneu "
-"pentru a aduce sistemul la o stare consistentă. Fă clic pe Da pentru "
-"confirmare."
+"Anularea procesului de restaurare va lăsa sistemul țintă într-o stare "
+"inconsistentă. Este posibil ca sistemul să nu pornească sau să întâmpini "
+"diverse probleme. După anulare, trebuie să restaurezi un alt instantaneu "
+"pentru a aduce sistemul într-o stare consistentă. Fă clic pe Da pentru a "
+"confirma."
 
 #: src/Gtk/MainWindow.vala:532
 msgid "Cannot Delete Live Snapshot"
-msgstr "Nu se poate șterge un instantaneu live"
+msgstr "Nu se poate șterge instantaneul Live"
 
 #: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
 #: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
@@ -357,7 +354,7 @@ msgstr "Elemente modificate:"
 
 #: src/Gtk/RestoreWindow.vala:104
 msgid "Checking Restore Actions (Dry Run)"
-msgstr "Verificarea acțiunilor de restaurare (rulare în gol)"
+msgstr "Se verifică acțiunile de restaurare (simulare)"
 
 #: src/Core/Main.vala:3055
 msgid "Checking file systems for errors..."
@@ -367,7 +364,7 @@ msgstr "Se verifică sistemele de fișiere pentru erori..."
 #: src/Gtk/RsyncLogBox.vala:390
 #, c-format
 msgid "Checksum"
-msgstr "Suma de control"
+msgstr "Sumă de control"
 
 #: src/Core/Main.vala:2695
 msgid "Cleaning up..."
@@ -375,11 +372,11 @@ msgstr "Se curăță..."
 
 #: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:88
 msgid "Click to edit. Drag and drop to re-order."
-msgstr "Clic pentru editare. Trage și lasă să cadă pentru a reordona."
+msgstr "Fă clic pentru a edita. Trage și plasează pentru a reordona."
 
 #: src/Gtk/ExcludeBox.vala:59
 msgid "Click to edit. Drag-drop to re-order."
-msgstr "Clic pentru editare. Trage și lasă să cadă pentru a reordona."
+msgstr "Fă clic pentru a edita. Trage și plasează pentru a reordona."
 
 #: src/Gtk/RestoreWindow.vala:69
 msgid "Clone System"
@@ -387,7 +384,7 @@ msgstr "Clonează sistemul"
 
 #: src/Gtk/RestoreFinishBox.vala:68
 msgid "Cloning"
-msgstr "Se clonează"
+msgstr "Clonare"
 
 #: src/Core/Main.vala:3105
 msgid "Cloning system..."
@@ -407,16 +404,16 @@ msgstr "Închide fereastra pentru a ieși"
 
 #: src/Core/Main.vala:362
 msgid "Commands listed below are not available on this system"
-msgstr "Comenzile afișate mai jos nu sunt disponibile pe acest sistem"
+msgstr "Comenzile enumerate mai jos nu sunt disponibile pe acest sistem"
 
 #: src/Gtk/SnapshotListBox.vala:223
 msgid "Comments (click to edit)"
-msgstr "Comentarii (clic pentru a edita)"
+msgstr "Comentarii (fă clic pentru a edita)"
 
 #: src/Core/Main.vala:3098 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
 msgid "Comparing Files (Dry Run)..."
-msgstr "Se compară fișierele (execuție în gol)..."
+msgstr "Se compară fișierele (simulare)..."
 
 #: src/Core/Main.vala:2856
 msgid "Comparing files with rsync..."
@@ -438,29 +435,29 @@ msgstr "Confirmă acțiunile"
 #: src/AppConsole.vala:1119
 #, c-format
 msgid "Continue with restore? (y/n): "
-msgstr "Continuă restaurarea? (y/n): "
+msgstr "Continui cu restaurarea? (y/n): "
 
 #: src/AppConsole.vala:858 src/AppConsole.vala:997
 msgid "Could not find device"
-msgstr "Dispozitivul nu a fost găsit"
+msgstr "Nu s-a putut găsi dispozitivul"
 
 #: src/Utility/Device.vala:1330
 #, c-format
 msgid "Could not find file"
-msgstr "Fișierul nu a fost găsit"
+msgstr "Nu s-a putut găsi fișierul"
 
 #: src/AppConsole.vala:749
 msgid "Could not find snapshot"
-msgstr "Instantaneul nu a fost găsit"
+msgstr "Nu s-a putut găsi instantaneul"
 
 #: src/Core/Main.vala:3278
 msgid "Could not find system subvolume"
-msgstr "Subvolumul de sistem nu a fost găsit"
+msgstr "Nu s-a putut găsi subvolumul de sistem"
 
 #: src/Core/Main.vala:3306
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr ""
-"Nu s-au putut găsi subvolumele de sistem pentru crearea unui instantaneu de "
+"Nu s-au putut găsi subvolumele de sistem pentru crearea instantaneului de "
 "pre-restaurare"
 
 #: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
@@ -475,7 +472,7 @@ msgstr "Creează instantaneu"
 
 #: src/Gtk/ScheduleBox.vala:136
 msgid "Create one per boot"
-msgstr "Creează unul pentru fiecare pornire"
+msgstr "Creează unul la fiecare pornire"
 
 #: src/Gtk/ScheduleBox.vala:100
 msgid "Create one per day"
@@ -495,31 +492,33 @@ msgstr "Creează unul pe săptămână"
 
 #: src/AppConsole.vala:372
 msgid "Create snapshot (even if not scheduled)"
-msgstr "Creează instantaneu (chiar dacă nu este planificat)"
+msgstr "Creează instantaneu (chiar dacă nu este programat)"
 
 #: src/AppConsole.vala:371
 msgid "Create snapshot if scheduled"
-msgstr "Creează instantaneul dacă este programat"
+msgstr "Creează instantaneu dacă este programat"
 
 #: src/Gtk/MainWindow.vala:141
 msgid "Create snapshot of current system"
-msgstr "Creează un instantaneu al sistemului actual"
+msgstr "Creează instantaneul sistemului actual"
 
 #: src/Gtk/MainWindow.vala:1022
 msgid ""
 "Create snapshots manually or enable scheduled snapshots to protect your "
 "system"
 msgstr ""
-"Creează instantanee manual ori activează instantanee programate pentru "
-"protecția sistemului"
+"Creează instantanee manual sau activează instantaneele programate pentru a-"
+"ți proteja sistemul"
 
 #: src/Gtk/SnapshotBackendBox.vala:96
 msgid "Create snapshots using BTRFS"
-msgstr "Creează instantanee folosind BTRFS"
+msgstr "Creează instantanee utilizând BTRFS"
 
 #: src/Gtk/SnapshotBackendBox.vala:78
 msgid "Create snapshots using RSYNC tool and hard-links"
-msgstr "Creează instantanee folosind instrumentul RSYNC și hard-link-uri"
+msgstr ""
+"Creează instantanee utilizând instrumentul RSYNC și legăturile fizice (hard-"
+"links)"
 
 #: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
 #: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:570
@@ -538,28 +537,27 @@ msgstr "Director creat"
 
 #: src/Core/Main.vala:3328
 msgid "Created pre-restore snapshot"
-msgstr "Instantaneu de restabilire creat"
+msgstr "S-a creat instantaneul de pre-restaurare"
 
 #: src/Core/Main.vala:1783
 msgid "Created subvolume snapshot"
-msgstr "S-a creat un instantaneu al subvolumului"
+msgstr "S-a creat instantaneul subvolumului"
 
 #: src/Gtk/BackupBox.vala:71
 msgid "Creating Snapshot..."
-msgstr "Se creează un instantaneu..."
+msgstr "Se creează instantaneul..."
 
 #: src/Core/Main.vala:1721
 msgid "Creating new backup..."
-msgstr "Se creează o copie de rezervă nouă ..."
+msgstr "Se creează un backup nou..."
 
 #: src/Core/Main.vala:1566
 msgid "Creating new snapshot..."
-msgstr "Se creează un nou instantaneu..."
+msgstr "Se creează un instantaneu nou..."
 
 #: src/Core/Main.vala:3256
 msgid "Creating pre-restore snapshot from system subvolumes..."
-msgstr ""
-"Se creează un instantaneu înainte de restaurare din subvolumele de sistem..."
+msgstr "Se creează instantaneul de pre-restaurare din subvolumele de sistem..."
 
 #: src/Core/Main.vala:3870
 msgid "Critical Error"
@@ -567,11 +565,11 @@ msgstr "Eroare critică"
 
 #: src/Utility/CronTab.vala:136
 msgid "Cron job added"
-msgstr "S-a adăugat o sarcină cron"
+msgstr "Sarcină cron adăugată"
 
 #: src/Utility/CronTab.vala:217
 msgid "Cron job removed"
-msgstr "S-a eliminat sarcina cron"
+msgstr "Sarcina cron a fost eliminată"
 
 #: src/Utility/CronTab.vala:304
 msgid "Cron task exists"
@@ -610,7 +608,7 @@ msgstr "Șterge"
 
 #: src/Gtk/DeleteWindow.vala:62
 msgid "Delete Snapshots"
-msgstr "Șterge instantaneele"
+msgstr "Șterge instantanee"
 
 #: src/AppConsole.vala:386
 msgid "Delete all snapshots"
@@ -647,7 +645,7 @@ msgstr "Se șterg instantaneele..."
 #: src/Core/Subvolume.vala:141
 #, c-format
 msgid "Deleting subvolume"
-msgstr "Șterge subvolum"
+msgstr "Se șterge subvolumul"
 
 #: src/Gtk/RestoreExcludeBox.vala:105
 msgid "Deluge, Transmission"
@@ -660,7 +658,7 @@ msgstr "Descriere"
 #: src/Core/Subvolume.vala:217
 #, c-format
 msgid "Destroyed qgroup"
-msgstr "S-a distrus qgroupul"
+msgstr "qgroup distrus"
 
 #: src/Core/Subvolume.vala:208
 #, c-format
@@ -687,7 +685,7 @@ msgstr "Numele dispozitivului este gol!"
 #: src/Core/Main.vala:3588 src/Core/SnapshotRepo.vala:483
 #: src/AppConsole.vala:681
 msgid "Device not found"
-msgstr "Dispozitiv negăsit"
+msgstr "Dispozitivul nu a fost găsit"
 
 #: src/Gtk/BackupDeviceBox.vala:97
 #, c-format
@@ -701,7 +699,7 @@ msgstr "Dispozitivele afișate mai sus au sisteme de fișiere Linux."
 
 #: src/Gtk/RestoreDeviceBox.vala:84
 msgid "Devices from which snapshot was created are pre-selected."
-msgstr "Dispozitivele din care a fost creat instantaneul sunt preselectate."
+msgstr "Dispozitivele de pe care a fost creat instantaneul sunt preselectate."
 
 #: src/AppConsole.vala:335
 msgid "Devices with Linux file systems"
@@ -711,11 +709,11 @@ msgstr "Dispozitive cu sisteme de fișiere Linux"
 msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
 msgstr ""
 "Dispozitivele cu sisteme de fișiere Windows nu sunt acceptate (NTFS, FAT, "
-"etc)."
+"etc.)."
 
 #: src/Core/Main.vala:2513 src/Gtk/RestoreSummaryBox.vala:64
 msgid "Disclaimer"
-msgstr "Asumare a responsabilității"
+msgstr "Declinarea responsabilității"
 
 #: src/Gtk/BackupDeviceBox.vala:127
 msgid "Disk"
@@ -727,7 +725,7 @@ msgstr "Distribuție"
 
 #: src/Gtk/MainWindow.vala:1016
 msgid "Enable scheduled snapshots to protect your system"
-msgstr "Activează instantanee planificate pentru a-ți proteja sistemul"
+msgstr "Activează instantaneele programate pentru a-ți proteja sistemul"
 
 #: src/Utility/Device.vala:1476
 msgid "Encrypted Device"
@@ -735,27 +733,27 @@ msgstr "Dispozitiv criptat"
 
 #: src/Gtk/UsersBox.vala:232
 msgid "Encrypted Home Directory"
-msgstr "Directorul personal criptat"
+msgstr "Director Home criptat"
 
 #: src/AppConsole.vala:916
 #, c-format
 msgid "Enter device name or number"
-msgstr "Introduceți numele sau numărul dispozitivului"
+msgstr "Introdu numele sau numărul dispozitivului"
 
 #: src/AppConsole.vala:700 src/AppConsole.vala:1063
 #, c-format
 msgid "Enter device name or number (a=Abort)"
-msgstr "Introdu numele sau numărul dispozitivului (a=Anulare)"
+msgstr "Introdu numele sau numărul dispozitivului (a=Anulează)"
 
 #: src/Utility/Device.vala:1477
 #, c-format
 msgid "Enter passphrase to unlock '%s'"
-msgstr "Introdu expresia de acces pentru a debloca '%s'"
+msgstr "Introdu fraza de acces pentru a debloca '%s'"
 
 #: src/AppConsole.vala:778
 #, c-format
 msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
-msgstr "Introduc numărul instantaneului (a=Abort, p=Previous, n=Next)"
+msgstr "Introdu numărul instantaneului (a=Anulează, p=Anteriorul, n=Următorul)"
 
 #: src/Gtk/ExcludeBox.vala:231
 msgid "Enter the pattern to exclude (Ex: *.mp3, *.bak)"
@@ -767,7 +765,7 @@ msgstr "Eroare"
 
 #: src/Gtk/RestoreWindow.vala:478
 msgid "Error running Rsync"
-msgstr "Eroare la rularea rsync"
+msgstr "Eroare la rularea Rsync"
 
 #: src/Gtk/BackupWindow.vala:83 src/Gtk/SetupWizardWindow.vala:99
 msgid "Estimate"
@@ -795,7 +793,7 @@ msgstr "Exclude setările aplicațiilor"
 
 #: src/Gtk/RestoreWindow.vala:99
 msgid "Exclude Apps"
-msgstr "Exclude aplicațiile"
+msgstr "Exclude aplicații"
 
 #: src/Gtk/ExcludeMessageWindow.vala:70
 msgid "Exclude List"
@@ -803,11 +801,11 @@ msgstr "Listă de excluderi"
 
 #: src/Gtk/ExcludeListSummaryWindow.vala:49
 msgid "Exclude List Summary"
-msgstr "Rezumat al listei de excludere"
+msgstr "Rezumat listă de excluderi"
 
 #: src/Gtk/ExcludeBox.vala:230
 msgid "Exclude Pattern"
-msgstr "Exclude modelul"
+msgstr "Model de excludere"
 
 #: src/Gtk/ExcludeMessageWindow.vala:56
 msgid "Excluded Directories"
@@ -819,11 +817,11 @@ msgstr "Valori așteptate: O, B, H, D, W, M"
 
 #: src/Utility/CronTab.vala:132
 msgid "Failed to add cron job"
-msgstr "Eșec la adăugarea unui sarcini cron"
+msgstr "Nu s-a reușit adăugarea sarcinii cron"
 
 #: src/Utility/TeeJee.FileSystem.vala:198
 msgid "Failed to copy file"
-msgstr "Nu s-a putut copia fișierul"
+msgstr "Nu s-a reușit copierea fișierului"
 
 #: src/Utility/TeeJee.FileSystem.vala:314
 #: src/Utility/TeeJee.FileSystem.vala:323
@@ -840,11 +838,11 @@ msgstr "Nu s-a reușit crearea instantaneului"
 
 #: src/Core/Main.vala:1779
 msgid "Failed to create subvolume snapshot"
-msgstr "Nu s-a reușit crearea unui instantaneu de subvolum"
+msgstr "Nu s-a reușit crearea instantaneului subvolumului"
 
 #: src/Core/SnapshotRepo.vala:919 src/Core/SnapshotRepo.vala:923
 msgid "Failed to create symlinks"
-msgstr "Legăturile simbolice nu au putut fi create"
+msgstr "Nu s-a reușit crearea legăturilor simbolice (symlinks)"
 
 #: src/Utility/TeeJee.FileSystem.vala:387
 msgid "Failed to delete directory"
@@ -856,11 +854,11 @@ msgstr "Nu s-a reușit ștergerea fișierului"
 
 #: src/Core/Subvolume.vala:161
 msgid "Failed to delete snapshot nested subvolume"
-msgstr "Ștergerea subvolumului din snapshot a eșuat"
+msgstr "Nu s-a reușit ștergerea subvolumului imbricat al instantaneului"
 
 #: src/Core/Subvolume.vala:175
 msgid "Failed to delete snapshot subvolume"
-msgstr "Ștergerea nereușită a subvolumului instantaneului"
+msgstr "Nu s-a reușit ștergerea subvolumului instantaneului"
 
 #: src/Core/SnapshotRepo.vala:935
 msgid "Failed to delete symlinks"
@@ -868,68 +866,68 @@ msgstr "Nu s-a reușit ștergerea legăturilor simbolice"
 
 #: src/Utility/CronTab.vala:257
 msgid "Failed to export crontab file"
-msgstr "Nu s-a putut exporta fișierul crontab"
+msgstr "Nu s-a reușit exportarea fișierului crontab"
 
 #: src/AppConsole.vala:715 src/AppConsole.vala:785 src/AppConsole.vala:925
 #: src/AppConsole.vala:1028 src/AppConsole.vala:1079 src/AppConsole.vala:1125
 msgid "Failed to get input from user in 3 attempts"
-msgstr "Nu s-au putut obține informații de la utilizator în 3 încercări"
+msgstr "Nu s-a reușit obținerea datelor de la utilizator în 3 încercări"
 
 #: src/Utility/Device.vala:746
 msgid "Failed to get partition list"
-msgstr "Nu s-a putut obține lista de partiții"
+msgstr "Nu s-a reușit obținerea listei de partiții"
 
 #: src/Core/Main.vala:3667
 msgid "Failed to get partition list."
-msgstr "Nu s-a putut obține lista de partiții."
+msgstr "Nu s-a reușit obținerea listei de partiții."
 
 #: src/Utility/CronTab.vala:240
 msgid "Failed to install crontab file"
-msgstr "Nu s-a putut instala fișierul crontab"
+msgstr "Nu s-a reușit instalarea fișierului crontab"
 
 #: src/Gtk/RestoreDeviceBox.vala:521
 msgid "Failed to mount devices"
-msgstr "Eșec la montarea dispozitivelor"
+msgstr "Nu s-a reușit montarea dispozitivelor"
 
 #: src/Utility/TeeJee.FileSystem.vala:217
 msgid "Failed to move file"
-msgstr "Eșec la mutarea fișierului"
+msgstr "Nu s-a reușit mutarea fișierului"
 
 #: src/Core/Main.vala:3293
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr ""
-"Nu s-a reușit mutarea subvolumului de sistem în directorul de instantanee"
+"Nu s-a reușit mutarea subvolumului de sistem în directorul instantaneului"
 
 #: src/Core/Main.vala:4134
 msgid "Failed to query subvolume list"
-msgstr "Nu s-a reușit interogarea listei de subvolume"
+msgstr "Nu s-a reușit interogarea listei subvolumelor"
 
 #: src/Core/Main.vala:4219
 msgid "Failed to query subvolume quota"
-msgstr "Nu s-a putut obține cota subvolumului"
+msgstr "Nu s-a reușit interogarea cotei subvolumului"
 
 #: src/Utility/CronTab.vala:50
 msgid "Failed to read cron tab"
-msgstr "Eșec la citirea tabelului cron"
+msgstr "Nu s-a reușit citirea filei cron (cron tab)"
 
 #: src/Utility/TeeJee.FileSystem.vala:110
 #: src/Utility/TeeJee.FileSystem.vala:128
 #: src/Utility/TeeJee.FileSystem.vala:159
 msgid "Failed to read file"
-msgstr "Eșec la citirea fișierului"
+msgstr "Nu s-a reușit citirea fișierului"
 
 #: src/Core/SnapshotRepo.vala:895
 msgid "Failed to remove"
-msgstr "Eliminare nereușită"
+msgstr "Nu s-a reușit eliminarea"
 
 #: src/Utility/CronTab.vala:213
 msgid "Failed to remove cron job"
-msgstr "Eșec la eliminarea sarcinii cron"
+msgstr "Nu s-a reușit eliminarea sarcinii cron"
 
 #: src/Core/Snapshot.vala:532 src/Core/Snapshot.vala:544
 #: src/Core/Snapshot.vala:552
 msgid "Failed to remove snapshot"
-msgstr "Nu s-a putut elimina instantaneul"
+msgstr "Nu s-a reușit eliminarea instantaneului"
 
 #: src/Core/Subvolume.vala:267
 msgid "Failed to restore system subvolume"
@@ -947,7 +945,7 @@ msgstr "Nu s-a reușit deblocarea dispozitivului"
 
 #: src/Utility/Device.vala:1755
 msgid "Failed to unmount"
-msgstr "Eșec la demontare"
+msgstr "Nu s-a reușit demontarea"
 
 #: src/Core/Main.vala:3871
 msgid "Failed to unmount device!"
@@ -955,7 +953,7 @@ msgstr "Nu s-a reușit demontarea dispozitivului!"
 
 #: src/Utility/TeeJee.FileSystem.vala:182
 msgid "Failed to write file"
-msgstr "Eșec la scrierea fișierului"
+msgstr "Nu s-a reușit scrierea fișierului"
 
 #: src/Gtk/RsyncLogBox.vala:122
 msgid "File (snapshot)"
@@ -967,7 +965,7 @@ msgstr "Fișier (sistem)"
 
 #: src/Gtk/ExcludeMessageWindow.vala:97
 msgid "File Pattern"
-msgstr "Model de fișiere"
+msgstr "Model de fișier"
 
 #: src/Gtk/BackupBox.vala:83
 msgid "File and directory counts:"
@@ -976,21 +974,19 @@ msgstr "Număr de fișiere și directoare:"
 #: src/Utility/CronTab.vala:225 src/Utility/RsyncTask.vala:308
 #: src/Utility/TeeJee.FileSystem.vala:212
 msgid "File not found"
-msgstr "Fișier negăsit"
+msgstr "Fișierul nu a fost găsit"
 
 #: src/Gtk/ExcludeListSummaryWindow.vala:62
 msgid ""
 "Files &amp; directories matching the patterns below will be excluded. "
 "Patterns starting with a + will include the item instead of excluding."
 msgstr ""
-"Fișiere și directoarele care se potrivesc modelelor de mai jos vor fi "
-"excluse. Modelele care încep cu un + vor include elementul în loc să-l "
-"excludă."
+"Fișierele &amp; directoarele care se potrivesc cu modelele de mai jos vor fi "
+"excluse. Modelele care încep cu + vor include elementul în loc să îl excludă."
 
 #: src/Gtk/SnapshotBackendBox.vala:201
 msgid "Files and directories can be excluded to save disk space."
-msgstr ""
-"Fișierele și directoarele pot fi excluse pentru a economisi spațiu pe disc."
+msgstr "Fișierele și directoarele pot fi excluse pentru a economisi spațiu pe disc."
 
 #: src/Gtk/RestoreBox.vala:119
 msgid "Files and directory counts:"
@@ -1007,7 +1003,7 @@ msgstr "Sistem de fișiere"
 
 #: src/Gtk/RsyncLogBox.vala:302
 msgid "Filter by name or path"
-msgstr "Filtrează după nume sau adresă"
+msgstr "Filtrează după nume sau cale"
 
 #: src/Gtk/SettingsWindow.vala:103
 msgid "Filters"
@@ -1016,7 +1012,7 @@ msgstr "Filtre"
 #: src/Gtk/BackupWindow.vala:98 src/Gtk/SetupWizardWindow.vala:211
 #: src/Gtk/DeleteWindow.vala:103
 msgid "Finish"
-msgstr "Finalizare"
+msgstr "Finalizează"
 
 #: src/Gtk/RestoreWindow.vala:130 src/Gtk/SetupWizardWindow.vala:120
 msgid "Finished"
@@ -1032,7 +1028,7 @@ msgstr "Primul instantaneu necesită:"
 
 #: src/Core/Main.vala:3226
 msgid "Found existing pre-restore snapshot"
-msgstr "A fost găsit un instantaneu existent înainte de restaurare"
+msgstr "S-a găsit un instantaneu de pre-restaurare existent"
 
 #: src/Gtk/BackupDeviceBox.vala:215
 msgid "Free"
@@ -1077,8 +1073,8 @@ msgid ""
 "Hidden files and folders are included by default since they contain user-"
 "specific configuration files."
 msgstr ""
-"Fișierele și dosarele ascunse sunt incluse în mod implicit, deoarece conțin "
-"fișiere de configurare specifice utilizatorului."
+"Fișierele și dosarele ascunse sunt incluse implicit deoarece conțin fișiere "
+"de configurare specifice utilizatorului."
 
 #: src/Gtk/DeleteWindow.vala:181
 msgid "Hide"
@@ -1086,7 +1082,7 @@ msgstr "Ascunde"
 
 #: src/AppConsole.vala:395
 msgid "Hide rsync output"
-msgstr "Ascunde ieșirea rsync"
+msgstr "Ascunde rezultatul rsync"
 
 #: src/Gtk/DeleteWindow.vala:182
 msgid "Hide this window (files will be deleted in background)"
@@ -1094,11 +1090,11 @@ msgstr "Ascunde această fereastră (fișierele vor fi șterse în fundal)"
 
 #: src/Gtk/UsersBox.vala:116
 msgid "Home"
-msgstr "Acasă"
+msgstr "Home"
 
 #: src/Gtk/ExcludeMessageWindow.vala:115
 msgid "Home Directory"
-msgstr "Directorul personal"
+msgstr "Directorul Home"
 
 #: src/Gtk/SnapshotListBox.vala:300 src/Gtk/ScheduleBox.vala:118
 msgid "Hourly"
@@ -1117,25 +1113,24 @@ msgid ""
 "If the restored system fails to boot, then boot from the Live CD/USB, "
 "install Timeshift, and try restoring another snapshot."
 msgstr ""
-"Dacă sistemul restabilit nu reușește să pornească,  pornește folosind un "
-"Live CD/USB, instalează Timeshift și încearcă să restaurezi un alt "
-"instantaneu."
+"Dacă sistemul restaurat nu reușește să pornească, atunci pornește de pe Live "
+"CD/USB, instalează Timeshift și încearcă să restaurezi un alt instantaneu."
 
 #: src/Core/Main.vala:2519
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
 msgstr ""
-"Dacă acești termeni nu sunt acceptabili pentru dvs., vă rugăm să nu "
-"continuați dincolo de acest punct!"
+"Dacă acești termeni nu sunt acceptabili pentru tine, te rugăm să nu continui "
+"dincolo de acest punct!"
 
 #: src/Gtk/ExcludeBox.vala:54
 msgid "Include / Exclude Patterns"
-msgstr "Include / exclude modelele"
+msgstr "Modele de includere / excludere"
 
 #: src/Gtk/UsersBox.vala:336
 msgid "Include @home subvolume in backups"
-msgstr "Include subvolumul @home în copiile de siguranță"
+msgstr "Include subvolumul @home în backupuri"
 
 #: src/Gtk/UsersBox.vala:262
 msgid "Include All Files"
@@ -1152,7 +1147,7 @@ msgstr "Instantaneu nevalid"
 #: src/AppConsole.vala:260
 #, c-format
 msgid "Invalid command line arguments"
-msgstr "Argumentele liniei de comandă sunt nevalide"
+msgstr "Argumente în linia de comandă nevalide"
 
 #: src/Gtk/MainWindow.vala:806
 msgid "Invalid snapshot"
@@ -1160,7 +1155,7 @@ msgstr "Instantaneu nevalid"
 
 #: src/Gtk/ExcludeBox.vala:282
 msgid "Items Not Selected"
-msgstr "Elementele nu sunt selectate"
+msgstr "Elemente neselectate"
 
 #: src/Gtk/ScheduleBox.vala:283
 msgid "Keep"
@@ -1172,22 +1167,22 @@ msgid ""
 "etc. If un-checked, previous configuration files will be restored from "
 "snapshot."
 msgstr ""
-"Păstrează fișierele de configurare pentru clienții bittorrent cum ar fi "
-"Deluge, Transmission, etc. Dacă nu este bifată, fișierele de configurare "
-"neconfirmate vor fi restabilite din instantaneu."
+"Păstrează fișierele de configurare pentru clienții BitTorrent precum Deluge, "
+"Transmission etc. Dacă debifezi, fișierele de configurare anterioare vor fi "
+"restaurate din instantaneu."
 
 #: src/Gtk/RestoreExcludeBox.vala:85
 msgid ""
 "Keep configuration files for web browsers like Firefox and Chrome. If un-"
 "checked, previous configuration files will be restored from snapshot"
 msgstr ""
-"Păstrează fișierele de configurare pentru browserele web, cum ar fi Firefox "
-"și Chrome. Dacă nu este bifat, fișierele de configurare anterioare vor fi "
-"restabilite din instantaneu"
+"Păstrează fișierele de configurare pentru browserele web precum Firefox și "
+"Chrome. Dacă debifezi, fișierele de configurare anterioare vor fi restaurate "
+"din instantaneu"
 
 #: src/Gtk/RestoreDeviceBox.vala:244
 msgid "Keep on Root Device"
-msgstr "Păstrează pe dispozitivul rădăcină"
+msgstr "Păstrează pe dispozitivul rădăcină (root)"
 
 #: src/Gtk/RestoreDeviceBox.vala:229
 msgid "Keep this mount path on the root filesystem"
@@ -1206,12 +1201,12 @@ msgstr "Etichetă"
 #: src/Core/Main.vala:1162
 #, c-format
 msgid "Last boot snapshot is %d hours old"
-msgstr "Ultimul instantaneu de pornire este vechi de %d ore"
+msgstr "Ultimul instantaneu de pornire are o vechime de %d ore"
 
 #: src/Core/Main.vala:1157
 msgid "Last boot snapshot is older than system start time"
 msgstr ""
-"Ultimul instantaneu de pornire este mai vechi decât ora de pornire a "
+"Ultimul instantaneu de pornire este mai vechi decât timpul de pornire al "
 "sistemului"
 
 #: src/Core/Main.vala:1153
@@ -1221,7 +1216,7 @@ msgstr "Ultimul instantaneu de pornire nu a fost găsit"
 #: src/Core/Main.vala:1224
 #, c-format
 msgid "Last daily snapshot is %d hours old"
-msgstr "Ultimul instantaneu zilnic este vechi de %d ore"
+msgstr "Ultimul instantaneu zilnic are o vechime de %d ore"
 
 #: src/Core/Main.vala:1219
 msgid "Last daily snapshot is more than 1 day old"
@@ -1234,11 +1229,11 @@ msgstr "Ultimul instantaneu zilnic nu a fost găsit"
 #: src/Core/Main.vala:1193
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
-msgstr "Ultimul instantaneu orar este vechi de %d minute"
+msgstr "Ultimul instantaneu orar are o vechime de %d minute"
 
 #: src/Core/Main.vala:1188
 msgid "Last hourly snapshot is more than 1 hour old"
-msgstr "Ultimul instantaneu orar este mai vechi de o oră"
+msgstr "Ultimul instantaneu orar este mai vechi de 1 oră"
 
 #: src/Core/Main.vala:1184
 msgid "Last hourly snapshot not found"
@@ -1247,11 +1242,11 @@ msgstr "Ultimul instantaneu orar nu a fost găsit"
 #: src/Core/Main.vala:1286
 #, c-format
 msgid "Last monthly snapshot is %d days old"
-msgstr "Ultimul instantaneu lunar este vechi de %d zile"
+msgstr "Ultimul instantaneu lunar are o vechime de %d zile"
 
 #: src/Core/Main.vala:1281
 msgid "Last monthly snapshot is more than 1 month old"
-msgstr "Ultimul instantaneu lunar este mai vechi de o lună"
+msgstr "Ultimul instantaneu lunar este mai vechi de 1 lună"
 
 #: src/Core/Main.vala:1277
 msgid "Last monthly snapshot not found"
@@ -1260,11 +1255,11 @@ msgstr "Ultimul instantaneu lunar nu a fost găsit"
 #: src/Core/Main.vala:1255
 #, c-format
 msgid "Last weekly snapshot is %d days old"
-msgstr "Ultimul instantaneu săptămânal este vechi de %d zile"
+msgstr "Ultimul instantaneu săptămânal are o vechime de %d zile"
 
 #: src/Core/Main.vala:1250
 msgid "Last weekly snapshot is more than 1 week old"
-msgstr "Ultimul instantaneu săptămânal este mai vechi de o săptămână"
+msgstr "Ultimul instantaneu săptămânal este mai vechi de 1 săptămână"
 
 #: src/Core/Main.vala:1246
 msgid "Last weekly snapshot not found"
@@ -1278,7 +1273,7 @@ msgstr "Cel mai recent instantaneu"
 #: src/Core/Main.vala:1627
 #, c-format
 msgid "Linking from snapshot"
-msgstr "Se leagă din instantaneu"
+msgstr "Se creează legături din instantaneu"
 
 #: src/AppConsole.vala:366
 msgid "List"
@@ -1286,15 +1281,15 @@ msgstr "Listă"
 
 #: src/AppConsole.vala:368
 msgid "List devices"
-msgstr "Afișează dispozitivele"
+msgstr "Listează dispozitivele"
 
 #: src/AppConsole.vala:367
 msgid "List snapshots"
-msgstr "Afișează instantaneele"
+msgstr "Listează instantaneele"
 
 #: src/Gtk/MainWindow.vala:948
 msgid "Live USB Mode (Restore Only)"
-msgstr "Modul Live USB (numai restaurare)"
+msgstr "Mod Live USB (Doar restaurare)"
 
 #: src/Gtk/SettingsWindow.vala:90 src/Gtk/BackupWindow.vala:88
 #: src/Gtk/SetupWizardWindow.vala:104
@@ -1307,13 +1302,11 @@ msgstr "Fereastra principală a fost închisă de utilizator"
 
 #: src/Gtk/SnapshotListBox.vala:351
 msgid "Mark/Unmark for Deletion"
-msgstr "Marchează/demarchează pentru ștergere"
+msgstr "Marchează/Demarchează pentru ștergere"
 
 #: src/Core/SnapshotRepo.vala:632 src/Core/SnapshotRepo.vala:675
 msgid "Maximum backups exceeded for backup level"
-msgstr ""
-"Numărul maxim de copii de siguranță a fost depășit pentru nivelul de "
-"instantanee"
+msgstr "Numărul maxim de backupuri a fost depășit pentru nivelul de backup"
 
 #: src/Gtk/MainWindow.vala:207
 msgid "Menu"
@@ -1351,11 +1344,11 @@ msgstr "Instantaneul lunar a eșuat!"
 
 #: src/Core/Main.vala:2420 src/Core/Main.vala:2453
 msgid "Mount"
-msgstr "Montare"
+msgstr "Montează"
 
 #: src/Core/Main.vala:3300
 msgid "Moved system subvolume to snapshot directory"
-msgstr "Subvolumul de sistem a fost mutat în directorul de instantanee"
+msgstr "S-a mutat subvolumul de sistem în directorul instantaneului"
 
 #: src/Gtk/MainWindow.vala:782
 msgid "Multiple snapshots selected"
@@ -1381,11 +1374,11 @@ msgstr "Nicio modificare"
 
 #: src/Gtk/MainWindow.vala:601 src/Gtk/DeleteWindow.vala:335
 msgid "No Snapshots Selected"
-msgstr "Nu sunt selectate instantanee"
+msgstr "Niciun instantaneu selectat"
 
 #: src/Gtk/MainWindow.vala:1021
 msgid "No snapshots available"
-msgstr "Nu sunt disponibile instantanee"
+msgstr "Niciun instantaneu disponibil"
 
 #: src/Core/SnapshotRepo.vala:834 src/Gtk/MainWindow.vala:965
 #: src/AppConsole.vala:329
@@ -1406,7 +1399,7 @@ msgstr "Nu există instantanee pe acest dispozitiv"
 
 #: src/Gtk/MainWindow.vala:775
 msgid "No snapshots selected"
-msgstr "Nu sunt selectate instantanee"
+msgstr "Niciun instantaneu selectat"
 
 #: src/Gtk/MainWindow.vala:998 src/Gtk/MainWindow.vala:1000
 msgid "None"
@@ -1423,11 +1416,11 @@ msgstr "Neselectat"
 
 #: src/Core/Main.vala:500
 msgid "Not Supported"
-msgstr "Nu este acceptat"
+msgstr "Nesuportat"
 
 #: src/Core/SnapshotRepo.vala:547 src/Core/SnapshotRepo.vala:576
 msgid "Not enough disk space"
-msgstr "Nu există suficient spațiu pe disc"
+msgstr "Spațiu insuficient pe disc"
 
 #: src/Gtk/FinishBox.vala:55 src/AppConsole.vala:412
 msgid "Notes"
@@ -1440,7 +1433,7 @@ msgstr "Nimic de făcut!"
 #: src/AppConsole.vala:438 src/AppConsole.vala:468 src/AppConsole.vala:507
 #: src/AppConsole.vala:555
 msgid "Num"
-msgstr "Num"
+msgstr "Nr."
 
 #: src/Gtk/ScheduleBox.vala:282
 msgid ""
@@ -1462,13 +1455,13 @@ msgid ""
 "OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout "
 "(@ and @home subvolumes). Other layouts are not supported."
 msgstr ""
-"Sistemul de operare trebuie instalat pe o partiție BTRFS cu aranjamentul "
-"subvolumelor tip Ubuntu (subvolumele @ și @home). Alte aranjamente nu sunt "
+"Sistemul de operare trebuie instalat pe o partiție BTRFS cu aranjament de "
+"subvolume de tip Ubuntu (subvolumele @ și @home). Alte aranjamente nu sunt "
 "acceptate."
 
 #: src/Core/Main.vala:4392
 msgid "Older log files removed"
-msgstr "Fișierele de înregistrări mai vechi au fost șterse"
+msgstr "Fișierele jurnal mai vechi au fost eliminate"
 
 #: src/Gtk/MainWindow.vala:999
 msgid "Oldest snapshot"
@@ -1483,8 +1476,8 @@ msgstr "La cerere (manual)"
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
 msgstr ""
-"Doar aranjamentele tip Ubuntu cu subvolume @ și @home sunt momentan "
-"acceptate."
+"Doar aranjamentele de tip Ubuntu cu subvolumele @ și @home sunt acceptate în "
+"prezent."
 
 #: src/Gtk/MainWindow.vala:208
 msgid "Open Menu"
@@ -1495,8 +1488,8 @@ msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
 msgstr ""
-"Opțiunea --snapshot-device nu ar trebui specificată pentru crearea "
-"instantaneelor în modul BTRFS"
+"Opțiunea --snapshot-device nu trebuie specificată pentru crearea de "
+"instantanee în modul BTRFS"
 
 #: src/AppConsole.vala:364 src/AppGtk.vala:130
 msgid "Options"
@@ -1519,7 +1512,7 @@ msgstr "Dispozitiv părinte"
 
 #: src/Core/Main.vala:2784 src/Core/Main.vala:2875 src/Gtk/RsyncLogBox.vala:222
 msgid "Parsing log file..."
-msgstr "Se citește fișierul de jurnale..."
+msgstr "Se analizează fișierul jurnal..."
 
 #: src/Gtk/RestoreDeviceBox.vala:510
 msgid "Partition has an unsupported subvolume layout."
@@ -1536,65 +1529,66 @@ msgstr "Model"
 
 #: src/Gtk/BackupWindow.vala:194 src/Gtk/BackupWindow.vala:200
 msgid "Pause"
-msgstr ""
+msgstr "Pauză"
 
 #: src/Gtk/BackupBox.vala:137 src/Gtk/BackupBox.vala:278
 msgid "Paused"
-msgstr ""
+msgstr "În pauză"
 
 #: src/Gtk/BackupBox.vala:98 src/Gtk/RestoreBox.vala:133
 #: src/Gtk/RsyncLogBox.vala:396
 #, c-format
 msgid "Permissions"
-msgstr "Drepturi"
+msgstr "Permisiuni"
 
 #: src/Core/Main.vala:272
 msgid "Please check if you have multiple windows open."
-msgstr "Te rog să verifici dacă ai mai multe ferestre deschise."
+msgstr "Te rugăm să verifici dacă ai mai multe ferestre deschise."
 
 #: src/Core/Main.vala:2551
 msgid "Please do not interrupt the restore process!"
-msgstr "Te rog să nu întrerupi procesul de restaurare!"
+msgstr "Te rugăm să nu întrerupi procesul de restaurare!"
 
 #: src/Core/Main.vala:363
 msgid "Please install required packages and try running TimeShift again"
 msgstr ""
-"Te rog instalează pachetele necesare și încearcă să execuți iar TimeShift"
+"Te rugăm să instalezi pachetele necesare și să încerci să rulezi din nou "
+"TimeShift"
 
 #: src/AppGtk.vala:145
 msgid "Please re-run the application as admin (using 'sudo' or 'su')"
 msgstr ""
-"Te rog să rulezi din nou aplicația ca administrator (folosind 'sudo' sau "
+"Te rugăm să rulezi din nou aplicația ca administrator (folosind 'sudo' sau "
 "'su')"
 
 #: src/AppConsole.vala:110
 msgid "Please run the application as admin (using 'sudo' or 'su')"
 msgstr ""
-"Te rog să rulezi aplicația ca administrator (folosind 'sudo' sau 'su')"
+"Te rugăm să rulezi aplicația ca administrator (folosind 'sudo' sau 'su')"
 
 #: src/Core/Main.vala:2501
 msgid "Please save your work and close all applications."
-msgstr "Te rog să-ți salvezi munca și să închizi toate aplicațiile."
+msgstr "Te rugăm să îți salvezi munca și să închizi toate aplicațiile."
 
 #: src/Gtk/MainWindow.vala:687
 msgid "Please select a snapshot to view the log!"
-msgstr "Te rog selectează un instantaneu pentru a vizualiza jurnalul!"
+msgstr "Selectează un instantaneu pentru a vizualiza jurnalul!"
 
 #: src/Gtk/RestoreDeviceBox.vala:498
 msgid "Please select the GRUB device"
-msgstr "Te rog să selectezi dispozitivul GRUB"
+msgstr "Te rugăm să selectezi dispozitivul GRUB"
 
 #: src/Core/Main.vala:268
 msgid "Please wait a few minutes and try again."
-msgstr "Te rog să aștepți câteva minute și să încercați din nou."
+msgstr "Așteaptă câteva minute și încearcă din nou."
 
 #: src/Gtk/MainWindow.vala:744
 msgid "Please wait for snapshots to be deleted."
-msgstr "Te rog să aștepți ca instantaneele să fie șterse."
+msgstr "Așteaptă ștergerea instantaneelor."
 
 #: src/Gtk/EstimateBox.vala:64
 msgid "Please wait..."
-msgstr "Te rog să aștepți..."
+msgstr "Așteaptă..."
 
 #: src/Gtk/RsyncLogBox.vala:188
 msgid "Populating list..."
@@ -1609,15 +1603,15 @@ msgstr "Se pregătește..."
 #: src/Gtk/RestoreWindow.vala:193 src/Gtk/BackupWindow.vala:157
 #: src/Gtk/SetupWizardWindow.vala:195 src/Gtk/DeleteWindow.vala:157
 msgid "Previous"
-msgstr "Anterior"
+msgstr "Înapoi"
 
 #: src/AppGtk.vala:132
 msgid "Print debug information"
-msgstr "Tipărire informații de depanare"
+msgstr "Afișează informații de depanare"
 
 #: src/AppConsole.vala:398 src/AppGtk.vala:134
 msgid "Print version number"
-msgstr "Scrie numărul de versiune"
+msgstr "Afișează numărul versiunii"
 
 #: src/Core/Main.vala:4082
 msgid "Query completed"
@@ -1625,7 +1619,7 @@ msgstr "Interogare finalizată"
 
 #: src/Core/Main.vala:4065
 msgid "Querying subvolume info..."
-msgstr "Se solicită informații despre subvolum..."
+msgstr "Se interoghează informațiile despre subvolum..."
 
 #: src/Gtk/SnapshotBackendBox.vala:77
 msgid "RSYNC"
@@ -1640,27 +1634,27 @@ msgid ""
 "Re-generates initramfs for all installed kernels. This is generally not "
 "needed. Select this only if the restored system fails to boot."
 msgstr ""
-"Regenerează initramfs pentru toate nucleele instalate. De obicei nu este "
-"nevoie de acest lucru. Selectează doar dacă sistemul restaurat nu poate "
-"porni."
+"Regenerează initramfs pentru toate nucleele (kernel-urile) instalate. Acest "
+"lucru nu este, în general, necesar. Selectează această opțiune doar dacă "
+"sistemul restaurat nu reușește să pornească."
 
 #: src/AppConsole.vala:1022
 #, c-format
 msgid "Re-install GRUB2 bootloader?"
-msgstr "Reinstalezi bootloader-ul GRUB2?"
+msgstr "Reinstalezi bootloaderul GRUB2?"
 
 #: src/Core/Main.vala:2614
 msgid "Re-installing GRUB2 bootloader..."
-msgstr "Se reinstalează bootloader-ul GRUB2..."
+msgstr "Se reinstalează bootloaderul GRUB2..."
 
 #: src/Gtk/BootOptionsBox.vala:120
 msgid "Re-installs the GRUB2 bootloader on the selected device."
-msgstr "Reinstalează bootloader-ul GRUB2 pe dispozitivul selectat."
+msgstr "Reinstalează bootloaderul GRUB2 pe dispozitivul selectat."
 
 #: src/Gtk/RsyncLogBox.vala:181
 #, c-format
 msgid "Read %'d of %'d lines..."
-msgstr "Citește %'d din %'d linii..."
+msgstr "S-au citit %'d din %'d linii..."
 
 #: src/Core/Main.vala:2714
 msgid "Rebooting system..."
@@ -1673,7 +1667,7 @@ msgstr "Recomandat"
 
 #: src/Gtk/BackupDeviceBox.vala:65 src/Gtk/RestoreDeviceBox.vala:70
 msgid "Refresh"
-msgstr "Reîmprospătare"
+msgstr "Reîmprospătează"
 
 #: src/Gtk/BackupDeviceBox.vala:106
 msgid "Remote and network locations are not supported."
@@ -1691,20 +1685,20 @@ msgstr "Eliminat"
 
 #: src/Utility/CronTab.vala:340
 msgid "Removed cron task"
-msgstr "S-a șters sarcina cron"
+msgstr "Sarcina cron a fost eliminată"
 
 #: src/Core/Main.vala:3934
 #, c-format
 msgid "Removed mount directory: '%s'"
-msgstr "S-a șters directorul de montări „%s”"
+msgstr "Director de montare eliminat: '%s'"
 
 #: src/Core/Snapshot.vala:557
 msgid "Removed snapshot"
-msgstr "S-a șters instantaneul"
+msgstr "Instantaneu eliminat"
 
 #: src/Core/Snapshot.vala:486
 msgid "Removing"
-msgstr "Eliminare"
+msgstr "Se elimină"
 
 #: src/Core/Snapshot.vala:523
 msgid "Removing snapshot"
@@ -1728,11 +1722,11 @@ msgstr "Restaurează subvolumul @home"
 
 #: src/Gtk/RestoreWindow.vala:89
 msgid "Restore Device"
-msgstr "Restaurează dispozitivul"
+msgstr "Dispozitiv de restaurare"
 
 #: src/Gtk/RestoreWindow.vala:94
 msgid "Restore Exclude"
-msgstr "Excludere restaurare"
+msgstr "Excluderi restaurare"
 
 #: src/Gtk/RestoreWindow.vala:69
 msgid "Restore Snapshot"
@@ -1740,7 +1734,7 @@ msgstr "Restaurează instantaneul"
 
 #: src/Core/Main.vala:3132 src/Core/Main.vala:3174
 msgid "Restore completed"
-msgstr "Restaurare completă"
+msgstr "Restaurare finalizată"
 
 #: src/Gtk/MainWindow.vala:151
 msgid "Restore selected snapshot"
@@ -1752,12 +1746,11 @@ msgstr "Restaurează instantaneul"
 
 #: src/Gtk/RestoreFinishBox.vala:96
 msgid "Restored subvolumes will become active after system is restarted."
-msgstr ""
-"Subvolumele restaurate vor deveni active atunci când sistemul repornește."
+msgstr "Subvolumele restaurate vor deveni active după repornirea sistemului."
 
 #: src/Core/Subvolume.vala:271
 msgid "Restored system subvolume"
-msgstr "S-a restaurat subvolumul de sistem"
+msgstr "Subvolum de sistem restaurat"
 
 #: src/Gtk/RestoreBox.vala:77 src/Gtk/RestoreBox.vala:190
 msgid "Restoring Snapshot..."
@@ -1770,9 +1763,9 @@ msgid ""
 "snapshot can be restored later to 'undo' the restore."
 msgstr ""
 "Restaurarea unui instantaneu va înlocui subvolumele de sistem, iar "
-"subvolumele de sistem folosite actual vor fi păstrate ca și un instantaneu "
-"nou. Dacă este nevoie, acest instantaneu se poate restaura mai târziu pentru "
-"a anula restaurarea."
+"subvolumele de sistem utilizate în prezent vor fi păstrate ca un instantaneu "
+"nou. Dacă este necesar, acest instantaneu poate fi restaurat ulterior pentru "
+"a 'anula' restaurarea."
 
 #: src/Core/Main.vala:3101
 msgid "Restoring snapshot..."
@@ -1786,34 +1779,34 @@ msgid ""
 "files will be backed up when snapshot is created, and replaced when snapshot "
 "is restored."
 msgstr ""
-"Restaurarea instantaneelor înlocuiește numai fișiere și setări de sistem. "
-"Fișierele și directoarele vizibile din directoarele personale nu vor fi "
-"atinse. Acest comportament poate fi schimbat adăugând un filtru pentru a "
-"include acele fișiere. Fișierele incluse vor fi păstrate în siguranță când "
-"instantaneul este creat și înlocuite când este restaurat."
+"Restaurarea instantaneelor înlocuiește doar fișierele și setările de sistem. "
+"Fișierele și directoarele neascunse din directoarele home ale utilizatorului "
+"nu vor fi afectate. Acest comportament poate fi modificat prin adăugarea "
+"unui filtru pentru a include aceste fișiere. Fișierele incluse vor face "
+"parte din backup la crearea instantaneului și vor fi înlocuite la "
+"restaurarea instantaneului."
 
 #: src/Gtk/BackupWindow.vala:204
 msgid "Resume"
-msgstr ""
+msgstr "Reia"
 
 #: src/Utility/Device.vala:1958
 #, c-format
 msgid "Revision"
-msgstr "Revizuire"
+msgstr "Revizie"
 
 #: src/Gtk/RestoreDeviceBox.vala:438
 msgid "Root device not selected"
-msgstr "Dispozitivul rădăcină nu este selectat"
+msgstr "Dispozitivul rădăcină (root) nu este selectat"
 
 #: src/Gtk/RsyncLogWindow.vala:49
 msgid "Rsync Log Viewer"
-msgstr "Vizualizatorul jurnalelor Rsync"
+msgstr "Vizualizator jurnal Rsync"
 
 #: src/AppGtk.vala:136
 #, c-format
 msgid "Run 'timeshift' for the command-line version of this tool"
-msgstr ""
-"Rulează `timeshift` pentru versiunea în terminal al acestui instrument"
+msgstr "Rulează 'timeshift' pentru versiunea în linie de comandă a acestui instrument"
 
 #: src/AppConsole.vala:396
 msgid "Run in non-interactive mode"
@@ -1828,8 +1821,8 @@ msgid ""
 "Save snapshots to an external disk instead of the system disk to guard "
 "against drive failures."
 msgstr ""
-"Salvează instantaneele într-un disc extern în loc de discul de sistem pentru "
-"a proteja împotriva eșecurilor de disc."
+"Salvează instantaneele pe un disc extern în loc de discul sistemului pentru "
+"a te proteja împotriva defecțiunilor unității."
 
 #: src/Gtk/FinishBox.vala:97
 msgid ""
@@ -1838,10 +1831,11 @@ msgid ""
 "even install another Linux distribution and later roll-back the previous "
 "distribution by restoring a snapshot."
 msgstr ""
-"Salvarea instantaneelor pe un disc altul decât cel de sistem permite "
-"formatarea și reinstalarea sistemului de operare pe discul de sistem fără a "
-"pierde instantaneele stocate pe el. Poți inclusiv instala altă distribuție "
-"de Linux și apoi să te întorci la cea veche folosind un instantaneu."
+"Salvarea instantaneelor pe un disc care nu este de sistem îți permite să "
+"formatezi și să reinstalezi sistemul de operare pe discul de sistem fără a "
+"pierde instantaneele stocate pe acesta. Poți chiar să instalezi o altă "
+"distribuție Linux și, ulterior, să revii la distribuția anterioară prin "
+"restaurarea unui instantaneu."
 
 #: src/Core/Main.vala:1568 src/Core/Main.vala:1723 src/Core/Main.vala:1725
 msgid "Saving to device"
@@ -1849,11 +1843,11 @@ msgstr "Se salvează pe dispozitiv"
 
 #: src/Gtk/SettingsWindow.vala:93 src/Gtk/SetupWizardWindow.vala:109
 msgid "Schedule"
-msgstr "Program"
+msgstr "Programare"
 
 #: src/Core/Main.vala:275
 msgid "Scheduled snapshot in progress..."
-msgstr "Instantaneu programat în progres..."
+msgstr "Instantaneu programat în curs de desfășurare..."
 
 #: src/Core/Main.vala:1304 src/Gtk/MainWindow.vala:1015
 #: src/Gtk/ScheduleBox.vala:312
@@ -1862,8 +1856,7 @@ msgstr "Instantaneele programate sunt dezactivate"
 
 #: src/Gtk/FinishBox.vala:78
 msgid "Scheduled snapshots are disabled. It's recommended to enable it."
-msgstr ""
-"Instantaneele programate sunt dezactivate. Este recomandat să le activezi."
+msgstr "Instantaneele programate sunt dezactivate. Se recomandă activarea lor."
 
 #: src/Gtk/ScheduleBox.vala:305
 msgid "Scheduled snapshots are enabled"
@@ -1874,17 +1867,17 @@ msgid ""
 "Scheduled snapshots are enabled. Snapshots will be created automatically for "
 "selected levels."
 msgstr ""
-"Instantaneele programate sunt activate. Vor fi create instantanee automat "
+"Instantaneele programate sunt activate. Instantaneele vor fi create automat "
 "pentru nivelurile selectate."
 
 #: src/AppConsole.vala:902
 #, c-format
 msgid "Select '%s' device (default = %s)"
-msgstr "Selectează dispozitivul „%s” (implicit = %s)"
+msgstr "Selectează dispozitivul '%s' (implicit = %s)"
 
 #: src/Core/SnapshotRepo.vala:514 src/AppConsole.vala:707
 msgid "Select BTRFS system disk with root subvolume (@)"
-msgstr "Selectează discul de sistem BTRFS cu subvolum rădăcină (@)"
+msgstr "Selectează discul de sistem BTRFS cu subvolumul rădăcină (@)"
 
 #: src/AppConsole.vala:1039
 msgid "Select GRUB device"
@@ -1908,7 +1901,7 @@ msgstr "Selectează tipul instantaneului"
 
 #: src/Gtk/DeleteWindow.vala:85
 msgid "Select Snapshots"
-msgstr "Selectează instantaneele"
+msgstr "Selectează instantanee"
 
 #: src/Gtk/RestoreDeviceBox.vala:61
 msgid "Select Target Device"
@@ -1917,35 +1910,35 @@ msgstr "Selectează dispozitivul țintă"
 #: src/Gtk/BackupDeviceBox.vala:410
 #, c-format
 msgid "Select a partition on this disk"
-msgstr "Selectează o partiție de pe acest disc"
+msgstr "Selectează o partiție pe acest disc"
 
 #: src/Gtk/MainWindow.vala:783
 msgid "Select a single snapshot to restore"
-msgstr "Selectează un singur instantaneu de restaurat"
+msgstr "Selectează un singur instantaneu pentru restaurare"
 
 #: src/Gtk/RestoreDeviceBox.vala:467
 msgid "Select another device for root file system (/)"
-msgstr "Selectează alt dispozitiv pentru sistemul de fișiere rădăcină (/)"
+msgstr "Selectează un alt dispozitiv pentru sistemul de fișiere rădăcină (/)"
 
 #: src/Core/SnapshotRepo.vala:550 src/Core/SnapshotRepo.vala:579
 msgid "Select another device or free up some space"
-msgstr "Selectează alt dispozitiv sau eliberează puțin spațiu"
+msgstr "Selectează un alt dispozitiv sau eliberează spațiu"
 
 #: src/Gtk/MainWindow.vala:516 src/Gtk/MainWindow.vala:523
 msgid "Select another device to delete snasphots"
-msgstr "Selectează alt dispozitiv pentru a șterge instantanee"
+msgstr "Selectează un alt dispozitiv pentru a șterge instantaneele"
 
 #: src/Gtk/MainWindow.vala:450
 msgid "Select another device?"
-msgstr "Selectezi alt dispozitiv?"
+msgstr "Selectezi un alt dispozitiv?"
 
 #: src/Gtk/RestoreExcludeBox.vala:57
 msgid "Select applications to exclude from restore"
-msgstr "Selectează aplicații pentru a le exclude din restaurare"
+msgstr "Selectează aplicațiile de exclus de la restaurare"
 
 #: src/AppConsole.vala:690
 msgid "Select backup device"
-msgstr "Selectează dispozitivul pentru copia de rezervă"
+msgstr "Selectează dispozitivul de backup"
 
 #: src/Gtk/ExcludeBox.vala:405
 msgid "Select directory"
@@ -1953,7 +1946,7 @@ msgstr "Selectează directorul"
 
 #: src/Gtk/ExcludeBox.vala:378
 msgid "Select file(s)"
-msgstr "Selectează fișier(ele)"
+msgstr "Selectează fișierele"
 
 #: src/AppConsole.vala:770
 msgid "Select snapshot"
@@ -1961,7 +1954,7 @@ msgstr "Selectează instantaneul"
 
 #: src/Gtk/DeleteWindow.vala:336
 msgid "Select snapshots to delete"
-msgstr "Selectează instantaneele de șters"
+msgstr "Selectează instantanee pentru ștergere"
 
 #: src/Gtk/RestoreDeviceBox.vala:439
 msgid "Select the device for root file system (/)"
@@ -1969,19 +1962,19 @@ msgstr "Selectează dispozitivul pentru sistemul de fișiere rădăcină (/)"
 
 #: src/Gtk/RestoreDeviceBox.vala:83
 msgid "Select the devices where files will be restored."
-msgstr "Selectează dispozitivele unde fișierele vor fi restaurate."
+msgstr "Selectează dispozitivele unde vor fi restaurate fișierele."
 
 #: src/Gtk/ScheduleBox.vala:313
 msgid "Select the intervals for creating snapshots"
-msgstr "Selectează intervalele pentru creat instantanee"
+msgstr "Selectează intervalele pentru crearea instantaneelor"
 
 #: src/Gtk/ExcludeBox.vala:283
 msgid "Select the items to be removed from the list"
-msgstr "Selectează elementele de șters din această listă"
+msgstr "Selectează elementele de eliminat din listă"
 
 #: src/Core/SnapshotRepo.vala:476
 msgid "Select the snapshot device"
-msgstr "Selectează dispozitivul pentru instantaneu"
+msgstr "Selectează dispozitivul pentru instantanee"
 
 #: src/Gtk/MainWindow.vala:776
 msgid "Select the snapshot to restore"
@@ -1997,7 +1990,7 @@ msgstr "Selectează instantaneele de marcat pentru ștergere"
 
 #: src/Gtk/RestoreDeviceBox.vala:79
 msgid "Select the target devices where system will be cloned."
-msgstr "Selectează dispozitivele țintă unde sistemul va fi clonat."
+msgstr "Selectează dispozitivele țintă unde va fi clonat sistemul."
 
 #: src/Core/Main.vala:3598
 msgid "Selected default snapshot device"
@@ -2005,7 +1998,7 @@ msgstr "Dispozitivul implicit pentru instantanee selectat"
 
 #: src/Core/Main.vala:3549 src/Core/Main.vala:3553
 msgid "Selected default snapshot type"
-msgstr "Tipul implicit pentru instantanee selectat"
+msgstr "Tipul implicit de instantaneu selectat"
 
 #: src/Gtk/BackupDeviceBox.vala:388
 msgid "Selected device does not have BTRFS partition"
@@ -2017,11 +2010,11 @@ msgstr "Dispozitivul selectat nu are partiție Linux"
 
 #: src/Core/SnapshotRepo.vala:144
 msgid "Selected snapshot device"
-msgstr "Dispozitivul pentru instantanee selectat"
+msgstr "Dispozitivul selectat pentru instantanee"
 
 #: src/Core/SnapshotRepo.vala:513 src/AppConsole.vala:706
 msgid "Selected snapshot device is not a system disk"
-msgstr "Dispozitivul pentru instantanee delectat nu este un disc de sistem"
+msgstr "Dispozitivul selectat pentru instantanee nu este un disc de sistem"
 
 #: src/Core/Main.vala:2334
 msgid "Selected snapshot is marked for deletion"
@@ -2037,8 +2030,8 @@ msgid ""
 "Selected user has an encrypted home directory. It's not possible to include "
 "only hidden files."
 msgstr ""
-"Utilizatorul selectat are un director personal criptat. Nu este posibil să "
-"incluzi doar fișiere ascunse."
+"Utilizatorul selectat are un director home criptat. Nu este posibilă "
+"includerea doar a fișierelor ascunse."
 
 #: src/Utility/Device.vala:1957
 #, c-format
@@ -2047,7 +2040,7 @@ msgstr "Serial"
 
 #: src/Core/Main.vala:230
 msgid "Session log file"
-msgstr "Fișier cu jurnalele sesiunii"
+msgstr "Fișier jurnal de sesiune"
 
 #: src/AppConsole.vala:373
 msgid "Set snapshot description"
@@ -2064,7 +2057,7 @@ msgstr "Asistent de setări"
 
 #: src/Gtk/FinishBox.vala:58
 msgid "Setup Complete"
-msgstr "Configurarea este completă"
+msgstr "Configurare finalizată"
 
 #: src/Gtk/SetupWizardWindow.vala:64
 msgid "Setup Wizard"
@@ -2072,19 +2065,19 @@ msgstr "Asistent de configurare"
 
 #: src/AppConsole.vala:393
 msgid "Show additional debug messages"
-msgstr "Arată mai multe mesaje de depanare"
+msgstr "Afișează mesaje suplimentare de depanare"
 
 #: src/AppConsole.vala:397 src/AppGtk.vala:133
 msgid "Show all options"
-msgstr "Arată toate opțiunile"
+msgstr "Afișează toate opțiunile"
 
 #: src/Gtk/RestoreExcludeBox.vala:121
 msgid "Show more applications to exclude on the next page"
-msgstr "Arată mai multe aplicații de exclus pe următoarea pagină"
+msgstr "Afișează mai multe aplicații de exclus pe pagina următoare"
 
 #: src/AppConsole.vala:394
 msgid "Show rsync output (default)"
-msgstr "Arată ieșirea rsync (implicit)"
+msgstr "Afișează rezultatul rsync (implicit)"
 
 #: src/Utility/Device.vala:1960 src/Utility/Device.vala:1975
 #: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
@@ -2101,10 +2094,10 @@ msgid ""
 "(copy-on-write). Files in the snapshot continue to point to original data "
 "blocks."
 msgstr ""
-"Dimensiunea instantaneelor BTRFS este inițial nulă. Pe măsură ce fișierele "
-"de sistem se schimbă, datele se scriu pe noi blocuri de data care consumă "
-"spațiu pe disc (copiere la scriere). Fișierele din instantaneu contiună să "
-"trimită către blocurile de date originale."
+"Dimensiunea instantaneelor BTRFS este inițial zero. Pe măsură ce fișierele "
+"de sistem se schimbă treptat în timp, datele sunt scrise în noi blocuri de "
+"date care ocupă spațiu pe disc (copy-on-write). Fișierele din instantaneu "
+"continuă să trimită către blocurile de date originale."
 
 #: src/AppConsole.vala:382
 msgid "Skip GRUB2 reinstall"
@@ -2122,8 +2115,8 @@ msgid ""
 "Snapshot '%s' is being used by the system and cannot be deleted. Restart the "
 "system to activate the restored snapshot."
 msgstr ""
-"Instantaneul „%s” este utilizat de către sistem și nu poate fi șters. "
-"Repornește sistemul pentru a activa instantaneul restaurat."
+"Instantaneul '%s' este utilizat de sistem și nu poate fi șters. Repornește "
+"sistemul pentru a activa instantaneul restaurat."
 
 #: src/Gtk/BackupFinishBox.vala:60
 msgid "Snapshot Created"
@@ -2132,24 +2125,24 @@ msgstr "Instantaneu creat"
 #: src/Gtk/SnapshotListBox.vala:297
 #, c-format
 msgid "Snapshot Levels"
-msgstr "Niveluri de instantaneu"
+msgstr "Niveluri de instantanee"
 
 #: src/Gtk/MainWindow.vala:743
 msgid "Snapshot deletion in progress..."
-msgstr "Ștergerea instantaneului în progres..."
+msgstr "Ștergerea instantaneului în curs de desfășurare..."
 
 #: src/Core/SnapshotRepo.vala:446
 #, c-format
 msgid "Snapshot device"
-msgstr "Dispozitiv de instantanee"
+msgstr "Dispozitiv pentru instantanee"
 
 #: src/Core/SnapshotRepo.vala:482 src/AppConsole.vala:680
 msgid "Snapshot device not available"
-msgstr "Dispozitivul de instantanee nu este disponibil"
+msgstr "Dispozitivul pentru instantanee nu este disponibil"
 
 #: src/Core/SnapshotRepo.vala:475 src/AppConsole.vala:676
 msgid "Snapshot device not selected"
-msgstr "Dispozitivul de instantanee nu este selectat"
+msgstr "Dispozitivul pentru instantanee nu este selectat"
 
 #: src/Core/SnapshotRepo.vala:450
 #, c-format
@@ -2166,11 +2159,11 @@ msgstr "Instantaneul de restaurat nu este specificat!"
 
 #: src/Core/Main.vala:3189
 msgid "Snapshot will become active after system is rebooted."
-msgstr "Instantaneul se va activa atunci când sistemul repornește."
+msgstr "Instantaneul va deveni activ după repornirea sistemului."
 
 #: src/Gtk/DeleteFinishBox.vala:60
 msgid "Snapshot(s) Deleted"
-msgstr "Instantaneu(e) șters(e)"
+msgstr "Instantanee șterse"
 
 #: src/Gtk/MainWindow.vala:309 src/Gtk/DeleteWindow.vala:89
 msgid "Snapshots"
@@ -2181,36 +2174,36 @@ msgid ""
 "Snapshots are created and restored instantly. Snapshot creation is an atomic "
 "transaction at the file system level."
 msgstr ""
-"Instantaneele sunt create și restaurate brusc. Crearea de instantanee este o "
-"tranzacție atomică la nivelul sistemului de fișiere."
+"Instantaneele sunt create și restaurate instantaneu. Crearea instantaneelor "
+"este o tranzacție atomică la nivelul sistemului de fișiere."
 
 #: src/Gtk/SnapshotBackendBox.vala:195
 msgid ""
 "Snapshots are created by creating copies of system files using rsync, and "
 "hard-linking unchanged files from previous snapshot."
 msgstr ""
-"Instantaneele sunt create creând copii ale fișierelor de sistem folosind "
-"rsync și legarea hardware a fișierelor neschimbate din instantaneul "
-"precedent."
+"Instantaneele sunt create prin realizarea de copii ale fișierelor de sistem "
+"utilizând rsync și prin legarea fizică (hard-linking) a fișierelor "
+"neschimbate de la instantaneul anterior."
 
 #: src/Gtk/SnapshotBackendBox.vala:176
 msgid ""
 "Snapshots are created using the built-in features of the BTRFS file system."
 msgstr ""
-"Instantaneele sunt create folosind funcțiile încorporate ale sistemului de "
+"Instantaneele sunt create utilizând funcțiile integrate ale sistemului de "
 "fișiere BTRFS."
 
 #: src/Gtk/ScheduleBox.vala:167
 #, c-format
 msgid "Snapshots are not scheduled at fixed times."
-msgstr "Instantaneele nu sunt programate la ore prestabilite."
+msgstr "Instantaneele nu sunt programate la ore fixe."
 
 #: src/Gtk/SnapshotBackendBox.vala:182
 msgid ""
 "Snapshots are perfect, byte-for-byte copies of the system. Nothing is "
 "excluded."
 msgstr ""
-"Instantaneele sunt copii perfect octet cu octet ale sistemului. Nimic nu "
+"Instantaneele sunt copii perfecte, byte cu byte, ale sistemului. Nimic nu "
 "este exclus."
 
 #: src/Gtk/SnapshotBackendBox.vala:180
@@ -2219,9 +2212,9 @@ msgid ""
 "copied, deleted or overwritten, there is no risk of data loss. The existing "
 "system is preserved as a new snapshot after restore."
 msgstr ""
-"Instantaneele sunt restaurate înlocuind subvolumele sistemului. Fiindcă "
-"fișierele nu sunt niciodată copiate, șterse sau suprascrise, nu există "
-"riscul pierderii de date. Sistemul existent este păstrat ca și un nou "
+"Instantaneele sunt restaurate prin înlocuirea subvolumelor de sistem. "
+"Deoarece fișierele nu sunt niciodată copiate, șterse sau suprascrise, nu "
+"există riscul pierderii de date. Sistemul existent este păstrat ca un nou "
 "instantaneu după restaurare."
 
 #: src/Gtk/SnapshotBackendBox.vala:184
@@ -2230,16 +2223,16 @@ msgid ""
 "disk). Storage on other disks is not supported. If system disk fails then "
 "snapshots stored on it will be lost along with the system."
 msgstr ""
-"Instantaneele sunt salvate pe același disc din care sunt create (discul de "
+"Instantaneele sunt salvate pe același disc de pe care sunt create (discul de "
 "sistem). Stocarea pe alte discuri nu este acceptată. Dacă discul de sistem "
-"eșuează instantaneele păstrate pe el vor fi pierdute împreună cu sistemul."
+"cedează, instantaneele stocate pe acesta se vor pierde odată cu sistemul."
 
 #: src/Gtk/BackupDeviceBox.vala:107
 msgid ""
 "Snapshots are saved to /timeshift on selected partition. Other locations are "
 "not supported."
 msgstr ""
-"Instantaneele sunt salvate la /timeshift pe partiția selectată. Alte locații "
+"Instantaneele sunt salvate în /timeshift pe partiția selectată. Alte locații "
 "nu sunt acceptate."
 
 #: src/Gtk/BackupDeviceBox.vala:99
@@ -2247,7 +2240,7 @@ msgid ""
 "Snapshots are saved to /timeshift-btrfs on selected partition. Other "
 "locations are not supported."
 msgstr ""
-"Instantaneele sunt salvate la /timeshift-btrfs pe partiția selectată. Alte "
+"Instantaneele sunt salvate în /timeshift-btrfs pe partiția selectată. Alte "
 "locații nu sunt acceptate."
 
 #: src/Gtk/MainWindow.vala:960
@@ -2261,13 +2254,13 @@ msgid ""
 "restored even if system disk is damaged or re-formatted."
 msgstr ""
 "Instantaneele pot fi salvate pe orice disc formatat cu un sistem de fișiere "
-"Linux. Salvarea instantaneelor pe un disc secundar sau extern permite "
-"restaurarea sistemului chiar dacă discul de sistem se strică sau este "
-"reformatat."
+"Linux. Salvarea instantaneelor pe un disc care nu este de sistem sau pe un "
+"disc extern permite restaurarea sistemului chiar dacă discul de sistem este "
+"deteriorat sau reformatat."
 
 #: src/AppConsole.vala:292
 msgid "Snapshots cannot be created in Live CD mode"
-msgstr "Instantaneele nu pot fi create în modul live"
+msgstr "Instantaneele nu pot fi create în modul Live CD"
 
 #: src/Gtk/MainWindow.vala:1007
 msgid "Snapshots will be created at selected intervals"
@@ -2283,7 +2276,7 @@ msgstr ""
 
 #: src/AppConsole.vala:389
 msgid "Specify backup device (default: config)"
-msgstr "Specifică dispozitivul de rezervă (implicit: config)"
+msgstr "Specifică dispozitivul de backup (implicit: config)"
 
 #: src/AppConsole.vala:381
 msgid "Specify device for installing GRUB2 bootloader"
@@ -2305,7 +2298,7 @@ msgstr "Stare"
 
 #: src/Gtk/ScheduleBox.vala:154
 msgid "Stop cron emails for scheduled tasks"
-msgstr "Oprește emailurile cron pentru sarcini programate"
+msgstr "Oprește emailurile cron pentru sarcinile programate"
 
 #: src/Gtk/RestoreDeviceBox.vala:101
 msgid "Subvolume"
@@ -2324,15 +2317,15 @@ msgstr "Subvolume"
 #: src/Gtk/ExcludeBox.vala:267 src/Gtk/RestoreWindow.vala:120
 #: src/Gtk/ExcludeAppsBox.vala:134
 msgid "Summary"
-msgstr "Sumar"
+msgstr "Rezumat"
 
 #: src/AppConsole.vala:391
 msgid "Switch to BTRFS mode (default: config)"
-msgstr "Treci la modul BTRFS (implicit: config)"
+msgstr "Comută la modul BTRFS (implicit: config)"
 
 #: src/AppConsole.vala:392
 msgid "Switch to RSYNC mode (default: config)"
-msgstr "Treci la modul RSYNC (implicit: config)"
+msgstr "Comută la modul RSYNC (implicit: config)"
 
 #: src/Core/SnapshotRepo.vala:928
 msgid "Symlinks updated"
@@ -2357,12 +2350,13 @@ msgstr "Sistem"
 
 #: src/Gtk/MainWindow.vala:904
 msgid "System Restore Utility"
-msgstr "Utilitarul de restaurare a sistemului"
+msgstr "Utilitar de restaurare a sistemului"
 
 #: src/Gtk/FinishBox.vala:82
 msgid "System can be rolled-back to a previous date by restoring a snapshot."
 msgstr ""
-"Sistemul poate fi restaurat la o dată anterioară restaurând un instantaneu."
+"Sistemul poate fi readus la o dată anterioară prin restaurarea unui "
+"instantaneu."
 
 #: src/Core/Main.vala:2552
 msgid "System will reboot after files are restored"
@@ -2386,11 +2380,11 @@ msgstr "Dispozitivul țintă nu este montat"
 
 #: src/Gtk/RestoreDeviceBox.vala:466
 msgid "Target device is same as system device"
-msgstr "Dispozitivul țintă este același ca dispozitivul de sistem"
+msgstr "Dispozitivul țintă este același cu dispozitivul de sistem"
 
 #: src/Core/Main.vala:2358
 msgid "Target device not specified!"
-msgstr "Dispozitivul țintă nu e specificat!"
+msgstr "Dispozitivul țintă nu este specificat!"
 
 #: src/Gtk/ScheduleBox.vala:156
 msgid ""
@@ -2398,8 +2392,8 @@ msgid ""
 "current user. Select this option to suppress the emails for cron tasks "
 "created by Timeshift."
 msgstr ""
-"Serviciul cron trimite ieșirea sarcinilor programate ca un email "
-"utilizatorului actual. Selectează această opțiune pentru a opri emailurile "
+"Serviciul cron trimite rezultatul sarcinilor programate ca email "
+"utilizatorului curent. Selectează această opțiune pentru a suprima emailurile "
 "pentru sarcinile cron create de Timeshift."
 
 #: src/Core/Main.vala:497
@@ -2424,8 +2418,9 @@ msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
 msgstr ""
-"Acest software nu vine cu absolut NICIO garanție și autorul nu își asumă "
-"răspunderea pentru orice daune cauzate de utilizarea acestui program."
+"Acest software vine fără absolut NICIO garanție, iar autorul nu își asumă "
+"nicio responsabilitate pentru daunele rezultate din utilizarea acestui "
+"program."
 
 #: src/Gtk/MainWindow.vala:995 src/Gtk/MainWindow.vala:1006
 msgid "Timeshift is active"
@@ -2435,14 +2430,14 @@ msgstr "Timeshift este activ"
 #: src/Gtk/RsyncLogBox.vala:394
 #, c-format
 msgid "Timestamp"
-msgstr "Datele temporale"
+msgstr "Marcaj temporal"
 
 #: src/AppConsole.vala:628
 #, c-format
 msgid "To restore with default options, press the ENTER key for all prompts!"
 msgstr ""
-"Pentru a restaura folosind opțiunile implicite, apasă tasta ENTER pentru "
-"toate întrebările!"
+"Pentru a restaura cu opțiunile implicite, apasă tasta ENTER la toate "
+"solicitările!"
 
 #: src/Utility/Device.vala:1971 src/Gtk/BackupDeviceBox.vala:190
 #: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:473
@@ -2471,7 +2466,7 @@ msgstr "Valoare necunoscută specificată pentru opțiunea --tags"
 #: src/Utility/Device.vala:1413 src/Utility/Device.vala:1529
 #, c-format
 msgid "Unlocked device is mapped to '%s'"
-msgstr "Dispozitivul deblocat corespunde cu „%s”"
+msgstr "Dispozitivul deblocat este mapat la '%s'"
 
 #: src/Utility/Device.vala:1528
 msgid "Unlocked successfully"
@@ -2479,7 +2474,7 @@ msgstr "Deblocat cu succes"
 
 #: src/Utility/Device.vala:1744
 msgid "Unmounting from"
-msgstr "Se demontează din"
+msgstr "Se demontează de la"
 
 #: src/Gtk/SnapshotListBox.vala:198
 msgid "Unshared"
@@ -2487,7 +2482,7 @@ msgstr "Nepartajat"
 
 #: src/Core/Main.vala:3787 src/Gtk/RestoreDeviceBox.vala:508
 msgid "Unsupported Subvolume Layout"
-msgstr "Aranjamentul subvolumelor neacceptat"
+msgstr "Aranjament de subvolume neacceptat"
 
 #: src/Gtk/BootOptionsBox.vala:150
 msgid "Update GRUB menu"
@@ -2510,8 +2505,8 @@ msgid ""
 "Updates the GRUB menu entries (recommended). This is safe to run and should "
 "be left selected."
 msgstr ""
-"Actualizează intrările de meniu GRUB (recomandat). Acesta este sigur de "
-"rulat și ar trebui lăsat selectat."
+"Actualizează intrările din meniul GRUB (recomandat). Aceasta este o "
+"operațiune sigură și ar trebui lăsată selectată."
 
 #: src/Core/Main.vala:2672
 msgid "Updating GRUB menu..."
@@ -2532,18 +2527,18 @@ msgstr "Utilizator"
 
 #: src/Gtk/UsersBox.vala:62
 msgid "User Home Directories"
-msgstr "Directoarele personale ale utilizatorului"
+msgstr "Directoare home ale utilizatorilor"
 
 #: src/Utility/Device.vala:1483
 msgid "User cancelled the password prompt"
-msgstr "Utilizatorul a anulat introducerea parolei"
+msgstr "Utilizatorul a anulat solicitarea parolei"
 
 #: src/Gtk/UsersBox.vala:66
 msgid ""
 "User home directories are excluded by default unless you enable them here"
 msgstr ""
-"Directoarele personale ale utilizatorilor sunt excluse implicit dacă nu le "
-"activezi aici"
+"Directoarele home ale utilizatorilor sunt excluse implicit, cu excepția "
+"cazului în care le activezi aici"
 
 #: src/Gtk/SettingsWindow.vala:101
 msgid "Users"
@@ -2551,12 +2546,12 @@ msgstr "Utilizatori"
 
 #: src/Gtk/RestoreWindow.vala:114
 msgid "Users Home"
-msgstr "Directoare personale"
+msgstr "Home utilizatori"
 
 #: src/Utility/Device.vala:1955
 #, c-format
 msgid "Vendor"
-msgstr "Furnizor"
+msgstr "Producător"
 
 #: src/Gtk/SnapshotListBox.vala:330
 msgid "View Rsync Log for Create"
@@ -2568,7 +2563,7 @@ msgstr "Vezi jurnalul Rsync pentru restaurare"
 
 #: src/Gtk/MainWindow.vala:369
 msgid "View TimeShift Logs"
-msgstr "Vezi jurnalul TimeShift"
+msgstr "Vezi jurnalele TimeShift"
 
 #: src/Core/Main.vala:2413 src/Gtk/RestoreSummaryBox.vala:53
 msgid "Warning"
@@ -2588,7 +2583,7 @@ msgstr "Instantaneul săptămânal a eșuat!"
 
 #: src/Core/Main.vala:1243
 msgid "Weekly snapshots are enabled"
-msgstr "Instantaneele săptămânale sunt activate."
+msgstr "Instantaneele săptămânale sunt activate"
 
 #: src/Gtk/DeleteFinishBox.vala:63 src/Gtk/BackupFinishBox.vala:63
 msgid "With Errors"
@@ -2612,31 +2607,31 @@ msgid ""
 "system will be visible as a new snapshot. This snapshot can be restored "
 "later if required, to 'undo' the restore."
 msgstr ""
-"Poți continua lucrul pe sistemul actual. După repornire, sistemul actual va "
-"fi disponibil drept un nou instantaneu. Acesta poate fi restaurat mai târziu "
-"dacă este necesar, pentru a anula restaurarea."
+"Poți continua să lucrezi pe sistemul curent. După repornire, sistemul curent "
+"va fi vizibil ca un nou instantaneu. Acest instantaneu poate fi restaurat "
+"ulterior, dacă este necesar, pentru a 'anula' restaurarea."
 
 #: src/AppConsole.vala:1060
 #, c-format
 msgid "[ENTER = Default (%s), a = Abort]"
-msgstr "[ENTER = Implicit (%s), a = Anulare]"
+msgstr "[ENTER = Implicit (%s), a = Anulează]"
 
 #: src/AppConsole.vala:913
 #, c-format
 msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
-msgstr "[ENTER = Implicit (%s), r = Rădăcina dispozitivului, a = Anulare]"
+msgstr "[ENTER = Implicit (%s), r = Dispozitiv rădăcină, a = Anulează]"
 
 #: src/Gtk/RestoreDeviceBox.vala:401
 msgid ""
 "[For Experienced Users] Change these settings if the restored system fails "
 "to boot."
 msgstr ""
-"[Pentru utilizatori experimentați] Schimbă setările de aici dacă sistemul "
-"restaurat nu poate porn."
+"[Pentru utilizatori experimentați] Modifică aceste setări dacă sistemul "
+"restaurat nu reușește să pornească."
 
 #: src/Utility/AppLock.vala:54
 msgid "[Warning] Deleted invalid lock"
-msgstr "[Avertisment] S-a șters lacătul invalid"
+msgstr "[Avertisment] Blocare nevalidă ștearsă"
 
 #: src/Core/SnapshotRepo.vala:818
 msgid "all"
@@ -2653,11 +2648,11 @@ msgstr "complet"
 
 #: src/Utility/CronTab.vala:261
 msgid "crontab file exported"
-msgstr "fișierul crontab exportat"
+msgstr "fișier crontab exportat"
 
 #: src/Utility/CronTab.vala:244
 msgid "crontab file installed"
-msgstr "fișierul crontab instalat"
+msgstr "fișier crontab instalat"
 
 #: src/Core/SnapshotRepo.vala:804
 msgid "incomplete"
@@ -2669,7 +2664,7 @@ msgstr "marcat pentru ștergere"
 
 #: src/Core/Main.vala:1568 src/Core/Main.vala:1723 src/Core/Main.vala:1725
 msgid "mounted at path"
-msgstr "montat la adresa"
+msgstr "montat la calea"
 
 #: src/Core/Snapshot.vala:503 src/Core/Main.vala:1674
 #: src/Gtk/BackupBox.vala:265 src/Gtk/RestoreBox.vala:237
@@ -2693,9 +2688,8 @@ msgstr "Timeshift"
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:10
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:22
 msgid "Run Timeshift as Administrator"
-msgstr "Rulează Timeshift ca și administrator"
+msgstr "Rulează Timeshift ca administrator"
 
 #: src/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy:21
 msgid "Authentication is required to run Timeshift as Administrator"
-msgstr ""
-"Autentificarea este necesară pentru a rula Timeshift ca administrator"
+msgstr "Autentificarea este necesară pentru a rula Timeshift ca administrator"
