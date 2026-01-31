@@ -1597,6 +1597,8 @@ public class Main : GLib.Object{
 
 		Snapshot snapshot_to_link = null;
 
+		this.run_pre_backup_hooks(snapshot_path);
+
 		// check if a snapshot was restored recently and use it for linking ---------
 
 		try{
@@ -1742,7 +1744,7 @@ public class Main : GLib.Object{
 		string time_stamp = dt_created.format("%Y-%m-%d_%H-%M-%S");
 		string snapshot_name = time_stamp;
 		string sys_uuid = (sys_root == null) ? "" : sys_root.uuid;
-		string snapshot_path = "";
+		string snapshot_base_path = path_combine(repo.mount_paths["@"], "timeshift-btrfs/snapshots/%s/".printf(snapshot_name));
 		
 		// create subvolume snapshots
 
@@ -1752,10 +1754,12 @@ public class Main : GLib.Object{
 			
 			subvol_names = new string[] { "@","@home" };
 		}
+
+		this.run_pre_backup_hooks(snapshot_base_path);
 		
 		foreach(var subvol_name in subvol_names){
 
-			snapshot_path = path_combine(repo.mount_paths[subvol_name], "timeshift-btrfs/snapshots/%s".printf(snapshot_name));
+			string snapshot_path = path_combine(repo.mount_paths[subvol_name], "timeshift-btrfs/snapshots/%s".printf(snapshot_name));
 			
 			dir_create(snapshot_path, true);
 			
@@ -1793,13 +1797,13 @@ public class Main : GLib.Object{
 
 		//log_msg(_("Writing control file..."));
 
-		snapshot_path = path_combine(repo.mount_paths["@"], "timeshift-btrfs/snapshots/%s".printf(snapshot_name));
+		string control_path = snapshot_base_path + snapshot_name;
 
 		string initial_tags = (tag == "ondemand") ? "" : tag;
 		
 		// write control file
 		var snapshot = Snapshot.write_control_file(
-			snapshot_path, dt_created, sys_uuid, current_distro.full_name(),
+			control_path, dt_created, sys_uuid, current_distro.full_name(),
 			initial_tags, cmd_comments, 0, true, false, repo);
 
 		// write subvolume info
@@ -1811,24 +1815,32 @@ public class Main : GLib.Object{
 		set_tags(snapshot); // set_tags() will update the control file
 		
 		// Perform any post-backup actions
-		this.run_post_backup_hooks(snapshot_path);
+		this.run_post_backup_hooks(snapshot_base_path);
 
 		return snapshot;
 	}
 
-	private void run_post_backup_hooks(string snapshot_path) {
-		const string backuphooksdir = "/etc/timeshift/backup-hooks.d";
-		FileType fileType = File.new_for_path(backuphooksdir).query_file_type(FileQueryInfoFlags.NONE);
-		if(fileType == FileType.DIRECTORY) {
-			log_debug("Running post-backup tasks...");
+	private void run_pre_backup_hooks(string snapshot_path) {
+		this.run_hooks("/etc/timeshift/pre-backup-hooks.d", snapshot_path);
+	}
 
-			string sh = "export TS_SNAPSHOT_PATH=\"" + snapshot_path + "\" &&" +
-				" run-parts --verbose \"%s\"".printf(backuphooksdir);
+	private void run_post_backup_hooks(string snapshot_path) {
+		this.run_hooks("/etc/timeshift/backup-hooks.d", snapshot_path);
+	}
+
+	private void run_hooks(string path, string snapshot_path) {
+		FileType fileType = File.new_for_path(path).query_file_type(FileQueryInfoFlags.NONE);
+		if(fileType == FileType.DIRECTORY) {
+			log_debug("Running tasks...");
+
+			string mode_text = (this.btrfs_mode ? "BTRFS" : "RSYNC");
+
+			string sh = "export TS_SNAPSHOT_PATH=\"%s\" TS_MODE=\"%s\" && run-parts --verbose \"%s\"".printf(snapshot_path, mode_text, path);
 			exec_script_sync(sh, null, null, false, false, false, true);
 
-			log_debug("Finished running post-backup tasks...");
+			log_debug("Finished running tasks...");
 		} else {
-			log_debug("Backup hooks skipped, because %s does not exist".printf(backuphooksdir));
+			log_debug("Hooks skipped, because %s does not exist".printf(path));
 		}
 	}
 
