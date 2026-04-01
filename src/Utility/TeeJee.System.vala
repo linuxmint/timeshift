@@ -151,6 +151,20 @@ namespace TeeJee.System{
 		return dir_exists("/sys/firmware/efi");
 	}
 
+	private static string? current_boot_id = null;
+	public static string? get_current_boot_id() {
+		if(current_boot_id != null) {
+			return current_boot_id;
+		}
+
+		current_boot_id = file_read("/proc/sys/kernel/random/boot_id");
+		if(null != current_boot_id) {
+			current_boot_id._strip();
+		}
+
+		return current_boot_id;
+	}
+
 	// timers --------------------------------------------------
 	
 	public GLib.Timer timer_start(){
