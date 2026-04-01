@@ -372,7 +372,16 @@ class MainWindow : Gtk.Window{
 			menu_extra.append(menu_item);
 
 			Gtk.Menu? menu_pause = new Gtk.Menu();
-			Gtk.MenuItem? menu_pause_item = create_menu_item(_("Pause for 30min"));
+			Gtk.MenuItem? menu_pause_item = create_menu_item(_("Unpause"));
+			menu_pause_item.activate.connect(() => App.unpause_snapshots());
+			menu_pause_item.sensitive = App.snapshots_paused;
+			menu_pause.append(menu_pause_item);
+
+			menu_pause_item = create_menu_item(_("Pause until shutdown"));
+			menu_pause_item.activate.connect(() => App.pause_snapshots_for_this_boot());
+			menu_pause.append(menu_pause_item);
+
+			menu_pause_item = create_menu_item(_("Pause for 30min"));
 			menu_pause_item.activate.connect(() => App.pause_snapshots_for(1800));
 			menu_pause.append(menu_pause_item);
 
@@ -387,16 +396,6 @@ class MainWindow : Gtk.Window{
 			menu_pause_item = create_menu_item(_("Pause for 12h"));
 			menu_pause_item.activate.connect(() => App.pause_snapshots_for(3600*12));
 			menu_pause.append(menu_pause_item);
-
-			menu_pause_item = create_menu_item(_("Pause until shutdown"));
-			menu_pause_item.activate.connect(() => App.pause_snapshots_for_this_boot());
-			menu_pause.append(menu_pause_item);
-
-			menu_pause_item = create_menu_item(_("Unpause"));
-			menu_pause_item.activate.connect(() => App.unpause_snapshots());
-			menu_pause.append(menu_pause_item);
-
-			menu_pause_item.sensitive = App.snapshots_paused;
 
 			menu_item.submenu = menu_pause;
 		}
