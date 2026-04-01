@@ -1355,6 +1355,10 @@ public class AppConsole : GLib.Object {
 
 	public bool delete_snapshot(){
 
+		if (App.btrfs_mode && (App.check_btrfs_layout_system() == false)){
+			return false;
+		}
+
 		select_snapshot_device(true);
 
 		select_snapshot_for_deletion();
@@ -1367,6 +1371,10 @@ public class AppConsole : GLib.Object {
 	}
 
 	public bool delete_all_snapshots(){
+
+		if (App.btrfs_mode && (App.check_btrfs_layout_system() == false)){
+			return false;
+		}
 		
 		select_snapshot_device(true);
 		
