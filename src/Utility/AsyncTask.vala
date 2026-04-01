@@ -63,6 +63,8 @@ public abstract class AsyncTask : GLib.Object{
 	public int64 prg_count = 0;
 	public int64 prg_count_total = 0;
 
+	public bool io_nice = true; // renice child processes to IDlE PRIO
+
 	// signals
 	public signal void stdout_line_read(string line);
 	public signal void stderr_line_read(string line);
@@ -112,7 +114,7 @@ public abstract class AsyncTask : GLib.Object{
 	}
 
 	protected abstract string build_script();
-	
+
 	protected virtual bool begin() {
 		status = AppStatus.RUNNING;
 		
@@ -131,20 +133,27 @@ public abstract class AsyncTask : GLib.Object{
 			timer = new GLib.Timer();
 			timer.start();
 
+			GLib.SpawnChildSetupFunc? childsetup = null;
+
+			if(this.io_nice) {
+				// change io prio of process, right before it execs
+				childsetup = () => TeeJee.ProcessHelper.ioprio_set(0, IoPrio.prioValue(IoPrio.PrioClass.IDLE, 0));
+			}
+
 			// execute script file
 			Process.spawn_async_with_pipes(
 			    working_dir, // working dir
 			    spawn_args,  // argv
 			    spawn_env,   // environment
 			    SpawnFlags.SEARCH_PATH,
-			    null,        // child_setup
+			    childsetup,        // child_setup
 			    out child_pid,
 			    out input_fd,
 			    out output_fd,
 			    out error_fd);
 
 			log_debug("AsyncTask: child_pid: %d".printf(child_pid));
-			
+
 			// create stream readers
 			UnixOutputStream uos_in = new UnixOutputStream(input_fd, true);
 			UnixInputStream uis_out = new UnixInputStream(output_fd, true);
