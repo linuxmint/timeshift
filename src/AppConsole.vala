@@ -162,6 +162,10 @@ public class AppConsole : GLib.Object {
 					App.app_mode = "ondemand";
 					break;
 
+				case "--readonly":
+					App.btrfs_readonly = bool.parse(args[++k]);
+					break;
+
 				case "--comment":
 				case "--comments":
 					App.cmd_comments = args[++k];
@@ -372,6 +376,7 @@ public class AppConsole : GLib.Object {
 		msg += "  --check                    " + _("Create snapshot if scheduled") + "\n";
 		msg += "  --create                   " + _("Create snapshot (even if not scheduled)") + "\n";
 		msg += "  --comments <string>        " + _("Set snapshot description") + "\n";
+		msg += "  --readonly <bool>          " + _("Create read-only snapshots (BTRFS only) (default: config)") + "\n";
 		msg += "  --tags {O,B,H,D,W,M}       " + _("Add tags to snapshot (default: O)") + "\n";;
 		msg += "\n";
 		msg += _("Restore") + ":\n";
