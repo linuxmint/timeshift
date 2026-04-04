@@ -934,9 +934,9 @@ class MainWindow : Gtk.Window{
 
 		if (App.repo.has_snapshots()){
 			string sys_uuid = (App.sys_root == null) ? "" : App.sys_root.uuid;
-			var last_snapshot = App.repo.get_latest_snapshot("", sys_uuid);
+			var last_snapshot = App.repo.get_latest_snapshot(0, sys_uuid);
 			last_snapshot_date = (last_snapshot == null) ? null : last_snapshot.date;
-			var oldest_snapshot = App.repo.get_oldest_snapshot("", sys_uuid);
+			var oldest_snapshot = App.repo.get_oldest_snapshot(0, sys_uuid);
 			oldest_snapshot_date = (oldest_snapshot == null) ? null : oldest_snapshot.date;
 		}
 
