@@ -44,7 +44,6 @@ class MainWindow : Gtk.Window{
 	private Gtk.ToolButton btn_browse_snapshot;
 	private Gtk.ToolButton btn_settings;
 	private Gtk.ToolButton btn_wizard;
-	private Gtk.Menu menu_extra;
 
 	private SnapshotListBox snapshot_list_box;
 	
@@ -209,9 +208,7 @@ class MainWindow : Gtk.Window{
 		toolbar.add(button);
 
         // click event
-		button.clicked.connect(()=>{
-			menu_extra_popup(null);
-		});
+		button.clicked.connect(() => menu_extra_popup());
 	}
 
 	private void init_ui_snapshot_list(){
@@ -357,47 +354,72 @@ class MainWindow : Gtk.Window{
 		// TODO: low: refresh device list automatically when a device is plugged in
 	}
 	
-    private bool menu_extra_popup(Gdk.EventButton? event){
+    private bool menu_extra_popup(){
 
-		menu_extra = new Gtk.Menu();
+		Gtk.Menu? menu_extra = new Gtk.Menu();
 		menu_extra.reserve_toggle_size = false;
 
 		Gtk.MenuItem menu_item = null;
 
 		if (!App.live_system()){
 			// app logs
-			menu_item = create_menu_item(_("View TimeShift Logs"), "", "", 16);
+			menu_item = create_menu_item(_("View TimeShift Logs"));
 			menu_extra.append(menu_item);
 			menu_item.activate.connect(btn_view_app_logs_clicked);
+
+			// pause snapshots
+			menu_item = create_menu_item(_("Pause Snapshots"));
+			menu_extra.append(menu_item);
+
+			Gtk.Menu? menu_pause = new Gtk.Menu();
+			Gtk.MenuItem? menu_pause_item = create_menu_item(_("Unpause"));
+			menu_pause_item.activate.connect(() => App.unpause_snapshots());
+			menu_pause_item.sensitive = App.snapshots_paused;
+			menu_pause.append(menu_pause_item);
+
+			menu_pause_item = create_menu_item(_("Pause until shutdown"));
+			menu_pause_item.activate.connect(() => App.pause_snapshots_for_this_boot());
+			menu_pause.append(menu_pause_item);
+
+			menu_pause_item = create_menu_item(_("Pause for 30min"));
+			menu_pause_item.activate.connect(() => App.pause_snapshots_for(1800));
+			menu_pause.append(menu_pause_item);
+
+			menu_pause_item = create_menu_item(_("Pause for 4h"));
+			menu_pause_item.activate.connect(() => App.pause_snapshots_for(3600*4));
+			menu_pause.append(menu_pause_item);
+
+			menu_pause_item = create_menu_item(_("Pause for 8h"));
+			menu_pause_item.activate.connect(() => App.pause_snapshots_for(3600*8));
+			menu_pause.append(menu_pause_item);
+
+			menu_pause_item = create_menu_item(_("Pause for 12h"));
+			menu_pause_item.activate.connect(() => App.pause_snapshots_for(3600*12));
+			menu_pause.append(menu_pause_item);
+
+			menu_item.submenu = menu_pause;
 		}
 
 		// about
-		menu_item = create_menu_item(_("About"), "", "", 16);
+		menu_item = create_menu_item(_("About"));
 		menu_extra.append(menu_item);
 		menu_item.activate.connect(btn_about_clicked);
 		
 		menu_extra.show_all();
-		
-		if (event != null) {
-			menu_extra.popup (null, null, null, event.button, event.time);
-		}
-		else {
-			menu_extra.popup (null, null, null, 0, Gtk.get_current_event_time());
-		}
+
+		menu_extra.popup (null, null, null, 0, Gtk.get_current_event_time());
 
 		return true;
 	}
 
-	private Gtk.MenuItem create_menu_item(
-		string label_text, string icon_name_stock, string icon_name_custom,
-		int icon_size, string tooltip_text = ""){
-			
-		var menu_item = new Gtk.MenuItem();
+	private Gtk.MenuItem create_menu_item(string label_text, string tooltip_text = ""){
+
+		Gtk.MenuItem menu_item = new Gtk.MenuItem();
 	
-		var box = new Gtk.Box(Orientation.HORIZONTAL, 3);
+		Gtk.Box box = new Gtk.Box(Orientation.HORIZONTAL, 3);
 		menu_item.add(box);
 
-		var label = new Gtk.Label(label_text);
+		Gtk.Label label = new Gtk.Label(label_text);
 		label.xalign = (float) 0.0;
 		label.margin_end = 6;
 		label.set_tooltip_text((tooltip_text.length > 0) ? tooltip_text : label_text);
