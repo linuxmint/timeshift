@@ -178,7 +178,12 @@ namespace TeeJee.ProcessHelper{
 
 		try {
 
-			string scriptfile = save_bash_script_temp (script);
+			string? scriptfile = save_bash_script_temp (script);
+
+			if (scriptfile == null) {
+				log_error("Failed to create temporary script");
+				return 1;
+			}
 
 			string[] argv = new string[1];
 			argv[0] = scriptfile;
@@ -209,17 +214,75 @@ namespace TeeJee.ProcessHelper{
 	public static int exec_user_async(string command) {
 		// find correct user
 		int uid = TeeJee.System.get_user_id();
-		string cmd = command;
+		string[] args;
+
 		if(uid > 0) {
 			// non root
 			string? user = TeeJee.System.get_username_from_uid(uid);
 			if(user != null) {
-				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS ".printf(user) + cmd;
+				args = new string[] {
+					"pkexec",
+					"--user", user,
+					"env",
+					"DISPLAY=" + Environment.get_variable("DISPLAY"),
+					"XAUTHORITY=" + Environment.get_variable("XAUTHORITY"),
+					"DBUS_SESSION_BUS_ADDRESS=" + Environment.get_variable("DBUS_SESSION_BUS_ADDRESS")
+				};
+
+				try {
+					string[] cmd_parts;
+					Shell.parse_argv(command, out cmd_parts);
+					foreach (string part in cmd_parts) {
+						args += part;
+					}
+				} catch (ShellError e) {
+					log_error("Failed to parse command: " + e.message);
+					return 1;
+				}
+			} else {
+				try {
+					Shell.parse_argv(command, out args);
+				} catch (ShellError e) {
+					log_error("Failed to parse command: " + e.message);
+					return 1;
+				}
+			}
+		} else {
+			try {
+				Shell.parse_argv(command, out args);
+			} catch (ShellError e) {
+				log_error("Failed to parse command: " + e.message);
+				return 1;
 			}
 		}
 
-		log_debug(cmd);
-		return TeeJee.ProcessHelper.exec_script_async(cmd);
+		log_debug(string.joinv(" ", args));
+		return TeeJee.ProcessHelper.exec_async_with_args(args);
+	}
+
+	public int exec_async_with_args(string[] argv) {
+		/**
+		 * Executes commands asynchronously with proper argument array.
+		 */
+
+		try {
+			string[] env = Environ.get();
+			Pid child_pid;
+
+			Process.spawn_async_with_pipes(
+				TEMP_DIR, //working dir
+				argv, //argv (properly parsed)
+				env, //environment
+				SpawnFlags.SEARCH_PATH,
+				null,
+				out child_pid);
+
+			return 0;
+		}
+		catch (Error e){
+			log_error (e.message);
+			return 1;
+		}
 	}
 
 	public string? save_bash_script_temp (string commands, string? script_path = null,
