@@ -210,8 +210,7 @@ public class AppConsole : GLib.Object {
 					break;
 
 				case "--tags":
-					App.cmd_tags = args[++k];
-					App.validate_cmd_tags();
+					App.parse_cmd_tags(args[++k]);
 					break;
 
 				case "--debug":

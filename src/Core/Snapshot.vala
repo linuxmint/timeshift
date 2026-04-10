@@ -162,9 +162,13 @@ public class Snapshot : GLib.Object{
 		}
 	}
 
-	public void add_tag(Tags tag){
-		if (!(tag in this.tags)){
+	/* if at_least_on_demand is true and no tags are set, set Tags.OnDemand */
+	public void add_tag(Tags tag, bool at_least_on_demand = false){
+		if (!(tag in this.tags) || at_least_on_demand){
 			this.tags |= tag;
+			if (at_least_on_demand && this.tags == 0){
+				this.tags |= Tags.OnDemand;
+			}
 			update_control_file();
 		}
 	}

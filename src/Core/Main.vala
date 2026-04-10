@@ -154,7 +154,7 @@ public class Main : GLib.Object{
 	public bool cmd_verbose = true;
 	public bool cmd_scripted = false;
 	public string cmd_comments = "";
-	public string cmd_tags = "";
+	public Tags cmd_tags = 0;
 	public bool? cmd_btrfs_mode = null;
 	
 	public string progress_text = "";
@@ -1709,7 +1709,7 @@ public class Main : GLib.Object{
 			snapshot_path, dt_created, sys_uuid, current_distro.full_name(),
 			initial_tags, cmd_comments, fcount, false, false, repo);
 
-		set_tags(snapshot); // set_tags() will update the control file
+		snapshot.add_tag(App.cmd_tags, true); // add_tag() may update the control file
 
 		// Perform any post-backup actions
 		this.run_post_backup_hooks(snapshot_path);
@@ -1802,7 +1802,7 @@ public class Main : GLib.Object{
 		}
 		snapshot.update_control_file(); // save subvolume info
 
-		set_tags(snapshot); // set_tags() will update the control file
+		snapshot.add_tag(App.cmd_tags, true); // add_tag() may update the control file
 		
 		// Perform any post-backup actions
 		this.run_post_backup_hooks(snapshot_path);
@@ -1826,30 +1826,16 @@ public class Main : GLib.Object{
 		}
 	}
 
-	private void set_tags(Snapshot snapshot){
-
-		// add tags passed on commandline for both --check and --create
-		
-		foreach(string tag in cmd_tags.split(",")){
-			Tags? parsed = Tags.parse(tag);
-			if(parsed != null) {
-				snapshot.add_tag(parsed);
-			}
-		}
-
-		// add tag as ondemand if no other tag is specified
-		
-		if (snapshot.tags == 0){
-			snapshot.add_tag(Tags.OnDemand);
-		}
-	}
-
-	public void validate_cmd_tags(){
-		foreach(string tag in cmd_tags.split(",")){
-			if(Tags.parse(tag) == null) {
+	public void parse_cmd_tags(string input_tags){
+		App.cmd_tags = 0;
+		foreach(string tag in input_tags.split(",")){
+			Tags? parsed_tag = Tags.parse(tag);
+			if(parsed_tag == null) {
 				log_error(_("Unknown value specified for option --tags") + " (%s).".printf(tag));
 				log_error(_("Expected values: O, B, H, D, W, M"));
 				exit_app(1);
+			} else {
+				App.cmd_tags |= parsed_tag;
 			}
 		}
 	}
