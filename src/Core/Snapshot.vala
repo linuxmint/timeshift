@@ -228,7 +228,7 @@ public class Snapshot : GLib.Object{
 			live = json_get_bool(config,"live",false);
 			string type = config.get_string_member_with_default("type", "rsync");
 
-			string extension = (type == "btrfs") ? "@" : "localhost";
+			string extension = (type == "btrfs") ? App.root_subvolume_name : "localhost";
 			distro = LinuxDistro.get_dist_info(path_combine(path, extension));
 
 			//log_debug("repo.mount_path: %s".printf(repo.mount_path));
@@ -239,7 +239,7 @@ public class Snapshot : GLib.Object{
 
 				foreach(string subvol_name in subvols.get_members()){
 					
-					if ((subvol_name != "@")&&(subvol_name != "@home")){ continue; }
+					if ((subvol_name != App.root_subvolume_name)&&(subvol_name != App.home_subvolume_name)){ continue; }
 					
 					paths[subvol_name] = path.replace(repo.mount_path, repo.mount_paths[subvol_name]);
 					
@@ -321,7 +321,7 @@ public class Snapshot : GLib.Object{
 		string fstab_path = path_combine(path, "/localhost/etc/fstab");
 		
 		if (btrfs_mode){
-			fstab_path = path_combine(path, "/@/etc/fstab");
+			fstab_path = path_combine(path, @"/$(App.root_subvolume_name)/etc/fstab");
 		}
 		
 		fstab_list = FsTabEntry.read_file(fstab_path);
@@ -332,7 +332,7 @@ public class Snapshot : GLib.Object{
 		string crypttab_path = path_combine(path, "/localhost/etc/crypttab");
 		
 		if (btrfs_mode){
-			crypttab_path = path_combine(path, "/@/etc/crypttab");
+			crypttab_path = path_combine(path, @"/$(App.root_subvolume_name)/etc/crypttab");
 		}
 		
 		cryttab_list = CryptTabEntry.read_file(crypttab_path);
@@ -439,7 +439,7 @@ public class Snapshot : GLib.Object{
 	
 	public bool has_subvolumes(){
 		foreach(FsTabEntry en in fstab_list){
-			if (en.options.contains("subvol=@")){
+			if (en.options.contains("subvol=" + App.root_subvolume_name)){
 				return true;
 			}
 		}
