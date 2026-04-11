@@ -380,7 +380,7 @@ public class Snapshot : GLib.Object{
 	
 	public static Snapshot write_control_file(
 		string snapshot_path, DateTime dt_created, string root_uuid, string distro_full_name, 
-		string tag, string comments, int64 item_count, bool is_btrfs, bool is_live, SnapshotRepo repo, bool silent = false){
+		Tags tags, string comments, int64 item_count, bool is_btrfs, bool is_live, SnapshotRepo repo, bool silent = false){
 			
 		var ctl_path = snapshot_path + "/info.json";
 		var config = new Json.Object();
@@ -390,7 +390,7 @@ public class Snapshot : GLib.Object{
 		config.set_string_member("sys-distro", distro_full_name);
 		config.set_string_member("app-version", AppVersion);
 		config.set_string_member("file_count", item_count.to_string());
-		config.set_string_member("tags", tag);
+		config.set_string_member("tags", tags.as_config_string());
 		config.set_string_member("comments", comments);
 		config.set_string_member("live", is_live.to_string());
 		config.set_string_member("type", (is_btrfs ? "btrfs" : "rsync"));
