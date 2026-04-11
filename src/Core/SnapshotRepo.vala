@@ -378,7 +378,7 @@ public class SnapshotRepo : GLib.Object{
 		var list = new Gee.ArrayList<Snapshot>();
 
 		foreach(Snapshot bak in snapshots){
-			if (bak.valid && (tag == 0) || bak.has_tag(tag)){
+			if (bak.valid && (tag == 0) || (tag in bak.tags)){
 				list.add(bak);
 			}
 		}
@@ -693,7 +693,7 @@ public class SnapshotRepo : GLib.Object{
 		count = 0;
 		foreach(var bak in snapshots){
 			if (bak.date.compare(now.add_days(-1 * App.retain_snapshots_max_days)) < 0){
-				if (!bak.has_tag("ondemand")){
+				if (!(Tags.OnDemand in bak.tags)){
 
 					if (show_msg){
 						log_msg(_("Removing backups older than") + " %d ".printf(
@@ -724,7 +724,7 @@ public class SnapshotRepo : GLib.Object{
 			load_snapshots();
 			
 			if (snapshots.size > 0){
-				if (!snapshots[0].has_tag("ondemand")){
+				if (!(Tags.OnDemand in snapshots[0].tags)){
 
 					if (show_msg){
 						log_msg(_("Free space is less than") + " %lld GB".printf(

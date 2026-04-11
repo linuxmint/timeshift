@@ -166,10 +166,6 @@ public class Snapshot : GLib.Object{
 		}
 	}
 
-	public bool has_tag(Tags tag){
-		return tag in this.tags;
-	}
-
 	// control files
 	
 	public void read_control_file(){
