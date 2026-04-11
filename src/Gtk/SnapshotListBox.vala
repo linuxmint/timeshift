@@ -408,7 +408,7 @@ class SnapshotListBox : Gtk.Box{
 		model.get (iter, 0, out bak, -1);
 		
 		var ctxt = (cell as Gtk.CellRendererText);
-		ctxt.text = bak.taglist_short;
+		ctxt.text = bak.tags.as_short_list();
 		ctxt.sensitive = !bak.marked_for_deletion;
 
 		if (bak.live){

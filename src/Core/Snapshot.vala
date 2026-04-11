@@ -41,7 +41,7 @@ public class Snapshot : GLib.Object{
 	public string app_version = "";
 	public string description = "";
 	public int64 file_count = 0;
-	public Gee.ArrayList<string> tags;
+	public Tags tags;
 	public Gee.ArrayList<string> exclude_list;
 	public Gee.HashMap<string,Subvolume> subvolumes;
 	public Gee.ArrayList<FsTabEntry> fstab_list;
@@ -73,7 +73,7 @@ public class Snapshot : GLib.Object{
 			repo = _repo;
 			
 			date = new DateTime.from_unix_utc(0);
-			tags = new Gee.ArrayList<string>();
+			tags = 0;
 			exclude_list = new Gee.ArrayList<string>();
 			fstab_list = new Gee.ArrayList<FsTabEntry>();
 			delete_file_task = new DeleteFileTask();
@@ -138,51 +138,32 @@ public class Snapshot : GLib.Object{
 	
 	public string taglist{
 		owned get{
-			string str = "";
-			foreach(string tag in tags){
-				str += " " + tag;
-			}
-			return str.strip();
+			return this.tags.as_config_string();
 		}
 		set{
-			tags.clear();
+			this.tags = 0;
 			foreach(string tag in value.split(" ")){
-				if (!tags.contains(tag.strip())){
-					tags.add(tag.strip());
-				}
+				this.tags |= Tags.parse(tag);
 			}
 		}
 	}
 
-	public string taglist_short{
-		owned get{
-			string str = "";
-			foreach(string tag in tags){
-				str += " " + tag.replace("ondemand","O").replace("boot","B").replace("hourly","H").replace("daily","D").replace("weekly","W").replace("monthly","M");
+	/* if at_least_on_demand is true and no tags are set, set Tags.OnDemand */
+	public void add_tag(Tags tag, bool at_least_on_demand = false){
+		if (!(tag in this.tags) || at_least_on_demand){
+			this.tags |= tag;
+			if (at_least_on_demand && this.tags == 0){
+				this.tags |= Tags.OnDemand;
 			}
-			return str.strip();
-		}
-	}
-
-	public void add_tag(string tag){
-		
-		if (!tags.contains(tag.strip())){
-			tags.add(tag.strip());
 			update_control_file();
 		}
 	}
 
-	public void remove_tag(string tag){
-		
-		if (tags.contains(tag.strip())){
-			tags.remove(tag.strip());
+	public void remove_tag(Tags tag){
+		if (tag in this.tags){
+			this.tags ^= tag;
 			update_control_file();
 		}
-	}
-
-	public bool has_tag(string tag){
-		
-		return tags.contains(tag.strip());
 	}
 
 	// control files
@@ -395,7 +376,7 @@ public class Snapshot : GLib.Object{
 	
 	public static Snapshot write_control_file(
 		string snapshot_path, DateTime dt_created, string root_uuid, string distro_full_name, 
-		string tag, string comments, int64 item_count, bool is_btrfs, bool is_live, SnapshotRepo repo, bool silent = false){
+		Tags tags, string comments, int64 item_count, bool is_btrfs, bool is_live, SnapshotRepo repo, bool silent = false){
 			
 		var ctl_path = snapshot_path + "/info.json";
 		var config = new Json.Object();
@@ -405,7 +386,7 @@ public class Snapshot : GLib.Object{
 		config.set_string_member("sys-distro", distro_full_name);
 		config.set_string_member("app-version", AppVersion);
 		config.set_string_member("file_count", item_count.to_string());
-		config.set_string_member("tags", tag);
+		config.set_string_member("tags", tags.as_config_string());
 		config.set_string_member("comments", comments);
 		config.set_string_member("live", is_live.to_string());
 		config.set_string_member("type", (is_btrfs ? "btrfs" : "rsync"));
