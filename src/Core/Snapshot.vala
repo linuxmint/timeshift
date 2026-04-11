@@ -138,27 +138,13 @@ public class Snapshot : GLib.Object{
 	
 	public string taglist{
 		owned get{
-			string str = "";
-			foreach(Tags? tag in tags) {
-				str += " " + tag.name();
-			}
-			return str.strip();
+			return this.tags.as_config_string();
 		}
 		set{
 			this.tags = 0;
 			foreach(string tag in value.split(" ")){
 				this.tags |= Tags.parse(tag);
 			}
-		}
-	}
-
-	public string taglist_short{
-		owned get{
-			string str = "";
-			foreach(Tags? tag in this.tags){
-				str += " " + tag.letter().to_string();
-			}
-			return str.strip();
 		}
 	}
 

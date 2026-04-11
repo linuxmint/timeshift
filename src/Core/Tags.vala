@@ -82,6 +82,30 @@ public enum Tags {
         }
     }
 
+    // does this contain any of tags?
+    // not the same as `(tags in this)` !
+    public bool contains_any(Tags tags) {
+        return (this & tags) > 0;
+    }
+
+    // convert a Tags object into something that can be stored in the config. example: "boot daily weekly"
+    public string as_config_string() {
+        string str = "";
+        foreach(Tags? tag in this) {
+            str += " " + tag.name();
+        }
+        return str.strip();
+    }
+
+    // returns something like "B D W"
+    public string as_short_list() {
+        string str = "";
+        foreach(Tags? tag in this) {
+            str += " " + tag.letter().to_string();
+        }
+        return str.strip();
+    }
+
     public TagsIterator iterator() {
         return new TagsIterator(this);
     }

@@ -449,7 +449,7 @@ public class AppConsole : GLib.Object {
 				grid[row, ++col] = "%d".printf(index);
 				grid[row, ++col] = ">";
 				grid[row, ++col] = "%s".printf(bak.name);
-				grid[row, ++col] = "%s".printf(bak.taglist_short);
+				grid[row, ++col] = "%s".printf(bak.tags.as_short_list());
 				grid[row, ++col] = "%s".printf(bak.description);
 				row++;
 			}
