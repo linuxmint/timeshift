@@ -86,6 +86,10 @@ You can selectively include items for backup from the ***Settings*** window. Sel
 
   ![](images/restore_summary.png)
 
+### Incomplete snapshots
+
+Incomplete snapshots don't show up in the restore list and are deleted when the next scheduled snapshot is taken.
+
 ### Cross-Distribution Restore
 
 - You can also Timeshift across distributions. Let's say you are currently using Xubuntu and decide to try out Linux Mint. You install Linux Mint on your system and try it out for a week before deciding to go back to Xubuntu. Using Timeshift you can simply restore the last week's snapshot to get your Xubuntu system back. Timeshift will take care of things like reinstalling the bootloader and other details. 
