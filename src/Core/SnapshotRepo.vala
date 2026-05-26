@@ -513,6 +513,8 @@ public class SnapshotRepo : GLib.Object{
 		if (btrfs_mode) {
 			// Run the btrfs checks from Main.check_btrfs_system_config.
 			if (!App.check_btrfs_system_config(out title, out msg)) {
+				title = "";
+				msg = "";
 				code = SnapshotLocationStatus.NO_BTRFS_SYSTEM;
 				return false;
 			}
@@ -561,6 +563,12 @@ public class SnapshotRepo : GLib.Object{
 				code = SnapshotLocationStatus.NO_BTRFS_SYSTEM;
 				return false;
 			}
+		}
+		else {
+			title = "";
+			msg = "";
+			// If not assigned, it will be set to 0.
+			code = SnapshotLocationStatus.HAS_SNAPSHOTS_HAS_SPACE;
 		}
 
 		return true;
