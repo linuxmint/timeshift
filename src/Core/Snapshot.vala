@@ -190,6 +190,13 @@ public class Snapshot : GLib.Object{
 	public void read_control_file(){
 		
 		//log_debug("read_control_file()");
+
+		// In case the root_subvolume_name is miscomfigured to empty string,
+		// make sure the path to the dist info file is not valid.
+		if (type == "btrfs" && App.root_subvolume_name == "") {
+			valid = false;
+			return;
+		}
 		
 		string ctl_file = path + "/info.json";
 
