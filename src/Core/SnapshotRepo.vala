@@ -526,9 +526,9 @@ public class SnapshotRepo : GLib.Object{
 
 			// Check the home subvolume configuration.
 			// home_path can be null if mount_paths[App.home_subvolume_name] doesn't exist.
-			var home_path = path_combine(mount_paths[App.home_subvolume_name], App.home_subvolume_name);
-			var home_subvolume_configured = App.home_subvolume_name != "";
 			var has_home_mount_path = mount_paths.has_key(App.home_subvolume_name);
+			var home_path = has_home_mount_path ? path_combine(mount_paths[App.home_subvolume_name], App.home_subvolume_name) : "";
+			var home_subvolume_configured = App.home_subvolume_name != "";
 			
 			log_debug("home_path=%s".printf(home_path));
 			log_debug("home_subvolume_configured=%s".printf(home_subvolume_configured.to_string()));
