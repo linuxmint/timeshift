@@ -41,7 +41,6 @@ public class RsyncSpaceCheckTask : AsyncTask{
 	public string source_path = "";
 	public string dest_path = "";
 	public bool verbose = true;
-	public bool io_nice = true;
 	public bool dry_run = false;
 
 	// regex

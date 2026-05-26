@@ -8,9 +8,12 @@ on:
     branches:
       - master
   workflow_dispatch:
+  issue_comment:
+    types: [created]
 
 jobs:
   build:
+    if: github.event_name != 'issue_comment'
     uses: linuxmint/github-actions/.github/workflows/do-builds.yml@master
     with:
       commit_id: master
@@ -18,3 +21,15 @@ jobs:
       dependencies:
       ##############################
 
+  # Generate test packages when /generate-test-packages is commented on a PR
+  generate-test-packages:
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request
+    uses: linuxmint/github-actions/.github/workflows/generate-test-packages.yml@master
+    secrets: inherit
+    with:
+      comment_body: ${{ github.event.comment.body }}
+      comment_user: ${{ github.event.comment.user.login }}
+      comment_id: ${{ github.event.comment.id }}
+      issue_number: ${{ github.event.issue.number }}
+      ############################## Comma separated list - like 'linuxmint/xapp, linuxmint/cinnamon-desktop'
+      dependencies:

@@ -115,7 +115,7 @@ namespace TeeJee.System{
 		if (xdg_open_try_first && xdgAvailable){
 			//try using xdg-open
 			string cmd = "xdg-open '%s'".printf(escaped_dir_path);
-			status = exec_script_async (cmd);
+			status = TeeJee.ProcessHelper.exec_user_async(cmd);
 			return (status == 0);
 		}
 
@@ -126,7 +126,7 @@ namespace TeeJee.System{
 			}
 
 			string cmd = "%s '%s'".printf(app_name, escaped_dir_path);
-			status = exec_script_async (cmd);
+			status = TeeJee.ProcessHelper.exec_user_async(cmd);
 
 			if(status == 0) {
 				return true;
@@ -136,7 +136,7 @@ namespace TeeJee.System{
 		if (!xdg_open_try_first && xdgAvailable){
 			//try using xdg-open
 			string cmd = "xdg-open '%s'".printf(escaped_dir_path);
-			status = exec_script_async (cmd);
+			status = TeeJee.ProcessHelper.exec_user_async(cmd);
 			return (status == 0);
 		}
 
@@ -149,6 +149,20 @@ namespace TeeJee.System{
 		 * and false for BIOS mode */
 		 
 		return dir_exists("/sys/firmware/efi");
+	}
+
+	private static string? current_boot_id = null;
+	public static string? get_current_boot_id() {
+		if(current_boot_id != null) {
+			return current_boot_id;
+		}
+
+		current_boot_id = file_read("/proc/sys/kernel/random/boot_id");
+		if(null != current_boot_id) {
+			current_boot_id._strip();
+		}
+
+		return current_boot_id;
 	}
 
 	// timers --------------------------------------------------

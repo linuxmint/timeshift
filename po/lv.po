@@ -8,14 +8,15 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2025-12-10 14:42+0000\n"
-"PO-Revision-Date: 2025-12-11 17:10+0000\n"
+"PO-Revision-Date: 2025-12-25 11:21+0000\n"
 "Last-Translator: Klavs Petersons <Unknown>\n"
 "Language-Team: Latvian <lv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2025-12-12 13:32+0000\n"
-"X-Generator: Launchpad (build 379e22b8475e3402088a4cdb4a6e7936a4d28414)\n"
+"X-Launchpad-Export-Date: 2026-01-08 15:43+0000\n"
+"X-Generator: Launchpad (build 99c00f518760bdd50fc6e353e7736d2fff8fba4a)\n"
+"Language: lv\n"
 
 #: src/AppConsole.vala:630
 #, c-format
@@ -24,7 +25,7 @@ msgid ""
 "Press ENTER to continue..."
 msgstr ""
 "\n"
-"Nospiediet ENTER, lai turpinātu..."
+"Nospied ENTER, lai turpinātu..."
 
 #: src/Core/SnapshotRepo.vala:560
 #, c-format
@@ -43,7 +44,7 @@ msgstr "'%s' būs root ierīcē"
 
 #: src/Gtk/BootOptionsBox.vala:118
 msgid "(Re)install GRUB2 on:"
-msgstr "(Pār)instalējiet GRUB2 uz:"
+msgstr "(Pār)instalē GRUB2 uz:"
 
 #: src/Core/Main.vala:483
 msgid "** Uninstalled Timeshift BTRFS **"
@@ -67,7 +68,7 @@ msgstr "/home ir kartēts uz ierīci"
 
 #: src/Gtk/SnapshotListBox.vala:291
 msgid "<b>Comments</b> (double-click to edit)"
-msgstr "<b>Komentāri</b> (veiciet dubultklikšķi, lai rediģētu)"
+msgstr "<b>Komentāri</b> (dubultklikšķis, lai rediģētu)"
 
 #: src/Gtk/ScheduleBox.vala:168
 msgid ""
@@ -163,8 +164,8 @@ msgstr ""
 "sekmīgi palaist, sāknēšanas direktorijam (/boot) jābūt uzstādītam nešifrētā "
 "ierīcē.\n"
 "\n"
-"Atlasiet nešifrētu ierīci sāknēšanas direktorijam vai atlasiet nešifrētu "
-"ierīci root failu sistēmai."
+"Atlasi nešifrētu ierīci sāknēšanas direktorijam vai atlasi nešifrētu ierīci "
+"root failu sistēmai."
 
 #: src/Core/Main.vala:267
 msgid "Another instance of Timeshift is creating a snapshot."
@@ -180,7 +181,7 @@ msgstr "Vēl viena timeshift instance pašlaik darbojas!"
 
 #: src/AppConsole.vala:390
 msgid "Answer YES to all confirmation prompts"
-msgstr "Atbildiet JĀ uz visām apstiprinājuma uzvednēm"
+msgstr "Atbildi JĀ uz visām apstiprinājuma uzvednēm"
 
 #: src/Core/Main.vala:3535
 msgid "App config loaded"
@@ -204,7 +205,7 @@ msgstr "Lietojumprogramma tiks aizvērta."
 
 #: src/Gtk/MainWindow.vala:546
 msgid "Are you sure you want to delete this snapshot?"
-msgstr "Vai tiešām vēlaties dzēst šo momentuzņēmumu?"
+msgstr "Vai tiešām vēlies dzēst šo momentuzņēmumu?"
 
 #: src/Gtk/MainWindow.vala:345
 msgid "Available"
@@ -239,7 +240,7 @@ msgid ""
 msgstr ""
 "BTRFS momentuzņēmumi tiek saglabāti tajā pašā diskā, no kura tie ir "
 "izveidoti. Ja sistēmas disks sabojājas, momentuzņēmumi tiks zaudēti kopā ar "
-"sistēmu. Lai pasargātu no diska kļūmēm, momentuzņēmumus saglabājiet ārējā "
+"sistēmu. Lai pasargātu no diska kļūmēm, momentuzņēmumus saglabā ārējā "
 "nesistēmas diskā RSYNC režīmā."
 
 #: src/Gtk/SetupWizardWindow.vala:94
@@ -332,10 +333,10 @@ msgid ""
 "issues. After cancelling, you need to restore another snapshot, to bring the "
 "system to a consistent state. Click Yes to confirm."
 msgstr ""
-"Atjaunošanas procesa atcelšana atstās mērķa sistēmu nekonsekventā stāvoklī. "
-"Sistēmu var neizdoties ielādēt vai var rasties dažādas problēmas. Pēc "
-"atcelšanas jāatjauno cits momentuzņēmums, lai sistēma būtu konsekventā "
-"stāvoklī. Lai apstiprinātu, noklikšķiniet uz Jā."
+"Atceļot atjaunošanas procesu, mērķa sistēma paliks nekonsekventā stāvoklī. "
+"Sistēmu var neizdoties sāknēt vai var rasties dažādas problēmas. Pēc "
+"atcelšanas ir jāatjauno cits momentuzņēmums, lai sistēma būtu pastāvīgā "
+"stāvoklī. Noklikšķini uz Jā, lai apstiprinātu."
 
 #: src/Gtk/MainWindow.vala:532
 msgid "Cannot Delete Live Snapshot"
@@ -371,11 +372,11 @@ msgstr "Notiek tīrīšana..."
 
 #: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:88
 msgid "Click to edit. Drag and drop to re-order."
-msgstr "Noklikšķiniet, lai rediģētu. Velciet un nometiet, lai pārkārtotu."
+msgstr "Noklikšķini, lai rediģētu. Velc un nomet, lai pārkārtotu."
 
 #: src/Gtk/ExcludeBox.vala:59
 msgid "Click to edit. Drag-drop to re-order."
-msgstr "Noklikšķiniet, lai rediģētu. Velciet un nometiet, lai pārkārtotu."
+msgstr "Noklikšķini, lai rediģētu. Velc un nomet, lai pārkārtotu."
 
 #: src/Gtk/RestoreWindow.vala:69
 msgid "Clone System"
@@ -407,7 +408,7 @@ msgstr "Tālāk norādītās komandas šajā sistēmā nav pieejamas"
 
 #: src/Gtk/SnapshotListBox.vala:223
 msgid "Comments (click to edit)"
-msgstr "Komentāri (noklikšķiniet, lai rediģētu)"
+msgstr "Komentāri (noklikšķini, lai rediģētu)"
 
 #: src/Core/Main.vala:3098 src/Gtk/RestoreBox.vala:74
 #: src/Gtk/RestoreBox.vala:187
@@ -506,8 +507,8 @@ msgid ""
 "Create snapshots manually or enable scheduled snapshots to protect your "
 "system"
 msgstr ""
-"Izveidojiet momentuzņēmumus manuāli vai iespējojiet ieplānotos "
-"momentuzņēmumus, lai aizsargātu savu sistēmu"
+"Izveido momentuzņēmumus manuāli vai iespējo ieplānotos momentuzņēmumus, lai "
+"aizsargātu savu sistēmu"
 
 #: src/Gtk/SnapshotBackendBox.vala:96
 msgid "Create snapshots using BTRFS"
@@ -1113,14 +1114,14 @@ msgid ""
 "If the restored system fails to boot, then boot from the Live CD/USB, "
 "install Timeshift, and try restoring another snapshot."
 msgstr ""
-"Ja atjaunoto sistēmu neizdodas palaist, tad palaidiet no Live CD/USB, "
-"instalējiet Timeshift un mēģiniet atjaunot citu momentuzņēmumu."
+"Ja atjaunoto sistēmu neizdodas palaist, tad palaid no Live CD/USB, instalē "
+"Timeshift un mēģini atjaunot citu momentuzņēmumu."
 
 #: src/Core/Main.vala:2519
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
-msgstr "Ja šie noteikumi jums nav pieņemami, lūdzu, neturpiniet tālāk!"
+msgstr "Ja šie noteikumi tev nav pieņemami, lūdzu, neturpini tālāk!"
 
 #: src/Gtk/ExcludeBox.vala:54
 msgid "Include / Exclude Patterns"
@@ -1165,7 +1166,7 @@ msgid ""
 "etc. If un-checked, previous configuration files will be restored from "
 "snapshot."
 msgstr ""
-"Saglabājiet konfigurācijas failus BitTorrent klientiem, piemēram, Deluge, "
+"Saglabā konfigurācijas failus BitTorrent klientiem, piemēram, Deluge, "
 "Transmission utt. Ja šī izvēles rūtiņa nav atzīmēta, iepriekšējie "
 "konfigurācijas faili tiks atjaunoti no momentuzņēmuma."
 
@@ -1174,9 +1175,9 @@ msgid ""
 "Keep configuration files for web browsers like Firefox and Chrome. If un-"
 "checked, previous configuration files will be restored from snapshot"
 msgstr ""
-"Saglabājiet konfigurācijas failus tādām tīmekļa pārlūkprogrammām kā Firefox "
-"un Chrome. Ja šī izvēles rūtiņa nav atzīmēta, iepriekšējie konfigurācijas "
-"faili tiks atjaunoti no momentuzņēmuma"
+"Saglabā konfigurācijas failus tādām tīmekļa pārlūkprogrammām kā Firefox un "
+"Chrome. Ja šī izvēles rūtiņa nav atzīmēta, iepriekšējie konfigurācijas faili "
+"tiks atjaunoti no momentuzņēmuma"
 
 #: src/Gtk/RestoreDeviceBox.vala:244
 msgid "Keep on Root Device"
@@ -1539,53 +1540,52 @@ msgstr "Atļaujas"
 
 #: src/Core/Main.vala:272
 msgid "Please check if you have multiple windows open."
-msgstr "Lūdzu, pārbaudiet, vai ir atvērti vairāki logi."
+msgstr "Lūdzu, pārbaudi, vai ir atvērti vairāki logi."
 
 #: src/Core/Main.vala:2551
 msgid "Please do not interrupt the restore process!"
-msgstr "Lūdzu, nepārtrauciet atjaunošanas procesu!"
+msgstr "Lūdzu, nepārtrauc atjaunošanas procesu!"
 
 #: src/Core/Main.vala:363
 msgid "Please install required packages and try running TimeShift again"
 msgstr ""
-"Lūdzu, instalējiet nepieciešamās pakotnes un vēlreiz mēģiniet palaist "
-"Timeshift"
+"Lūdzu, instalē nepieciešamās pakotnes un vēlreiz mēģini palaist Timeshift"
 
 #: src/AppGtk.vala:145
 msgid "Please re-run the application as admin (using 'sudo' or 'su')"
 msgstr ""
-"Lūdzu, atkārtoti palaidiet lietojumprogrammu kā administrators (izmantojot "
+"Lūdzu, atkārtoti palaid lietojumprogrammu kā administrators (izmantojot "
 "'sudo' vai 'su')"
 
 #: src/AppConsole.vala:110
 msgid "Please run the application as admin (using 'sudo' or 'su')"
 msgstr ""
-"Lūdzu, palaidiet lietojumprogrammu kā administrators (izmantojot 'sudo' vai "
+"Lūdzu, palaid lietojumprogrammu kā administrators (izmantojot 'sudo' vai "
 "'su')"
 
 #: src/Core/Main.vala:2501
 msgid "Please save your work and close all applications."
-msgstr "Lūdzu, saglabājiet savu darbu un aizveriet visas lietojumprogrammas."
+msgstr "Lūdzu, saglabā savu darbu un aizver visas lietojumprogrammas."
 
 #: src/Gtk/MainWindow.vala:687
 msgid "Please select a snapshot to view the log!"
-msgstr "Lūdzu, atlasiet momentuzņēmumu, lai skatītu žurnālu!"
+msgstr "Lūdzu, atlasi momentuzņēmumu, lai skatītu žurnālu!"
 
 #: src/Gtk/RestoreDeviceBox.vala:498
 msgid "Please select the GRUB device"
-msgstr "Lūdzu, izvēlieties GRUB ierīci"
+msgstr "Lūdzu, izvēlies GRUB ierīci"
 
 #: src/Core/Main.vala:268
 msgid "Please wait a few minutes and try again."
-msgstr "Lūdzu, uzgaidiet dažas minūtes un mēģiniet vēlreiz."
+msgstr "Lūdzu, uzgaidi dažas minūtes un mēģini vēlreiz."
 
 #: src/Gtk/MainWindow.vala:744
 msgid "Please wait for snapshots to be deleted."
-msgstr "Lūdzu, uzgaidiet, līdz momentuzņēmumi tiek dzēsti."
+msgstr "Lūdzu, uzgaidi, līdz momentuzņēmumi tiek dzēsti."
 
 #: src/Gtk/EstimateBox.vala:64
 msgid "Please wait..."
-msgstr "Lūdzu, uzgaidiet..."
+msgstr "Lūdzu, uzgaidi..."
 
 #: src/Gtk/RsyncLogBox.vala:188
 msgid "Populating list..."
@@ -1632,8 +1632,7 @@ msgid ""
 "needed. Select this only if the restored system fails to boot."
 msgstr ""
 "Atkārtoti ģenerē initramfs visiem instalētajiem kodoliem. Tas parasti nav "
-"nepieciešams. Izvēlieties to tikai tad, ja atjaunoto sistēmu neizdodas "
-"ielādēt."
+"nepieciešams. Izvēlies to tikai tad, ja atjaunoto sistēmu neizdodas ielādēt."
 
 #: src/AppConsole.vala:1022
 #, c-format
@@ -1802,7 +1801,7 @@ msgstr "Rsync žurnāla skatītājs"
 #: src/AppGtk.vala:136
 #, c-format
 msgid "Run 'timeshift' for the command-line version of this tool"
-msgstr "Palaist 'Timeshift' šī rīka komandrindas versijai"
+msgstr "Palaist 'timeshift' šī rīka komandrindas versijai"
 
 #: src/AppConsole.vala:396
 msgid "Run in non-interactive mode"
@@ -1817,8 +1816,8 @@ msgid ""
 "Save snapshots to an external disk instead of the system disk to guard "
 "against drive failures."
 msgstr ""
-"Saglabājiet momentuzņēmumus ārējā diskā, nevis sistēmas diskā, lai pasargātu "
-"no diska kļūmēm."
+"Saglabā momentuzņēmumus ārējā diskā, nevis sistēmas diskā, lai pasargātu no "
+"diska kļūmēm."
 
 #: src/Gtk/FinishBox.vala:97
 msgid ""
@@ -1868,15 +1867,15 @@ msgstr ""
 #: src/AppConsole.vala:902
 #, c-format
 msgid "Select '%s' device (default = %s)"
-msgstr "Izvēlieties '%s' ierīci (noklusējuma = %s)"
+msgstr "Izvēlies '%s' ierīci (noklusējuma = %s)"
 
 #: src/Core/SnapshotRepo.vala:514 src/AppConsole.vala:707
 msgid "Select BTRFS system disk with root subvolume (@)"
-msgstr "Izvēlieties BTRFS sistēmas disku ar root apakšsējumu (@)"
+msgstr "Izvēlies BTRFS sistēmas disku ar root apakšsējumu (@)"
 
 #: src/AppConsole.vala:1039
 msgid "Select GRUB device"
-msgstr "Izvēlieties GRUB ierīci"
+msgstr "Izvēlies GRUB ierīci"
 
 #: src/Gtk/MainWindow.vala:686
 msgid "Select Snapshot"
@@ -1909,19 +1908,19 @@ msgstr "Atlasīt partīciju šajā diskā"
 
 #: src/Gtk/MainWindow.vala:783
 msgid "Select a single snapshot to restore"
-msgstr "Atlasiet vienu atjaunojamo momentuzņēmumu"
+msgstr "Atlasi vienu atjaunojamo momentuzņēmumu"
 
 #: src/Gtk/RestoreDeviceBox.vala:467
 msgid "Select another device for root file system (/)"
-msgstr "Atlasiet citu ierīci root failu sistēmai (/)"
+msgstr "Atlasi citu ierīci root failu sistēmai (/)"
 
 #: src/Core/SnapshotRepo.vala:550 src/Core/SnapshotRepo.vala:579
 msgid "Select another device or free up some space"
-msgstr "Atlasiet citu ierīci vai atbrīvojiet vietu"
+msgstr "Atlasi citu ierīci vai atbrīvo vietu"
 
 #: src/Gtk/MainWindow.vala:516 src/Gtk/MainWindow.vala:523
 msgid "Select another device to delete snasphots"
-msgstr "Izvēlieties citu ierīci, lai dzēstu momentuzņēmumus"
+msgstr "Izvēlies citu ierīci, lai dzēstu momentuzņēmumus"
 
 #: src/Gtk/MainWindow.vala:450
 msgid "Select another device?"
@@ -1929,7 +1928,7 @@ msgstr "Izvēlēties citu ierīci?"
 
 #: src/Gtk/RestoreExcludeBox.vala:57
 msgid "Select applications to exclude from restore"
-msgstr "Atlasiet lietojumprogrammas, kuras izslēgt no atjaunošanas"
+msgstr "Atlasi lietojumprogrammas, kuras izslēgt no atjaunošanas"
 
 #: src/AppConsole.vala:690
 msgid "Select backup device"
@@ -1949,43 +1948,43 @@ msgstr "Izvēlieties momentuzņēmumu"
 
 #: src/Gtk/DeleteWindow.vala:336
 msgid "Select snapshots to delete"
-msgstr "Atlasiet momentuzņēmumus, kurus vēlaties dzēst"
+msgstr "Atlasi momentuzņēmumus, kurus vēlies dzēst"
 
 #: src/Gtk/RestoreDeviceBox.vala:439
 msgid "Select the device for root file system (/)"
-msgstr "Izvēlieties ierīci root failu sistēmai (/)"
+msgstr "Izvēlies ierīci root failu sistēmai (/)"
 
 #: src/Gtk/RestoreDeviceBox.vala:83
 msgid "Select the devices where files will be restored."
-msgstr "Izvēlieties ierīces, kurās tiks atjaunoti faili."
+msgstr "Izvēlies ierīces, kurās tiks atjaunoti faili."
 
 #: src/Gtk/ScheduleBox.vala:313
 msgid "Select the intervals for creating snapshots"
-msgstr "Izvēlieties intervālus momentuzņēmumu veidošanai"
+msgstr "Izvēlies intervālus momentuzņēmumu veidošanai"
 
 #: src/Gtk/ExcludeBox.vala:283
 msgid "Select the items to be removed from the list"
-msgstr "Atlasiet vienumus, kas jānoņem no saraksta"
+msgstr "Atlasi vienumus, kas jānoņem no saraksta"
 
 #: src/Core/SnapshotRepo.vala:476
 msgid "Select the snapshot device"
-msgstr "Atlasiet momentuzņēmuma ierīci"
+msgstr "Atlasi momentuzņēmuma ierīci"
 
 #: src/Gtk/MainWindow.vala:776
 msgid "Select the snapshot to restore"
-msgstr "Atlasiet atjaunojamo momentuzņēmumu"
+msgstr "Atlasi atjaunojamo momentuzņēmumu"
 
 #: src/Gtk/DeleteWindow.vala:87
 msgid "Select the snapshots to be deleted"
-msgstr "Atlasiet dzēšamos momentuzņēmumus"
+msgstr "Atlasi dzēšamos momentuzņēmumus"
 
 #: src/Gtk/MainWindow.vala:602
 msgid "Select the snapshots to mark for deletion"
-msgstr "Atlasiet momentuzņēmumus, ko atzīmēt dzēšanai"
+msgstr "Atlasi momentuzņēmumus, ko atzīmēt dzēšanai"
 
 #: src/Gtk/RestoreDeviceBox.vala:79
 msgid "Select the target devices where system will be cloned."
-msgstr "Atlasiet mērķa ierīces, kurās sistēma tiks klonēta."
+msgstr "Atlasi mērķa ierīces, kurās sistēma tiks klonēta."
 
 #: src/Core/Main.vala:3598
 msgid "Selected default snapshot device"
@@ -2109,8 +2108,8 @@ msgid ""
 "Snapshot '%s' is being used by the system and cannot be deleted. Restart the "
 "system to activate the restored snapshot."
 msgstr ""
-"Momentuzņēmumu '%s' izmanto sistēma, un to nevar izdzēst. Restartējiet "
-"sistēmu, lai aktivizētu atjaunoto momentuzņēmumu."
+"Momentuzņēmumu '%s' izmanto sistēma, un to nevar izdzēst. Restartē sistēmu, "
+"lai aktivizētu atjaunoto momentuzņēmumu."
 
 #: src/Gtk/BackupFinishBox.vala:60
 msgid "Snapshot Created"
@@ -2527,7 +2526,7 @@ msgid ""
 "User home directories are excluded by default unless you enable them here"
 msgstr ""
 "Lietotāju sākumdirektoriji pēc noklusējuma tiek izslēgti, ja vien tos "
-"neaktivizējat šeit"
+"neaktivizē šeit"
 
 #: src/Gtk/SettingsWindow.vala:101
 msgid "Users"
@@ -2596,7 +2595,7 @@ msgid ""
 "system will be visible as a new snapshot. This snapshot can be restored "
 "later if required, to 'undo' the restore."
 msgstr ""
-"Varat turpināt darbu ar pašreizējo sistēmu. Pēc restartēšanas pašreizējā "
+"Vari turpināt darbu ar pašreizējo sistēmu. Pēc restartēšanas pašreizējā "
 "sistēma būs redzama kā jauns momentuzņēmums. Šo momentuzņēmumu var atjaunot "
 "vēlāk, ja nepieciešams, lai 'atsauktu' atjaunošanu."
 
@@ -2615,7 +2614,7 @@ msgid ""
 "[For Experienced Users] Change these settings if the restored system fails "
 "to boot."
 msgstr ""
-"[Pieredzējušiem lietotājiem] Mainiet šos iestatījumus, ja atjaunoto sistēmu "
+"[Pieredzējušiem lietotājiem] Maini šos iestatījumus, ja atjaunoto sistēmu "
 "neizdodas palaist."
 
 #: src/Utility/AppLock.vala:54

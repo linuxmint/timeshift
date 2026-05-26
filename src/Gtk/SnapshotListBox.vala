@@ -288,7 +288,7 @@ class SnapshotListBox : Gtk.Box{
 						return true;
 					}
 					else if (column == col_desc){
-						tooltip.set_markup(_("<b>Comments</b> (double-click to edit)"));
+						tooltip.set_markup(_("<b>Comments</b> (double-click to edit)") + "\n" + _("Snapshots with comments are not auto-deleted"));
 						return true;
 					}
 					else if (column == col_tags){
