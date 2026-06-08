@@ -21,12 +21,11 @@
  *
  *
  */
- 
+
 namespace TeeJee.Misc {
 
 	/* Various utility functions */
 
-	using Gtk;
 	using TeeJee.Logging;
 	using TeeJee.FileSystem;
 	using TeeJee.ProcessHelper;
@@ -38,9 +37,9 @@ namespace TeeJee.Misc {
 	    Intl.setlocale(GLib.LocaleCategory.COLLATE, type);
 	    Intl.setlocale(GLib.LocaleCategory.TIME, type);
 	}
-	
+
 	// timestamp ----------------
-	
+
 	public string timestamp (bool show_millis = false){
 
 		/* Returns a formatted timestamp string */
@@ -48,7 +47,7 @@ namespace TeeJee.Misc {
 		// NOTE: format() does not support milliseconds
 
 		DateTime now = new GLib.DateTime.now_local();
-		
+
 		if (show_millis){
 			var msec = now.get_microsecond () / 1000;
 			return "%s.%03d".printf(now.format("%H:%M:%S"), msec);
@@ -91,12 +90,12 @@ namespace TeeJee.Misc {
 	}
 
 	public string escape_html(string html){
-		
+
 		return GLib.Markup.escape_text(html);
 	}
 
 	public string random_string(int length = 8, string charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"){
-		
+
 		string random = "";
 
 		for(int i=0;i<length;i++){
