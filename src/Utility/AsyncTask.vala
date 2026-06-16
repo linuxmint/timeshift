@@ -37,8 +37,8 @@ public abstract class AsyncTask : GLib.Object{
 	private DataInputStream dis_err = null;
 	protected DataOutputStream dos_log = null;
 
-	private bool stdout_is_open = false;
-	private bool stderr_is_open = false;
+	private Thread<void> stdout_thread = null;
+	private Thread<void> stderr_thread = null;
 
 	protected Pid child_pid = 0;
 	private int input_fd = -1;
@@ -166,7 +166,7 @@ public abstract class AsyncTask : GLib.Object{
 
 			try {
 				//start thread for reading output stream
-				new Thread<void>.try ("async-task-stdout-reader", read_stdout);
+				stdout_thread = new Thread<void>.try ("async-task-stdout-reader", read_stdout);
 			} catch (GLib.Error e) {
 				log_error ("AsyncTask.begin():create_thread:read_stdout()");
 				log_error (e.message);
@@ -174,9 +174,23 @@ public abstract class AsyncTask : GLib.Object{
 
 			try {
 				//start thread for reading error stream
-				new Thread<void>.try ("async-task-stderr-reader", read_stderr);
+				stderr_thread = new Thread<void>.try ("async-task-stderr-reader", read_stderr);
 			} catch (GLib.Error e) {
 				log_error ("AsyncTask.begin():create_thread:read_stderr()");
+				log_error (e.message);
+			}
+
+			try {
+				// Wait for both reader threads to finish (streams fully closed),
+				// then signal completion exactly once. Previously each reader called
+				// finish() on its own as soon as both *_is_open flags were clear, but
+				// those flags were cleared *before* the stream was actually closed.
+				// That let one reader fire finish()/task_complete() while the other was
+				// still inside dis_*.close()/= null; the owner would then tear the task
+				// down mid-unref, double-unreffing the underlying stream (SIGSEGV).
+				new Thread<void>.try ("async-task-finish-waiter", wait_and_finish);
+			} catch (GLib.Error e) {
+				log_error ("AsyncTask.begin():create_thread:wait_and_finish()");
 				log_error (e.message);
 			}
 		}
@@ -192,8 +206,6 @@ public abstract class AsyncTask : GLib.Object{
 
 	private void read_stdout() {
 		try {
-			stdout_is_open = true;
-			
 			out_line = dis_out.read_line (null);
 			while (out_line != null) {
 				//log_msg("O: " + out_line);
@@ -204,8 +216,6 @@ public abstract class AsyncTask : GLib.Object{
 				out_line = dis_out.read_line (null); //read next
 			}
 
-			stdout_is_open = false;
-
 			// dispose stdout
 			try {
 				if (dis_out != null) {
@@ -214,22 +224,15 @@ public abstract class AsyncTask : GLib.Object{
 			}
 			catch (GLib.Error ignored) {}
 			dis_out = null;
-
-			// check if complete
-			if (!stdout_is_open && !stderr_is_open){
-				finish();
-			}
 		}
 		catch (Error e) {
 			log_error ("AsyncTask.read_stdout()");
 			log_error (e.message);
 		}
 	}
-	
+
 	private void read_stderr() {
 		try {
-			stderr_is_open = true;
-			
 			err_line = dis_err.read_line (null);
 			while (err_line != null) {
 				if (err_line.length > 0){
@@ -239,8 +242,6 @@ public abstract class AsyncTask : GLib.Object{
 				err_line = dis_err.read_line (null); //read next
 			}
 
-			stderr_is_open = false;
-
 			// dispose stderr
 			try {
 				if (dis_err != null) {
@@ -249,16 +250,25 @@ public abstract class AsyncTask : GLib.Object{
 			}
 			catch (GLib.Error ignored) {}
 			dis_err = null;
-
-			// check if complete
-			if (!stdout_is_open && !stderr_is_open){
-				finish();
-			}
 		}
 		catch (Error e) {
 			log_error ("AsyncTask.read_stderr()");
 			log_error (e.message);
 		}
+	}
+
+	// Joins both reader threads (so their streams are fully closed) and then runs
+	// finish() exactly once, from a single thread. See begin() for the rationale.
+	private void wait_and_finish() {
+		if (stdout_thread != null) {
+			stdout_thread.join();
+			stdout_thread = null;
+		}
+		if (stderr_thread != null) {
+			stderr_thread.join();
+			stderr_thread = null;
+		}
+		finish();
 	}
 
 	public void write_stdin(string line){
