@@ -50,6 +50,19 @@ meson compile -C build
 
 ### Step 4. Install Timeshift
 
+Install
 ```bash
 sudo meson install -C build
+```
+Uninstall
+```
+cd build
+sudo ninja uninstall
+```
+
+### Step 5. Build the debian package
+#### Package
+```bash
+sudo apt install debhelper-compat=10
+dpkg-buildpackage -us -uc
 ```
