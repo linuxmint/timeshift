@@ -54,11 +54,44 @@ class MiscBox : Gtk.Box{
 		// ------------------------
 		
 		init_date_format_option(vbox);
+		
+		init_rsync_options(vbox);
 
 		refresh();
 		
 		log_debug("MiscBox: MiscBox(): exit");
     }
+	
+	private void init_rsync_options(Gtk.Box box){
+		
+		log_debug("MiscBox: init_rsync_options()");
+		
+		Gtk.Label label_rsync = add_label_header(box, _("Rsync Options"), false);
+		label_rsync.margin_top = 12;
+		label_rsync.margin_bottom = 6;
+		
+		//no_inc_recursive
+		
+		Gtk.CheckButton chk_rsync_no_inc = add_checkbox(this, _("Disable incremental recursion in rsync snapshots"));
+		chk_rsync_no_inc.set_tooltip_text(_("Ensures newly hardlinked files will always be linked with the previous snapshot correctly, at the cost of backups taking significantly longer to start and rsync using significantly more memory. Note that if this option is unchecked, the worst case scenario would only result in a few files being incorrectly marked as new."));
+		
+		chk_rsync_no_inc.active = App.rsync_no_inc;
+		chk_rsync_no_inc.toggled.connect(()=>{
+			App.rsync_no_inc = chk_rsync_no_inc.active;
+		});
+		
+		//checksum
+		
+		Gtk.CheckButton chk_rsync_checksum = add_checkbox(this, _("Compare file checksums in rsync snapshots"));
+		chk_rsync_checksum.set_tooltip_text(_("Compare the contents of all files when creating or restoring snapshots. This can be helpful when you suspect file corruption has occured, but it comes at a massive cost of speed and thus should not be left enabled."));
+		
+		chk_rsync_checksum.active = App.rsync_checksum;
+		chk_rsync_checksum.toggled.connect(()=>{
+			App.rsync_checksum = chk_rsync_checksum.active;
+		});
+		
+		log_debug("MiscBox: init_rsync_options(): exit");
+	}
 
 	private void init_date_format_option(Gtk.Box box){
 
