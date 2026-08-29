@@ -280,6 +280,9 @@ class SnapshotListBox : Gtk.Box{
 								txt += "%s".printf(subvol.path);
 							}
 						}
+						else if (App.repo.backend.is_remote){
+							txt = "%s:%s".printf(App.repo.backend.display_name, bak.path);
+						}
 						else{
 							txt = bak.path;
 						}
@@ -545,9 +548,16 @@ class SnapshotListBox : Gtk.Box{
 		if (!App.btrfs_mode){
 
 			if (selected.size > 0){
-				
-				mi_view_log_restore.sensitive = file_exists(selected[0].rsync_restore_log_file)
-					|| file_exists(selected[0].rsync_restore_changes_log_file);
+
+				// a remote log cannot be probed with a local stat; assume it
+				// exists and let the fetch report a real failure
+				if (App.repo.backend.is_remote){
+					mi_view_log_restore.sensitive = true;
+				}
+				else {
+					mi_view_log_restore.sensitive = file_exists(selected[0].rsync_restore_log_file)
+						|| file_exists(selected[0].rsync_restore_changes_log_file);
+				}
 			}
 		}
 

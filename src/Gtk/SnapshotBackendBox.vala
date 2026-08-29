@@ -210,6 +210,18 @@ class SnapshotBackendBox : Gtk.Box{
 	}
 
 	public void refresh(){
+
+		// BTRFS snapshots need a local filesystem, so the option is not
+		// available while snapshots are sent to a remote host
+		if (App.backup_location_type == "ssh"){
+			opt_btrfs.sensitive = false;
+			opt_btrfs.set_tooltip_markup(_("Not available for remote locations"));
+			opt_rsync.active = true;
+		}
+		else if (check_for_btrfs_tools()){
+			opt_btrfs.sensitive = true;
+			opt_btrfs.set_tooltip_markup(_("Create snapshots using BTRFS"));
+		}
 		
 		opt_btrfs.active = App.btrfs_mode;
 		type_changed();

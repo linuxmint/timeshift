@@ -40,6 +40,12 @@ public class RsyncSpaceCheckTask : AsyncTask{
 	public string link_from_path = "";
 	public string source_path = "";
 	public string dest_path = "";
+
+	/* Remote transport. Empty for a local repository.
+	 * rsh     -> rsync's -e option (the ssh command line)
+	 * rsync_path -> rsync's --rsync-path (used for --fake-super) */
+	public string rsh = "";
+	public string rsync_path = "";
 	public bool verbose = true;
 	public bool dry_run = false;
 
@@ -97,6 +103,22 @@ public class RsyncSpaceCheckTask : AsyncTask{
 		}
 
 		cmd += " --force"; // allow deletion of non-empty directories
+
+		if (rsh.length > 0){
+
+			cmd += " -e '%s'".printf(escape_single_quote(rsh));
+
+			// Across an SSH boundary rsync maps uid/gid by *name*, which
+			// silently rewrites ownership when the remote passwd database
+			// differs. Numeric ids are the only safe choice for a system
+			// backup. Left off for local repositories to keep their
+			// behaviour unchanged.
+			cmd += " --numeric-ids";
+		}
+
+		if (rsync_path.length > 0){
+			cmd += " --rsync-path='%s'".printf(escape_single_quote(rsync_path));
+		}
 
 		cmd += " --stats";
 

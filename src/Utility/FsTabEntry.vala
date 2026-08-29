@@ -57,12 +57,19 @@ public class FsTabEntry : GLib.Object{
 	}
 
 	public static Gee.ArrayList<FsTabEntry> read_file(string file_path){
+
+		if (!file_exists(file_path)){ return new Gee.ArrayList<FsTabEntry>(); }
+
+		return parse_text(file_read(file_path));
+	}
+
+	/* Parses the file's contents. Split out from read_file() so that the text
+	 * can also come from a remote repository. */
+	public static Gee.ArrayList<FsTabEntry> parse_text(string? text){
 		
 		var list = new Gee.ArrayList<FsTabEntry>();
 
-		if (!file_exists(file_path)){ return list; }
-
-		string text = file_read(file_path);
+		if (text == null){ return list; }
 		
 		string[] lines = text.split("\n");
 		

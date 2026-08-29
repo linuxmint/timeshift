@@ -49,6 +49,14 @@ public class Main : GLib.Object{
 	public string backup_uuid = "";
 	public string backup_parent_uuid = "";
 
+	/* Remote snapshot location. When backup_location_type is "ssh" the
+	 * repository lives on another host and backup_uuid is unused. */
+	public string backup_location_type = "local";
+	public string backup_ssh_url = "";
+	public string backup_ssh_key = "";
+	public int backup_ssh_port = 0;
+	public bool backup_ssh_fake_super = false;
+
 	public bool btrfs_mode = true;
 	public bool include_btrfs_home_for_backup = false;
 	public bool include_btrfs_home_for_restore = false;
@@ -157,6 +165,9 @@ public class Main : GLib.Object{
 	public string cmd_comments = "";
 	public string cmd_tags = "";
 	public bool? cmd_btrfs_mode = null;
+	public string cmd_ssh_url = "";
+	public string cmd_ssh_key = "";
+	public int cmd_ssh_port = 0;
 	
 	public string progress_text = "";
 
@@ -231,6 +242,12 @@ public class Main : GLib.Object{
 			}
 
 			TeeJee.Logging.dos_log = new DataOutputStream (file.create(FileCreateFlags.REPLACE_DESTINATION));
+
+			// Session logs record command lines and device details and are
+			// kept for hundreds of runs; there is no reason for them to be
+			// world-readable.
+			Posix.chmod(log_file, 0600);
+
 			if (LOG_DEBUG || gui_mode){
 				log_debug(_("Session log file") + ": %s".printf(log_file));
 			}
@@ -598,6 +615,10 @@ public class Main : GLib.Object{
 				case "--list-devices":
 					app_mode = "list-devices";
 					break;
+
+				case "--setup-ssh-key":
+					app_mode = "setup-ssh-key";
+					break;
 			}
 		}
 	}
@@ -642,6 +663,33 @@ public class Main : GLib.Object{
 	
 	// exclude lists
 	
+	/* Returns the file-backed swap areas currently in use, from /proc/swaps.
+	 * Swap partitions are ignored - only files can end up inside a snapshot. */
+	public Gee.ArrayList<string> get_swap_file_paths(){
+
+		var list = new Gee.ArrayList<string>();
+
+		string? text = file_read("/proc/swaps");
+		if (text == null){ return list; }
+
+		bool first = true;
+
+		foreach(string line in text.split("\n")){
+
+			if (first){ first = false; continue; } // header
+			if (line.strip().length == 0){ continue; }
+
+			string[] parts = Regex.split_simple("""[ \t]+""", line.strip());
+			if (parts.length < 2){ continue; }
+			if (parts[1] != "file"){ continue; } // skip swap partitions
+
+			string path = parts[0].strip();
+			if (path.has_prefix("/")){ list.add(path); }
+		}
+
+		return list;
+	}
+
 	public void add_default_exclude_entries(){
 
 		log_debug("Main: add_default_exclude_entries()");
@@ -678,11 +726,31 @@ public class Main : GLib.Object{
 		exclude_list_default.add("/cdrom/*");
 		exclude_list_default.add("/sdcard/*");
 		exclude_list_default.add("/system/*");
-		exclude_list_default.add("/etc/timeshift.json");
+		exclude_list_default.add("/etc/timeshift.json"); // legacy config path
+		// The live config lives in /etc/timeshift/, and so does the SSH private
+		// key for a remote repository. Backing that directory up would place the
+		// key inside the very repo it unlocks, readable by anyone with access to
+		// the share. It would also mean a full restore reverts or deletes the key
+		// and silently breaks scheduled backups.
+		exclude_list_default.add("/etc/timeshift/*");
 		exclude_list_default.add("/var/log/timeshift/*");
 		exclude_list_default.add("/var/log/timeshift-btrfs/*");
 		exclude_list_default.add("/swapfile");
+		exclude_list_default.add("/swap.img"); // Ubuntu's default since 17.04
 		exclude_list_default.add("/snap/*");
+
+		// The names above cover the common cases (/swapfile on Debian,
+		// /swap.img on Ubuntu) and still apply when swap is switched off but
+		// the file is left on disk - /proc/swaps is empty then, yet the file
+		// would still be copied. This pass adds whatever is actually in use,
+		// so a swap file at any other path is caught too. Copying swap is
+		// pointless, and an 8 GB file dominates a remote transfer.
+		foreach(string swap_path in get_swap_file_paths()){
+			if (!exclude_list_default.contains(swap_path)){
+				exclude_list_default.add(swap_path);
+				log_debug("excluding active swap file: %s".printf(swap_path));
+			}
+		}
 
 		foreach(var entry in FsTabEntry.read_file("/etc/fstab")){
 
@@ -937,12 +1005,13 @@ public class Main : GLib.Object{
 
 		//add user entries from snapshot exclude list
 		if (snapshot_to_restore != null){
-			string list_file = path_combine(snapshot_to_restore.path, "exclude.list");
-			if (file_exists(list_file)){
-				foreach(string path in file_read(list_file).split("\n")){
-					if (!exclude_list_restore.contains(path) && !exclude_list_home.contains(path)){
-						exclude_list_restore.add(path);
-					}
+			// Use the list already parsed through the repository backend.
+			// Reading <snapshot>/exclude.list with local file calls silently
+			// found nothing for a remote repo, so the exclusions recorded at
+			// backup time were not applied when restoring.
+			foreach(string path in snapshot_to_restore.exclude_list){
+				if (!exclude_list_restore.contains(path) && !exclude_list_home.contains(path)){
+					exclude_list_restore.add(path);
 				}
 			}
 		}
@@ -1006,6 +1075,18 @@ public class Main : GLib.Object{
 			}
 		}
 		
+		// rsync opens --exclude-from on the client side, so for a remote
+		// repository the file it reads has to be local. The copy that goes
+		// into the snapshot is uploaded by the caller, which is the only
+		// place that knows the snapshot path - output_path here is often just
+		// a local temp dir (estimate_system_size passes TEMP_DIR).
+		if ((repo != null) && repo.backend.is_remote){
+
+			string local_list = path_combine(TEMP_DIR, "exclude.list");
+
+			return file_write(local_list, txt) ? local_list : null;
+		}
+
 		string list_file = path_combine(output_path, "exclude.list");
 		if (file_write(list_file, txt)) {
 			return list_file;
@@ -1100,7 +1181,7 @@ public class Main : GLib.Object{
 
 		string sys_uuid = (sys_root == null) ? "" : sys_root.uuid;
 		
-		try
+		
 		{
 			if (btrfs_mode && (check_btrfs_layout_system() == false)){
 				return false;
@@ -1129,11 +1210,12 @@ public class Main : GLib.Object{
 				}
 			}
 
-			// create snapshot root if missing
-			var f = File.new_for_path(repo.snapshots_path);
-			if (!f.query_exists()){
+			// create snapshot root if missing - through the backend, or for a
+			// remote repo this would create the directory tree on the LOCAL
+			// filesystem instead (and inside the backup source)
+			if (!repo.backend.dir_exists(repo.snapshots_path)){
 				log_debug("mkdir: %s".printf(repo.snapshots_path));
-				f.make_directory_with_parents();
+				repo.backend.dir_create(repo.snapshots_path);
 			}
 
 			// ondemand
@@ -1331,10 +1413,6 @@ public class Main : GLib.Object{
 			
 			//log_msg("OK");
 		}
-		catch(Error e){
-			log_error (e.message);
-			return false;
-		}
 
 		return status;
 	}
@@ -1411,18 +1489,18 @@ public class Main : GLib.Object{
 			new_snapshot = create_snapshot_with_btrfs(tag, dt_created);
 		}
 		else
-		if (first_snapshot_size > 0 && repo.device.free_bytes < first_snapshot_size)
+		if (first_snapshot_size > 0 && repo.free_bytes < first_snapshot_size)
 		{
 			// Perform a dry-run of the intended backup and make sure we'll have enough room
 			uint64 needed = get_space_needed_for_rsync_snapshot(dt_created);
 			bool enough = repo.has_space(needed);
 
-			var message = "Space required for snapshot: %lld (%s). Space available: %lu (%s)"
-							    .printf(needed, format_file_size(needed), repo.device.free_bytes, repo.device.free);
+			var message = "Space required for snapshot: %lld (%s). Space available: %llu (%s)"
+							    .printf(needed, format_file_size(needed), repo.free_bytes, format_file_size(repo.free_bytes));
 			log_msg(message);
 			if (!enough)
 			{
-				message = "Not enough disk space! Additional required: %lld (%s)".printf(needed - repo.device.free_bytes, format_file_size(needed - repo.device.free_bytes));
+				message = "Not enough disk space! Additional required: %lld (%s)".printf(needed - repo.free_bytes, format_file_size(needed - repo.free_bytes));
 				log_msg(message);
 			}
 
@@ -1470,15 +1548,17 @@ public class Main : GLib.Object{
 		log_msg(string.nfill(78, '-'));
 
 		log_msg("Checking if target drive has enough free space for a snapshot (RSYNC)");
-		log_msg("Target device: %s, mount path: %s".printf(repo.device.device, repo.mount_path));
+		log_msg("Target: %s, path: %s".printf(
+			(repo.device == null) ? repo.backend.display_name : repo.device.device,
+			repo.mount_path));
 		
 		string time_stamp = dt_created.format("%Y-%m-%d_%H-%M-%S");
 		string snapshot_dir = repo.snapshots_path;
 		string snapshot_name = time_stamp;
 		string snapshot_path = path_combine(snapshot_dir, snapshot_name);
-		dir_create(snapshot_path);
+		repo.backend.dir_create(snapshot_path);
 		string localhost_path = path_combine(snapshot_path, "localhost");
-		dir_create(localhost_path);
+		repo.backend.dir_create(localhost_path);
 		
 		string sys_uuid = (sys_root == null) ? "" : sys_root.uuid;
 
@@ -1486,32 +1566,23 @@ public class Main : GLib.Object{
 
 		// check if a snapshot was restored recently and use it for linking ---------
 
-		try{
-			
-			string ctl_path = path_combine(snapshot_dir, ".sync-restore");
-			var f = File.new_for_path(ctl_path);
-			
-			if (f.query_exists()){
+		string ctl_path = path_combine(snapshot_dir, ".sync-restore");
 
-				// read snapshot name from file
-				string snap_path = file_read(ctl_path);
-				string snap_name = file_basename(snap_path);
-				
-				// find the snapshot that was restored
-				foreach(var bak in repo.snapshots){
-					if ((bak.name == snap_name) && (bak.sys_uuid == sys_uuid)){
-						// use for linking
-						snapshot_to_link = bak;
-						// delete the restore-control-file
-						f.delete();
-						break;
-					}
+		string? snap_path = repo.backend.file_read(ctl_path);
+
+		if (snap_path != null){
+
+			string snap_name = file_basename(snap_path);
+
+			// find the snapshot that was restored
+			foreach(var bak in repo.snapshots){
+				if ((bak.name == snap_name) && (bak.sys_uuid == sys_uuid)){
+					// use for linking
+					snapshot_to_link = bak;
+					// note: not deleted here, the real snapshot run consumes it
+					break;
 				}
 			}
-		}
-		catch(Error e){
-			log_error (e.message);
-			return 0;
 		}
 
 		// get latest snapshot to link if not set -------
@@ -1541,9 +1612,11 @@ public class Main : GLib.Object{
 		space_check_task = new RsyncSpaceCheckTask();
 
 		space_check_task.source_path = "";
-		space_check_task.dest_path = snapshot_path + "/localhost/";
+		space_check_task.dest_path = "%s%s/localhost/".printf(repo.backend.rsync_prefix(), snapshot_path);
 		space_check_task.link_from_path = link_from_path;
 		space_check_task.exclude_from_file = exclude_from_file;
+		space_check_task.rsh = repo.backend.rsync_rsh();
+		space_check_task.rsync_path = repo.backend.rsync_remote_path();
 		space_check_task.prg_count_total = Main.first_snapshot_count;
 
 		space_check_task.relative = true;
@@ -1563,6 +1636,12 @@ public class Main : GLib.Object{
 
 		var total_size = space_check_task.total_size;
 		space_check_task = null;
+
+		// This was a dry run: the snapshot directories created above are
+		// empty scaffolding. Remove them, or a caller that decides there is
+		// not enough space leaves them on the remote permanently.
+		repo.backend.remove_dir_recursive(snapshot_path);
+
 		return total_size;
 	}
 
@@ -1576,7 +1655,12 @@ public class Main : GLib.Object{
 		
 		log_msg(_("Creating new snapshot...") + "(RSYNC)");
 
-		log_msg(_("Saving to device") + ": %s".printf(repo.device.device) + ", " + _("mounted at path") + ": %s".printf(repo.mount_path));
+		if (repo.backend.is_remote){
+			log_msg(_("Saving to remote location") + ": %s:%s".printf(repo.backend.display_name, repo.mount_path));
+		}
+		else{
+			log_msg(_("Saving to device") + ": %s".printf(repo.device.device) + ", " + _("mounted at path") + ": %s".printf(repo.mount_path));
+		}
 		
 		// take new backup ---------------------------------
 
@@ -1589,9 +1673,9 @@ public class Main : GLib.Object{
 		string snapshot_dir = repo.snapshots_path;
 		string snapshot_name = time_stamp;
 		string snapshot_path = path_combine(snapshot_dir, snapshot_name);
-		dir_create(snapshot_path);
+		repo.backend.dir_create(snapshot_path);
 		string localhost_path = path_combine(snapshot_path, "localhost");
-		dir_create(localhost_path);
+		repo.backend.dir_create(localhost_path);
 		
 		string sys_uuid = (sys_root == null) ? "" : sys_root.uuid;
 
@@ -1599,32 +1683,24 @@ public class Main : GLib.Object{
 
 		// check if a snapshot was restored recently and use it for linking ---------
 
-		try{
-			
-			string ctl_path = path_combine(snapshot_dir, ".sync-restore");
-			var f = File.new_for_path(ctl_path);
-			
-			if (f.query_exists()){
+		string ctl_path = path_combine(snapshot_dir, ".sync-restore");
 
-				// read snapshot name from file
-				string snap_path = file_read(ctl_path);
-				string snap_name = file_basename(snap_path);
-				
-				// find the snapshot that was restored
-				foreach(var bak in repo.snapshots){
-					if ((bak.name == snap_name) && (bak.sys_uuid == sys_uuid)){
-						// use for linking
-						snapshot_to_link = bak;
-						// delete the restore-control-file
-						f.delete();
-						break;
-					}
+		string? snap_path = repo.backend.file_read(ctl_path);
+
+		if (snap_path != null){
+
+			string snap_name = file_basename(snap_path);
+
+			// find the snapshot that was restored
+			foreach(var bak in repo.snapshots){
+				if ((bak.name == snap_name) && (bak.sys_uuid == sys_uuid)){
+					// use for linking
+					snapshot_to_link = bak;
+					// delete the restore-control-file
+					repo.backend.file_delete(ctl_path);
+					break;
 				}
 			}
-		}
-		catch(Error e){
-			log_error (e.message);
-			return null;
 		}
 
 		// get latest snapshot to link if not set -------
@@ -1653,17 +1729,35 @@ public class Main : GLib.Object{
 		progress_text = _("Syncing files with rsync...");
 		log_msg(progress_text);
 
-		var log_file = snapshot_path + "/rsync-log";
+		// rsync opens --log-file on the client side. Pointing it inside a
+		// remote snapshot makes rsync warn, carry on and exit 0, leaving no
+		// log at all - so write it locally and upload it afterwards.
+		bool repo_is_remote = repo.backend.is_remote;
+
+		var log_file = repo_is_remote
+			? path_combine(TEMP_DIR, "rsync-log")
+			: snapshot_path + "/rsync-log";
+
 		file_delete(log_file);
 
 		task = new RsyncTask();
 
 		task.source_path = "";
-		task.dest_path = snapshot_path + "/localhost/";
+		task.dest_path = "%s%s/localhost/".printf(repo.backend.rsync_prefix(), snapshot_path);
+		// --link-dest is resolved by the receiving rsync, so it stays a plain
+		// path in the repository's namespace with no host prefix.
 		task.link_from_path = link_from_path;
 		task.exclude_from_file = exclude_from_file;
 		task.rsync_log_file = log_file;
-		task.prg_count_total = Main.first_snapshot_count;
+		task.rsh = repo.backend.rsync_rsh();
+		task.rsync_path = repo.backend.rsync_remote_path();
+
+		// A zero total makes the progress fraction NaN, which shows as an
+		// empty bar and "???" for the whole run. Leave it unset instead so
+		// the bar can pulse.
+		if (Main.first_snapshot_count > 0){
+			task.prg_count_total = Main.first_snapshot_count;
+		}
 
 		task.relative = true;
 		task.verbose = true;
@@ -1688,9 +1782,33 @@ public class Main : GLib.Object{
 		stdout.printf("\r");
 		stdout.flush();
 
-		if (task.total_size == 0){
-			log_error(_("rsync returned an error"));
+		// rsync prints --stats on a partial transfer too, so a non-zero
+		// total_size does NOT mean the snapshot is complete. Exit 23 is
+		// "partial transfer due to error" - exactly what a dropped SSH link
+		// produces - and accepting it would publish a truncated snapshot as
+		// valid, then use it as the --link-dest base for every later one.
+		// 24 ("some files vanished") is normal on a live system.
+		bool rsync_ok = ((task.exit_code == 0) || (task.exit_code == 24))
+			&& (task.total_size > 0);
+
+		if (!rsync_ok){
+
+			if (task.exit_code == 23){
+				log_error(_("rsync could not transfer all files (partial transfer)"));
+			}
+			else {
+				log_error(_("rsync returned an error") + " (%d)".printf(task.exit_code));
+			}
+
 			log_error(_("Failed to create new snapshot"));
+
+			// Do not leave a half-written snapshot behind. On a remote
+			// repository nothing else would ever clean it up: remove_invalid()
+			// is only reached from auto_remove(), which does not run in GUI
+			// mode, so the orphan would consume space indefinitely.
+			log_msg(_("Removing incomplete snapshot") + ": %s".printf(snapshot_path));
+			repo.backend.remove_dir_recursive(snapshot_path);
+
 			return null;
 		}
 
@@ -1707,6 +1825,20 @@ public class Main : GLib.Object{
 		//log_msg(progress_text);
 		//var task = new RsyncTask();
 		//task.parse_log(log_file);
+
+		// publish the exclude list and log into the snapshot
+		if (repo_is_remote && (exclude_from_file != null) && (exclude_from_file.length > 0)){
+			repo.backend.upload_file(exclude_from_file, snapshot_path + "/exclude.list");
+		}
+
+		if (repo_is_remote){
+			repo.backend.upload_file(log_file, snapshot_path + "/rsync-log");
+
+			string changes_file = log_file + "-changes";
+			if (file_exists(changes_file)){
+				repo.backend.upload_file(changes_file, snapshot_path + "/rsync-log-changes");
+			}
+		}
 
 		int64 fcount = file_line_count(log_file);
 
@@ -2066,14 +2198,27 @@ public class Main : GLib.Object{
 		}
 	}
 
+	/* rsync opens --log-file and --exclude-from on the client side, so for a
+	 * remote repository these have to live locally rather than inside the
+	 * snapshot. */
+	private bool repo_is_remote(){
+		return (repo != null) && repo.backend.is_remote;
+	}
+
 	public string restore_log_file{
 		owned get {
+			if (repo_is_remote()){
+				return path_combine(TEMP_DIR, "rsync-log-restore");
+			}
 			return restore_source_path + "/rsync-log-restore";
 		}
 	}
 
 	public string restore_exclude_file{
 		owned get {
+			if (repo_is_remote()){
+				return path_combine(TEMP_DIR, "exclude-restore.list");
+			}
 			return restore_source_path + "/exclude-restore.list";
 		}
 	}
@@ -2322,13 +2467,15 @@ public class Main : GLib.Object{
 		
 		if (!mirror_system){
 			
-			if (repo.device == null){
+			// a remote repository has no Device; the location is the URL
+			if ((repo.device == null) && !repo.backend.is_remote){
 				log_error(_("Backup device not specified!"));
 				return false;
 			}
 			else{
 				log_msg(string.nfill(78, '*'));
-				log_msg(_("Backup Device") + ": %s".printf(repo.device.device));
+				log_msg(_("Backup Device") + ": %s".printf(
+					(repo.device == null) ? repo.backend.display_name : repo.device.device));
 				log_msg(string.nfill(78, '*'));
 			}
 			
@@ -2568,15 +2715,35 @@ public class Main : GLib.Object{
 		if (dry_run){
 			sh += " --dry-run";
 		}
-		
-		sh += " --log-file=\"%s\"".printf(restore_log_file);
-		sh += " --exclude-from=\"%s\"".printf(restore_exclude_file);
+
+		// Pulling from a remote repository: the target stays local, only the
+		// source is remote. Numeric ids are required across the SSH boundary,
+		// and --fake-super has to be repeated on the source side so the stored
+		// ownership is expanded again.
+		if (repo_is_remote()){
+
+			sh += " --numeric-ids";
+			sh += " -e '%s'".printf(escape_single_quote(repo.backend.rsync_rsh()));
+
+			string remote_rsync = repo.backend.rsync_remote_path();
+			if (remote_rsync.length > 0){
+				sh += " --rsync-path='%s'".printf(escape_single_quote(remote_rsync));
+			}
+		}
+
+		// single-quoted: this string is assembled into a local bash script, so
+		// double quotes would let $, backticks and \ in a path be expanded
+		sh += " --log-file='%s'".printf(escape_single_quote(restore_log_file));
+		sh += " --exclude-from='%s'".printf(escape_single_quote(restore_exclude_file));
 
 		if (mirror_system){
-			sh += " \"%s\" \"%s\" \n".printf("/", restore_target_path);
+			sh += " '%s' '%s' \n".printf("/", escape_single_quote(restore_target_path));
 		}
 		else{
-			sh += " \"%s\" \"%s\" \n".printf(restore_source_path + "/localhost/", restore_target_path);
+			sh += " '%s%s' '%s' \n".printf(
+				repo_is_remote() ? repo.backend.rsync_prefix() : "",
+				escape_single_quote(restore_source_path + "/localhost/"),
+				escape_single_quote(restore_target_path));
 		}
 
 		if (dry_run){
@@ -2833,10 +3000,18 @@ public class Main : GLib.Object{
 			task.source_path = "/";
 		}
 		else{
-			task.source_path = path_combine(snapshot_to_restore.path, "localhost");
+			// pulling from the repository: only the source side is remote
+			task.source_path = "%s%s".printf(
+				repo_is_remote() ? repo.backend.rsync_prefix() : "",
+				path_combine(snapshot_to_restore.path, "localhost"));
 		}
 
 		task.dest_path = restore_target_path;
+
+		if (repo_is_remote() && !mirror_system){
+			task.rsh = repo.backend.rsync_rsh();
+			task.rsync_path = repo.backend.rsync_remote_path();
+		}
 		
 		task.exclude_from_file = restore_exclude_file;
 
@@ -3074,7 +3249,11 @@ public class Main : GLib.Object{
 		
 		log_debug("Main: restore_execute_rsync()");
 
-		try{
+		// set explicitly: the only path that used to clear it was an
+		// exception handler that is no longer reachable
+		thr_success = false;
+
+		{
 			log_debug("source_path=%s".printf(restore_source_path));
 			log_debug("target_path=%s".printf(restore_target_path));
 			
@@ -3088,14 +3267,17 @@ public class Main : GLib.Object{
 			file_delete(restore_log_file + ".gz");
 			
 			if (restore_current_system){
-				string control_file_path = path_combine(snapshot_to_restore.path,".sync-restore");
+				// Written where the readers look: create_snapshot_with_rsync()
+				// and get_space_needed_for_rsync_snapshot() both read
+				// <snapshots_path>/.sync-restore. Writing it inside the
+				// snapshot meant the post-restore link-dest optimisation never
+				// fired, and the marker accumulated in every restored snapshot.
+				string control_file_path = path_combine(repo.snapshots_path, ".sync-restore");
 
-				var f = File.new_for_path(control_file_path);
-				if(f.query_exists()){
-					f.delete(); //delete existing file
-				}
-
-				file_write(control_file_path, snapshot_to_restore.path); //save snapshot name
+				// written through the backend: for a remote repository this
+				// path is not reachable with the local file API
+				repo.backend.file_delete(control_file_path);
+				repo.backend.file_write(control_file_path, snapshot_to_restore.path);
 			}
 
 			// run the scripts --------------------
@@ -3145,10 +3327,6 @@ public class Main : GLib.Object{
 
 				check_and_repair_filesystems();
 			}
-		}
-		catch(Error e){
-			log_error (e.message);
-			thr_success = false;
 		}
 
 		thread_restore_running = false;
@@ -3349,10 +3527,9 @@ public class Main : GLib.Object{
 		
 		var config = new Json.Object();
 		
-		if ((repo != null) && repo.available()){
+		if ((repo != null) && repo.available() && (repo.device != null)){
 			// save backup device uuid
-			config.set_string_member("backup_device_uuid",
-				(repo.device == null) ? "" : repo.device.uuid);
+			config.set_string_member("backup_device_uuid", repo.device.uuid);
 			
 			// save parent uuid if backup device has parent
 			config.set_string_member("parent_device_uuid",
@@ -3363,6 +3540,12 @@ public class Main : GLib.Object{
 			config.set_string_member("backup_device_uuid", backup_uuid);
 			config.set_string_member("parent_device_uuid", backup_parent_uuid);
 		}
+
+		config.set_string_member("backup_location_type", backup_location_type);
+		config.set_string_member("backup_ssh_url", backup_ssh_url);
+		config.set_string_member("backup_ssh_key", backup_ssh_key);
+		config.set_string_member("backup_ssh_port", backup_ssh_port.to_string());
+		config.set_string_member("backup_ssh_fake_super", backup_ssh_fake_super.to_string());
 
 		config.set_string_member("do_first_run", false.to_string());
 		config.set_string_member("btrfs_mode", btrfs_mode.to_string());
@@ -3382,15 +3565,15 @@ public class Main : GLib.Object{
 		config.set_string_member("count_hourly", count_hourly.to_string());
 		config.set_string_member("count_boot", count_boot.to_string());
 
+		// Persist the estimate only once there are snapshots to describe, but
+		// do NOT discard the in-memory values: estimate_system_size() calls
+		// this function immediately after computing them, so zeroing here
+		// threw away the numbers that drive the progress bar for the whole of
+		// the first backup.
 		if (repo.available() && repo.has_snapshots())
 		{
 			config.set_string_member("snapshot_size", first_snapshot_size.to_string());
 			config.set_string_member("snapshot_count", first_snapshot_count.to_string());
-		}
-		else
-		{
-			first_snapshot_size = 0;
-			first_snapshot_count = 0;
 		}
 
 		config.set_string_member("date_format", date_format);
@@ -3492,6 +3675,15 @@ public class Main : GLib.Object{
 		
 		backup_uuid = json_get_string(config,"backup_device_uuid", backup_uuid);
 		backup_parent_uuid = json_get_string(config,"parent_device_uuid", backup_parent_uuid);
+
+		backup_location_type = json_get_string(config,"backup_location_type", backup_location_type);
+		backup_ssh_url = json_get_string(config,"backup_ssh_url", backup_ssh_url);
+		backup_ssh_key = json_get_string(config,"backup_ssh_key", backup_ssh_key);
+		backup_ssh_port = json_get_int(config,"backup_ssh_port", backup_ssh_port);
+		backup_ssh_fake_super = json_get_bool(config,"backup_ssh_fake_super", backup_ssh_fake_super);
+
+		// btrfs snapshots require a local filesystem
+		if (backup_location_type == "ssh"){ btrfs_mode = false; }
 
         this.schedule_monthly = json_get_bool(config,"schedule_monthly",schedule_monthly);
 		this.schedule_weekly = json_get_bool(config,"schedule_weekly",schedule_weekly);
@@ -3627,8 +3819,47 @@ public class Main : GLib.Object{
 		log_debug("backup_uuid=%s".printf(backup_uuid));
 		log_debug("backup_parent_uuid=%s".printf(backup_parent_uuid));
 
+		// Command line options are parsed after the config is loaded, so the
+		// remote-location overrides are applied here rather than in
+		// load_app_config().
+		if (cmd_ssh_url.length > 0){
+			backup_location_type = "ssh";
+			backup_ssh_url = cmd_ssh_url;
+		}
+		if (cmd_ssh_key.length > 0){ backup_ssh_key = cmd_ssh_key; }
+		if (cmd_ssh_port > 0){ backup_ssh_port = cmd_ssh_port; }
+
+		// btrfs snapshots require a local filesystem
+		if (backup_location_type == "ssh"){ btrfs_mode = false; }
+
+		// a remote location takes priority over any local device
+		if (backup_location_type == "ssh"){
+
+			if (backup_ssh_url.length == 0){
+				log_error(_("Remote snapshot location is not configured"));
+				exit_app(1);
+				return;
+			}
+
+			if (!cmd_exists("ssh")){
+				log_error(_("Commands listed below are not available on this system") + ":\n\n * ssh\n");
+				log_error(_("Please install required packages and try running TimeShift again"));
+				exit_app(1);
+				return;
+			}
+
+			// fall back to the key Timeshift manages itself
+			if (backup_ssh_key.length == 0){
+				backup_ssh_key = SshRepoBackend.default_key_file();
+			}
+
+			log_debug("Using remote snapshot location: %s".printf(backup_ssh_url));
+
+			repo = new SnapshotRepo.from_ssh(backup_ssh_url, backup_ssh_key,
+				backup_ssh_port, backup_ssh_fake_super, parent_window);
+		}
 		// use system disk as snapshot device in btrfs mode for backup
-		if (((app_mode == "backup")||((app_mode == "ondemand"))) && btrfs_mode){
+		else if (((app_mode == "backup")||((app_mode == "ondemand"))) && btrfs_mode){
 			if (sys_root != null){
 				log_msg("Using system disk as snapshot device for creating snapshots in BTRFS mode");
 				if (cmd_backup_device.length > 0){
@@ -4006,6 +4237,15 @@ public class Main : GLib.Object{
 	public void try_select_default_device_for_backup(Gtk.Window? parent_win){
 
 		log_debug("try_select_default_device_for_backup()");
+
+		// A remote repository has no Device at all. Falling through would pass
+		// null to check_device_for_backup(), which returns false on its null
+		// precondition and would silently replace a working remote repo with
+		// from_null().
+		if ((repo != null) && repo.backend.is_remote){
+			log_debug("repo is remote - keeping it");
+			return;
+		}
 
 		// check if currently selected device can be used
 		if (repo.available()){
@@ -4471,6 +4711,22 @@ public class Main : GLib.Object{
 		cron_job_update();
 
 		unmount_target_device(false);
+
+		// Unmount a browse mount if one was made. cleanup_unmount_devices()
+		// will not catch it: that sweep matches against the device list, which
+		// filters out anything without a UUID - and a FUSE mount has none.
+		string browse_mount = path_combine(mount_point_app, "browse");
+		if (dir_exists(browse_mount)){
+			string o, e;
+			exec_script_sync("fusermount -u '%s' 2>/dev/null || umount '%s' 2>/dev/null".printf(
+				escape_single_quote(browse_mount), escape_single_quote(browse_mount)),
+				out o, out e, true);
+		}
+
+		// close the multiplexed SSH connection, if one was opened
+		if (repo != null){
+			repo.backend.cleanup();
+		}
 
 		clean_logs();
 

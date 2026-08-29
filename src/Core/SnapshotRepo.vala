@@ -34,11 +34,20 @@ public class SnapshotRepo : GLib.Object{
 	public Device device = null;
 	public Device device_home = null; // used for btrfs mode only
 	public string mount_path = "";
-	public Gee.HashMap<string,string> mount_paths;
+	public Gee.HashMap<string,string> mount_paths = new Gee.HashMap<string,string>();
 	public bool btrfs_mode = false;
 
-	public Gee.ArrayList<Snapshot?> snapshots;
-	public Gee.ArrayList<Snapshot?> invalid_snapshots;
+	/* Performs the repository's file operations. A local repository uses the
+	 * ordinary filesystem calls; a remote one runs them over SSH. Never null.
+	 * Initialized here so that every constructor - including the implicit one
+	 * used in the Main ctor - gets a usable backend. */
+	public RepoBackend backend = new LocalRepoBackend();
+
+	/* Initialised here, not only in the named constructors: Main uses the
+	 * implicit `new SnapshotRepo()` (Main.vala:341), which left these null and
+	 * made every first run log a GLib CRITICAL from `repo.snapshots.size`. */
+	public Gee.ArrayList<Snapshot?> snapshots = new Gee.ArrayList<Snapshot>();
+	public Gee.ArrayList<Snapshot?> invalid_snapshots = new Gee.ArrayList<Snapshot>();
 
 	public string status_message = "";
 	public string status_details = "";
@@ -118,6 +127,54 @@ public class SnapshotRepo : GLib.Object{
 		log_debug("SnapshotRepo: from_uuid(): exit");
 	}
 
+	/* A repository on a remote host, reached over SSH. Nothing is mounted:
+	 * rsync talks to the remote directly and every other operation runs as a
+	 * command over the SSH connection. */
+	public SnapshotRepo.from_ssh(string url, string key_file, int port,
+		bool fake_super, Gtk.Window? parent_win){
+
+		log_debug("SnapshotRepo: from_ssh(): %s".printf(url));
+
+		this.parent_window = parent_win;
+		this.btrfs_mode = false; // btrfs snapshots require a local filesystem
+
+		snapshots = new Gee.ArrayList<Snapshot>();
+		invalid_snapshots = new Gee.ArrayList<Snapshot>();
+		mount_paths = new Gee.HashMap<string,string>();
+
+		string user, host, path;
+		int parsed_port;
+
+		if (!SshRepoBackend.parse_url(url, out user, out host, out parsed_port, out path)){
+			status_code = SnapshotLocationStatus.NOT_AVAILABLE;
+			status_message = _("Invalid remote location");
+			status_details = _("Use one of these forms") + ":\n    user@host:/path\n    ssh://user@host:port/path";
+			return;
+		}
+
+		// an explicit --ssh-port overrides a port given in the URL
+		if (port > 0){ parsed_port = port; }
+
+		this.mount_path = path;
+
+		this.backend = new SshRepoBackend(user, host, parsed_port,
+			key_file, fake_super, App.mount_point_app);
+
+		// During key setup we must not connect yet: ssh_options() uses
+		// StrictHostKeyChecking=accept-new, so probing here would silently
+		// record the host key before the user has confirmed its fingerprint,
+		// defeating the point of asking.
+		if (App.app_mode == "setup-ssh-key"){
+			return;
+		}
+
+		check_status();
+
+		if (available()){
+			load_snapshots();
+		}
+	}
+
 	public SnapshotRepo.from_null(){
 
 		log_debug("SnapshotRepo: from_null()");
@@ -170,6 +227,17 @@ public class SnapshotRepo : GLib.Object{
 	public string snapshots_path {
 		owned get{
 			return path_combine(timeshift_path, "snapshots");
+		}
+	}
+
+	/* Free space on the repository. A local repository reads it off the
+	 * Device; a remote one caches what the last df over SSH reported. */
+	private uint64 remote_free_bytes = 0;
+
+	public uint64 free_bytes {
+		get {
+			if (backend.is_remote){ return remote_free_bytes; }
+			return (device == null) ? 0 : device.free_bytes;
 		}
 	}
  
@@ -296,40 +364,71 @@ public class SnapshotRepo : GLib.Object{
 	public bool load_snapshots(){
 
 		log_debug("SnapshotRepo: load_snapshots()");
-		
-		snapshots.clear();
-		invalid_snapshots.clear();
-		
-		if ((device == null) || !dir_exists(snapshots_path)){
+
+		// A local repository still needs a device; a remote one has none.
+		if (!backend.is_remote && (device == null)){
+			snapshots.clear();
+			invalid_snapshots.clear();
 			return false;
 		}
 
-		try{
-			var dir = File.new_for_path(snapshots_path);
-			var enumerator = dir.enumerate_children("*", 0);
+		if (!backend.dir_exists(snapshots_path)){
+			snapshots.clear();
+			invalid_snapshots.clear();
+			return false;
+		}
 
-			var info = enumerator.next_file ();
-			while (info != null) {
-				if (info.get_file_type() == FileType.DIRECTORY) {
-					if (info.get_name() != ".sync") {
-						
-						//log_debug("load_snapshots():" + snapshots_path + "/" + info.get_name());
-						
-						Snapshot bak = new Snapshot(snapshots_path + "/" + info.get_name(), btrfs_mode, this);
-						if (bak.valid){
-							snapshots.add(bak);
-						}
-						else{
-							invalid_snapshots.add(bak);
-						}
-					}
-				}
-				info = enumerator.next_file ();
+		// For a remote repository, fetch every snapshot's control files in one
+		// round trip. Reading them per-snapshot would cost four round trips
+		// each, which dominates the time to list a repository.
+		Gee.HashMap<string, Gee.HashMap<string,string>>? prefetched = null;
+
+		if (backend is SshRepoBackend){
+			prefetched = ((SshRepoBackend) backend).read_control_files(
+				snapshots_path,
+				{ "info.json", "exclude.list", "delete",
+				  "localhost/etc/fstab", "localhost/etc/crypttab" });
+
+			// A null result means the transport failed, not that the snapshots
+			// have no control files. Carrying on would mark every snapshot
+			// invalid, and auto_remove() would then delete the whole
+			// repository. Leave the previously loaded list untouched.
+			if (prefetched == null){
+				log_error(_("Could not read the snapshot list from the remote location"));
+				log_error(_("Leaving the existing list unchanged"));
+				return false;
 			}
 		}
-		catch(Error e){
-			log_error (e.message);
+
+		var subdirs = backend.list_subdirs(snapshots_path);
+
+		if (!backend.last_listing_ok){
+			log_error(_("Could not list snapshots at the backup location"));
 			return false;
+		}
+
+		// Everything needed is in hand, so it is now safe to replace the list.
+		snapshots.clear();
+		invalid_snapshots.clear();
+
+		foreach(string name in subdirs){
+
+			if (name == ".sync"){ continue; }
+
+			Gee.HashMap<string,string>? snap_files = null;
+			if (prefetched != null){
+				snap_files = prefetched.has_key(name)
+					? prefetched[name]
+					: new Gee.HashMap<string,string>();
+			}
+
+			Snapshot bak = new Snapshot(snapshots_path + "/" + name, btrfs_mode, this, snap_files);
+			if (bak.valid){
+				snapshots.add(bak);
+			}
+			else{
+				invalid_snapshots.add(bak);
+			}
 		}
 
 		snapshots.sort((a,b) => {
@@ -433,6 +532,16 @@ public class SnapshotRepo : GLib.Object{
         }
 
 		if (available()){
+
+			// A remote target has to be probed: the two failure modes that
+			// silently produce useless backups are a read-only export and a
+			// filesystem without hardlinks (every snapshot becomes a full
+			// copy). Both status codes are already rendered by the UI.
+			if (backend.is_remote && !check_remote_capabilities()){
+				log_debug("SnapshotRepo: check_status(): remote capability check failed");
+				return;
+			}
+
 			has_snapshots();
             if (!last_snapshot_failed_space)
             {
@@ -463,11 +572,91 @@ public class SnapshotRepo : GLib.Object{
 		log_debug("SnapshotRepo: check_status(): exit");
 	}
 
+	/* Probes a remote target for the things that would otherwise fail quietly.
+	 * Returns false and sets the status when the target is unusable. */
+	/* Capability probe results. These describe the remote filesystem, which
+	 * cannot change while the repository object lives, but each probe is an
+	 * SSH round trip - and check_status() is called many times per UI refresh.
+	 * Probe once; re-probe only when the user explicitly retests. */
+	private bool caps_checked = false;
+	private bool caps_ok = false;
+
+	public void invalidate_capability_cache(){
+		caps_checked = false;
+	}
+
+	private bool check_remote_capabilities(){
+
+		if (caps_checked){ return caps_ok; }
+
+		caps_ok = check_remote_capabilities_uncached();
+		caps_checked = true;
+		return caps_ok;
+	}
+
+	private bool check_remote_capabilities_uncached(){
+
+		// the repository directory has to exist before anything can be probed
+		if (!backend.dir_exists(mount_path)){
+			if (!backend.dir_create(mount_path)){
+				status_message = _("Remote location is not accessible");
+				status_details = _("Path not found") + ": %s".printf(mount_path);
+				status_code = SnapshotLocationStatus.NOT_AVAILABLE;
+				return false;
+			}
+		}
+
+		if (!backend.probe_writable(mount_path)){
+			status_message = _("Remote location is read-only");
+			status_details = _("Select another location or make it writable");
+			status_code = SnapshotLocationStatus.READ_ONLY_FS;
+			return false;
+		}
+
+		if (!backend.probe_hardlinks(mount_path)){
+			status_message = _("Hard-links are not supported on this location");
+			status_details = _("Snapshots would each take a full copy of the system");
+			status_code = SnapshotLocationStatus.HARDLINKS_NOT_SUPPORTED;
+			return false;
+		}
+
+		// Without root on the far end (or --fake-super) rsync silently drops
+		// ownership, which makes the snapshots useless for a system restore.
+		// the xattr probe inside probe_preserves_ownership needs somewhere to write
+		if (backend is SshRepoBackend){
+			((SshRepoBackend) backend).base_path_for_probe = mount_path;
+		}
+
+		if (!backend.probe_preserves_ownership()){
+			status_message = _("Remote account cannot preserve file ownership");
+			status_details = _("Connect as root, or enable the fake-super option, otherwise restored files would lose their owner");
+			status_code = SnapshotLocationStatus.NOT_AVAILABLE;
+			return false;
+		}
+
+		return true;
+	}
+
 	public bool available(){
 
 		log_debug("SnapshotRepo: available()");
 		
 		//log_debug("checking selected device");
+
+		if (backend.is_remote){
+
+			string message;
+			if (!backend.test_connection(out message)){
+				status_message = _("Remote location not available");
+				status_details = message;
+				status_code = SnapshotLocationStatus.NOT_AVAILABLE;
+				log_debug("is_available: false (remote unreachable)");
+				return false;
+			}
+
+			log_debug("is_available: ok (remote)");
+			return true;
+		}
 
 		if (device == null){
 			if (App.backup_uuid == null || App.backup_uuid.length == 0){
@@ -532,7 +721,20 @@ public class SnapshotRepo : GLib.Object{
 	public bool has_space(uint64 needed = 0) {
 		log_debug("SnapshotRepo: has_space() - %llu required (%s)".printf(needed, format_file_size(needed)));
 		
-		if ((device != null) && (device.device.length > 0)){
+		if (backend.is_remote){
+
+			uint64 size_bytes, used_bytes, avail_bytes;
+
+			if (!backend.query_space(mount_path, out size_bytes, out used_bytes, out avail_bytes)){
+				status_message = _("Failed to query disk space on remote location");
+				status_details = backend.last_error;
+				status_code = SnapshotLocationStatus.NOT_AVAILABLE;
+				return false;
+			}
+
+			remote_free_bytes = avail_bytes;
+		}
+		else if ((device != null) && (device.device.length > 0)){
 			device.query_disk_space();
 		}
 		else{
@@ -543,7 +745,7 @@ public class SnapshotRepo : GLib.Object{
 		if (snapshots.size > 0){
 			// has snapshots, check minimum space
 
-            if (device.free_bytes < (needed > 0 ? needed : Main.MIN_FREE_SPACE)) {
+            if (free_bytes < (needed > 0 ? needed : Main.MIN_FREE_SPACE)) {
 				status_message = _("Not enough disk space");
 				status_message += " (< %s)".printf(format_file_size((needed > 0 ? needed : Main.MIN_FREE_SPACE), false, "", true, 0));
 					
@@ -558,7 +760,7 @@ public class SnapshotRepo : GLib.Object{
 				status_message = _("OK");
 				
 				status_details = _("%d snapshots, %s free").printf(
-					snapshots.size, format_file_size(device.free_bytes));
+					snapshots.size, format_file_size(free_bytes));
 					
                 last_snapshot_failed_space = false;
 				status_code = SnapshotLocationStatus.HAS_SNAPSHOTS_HAS_SPACE;
@@ -572,7 +774,7 @@ public class SnapshotRepo : GLib.Object{
 			
 			var required_space = Main.first_snapshot_size;
 
-			if (device.free_bytes < required_space){
+			if (free_bytes < required_space){
 				status_message = _("Not enough disk space");
 				status_message += " (< %s)".printf(format_file_size(required_space));
 				
@@ -599,7 +801,14 @@ public class SnapshotRepo : GLib.Object{
 		
 		//log_msg("");
 		
-		if (device == null){
+		if (backend.is_remote){
+			log_msg("%-6s : %s".printf(_("Remote"), backend.display_name));
+			log_msg("%-6s : %s".printf(_("Path"), mount_path));
+			log_msg("%-6s : %s".printf(_("Mode"), "RSYNC"));
+			log_msg("%-6s : %s".printf(_("Status"), status_message));
+			log_msg(status_details);
+		}
+		else if (device == null){
 			log_msg("%-6s : %s".printf(_("Device"), _("Not Selected")));
 		}
 		else{
@@ -800,6 +1009,14 @@ public class SnapshotRepo : GLib.Object{
 
 		foreach(var bak in invalid_snapshots){
 
+			// Deleting a snapshot is irreversible, so require positive
+			// evidence that it really is incomplete rather than trusting a
+			// "valid" flag that a transport failure could have produced.
+			if (backend.file_exists(path_combine(bak.path, "info.json"))){
+				log_error(_("Refusing to remove a snapshot that still has a control file") + ": %s".printf(bak.name));
+				continue;
+			}
+
 			if (show_msg){
 				log_msg("%s (%s):".printf(_("Removing snapshots"), _("incomplete")));
 				show_msg = false;
@@ -813,7 +1030,7 @@ public class SnapshotRepo : GLib.Object{
 
 	public bool remove_all(){
 
-		if (dir_exists(timeshift_path)){
+		if (backend.dir_exists(timeshift_path)){
 
 			log_msg(_("Removing snapshots") + " > " + _("all") + "...");
 			
@@ -840,7 +1057,7 @@ public class SnapshotRepo : GLib.Object{
 		string sync_dir = mount_path + "/timeshift/snapshots/.sync";
 		
 		//delete .sync
-		if (dir_exists(sync_dir)){
+		if (backend.dir_exists(sync_dir)){
 			if (!delete_directory(sync_dir)){
 				return false;
 			}
@@ -852,7 +1069,7 @@ public class SnapshotRepo : GLib.Object{
 	public bool remove_timeshift_dir(){
 
 		// delete /timeshift
-		if (dir_exists(timeshift_path)){
+		if (backend.dir_exists(timeshift_path)){
 			if (!delete_directory(timeshift_path)){
 				return false;
 			}
@@ -887,7 +1104,7 @@ public class SnapshotRepo : GLib.Object{
 	}
 
 	private void delete_directory_thread(){
-		thr_success = TeeJee.FileSystem.dir_delete_recursive(thr_args1);
+		thr_success = backend.remove_dir_recursive(thr_args1);
 
 		if (thr_success) {
 			log_msg(_("Removed") + ": '%s'".printf(thr_args1));
@@ -913,13 +1130,7 @@ public class SnapshotRepo : GLib.Object{
 			foreach(string tag in bak.tags) {
 				string linkTarget = "%s-%s/%s".printf(snapshots_path, tag, bak.name);
 				string linkValue = "../snapshots/" + bak.name;
-				try {
-					File f = File.new_for_path(linkTarget);
-					if (!f.make_symbolic_link(linkValue)) {
-						log_error(_("Failed to create symlinks") + ": %s".printf(linkTarget));
-					}
-				} catch(Error e) {
-					log_debug(e.message);
+				if (!backend.create_symlink(linkValue, linkTarget)) {
 					log_error(_("Failed to create symlinks") + ": %s".printf(linkTarget));
 				}
 			}
@@ -929,18 +1140,14 @@ public class SnapshotRepo : GLib.Object{
 	}
 
 	public void cleanup_symlink_dir(string tag){
-		try{
-			string path = "%s-%s".printf(snapshots_path, tag);
-			if(!TeeJee.FileSystem.dir_delete_recursive(path)) {
-				log_error(_("Failed to delete symlinks") + ": '%s'".printf(path));
-			}
 
-			File f = File.new_for_path(path);
-			f.make_directory_with_parents();
+		string path = "%s-%s".printf(snapshots_path, tag);
+
+		if (!backend.remove_dir_recursive(path)) {
+			log_error(_("Failed to delete symlinks") + ": '%s'".printf(path));
 		}
-		catch (Error e) {
-			log_error (e.message);
-		}
+
+		backend.dir_create(path);
 	}
 
 }

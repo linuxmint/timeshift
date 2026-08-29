@@ -107,7 +107,11 @@ class MainWindow : Gtk.Window{
 
 		log_debug("MainWindow(): init_delayed()");
 
-		if ((App.repo == null) || !App.repo.available()){
+		// Don't fall back to a local device when a remote location is
+		// configured - an unreachable remote would otherwise be silently
+		// replaced by whatever backup_parent_uuid still points at.
+		if ((App.backup_location_type != "ssh")
+			&& ((App.repo == null) || !App.repo.available())){
 			if (App.backup_parent_uuid.length > 0){
 				log_debug("repo: creating from parent uuid");
 				App.repo = new SnapshotRepo.from_uuid(App.backup_parent_uuid, this, App.btrfs_mode);
@@ -659,19 +663,102 @@ class MainWindow : Gtk.Window{
 		snapshot_list_box.refresh();
 	}
 
+	/* Opens a path inside the snapshot repository in the user's file manager.
+	 *
+	 * Local repositories open the path directly. Remote ones open an sftp://
+	 * URI, which GVFS handles - so this authenticates as the desktop user
+	 * rather than with Timeshift's root-only key. If GVFS is unavailable we
+	 * fall back to an sshfs mount, and if that is not possible we say which
+	 * piece is missing rather than doing nothing.
+	 *
+	 * Note the opener cannot report success: exo_open_folder() returns whether
+	 * the *spawn* worked, not whether anything appeared. So we never claim it
+	 * opened. */
+	private void browse_repo_path(string repo_path){
+
+		if (!App.repo.backend.is_remote){
+			exo_open_folder(repo_path, false);
+			return;
+		}
+
+		if (cmd_exists("gio") || cmd_exists("nautilus")){
+			string uri = App.repo.backend.browse_uri(repo_path);
+			log_debug("browse: %s".printf(uri));
+			xdg_open(uri);
+			return;
+		}
+
+		if (!cmd_exists("sshfs")){
+			gtk_messagebox(
+				_("Cannot browse the remote location"),
+				_("Browsing a remote snapshot needs either GVFS (for sftp:// support in the file manager) or the sshfs package. Neither is installed."),
+				this, false);
+			return;
+		}
+
+		string mount_point = browse_mount_remote(repo_path);
+
+		if (mount_point.length == 0){ return; }
+
+		exo_open_folder(mount_point, false);
+	}
+
+	/* sshfs fallback. Mounts the snapshot read-only using Timeshift's own key.
+	 * Returns "" and explains why if it cannot. */
+	private string browse_mount_remote(string repo_path){
+
+		var backend = App.repo.backend as SshRepoBackend;
+		if (backend == null){ return ""; }
+
+		// A root-owned FUSE mount is invisible to the desktop user unless
+		// allow_other is permitted, so check before mounting something nobody
+		// can read.
+		string? fuse_conf = file_read("/etc/fuse.conf");
+		if ((fuse_conf == null) || !fuse_conf.contains("user_allow_other")){
+			gtk_messagebox(
+				_("Cannot browse the remote location"),
+				_("Mounting the snapshot needs 'user_allow_other' in /etc/fuse.conf, otherwise your file manager cannot read the mount."),
+				this, false);
+			return "";
+		}
+
+		string mount_point = path_combine(App.mount_point_app, "browse");
+		dir_create(mount_point);
+
+		string cmd = "sshfs -o ro,allow_other,IdentityFile='%s',UserKnownHostsFile='%s',StrictHostKeyChecking=yes,port=%d '%s:%s' '%s'".printf(
+			escape_single_quote(backend.key_file),
+			escape_single_quote(SshRepoBackend.known_hosts_file()),
+			backend.port,
+			escape_single_quote(backend.host_spec()),
+			escape_single_quote(repo_path),
+			escape_single_quote(mount_point));
+
+		string std_out, std_err;
+		gtk_set_busy(true, this);
+		int ret_val = exec_script_sync(cmd + "\nexit $?\n", out std_out, out std_err, true);
+		gtk_set_busy(false, this);
+
+		if (ret_val != 0){
+			gtk_messagebox(_("Could not mount the remote snapshot"),
+				(std_err == null) ? "" : std_err.strip(), this, false);
+			return "";
+		}
+
+		return mount_point;
+	}
+
 	public void browse_selected(){
-		
+
 		var sel = snapshot_list_box.treeview.get_selection ();
 		
 		if (sel.count_selected_rows() == 0){
 			
-			var f = File.new_for_path(App.repo.snapshots_path);
-			
-			if (f.query_exists()){
-				exo_open_folder(App.repo.snapshots_path);
+			// through the backend: a local stat says nothing about a remote repo
+			if (App.repo.backend.dir_exists(App.repo.snapshots_path)){
+				browse_repo_path(App.repo.snapshots_path);
 			}
 			else{
-				exo_open_folder(App.repo.mount_path);
+				browse_repo_path(App.repo.mount_path);
 			}
 			return;
 		}
@@ -688,10 +775,10 @@ class MainWindow : Gtk.Window{
 				store.get (iter, 0, out bak);
 
 				if (App.btrfs_mode){
-					exo_open_folder(bak.path, false);
+					browse_repo_path(bak.path);
 				}
 				else{
-					exo_open_folder(bak.path + "/localhost", false);
+					browse_repo_path(bak.path + "/localhost");
 				}
 				return;
 			}
@@ -726,6 +813,30 @@ class MainWindow : Gtk.Window{
 				string log_file_name = bak.rsync_log_file;
 				if (view_restore_log){
 					log_file_name = bak.rsync_restore_log_file;;
+				}
+
+				// A remote log has to be fetched before it can be parsed:
+				// rsync's log parser reads it, and derives every item path
+				// from the log's own parent directory, so both sides must
+				// agree on the local copy.
+				if (App.repo.backend.is_remote){
+
+					string local_log = path_combine(TEMP_DIR,
+						"%s-%s".printf(bak.name, view_restore_log ? "rsync-log-restore" : "rsync-log"));
+
+					gtk_set_busy(true, this);
+					bool fetched = App.repo.backend.download_file(log_file_name, local_log);
+					gtk_set_busy(false, this);
+
+					if (!fetched || !file_exists(local_log)){
+						gtk_messagebox(
+							_("Log not available"),
+							_("Could not fetch the log from the remote location."),
+							this, false);
+						return;
+					}
+
+					log_file_name = local_log;
 				}
 
 				if (file_exists(log_file_name) || file_exists(log_file_name + "-changes")){
@@ -893,6 +1004,19 @@ class MainWindow : Gtk.Window{
 	}
 
 	private void settings_changed(bool btrfs_mode_prev){
+
+		// A remote repo has no Device, so the branches below would fall through
+		// to the btrfs/null case and silently discard a location the user just
+		// configured, while backup_location_type stayed "ssh".
+		if ((App.backup_location_type == "ssh")
+			|| ((App.repo != null) && App.repo.backend.is_remote)){
+
+			App.save_app_config();
+			App.repo.load_snapshots();
+			refresh_all();
+			this.show();
+			return;
+		}
 
 		if (btrfs_mode_prev != App.btrfs_mode){
 			if ((App.repo != null) && (App.repo.device != null) && (App.repo.device.uuid.length > 0)){
@@ -1066,10 +1190,13 @@ class MainWindow : Gtk.Window{
 				scrolled_free_space.no_show_all = false;
 				scrolled_free_space.show_all();
 				
-				lbl_free_space.label = format_text_large("%s".printf(format_file_size(App.repo.device.free_bytes)));
+				lbl_free_space.label = format_text_large("%s".printf(format_file_size(App.repo.free_bytes)));
 
 				string devname = "(??)";
-				if ((App.repo != null) && (App.repo.device != null)){
+				if (App.repo.backend.is_remote){
+					devname = App.repo.backend.display_name;
+				}
+				else if ((App.repo != null) && (App.repo.device != null)){
 					devname = "%s".printf(App.repo.device.device);
 				}
 				lbl_free_space_subnote.label = format_text(devname, false, true, false);

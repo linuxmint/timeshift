@@ -214,7 +214,36 @@ namespace TeeJee.ProcessHelper{
 			// non root
 			string? user = TeeJee.System.get_username_from_uid(uid);
 			if(user != null) {
-				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS ".printf(user) + cmd;
+
+				// These expand from OUR environment, which is root's. Under
+				// sudo there is no DBUS_SESSION_BUS_ADDRESS at all, so
+				// anything needing the session bus - notably gio/gvfs, which
+				// is how a remote snapshot gets opened - would silently do
+				// nothing. Recover the desktop user's own values, falling back
+				// to the standard systemd layout for their uid.
+				string bus = GLib.Environment.get_variable("DBUS_SESSION_BUS_ADDRESS");
+				string runtime = null;
+
+				Pid user_pid = get_user_process();
+				string[]? user_env = get_process_env(user_pid);
+
+				if (user_env != null){
+					string v = get_env(user_env, "DBUS_SESSION_BUS_ADDRESS");
+					if (v != null){ bus = v; }
+					runtime = get_env(user_env, "XDG_RUNTIME_DIR");
+				}
+
+				if ((runtime == null) || (runtime.length == 0)){
+					runtime = "/run/user/%d".printf(uid);
+				}
+				if ((bus == null) || (bus.length == 0)){
+					bus = "unix:path=%s/bus".printf(runtime);
+				}
+
+				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY XDG_RUNTIME_DIR='%s' DBUS_SESSION_BUS_ADDRESS='%s' ".printf(
+					user,
+					TeeJee.FileSystem.escape_single_quote(runtime),
+					TeeJee.FileSystem.escape_single_quote(bus)) + cmd;
 			}
 		}
 

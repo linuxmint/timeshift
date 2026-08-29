@@ -56,6 +56,12 @@ public class RsyncTask : AsyncTask{
 	public string link_from_path = "";
 	public string source_path = "";
 	public string dest_path = "";
+
+	/* Remote transport. Empty for a local repository.
+	 * rsh     -> rsync's -e option (the ssh command line)
+	 * rsync_path -> rsync's --rsync-path (used for --fake-super) */
+	public string rsh = "";
+	public string rsync_path = "";
 	public bool verbose = true;
 	public bool dry_run = false;
 
@@ -209,6 +215,22 @@ public class RsyncTask : AsyncTask{
 		}
 
 		cmd += " --force"; // allow deletion of non-empty directories
+
+		if (rsh.length > 0){
+
+			cmd += " -e '%s'".printf(escape_single_quote(rsh));
+
+			// Across an SSH boundary rsync maps uid/gid by *name*, which
+			// silently rewrites ownership when the remote passwd database
+			// differs. Numeric ids are the only safe choice for a system
+			// backup. Left off for local repositories to keep their
+			// behaviour unchanged.
+			cmd += " --numeric-ids";
+		}
+
+		if (rsync_path.length > 0){
+			cmd += " --rsync-path='%s'".printf(escape_single_quote(rsync_path));
+		}
 
 		//cmd += " --numeric-ids";
 
@@ -401,7 +423,17 @@ public class RsyncTask : AsyncTask{
 						
 					item_disk_path = path_combine(item_basepath, item_path);
 
-					var item = new FileItem.from_disk_path_with_basic_info(item_disk_path);
+					// from_disk_path_with_basic_info() stats every file. That
+					// path only exists for a local repository; for a remote one
+					// there is nothing to stat, so skip it and accept the
+					// generic icon.
+					FileItem item;
+					if ((App != null) && (App.repo != null) && App.repo.backend.is_remote){
+						item = new FileItem.from_path_and_type(item_disk_path, FileType.REGULAR);
+					}
+					else {
+						item = new FileItem.from_disk_path_with_basic_info(item_disk_path);
+					}
 					item.file_status = item_status;
 					list.add(item);
 					//log_debug("added: %s".printf(item_path));

@@ -18,6 +18,7 @@ config_header = configure_file(
 sources_core = files([
   'Core/AppExcludeEntry.vala',
   'Core/Main.vala',
+  'Core/RepoBackend.vala',
   'Core/Snapshot.vala',
   'Core/SnapshotRepo.vala',
   'Core/Subvolume.vala',

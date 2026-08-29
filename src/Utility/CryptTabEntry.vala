@@ -57,12 +57,19 @@ public class CryptTabEntry : GLib.Object{
 	}
 
 	public static Gee.ArrayList<CryptTabEntry> read_file(string file_path){
+
+		if (!file_exists(file_path)){ return new Gee.ArrayList<CryptTabEntry>(); }
+
+		return parse_text(file_read(file_path));
+	}
+
+	/* Parses the file's contents. Split out from read_file() so that the text
+	 * can also come from a remote repository. */
+	public static Gee.ArrayList<CryptTabEntry> parse_text(string? text){
 		
 		var list = new Gee.ArrayList<CryptTabEntry>();
 
-		if (!file_exists(file_path)){ return list; }
-
-		string text = file_read(file_path);
+		if (text == null){ return list; }
 		string[] lines = text.split("\n");
 		foreach(string line in lines){
 			var entry = new CryptTabEntry();

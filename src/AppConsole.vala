@@ -199,6 +199,23 @@ public class AppConsole : GLib.Object {
 					App.cmd_target_device = args[++k];
 					break;
 
+				case "--setup-ssh-key":
+					App.app_mode = "setup-ssh-key";
+					break;
+
+				case "--snapshot-url":
+				case "--remote":
+					App.cmd_ssh_url = args[++k];
+					break;
+
+				case "--ssh-key":
+					App.cmd_ssh_key = args[++k];
+					break;
+
+				case "--ssh-port":
+					App.cmd_ssh_port = int.parse(args[++k]);
+					break;
+
 				case "--backup-device":
 				case "--snapshot-device":
 					App.cmd_backup_device = args[++k];
@@ -338,6 +355,10 @@ public class AppConsole : GLib.Object {
 				log_msg("");
 				return true;
 
+			case "setup-ssh-key":
+				LOG_ENABLE = true;
+				return setup_ssh_key();
+
 			default:
 				return true;
 		}
@@ -388,6 +409,10 @@ public class AppConsole : GLib.Object {
 		msg += "\n";
 		msg += _("Global") + ":\n";
 		msg += "  --snapshot-device <device> " + _("Specify backup device (default: config)") + "\n";
+		msg += "  --snapshot-url <url>       " + _("Use a remote snapshot location (user@host:/path)") + "\n";
+		msg += "  --ssh-key <file>           " + _("SSH private key for the remote location") + "\n";
+		msg += "  --ssh-port <port>          " + _("SSH port for the remote location") + "\n";
+		msg += "  --setup-ssh-key            " + _("Set up key-based login for the remote location") + "\n";
 		msg += "  --yes                      " + _("Answer YES to all confirmation prompts") + "\n";
 		msg += "  --btrfs                    " + _("Switch to BTRFS mode (default: config)") + "\n";
 		msg += "  --rsync                    " + _("Switch to RSYNC mode (default: config)") + "\n";
@@ -652,9 +677,138 @@ public class AppConsole : GLib.Object {
 		return App.restore_snapshot(null);
 	}
 
+	/* Sets up key-based login for the configured remote location.
+	 *
+	 * On a terminal we let ssh do its own password prompt, so the password
+	 * never passes through this process: not into a variable, not into the
+	 * environment, not onto a command line. */
+	private bool setup_ssh_key(){
+
+		if (App.backup_location_type != "ssh"){
+			log_error(_("No remote location is configured"));
+			log_msg(_("Specify one with") + ": --snapshot-url user@host:/path");
+			return false;
+		}
+
+		// this flow is interactive by definition
+		if (App.cmd_scripted){
+			log_error(_("Cannot set up a key in scripted mode"));
+			log_msg(_("Run this once from a terminal, then scheduled snapshots will work without a password."));
+			return false;
+		}
+
+		var backend = App.repo.backend as SshRepoBackend;
+		if (backend == null){
+			log_error(_("No remote location is configured"));
+			return false;
+		}
+
+		// 1. confirm the host key before anything is sent to it
+		string key_line, fingerprint;
+
+		if (!backend.scan_host_key(out key_line, out fingerprint)){
+			log_error(_("Could not retrieve the host key"));
+			log_error(backend.last_error);
+			return false;
+		}
+
+		log_msg("");
+		log_msg(string.nfill(78, '*'));
+		log_msg(_("Verify the remote host"));
+		log_msg(string.nfill(78, '*'));
+		log_msg("%s: %s".printf(_("Host"), backend.display_name));
+		log_msg("%s: %s".printf(_("Fingerprint"), fingerprint));
+		log_msg("");
+		log_msg(_("Check this fingerprint against the remote host before continuing."));
+		log_msg(_("Your password will be sent to this host."));
+		log_msg("");
+
+		stdout.printf("%s (y/n): ", _("Continue"));
+		stdout.flush();
+
+		var counter = new TimeoutCounter();
+		counter.exit_on_timeout();
+		string? line = stdin.read_line();
+		counter.stop();
+
+		if ((line == null) || (line.strip().down() != "y")){
+			log_msg(_("Cancelled"));
+			return false;
+		}
+
+		if (!backend.trust_host_key(key_line)){
+			log_error(_("Failed to record the host key"));
+			return false;
+		}
+
+		// 2. make sure we have a keypair to install
+		string key_path = App.backup_ssh_key;
+		if (key_path.length == 0){
+			key_path = SshRepoBackend.default_key_file();
+			App.backup_ssh_key = key_path;
+		}
+
+		string message;
+		if (!backend.ensure_keypair(key_path, out message)){
+			log_error(message);
+			return false;
+		}
+		log_msg("%s: %s".printf(_("Using key"), key_path));
+
+		// 3. install it - ssh prompts for the password itself
+		backend.key_file = key_path;
+
+		log_msg("");
+		log_msg(_("Installing the public key on the remote host..."));
+		log_msg("");
+
+		if (!backend.install_public_key(null, out message)){
+			log_error(message);
+			return false;
+		}
+
+		// 4. only claim success if the key actually authenticates
+		if (!backend.verify_key_auth(out message)){
+			log_error(message);
+			return false;
+		}
+
+		// 5. now that the new key is known to work, drop any earlier keys this
+		// machine left behind whose private half no longer exists
+		int removed = 0;
+		string clean_msg;
+		if (backend.remove_stale_keys(out removed, out clean_msg)){
+			if (removed > 0){
+				log_msg(_("Removed old Timeshift keys from the remote") + ": %d".printf(removed));
+			}
+		}
+		else {
+			log_msg(_("Could not tidy old keys on the remote") + ": %s".printf(clean_msg));
+		}
+
+		App.save_app_config();
+
+		log_msg("");
+		log_msg(_("Key-based login is working."));
+		log_msg(_("Scheduled snapshots to this location will now run without a password."));
+
+		return true;
+	}
+
 	private void select_snapshot_device(bool prompt_if_empty){
 
 		if (App.mirror_system){
+			return;
+		}
+
+		// A remote repository has no Device to pick; the location came from
+		// --snapshot-url or the config file.
+		if (App.repo.backend.is_remote){
+			if (!App.repo.available()){
+				log_error(App.repo.status_message);
+				log_error(App.repo.status_details);
+				App.exit_app(1);
+			}
 			return;
 		}
 
@@ -756,7 +910,8 @@ public class AppConsole : GLib.Object {
 		if (selected_snapshot == null){
 
 			if (!App.repo.has_snapshots()){
-				log_error(_("No snapshots found on device") + ": '%s'".printf(App.repo.device.device));
+				log_error(_("No snapshots found on device") + ": '%s'".printf(
+					(App.repo.device == null) ? App.repo.backend.display_name : App.repo.device.device));
 				App.exit_app(0);
 				return null;
 			}

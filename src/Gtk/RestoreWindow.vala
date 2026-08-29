@@ -469,8 +469,13 @@ class RestoreWindow : Gtk.Window{
 			break;
 			
 		case Tabs.SHOW_LOG:
-			if (file_exists(App.snapshot_to_restore.rsync_restore_log_file)){
-				log_box.open_log(App.snapshot_to_restore.rsync_restore_log_file);
+			// App.restore_log_file, not the snapshot-relative property: for a
+			// remote repo the log is written locally under TEMP_DIR, and
+			// checking the remote path made every remote restore report
+			// "Error running Rsync" even on success. The two coincide for a
+			// local repo, which is why this went unnoticed.
+			if (file_exists(App.restore_log_file)){
+				log_box.open_log(App.restore_log_file);
 			}
 			else{
 				notebook.page = Tabs.FINISH;

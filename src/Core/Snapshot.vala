@@ -60,17 +60,20 @@ public class Snapshot : GLib.Object{
 	
 	public DeleteFileTask delete_file_task;
 
-	public Snapshot(string dir_path, bool btrfs_snapshot, SnapshotRepo _repo){
+	/* control files fetched up-front by the repository, keyed by file name.
+	 * Null means read them individually through the backend. */
+	private Gee.HashMap<string,string>? prefetched = null;
 
-		try{
-			var f = File.new_for_path(dir_path);
-			var info = f.query_info("*", FileQueryInfoFlags.NONE);
+	public Snapshot(string dir_path, bool btrfs_snapshot, SnapshotRepo _repo,
+		Gee.HashMap<string,string>? _prefetched = null){
 
+		{
 			path = dir_path;
-			name = info.get_name();
+			name = GLib.Path.get_basename(dir_path);
 			description = "";
 			btrfs_mode = btrfs_snapshot;
 			repo = _repo;
+			prefetched = _prefetched;
 			
 			date = new DateTime.from_unix_utc(0);
 			tags = new Gee.ArrayList<string>();
@@ -84,9 +87,6 @@ public class Snapshot : GLib.Object{
 			read_exclude_list();
 			read_fstab_file();
 			read_crypttab_file();
-		}
-		catch(Error e){
-			log_error (e.message);
 		}
 	}
 
@@ -186,21 +186,47 @@ public class Snapshot : GLib.Object{
 	}
 
 	// control files
-	
+
+	/* Reads a file from inside the snapshot directory, through the repository
+	 * backend so that it works for a remote repository too. */
+	private string? read_repo_file(string file_path){
+
+		// key used by the batched pre-fetch: path relative to the snapshot dir
+		string short_name = file_path;
+		if (short_name.has_prefix(path)){
+			short_name = short_name[path.length : short_name.length];
+		}
+		while (short_name.has_prefix("/")){
+			short_name = short_name[1 : short_name.length];
+		}
+
+		if (prefetched != null){
+			// the pre-fetch is authoritative: a key that is absent means the
+			// file does not exist, so there is nothing to go back for
+			return prefetched.has_key(short_name) ? prefetched[short_name] : null;
+		}
+
+		if (repo == null){
+			return file_exists(file_path) ? file_read(file_path) : null;
+		}
+
+		return repo.backend.file_read(file_path);
+	}
+
 	public void read_control_file(){
 		
 		//log_debug("read_control_file()");
 		
 		string ctl_file = path + "/info.json";
 
-		var f = File.new_for_path(ctl_file);
-		
-		if (f.query_exists()) {
+		string? ctl_text = read_repo_file(ctl_file);
+
+		if (ctl_text != null) {
 			
 			var parser = new Json.Parser();
 			
 			try{
-				parser.load_from_file(ctl_file);
+				parser.load_from_data(ctl_text);
 			} catch (Error e) {
 				log_error (e.message);
 			}
@@ -279,7 +305,8 @@ public class Snapshot : GLib.Object{
 			}
 			
 			string delete_trigger_file = path + "/delete";
-			if (file_exists(delete_trigger_file)){
+			if ((repo == null) ? file_exists(delete_trigger_file)
+			                   : repo.backend.file_exists(delete_trigger_file)){
 				marked_for_deletion = true;
 			}
 		}
@@ -296,11 +323,11 @@ public class Snapshot : GLib.Object{
 
 		exclude_list.clear();
 
-		var f = File.new_for_path(list_file);
+		string? list_text = read_repo_file(list_file);
 		
-		if (f.query_exists()) {
+		if (list_text != null) {
 			
-			foreach(string path in file_read(list_file).split("\n")){
+			foreach(string path in list_text.split("\n")){
 				
 				path = path.strip();
 				
@@ -324,7 +351,7 @@ public class Snapshot : GLib.Object{
 			fstab_path = path_combine(path, "/@/etc/fstab");
 		}
 		
-		fstab_list = FsTabEntry.read_file(fstab_path);
+		fstab_list = FsTabEntry.parse_text(read_repo_file(fstab_path));
 	}
 
 	public void read_crypttab_file(){
@@ -335,21 +362,22 @@ public class Snapshot : GLib.Object{
 			crypttab_path = path_combine(path, "/@/etc/crypttab");
 		}
 		
-		cryttab_list = CryptTabEntry.read_file(crypttab_path);
+		cryttab_list = CryptTabEntry.parse_text(read_repo_file(crypttab_path));
 	}
 
 	public void update_control_file(){
 		/* Updates tag and comments */
-		
-		try{
-			string ctl_file = path + "/info.json";
-			var f = File.new_for_path(ctl_file);
 
-			if (f.query_exists()) {
+		{
+			string ctl_file = path + "/info.json";
+
+			string? ctl_text = read_repo_file(ctl_file);
+
+			if (ctl_text != null) {
 
 				var parser = new Json.Parser();
 				try{
-					parser.load_from_file(ctl_file);
+					parser.load_from_data(ctl_text);
 				} catch (Error e) {
 					log_error (e.message);
 				}
@@ -379,18 +407,30 @@ public class Snapshot : GLib.Object{
 				json.indent = 2;
 				node.set_object(config);
 				json.set_root(node);
-				f.delete();
-				json.to_file(ctl_file);
+
+				size_t len;
+				string data = json.to_data(out len);
+
+				if (repo != null){
+					repo.backend.file_write(ctl_file, data);
+				}
+				else {
+					file_write(ctl_file, data);
+				}
 			}
-		} catch (Error e) {
-			log_error (e.message);
 		}
 	}
 
 	public void remove_control_file(){
 		
 		string ctl_file = path + "/info.json";
-		file_delete(ctl_file);
+
+		if (repo != null){
+			repo.backend.file_delete(ctl_file);
+		}
+		else {
+			file_delete(ctl_file);
+		}
 	}
 	
 	public static Snapshot write_control_file(
@@ -417,16 +457,10 @@ public class Snapshot : GLib.Object{
 		node.set_object(config);
 		json.set_root(node);
 
-		try{
-			var f = File.new_for_path(ctl_path);
-			if (f.query_exists()){
-				f.delete();
-			}
+		size_t len;
+		string data = json.to_data(out len);
 
-			json.to_file(ctl_path);
-		} catch (Error e) {
-	        log_error (e.message);
-	    }
+		repo.backend.file_write(ctl_path, data);
 
 		if (!silent){
 			log_msg(_("Created control file") + ": %s".printf(ctl_path));
@@ -463,7 +497,11 @@ public class Snapshot : GLib.Object{
 
 	public bool remove(bool wait){
 
-		if (!dir_exists(path)){
+		// must go through the backend: for a remote repository this path does
+		// not exist locally, and a local check would silently skip the delete
+		bool exists = (repo == null) ? dir_exists(path) : repo.backend.dir_exists(path);
+
+		if (!exists){
 			return true;
 		}
 
@@ -485,6 +523,23 @@ public class Snapshot : GLib.Object{
 		
 		var message = _("Removing") + " '%s'...".printf(name);
 		log_msg(message);
+
+		// A remote snapshot is removed by the repository backend; there is no
+		// local path for rm to walk.
+		if ((repo != null) && repo.backend.is_remote){
+
+			bool ok = repo.backend.remove_dir_recursive(path);
+
+			if (ok){
+				log_msg("%s '%s'".printf(_("Removed"), name));
+			}
+			else{
+				log_error(_("Failed to remove") + ": '%s'".printf(path));
+			}
+
+			log_msg(string.nfill(78, '-'));
+			return ok;
+		}
 		
 		delete_file_task.dest_path = "%s/".printf(path);
 		delete_file_task.status_message = message;
@@ -563,12 +618,23 @@ public class Snapshot : GLib.Object{
 	public void mark_for_deletion(){
 		
 		string delete_trigger_file = path + "/delete";
-		
-		if (!file_exists(delete_trigger_file)){
-			file_write(delete_trigger_file, "");
+
+		if (repo == null){
+			if (!file_exists(delete_trigger_file)){
+				file_write(delete_trigger_file, "");
+				marked_for_deletion = true;
+			} else {
+				file_delete(delete_trigger_file);
+				marked_for_deletion = false;
+			}
+			return;
+		}
+
+		if (!repo.backend.file_exists(delete_trigger_file)){
+			repo.backend.file_write(delete_trigger_file, "");
 			marked_for_deletion = true;
 		} else {
-			file_delete(delete_trigger_file);
+			repo.backend.file_delete(delete_trigger_file);
 			marked_for_deletion = false;
 		}
 	}
