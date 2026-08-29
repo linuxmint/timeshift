@@ -57,6 +57,11 @@ public class Snapshot : GLib.Object{
 	public Gee.HashMap<string,string> paths; // for btrfs snapshots only
 	public string mount_path_root = "";
 	public string mount_path_home = "";
+
+	//rsync size cache; -1 means "not yet computed". btrfs mode uses
+	//subvolumes[].total_bytes/unshared_bytes instead - see size_bytes below.
+	public int64 rsync_size_bytes = -1;
+	public int64 rsync_size_unshared_bytes = -1;
 	
 	public DeleteFileTask delete_file_task;
 
@@ -95,6 +100,44 @@ public class Snapshot : GLib.Object{
 	public string date_formatted{
 		owned get{
 			return date.format(App.date_format);//.format("%Y-%m-%d %H:%M:%S");
+		}
+	}
+
+	/* Total logical content size: btrfs sums the referenced size of its
+	 * subvolumes; rsync uses the cached du result (-1 if not computed yet). */
+	public int64 size_bytes{
+		get{
+			if (btrfs_mode){
+				int64 total = 0;
+				foreach(var s in subvolumes.values){ total += s.total_bytes; }
+				return total;
+			}
+			return rsync_size_bytes;
+		}
+	}
+
+	/* Size unique to this snapshot: btrfs sums the exclusive size of its
+	 * subvolumes; rsync sums files with no other hardlink (-1 if not computed). */
+	public int64 size_unshared_bytes{
+		get{
+			if (btrfs_mode){
+				int64 total = 0;
+				foreach(var s in subvolumes.values){ total += s.unshared_bytes; }
+				return total;
+			}
+			return rsync_size_unshared_bytes;
+		}
+	}
+
+	public string size_formatted{
+		owned get{
+			return (size_bytes >= 0) ? format_file_size(size_bytes) : "";
+		}
+	}
+
+	public string size_unshared_formatted{
+		owned get{
+			return (size_unshared_bytes >= 0) ? format_file_size(size_unshared_bytes) : "";
 		}
 	}
 
@@ -252,6 +295,8 @@ public class Snapshot : GLib.Object{
 			app_version = json_get_string(config,"app-version","");
 			file_count = (int64) json_get_uint64(config,"file_count",file_count);
 			live = json_get_bool(config,"live",false);
+			rsync_size_bytes = int64.parse(json_get_string(config,"size_bytes","-1"));
+			rsync_size_unshared_bytes = int64.parse(json_get_string(config,"size_unshared_bytes","-1"));
 			string type = config.get_string_member_with_default("type", "rsync");
 
 			string extension = (type == "btrfs") ? "@" : "localhost";
@@ -388,6 +433,11 @@ public class Snapshot : GLib.Object{
 				config.set_string_member("comments", description);
 				config.set_string_member("live", live.to_string());
 
+				if (!btrfs_mode){
+					config.set_string_member("size_bytes", rsync_size_bytes.to_string());
+					config.set_string_member("size_unshared_bytes", rsync_size_unshared_bytes.to_string());
+				}
+
 				if (btrfs_mode){
 					var subvols = new Json.Object();
 					config.set_object_member("subvolumes",subvols);
@@ -519,8 +569,12 @@ public class Snapshot : GLib.Object{
 	
 	public bool remove_rsync(bool wait){
 
+		// hardlink counts on files shared with chronological neighbors are
+		// about to change, so their cached size no longer applies
+		invalidate_neighbor_sizes();
+
 		log_msg(string.nfill(78, '-'));
-		
+
 		var message = _("Removing") + " '%s'...".printf(name);
 		log_msg(message);
 
@@ -636,6 +690,47 @@ public class Snapshot : GLib.Object{
 		} else {
 			repo.backend.file_delete(delete_trigger_file);
 			marked_for_deletion = false;
+		}
+	}
+
+	// size (rsync only; btrfs size comes from live qgroup queries, see Main.query_subvolume_quota)
+
+	/* Runs the (expensive) du/find walk for an rsync snapshot and caches the
+	 * result in info.json. No-op if already cached, btrfs, or repo-less. */
+	public void compute_rsync_size(){
+
+		if (btrfs_mode || (repo == null) || (rsync_size_bytes >= 0)){ return; }
+
+		int64 total, unique;
+		if (repo.backend.query_dir_size(path, out total, out unique)){
+			rsync_size_bytes = total;
+			rsync_size_unshared_bytes = unique;
+			update_control_file();
+		}
+	}
+
+	/* Deleting this snapshot changes the hardlink count of files it shares
+	 * with its chronological neighbors, so their cached "unique" size (and,
+	 * in principle, total size) may no longer be accurate. Clear the cache
+	 * on both sides so the next list load recomputes it. */
+	private void invalidate_neighbor_sizes(){
+
+		if (btrfs_mode || (repo == null)){ return; }
+
+		var list = repo.snapshots; // sorted by date; `this` is still present
+		int idx = list.index_of(this);
+		if (idx < 0){ return; }
+
+		foreach(int ni in new int[]{ idx - 1, idx + 1 }){
+
+			if ((ni < 0) || (ni >= list.size)){ continue; }
+
+			var neighbor = list[ni];
+			if (!neighbor.btrfs_mode){
+				neighbor.rsync_size_bytes = -1;
+				neighbor.rsync_size_unshared_bytes = -1;
+				neighbor.update_control_file();
+			}
 		}
 	}
 

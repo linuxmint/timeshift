@@ -69,6 +69,13 @@ public abstract class RepoBackend : GLib.Object {
 	public abstract bool query_space(string path,
 		out uint64 size_bytes, out uint64 used_bytes, out uint64 available_bytes);
 
+	/* Returns false if the size could not be determined. total_bytes is the
+	 * full logical content size of the directory (as 'du -sb' reports it);
+	 * unique_bytes is the subset of that which is not hardlinked anywhere
+	 * else (nlink == 1) - i.e. what deleting just this directory would free. */
+	public abstract bool query_dir_size(string path,
+		out int64 total_bytes, out int64 unique_bytes);
+
 	/* Copies a file from the local filesystem into the repository, and back.
 	 * For a local repository these are plain copies. */
 	public abstract bool upload_file(string local_path, string repo_path);
@@ -277,6 +284,36 @@ public class LocalRepoBackend : RepoBackend {
 
 		return RepoBackend.parse_df_output(std_out,
 			out size_bytes, out used_bytes, out available_bytes);
+	}
+
+	public override bool query_dir_size(string path,
+		out int64 total_bytes, out int64 unique_bytes){
+
+		total_bytes = 0;
+		unique_bytes = 0;
+
+		string std_out, std_err;
+
+		int ret_val = run_script_checked("du -sb '%s'".printf(escape_single_quote(path)),
+			out std_out, out std_err);
+
+		if ((ret_val != 0) || (std_out == null)){ return false; }
+
+		string[] parts = Regex.split_simple("""[ \t]+""", std_out.strip());
+		if (parts.length < 1){ return false; }
+
+		total_bytes = int64.parse(parts[0]);
+
+		string find_cmd = "find '%s' -type f -links 1 -printf '%%s\\n' | awk '{s+=$1} END{print s+0}'".printf(
+			escape_single_quote(path));
+
+		ret_val = run_script_checked(find_cmd, out std_out, out std_err);
+
+		if ((ret_val != 0) || (std_out == null)){ return false; }
+
+		unique_bytes = int64.parse(std_out.strip());
+
+		return true;
 	}
 
 	public override bool upload_file(string local_path, string repo_path){
@@ -538,6 +575,63 @@ public class SshRepoBackend : RepoBackend {
 		return opts;
 	}
 
+	/* Builds the sshfs command for mounting a repository path read-only,
+	 * using Timeshift's own key.
+	 *
+	 * The ssh settings deliberately mirror ssh_options() rather than being
+	 * hand-rolled: this used to be a separate, much weaker option list that
+	 * dropped -F /dev/null, IdentitiesOnly, BatchMode and the timeouts, which
+	 * meant root's ssh_config could rewrite Host or inject a ProxyCommand for
+	 * this one code path.
+	 *
+	 * Note sshfs splits -o on commas, so anything that could contain one gets
+	 * its own -o rather than being joined into a list.
+	 *
+	 * Returns "" when no key is configured - mounting with IdentityFile=''
+	 * would just produce a confusing auth failure.
+	 * as_uid/as_gid own the mounted tree so the desktop user can read it. */
+	public string sshfs_command(string repo_path, string mount_point, int as_uid, int as_gid){
+
+		if (key_file.length == 0){
+			last_error = _("No SSH key is configured for this location");
+			return "";
+		}
+
+		string cmd = "sshfs";
+
+		// read-only: browsing must never be able to alter a snapshot
+		cmd += " -o ro";
+
+		// allow_other is what lets the desktop user's file manager read a
+		// mount made by root. It needs user_allow_other in /etc/fuse.conf only
+		// for NON-root mounts - see fuse.conf's own comment - and Timeshift is
+		// always root, so no change to that file is required.
+		cmd += " -o allow_other,default_permissions";
+		cmd += " -o uid=%d,gid=%d".printf(as_uid, as_gid);
+
+		// same discipline as ssh_options()
+		cmd += " -o BatchMode=yes";
+		cmd += " -o StrictHostKeyChecking=accept-new";
+		cmd += " -o ConnectTimeout=10";
+		cmd += " -o ServerAliveInterval=15";
+		cmd += " -o ServerAliveCountMax=3";
+		cmd += " -o IdentitiesOnly=yes";
+		cmd += " -o 'ssh_command=ssh -F /dev/null'";
+		cmd += " -o IdentityFile='%s'".printf(escape_single_quote(key_file));
+		cmd += " -o UserKnownHostsFile='%s'".printf(escape_single_quote(known_hosts_file()));
+
+		if (port != 22){
+			cmd += " -p %d".printf(port);
+		}
+
+		cmd += " '%s:%s' '%s'".printf(
+			escape_single_quote(host_spec()),
+			escape_single_quote(repo_path),
+			escape_single_quote(mount_point));
+
+		return cmd;
+	}
+
 	/* stdin_used: set when the caller pipes data into ssh (upload_file). */
 	public string ssh_command(bool stdin_used = false){
 		return "ssh %s".printf(ssh_options(stdin_used));
@@ -696,6 +790,36 @@ public class SshRepoBackend : RepoBackend {
 
 		return RepoBackend.parse_df_output(std_out,
 			out size_bytes, out used_bytes, out available_bytes);
+	}
+
+	public override bool query_dir_size(string path,
+		out int64 total_bytes, out int64 unique_bytes){
+
+		total_bytes = 0;
+		unique_bytes = 0;
+
+		string std_out, std_err;
+
+		if (run_remote("du -sb %s".printf(q(path)), out std_out, out std_err) != 0){
+			return false;
+		}
+
+		if (std_out == null){ return false; }
+
+		string[] parts = Regex.split_simple("""[ \t]+""", std_out.strip());
+		if (parts.length < 1){ return false; }
+
+		total_bytes = int64.parse(parts[0]);
+
+		string find_cmd = "find %s -type f -links 1 -printf '%%s\\n' | awk '{s+=$1} END{print s+0}'".printf(
+			q(path));
+
+		if (run_remote(find_cmd, out std_out, out std_err) != 0){ return false; }
+		if (std_out == null){ return false; }
+
+		unique_bytes = int64.parse(std_out.strip());
+
+		return true;
 	}
 
 	public override bool upload_file(string local_path, string repo_path){

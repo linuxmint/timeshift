@@ -1,3 +1,38 @@
+timeshift-ssh (25.12.4+ssh4) resolute; urgency=medium
+
+  * Show snapshot size (total + unique) for both rsync and btrfs snapshots, in the GUI and CLI (--list)
+
+ -- makeafide <willsmit4433@gmail.com>  Sat, 29 Aug 2026 17:29:09 -0400
+
+timeshift-ssh (25.12.4+ssh3) resolute; urgency=medium
+
+  * Superseded ssh2 to avoid a version-number collision with an earlier build's content.
+
+ -- makeafide <willsmit4433@gmail.com>  Sat, 29 Aug 2026 17:13:22 -0400
+
+timeshift-ssh (25.12.4+ssh2) resolute; urgency=medium
+
+  * Add versioned Provides, Rules-Requires-Root: no, and check-deb.sh verification.
+
+ -- makeafide <willsmit4433@gmail.com>  Sat, 29 Aug 2026 17:12:57 -0400
+
+timeshift-ssh (25.12.4+ssh1) resolute; urgency=medium
+
+  * Add remote snapshot storage over SSH (rsync --link-dest over a multiplexed
+    connection, --fake-super ownership, password-based key enrolment).
+  * Browse remote snapshots via an sshfs mount using Timeshift's own key when the
+    desktop user has no access of their own.
+  * Detect swap files dynamically from /proc/swaps and exclude them.
+  * Exclude /etc/timeshift/* so the SSH private key is never copied into a snapshot.
+  * Never delete browse mount points recursively; a failed unmount could otherwise
+    walk into the backup itself.
+  * Rename package to timeshift-ssh; add openssh-client to Depends and sshfs to
+    Recommends; declare Provides/Conflicts/Replaces against timeshift.
+  * Add gettext to Build-Depends; without it a clean chroot builds no translations.
+  * Declare Rules-Requires-Root: no.
+
+ -- makeafide <willsmit4433@gmail.com>  Sat, 29 Aug 2026 17:11:33 -0400
+
 timeshift (25.12.4) zena; urgency=medium
 
   * l10n: Update translations

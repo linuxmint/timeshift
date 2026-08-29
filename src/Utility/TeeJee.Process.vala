@@ -240,10 +240,28 @@ namespace TeeJee.ProcessHelper{
 					bus = "unix:path=%s/bus".printf(runtime);
 				}
 
-				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY XDG_RUNTIME_DIR='%s' DBUS_SESSION_BUS_ADDRESS='%s' ".printf(
+				// WAYLAND_DISPLAY matters on a Wayland session with no
+				// XWayland: without it the launched file manager has no
+				// display at all, and the failure looks like a Timeshift bug.
+				// Take the user's own value - setup_env() rewrites ours to an
+				// absolute path for root's GUI, which is not what the desktop
+				// user's process wants.
+				string wayland_opt = "";
+				if (user_env != null){
+					string w = get_env(user_env, "WAYLAND_DISPLAY");
+					if ((w != null) && (w.length > 0)){
+						wayland_opt = "WAYLAND_DISPLAY='%s' ".printf(
+							TeeJee.FileSystem.escape_single_quote(w));
+					}
+				}
+
+				// $XAUTHORITY is quoted: an unquoted path containing a space
+				// word-splits and the file manager silently gets no auth file.
+				cmd = "pkexec --user %s env DISPLAY=\"$DISPLAY\" XAUTHORITY=\"$XAUTHORITY\" XDG_RUNTIME_DIR='%s' DBUS_SESSION_BUS_ADDRESS='%s' %s".printf(
 					user,
 					TeeJee.FileSystem.escape_single_quote(runtime),
-					TeeJee.FileSystem.escape_single_quote(bus)) + cmd;
+					TeeJee.FileSystem.escape_single_quote(bus),
+					wayland_opt) + cmd;
 			}
 		}
 

@@ -123,7 +123,9 @@ public class Main : GLib.Object{
 
 	public bool thread_subvol_info_running = false;
 	public bool thread_subvol_info_success = false;
-		
+
+	public bool thread_snapshot_size_running = false;
+
 	public int thr_retval = -1;
 	public string thr_arg1 = "";
 	public bool thr_timeout_active = false;
@@ -365,6 +367,9 @@ public class Main : GLib.Object{
 
 	public void initialize(){
 		
+		// clear browse mounts a previous run left behind (crash, SIGKILL)
+		reap_stale_browse_mounts();
+
 		initialize_repo();
 	}
 
@@ -4410,6 +4415,47 @@ public class Main : GLib.Object{
 		return;
 	}
 
+	// rsync size
+
+	/* Computes and caches size for any rsync snapshot in parent_repo that
+	 * does not already have one, mirroring query_subvolume_info()'s
+	 * thread-plus-wait pattern. A no-op once every snapshot has been sized
+	 * once, since the result is cached in info.json. */
+	public void compute_rsync_snapshot_sizes(SnapshotRepo parent_repo){
+
+		var pending = new Gee.ArrayList<Snapshot>();
+		foreach(var bak in parent_repo.snapshots){
+			if (!bak.btrfs_mode && (bak.size_bytes < 0)){
+				pending.add(bak);
+			}
+		}
+
+		if (pending.size == 0){ return; }
+
+		log_debug(_("Computing snapshot sizes..."));
+
+		try {
+			thread_snapshot_size_running = true;
+			new Thread<void>.try ("compute-snapshot-sizes", () => {
+				foreach(var bak in pending){
+					bak.compute_rsync_size();
+				}
+				thread_snapshot_size_running = false;
+			});
+		} catch (Error e) {
+			thread_snapshot_size_running = false;
+			log_error (e.message);
+			return;
+		}
+
+		while (thread_snapshot_size_running){
+			gtk_do_events ();
+			Thread.usleep((ulong) GLib.TimeSpan.MILLISECOND * 100);
+		}
+
+		log_debug(_("Query completed"));
+	}
+
 	public bool query_subvolume_ids(){
 		bool ok = query_subvolume_id("@");
 		if ((repo.device_home != null) && (repo.device.uuid != repo.device_home.uuid)){
@@ -4699,6 +4745,142 @@ public class Main : GLib.Object{
 		}
 	}
 
+	/* Unmounts every browse mount under a directory and removes the empties.
+	 * Browsing makes one mount per snapshot, so this has to walk them. */
+	public void unmount_browse_mounts(string browse_root){
+
+		if (!dir_exists(browse_root)){ return; }
+
+		var mount_points = browse_mount_points(browse_root);
+
+		// deepest first, so a nested mount comes off before its parent
+		mount_points.sort((a,b) => { return strcmp(b,a); });
+
+		foreach(string mp in mount_points){
+
+			string o, e;
+
+			int ret_val = exec_script_sync(
+				"fusermount3 -u '%s' 2>/dev/null || fusermount -u '%s' 2>/dev/null || umount '%s'\nexit $?\n".printf(
+					escape_single_quote(mp), escape_single_quote(mp), escape_single_quote(mp)),
+				out o, out e, true);
+
+			if (ret_val != 0){
+				log_error(_("Failed to unmount") + ": %s".printf(mp));
+				if ((e != null) && (e.strip().length > 0)){ log_error(e.strip()); }
+			}
+		}
+
+		/* Never delete recursively here. While a mount point is still mounted it
+		 * resolves to the snapshot on the backup device, so a recursive delete
+		 * would walk into the backup and try to erase it. Re-read /proc/mounts
+		 * and bail out if anything is still mounted; otherwise the directories
+		 * are empty and plain rmdir is enough. */
+		if (browse_mount_points(browse_root).size > 0){
+			log_error(_("Some snapshots are still mounted and were left in place") + ": %s".printf(browse_root));
+			return;
+		}
+
+		exec_script_sync("rmdir '%s'/* 2>/dev/null; rmdir '%s' 2>/dev/null\nexit 0\n".printf(
+			escape_single_quote(browse_root), escape_single_quote(browse_root)),
+			null, null, true);
+	}
+
+	/* Mount points currently mounted at or under browse_root, per /proc/mounts. */
+	private Gee.ArrayList<string> browse_mount_points(string browse_root){
+
+		var list = new Gee.ArrayList<string>();
+
+		string? mounts = file_read("/proc/mounts");
+		if (mounts == null){ return list; }
+
+		string prefix = browse_root.has_suffix("/") ? browse_root : browse_root + "/";
+
+		foreach(string line in mounts.split("\n")){
+
+			string[] parts = line.split(" ");
+			if (parts.length < 2){ continue; }
+
+			// /proc/mounts escapes spaces and tabs as octal
+			string mp = parts[1].compress();
+
+			if ((mp != browse_root) && !mp.has_prefix(prefix)){ continue; }
+
+			list.add(mp);
+		}
+
+		return list;
+	}
+
+	/* Browse mounts live under /run/timeshift/<pid>. A crash or SIGKILL leaves
+	 * them mounted with nothing to reap them, so clear out any left by a
+	 * previous run whose process is gone. */
+	public void reap_stale_browse_mounts(){
+
+		string? mounts = file_read("/proc/mounts");
+		if (mounts == null){ return; }
+
+		var seen = new Gee.ArrayList<string>();
+
+		foreach(string line in mounts.split("\n")){
+
+			string[] parts = line.split(" ");
+			if (parts.length < 2){ continue; }
+			if (!parts[1].has_prefix("/run/timeshift/")){ continue; }
+			if (!parts[1].contains("/browse/")){ continue; }
+
+			// /run/timeshift/<pid>/browse/<hash>
+			string[] bits = parts[1].split("/");
+			if (bits.length < 4){ continue; }
+
+			string pid_str = bits[3];
+			if (dir_exists("/proc/%s".printf(pid_str))){ continue; } // still alive
+
+			string root = "/run/timeshift/%s/browse".printf(pid_str);
+			if (seen.contains(root)){ continue; }
+			seen.add(root);
+
+			log_debug("reaping stale browse mounts from pid %s".printf(pid_str));
+			unmount_browse_mounts(root);
+		}
+
+		reap_stale_run_dirs();
+	}
+
+	/* A run that was killed leaves an empty /run/timeshift/<pid> behind, since
+	 * exit_app() never got to remove it. Clear out the ones whose process is
+	 * gone. rmdir only, so a directory that still holds anything is left alone. */
+	private void reap_stale_run_dirs(){
+
+		try{
+			var dir = File.new_for_path("/run/timeshift");
+			if (!dir.query_exists()){ return; }
+
+			var iter = dir.enumerate_children(FileAttribute.STANDARD_NAME, 0);
+			FileInfo info;
+
+			while ((info = iter.next_file()) != null){
+
+				string name = info.get_name();
+
+				// only numeric names, and never our own
+				int64 pid = 0;
+				if (!int64.try_parse(name, out pid)){ continue; }
+				if (pid == (int64) Posix.getpid()){ continue; }
+				if (dir_exists("/proc/%s".printf(name))){ continue; }
+
+				string stale = "/run/timeshift/%s".printf(name);
+
+				exec_script_sync("rmdir '%s'/* 2>/dev/null; rmdir '%s' 2>/dev/null\nexit 0\n".printf(
+					escape_single_quote(stale), escape_single_quote(stale)),
+					null, null, true);
+			}
+		}
+		catch(Error e){
+			log_debug(e.message);
+		}
+	}
+
 	public void exit_app (int exit_code = 0){
 
 		log_debug("exit_app()");
@@ -4712,16 +4894,10 @@ public class Main : GLib.Object{
 
 		unmount_target_device(false);
 
-		// Unmount a browse mount if one was made. cleanup_unmount_devices()
-		// will not catch it: that sweep matches against the device list, which
+		// Unmount anything browsing mounted. cleanup_unmount_devices() will
+		// not catch these: that sweep matches against the device list, which
 		// filters out anything without a UUID - and a FUSE mount has none.
-		string browse_mount = path_combine(mount_point_app, "browse");
-		if (dir_exists(browse_mount)){
-			string o, e;
-			exec_script_sync("fusermount -u '%s' 2>/dev/null || umount '%s' 2>/dev/null".printf(
-				escape_single_quote(browse_mount), escape_single_quote(browse_mount)),
-				out o, out e, true);
-		}
+		unmount_browse_mounts(path_combine(mount_point_app, "browse"));
 
 		// close the multiplexed SSH connection, if one was opened
 		if (repo != null){

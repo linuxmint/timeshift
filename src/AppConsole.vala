@@ -456,8 +456,8 @@ public class AppConsole : GLib.Object {
 			}
 		}
 
-		string[,] grid = new string[count+1,5];
-		bool[] right_align = { false, false, false, false, false};
+		string[,] grid = new string[count+1,7];
+		bool[] right_align = { false, false, false, false, true, true, false};
 
 		int row = 0;
 		int col = -1;
@@ -465,6 +465,8 @@ public class AppConsole : GLib.Object {
 		grid[row, ++col] = "";
 		grid[row, ++col] = _("Name");
 		grid[row, ++col] = _("Tags");
+		grid[row, ++col] = _("Size");
+		grid[row, ++col] = _("Unique");
 		grid[row, ++col] = _("Description");
 		row++;
 
@@ -476,6 +478,8 @@ public class AppConsole : GLib.Object {
 				grid[row, ++col] = ">";
 				grid[row, ++col] = "%s".printf(bak.name);
 				grid[row, ++col] = "%s".printf(bak.taglist_short);
+				grid[row, ++col] = "%s".printf(bak.size_formatted);
+				grid[row, ++col] = "%s".printf(bak.size_unshared_formatted);
 				grid[row, ++col] = "%s".printf(bak.description);
 				row++;
 			}

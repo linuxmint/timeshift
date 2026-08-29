@@ -464,7 +464,10 @@ public class SnapshotRepo : GLib.Object{
 		if (btrfs_mode){
 			App.query_subvolume_info(this);
 		}
-		
+		else{
+			App.compute_rsync_snapshot_sizes(this);
+		}
+
 		log_debug("loading snapshots from '%s': %d found".printf(snapshots_path, snapshots.size));
 
 		return true;

@@ -1,8 +1,9 @@
-Source: timeshift
+Source: timeshift-ssh
 Section: utils
-Priority: extra
-Maintainer: Linux Mint <root@linuxmint.com>
-Build-Depends: debhelper-compat (= 10),
+Priority: optional
+Maintainer: makeafide <willsmit4433@gmail.com>
+Build-Depends: debhelper-compat (= 13),
+               gettext,
                gzip,
                valac,
                libgtk-3-dev,
@@ -13,15 +14,23 @@ Build-Depends: debhelper-compat (= 10),
                meson,
                pkg-config,
                help2man,
-Standards-Version: 3.9.3
-Homepage: https://github.com/linuxmint/timeshift
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+Homepage: https://github.com/makeafide/timeshift
 
-Package: timeshift
+Package: timeshift-ssh
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, rsync, debianutils, btrfs-progs | btrfs-tools
-Replaces: timeshift-btrfs
-Description: System restore utility
+Depends: ${shlibs:Depends}, ${misc:Depends}, rsync, debianutils, btrfs-progs | btrfs-tools, openssh-client
+Recommends: sshfs
+Provides: timeshift (= ${binary:Version})
+Conflicts: timeshift
+Replaces: timeshift, timeshift-btrfs
+Description: System restore utility with remote SSH snapshot storage
  Timeshift is a system restore utility which takes snapshots
  of the system at regular intervals. These snapshots can be restored
  at a later date to undo system changes. Creates incremental snapshots
  using rsync or BTRFS snapshots using BTRFS tools.
+ .
+ This build adds a remote snapshot location: snapshots are stored on
+ another host over SSH using rsync with hardlinked incrementals, and
+ can be browsed and restored from there.

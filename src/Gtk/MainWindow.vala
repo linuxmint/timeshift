@@ -448,6 +448,9 @@ class MainWindow : Gtk.Window{
 
 	private bool on_delete_event(Gdk.EventAny event){
 
+		// a browse mount should not outlive the window that opened it
+		browse_unmount_all();
+
 		this.delete_event.disconnect(on_delete_event); //disconnect this handler
 
 		if (App.task.status == AppStatus.RUNNING){
@@ -663,88 +666,292 @@ class MainWindow : Gtk.Window{
 		snapshot_list_box.refresh();
 	}
 
+	// ---------------------------------------------------------------
+	// snapshot browsing
+	// ---------------------------------------------------------------
+
+	// mount state, so a second browse reuses the first mount and exit can
+	// unmount everything we made
+	private Gee.ArrayList<string> browse_mounts = new Gee.ArrayList<string>();
+
+	private bool thr_mount_running = false;
+	private bool thr_mount_ok = false;
+	private string thr_mount_cmd = "";
+	private string thr_mount_err = "";
+
 	/* Opens a path inside the snapshot repository in the user's file manager.
 	 *
-	 * Local repositories open the path directly. Remote ones open an sftp://
-	 * URI, which GVFS handles - so this authenticates as the desktop user
-	 * rather than with Timeshift's root-only key. If GVFS is unavailable we
-	 * fall back to an sshfs mount, and if that is not possible we say which
-	 * piece is missing rather than doing nothing.
+	 * Local repositories open the path directly.
 	 *
-	 * Note the opener cannot report success: exo_open_folder() returns whether
-	 * the *spawn* worked, not whether anything appeared. So we never claim it
-	 * opened. */
+	 * Remote ones prefer sftp:// when the desktop user already has a working
+	 * GVFS mount for that host - that costs us nothing and uses their own
+	 * session. Otherwise we mount the path ourselves with Timeshift's key,
+	 * because the desktop user frequently has no credentials for the remote at
+	 * all: the key lives in /etc/timeshift/ssh and only root can read it.
+	 *
+	 * Note the openers cannot confirm success - exec_user_async() returns as
+	 * soon as the spawn works, not when a window appears - so we report
+	 * failures to launch but never claim it opened. */
 	private void browse_repo_path(string repo_path){
 
+		if ((App.repo == null) || (App.repo.backend == null)){ return; }
+
 		if (!App.repo.backend.is_remote){
-			exo_open_folder(repo_path, false);
+			if (!exo_open_folder(repo_path, false)){
+				gtk_messagebox(_("Could not open the file manager"),
+					_("No file manager could be launched for") + ":\n%s".printf(repo_path),
+					this, true);
+			}
 			return;
 		}
 
-		if (cmd_exists("gio") || cmd_exists("nautilus")){
+		var backend = App.repo.backend as SshRepoBackend;
+		if (backend == null){ return; }
+
+		// 1. the user's own GVFS mount, if they have one
+		if (user_has_gvfs_mount(backend)){
 			string uri = App.repo.backend.browse_uri(repo_path);
-			log_debug("browse: %s".printf(uri));
-			xdg_open(uri);
+			log_debug("browse via gvfs: %s".printf(uri));
+			if (!xdg_open(uri)){
+				gtk_messagebox(_("Could not open the file manager"),
+					_("xdg-open is not available."), this, true);
+			}
 			return;
 		}
 
+		// 2. mount it ourselves using Timeshift's key
 		if (!cmd_exists("sshfs")){
-			gtk_messagebox(
-				_("Cannot browse the remote location"),
-				_("Browsing a remote snapshot needs either GVFS (for sftp:// support in the file manager) or the sshfs package. Neither is installed."),
-				this, false);
+			offer_sshfs_install();
 			return;
 		}
 
-		string mount_point = browse_mount_remote(repo_path);
+		string mount_point = browse_mount_remote(backend, repo_path);
 
 		if (mount_point.length == 0){ return; }
 
-		exo_open_folder(mount_point, false);
+		if (!exo_open_folder(mount_point, false)){
+			gtk_messagebox(_("Could not open the file manager"),
+				_("The snapshot is mounted at") + ":\n%s".printf(mount_point),
+				this, true);
+		}
 	}
 
-	/* sshfs fallback. Mounts the snapshot read-only using Timeshift's own key.
-	 * Returns "" and explains why if it cannot. */
-	private string browse_mount_remote(string repo_path){
+	/* True when the desktop user already has this host mounted through GVFS,
+	 * in which case sftp:// works with their own credentials.
+	 *
+	 * Deliberately not `cmd_exists("gio")`: gio ships with glib2 on every
+	 * desktop whether or not the sftp backend is installed or usable, so that
+	 * test always passed and the mount path below was never reached. */
+	private bool user_has_gvfs_mount(SshRepoBackend backend){
 
-		var backend = App.repo.backend as SshRepoBackend;
-		if (backend == null){ return ""; }
+		int uid = get_user_id();
+		if (uid <= 0){ return false; }
 
-		// A root-owned FUSE mount is invisible to the desktop user unless
-		// allow_other is permitted, so check before mounting something nobody
-		// can read.
-		string? fuse_conf = file_read("/etc/fuse.conf");
-		if ((fuse_conf == null) || !fuse_conf.contains("user_allow_other")){
-			gtk_messagebox(
-				_("Cannot browse the remote location"),
-				_("Mounting the snapshot needs 'user_allow_other' in /etc/fuse.conf, otherwise your file manager cannot read the mount."),
-				this, false);
-			return "";
+		string gvfs_dir = "/run/user/%d/gvfs".printf(uid);
+		if (!dir_exists(gvfs_dir)){ return false; }
+
+		string needle = "host=%s".printf(backend.host);
+
+		try{
+			var dir = File.new_for_path(gvfs_dir);
+			var iter = dir.enumerate_children(FileAttribute.STANDARD_NAME, 0);
+			FileInfo info;
+			while ((info = iter.next_file()) != null){
+				string name = info.get_name();
+				if (name.has_prefix("sftp:") && name.contains(needle)){
+					log_debug("found gvfs mount: %s".printf(name));
+					return true;
+				}
+			}
+		}
+		catch(Error e){
+			log_debug(e.message);
 		}
 
-		string mount_point = path_combine(App.mount_point_app, "browse");
-		dir_create(mount_point);
+		return false;
+	}
 
-		string cmd = "sshfs -o ro,allow_other,IdentityFile='%s',UserKnownHostsFile='%s',StrictHostKeyChecking=yes,port=%d '%s:%s' '%s'".printf(
-			escape_single_quote(backend.key_file),
-			escape_single_quote(SshRepoBackend.known_hosts_file()),
-			backend.port,
-			escape_single_quote(backend.host_spec()),
-			escape_single_quote(repo_path),
-			escape_single_quote(mount_point));
+	private void offer_sshfs_install(){
+
+		string package = "sshfs";
+		string install_cmd = "";
+
+		// Only offer to run an install for a package manager we recognise;
+		// otherwise just name the package and let the user do it.
+		switch ((App.current_distro == null) ? "" : App.current_distro.dist_type){
+		case "debian":
+			install_cmd = "apt-get install -y sshfs";
+			break;
+		case "redhat":
+			package = "fuse-sshfs";
+			install_cmd = "dnf install -y fuse-sshfs";
+			break;
+		case "arch":
+			install_cmd = "pacman -S --noconfirm sshfs";
+			break;
+		}
+
+		string msg = _("Browsing a remote snapshot needs the %s package, which is not installed.").printf(package);
+
+		if (install_cmd.length == 0){
+			msg += "\n\n" + _("Install it with your package manager and try again.");
+			gtk_messagebox(_("sshfs is not installed"), msg, this, true);
+			return;
+		}
+
+		msg += "\n\n" + _("Install it with") + ":\n    sudo %s".printf(install_cmd);
+		msg += "\n\n" + _("Install it now?");
+
+		var dlg = new CustomMessageDialog(_("sshfs is not installed"), msg,
+			Gtk.MessageType.QUESTION, this, Gtk.ButtonsType.YES_NO);
+
+		var resp = dlg.run();
+		dlg.destroy();
+		gtk_do_events();
+
+		if (resp != Gtk.ResponseType.YES){ return; }
 
 		string std_out, std_err;
 		gtk_set_busy(true, this);
-		int ret_val = exec_script_sync(cmd + "\nexit $?\n", out std_out, out std_err, true);
+		int ret_val = exec_script_sync(install_cmd + "\nexit $?\n", out std_out, out std_err, true);
 		gtk_set_busy(false, this);
 
-		if (ret_val != 0){
+		if ((ret_val != 0) || !cmd_exists("sshfs")){
+			gtk_messagebox(_("Could not install %s").printf(package),
+				(std_err == null) ? "" : std_err.strip(), this, true);
+		}
+	}
+
+	/* Mounts a repository path read-only with Timeshift's key and returns the
+	 * mount point, or "" with the reason already shown. */
+	private string browse_mount_remote(SshRepoBackend backend, string repo_path){
+
+		// one mount per path, so browsing a second snapshot does not collide
+		// with the first
+		string mount_point = path_combine(
+			path_combine(App.mount_point_app, "browse"),
+			Checksum.compute_for_string(ChecksumType.SHA1, repo_path).substring(0, 12));
+
+		if (path_is_mounted(mount_point)){
+			log_debug("reusing existing browse mount: %s".printf(mount_point));
+			return mount_point;
+		}
+
+		dir_create(mount_point);
+
+		int uid = get_user_id();
+		int gid = uid;
+		unowned Posix.Passwd? pw = Posix.getpwuid(uid);
+		if (pw != null){ gid = (int) pw.pw_gid; }
+
+		string cmd = backend.sshfs_command(repo_path, mount_point, uid, gid);
+
+		if (cmd.length == 0){
 			gtk_messagebox(_("Could not mount the remote snapshot"),
-				(std_err == null) ? "" : std_err.strip(), this, false);
+				backend.last_error, this, true);
 			return "";
 		}
 
+		// on a worker thread: sshfs can block for ConnectTimeout, and this
+		// runs from a button handler on the GTK main thread
+		thr_mount_cmd = cmd;
+		thr_mount_err = "";
+		thr_mount_ok = false;
+		thr_mount_running = true;
+
+		try {
+			new Thread<bool>.try("browse-mount", () => {
+				string o, e;
+				int r = exec_script_sync(thr_mount_cmd + "\nexit $?\n", out o, out e, true);
+				thr_mount_ok = (r == 0);
+				thr_mount_err = (e == null) ? "" : e.strip();
+				thr_mount_running = false;
+				return true;
+			});
+		}
+		catch (Error e){
+			thr_mount_running = false;
+			log_error(e.message);
+		}
+
+		gtk_set_busy(true, this);
+		while (thr_mount_running){
+			gtk_do_events();
+			Thread.usleep((ulong) GLib.TimeSpan.MILLISECOND * 100);
+		}
+		gtk_set_busy(false, this);
+
+		// Trust /proc/mounts over the exit code: opening an empty directory as
+		// if it were the snapshot would be worse than saying the mount failed.
+		if (!thr_mount_ok || !path_is_mounted(mount_point)){
+			gtk_messagebox(_("Could not mount the remote snapshot"),
+				thr_mount_err, this, true);
+			remove_mount_dir(mount_point);
+			return "";
+		}
+
+		if (!browse_mounts.contains(mount_point)){
+			browse_mounts.add(mount_point);
+		}
+
+		// With --fake-super the real ownership and mode live in xattrs, so what
+		// the file manager shows is the remote account's, not the original's.
+		// Say so once rather than quietly misrepresenting the snapshot.
+		if (backend.fake_super && !browse_fake_super_warned){
+			browse_fake_super_warned = true;
+			gtk_messagebox(_("File ownership is not shown correctly"),
+				_("This location stores ownership in extended attributes, so files here appear to belong to the remote account. The original ownership is preserved and restored correctly."),
+				this, false);
+		}
+
 		return mount_point;
+	}
+
+	private bool browse_fake_super_warned = false;
+
+	private bool path_is_mounted(string path){
+
+		string? text = file_read("/proc/mounts");
+		if (text == null){ return false; }
+
+		foreach(string line in text.split("\n")){
+			string[] parts = line.split(" ");
+			// /proc/mounts escapes spaces and tabs as octal
+			if ((parts.length > 1) && (parts[1].compress() == path)){ return true; }
+		}
+
+		return false;
+	}
+
+	/* Removes an empty browse mount point. Deliberately rmdir and not
+	 * dir_delete: while the path is still mounted it resolves to the snapshot
+	 * on the backup device, and a recursive delete would walk into the backup
+	 * itself. rmdir refuses a non-empty directory, so it cannot do that. */
+	private void remove_mount_dir(string mount_point){
+
+		if (path_is_mounted(mount_point)){
+			log_error(_("Still mounted, leaving in place") + ": %s".printf(mount_point));
+			return;
+		}
+
+		exec_script_sync("rmdir '%s' 2>/dev/null\nexit 0\n".printf(
+			escape_single_quote(mount_point)), null, null, true);
+	}
+
+	/* Unmounts everything browsing mounted. Called when the window closes, so
+	 * a mount does not outlive the reason for it. */
+	public void browse_unmount_all(){
+
+		foreach(string mp in browse_mounts){
+			if (!path_is_mounted(mp)){ continue; }
+			string o, e;
+			exec_script_sync("fusermount3 -u '%s' 2>/dev/null || fusermount -u '%s' 2>/dev/null || umount '%s'".printf(
+				escape_single_quote(mp), escape_single_quote(mp), escape_single_quote(mp)),
+				out o, out e, true);
+			remove_mount_dir(mp);
+		}
+
+		browse_mounts.clear();
 	}
 
 	public void browse_selected(){
@@ -753,8 +960,14 @@ class MainWindow : Gtk.Window{
 		
 		if (sel.count_selected_rows() == 0){
 			
-			// through the backend: a local stat says nothing about a remote repo
-			if (App.repo.backend.dir_exists(App.repo.snapshots_path)){
+			// For a remote repo, skip the existence probe: it is a full SSH
+			// round trip on the GTK main thread and would stall the click for
+			// up to ConnectTimeout. The snapshots dir is the right target
+			// anyway, and a wrong one fails visibly at the mount.
+			if (App.repo.backend.is_remote){
+				browse_repo_path(App.repo.snapshots_path);
+			}
+			else if (dir_exists(App.repo.snapshots_path)){
 				browse_repo_path(App.repo.snapshots_path);
 			}
 			else{

@@ -430,24 +430,8 @@ class SnapshotListBox : Gtk.Box{
 		
 		var ctxt = (cell as Gtk.CellRendererText);
 
-		if (bak.btrfs_mode){
-			
-			int64 size = 0;
-			
-			if (bak.subvolumes.has_key("@")){
-				size += bak.subvolumes["@"].total_bytes;
-			}
-			
-			if (bak.subvolumes.has_key("@home")){
-				size += bak.subvolumes["@home"].total_bytes;
-			}
-			
-			ctxt.text = format_file_size(size);
-		}
-		else{
-			ctxt.text = "";
-		}
-		
+		ctxt.text = bak.size_formatted;
+
 		ctxt.sensitive = !bak.marked_for_deletion;
 
 		if (bak.live){
@@ -466,23 +450,8 @@ class SnapshotListBox : Gtk.Box{
 		
 		var ctxt = (cell as Gtk.CellRendererText);
 
-		if (bak.btrfs_mode){
-			
-			int64 size = 0;
-			
-			if (bak.subvolumes.has_key("@")){
-				size += bak.subvolumes["@"].unshared_bytes;
-			}
-			if (bak.subvolumes.has_key("@home")){
-				size += bak.subvolumes["@home"].unshared_bytes;
-			}
-			
-			ctxt.text = format_file_size(size);
-		}
-		else{
-			ctxt.text = "";
-		}
-		
+		ctxt.text = bak.size_unshared_formatted;
+
 		ctxt.sensitive = !bak.marked_for_deletion;
 
 		if (bak.live){
@@ -548,6 +517,10 @@ class SnapshotListBox : Gtk.Box{
 		if (!App.btrfs_mode){
 
 			if (selected.size > 0){
+
+				// Browsing a snapshot queued for deletion is misleading - it
+				// may vanish under the file manager.
+				mi_browse.sensitive = !selected[0].marked_for_deletion;
 
 				// a remote log cannot be probed with a local stat; assume it
 				// exists and let the fetch report a real failure
@@ -631,8 +604,8 @@ class SnapshotListBox : Gtk.Box{
 			model.set (iter, 0, bak);
 		}
 
-		col_size.visible = App.btrfs_qgroups_enabled;
-		col_unshared.visible = App.btrfs_qgroups_enabled;
+		col_size.visible = !App.btrfs_mode || App.btrfs_qgroups_enabled;
+		col_unshared.visible = !App.btrfs_mode || App.btrfs_qgroups_enabled;
 
 		treeview.set_model (model);
 		treeview.columns_autosize ();
