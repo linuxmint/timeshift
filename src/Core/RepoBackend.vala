@@ -43,6 +43,15 @@ public abstract class RepoBackend : GLib.Object {
 	// identity shown to the user and written to the config file
 	public abstract string display_name { owned get; }
 
+	/* Stable, untranslated identifier for the kind of repository this backend
+	 * provides. It is logged and printed verbatim as a diagnostic token, so it
+	 * must never be localised. Not persisted - the config keeps
+	 * backup_location_type; this only collapses location and mode into one
+	 * string for human consumption. */
+	public virtual string type_id {
+		owned get { return "local"; }
+	}
+
 	public abstract bool dir_exists(string path);
 
 	public abstract bool file_exists(string path);
@@ -423,6 +432,12 @@ public class SshRepoBackend : RepoBackend {
 
 	public override string display_name {
 		owned get { return host_spec(); }
+	}
+
+	/* A remote repository is always rsync: btrfs mode needs local subvolumes
+	 * and is forced off for SSH. */
+	public override string type_id {
+		owned get { return "remote-ssh-rsync"; }
 	}
 
 	public string host_spec(){

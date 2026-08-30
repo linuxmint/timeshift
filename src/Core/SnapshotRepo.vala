@@ -554,9 +554,17 @@ public class SnapshotRepo : GLib.Object{
 
 		if ((App != null) && (App.app_mode.length == 0)){
 			
-			log_debug("%s: '%s'".printf(
-				_("Snapshot device"),
-				(device == null) ? " UNKNOWN" : device.device));
+			// a remote repository has no Device at all, so fall back to the
+			// backend's type and host rather than reporting it as unknown
+			string device_desc;
+			if (backend.is_remote){
+				device_desc = "%s (%s)".printf(backend.type_id, backend.display_name);
+			}
+			else {
+				device_desc = (device == null) ? " UNKNOWN" : device.device;
+			}
+
+			log_debug("%s: '%s'".printf(_("Snapshot device"), device_desc));
 				
 			log_debug("%s: %s".printf(
 				_("Snapshot location"), mount_path));
@@ -807,7 +815,7 @@ public class SnapshotRepo : GLib.Object{
 		if (backend.is_remote){
 			log_msg("%-6s : %s".printf(_("Remote"), backend.display_name));
 			log_msg("%-6s : %s".printf(_("Path"), mount_path));
-			log_msg("%-6s : %s".printf(_("Mode"), "RSYNC"));
+			log_msg("%-6s : %s".printf(_("Type"), backend.type_id));
 			log_msg("%-6s : %s".printf(_("Status"), status_message));
 			log_msg(status_details);
 		}
