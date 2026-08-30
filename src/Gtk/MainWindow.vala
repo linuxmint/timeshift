@@ -152,6 +152,7 @@ class MainWindow : AppWindow{
 
 		btn_delete_snapshot = Ui.add_icon_only_button(group, "edit-delete-symbolic",
 			_("Delete selected snapshot"));
+		btn_delete_snapshot.add_css_class("destructive-action");
 		btn_delete_snapshot.clicked.connect (delete_selected);
 
 		btn_browse_snapshot = Ui.add_icon_only_button(group, "folder-symbolic",
@@ -170,9 +171,7 @@ class MainWindow : AppWindow{
 
 		snapshot_list_box = new SnapshotListBox(this);
 		snapshot_list_box.vexpand = true;
-		snapshot_list_box.margin_start = Ui.Spacing.LG;
-		snapshot_list_box.margin_end = Ui.Spacing.LG;
-		snapshot_list_box.margin_top = Ui.Spacing.LG;
+		Ui.as_page(snapshot_list_box);
 		content_stack.add_named(snapshot_list_box, "list");
 
 		snapshot_list_box.delete_selected.connect(delete_selected);
@@ -208,7 +207,7 @@ class MainWindow : AppWindow{
 
 		status_area = new Gtk.Box(Orientation.HORIZONTAL, Ui.Spacing.MD);
 		set_margin_all(status_area, Ui.Spacing.LG);
-		status_area.margin_top = Ui.Spacing.MD;
+		status_area.margin_top = 0; // the page above carries the gap
 		vbox_main.append(status_area);
 
 		status_card = new StatusCard();
@@ -331,6 +330,9 @@ class MainWindow : AppWindow{
 		else {
 			content_stack.visible_child_name = "list";
 		}
+
+		// the empty state already says what is wrong; the card would repeat it
+		status_area.visible = (content_stack.visible_child_name == "list");
 	}
 
 	private bool on_delete_event(){
@@ -464,6 +466,7 @@ class MainWindow : AppWindow{
             this,
             Gtk.ButtonsType.YES_NO
             );
+        confirm_dialog.set_destructive();
 
         var confirm_response = confirm_dialog.run();
 
@@ -1148,7 +1151,9 @@ class MainWindow : AppWindow{
 		}
 
 		if (App.live_system()){
-			status_area.visible = true;
+			// nothing to count in restore-only mode
+			tile_snapshots.visible = false;
+			tile_free.visible = false;
 
 			status_card.set_shield(IconManager.SHIELD_LIVE);
 			status_card.set_title(_("Live USB Mode (Restore Only)"));
@@ -1173,8 +1178,6 @@ class MainWindow : AppWindow{
 			}
 		}
 		else{
-			status_area.visible = true;
-
 			switch (status_code){
 			case SnapshotLocationStatus.READ_ONLY_FS:
 			case SnapshotLocationStatus.HARDLINKS_NOT_SUPPORTED:

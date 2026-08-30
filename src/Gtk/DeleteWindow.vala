@@ -39,9 +39,6 @@ class DeleteWindow : WizardWindow {
 	private DeleteBox delete_box;
 	private SummaryBox finish_box;
 
-	// header actions
-	private Gtk.Button btn_hide;
-
 	private uint tmr_init;
 	private bool success = false;
 
@@ -59,13 +56,13 @@ class DeleteWindow : WizardWindow {
 		finish_box = new SummaryBox(_("Completed"));
 		add_page(finish_box);
 
-		btn_hide = new Gtk.Button.with_label(_("Hide"));
-		btn_hide.set_tooltip_text(_("Hide this window (files will be deleted in background)"));
-		btn_hide.visible = false;
-		btn_hide.clicked.connect(() => { close_self(); });
-		add_header_action(btn_hide, Gtk.PackType.START);
+		// the select page's Next is the deletion itself
+		lbl_next.label = _("Delete");
+		btn_next.remove_css_class("suggested-action");
+		btn_next.add_css_class("destructive-action");
 
 		btn_finish.label = _("Close");
+		finish_is_primary = false;
 
 		present();
 
@@ -178,21 +175,21 @@ class DeleteWindow : WizardWindow {
 
 		switch(notebook.page){
 		case Tabs.DELETE:
-			// the window may be hidden (X or Hide); deletion continues
+			// closing the window hides it; deletion continues in the background
 			set_actions(false, false, false, true);
-			btn_hide.visible = true;
+			this.set_tooltip_text(_("Closing this window hides it; files will be deleted in the background"));
 			set_closable(true);
 			break;
 
 		case Tabs.SNAPSHOT_LIST:
 			set_actions(false, true, false, true);
-			btn_hide.visible = false;
+			this.set_tooltip_text(null);
 			set_closable(true);
 			break;
 
 		case Tabs.DELETE_FINISH:
 			set_actions(false, false, true, false);
-			btn_hide.visible = false;
+			this.set_tooltip_text(null);
 			set_closable(true);
 			break;
 		}

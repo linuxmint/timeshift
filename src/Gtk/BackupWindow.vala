@@ -69,6 +69,7 @@ class BackupWindow : WizardWindow {
 		create_pause_action();
 
 		btn_finish.label = _("Close");
+		finish_is_primary = false;
 
 		present();
 

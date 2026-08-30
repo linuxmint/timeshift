@@ -60,6 +60,7 @@ class ExcludeBox : Gtk.Box{
 	private Gtk.Window parent_window;
 	private UsersBox users_box;
 	private Gtk.Label lbl_message;
+	private Gtk.Button btn_remove;
 	
 	public ExcludeBox (Gtk.Window _parent_window) {
 
@@ -69,13 +70,18 @@ class ExcludeBox : Gtk.Box{
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
 
-		Ui.add_title(this, _("Include / Exclude Patterns"));
+		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
+		append(hbox);
+
+		var title = Ui.add_title(hbox, _("Include / Exclude Patterns"));
+		title.hexpand = true;
+		title.margin_bottom = 0;
+
+		init_actions(hbox);
 
 		lbl_message = Ui.add_dim_label(this, _("Click a pattern to edit it"));
 
 		init_treeview();
-
-		init_actions();
 		
 		refresh_treeview();
 
@@ -95,6 +101,9 @@ class ExcludeBox : Gtk.Box{
 
 		exclude_model = new GLib.ListStore(typeof(ExcludePatternRow));
 		exclude_selection = new Gtk.MultiSelection(exclude_model);
+		exclude_selection.selection_changed.connect(() => {
+			btn_remove.sensitive = (exclude_selection.get_selection().get_size() > 0);
+		});
 
 		treeview = new Gtk.ColumnView(exclude_selection);
 		treeview.show_column_separators = false;
@@ -162,7 +171,7 @@ class ExcludeBox : Gtk.Box{
 		factory.setup.connect((object) => {
 			var list_item = (Gtk.ListItem) object;
 
-			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
 
 			var img = new Gtk.Image();
 			img.pixel_size = 16;
@@ -218,15 +227,14 @@ class ExcludeBox : Gtk.Box{
 		return col;
 	}
 
-	private void init_actions(){
+	/* Page tools beside the title: an Add menu, Remove, Summary. */
+	private void init_actions(Gtk.Box hbox){
 
+		var actions = new GLib.SimpleActionGroup();
+		this.insert_action_group("exclude", actions);
 
-		var hbox = Ui.add_button_row(this, Gtk.Align.START);
-
-		var size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		var button = add_button(hbox, _("Add"), _("Add custom pattern"), size_group, null);
-		
-        button.clicked.connect(()=>{
+		var add_pattern = new GLib.SimpleAction("add-pattern", null);
+		add_pattern.activate.connect(() => {
 
 			string pattern = gtk_inputbox(
 						_("Exclude Pattern"),
@@ -240,39 +248,47 @@ class ExcludeBox : Gtk.Box{
 			
 			save_changes();
 		});
-		
-		button = add_button(hbox, _("Add Files"), _("Add files"), size_group, null);
-		
-        button.clicked.connect(()=>{
-			add_files_clicked();
-		});
+		actions.add_action(add_pattern);
 
-		button = add_button(hbox, _("Add Folders"), _("Add directories"), size_group, null);
-		
-        button.clicked.connect(()=>{
-			add_folder_clicked();
-		});
+		var add_files = new GLib.SimpleAction("add-files", null);
+		add_files.activate.connect(() => { add_files_clicked(); });
+		actions.add_action(add_files);
 
-		// for exclude only - Including contents without including directory is not logical
-		/*size_group = null;
-		button = add_button(hbox, _("Add Contents"),
-			_("Add directory contents"), ref size_group, null);
-		button.clicked.connect(()=>{
-			add_folder_contents_clicked();
-		});*/
+		var add_folders = new GLib.SimpleAction("add-folders", null);
+		add_folders.activate.connect(() => { add_folder_clicked(); });
+		actions.add_action(add_folders);
 
-		button = add_button(hbox, _("Remove"), "", size_group, null);
-        button.clicked.connect(()=>{
-			remove_clicked();
-		});
+		// for exclude only - including contents without including the
+		// directory is not logical, so there is no "Add Contents"
 
-		button = add_button(hbox, _("Summary"), "", size_group, null);
-        button.clicked.connect(()=>{
+		var menu = new GLib.Menu();
+		menu.append(_("Add Pattern..."), "exclude.add-pattern");
+		menu.append(_("Add Files..."), "exclude.add-files");
+		menu.append(_("Add Folders..."), "exclude.add-folders");
+
+		var group = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		group.add_css_class("linked");
+		group.valign = Gtk.Align.START;
+		hbox.append(group);
+
+		var btn_add = new Gtk.MenuButton();
+		btn_add.icon_name = "list-add-symbolic";
+		btn_add.tooltip_text = _("Add a pattern, files or folders");
+		btn_add.menu_model = menu;
+		group.append(btn_add);
+
+		btn_remove = Ui.add_icon_only_button(group, "list-remove-symbolic", _("Remove selected patterns"));
+		btn_remove.add_css_class("destructive-action");
+		btn_remove.sensitive = false;
+		btn_remove.clicked.connect(() => { remove_clicked(); });
+
+		var btn_summary = Ui.add_icon_only_button(group, "document-properties-symbolic", _("Show the effective exclude list"));
+		btn_summary.clicked.connect(() => {
 			save_changes();
 			new ExcludeListSummaryWindow(false);
 		});
 	}
-	
+
 	// actions
 	
     private void remove_clicked(){

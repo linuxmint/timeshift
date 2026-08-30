@@ -41,14 +41,9 @@ public class IconManager : GLib.Object {
 
     public const int SHIELD_ICON_SIZE = 64;
 
-    public const string GENERIC_ICON_IMAGE = "image-x-generic";
     public const string GENERIC_ICON_IMAGE_MISSING = "image-missing";
-    public const string GENERIC_ICON_VIDEO = "video-x-generic";
-    public const string GENERIC_ICON_FILE = "text-x-preview";
-    public const string GENERIC_ICON_ARCHIVE_FILE = "package-x-generic";
-    public const string GENERIC_ICON_DIRECTORY = "folder";
-    public const string GENERIC_ICON_ISO = "media-cdrom";
-    public const string GENERIC_ICON_PDF = "application-pdf";
+    public const string GENERIC_ICON_FILE = "text-x-generic-symbolic";
+    public const string GENERIC_ICON_DIRECTORY = "folder-symbolic";
 
     public const string ICON_HARDDRIVE = "drive-harddisk-symbolic";
 
@@ -159,17 +154,6 @@ public class IconManager : GLib.Object {
 		return load_pixbuf_from_file(path, icon_size);
 	}
 	
-	public static Gtk.Image? lookup_image(string icon_name, int icon_size, bool use_hardcoded = false){
-
-		if (icon_name.length == 0){ return null; }
-
-        Gtk.Image image = new Gtk.Image();
-
-        set_image_icon(image, icon_name, icon_size);
-
-        return image;
-	}
-
     public static Gdk.Texture? lookup_texture(string icon_name, int icon_size, int scale = 1, bool use_hardcoded = false){
 
         /* GTK4 renders from GdkPaintable; Gtk.Image.surface is gone. */

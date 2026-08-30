@@ -64,6 +64,7 @@ public class TaskProgressBox : Gtk.Box {
 
 		spinner = new Gtk.Spinner();
 		spinner.spinning = true;
+		spinner.add_css_class("ts-accent");
 		hbox_status.append(spinner);
 
 		lbl_msg = Ui.add_body(hbox_status, _("Preparing..."), false);
@@ -74,6 +75,7 @@ public class TaskProgressBox : Gtk.Box {
 		lbl_remaining.wrap = false;
 
 		progressbar = new Gtk.ProgressBar();
+		progressbar.add_css_class("ts-accent");
 		append(progressbar);
 
 		lbl_status = Ui.add_caption(this, "");
@@ -95,7 +97,7 @@ public class TaskProgressBox : Gtk.Box {
 
 		var grid = new Gtk.Grid();
 		grid.column_spacing = Ui.Spacing.LG;
-		grid.row_spacing = Ui.Spacing.XS / 2;
+		grid.row_spacing = Ui.Spacing.XXS;
 		box.append(grid);
 
 		int row = 0;
@@ -133,7 +135,7 @@ public class TaskProgressBox : Gtk.Box {
 
 		var lbl_value = new Gtk.Label("");
 		lbl_value.xalign = (float) 1.0;
-		lbl_value.add_css_class("numeric");
+		lbl_value.add_css_class("ts-numeric");
 		grid.attach(lbl_value, 1, row, 1, 1);
 
 		// a value made insensitive dims its caption too

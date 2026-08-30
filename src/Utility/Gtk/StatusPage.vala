@@ -66,6 +66,7 @@ public class StatusPage : Gtk.Box {
 		action_slot = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		action_slot.halign = Gtk.Align.CENTER;
 		action_slot.margin_top = Ui.Spacing.MD;
+		action_slot.visible = false;
 		append(action_slot);
 
 		set_icon(icon_name);

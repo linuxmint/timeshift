@@ -32,27 +32,20 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
-class EstimateBox : Gtk.Box{
+class EstimateBox : TaskProgressBox {
 	
-	private TaskProgressBox progress;
-	private Gtk.ProgressBar progressbar;
 	private Gtk.Window parent_window;
 	
 	public EstimateBox (Gtk.Window _parent_window) {
 
+		base(_("Estimating System Size..."), false);
+
 		log_debug("EstimateBox: EstimateBox()");
-		
-		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
+
 		parent_window = _parent_window;
 
-		progress = new TaskProgressBox(_("Estimating System Size..."), false);
-		append(progress);
-
-		progress.lbl_msg.label = _("Please wait...");
-		progress.lbl_status.visible = false;
-
-		progressbar = progress.progressbar;
+		lbl_msg.label = _("Please wait...");
+		lbl_status.visible = false;
 		progressbar.pulse_step = 0.01;
 
 		log_debug("EstimateBox: EstimateBox(): exit");

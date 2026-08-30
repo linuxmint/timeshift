@@ -47,14 +47,9 @@ class MiscBox : Gtk.Box{
 
 		restore_mode = _restore_mode;
 		
-		var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
-		vbox.hexpand = true;
-		vbox.vexpand = true;
-		this.append(vbox);
+		Ui.add_title(this, _("Miscellaneous"));
 
-		// ------------------------
-		
-		init_date_format_option(vbox);
+		init_date_format_option(this);
 
 		refresh();
 		
@@ -65,11 +60,11 @@ class MiscBox : Gtk.Box{
 
 		log_debug("MiscBox: init_date_format_option()");
 
-		Ui.add_heading(box, _("Date Format"));
-
-		Ui.add_dim_label(box, _("How snapshot dates are shown in the list."));
-
 		var card = Ui.add_card(box);
+
+		Ui.add_heading(card, _("Date Format"));
+
+		Ui.add_dim_label(card, _("How snapshot dates are shown in the list."));
 
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
 		card.append(hbox);

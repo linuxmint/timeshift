@@ -61,10 +61,17 @@ class ExcludeListSummaryWindow : AppWindow {
 
 		Ui.add_body(vbox_main, _("Files & directories matching the patterns below will be excluded. Patterns starting with a + will include the item instead of excluding."));
 
-		lbl_list = add_label_scrolled(vbox_main, "", false, true);
-		lbl_list.use_markup = false;
+		lbl_list = new Gtk.Label("");
+		lbl_list.xalign = (float) 0.0;
+		lbl_list.yalign = (float) 0.0;
+		lbl_list.wrap = true;
+		lbl_list.wrap_mode = Pango.WrapMode.WORD_CHAR;
 		lbl_list.selectable = true;
-		((Gtk.ScrolledWindow) lbl_list.parent).add_css_class("ts-boxed-list");
+		lbl_list.add_css_class("ts-body");
+		set_margin_all(lbl_list, Ui.Spacing.SM);
+
+		var scroll = Ui.add_boxed_list(vbox_main, lbl_list);
+		scroll.hscrollbar_policy = Gtk.PolicyType.NEVER;
 
 		refresh();
 		

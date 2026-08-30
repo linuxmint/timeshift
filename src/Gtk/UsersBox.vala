@@ -85,8 +85,7 @@ class UsersBox : Gtk.Box{
 
 		init_treeview();
 
-		box_btrfs = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
-		append(box_btrfs);
+		box_btrfs = Ui.add_card(this, Gtk.Orientation.VERTICAL, Ui.Spacing.XS);
 
 		init_btrfs_home_option(box_btrfs);
 		
@@ -289,7 +288,7 @@ class UsersBox : Gtk.Box{
 
 		if (App.btrfs_mode){
 
-			lbl_message.visible = false;
+			lbl_message.label = _("The @home subvolume is excluded by default unless you enable it here");
 
 			scrolled_treeview.visible = false;
 			box_btrfs.visible = true;
@@ -302,7 +301,7 @@ class UsersBox : Gtk.Box{
 			}
 		}
 		else{
-			lbl_message.visible = true;
+			lbl_message.label = _("User home directories are excluded by default unless you enable them here");
 
 			scrolled_treeview.visible = true;
 

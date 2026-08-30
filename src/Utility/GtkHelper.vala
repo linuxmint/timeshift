@@ -83,23 +83,37 @@ namespace TeeJee.GtkHelper{
 		hb.title_widget = new Gtk.Label("");
 		dlg.set_titlebar(hb);
 
-		var vbox_main = new Gtk.Box(Orientation.VERTICAL, Ui.Spacing.SM);
+		var vbox_main = new Gtk.Box(Orientation.VERTICAL, Ui.Spacing.MD);
 		set_margin_all(vbox_main, Ui.Spacing.LG);
 		vbox_main.margin_top = Ui.Spacing.SM;
 		dlg.set_child(vbox_main);
 
-		Ui.add_title(vbox_main, title, 2);
+		var hbox_contents = new Gtk.Box(Orientation.HORIZONTAL, Ui.Spacing.MD);
+		vbox_main.append(hbox_contents);
 
-		var lbl_input = Ui.add_body(vbox_main, message);
+		var img = new Gtk.Image();
+		IconManager.set_image_icon(img, mask_password ? "dialog-password-symbolic" : "dialog-question-symbolic", 32);
+		img.pixel_size = 32;
+		img.valign = Gtk.Align.START;
+		img.add_css_class("ts-accent");
+		hbox_contents.append(img);
+
+		var vbox_text = new Gtk.Box(Orientation.VERTICAL, Ui.Spacing.XS);
+		vbox_text.hexpand = true;
+		hbox_contents.append(vbox_text);
+
+		Ui.add_title(vbox_text, title, 2);
+
+		var lbl_input = Ui.add_body(vbox_text, message);
 
 		var txt_input = new Gtk.Entry();
 		txt_input.hexpand = true;
+		txt_input.margin_top = Ui.Spacing.XS;
 		txt_input.set_visibility(!mask_password);
 		txt_input.activates_default = true;
-		vbox_main.append(txt_input);
+		vbox_text.append(txt_input);
 
 		var bbox = Ui.add_button_row(vbox_main, Gtk.Align.END);
-		bbox.margin_top = Ui.Spacing.XS;
 
 		var btn_cancel = new Gtk.Button.with_label(_("Cancel"));
 		bbox.append(btn_cancel);
@@ -165,38 +179,6 @@ namespace TeeJee.GtkHelper{
 
 	// utility ------------------
 
-	// add_label_scrolled
-	public static Gtk.Label add_label_scrolled(Gtk.Box box, string text, bool show_border = false, bool wrap = false, int ellipsize_chars = 40){
-
-		// ScrolledWindow
-		var scroll = new Gtk.ScrolledWindow();
-		scroll.hscrollbar_policy = PolicyType.NEVER;
-		scroll.vscrollbar_policy = PolicyType.ALWAYS;
-		scroll.hexpand = true;
-		scroll.vexpand = true;
-		scroll.has_frame = show_border;
-		box.append(scroll);
-
-		var label = new Gtk.Label(text);
-		label.xalign = (float) 0.0;
-		label.yalign = (float) 0.0;
-		set_margin_all(label, 6);
-		label.set_use_markup(true);
-		scroll.set_child(label);
-
-		if (wrap){
-			label.wrap = true;
-			label.wrap_mode = Pango.WrapMode.WORD;
-		}
-		else {
-			label.wrap = false;
-			label.ellipsize = Pango.EllipsizeMode.MIDDLE;
-			label.max_width_chars = ellipsize_chars;
-		}
-
-		return label;
-	}
-
 	// add_label: plain text. Styling is a .ts-* class (see Ui), never markup.
 	public static Gtk.Label add_label(Gtk.Box box, string text){
 
@@ -229,7 +211,6 @@ namespace TeeJee.GtkHelper{
 		var chk = new Gtk.CheckButton();
 
 		var label = new Gtk.Label(text);
-		label.use_markup = true;
 		label.xalign = (float) 0.0;
 		label.wrap = true;
 		label.wrap_mode = Pango.WrapMode.WORD;
@@ -261,7 +242,7 @@ namespace TeeJee.GtkHelper{
 
 		if (icon != null){
 			/* GTK4 drops Button.set_image(); compose an explicit child. */
-			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
 			hbox.halign = Gtk.Align.CENTER;
 			hbox.append(icon);
 			hbox.append(new Gtk.Label(text));

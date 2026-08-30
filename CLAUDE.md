@@ -142,13 +142,24 @@ desktop's `color-scheme` and `accent-color` (portal `ReadAll`, falling back to
 layers the in-app choice on top (config keys `theme_mode` = system|light|dark,
 `theme_accent` = system|preset key; the Settings ▸ Appearance page is
 `src/Gtk/AppearanceBox.vala`). `refresh()` reloads the CSS only when the
-resolved `(dark, accent)` pair actually changes and emits
-`AppTheme.get_default().changed`.
+resolved `(dark, accent, high_contrast)` triple actually changes and emits
+`AppTheme.get_default().changed` (the Appearance page listens, so its
+"System" swatch shows the resolved desktop accent). The portal's `contrast`
+key (or `org.gnome.desktop.a11y.interface high-contrast` via gsettings)
+selects a high-contrast variant: opaque surfaces, 2 px borders, no dimmed
+text. Each accent preset's text-on-accent colour comes from
+`ThemeStyle.foreground_for()` (white or black-80 by luminance) so the info
+banner and list selection stay ≥ 4.5:1 for every preset; the accent also
+paints `progressbar.ts-accent` / `spinner.ts-accent` and boxed-list row
+selection, but never `.suggested-action` buttons, which stay on the desktop
+theme.
 
 Live updates: the portal `SettingChanged` signal is subscribed when the bus is
 reachable, but **a `dbus-daemon` session bus refuses root**, so under
 sudo/pkexec the portal is usually unreachable and the one-shot read falls back
-to gsettings. The live channel that actually works as root is a
+to gsettings. `read_user_env()` (dconf path, gtk/icon theme names) runs on
+every path — the icon-theme adoption must not depend on whether the portal
+answered. The live channel that actually works as root is a
 `GLib.FileMonitor` on the user's `~/.config/dconf/user` (dconf rewrites it
 atomically on every change), debounced 300 ms, re-reading the two keys.
 `Gtk.Settings` `notify::gtk-theme-name` is the last resort. Beware the classic
@@ -168,8 +179,15 @@ Box constructor). Text is styled with classes, never Pango markup:
 `Ui.add_title/add_heading/add_body/add_caption/add_dim_label` attach
 `.ts-title-1/-2`, `.ts-heading`, `.ts-body`, `.ts-caption`, `.ts-dim`.
 `TeeJee.GtkHelper.add_label` is plain text; the explicit
-`add_label_markup` exists for the few strings the core generates as markup
-(`RestoreSummaryBox`, `SnapshotBackendBox` help, `BackupDeviceBox.lbl_common`).
+`add_label_markup` exists only for the strings the core generates as markup
+(`RestoreSummaryBox`; `Device.tooltip_text()` via `set_tooltip_markup`).
+Bulleted help text is `Ui.add_bullets(box, lines, css_class)` — never a
+`"• …\n"` blob. Tooltips are `set_tooltip_text`. Destructive actions (Delete
+in the header, ExcludeBox Remove, DeleteWindow's Next, the Yes of a delete /
+abandon-restore confirmation via `CustomMessageDialog.set_destructive()`)
+carry `.destructive-action`; in a wizard only Next is `.suggested-action`,
+and Finish only on a last page (`finish_is_primary = false` when it is
+relabelled Close).
 Surfaces: `Ui.add_card` (`.ts-card`), `Ui.add_boxed_list` (a scroller with
 `.ts-boxed-list` around a ColumnView/ListView), `Clamp` (caps form pages at
 720 px — never clamp a page whose main content is a list). Reusable pieces:
@@ -196,7 +214,13 @@ Location, restore starts at Users/Summary in btrfs mode), and
 routes Alt+F4 to `on_cancel()`. Pages are still a tabless `Gtk.Notebook` with
 the `Tabs` enums and `go_next()/initialize_tab()` logic; `add_page(widget,
 clamp)` wraps them. Call `update_step_label()` first in `initialize_tab()`,
-because several pages block inside it.
+because several pages block inside it. `RestoreWindow.go_prev()` offers Back
+from Confirm and Summary; going back past the dry run re-runs it on Next, and
+`RsyncLogBox.open_log()` is idempotent for that reason. The progress pages
+(`BackupBox`, `RestoreBox`, `DeleteBox`, `EstimateBox`) *are*
+`TaskProgressBox` subclasses; their polling loops write to the inherited
+labels. `TerminalWindow` keeps its close button hidden until the script has
+exited.
 
 Lists use the GTK4 widgets, not the deprecated tree stack: `Gtk.ColumnView` /
 `Gtk.ListView` over a `GLib.ListStore`, with a `Gtk.SignalListItemFactory` per

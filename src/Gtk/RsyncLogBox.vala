@@ -75,7 +75,7 @@ public class RsyncLogBox : Gtk.Box {
 	private Gtk.CustomFilter log_filter;
 	private Gtk.DropDown cmb_filter;
 	private Gtk.Box hbox_filter;
-	private Gtk.Entry txt_pattern;
+	private Gtk.SearchEntry txt_pattern;
 
 	private Gtk.ColumnViewColumn col_name;
 	private Gtk.ColumnViewColumn col_status;
@@ -84,7 +84,6 @@ public class RsyncLogBox : Gtk.Box {
 	private string status_filter = "";
 
 	public Gtk.Label lbl_header;
-	public Gtk.Label lbl_header_progress;
 	private Gtk.Spinner spinner;
 	public Gtk.Label lbl_msg;
 	public Gtk.Label lbl_status;
@@ -99,6 +98,7 @@ public class RsyncLogBox : Gtk.Box {
 	private Gee.ArrayList<FileItem> loglist;
 
 	private Gtk.Window window;
+	private bool ui_built = false;
 
 	public RsyncLogBox(Gtk.Window _window) {
 		
@@ -113,10 +113,19 @@ public class RsyncLogBox : Gtk.Box {
 
 		rsync_log_file = _rsync_log_file;
 
-		// header
-		if (App.dry_run){
-			lbl_header = Ui.add_title(this, _("Confirm Actions"));
+		/* A second open (the restore wizard's Back, then another dry run)
+		 * reuses the widgets: treeview_refresh() clears the model itself. */
+		if (ui_built){
+			vbox_progress.visible = true;
+			hbox_filter.visible = false;
+			vbox_list.visible = false;
+			tmr_init = Timeout.add(100, init_delayed);
+			return;
 		}
+		ui_built = true;
+
+		// header
+		lbl_header = Ui.add_title(this, App.dry_run ? _("Confirm Actions") : _("Rsync Log"));
 
 		create_progressbar();
 
@@ -175,15 +184,8 @@ public class RsyncLogBox : Gtk.Box {
 			tmr_init = 0;
 		}
 
-		//gtk_set_busy(true, window);
-
 		parse_log_file();
 
-		if (App.dry_run){
-			lbl_header.visible = true;
-		}
-
-		//gtk_set_busy(false, window);
 
 		log_debug("init_delayed(): finish");
 		
@@ -246,7 +248,6 @@ public class RsyncLogBox : Gtk.Box {
 		this.append(progress);
 		vbox_progress = progress;
 
-		lbl_header_progress = progress.lbl_header;
 		spinner = progress.spinner;
 		lbl_msg = progress.lbl_msg;
 		progressbar = progress.progressbar;
@@ -259,44 +260,21 @@ public class RsyncLogBox : Gtk.Box {
 		
 		log_debug("create_filters()");
 		
-		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
+		hbox.visible = false; // until the log is parsed
         this.append(hbox);
 		hbox_filter = hbox;
 		
-		//add_label(hbox, _("Filter:"));
 
 		add_search_entry(hbox);
 
 		add_combo(hbox);
-
-
-
-		/*var btn_exclude = add_button(hbox,
-			_("Exclude Selected"),
-			_("Exclude selected items from future snapshots (careful!)"),
-			ref size_group, null);
-			
-        btn_exclude.clicked.connect(()=>{
-			if (flat_view){
-				gtk_messagebox(_("Cannot exclude files in flat view"),
-					_("View has been changed to tree view. Select the parent item you want to exclude and click the 'Exclude' button."),this, true);
-
-				flat_view = false;
-			}
-			else{
-				exclude_selected_items();
-			}
-			
-			treeview_refresh();
-		});*/
 	}
 
 	private void add_search_entry(Gtk.Box hbox){
 
-		var txt = new Gtk.Entry();
-		txt.xalign = 0.0f;
+		var txt = new Gtk.SearchEntry();
 		txt.hexpand = true;
-		set_margin_all(txt, 0);
 		hbox.append(txt);
 		
 		txt.placeholder_text = _("Filter by name or path");
@@ -425,7 +403,8 @@ public class RsyncLogBox : Gtk.Box {
 
 	private void create_treeview() {
 
-		vbox_list = new Gtk.Box(Orientation.VERTICAL, 6);
+		vbox_list = new Gtk.Box(Orientation.VERTICAL, Ui.Spacing.XS);
+		vbox_list.visible = false; // until the log is parsed
 		this.append(vbox_list);
 
 		/* GTK4 deprecates Gtk.TreeView/Gtk.TreeModelFilter. The rows live in a
@@ -457,7 +436,7 @@ public class RsyncLogBox : Gtk.Box {
 		factory.setup.connect((object) => {
 			var list_item = (Gtk.ListItem) object;
 
-			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
 
 			var img = new Gtk.Image();
 			img.pixel_size = 16;

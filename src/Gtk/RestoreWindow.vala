@@ -77,6 +77,7 @@ class RestoreWindow : WizardWindow {
 		add_page(finish_box);
 
 		btn_finish.label = _("Close");
+		finish_is_primary = false;
 
 		present();
 
@@ -121,6 +122,7 @@ class RestoreWindow : WizardWindow {
 			var msg = _("Cancelling the restore process will leave the target system in an inconsistent state. The system may fail to boot or you may run into various issues. After cancelling, you need to restore another snapshot, to bring the system to a consistent state. Click Yes to confirm.");
 
 			var dlg = new CustomMessageDialog(title, msg, Gtk.MessageType.ERROR, this, Gtk.ButtonsType.YES_NO);
+			dlg.set_destructive();
 			var response = dlg.run();
 			dlg.destroy();
 
@@ -220,6 +222,59 @@ class RestoreWindow : WizardWindow {
 		initialize_tab();
 	}
 
+	/* Back is offered on the pages a user can reasonably reconsider from.
+	 * Going back past the dry run means the check is re-run on Next. */
+	protected override void go_prev(){
+
+		switch(notebook.page){
+		case Tabs.SHOW_LOG:
+			notebook.page = Tabs.TARGET_DEVICE;
+			break;
+
+		case Tabs.SUMMARY:
+			if (App.btrfs_mode){
+				if ((App.snapshot_to_restore != null) && App.snapshot_to_restore.subvolumes.has_key("@home")){
+					notebook.page = Tabs.USERS;
+				}
+				else {
+					return;
+				}
+			}
+			else if (check_before_restore){
+				// the log is still on screen; do not re-open it
+				notebook.page = Tabs.SHOW_LOG;
+				update_step_label();
+				set_actions(true, true, false, true);
+				set_closable(true);
+				return;
+			}
+			else {
+				notebook.page = Tabs.TARGET_DEVICE;
+			}
+			break;
+
+		default:
+			return;
+		}
+
+		initialize_tab();
+	}
+
+	private bool can_go_back(){
+
+		switch(notebook.page){
+		case Tabs.SHOW_LOG:
+			return true;
+		case Tabs.SUMMARY:
+			if (App.btrfs_mode){
+				return (App.snapshot_to_restore != null) && App.snapshot_to_restore.subvolumes.has_key("@home");
+			}
+			return true;
+		default:
+			return false;
+		}
+	}
+
 	protected override void go_next(){
 
 		// finish any pending Gtk events before showing the next page
@@ -291,7 +346,7 @@ class RestoreWindow : WizardWindow {
 		case Tabs.SUMMARY:
 		case Tabs.USERS:
 		case Tabs.SHOW_LOG:
-			set_actions(false, true, false, true);
+			set_actions(can_go_back(), true, false, true);
 			set_closable(true);
 			break;
 

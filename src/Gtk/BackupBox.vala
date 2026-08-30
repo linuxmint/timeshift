@@ -32,25 +32,7 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
-class BackupBox : Gtk.Box{
-
-	private TaskProgressBox progress;
-
-	// the polling loop below writes to these; they belong to `progress`
-	public Gtk.Label lbl_msg;
-	public Gtk.Label lbl_status;
-	public Gtk.Label lbl_remaining;
-	public Gtk.ProgressBar progressbar;
-	public Gtk.Label lbl_unchanged;
-	public Gtk.Label lbl_created;
-	public Gtk.Label lbl_deleted;
-	public Gtk.Label lbl_modified;
-	public Gtk.Label lbl_checksum;
-	public Gtk.Label lbl_size;
-	public Gtk.Label lbl_timestamp;
-	public Gtk.Label lbl_permissions;
-	public Gtk.Label lbl_owner;
-	public Gtk.Label lbl_group;
+class BackupBox : TaskProgressBox {
 
 	private Gtk.Window parent_window;
 
@@ -59,29 +41,11 @@ class BackupBox : Gtk.Box{
 
 	public BackupBox (Gtk.Window _parent_window) {
 
+		base(_("Creating Snapshot..."), true);
+
 		log_debug("BackupBox: BackupBox()");
-		
-		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
+
 		parent_window = _parent_window;
-
-		progress = new TaskProgressBox(_("Creating Snapshot..."), true);
-		append(progress);
-
-		lbl_msg = progress.lbl_msg;
-		lbl_status = progress.lbl_status;
-		lbl_remaining = progress.lbl_remaining;
-		progressbar = progress.progressbar;
-		lbl_unchanged = progress.lbl_unchanged;
-		lbl_created = progress.lbl_created;
-		lbl_deleted = progress.lbl_deleted;
-		lbl_modified = progress.lbl_modified;
-		lbl_checksum = progress.lbl_checksum;
-		lbl_size = progress.lbl_size;
-		lbl_timestamp = progress.lbl_timestamp;
-		lbl_permissions = progress.lbl_permissions;
-		lbl_owner = progress.lbl_owner;
-		lbl_group = progress.lbl_group;
 
 		lbl_deleted.sensitive = false;
 
@@ -89,11 +53,11 @@ class BackupBox : Gtk.Box{
     }
 
 	public void pause() {
-		progress.set_paused(true);
+		set_paused(true);
 	}
 
 	public void resume() {
-		progress.set_paused(false);
+		set_paused(false);
 	}
 
 	public bool take_snapshot(){
@@ -136,7 +100,7 @@ class BackupBox : Gtk.Box{
 
 				bool checking = App.space_check_task != null;
 
-				progress.set_counts_visible(!checking);
+				set_counts_visible(!checking);
 
                 if (checking)
                 {
@@ -151,7 +115,7 @@ class BackupBox : Gtk.Box{
                     task_stat_time_remaining = App.task.stat_time_remaining;
                 }
 
-				status_line = escape_html(task_status_line);
+				status_line = task_status_line;
 				if (status_line != last_status_line){
 					lbl_status.label = status_line;
 					last_status_line = status_line;
@@ -182,7 +146,7 @@ class BackupBox : Gtk.Box{
 				if(App.task.status == AppStatus.PAUSED) {
 					lbl_msg.label = _("Paused");
 				} else {
-					lbl_msg.label = escape_html(App.progress_text);
+					lbl_msg.label = App.progress_text;
 				}
 
 				if (!checking)

@@ -47,6 +47,10 @@ class RestoreSummaryBox : Gtk.Box{
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
 
+		Ui.add_title(this, _("Summary"));
+
+		Ui.add_dim_label(this, _("Review what will be restored before continuing."));
+
 		/* The three texts come from the core as markup. */
 
 		var card = Ui.add_card(this);

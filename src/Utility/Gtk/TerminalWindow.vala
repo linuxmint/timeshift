@@ -33,13 +33,11 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
-public class TerminalWindow : Gtk.Window {
+public class TerminalWindow : AppWindow {
 	
 	private Gtk.Box vbox_main;
 	private Vte.Terminal term;
-	
-	private int def_width = 800;
-	private int def_height = 600;
+	private Gtk.HeaderBar header;
 
 	private Pid child_pid;
 	private Gtk.Window parent_win = null;
@@ -58,8 +56,10 @@ public class TerminalWindow : Gtk.Window {
 		fullscreen();
 
 		this.close_request.connect(()=>{
-			// do not allow window to close 
-			return true;
+			// the script must run to completion; afterwards the window may go
+			if (is_running){ return true; }
+			notify_closed();
+			return false;
 		});
 		
 		init_window();
@@ -67,13 +67,17 @@ public class TerminalWindow : Gtk.Window {
 
 	public void init_window () {
 		
-		this.title = "";
+		this.title = _("Restore");
 		this.resizable = true;
+
+		// no close button while the script runs; see close_request
+		header = new Gtk.HeaderBar();
+		header.show_title_buttons = false;
+		set_titlebar(header);
 		
 		// vbox_main ---------------
 		
-		vbox_main = new Gtk.Box(Orientation.VERTICAL, 6);
-		vbox_main.set_size_request (def_width, def_height);
+		vbox_main = new Gtk.Box(Orientation.VERTICAL, 0);
 		set_child (vbox_main);
 
 		// terminal ----------------------
@@ -178,13 +182,15 @@ public class TerminalWindow : Gtk.Window {
 	public void script_exit(int status){
 
 		is_running = false;
+
+		header.show_title_buttons = true;
 		
 		this.visible = false;
 
 		//no need to check status again
 		
 		//destroying parent will display main window
-		if (parent != null){
+		if (parent_win != null){
 			parent_win.destroy();
 		}
 	}

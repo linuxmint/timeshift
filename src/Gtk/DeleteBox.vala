@@ -32,32 +32,17 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
-class DeleteBox : Gtk.Box{
-
-	private TaskProgressBox progress;
-
-	public Gtk.Label lbl_msg;
-	public Gtk.Label lbl_status;
-	public Gtk.Label lbl_remaining;
-	public Gtk.ProgressBar progressbar;
+class DeleteBox : TaskProgressBox {
 
 	private Gtk.Window parent_window;
 
 	public DeleteBox (Gtk.Window _parent_window) {
 
+		base(_("Deleting Snapshots..."), false);
+
 		log_debug("DeleteBox: DeleteBox()");
-		
-		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
+
 		parent_window = _parent_window;
-
-		progress = new TaskProgressBox(_("Deleting Snapshots..."), false);
-		append(progress);
-
-		lbl_msg = progress.lbl_msg;
-		lbl_status = progress.lbl_status;
-		lbl_remaining = progress.lbl_remaining;
-		progressbar = progress.progressbar;
 
 		log_debug("DeleteBox: DeleteBox(): exit");
     }
@@ -94,7 +79,7 @@ class DeleteBox : Gtk.Box{
 			
 			while (App.thread_delete_running){
 
-				status_line = escape_html(App.delete_file_task.status_line);
+				status_line = App.delete_file_task.status_line;
 
 				if (status_line != last_status_line){
 					lbl_status.label = status_line;

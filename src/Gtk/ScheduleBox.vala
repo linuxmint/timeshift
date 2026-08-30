@@ -36,8 +36,6 @@ class ScheduleBox : Gtk.Box{
 	
 	private StatusCard status_card;
 	private Gtk.Box levels_box;
-	private Gtk.SizeGroup sg_title;
-	private Gtk.SizeGroup sg_subtitle;
 	private Gtk.SizeGroup sg_count;
 
 	private Gtk.CheckButton chk_cron;
@@ -54,6 +52,8 @@ class ScheduleBox : Gtk.Box{
 		
 		Ui.add_title(this, _("Select Snapshot Levels"));
 
+		Ui.add_dim_label(this, _("Snapshots are created automatically at the selected levels, and the oldest ones removed once the limit is reached."));
+
 		levels_box = Ui.add_card(this, Gtk.Orientation.VERTICAL, Ui.Spacing.XS);
 
 		Gtk.CheckButton chk_m, chk_w, chk_d, chk_h, chk_b = null;
@@ -66,13 +66,13 @@ class ScheduleBox : Gtk.Box{
 		chk_m.active = App.schedule_monthly;
 		chk_m.toggled.connect(()=>{
 			App.schedule_monthly = chk_m.active;
-			//spin_m.sensitive = chk_m.active;
+			spin_m.sensitive = chk_m.active;
 			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
 		spin_m.set_value(App.count_monthly);
-		//spin_m.sensitive = chk_m.active;
+		spin_m.sensitive = chk_m.active;
 		spin_m.value_changed.connect(()=>{
 			App.count_monthly = (int) spin_m.get_value();
 		});
@@ -84,13 +84,13 @@ class ScheduleBox : Gtk.Box{
 		chk_w.active = App.schedule_weekly;
 		chk_w.toggled.connect(()=>{
 			App.schedule_weekly = chk_w.active;
-			//spin_w.sensitive = chk_w.active;
+			spin_w.sensitive = chk_w.active;
 			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
 		spin_w.set_value(App.count_weekly);
-		//spin_w.sensitive = chk_w.active;
+		spin_w.sensitive = chk_w.active;
 		spin_w.value_changed.connect(()=>{
 			App.count_weekly = (int) spin_w.get_value();
 		});
@@ -102,13 +102,13 @@ class ScheduleBox : Gtk.Box{
 		chk_d.active = App.schedule_daily;
 		chk_d.toggled.connect(()=>{
 			App.schedule_daily = chk_d.active;
-			//spin_d.sensitive = chk_d.active;
+			spin_d.sensitive = chk_d.active;
 			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
 		spin_d.set_value(App.count_daily);
-		//spin_d.sensitive = chk_d.active;
+		spin_d.sensitive = chk_d.active;
 		spin_d.value_changed.connect(()=>{
 			App.count_daily = (int) spin_d.get_value();
 		});
@@ -120,13 +120,13 @@ class ScheduleBox : Gtk.Box{
 		chk_h.active = App.schedule_hourly;
 		chk_h.toggled.connect(()=>{
 			App.schedule_hourly = chk_h.active;
-			//spin_h.sensitive = chk_h.active;
+			spin_h.sensitive = chk_h.active;
 			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
 		spin_h.set_value(App.count_hourly);
-		//spin_h.sensitive = chk_h.active;
+		spin_h.sensitive = chk_h.active;
 		spin_h.value_changed.connect(()=>{
 			App.count_hourly = (int) spin_h.get_value();
 		});
@@ -138,22 +138,23 @@ class ScheduleBox : Gtk.Box{
 		chk_b.active = App.schedule_boot;
 		chk_b.toggled.connect(()=>{
 			App.schedule_boot = chk_b.active;
-			//spin_b.sensitive = chk_b.active;
+			spin_b.sensitive = chk_b.active;
 			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
 		spin_b.set_value(App.count_boot);
-		//spin_b.sensitive = chk_b.active;
+		spin_b.sensitive = chk_b.active;
 		spin_b.value_changed.connect(()=>{
 			App.count_boot = (int) spin_b.get_value();
 		});
 
 		// cron emails --------------------------------------------------------------------
 		
-		chk_cron = add_checkbox(this, _("Stop cron emails for scheduled tasks"));
+		var cron_card = Ui.add_card(this, Gtk.Orientation.VERTICAL, Ui.Spacing.XS);
+
+		chk_cron = add_checkbox(cron_card, _("Stop cron emails for scheduled tasks"));
 		chk_cron.set_tooltip_text(_("The cron service sends the output of scheduled tasks as an email to the current user. Select this option to suppress the emails for cron tasks created by Timeshift."));
-		chk_cron.margin_top = Ui.Spacing.XS;
 		
 		chk_cron.active = App.stop_cron_emails;
 		chk_cron.toggled.connect(()=>{
@@ -162,23 +163,16 @@ class ScheduleBox : Gtk.Box{
 
 		// notes ----------------------------------------------------------------------
 
-		var notes = new Gtk.Box(Gtk.Orientation.VERTICAL, Ui.Spacing.XS / 2);
-		notes.margin_top = Ui.Spacing.XS;
-		append(notes);
-
-		foreach (string line in new string[]{
+		Ui.add_bullets(this, {
 			_("Snapshots are not scheduled at fixed times."),
 			_("A maintenance task runs once every hour and creates snapshots as needed."),
-			_("Boot snapshots are created with a delay of 10 minutes after system startup.") }){
-			Ui.add_caption(notes, "• " + line);
-		}
+			_("Boot snapshots are created with a delay of 10 minutes after system startup.") }, "ts-caption");
 
 		Ui.add_spacer(this);
 
 		// status area --------------------------------------------------------------------
 		
 		status_card = new StatusCard();
-		status_card.margin_top = Ui.Spacing.XS;
 		append(status_card);
 
 		update_statusbar();
@@ -193,9 +187,7 @@ class ScheduleBox : Gtk.Box{
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
 		box.append(hbox);
 
-		if (sg_title == null){
-			sg_title = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-			sg_subtitle = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
+		if (sg_count == null){
 			sg_count = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		}
 		
@@ -203,7 +195,6 @@ class ScheduleBox : Gtk.Box{
 		((Gtk.Label) chk.child).add_css_class("ts-heading");
 		chk.set_tooltip_text(period_desc);
 		chk.hexpand = true;
-		sg_title.add_widget(chk);
 		
 		var tt = _("Number of snapshots to keep.\nOlder snapshots will be removed once this limit is exceeded.");
 		var label = Ui.add_dim_label(hbox, _("Keep"));

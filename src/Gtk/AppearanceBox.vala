@@ -35,6 +35,7 @@ class AppearanceBox : Gtk.Box {
 	private Gtk.Window parent_window;
 
 	private Gtk.DropDown dd_mode;
+	private Gtk.Label lbl_hc;
 	private Gee.HashMap<string, Gtk.ToggleButton> swatches;
 	private bool updating = false;
 
@@ -44,10 +45,14 @@ class AppearanceBox : Gtk.Box {
 
 		log_debug("AppearanceBox: AppearanceBox()");
 
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: ThemeStyle.SPACE_L);
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM);
 		parent_window = _parent_window;
 
 		swatches = new Gee.HashMap<string, Gtk.ToggleButton>();
+
+		Ui.add_title(this, _("Appearance"));
+
+		Ui.add_dim_label(this, _("Colours for Timeshift's own surfaces. Buttons and other standard controls follow the desktop theme."));
 
 		init_theme_option();
 
@@ -55,13 +60,15 @@ class AppearanceBox : Gtk.Box {
 
 		refresh();
 
+		// the swatches show the resolved system colour; keep them current
+		AppTheme.get_default().changed.connect(refresh);
+
 		log_debug("AppearanceBox: AppearanceBox(): exit");
 	}
 
 	private void init_theme_option(){
 
-		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, ThemeStyle.SPACE_XS);
-		append(box);
+		var box = Ui.add_card(this, Gtk.Orientation.VERTICAL, Ui.Spacing.XS);
 
 		Ui.add_heading(box, _("Theme"));
 
@@ -71,8 +78,11 @@ class AppearanceBox : Gtk.Box {
 
 		dd_mode = new Gtk.DropDown(names, null);
 		dd_mode.halign = Gtk.Align.START;
-		dd_mode.margin_top = ThemeStyle.SPACE_XS;
+		dd_mode.margin_top = Ui.Spacing.XS;
 		box.append(dd_mode);
+
+		lbl_hc = Ui.add_caption(box, _("The desktop's high-contrast setting is on; borders and text are strengthened."));
+		lbl_hc.visible = false;
 
 		dd_mode.notify["selected"].connect(() => {
 			if (updating){ return; }
@@ -85,15 +95,14 @@ class AppearanceBox : Gtk.Box {
 
 	private void init_accent_option(){
 
-		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, ThemeStyle.SPACE_XS);
-		append(box);
+		var box = Ui.add_card(this, Gtk.Orientation.VERTICAL, Ui.Spacing.XS);
 
 		Ui.add_heading(box, _("Accent Colour"));
 
 		Ui.add_dim_label(box, _("Used for status highlights and messages. System follows the desktop's accent where it reports one."));
 
-		var row = new Gtk.Box(Gtk.Orientation.HORIZONTAL, ThemeStyle.SPACE_XS);
-		row.margin_top = ThemeStyle.SPACE_XS;
+		var row = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
+		row.margin_top = Ui.Spacing.XS;
 		box.append(row);
 
 		Gtk.ToggleButton? group = null;
@@ -146,6 +155,8 @@ class AppearanceBox : Gtk.Box {
 		string accent = App.theme_accent;
 		if (!swatches.has_key(accent)){ accent = "system"; }
 		swatches[accent].active = true;
+
+		lbl_hc.visible = AppTheme.high_contrast;
 
 		updating = false;
 	}

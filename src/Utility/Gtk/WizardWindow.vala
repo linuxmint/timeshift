@@ -50,6 +50,11 @@ public abstract class WizardWindow : AppWindow {
 
 	private bool closable = true;
 
+	/* Finish is the primary action only on a last page that has no Next; a
+	 * Finish relabelled "Close" is never primary. */
+	protected bool finish_is_primary = true;
+	protected Gtk.Label lbl_next;
+
 	protected WizardWindow(string window_title, int def_width, int def_height){
 
 		this.title = window_title;
@@ -91,14 +96,14 @@ public abstract class WizardWindow : AppWindow {
 		header.pack_start(btn_back);
 
 		btn_finish = new Gtk.Button.with_label(_("Finish"));
-		btn_finish.add_css_class("suggested-action");
 		btn_finish.clicked.connect(() => { on_finish(); });
 		header.pack_end(btn_finish);
 
 		btn_next = new Gtk.Button();
 		btn_next.add_css_class("suggested-action");
 		var next_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
-		next_box.append(new Gtk.Label(_("Next")));
+		lbl_next = new Gtk.Label(_("Next"));
+		next_box.append(lbl_next);
 		next_box.append(new Gtk.Image.from_icon_name("go-next-symbolic"));
 		btn_next.set_child(next_box);
 		btn_next.clicked.connect(() => { go_next(); });
@@ -112,6 +117,10 @@ public abstract class WizardWindow : AppWindow {
 		notebook.hexpand = true;
 		notebook.vexpand = true;
 		set_child(notebook);
+
+		// GTK4 widgets start visible; initialize_tab() runs on a timeout, so
+		// without this every wizard flashes all four buttons on open
+		set_actions(false, false, false, false);
 
 		this.close_request.connect(on_close_request);
 	}
@@ -168,6 +177,13 @@ public abstract class WizardWindow : AppWindow {
 		btn_next.visible = next;
 		btn_finish.visible = finish;
 		btn_cancel.visible = cancel;
+
+		if (finish && !next && finish_is_primary){
+			btn_finish.add_css_class("suggested-action");
+		}
+		else {
+			btn_finish.remove_css_class("suggested-action");
+		}
 	}
 
 	protected void set_closable(bool value){

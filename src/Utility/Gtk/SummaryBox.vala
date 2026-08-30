@@ -92,13 +92,7 @@ public class SummaryBox : Gtk.Box {
 	}
 
 	private void clear_body(){
-
-		Gtk.Widget? child = body.get_first_child();
-		while (child != null){
-			Gtk.Widget? next = child.get_next_sibling();
-			body.remove(child);
-			child = next;
-		}
+		Ui.clear_children(body);
 	}
 
 	/* One row per line, each prefixed with a bullet. Plain text. */

@@ -32,6 +32,7 @@ namespace Ui {
 	public const int MAX_CONTENT_WIDTH = 720;
 
 	public enum Spacing {
+		XXS = 3,                    // between tightly related lines (grid rows)
 		XS = ThemeStyle.SPACE_XS,   // inside a row: icon<->label, linked buttons
 		SM = ThemeStyle.SPACE_S,    // between rows inside a card or form
 		MD = ThemeStyle.SPACE_M,    // card inner padding; card<->card gap
@@ -132,21 +133,41 @@ namespace Ui {
 		return page;
 	}
 
-	public Gtk.Box add_page(Gtk.Box parent){
+	/* Removes every child (GTK4 has no Container.get_children()). */
+	public void clear_children(Gtk.Box box){
 
-		var page = new Gtk.Box(Gtk.Orientation.VERTICAL, Spacing.SM);
-		page.add_css_class("ts-page");
-		page.hexpand = true;
-		page.vexpand = true;
-		parent.append(page);
-		return page;
+		Gtk.Widget? child = box.get_first_child();
+		while (child != null){
+			Gtk.Widget? next = child.get_next_sibling();
+			box.remove(child);
+			child = next;
+		}
 	}
 
-	public Gtk.Separator add_separator(Gtk.Box box, Gtk.Orientation orientation = Gtk.Orientation.HORIZONTAL){
+	/* One row per line, each with a leading accent-coloured bullet. Plain
+	 * text; replaces the "&bull; ...\n" markup blobs. */
+	public Gtk.Box add_bullets(Gtk.Box box, string[] lines, string css_class = "ts-body"){
 
-		var sep = new Gtk.Separator(orientation);
-		box.append(sep);
-		return sep;
+		var list = new Gtk.Box(Gtk.Orientation.VERTICAL, Spacing.XS);
+		box.append(list);
+
+		foreach (string line in lines){
+			if (line.strip().length == 0){ continue; }
+
+			var row = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Spacing.XS);
+			list.append(row);
+
+			var bullet = new Gtk.Label("•");
+			bullet.valign = Gtk.Align.START;
+			bullet.add_css_class("ts-accent");
+			row.append(bullet);
+
+			var label = make_label(line, css_class, true);
+			label.hexpand = true;
+			row.append(label);
+		}
+
+		return list;
 	}
 
 	/* A row of buttons. Not homogeneous: buttons take their natural width. */

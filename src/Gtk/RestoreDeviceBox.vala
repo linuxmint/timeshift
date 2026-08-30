@@ -48,13 +48,10 @@ public class RestoreDeviceOption : GLib.Object {
 
 class RestoreDeviceBox : Gtk.Box{
 
-	private Gtk.Box option_box;
+	private Gtk.Grid option_grid;
 	private Gtk.Label lbl_header_subvol;
 	private bool show_volume_name = false;
-	
-	private Gtk.SizeGroup sg_mount_point = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-	private Gtk.SizeGroup sg_device = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-	private Gtk.SizeGroup sg_mount_options = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
+	private int option_rows = 0;
 	private Gtk.Window parent_window;
 
 	public RestoreDeviceBox (Gtk.Window _parent_window) {
@@ -91,29 +88,15 @@ class RestoreDeviceBox : Gtk.Box{
 				_("Devices from which snapshot was created are pre-selected."));
 		}
 
-		// headings
-		
-		hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
-		hbox.margin_top = Ui.Spacing.SM;
-		append(hbox);
+		// mount table: caption header row, then one row per mount point
 
-		var label = Ui.add_caption(hbox, _("Path"));
-		label.xalign = (float) 0.0;
-		sg_mount_point.add_widget(label);
-		
-		label = Ui.add_caption(hbox, _("Device"));
-		label.xalign = (float) 0.0;
-		sg_device.add_widget(label);
+		var card = Ui.add_card(this);
 
-		label = Ui.add_caption(hbox, _("Subvolume"));
-		label.xalign = (float) 0.5;
-		lbl_header_subvol = label;
-
-		// options
-		
-		option_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
-		option_box.hexpand = true;
-		append(option_box);
+		option_grid = new Gtk.Grid();
+		option_grid.column_spacing = Ui.Spacing.MD;
+		option_grid.row_spacing = Ui.Spacing.XS;
+		option_grid.hexpand = true;
+		card.append(option_grid);
 
 		// bootloader
 		
@@ -147,15 +130,32 @@ class RestoreDeviceBox : Gtk.Box{
 			}
 		}
 
-		lbl_header_subvol.visible = show_volume_name;
-
 		/* GTK4 has no Container.get_children(); walk the sibling chain. */
-		var child = option_box.get_first_child();
+		var child = option_grid.get_first_child();
 		while (child != null){
 			var next = child.get_next_sibling();
-			option_box.remove(child);
+			option_grid.remove(child);
 			child = next;
 		}
+		option_rows = 0;
+
+		// header row
+		var caption = new Gtk.Label(_("Path"));
+		caption.xalign = (float) 0.0;
+		caption.add_css_class("ts-caption");
+		option_grid.attach(caption, 0, 0, 1, 1);
+
+		caption = new Gtk.Label(_("Device"));
+		caption.xalign = (float) 0.0;
+		caption.add_css_class("ts-caption");
+		option_grid.attach(caption, 1, 0, 1, 1);
+
+		lbl_header_subvol = new Gtk.Label(_("Subvolume"));
+		lbl_header_subvol.xalign = (float) 0.0;
+		lbl_header_subvol.add_css_class("ts-caption");
+		lbl_header_subvol.visible = show_volume_name;
+		option_grid.attach(lbl_header_subvol, 2, 0, 1, 1);
+		option_rows = 1;
 
 		foreach(MountEntry entry in App.mount_list){
 			add_device_selection_option(entry);
@@ -166,15 +166,17 @@ class RestoreDeviceBox : Gtk.Box{
 
 	private void add_device_selection_option(MountEntry entry){
 
-		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		option_box.append(box);
+		int row = option_rows++;
 
-		var label = Ui.add_heading(box, entry.mount_point);
-		label.wrap = false;
-		sg_mount_point.add_widget(label);
+		var label = new Gtk.Label(entry.mount_point);
+		label.xalign = (float) 0.0;
+		label.add_css_class("ts-heading");
+		label.valign = Gtk.Align.CENTER;
+		option_grid.attach(label, 0, row, 1, 1);
 		
-		var combo = add_device_combo(box, entry);
-		sg_device.add_widget(combo);
+		var combo = add_device_combo(entry);
+		combo.hexpand = true;
+		option_grid.attach(combo, 1, row, 1, 1);
 
 		if (show_volume_name){
 			string txt = "";
@@ -184,12 +186,15 @@ class RestoreDeviceBox : Gtk.Box{
 			else {
 				txt = "%s".printf(entry.lvm_name());
 			}
-			label = Ui.add_body(box, txt, false);
-			sg_mount_options.add_widget(label);
+			label = new Gtk.Label(txt);
+			label.xalign = (float) 0.0;
+			label.add_css_class("ts-body");
+			label.valign = Gtk.Align.CENTER;
+			option_grid.attach(label, 2, row, 1, 1);
 		}
 	}
 
-	private Gtk.DropDown add_device_combo(Gtk.Box box, MountEntry entry){
+	private Gtk.DropDown add_device_combo(MountEntry entry){
 
 		/* GTK4 deprecates Gtk.ComboBox; a Gtk.DropDown with a factory replaces
 		 * the cell renderers and their data functions. */
@@ -199,7 +204,7 @@ class RestoreDeviceBox : Gtk.Box{
 		factory.setup.connect((object) => {
 			var list_item = (Gtk.ListItem) object;
 
-			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
 
 			var img = new Gtk.Image();
 			IconManager.set_image_icon(img, IconManager.ICON_HARDDRIVE, 16);
@@ -207,7 +212,6 @@ class RestoreDeviceBox : Gtk.Box{
 
 			var lbl = new Gtk.Label("");
 			lbl.xalign = (float) 0.0;
-			lbl.use_markup = true;
 			hbox.append(lbl);
 
 			list_item.set_child(hbox);
@@ -223,7 +227,7 @@ class RestoreDeviceBox : Gtk.Box{
 
 			if (dev != null){
 				img.visible = (dev.type == "disk");
-				lbl.label = dev.description_simple_formatted();
+				lbl.label = dev.description_simple();
 				lbl.sensitive = (dev.type != "disk");
 			}
 			else{
@@ -235,7 +239,6 @@ class RestoreDeviceBox : Gtk.Box{
 
 		var combo = new Gtk.DropDown(null, null);
 		combo.factory = factory;
-		box.append(combo);
 
 		combo.has_tooltip = true;
 		combo.query_tooltip.connect((x, y, keyboard_tooltip, tooltip) => {
@@ -249,7 +252,7 @@ class RestoreDeviceBox : Gtk.Box{
 				tooltip.set_markup(option.dev.tooltip_text());
 			}
 			else{
-				tooltip.set_markup(_("Keep this mount path on the root filesystem"));
+				tooltip.set_text(_("Keep this mount path on the root filesystem"));
 			}
 
 			return true;

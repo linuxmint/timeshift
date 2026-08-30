@@ -66,7 +66,8 @@ class BackupDeviceBox : Gtk.Box{
 	private Gtk.ScrolledWindow sw_devices;
 	private Gtk.Button btn_refresh;
 	private Banner infobar_location;
-	private Gtk.Label lbl_common;
+	private Gtk.Box card_common;
+	private Gtk.Box bullets_common;
 
 	// remote (SSH) location
 	private Gtk.CheckButton opt_local;
@@ -102,6 +103,8 @@ class BackupDeviceBox : Gtk.Box{
 			App.update_partitions();
 			tv_devices_refresh();
 		});
+
+		Ui.add_dim_label(this, _("Where snapshots are stored. Choose a disk other than the system disk to survive a drive failure."));
 
 		// local / remote selector
 		init_location_type();
@@ -150,14 +153,11 @@ class BackupDeviceBox : Gtk.Box{
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.SM);
 		append(hbox);
 
-		opt_local = new Gtk.CheckButton.with_label(_("Local device"));
+		opt_local = Ui.add_radio(hbox, _("Local device"), null);
 		opt_local.set_tooltip_text(_("Save snapshots to a disk attached to this computer"));
-		hbox.append(opt_local);
 
-		opt_ssh = new Gtk.CheckButton.with_label(_("Remote (SSH)"));
-		opt_ssh.set_group(opt_local);
+		opt_ssh = Ui.add_radio(hbox, _("Remote (SSH)"), opt_local);
 		opt_ssh.set_tooltip_text(_("Save snapshots to another computer over SSH"));
-		hbox.append(opt_ssh);
 
 		// toggled fires on both the activated and the deactivated button
 		opt_local.toggled.connect(()=>{
@@ -194,25 +194,29 @@ class BackupDeviceBox : Gtk.Box{
 
 	private void init_ssh_box(){
 
-		vbox_ssh = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
-		// hidden in local mode; visibility is set explicitly in GTK4
+		vbox_ssh = new Gtk.Box(Gtk.Orientation.VERTICAL, Ui.Spacing.SM);
+		vbox_ssh.visible = false; // local mode until refresh() says otherwise
 		append(vbox_ssh);
 
-		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
+		var card = Ui.add_card(vbox_ssh);
+
+		var grid = new Gtk.Grid();
+		grid.column_spacing = Ui.Spacing.SM;
+		grid.row_spacing = Ui.Spacing.XS;
+		card.append(grid);
+
+		int row = 0;
 
 		// location ------------------------------------------------
 
-		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		vbox_ssh.append(hbox);
-
-		var label = add_label(hbox, _("Location"));
-		sg_label.add_widget(label);
+		grid.attach(form_label(_("Location")), 0, row, 1, 1);
 
 		txt_ssh_url = new Gtk.Entry();
 		txt_ssh_url.hexpand = true;
 		txt_ssh_url.placeholder_text = "user@host:/path";
 		txt_ssh_url.set_tooltip_text(_("Example") + ": user@nas:/backups");
-		hbox.append(txt_ssh_url);
+		grid.attach(txt_ssh_url, 1, row, 2, 1);
+		row++;
 
 		var focus_txt_ssh_url = new Gtk.EventControllerFocus();
 		focus_txt_ssh_url.leave.connect(() => {
@@ -222,17 +226,13 @@ class BackupDeviceBox : Gtk.Box{
 
 		// ssh key -------------------------------------------------
 
-		hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		vbox_ssh.append(hbox);
-
-		label = add_label(hbox, _("SSH key"));
-		sg_label.add_widget(label);
+		grid.attach(form_label(_("SSH key")), 0, row, 1, 1);
 
 		txt_ssh_key = new Gtk.Entry();
 		txt_ssh_key.hexpand = true;
 		txt_ssh_key.placeholder_text = "/etc/timeshift/ssh/id_ed25519";
 		txt_ssh_key.set_tooltip_text(_("Private key used to connect. Use 'Set up with password' if you do not have one yet."));
-		hbox.append(txt_ssh_key);
+		grid.attach(txt_ssh_key, 1, row, 1, 1);
 
 		var focus_txt_ssh_key = new Gtk.EventControllerFocus();
 		focus_txt_ssh_key.leave.connect(() => {
@@ -240,7 +240,11 @@ class BackupDeviceBox : Gtk.Box{
 		});
 		txt_ssh_key.add_controller(focus_txt_ssh_key);
 
-		var btn_browse = add_button(hbox, _("Browse"), "", null, null);
+		var btn_browse = Ui.add_icon_only_button(new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0), "folder-open-symbolic", _("Browse"));
+		btn_browse.unparent();
+		grid.attach(btn_browse, 2, row, 1, 1);
+		row++;
+
 		btn_browse.clicked.connect(()=>{
 			string? path = browse_ssh_key();
 			if (path != null){
@@ -251,21 +255,24 @@ class BackupDeviceBox : Gtk.Box{
 
 		// port ----------------------------------------------------
 
-		hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		vbox_ssh.append(hbox);
+		grid.attach(form_label(_("Port")), 0, row, 1, 1);
 
-		label = add_label(hbox, _("Port"));
-		sg_label.add_widget(label);
+		var port_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		spin_ssh_port = add_spin(port_box, 1, 65535, 22);
+		spin_ssh_port.halign = Gtk.Align.START;
+		grid.attach(port_box, 1, row, 2, 1);
+		row++;
 
-		spin_ssh_port = add_spin(hbox, 1, 65535, 22);
 		spin_ssh_port.value_changed.connect(()=>{
 			App.backup_ssh_port = (int) spin_ssh_port.get_value();
 		});
 
 		// fake-super ----------------------------------------------
 
-		chk_ssh_fake_super = add_checkbox(vbox_ssh,
-			_("Remote account is not root"));
+		var chk_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		chk_ssh_fake_super = add_checkbox(chk_box, _("Remote account is not root"));
+		grid.attach(chk_box, 1, row, 2, 1);
+		row++;
 
 		chk_ssh_fake_super.set_tooltip_text(_("Store file ownership in extended attributes (rsync --fake-super). Required when you cannot log in as root on the remote host, otherwise restored files would lose their owner."));
 
@@ -275,24 +282,28 @@ class BackupDeviceBox : Gtk.Box{
 
 		// test connection -----------------------------------------
 
-		hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		vbox_ssh.append(hbox);
+		var actions = Ui.add_button_row(vbox_ssh, Gtk.Align.START);
 
-		label = add_label(hbox, "");
-		sg_label.add_widget(label);
-
-		var btn_test = add_button(hbox, _("Test connection"), "", null, null);
+		var btn_test = add_button(actions, _("Test connection"), "", null, null);
 		btn_test.clicked.connect(()=>{
 			change_backup_ssh();
 		});
 
-		var btn_setup = add_button(hbox, _("Set up with password"),
+		var btn_setup = add_button(actions, _("Set up with password"),
 			_("Log in once with a password to install a key, so that scheduled snapshots can run without one"),
 			null, null);
 
 		btn_setup.clicked.connect(()=>{
 			setup_ssh_key();
 		});
+	}
+
+	private Gtk.Label form_label(string text){
+
+		var label = new Gtk.Label(text);
+		label.xalign = (float) 1.0;
+		label.add_css_class("ts-dim");
+		return label;
 	}
 
 	/* Reads the entries into App, rebuilds the repository and reports the
@@ -497,26 +508,28 @@ class BackupDeviceBox : Gtk.Box{
 		// The help text has to follow the selected mode. It used to be set
 		// only in refresh(), so toggling the radio left the local bullets on
 		// screen while the remote form was showing.
+		card_common.remove(bullets_common);
+
 		if (is_ssh){
-			lbl_common.label = "<i>• %s\n• %s\n• %s</i>".printf(
+			bullets_common = Ui.add_bullets(card_common, {
 				_("Snapshots are sent over SSH and saved to /timeshift on the remote host."),
 				_("Connect as root, or tick the option above, so that file ownership is preserved."),
 				_("Key-based authentication only. Scheduled snapshots need a key without a passphrase.")
-			);
+			}, "ts-dim");
 		}
 		else if (App.btrfs_mode){
-			lbl_common.label = "<i>• %s\n• %s\n• %s</i>".printf(
+			bullets_common = Ui.add_bullets(card_common, {
 				_("Devices displayed above have BTRFS file systems."),
 				_("BTRFS snapshots are saved on system partition. Other partitions are not supported."),
 				_("Snapshots are saved to /timeshift-btrfs on selected partition. Other locations are not supported.")
-			);
+			}, "ts-dim");
 		}
 		else {
-			lbl_common.label = "<i>• %s\n• %s\n• %s</i>".printf(
+			bullets_common = Ui.add_bullets(card_common, {
 				_("Devices displayed above have Linux file systems."),
 				_("Devices with Windows file systems are not supported (NTFS, FAT, etc)."),
 				_("Snapshots are saved to /timeshift on selected partition. Other locations are not supported.")
-			);
+			}, "ts-dim");
 		}
 
 		opt_local.active = !is_ssh;
@@ -528,10 +541,7 @@ class BackupDeviceBox : Gtk.Box{
 
 		btn_refresh.visible = !is_ssh;
 		vbox_ssh.visible = is_ssh;
-
-		if (is_ssh){
-			vbox_ssh.visible = true;
-		}
+		card_common.visible = true;
 	}
 
 	private void init_tv_devices(){
@@ -603,7 +613,7 @@ class BackupDeviceBox : Gtk.Box{
 
 			var expander = new Gtk.TreeExpander();
 
-			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4);
+			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
 
 			var img = new Gtk.Image();
 			img.pixel_size = 16;
@@ -738,11 +748,10 @@ class BackupDeviceBox : Gtk.Box{
 		infobar_location = new Banner();
 		append(infobar_location);
 
-		var card = Ui.add_card(this);
+		card_common = Ui.add_card(this);
+		card_common.visible = false; // empty until update_location_widgets()
 
-		var label = add_label_markup(card, "");
-		label.add_css_class("ts-dim");
-		lbl_common = label;
+		bullets_common = Ui.add_bullets(card_common, {}, "ts-dim");
 	}
 
 	private void try_change_device(Device dev){
@@ -855,8 +864,8 @@ class BackupDeviceBox : Gtk.Box{
 		
 		// TODO: call check on repo directly
 		
-		message = escape_html(message);
-		details = escape_html(details);
+		message = message;
+		details = details;
 		
 		if (App.live_system()){
 			

@@ -37,6 +37,8 @@ class SnapshotBackendBox : Gtk.Box{
 	private Gtk.CheckButton opt_rsync;
 	private Gtk.CheckButton opt_btrfs;
 	private Gtk.Label lbl_description;
+	private Gtk.Box bullets_description;
+	private Gtk.Box description_box;
 	private Gtk.Window parent_window;
 	
 	public signal void type_changed();
@@ -60,6 +62,8 @@ class SnapshotBackendBox : Gtk.Box{
 
 		Ui.add_title(this, _("Select Snapshot Type"));
 
+		Ui.add_dim_label(this, _("How snapshots are created and where they can be stored."));
+
 		var vbox = Ui.add_card(this, Gtk.Orientation.VERTICAL, Ui.Spacing.XS);
 		
 		add_opt_rsync(vbox);
@@ -73,9 +77,8 @@ class SnapshotBackendBox : Gtk.Box{
 
 	private void add_opt_rsync(Gtk.Box hbox){
 
-		var opt = new Gtk.CheckButton.with_label(_("RSYNC"));
-		opt.set_tooltip_markup(_("Create snapshots using RSYNC tool and hard-links"));
-		hbox.append(opt);
+		var opt = Ui.add_radio(hbox, _("RSYNC"), null);
+		opt.set_tooltip_text(_("Create snapshots using RSYNC tool and hard-links"));
 		opt_rsync = opt;
 
 		opt_rsync.toggled.connect(()=>{
@@ -91,10 +94,8 @@ class SnapshotBackendBox : Gtk.Box{
 
 	private void add_opt_btrfs(Gtk.Box hbox){
 
-		var opt = new Gtk.CheckButton.with_label(_("BTRFS"));
-		opt.set_group(opt_rsync);
-		opt.set_tooltip_markup(_("Create snapshots using BTRFS"));
-		hbox.append(opt);
+		var opt = Ui.add_radio(hbox, _("BTRFS"), opt_rsync);
+		opt.set_tooltip_text(_("Create snapshots using BTRFS"));
 		opt_btrfs = opt;
 
         if (!check_for_btrfs_tools()) {
@@ -148,17 +149,12 @@ class SnapshotBackendBox : Gtk.Box{
 		scrolled.vexpand = true;
 		this.append(scrolled);
 
-		var lbl = new Gtk.Label("");
-		lbl.set_use_markup(true);
-		lbl.xalign = (float) 0.0;
-		lbl.yalign = (float) 0.0;
-		lbl.wrap = true;
-		lbl.wrap_mode = Pango.WrapMode.WORD;
-		lbl.add_css_class("ts-dim");
-		lbl.vexpand = true;
-		scrolled.set_child(lbl);
+		description_box = new Gtk.Box(Gtk.Orientation.VERTICAL, Ui.Spacing.XS);
+		scrolled.set_child(description_box);
 
-		lbl_description = lbl;
+		lbl_description = Ui.add_heading(description_box, "");
+
+		bullets_description = Ui.add_bullets(description_box, {}, "ts-dim");
 	}
 
 	private void update_description(){
@@ -167,39 +163,30 @@ class SnapshotBackendBox : Gtk.Box{
 		 * before add_description() has created the label. */
 		if (lbl_description == null){ return; }
 
-		string bullet = "• ";
-		
+		description_box.remove(bullets_description);
+
 		if (opt_btrfs.active){
-			string txt = "<b>" + _("BTRFS Snapshots") + "</b>\n\n";
+			lbl_description.label = _("BTRFS Snapshots");
 
-			txt += bullet + _("Snapshots are created using the built-in features of the BTRFS file system.") + "\n\n";
-			
-			txt += bullet + _("Snapshots are created and restored instantly. Snapshot creation is an atomic transaction at the file system level.") + "\n\n";
-
-			txt += bullet + _("Snapshots are restored by replacing system subvolumes. Since files are never copied, deleted or overwritten, there is no risk of data loss. The existing system is preserved as a new snapshot after restore.") + "\n\n";
-			
-			txt += bullet + _("Snapshots are perfect, byte-for-byte copies of the system. Nothing is excluded.") + "\n\n";
-
-			txt += bullet + _("Snapshots are saved on the same disk from which they are created (system disk). Storage on other disks is not supported. If system disk fails then snapshots stored on it will be lost along with the system.") + "\n\n";
-
-			txt += bullet + _("Size of BTRFS snapshots are initially zero. As system files gradually change with time, data gets written to new data blocks which take up disk space (copy-on-write). Files in the snapshot continue to point to original data blocks.") + "\n\n";
-
-			txt += bullet + _("OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout (@ and @home subvolumes). Other layouts are not supported.") + "\n\n";
-			
-			lbl_description.label = txt;
+			bullets_description = Ui.add_bullets(description_box, {
+				_("Snapshots are created using the built-in features of the BTRFS file system."),
+				_("Snapshots are created and restored instantly. Snapshot creation is an atomic transaction at the file system level."),
+				_("Snapshots are restored by replacing system subvolumes. Since files are never copied, deleted or overwritten, there is no risk of data loss. The existing system is preserved as a new snapshot after restore."),
+				_("Snapshots are perfect, byte-for-byte copies of the system. Nothing is excluded."),
+				_("Snapshots are saved on the same disk from which they are created (system disk). Storage on other disks is not supported. If system disk fails then snapshots stored on it will be lost along with the system."),
+				_("Size of BTRFS snapshots are initially zero. As system files gradually change with time, data gets written to new data blocks which take up disk space (copy-on-write). Files in the snapshot continue to point to original data blocks."),
+				_("OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout (@ and @home subvolumes). Other layouts are not supported.")
+			}, "ts-dim");
 		}
 		else{
-			string txt = "<b>" + _("RSYNC Snapshots") + "</b>\n\n";
+			lbl_description.label = _("RSYNC Snapshots");
 
-			txt += bullet + _("Snapshots are created by creating copies of system files using rsync, and hard-linking unchanged files from previous snapshot.") + "\n\n";
-			
-			txt += bullet + _("All files are copied when first snapshot is created. Subsequent snapshots are incremental. Unchanged files will be hard-linked from the previous snapshot if available.") + "\n\n";
-
-			txt += bullet + _("Snapshots can be saved to any disk formatted with a Linux file system. Saving snapshots to non-system or external disk allows the system to be restored even if system disk is damaged or re-formatted.") + "\n\n";
-
-			txt += bullet + _("Files and directories can be excluded to save disk space.") + "\n\n";
-
-			lbl_description.label = txt;
+			bullets_description = Ui.add_bullets(description_box, {
+				_("Snapshots are created by creating copies of system files using rsync, and hard-linking unchanged files from previous snapshot."),
+				_("All files are copied when first snapshot is created. Subsequent snapshots are incremental. Unchanged files will be hard-linked from the previous snapshot if available."),
+				_("Snapshots can be saved to any disk formatted with a Linux file system. Saving snapshots to non-system or external disk allows the system to be restored even if system disk is damaged or re-formatted."),
+				_("Files and directories can be excluded to save disk space.")
+			}, "ts-dim");
 		}
 	}
 	
@@ -214,12 +201,12 @@ class SnapshotBackendBox : Gtk.Box{
 		// available while snapshots are sent to a remote host
 		if (App.backup_location_type == "ssh"){
 			opt_btrfs.sensitive = false;
-			opt_btrfs.set_tooltip_markup(_("Not available for remote locations"));
+			opt_btrfs.set_tooltip_text(_("Not available for remote locations"));
 			opt_rsync.active = true;
 		}
 		else if (check_for_btrfs_tools()){
 			opt_btrfs.sensitive = true;
-			opt_btrfs.set_tooltip_markup(_("Create snapshots using BTRFS"));
+			opt_btrfs.set_tooltip_text(_("Create snapshots using BTRFS"));
 		}
 		
 		opt_btrfs.active = App.btrfs_mode;

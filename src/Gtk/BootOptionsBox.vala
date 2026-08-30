@@ -50,6 +50,8 @@ class BootOptionsBox : Gtk.Box{
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
 
+		Ui.add_title(this, _("Bootloader Options"));
+
 		Ui.add_dim_label(this, _("[For Experienced Users] Change these settings if the restored system fails to boot."));
 
 		// options
@@ -80,7 +82,6 @@ class BootOptionsBox : Gtk.Box{
 			var list_item = (Gtk.ListItem) object;
 			var lbl = new Gtk.Label("");
 			lbl.xalign = (float) 0.0;
-			lbl.use_markup = true;
 			list_item.set_child(lbl);
 		});
 
@@ -90,10 +91,12 @@ class BootOptionsBox : Gtk.Box{
 			var dev = (Device) list_item.get_item();
 
 			if (dev.type == "disk"){
-				lbl.label = "<b>%s (MBR)</b>".printf(dev.description_formatted());
+				lbl.label = "%s (MBR)".printf(dev.description());
+				Ui.set_text_style(lbl, "ts-heading");
 			}
 			else{
-				lbl.label = GLib.Markup.escape_text(dev.description());
+				lbl.label = dev.description();
+				Ui.set_text_style(lbl, "ts-body");
 			}
 		});
 
@@ -106,7 +109,6 @@ class BootOptionsBox : Gtk.Box{
 			save_grub_device_selection();
 		});
 
-		/*string tt = "<b>" + _("** Advanced Users **") + "</b>\n\n"+ _("Skips bootloader (re)installation on target device.\nFiles in /boot directory on target partition will remain untouched.\n\nIf you are restoring a system that was bootable previously then it should boot successfully. Otherwise the system may fail to boot.");*/
 
 		add_chk_update_initramfs();
 
@@ -117,7 +119,7 @@ class BootOptionsBox : Gtk.Box{
 		
 		var chk = new CheckButton.with_label(_("(Re)install GRUB2 on:"));
 		chk.active = false;
-		chk.set_tooltip_markup(_("Re-installs the GRUB2 bootloader on the selected device."));
+		chk.set_tooltip_text(_("Re-installs the GRUB2 bootloader on the selected device."));
 		option_box.append(chk);
 		chk_reinstall_grub = chk;
 
@@ -133,7 +135,7 @@ class BootOptionsBox : Gtk.Box{
 		//chk_update_initramfs
 		var chk = new CheckButton.with_label(_("Update initramfs"));
 		chk.active = false;
-		chk.set_tooltip_markup(_("Re-generates initramfs for all installed kernels. This is generally not needed. Select this only if the restored system fails to boot."));
+		chk.set_tooltip_text(_("Re-generates initramfs for all installed kernels. This is generally not needed. Select this only if the restored system fails to boot."));
 		option_box.append(chk);
 		chk_update_initramfs = chk;
 
@@ -147,7 +149,7 @@ class BootOptionsBox : Gtk.Box{
 		//chk_update_grub
 		var chk = new CheckButton.with_label(_("Update GRUB menu"));
 		chk.active = false;
-		chk.set_tooltip_markup(_("Updates the GRUB menu entries (recommended). This is safe to run and should be left selected."));
+		chk.set_tooltip_text(_("Updates the GRUB menu entries (recommended). This is safe to run and should be left selected."));
 		option_box.append(chk);
 		chk_update_grub = chk;
 

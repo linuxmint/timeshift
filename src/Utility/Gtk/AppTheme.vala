@@ -69,11 +69,13 @@ public class AppTheme : GLib.Object {
 
 	public static bool prefer_dark { get; private set; default = false; }
 	public static string accent_key { get; private set; default = ThemeStyle.DEFAULT_ACCENT; }
+	public static bool high_contrast { get; private set; default = false; }
 
 	// system-reported --------------------------------------------------
 
 	private static bool system_dark = false;
 	private static string? system_accent = null;   // null: portal has no accent
+	private static bool system_high_contrast = false;
 
 	// user preferences (timeshift.json) --------------------------------
 
@@ -90,6 +92,7 @@ public class AppTheme : GLib.Object {
 	private static bool css_loaded = false;
 	private static bool last_dark = false;
 	private static string last_accent = "";
+	private static bool last_hc = false;
 
 	private static string? user_gtk_theme = null;
 	private static string? user_icon_theme = null;
@@ -123,14 +126,22 @@ public class AppTheme : GLib.Object {
 		var display = Gdk.Display.get_default();
 		if (display == null){ return; }
 
+		/* The user's environment (dconf path, theme names) is needed on every
+		 * path: the dconf watch is the live channel when the bus refuses root,
+		 * and the icon theme matters whether or not the portal answered. */
+		read_user_env();
+
 		bool found = read_from_portal();
 
 		if (!found){
-			read_from_user_gsettings();
+			read_appearance_gsettings();
 		}
 
 		gtk_settings = Gtk.Settings.get_for_display(display);
 
+		/* Theme-name writes below must stay BEFORE subscribe(): its
+		 * notify::gtk-theme-name handler would otherwise see our own
+		 * assignment. */
 		if (gtk_settings != null){
 
 			/* Adopting the user's icon theme matters beyond looks: Yaru carries
@@ -231,19 +242,24 @@ public class AppTheme : GLib.Object {
 			accent = ThemeStyle.DEFAULT_ACCENT;
 		}
 
-		// repeated portal signals must not trigger a full restyle
-		if (css_loaded && (dark == last_dark) && (accent == last_accent)){ return; }
+		bool hc = system_high_contrast;
 
-		prefer_dark = dark;
-		accent_key = accent;
-		last_dark = dark;
-		last_accent = accent;
+		// repeated portal signals must not trigger a full restyle
+		if (css_loaded && (dark == last_dark) && (accent == last_accent) && (hc == last_hc)){ return; }
 
 		if (provider != null){
-			var palette = ThemeStyle.resolve(dark, accent);
-			provider.load_from_string(ThemeStyle.build_css(palette));
+			var palette = ThemeStyle.resolve(dark, accent, hc);
+			provider.load_from_string(ThemeStyle.build_css(palette, hc));
 			css_loaded = true;
 		}
+
+		// recorded only once applied, so a display-less run cannot lie
+		prefer_dark = dark;
+		accent_key = accent;
+		high_contrast = hc;
+		last_dark = dark;
+		last_accent = accent;
+		last_hc = hc;
 
 		if (gtk_settings != null){
 			applying = true;
@@ -251,7 +267,7 @@ public class AppTheme : GLib.Object {
 			applying = false;
 		}
 
-		log_debug("AppTheme: css reloaded dark=%s accent=%s".printf(dark.to_string(), accent));
+		log_debug("AppTheme: css reloaded dark=%s accent=%s hc=%s".printf(dark.to_string(), accent, hc.to_string()));
 
 		get_default().changed();
 	}
@@ -319,6 +335,13 @@ public class AppTheme : GLib.Object {
 			return true;
 		}
 
+		if (key == "contrast"){
+			if (!v.is_of_type(GLib.VariantType.UINT32)){ return false; }
+			system_high_contrast = (v.get_uint32() == 1);
+			log_debug("AppTheme: portal contrast: %u".printf(v.get_uint32()));
+			return true;
+		}
+
 		if (key == "accent-color"){
 			if (!v.is_of_type(new GLib.VariantType("(ddd)"))){ return false; }
 			double r, g, b;
@@ -371,10 +394,14 @@ public class AppTheme : GLib.Object {
 
 			gtk_settings.notify["gtk-theme-name"].connect(() => {
 				if (applying || (bus_sub_id != 0)){ return; }
+				// a "-dark" name can only add darkness; a plain name says
+				// nothing about the colour-scheme preference
 				bool implies_dark;
 				normalise_theme_name(gtk_settings.gtk_theme_name, out implies_dark);
-				system_dark = implies_dark;
-				refresh();
+				if (implies_dark && !system_dark){
+					system_dark = true;
+					refresh();
+				}
 			});
 		}
 	}
@@ -401,11 +428,11 @@ public class AppTheme : GLib.Object {
 
 	// desktop preference: gsettings fallback ---------------------------
 
-	private static void read_from_user_gsettings(){
-
-		/* Read the desktop user's dconf database by pointing HOME and the
-		 * session bus at theirs -- deliberately NOT via exec_user_async(), which
-		 * shells out through pkexec and would raise an auth prompt at startup. */
+	/* Locates the desktop user's dconf database and reads their theme names.
+	 * Reads the database by pointing HOME and the session bus at theirs --
+	 * deliberately NOT via exec_user_async(), which shells out through pkexec
+	 * and would raise an auth prompt at startup. */
+	private static void read_user_env(){
 
 		int uid = TeeJee.System.get_user_id();
 		if (uid <= 0){ return; }
@@ -429,8 +456,6 @@ public class AppTheme : GLib.Object {
 		gsettings_prefix = prefix;
 		dconf_db_path = home + "/.config/dconf/user";
 
-		read_appearance_gsettings();
-
 		user_gtk_theme = read_gsetting(prefix, "gtk-theme");
 		user_icon_theme = read_gsetting(prefix, "icon-theme");
 
@@ -438,8 +463,10 @@ public class AppTheme : GLib.Object {
 		if (user_icon_theme.length == 0){ user_icon_theme = null; }
 	}
 
-	/* The two keys that change at runtime; also re-read by the dconf watch. */
+	/* The keys that change at runtime; also re-read by the dconf watch. */
 	private static void read_appearance_gsettings(){
+
+		if (gsettings_prefix.length == 0){ return; }
 
 		string scheme = read_gsetting(gsettings_prefix, "color-scheme");
 		system_dark = (scheme == "prefer-dark");
@@ -449,7 +476,10 @@ public class AppTheme : GLib.Object {
 			system_accent = accent;
 		}
 
-		log_debug("AppTheme: user gsettings color-scheme: %s accent-color: %s".printf(scheme, accent));
+		string hc = read_gsetting(gsettings_prefix, "high-contrast", "org.gnome.desktop.a11y.interface");
+		system_high_contrast = (hc == "true");
+
+		log_debug("AppTheme: user gsettings color-scheme: %s accent-color: %s high-contrast: %s".printf(scheme, accent, hc));
 	}
 
 	/* Live channel that works as root: dconf rewrites its database file on
@@ -486,12 +516,12 @@ public class AppTheme : GLib.Object {
 		}
 	}
 
-	private static string read_gsetting(string prefix, string key){
+	private static string read_gsetting(string prefix, string key, string schema = "org.gnome.desktop.interface"){
 
 		string std_out, std_err;
 
 		int status = exec_sync(
-			prefix + "gsettings get org.gnome.desktop.interface " + key,
+			prefix + "gsettings get " + schema + " " + key,
 			out std_out, out std_err);
 
 		if ((status != 0) || (std_out == null)){ return ""; }

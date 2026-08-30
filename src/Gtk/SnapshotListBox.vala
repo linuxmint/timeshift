@@ -62,6 +62,7 @@ class SnapshotListBox : Gtk.Box{
 	private GLib.SimpleAction mi_view_log_restore;
 	
 	private Gtk.Window parent_window;
+	private bool context_menu_enabled = true;
 
 	public signal void delete_selected();
 	public signal void mark_selected();
@@ -176,7 +177,7 @@ class SnapshotListBox : Gtk.Box{
 
 			if (App.btrfs_mode){
 
-				txt += "<b>%s: %d</b>\n".printf(_("Subvolumes"), bak.subvolumes.values.size);
+				txt += "%s: %d\n".printf(_("Subvolumes"), bak.subvolumes.values.size);
 
 				foreach(var subvol in bak.subvolumes_sorted){
 					if (txt.length > 0) { txt += "\n"; }
@@ -194,7 +195,7 @@ class SnapshotListBox : Gtk.Box{
 
 		case SnapshotField.TAGS:
 
-			return "<b>%s</b>\n\nO \t%s\nB \t%s\nH \t%s\nD \t%s\nW \t%s\nM \t%s".printf(
+			return "%s\n\nO \t%s\nB \t%s\nH \t%s\nD \t%s\nW \t%s\nM \t%s".printf(
 				_("Snapshot Levels"),
 				_("On demand (manual)"),
 				_("Boot"),
@@ -214,20 +215,17 @@ class SnapshotListBox : Gtk.Box{
 		factory.setup.connect((object) => {
 			var list_item = (Gtk.ListItem) object;
 
-			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4);
+			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
 
 			if (field == SnapshotField.DATE){
 				var img = new Gtk.Image();
 				img.pixel_size = 16;
-				img.margin_start = 4;
-				img.margin_end = 4;
 				img.set_from_icon_name("x-office-calendar-symbolic");
 				img.add_css_class("ts-dim");
 				hbox.append(img);
 			}
 
 			var lbl = new Gtk.Label("");
-			lbl.use_markup = true;
 
 			/* Ellipsizing makes a label report a minimum width near zero, so a
 			 * column with no fixed_width measures only as wide as its header.
@@ -255,13 +253,13 @@ class SnapshotListBox : Gtk.Box{
 
 			string txt = snapshot_field_text(bak, field);
 
-			lbl.label = bak.live ? "<b>%s</b>".printf(GLib.Markup.escape_text(txt))
-				: GLib.Markup.escape_text(txt);
+			lbl.label = txt;
+			Ui.set_text_style(lbl, bak.live ? "ts-heading" : "ts-body");
 			lbl.sensitive = !bak.marked_for_deletion;
 
 			string tip = snapshot_tooltip(bak, field);
 			if (tip.length > 0){
-				hbox.set_tooltip_markup(tip);
+				hbox.set_tooltip_text(tip);
 			}
 		});
 
@@ -283,8 +281,8 @@ class SnapshotListBox : Gtk.Box{
 
 			var editable = new Gtk.EditableLabel("");
 			editable.hexpand = true;
-			editable.set_tooltip_markup(
-				_("<b>Comments</b> (double-click to edit)") + "\n"
+			editable.set_tooltip_text(
+				_("Comments (double-click to edit)") + "\n"
 				+ _("Snapshots with comments are not auto-deleted"));
 
 			/* commit when editing ends, mirroring CellRendererText::edited */
@@ -360,6 +358,7 @@ class SnapshotListBox : Gtk.Box{
 		var gesture = new Gtk.GestureClick();
 		gesture.button = Gdk.BUTTON_SECONDARY;
 		gesture.pressed.connect((n_press, x, y) => {
+			if (!context_menu_enabled){ return; }
 			/* GTK 4.12 deprecates translate_coordinates in favour of compute_point */
 			Graphene.Point dest;
 			var src = Graphene.Point(){ x = (float) x, y = (float) y };
@@ -373,6 +372,7 @@ class SnapshotListBox : Gtk.Box{
 		// keyboard: Menu key and Shift+F10
 		var keys = new Gtk.EventControllerKey();
 		keys.key_pressed.connect((keyval, keycode, state) => {
+			if (!context_menu_enabled){ return false; }
 			if ((keyval == Gdk.Key.Menu)
 				|| ((keyval == Gdk.Key.F10) && ((state & Gdk.ModifierType.SHIFT_MASK) != 0))){
 				menu_snapshots_popup(0, 0);
@@ -449,10 +449,11 @@ class SnapshotListBox : Gtk.Box{
 		col_unshared.visible = !App.btrfs_mode || App.btrfs_qgroups_enabled;
 	}
 
+	/* Disables the right-click / Menu-key menu. GTK4 event controllers are
+	 * owned by the widget, so the handlers stay connected and check the flag. */
 	public void hide_context_menu(){
 
-		/* GTK4 event controllers are owned by the widget, so there is no
-		 * handler to disconnect; just make sure the popover is down. */
+		context_menu_enabled = false;
 
 		if (menu_snapshots != null){
 			menu_snapshots.popdown();

@@ -32,25 +32,7 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
-class RestoreBox : Gtk.Box{
-
-	private TaskProgressBox progress;
-
-	public Gtk.Label lbl_header;
-	public Gtk.Label lbl_msg;
-	public Gtk.Label lbl_status;
-	public Gtk.Label lbl_remaining;
-	public Gtk.ProgressBar progressbar;
-	public Gtk.Label lbl_unchanged;
-	public Gtk.Label lbl_created;
-	public Gtk.Label lbl_deleted;
-	public Gtk.Label lbl_modified;
-	public Gtk.Label lbl_checksum;
-	public Gtk.Label lbl_size;
-	public Gtk.Label lbl_timestamp;
-	public Gtk.Label lbl_permissions;
-	public Gtk.Label lbl_owner;
-	public Gtk.Label lbl_group;
+class RestoreBox : TaskProgressBox {
 
 	private Gtk.Window parent_window;
 
@@ -58,31 +40,11 @@ class RestoreBox : Gtk.Box{
 
 	public RestoreBox(Gtk.Window _parent_window) {
 
+		base(App.dry_run ? _("Comparing Files (Dry Run)...") : _("Restoring Snapshot..."), true);
+
 		log_debug("RestoreBox: RestoreBox()");
-		
-		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
+
 		parent_window = _parent_window;
-
-		progress = new TaskProgressBox(
-			App.dry_run ? _("Comparing Files (Dry Run)...") : _("Restoring Snapshot..."), true);
-		append(progress);
-
-		lbl_header = progress.lbl_header;
-		lbl_msg = progress.lbl_msg;
-		lbl_status = progress.lbl_status;
-		lbl_remaining = progress.lbl_remaining;
-		progressbar = progress.progressbar;
-		lbl_unchanged = progress.lbl_unchanged;
-		lbl_created = progress.lbl_created;
-		lbl_deleted = progress.lbl_deleted;
-		lbl_modified = progress.lbl_modified;
-		lbl_checksum = progress.lbl_checksum;
-		lbl_size = progress.lbl_size;
-		lbl_timestamp = progress.lbl_timestamp;
-		lbl_permissions = progress.lbl_permissions;
-		lbl_owner = progress.lbl_owner;
-		lbl_group = progress.lbl_group;
 
 		log_debug("RestoreBox: RestoreBox(): exit");
     }
@@ -95,7 +57,7 @@ class RestoreBox : Gtk.Box{
 			parent_window.visible = false;
 		}
 
-		progress.set_header(App.dry_run ? _("Comparing Files (Dry Run)...") : _("Restoring Snapshot..."));
+		set_header(App.dry_run ? _("Comparing Files (Dry Run)...") : _("Restoring Snapshot..."));
 		
 		try {
 			thread_is_running = true;
@@ -115,7 +77,7 @@ class RestoreBox : Gtk.Box{
 		
 		while (thread_is_running){
 
-			status_line = escape_html(App.task.status_line);
+			status_line = App.task.status_line;
 			
 			if (status_line != last_status_line){
 				

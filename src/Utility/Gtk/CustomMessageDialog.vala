@@ -38,6 +38,7 @@ public class CustomMessageDialog : Gtk.Window {
 	private Gtk.Label lbl_msg;
 	private Gtk.ScrolledWindow sw_msg;
 	private Gtk.Box bbox;
+	private Gtk.Button? btn_default = null;
 
 	private string msg_title;
 	private string msg_body;
@@ -186,6 +187,7 @@ public class CustomMessageDialog : Gtk.Window {
 
 		if (is_default){
 			button.add_css_class("suggested-action");
+			btn_default = button;
 		}
 
 		button.clicked.connect(() => {
@@ -199,6 +201,15 @@ public class CustomMessageDialog : Gtk.Window {
 		if (is_default){
 			button.grab_focus();
 		}
+	}
+
+	/* The default answer destroys something (delete, abandon a restore):
+	 * style it as such instead of as the suggested action. */
+	public void set_destructive(){
+
+		if (btn_default == null){ return; }
+		btn_default.remove_css_class("suggested-action");
+		btn_default.add_css_class("destructive-action");
 	}
 
 	private void quit_loop(){

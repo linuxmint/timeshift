@@ -81,6 +81,8 @@ public class ThemeStyle : GLib.Object {
 	public const int SPACE_M = 18;
 	public const int SPACE_L = 24;
 	public const int SPACE_XL = 36;
+	public const int BORDER = 1;
+	public const int BORDER_HC = 2;   // high contrast
 
 	public const string DEFAULT_ACCENT = "blue";
 
@@ -92,15 +94,17 @@ public class ThemeStyle : GLib.Object {
 
 		if (_presets == null){
 			_presets = {
+				/* bg values are GNOME's accents, red and slate darkened a step so
+				 * white text on them clears 4.5:1 (info banner, list selection) */
 				{ "blue",   "#3584e4", "#0461be", "#81d0ff" },
 				{ "teal",   "#2190a4", "#007184", "#7bdff4" },
 				{ "green",  "#3a944a", "#15793b", "#78e9ab" },
 				{ "yellow", "#c88800", "#905400", "#ffc252" },
 				{ "orange", "#ed5b00", "#b62200", "#ff9c5b" },
-				{ "red",    "#e62d42", "#c00023", "#ff888c" },
+				{ "red",    "#dd2b3f", "#c00023", "#ff888c" },
 				{ "pink",   "#d56199", "#a2326c", "#ffa0d8" },
 				{ "purple", "#9141ac", "#8939a4", "#fba7ff" },
-				{ "slate",  "#6f8396", "#526678", "#a2b7c9" }
+				{ "slate",  "#657788", "#526678", "#a2b7c9" }
 			};
 		}
 
@@ -178,16 +182,16 @@ public class ThemeStyle : GLib.Object {
 		p.card_bg    = "#ffffff";
 		p.card_fg    = "rgba(0,0,0,0.8)";
 		p.fg         = "rgba(0,0,0,0.8)";
-		p.dim_fg     = "rgba(0,0,0,0.55)";
+		p.dim_fg     = "rgba(0,0,0,0.62)";   // 5.6:1 on #fafafa; .55 was 4.7 with no headroom
 		p.border     = "rgba(0,0,0,0.15)";
 		p.shade      = "rgba(0,0,0,0.07)";
 		p.accent_fg  = "#ffffff";
 		p.success_bg = "#2ec27e";
-		p.success_fg = "#ffffff";
-		p.success    = "#1b8553";
+		p.success_fg = "rgba(0,0,0,0.8)";   // white on this green is 2.3:1
+		p.success    = "#15793b";            // 5.3:1; #1b8553 was 4.4
 		p.warning_bg = "#e5a50a";
 		p.warning_fg = "rgba(0,0,0,0.8)";
-		p.warning    = "#9c6e03";
+		p.warning    = "#8a6100";            // 5.1:1; #9c6e03 was 4.3
 		p.error_bg   = "#e01b24";
 		p.error_fg   = "#ffffff";
 		p.error      = "#c30000";
@@ -209,7 +213,7 @@ public class ThemeStyle : GLib.Object {
 		p.shade      = "rgba(0,0,0,0.36)";
 		p.accent_fg  = "#ffffff";
 		p.success_bg = "#26a269";
-		p.success_fg = "#ffffff";
+		p.success_fg = "rgba(0,0,0,0.8)";   // white on this green is 3.3:1
 		p.success    = "#78e9ab";
 		p.warning_bg = "#cd9309";
 		p.warning_fg = "rgba(0,0,0,0.8)";
@@ -223,7 +227,7 @@ public class ThemeStyle : GLib.Object {
 	/* Base palette for the mode with the accent preset applied. An unknown key
 	 * falls back to the default so a stale config value can never yield an
 	 * empty colour. */
-	public static ThemePalette resolve(bool dark, string accent_key){
+	public static ThemePalette resolve(bool dark, string accent_key, bool high_contrast = false){
 
 		var p = dark ? dark_palette() : light_palette();
 
@@ -235,13 +239,40 @@ public class ThemeStyle : GLib.Object {
 
 		p.accent_bg = preset.bg;
 		p.accent = dark ? preset.standalone_dark : preset.standalone_light;
+		p.accent_fg = foreground_for(preset.bg);
+
+		if (high_contrast){
+			/* Stronger edges, opaque surfaces, no dimmed text. */
+			p.border = dark ? "#ffffff" : "#000000";
+			p.card_bg = dark ? "#000000" : "#ffffff";
+			p.view_bg = dark ? "#000000" : "#ffffff";
+			p.dim_fg = p.fg;
+			p.shade = dark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)";
+		}
 
 		return p;
 	}
 
+	/* White on dark accents, near-black on light ones -- yellow and slate
+	 * would otherwise carry white text at 3:1. Threshold is the relative
+	 * luminance at which white reaches 4.5:1. */
+	public static string foreground_for(string bg_hex){
+
+		double r, g, b;
+		parse_hex(bg_hex, out r, out g, out b);
+
+		double lum = 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
+
+		return (lum <= 0.183) ? "#ffffff" : "rgba(0,0,0,0.8)";
+	}
+
+	private static double linear(double c){
+		return (c <= 0.03928) ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+	}
+
 	// stylesheet -------------------------------------------------------
 
-	public static string build_css(ThemePalette p){
+	public static string build_css(ThemePalette p, bool high_contrast = false){
 
 		string rules = RULES;
 
@@ -256,16 +287,46 @@ public class ThemeStyle : GLib.Object {
 			}
 		}
 
-		rules = rules
-			.replace("$RADIUS_SM", RADIUS_SM.to_string())
-			.replace("$RADIUS", RADIUS.to_string())
-			.replace("$SPACE_XS", SPACE_XS.to_string())
-			.replace("$SPACE_XL", SPACE_XL.to_string())
-			.replace("$SPACE_S", SPACE_S.to_string())
-			.replace("$SPACE_M", SPACE_M.to_string())
-			.replace("$SPACE_L", SPACE_L.to_string());
+		rules = substitute_lengths(rules, high_contrast);
 
-		return define_colors(p) + swatch_rules() + rules;
+		/* Swatch rules come last: `.ts-swatch.blue` must beat
+		 * `button.ts-swatch` for background-color, and it does on specificity
+		 * alone, but keeping them after the base rule makes it robust. */
+		return define_colors(p) + rules + swatch_rules();
+	}
+
+	/* $NAME tokens -> px lengths, in one pass so no token is a prefix hazard
+	 * for another ($SPACE_M vs $SPACE_MD). */
+	private static string substitute_lengths(string css, bool high_contrast){
+
+		var lengths = new Gee.HashMap<string, int>();
+		lengths["RADIUS"] = RADIUS;
+		lengths["RADIUS_SM"] = RADIUS_SM;
+		lengths["SPACE_XS"] = SPACE_XS;
+		lengths["SPACE_S"] = SPACE_S;
+		lengths["SPACE_M"] = SPACE_M;
+		lengths["SPACE_L"] = SPACE_L;
+		lengths["SPACE_XL"] = SPACE_XL;
+		lengths["BORDER"] = high_contrast ? BORDER_HC : BORDER;
+
+		try {
+			var re = new GLib.Regex("\\$([A-Z_]+)");
+			return re.replace_eval(css, -1, 0, 0, (info, result) => {
+				string name = info.fetch(1);
+				if (lengths.has_key(name)){
+					result.append(lengths[name].to_string());
+				}
+				else {
+					log_error("ThemeStyle: unknown length token $%s".printf(name));
+					result.append("0");
+				}
+				return false;
+			});
+		}
+		catch (Error e){
+			log_error("ThemeStyle: %s".printf(e.message));
+			return css;
+		}
 	}
 
 	private static string define_colors(ThemePalette p){
@@ -275,7 +336,6 @@ public class ThemeStyle : GLib.Object {
 		sb.append("@define-color ts_window_bg %s;\n".printf(p.window_bg));
 		sb.append("@define-color ts_window_fg %s;\n".printf(p.window_fg));
 		sb.append("@define-color ts_view_bg %s;\n".printf(p.view_bg));
-		sb.append("@define-color ts_view_fg %s;\n".printf(p.view_fg));
 		sb.append("@define-color ts_card_bg %s;\n".printf(p.card_bg));
 		sb.append("@define-color ts_card_fg %s;\n".printf(p.card_fg));
 		sb.append("@define-color ts_fg %s;\n".printf(p.fg));
@@ -306,7 +366,8 @@ public class ThemeStyle : GLib.Object {
 		var sb = new StringBuilder();
 
 		foreach (var preset in presets()){
-			sb.append(".ts-swatch.%s { background-color: %s; }\n".printf(preset.key, preset.bg));
+			sb.append("button.ts-swatch.%s { background-color: %s; color: %s; }\n".printf(
+				preset.key, preset.bg, foreground_for(preset.bg)));
 		}
 		sb.append("\n");
 
@@ -322,7 +383,8 @@ public class ThemeStyle : GLib.Object {
 .ts-body { font-size: 1em; }
 .ts-caption { font-size: 0.85em; color: @ts_dim_fg; }
 .ts-dim { color: @ts_dim_fg; }
-.ts-hero-value { font-size: 2.4em; font-weight: 300; color: @ts_accent; }
+.ts-hero-value { font-size: 2.4em; font-weight: 300; color: @ts_accent; font-feature-settings: "tnum"; }
+.ts-numeric { font-feature-settings: "tnum"; }
 .ts-success { color: @ts_success; }
 .ts-warning { color: @ts_warning; }
 .ts-error { color: @ts_error; }
@@ -335,30 +397,39 @@ public class ThemeStyle : GLib.Object {
 .ts-card {
 	background-color: @ts_card_bg;
 	color: @ts_card_fg;
-	border: 1px solid @ts_border;
+	border: $BORDERpx solid @ts_border;
 	border-radius: $RADIUSpx;
 	padding: $SPACE_Mpx;
+	box-shadow: 0 1px 2px @ts_shade;
 }
 
 .ts-boxed-list {
 	background-color: @ts_view_bg;
-	border: 1px solid @ts_border;
+	border: $BORDERpx solid @ts_border;
 	border-radius: $RADIUSpx;
 }
-.ts-boxed-list listview,
-.ts-boxed-list columnview,
-.ts-boxed-list textview,
-.ts-boxed-list textview text {
+.ts-boxed-list listview {
 	background-color: transparent;
+}
+/* selection follows the app accent, not the desktop theme's */
+.ts-boxed-list listview > row:selected {
+	background-color: @ts_accent_bg;
+	color: @ts_accent_fg;
+}
+.ts-boxed-list listview > row:selected label,
+.ts-boxed-list listview > row:selected image {
+	color: @ts_accent_fg;
 }
 
 .ts-status-page { padding: $SPACE_XLpx; }
-.ts-status-page > image { -gtk-icon-size: 96px; color: @ts_dim_fg; }
+.ts-status-page > image { color: @ts_dim_fg; }
 
-/* chrome ---------------------------------------------------------- */
-
-.ts-toolbar { padding: $SPACE_Spx; border-bottom: 1px solid @ts_border; }
-.ts-wizard-actions { padding: $SPACE_Spx; border-top: 1px solid @ts_border; }
+/* app-owned progress surfaces take the accent; buttons stay themed */
+progressbar.ts-accent > trough > progress {
+	background-color: @ts_accent_bg;
+	background-image: none;
+}
+spinner.ts-accent { color: @ts_accent; }
 
 /* banners --------------------------------------------------------- */
 
@@ -370,7 +441,6 @@ public class ThemeStyle : GLib.Object {
 .ts-banner.success { background-color: @ts_success_bg; color: @ts_success_fg; }
 .ts-banner.warning { background-color: @ts_warning_bg; color: @ts_warning_fg; }
 .ts-banner.error { background-color: @ts_error_bg; color: @ts_error_fg; }
-.ts-banner label, .ts-banner image { color: inherit; }
 
 /* appearance picker ----------------------------------------------- */
 
@@ -384,13 +454,16 @@ button.ts-swatch {
 	box-shadow: none;
 	color: @ts_accent_fg;
 }
+/* "System": the resolved desktop accent, with a dashed ring to say
+ * "inherited" */
 button.ts-swatch.system {
-	background-color: transparent;
+	background-color: @ts_accent_bg;
+	color: @ts_accent_fg;
 	border-color: @ts_dim_fg;
 	border-style: dashed;
-	color: @ts_dim_fg;
 }
 button.ts-swatch:checked { border-color: @ts_fg; border-style: solid; }
+button.ts-swatch:focus-visible { outline: 2px solid @ts_accent_bg; outline-offset: 2px; }
 button.ts-swatch image { -gtk-icon-size: 14px; }
 
 /* log status dots ------------------------------------------------- */
