@@ -68,9 +68,21 @@ public class AppGtk : GLib.Object {
 
 		Main.setup_env();
 
-		Gtk.init(ref args);
+		Gtk.init();
 
 		GTK_INITIALIZED = true;
+
+		/* --debug is parsed properly further down, but AppTheme and IconManager
+		 * both run before that, so pick the flag up early or their tracing is
+		 * silently dropped. */
+		foreach (string arg in args){
+			if (arg.down() == "--debug"){ LOG_DEBUG = true; }
+		}
+
+		/* Adopt the desktop user's light/dark preference before anything is
+		 * built -- notably before IconManager.init(), so icons resolve against
+		 * the right theme first time. */
+		AppTheme.apply();
 
 		init_tmp();
 
@@ -78,6 +90,11 @@ public class AppGtk : GLib.Object {
 
 		App = new Main(args, true);
 		parse_arguments(args);
+
+		/* The config is loaded by the Main constructor, so the in-app Theme /
+		 * Accent choice can be layered on before any window exists. */
+		AppTheme.set_preferences(App.theme_mode, App.theme_accent);
+
 		App.initialize();
 		start_application();
 
@@ -154,14 +171,26 @@ public class AppGtk : GLib.Object {
 	}
 
 	public static void start_application(){
-		
+
+		/* GTK4 removes gtk_main()/gtk_main_quit(). This app runs as root under
+		 * pkexec where a session bus may be absent, and it already handles
+		 * single-instance itself via AppLock, so drive a plain GLib main loop
+		 * rather than introducing GtkApplication. */
+
+		// window icons are looked up by name in GTK4
+		Gtk.Window.set_default_icon_name("timeshift");
+
+		var loop = new GLib.MainLoop();
+
 		// show main window
 		var window = new MainWindow ();
-		window.destroy.connect(Gtk.main_quit);
-		window.show_all();
+		window.closed.connect(() => {
+			if (loop.is_running()){ loop.quit(); }
+		});
+		window.present();
 
 		// start event loop
-		Gtk.main();
+		loop.run();
 	}
 }
 

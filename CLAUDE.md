@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Timeshift is a system restore tool for Linux, written in Vala against GTK3. It is part of Linux Mint's XApp family.
+Timeshift is a system restore tool for Linux, written in Vala against GTK4. It originates in Linux Mint's XApp family, but no longer depends on libxapp (which is GTK3-only).
 
 ## Build
 
@@ -14,9 +14,9 @@ meson compile -C build
 sudo meson install -C build     # only when you actually want it installed
 ```
 
-Options (`meson_options.txt`): `-Dman=false` skips the help2man man pages, `-Dxapp=false` drops the libxapp dependency and the `XAPP` Vala define.
+Options (`meson_options.txt`): `-Dman=false` skips the help2man man pages.
 
-Build deps: `meson help2man gettext valac libgtk-3-dev libvte-2.91-dev libgee-0.8-dev libjson-glib-dev libxapp-dev`.
+Build deps: `meson help2man gettext valac libgtk-4-dev libvte-2.91-gtk4-dev libgee-0.8-dev libjson-glib-dev`.
 
 Binaries land in `build/src/timeshift` (CLI) and `build/src/timeshift-gtk` (GUI). Both refuse to run as non-root.
 
@@ -79,8 +79,8 @@ touching the wizard's positional `Tabs` enum. Two Core guards keep it working:
 would otherwise pass a null `Device` to `check_device_for_backup()` and silently
 replace the repo with `from_null()`), and `MainWindow.init_delayed()` refuses to
 fall back to `backup_parent_uuid` when a remote location is configured. Note
-that all three parent windows call `show_all()`, so conditionally hidden widgets
-need `no_show_all = true`.
+that GTK4 widgets are visible by default, so conditionally hidden widgets must
+set `visible = false` explicitly.
 
 ### RSYNC vs BTRFS
 
@@ -110,11 +110,113 @@ Long-running work subclasses `AsyncTask` (`src/Utility/AsyncTask.vala`): impleme
 
 ### GTK layer
 
-All widgets are constructed in Vala — there are no `.ui`/glade files and no GResource; images live in `src/share/timeshift/images/` and load through `IconManager`.
+All widgets are constructed in Vala — there are no `.ui`/glade files and no GResource; images live in `src/share/timeshift/images/` and load through `IconManager`. Only the three `timeshift-shield-*.svg` files and a handful of `*-symbolic.svg` fallbacks remain there; every other icon is a themed symbolic name so it recolours in dark mode.
 
-The pattern is a `*Window` owning a tabless `Gtk.Notebook` of reusable `*Box` pages (`SettingsWindow` uses a `Gtk.Stack` + `StackSwitcher` instead), with `go_prev()`/`go_next()`/`initialize_tab()` navigation driven by a private `Tabs` enum. Pages are shared between the wizard, settings, backup, restore and delete windows.
+GTK4 notes: there is no `Gtk.Application` — `AppGtk.start_application()` runs a
+plain `GLib.MainLoop`, because the GUI runs as root under pkexec where a session
+bus may be absent and `AppLock` already handles single-instance. `gtk_do_events()`
+drives `GLib.MainContext` directly (GTK4 removed `Gtk.main_iteration`), and the
+blocking `Gtk.Dialog.run()` idiom is reproduced by `CustomMessageDialog.run()`
+and by nested `GLib.MainLoop`s around the async `Gtk.FileDialog` calls, since the
+core calls these synchronously. `Gtk.Window.destroy` is a *method* in GTK4 and
+shadows the inherited `Gtk.Widget::destroy` signal — connect via
+`((Gtk.Widget) win).destroy.connect(...)`; all top-level windows derive from
+`AppWindow` and announce themselves through its `closed` signal instead.
+`IconManager` still works in `Gdk.Pixbuf` internally and converts to
+`Gdk.Texture` only at the widget boundary.
 
-Boxes mutate `App.*` fields directly, then call the blocking core method on a `new Thread<bool>()` while a `Timeout` loop calls `gtk_do_events()` and polls `App.progress_text` / the `thread_*_running` flags. Closing a wizard calls `App.cron_job_update()` to resync the schedule. `#if XAPP` blocks add XApp progress integration in `BackupBox`/`RestoreBox`/`DeleteBox`.
+#### Theme engine (`src/Utility/Gtk/AppTheme.vala`, `ThemeStyle.vala`)
+
+There is **one** `Gtk.CssProvider`, owned by `AppTheme`, installed at
+`STYLE_PROVIDER_PRIORITY_APPLICATION` (above the GTK theme, below the user's own
+`~/.config/gtk-4.0/gtk.css`). `ThemeStyle` is pure data: the light/dark
+`ThemePalette`s, nine `AccentPreset`s, and `build_css()` which emits the palette
+as `@define-color ts_*` tokens (not `var()` — Mint/Ubuntu LTS ship GTK 4.14)
+followed by the `.ts-*` rule set. **No stock selectors are styled**; everything
+is scoped under a `.ts-` class so the user's GTK theme keeps its look.
+
+Two stages at boot: `AppTheme.apply()` right after `Gtk.init()` reads the
+desktop's `color-scheme` and `accent-color` (portal `ReadAll`, falling back to
+`gsettings` run as the desktop user) and installs the provider;
+`AppTheme.set_preferences(App.theme_mode, App.theme_accent)` after `new Main()`
+layers the in-app choice on top (config keys `theme_mode` = system|light|dark,
+`theme_accent` = system|preset key; the Settings ▸ Appearance page is
+`src/Gtk/AppearanceBox.vala`). `refresh()` reloads the CSS only when the
+resolved `(dark, accent)` pair actually changes and emits
+`AppTheme.get_default().changed`.
+
+Live updates: the portal `SettingChanged` signal is subscribed when the bus is
+reachable, but **a `dbus-daemon` session bus refuses root**, so under
+sudo/pkexec the portal is usually unreachable and the one-shot read falls back
+to gsettings. The live channel that actually works as root is a
+`GLib.FileMonitor` on the user's `~/.config/dconf/user` (dconf rewrites it
+atomically on every change), debounced 300 ms, re-reading the two keys.
+`Gtk.Settings` `notify::gtk-theme-name` is the last resort. Beware the classic
+Vala trap that bit this file: static field initializers only run in
+`class_init`, so a static-only class must instantiate itself (`get_default()`)
+before touching its static strings. A gtk-theme named `*-dark` is normalised to
+its base name so `gtk-application-prefer-dark-theme` can pick the variant.
+`TIMESHIFT_THEME_CSS=/path.css` under `--debug` swaps the rule set for live
+iteration without a rebuild.
+
+#### Layout vocabulary (`src/Utility/Gtk/Ui.vala`)
+
+`Ui.Spacing` {XS 6, SM 12, MD 18, LG 24, XL 36} is the only spacing scale;
+**containers own outer margins, boxes own none** (a page gets `.ts-page`
+padding from the window that hosts it, never `set_margin_all(this, …)` in a
+Box constructor). Text is styled with classes, never Pango markup:
+`Ui.add_title/add_heading/add_body/add_caption/add_dim_label` attach
+`.ts-title-1/-2`, `.ts-heading`, `.ts-body`, `.ts-caption`, `.ts-dim`.
+`TeeJee.GtkHelper.add_label` is plain text; the explicit
+`add_label_markup` exists for the few strings the core generates as markup
+(`RestoreSummaryBox`, `SnapshotBackendBox` help, `BackupDeviceBox.lbl_common`).
+Surfaces: `Ui.add_card` (`.ts-card`), `Ui.add_boxed_list` (a scroller with
+`.ts-boxed-list` around a ColumnView/ListView), `Clamp` (caps form pages at
+720 px — never clamp a page whose main content is a list). Reusable pieces:
+`StatusPage` (empty state), `StatusCard` (shield + title + subtitle),
+`StatTile` (hero number), `TaskProgressBox` (spinner/progress/counts shared by
+backup, restore, delete, estimate and log parsing), `SummaryBox` (finish page),
+`Banner` (`Gtk.InfoBar` replacement; `set_message(text, MessageType)`, INFO for
+guidance, WARNING/ERROR for problems — plain text, no markup).
+
+#### Windows
+
+Every window has a `Gtk.HeaderBar` (client-side decorations). `MainWindow` is
+non-modal: Create + a linked Restore/Delete/Browse group at the start, the menu
+(Settings, Setup Wizard, logs, pause, about) at the end; the body is a
+`Gtk.Stack` of the snapshot list or a `StatusPage` empty state, over a
+`StatusCard` + two `StatTile`s. `SettingsWindow` puts its `StackSwitcher` in the
+header and saves on close (no OK button). The wizards (`SetupWizardWindow`,
+`BackupWindow`, `RestoreWindow`, `DeleteWindow`) derive from
+`src/Utility/Gtk/WizardWindow.vala`: Cancel/Back at the start, Next/Finish at
+the end, a "Step n of m" subtitle driven by the subclass's `route()` (the pages
+actually on the current path — btrfs skips Estimate, a live system ends at
+Location, restore starts at Users/Summary in btrfs mode), and
+`set_closable(false)` while work is in flight, which hides the close button and
+routes Alt+F4 to `on_cancel()`. Pages are still a tabless `Gtk.Notebook` with
+the `Tabs` enums and `go_next()/initialize_tab()` logic; `add_page(widget,
+clamp)` wraps them. Call `update_step_label()` first in `initialize_tab()`,
+because several pages block inside it.
+
+Lists use the GTK4 widgets, not the deprecated tree stack: `Gtk.ColumnView` /
+`Gtk.ListView` over a `GLib.ListStore`, with a `Gtk.SignalListItemFactory` per
+column. The domain classes (`Snapshot`, `Device`, `SystemUser`,
+`AppExcludeEntry`, `FileItem`) are already GObjects and go into the store
+directly; where a row needs extra state or a nullable device it gets a small
+wrapper (`UserRow`, `ExcludePatternRow`, `RsyncLogRow`, `RestoreDeviceOption`,
+`DeviceRow`). `BackupDeviceBox`'s disk/partition hierarchy is a
+`Gtk.TreeListModel` plus `Gtk.TreeExpander`; `RsyncLogBox` filters with
+`Gtk.FilterListModel` + `Gtk.CustomFilter`; `SnapshotListBox` sorts natively via
+per-column `Gtk.CustomSorter`s rather than re-sorting and rebuilding the model.
+Drop-downs are `Gtk.DropDown`. A factory's `bind` handler is called on recycled
+rows, so handlers connected in `setup` read their row back via `get_data()`
+rather than capturing it.
+
+Boxes mutate `App.*` fields directly, then call the blocking core method on a `new Thread<bool>()` while a `Timeout` loop calls `gtk_do_events()` and polls `App.progress_text` / the `thread_*_running` flags. Closing a wizard calls `App.cron_job_update()` to resync the schedule. `LauncherEntry` (`src/Utility/LauncherEntry.vala`) reports taskbar progress over the Unity LauncherEntry DBus protocol in `BackupBox`/`RestoreBox`/`DeleteBox`/`EstimateBox`; it replaced libxapp, which has no GTK4 build.
+
+The restore-time "exclude applications" pages were removed (they had been
+unreachable for years); the core still honours names persisted under
+`exclude-apps` in the config.
 
 ## Running as root
 
@@ -132,6 +234,6 @@ Neither binary escalates itself; both hard-exit with a message if not root. Esca
 ## Conventions when editing
 
 - A new `.vala` file must be added to the matching `sources_*` list in `src/meson.build`, and to `po/POTFILES` if it contains translatable strings.
-- Mark user-visible strings with `_()`. Regenerate `timeshift.pot` by running `./makepot` from the repo root.
+- Mark user-visible strings with `_()`. Regenerate `timeshift.pot` by running `./makepot` from the repo root. `makepot` passes no `--from-code`, so a **non-ASCII character inside a `_()` string aborts xgettext** and leaves the pot half-written — keep msgids ASCII.
 - **Do not edit `po/*.po`** — translations are managed on Launchpad.
 - Vala sources indent with tabs; `.editorconfig` only governs `meson.build` files (2 spaces). Every `.vala` file carries the GPL-2.0-or-later header.

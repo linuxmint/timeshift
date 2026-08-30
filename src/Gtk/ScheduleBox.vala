@@ -34,9 +34,8 @@ using TeeJee.Misc;
 
 class ScheduleBox : Gtk.Box{
 	
-	private Gtk.Image img_shield;
-	private Gtk.Label lbl_shield;
-	private Gtk.Label lbl_shield_subnote;
+	private StatusCard status_card;
+	private Gtk.Box levels_box;
 	private Gtk.SizeGroup sg_title;
 	private Gtk.SizeGroup sg_subtitle;
 	private Gtk.SizeGroup sg_count;
@@ -50,18 +49,19 @@ class ScheduleBox : Gtk.Box{
 		log_debug("ScheduleBox: ScheduleBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
 		
-		add_label_header(this, _("Select Snapshot Levels"), true);
+		Ui.add_title(this, _("Select Snapshot Levels"));
+
+		levels_box = Ui.add_card(this, Gtk.Orientation.VERTICAL, Ui.Spacing.XS);
 
 		Gtk.CheckButton chk_m, chk_w, chk_d, chk_h, chk_b = null;
 		Gtk.SpinButton spin_m, spin_w, spin_d, spin_h, spin_b;
 
 		// monthly
 		
-		add_schedule_option(this, _("Monthly"), _("Create one per month"), out chk_m, out spin_m);
+		add_schedule_option(levels_box, _("Monthly"), _("Create one per month"), out chk_m, out spin_m);
 
 		chk_m.active = App.schedule_monthly;
 		chk_m.toggled.connect(()=>{
@@ -79,7 +79,7 @@ class ScheduleBox : Gtk.Box{
 		
 		// weekly
 		
-		add_schedule_option(this, _("Weekly"), _("Create one per week"), out chk_w, out spin_w);
+		add_schedule_option(levels_box, _("Weekly"), _("Create one per week"), out chk_w, out spin_w);
 
 		chk_w.active = App.schedule_weekly;
 		chk_w.toggled.connect(()=>{
@@ -97,7 +97,7 @@ class ScheduleBox : Gtk.Box{
 
 		// daily
 		
-		add_schedule_option(this, _("Daily"), _("Create one per day"), out chk_d, out spin_d);
+		add_schedule_option(levels_box, _("Daily"), _("Create one per day"), out chk_d, out spin_d);
 
 		chk_d.active = App.schedule_daily;
 		chk_d.toggled.connect(()=>{
@@ -115,7 +115,7 @@ class ScheduleBox : Gtk.Box{
 
 		// hourly
 		
-		add_schedule_option(this, _("Hourly"), _("Create one per hour"), out chk_h, out spin_h);
+		add_schedule_option(levels_box, _("Hourly"), _("Create one per hour"), out chk_h, out spin_h);
 
 		chk_h.active = App.schedule_hourly;
 		chk_h.toggled.connect(()=>{
@@ -133,7 +133,7 @@ class ScheduleBox : Gtk.Box{
 
 		// boot
 		
-		add_schedule_option(this, _("Boot"), _("Create one per boot"), out chk_b, out spin_b);
+		add_schedule_option(levels_box, _("Boot"), _("Create one per boot"), out chk_b, out spin_b);
 
 		chk_b.active = App.schedule_boot;
 		chk_b.toggled.connect(()=>{
@@ -152,122 +152,46 @@ class ScheduleBox : Gtk.Box{
 		// cron emails --------------------------------------------------------------------
 		
 		chk_cron = add_checkbox(this, _("Stop cron emails for scheduled tasks"));
-		//chk_cron.hexpand = true;
 		chk_cron.set_tooltip_text(_("The cron service sends the output of scheduled tasks as an email to the current user. Select this option to suppress the emails for cron tasks created by Timeshift."));
-
-		chk_cron.margin = 6;
-		chk_cron.margin_top = 12;	
+		chk_cron.margin_top = Ui.Spacing.XS;
 		
 		chk_cron.active = App.stop_cron_emails;
 		chk_cron.toggled.connect(()=>{
 			App.stop_cron_emails = chk_cron.active;
 		});
 
-		var msg = "<i>• %s\n• %s\n• %s</i>".printf(
+		// notes ----------------------------------------------------------------------
+
+		var notes = new Gtk.Box(Gtk.Orientation.VERTICAL, Ui.Spacing.XS / 2);
+		notes.margin_top = Ui.Spacing.XS;
+		append(notes);
+
+		foreach (string line in new string[]{
 			_("Snapshots are not scheduled at fixed times."),
 			_("A maintenance task runs once every hour and creates snapshots as needed."),
-			_("Boot snapshots are created with a delay of 10 minutes after system startup."));
+			_("Boot snapshots are created with a delay of 10 minutes after system startup.") }){
+			Ui.add_caption(notes, "• " + line);
+		}
 
-		// buffer
-		var label = new Gtk.Label("");
-		label.vexpand = true;
-		add(label);
-		
-		// message area -------------------------------------------------------------------
-		
-		var scrolled = new Gtk.ScrolledWindow(null, null);
-		scrolled.set_shadow_type (ShadowType.ETCHED_IN);
-		scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
-		scrolled.vscrollbar_policy = Gtk.PolicyType.AUTOMATIC;
-		scrolled.set_size_request(-1, 100);
-		scrolled.margin_top = 6;
-		scrolled.margin_bottom = 6;
-		this.add(scrolled);
-
-		label = new Gtk.Label(msg);
-		label.set_use_markup(true);
-		label.xalign = 0.0f;
-		label.wrap = true;
-		label.wrap_mode = Pango.WrapMode.WORD;
-		label.margin = 6;
-		scrolled.add(label);
+		Ui.add_spacer(this);
 
 		// status area --------------------------------------------------------------------
 		
-		scrolled = new Gtk.ScrolledWindow(null, null);
-		scrolled.set_shadow_type (ShadowType.ETCHED_IN);
-		scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
-		scrolled.vscrollbar_policy = Gtk.PolicyType.NEVER;
-		scrolled.set_size_request(-1, 100);
-		add(scrolled);
-		
-		// hbox
-		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		hbox.margin = 6;
-		hbox.margin_bottom = 12;
-		scrolled.add (hbox);
-
-        // img_shield
-		img_shield = new Gtk.Image();
-		img_shield.surface = IconManager.lookup_surface(IconManager.SHIELD_HIGH, IconManager.SHIELD_ICON_SIZE, img_shield.scale_factor);
-		img_shield.margin_bottom = 6;
-        hbox.add(img_shield);
-
-		var vbox = new Gtk.Box(Orientation.VERTICAL, 6);
-		vbox.margin_top = 6;
-        hbox.add (vbox);
-        
-		// lbl_shield
-		lbl_shield = add_label(vbox, "");
-        lbl_shield.yalign = 0.5f;
-        //lbl_shield.hexpand = true;
-
-        // lbl_shield_subnote
-		lbl_shield_subnote = add_label(vbox, "");
-		lbl_shield_subnote.yalign = 0.5f;
-		//lbl_shield_subnote.hexpand = true;
-
-		lbl_shield_subnote.wrap = true;
-		lbl_shield_subnote.wrap_mode = Pango.WrapMode.WORD;
+		status_card = new StatusCard();
+		status_card.margin_top = Ui.Spacing.XS;
+		append(status_card);
 
 		update_statusbar();
 
 		log_debug("ScheduleBox: ScheduleBox(): exit");
     }
 
-    private void set_shield_label(
-		string text, bool is_bold = true, bool is_italic = false, bool is_large = true){
-			
-		string msg = "<span%s%s%s>%s</span>".printf(
-			(is_bold ? " weight=\"bold\"" : ""),
-			(is_italic ? " style=\"italic\"" : ""),
-			(is_large ? " size=\"x-large\"" : ""),
-			escape_html(text));
-			
-		lbl_shield.label = msg;
-	}
-
-	private void set_shield_subnote(
-		string text, bool is_bold = false, bool is_italic = true, bool is_large = false){
-			
-		string msg = "<span%s%s%s>%s</span>".printf(
-			(is_bold ? " weight=\"bold\"" : ""),
-			(is_italic ? " style=\"italic\"" : ""),
-			(is_large ? " size=\"x-large\"" : ""),
-			escape_html(text));
-			
-		lbl_shield_subnote.label = msg;
-	}
-
 	private void add_schedule_option(
 		Gtk.Box box, string period, string period_desc,
 		out Gtk.CheckButton chk, out Gtk.SpinButton spin){
 
-		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		hbox.margin = 6;
-		hbox.margin_top = 1;
-		hbox.margin_bottom = 1;
-		box.add(hbox);
+		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
+		box.append(hbox);
 
 		if (sg_title == null){
 			sg_title = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
@@ -275,12 +199,14 @@ class ScheduleBox : Gtk.Box{
 			sg_count = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		}
 		
-        var txt = "<b>%s</b>".printf(period);
-		chk = add_checkbox(hbox, txt);
+		chk = add_checkbox(hbox, period);
+		((Gtk.Label) chk.child).add_css_class("ts-heading");
+		chk.set_tooltip_text(period_desc);
+		chk.hexpand = true;
 		sg_title.add_widget(chk);
 		
 		var tt = _("Number of snapshots to keep.\nOlder snapshots will be removed once this limit is exceeded.");
-		var label = add_label(hbox, "     " + _("Keep"));
+		var label = Ui.add_dim_label(hbox, _("Keep"));
 		label.set_tooltip_text(tt);
 
 		var spin2 = add_spin(hbox, 1, 999, 10);
@@ -299,18 +225,14 @@ class ScheduleBox : Gtk.Box{
 		if (App.schedule_monthly || App.schedule_weekly || App.schedule_daily
 			|| App.schedule_hourly || App.schedule_boot){
 
-			img_shield.surface = IconManager.lookup_surface(IconManager.SHIELD_HIGH,
-				IconManager.SHIELD_ICON_SIZE, img_shield.scale_factor);
-			
-			set_shield_label(_("Scheduled snapshots are enabled"));
-			set_shield_subnote(_("Snapshots will be created at selected intervals if snapshot disk has enough space (> 1 GB)"));
+			status_card.set_shield(IconManager.SHIELD_HIGH);
+			status_card.set_title(_("Scheduled snapshots are enabled"));
+			status_card.set_subtitle(_("Snapshots will be created at selected intervals if snapshot disk has enough space (> 1 GB)"));
 		}
 		else{
-			img_shield.surface = IconManager.lookup_surface(IconManager.SHIELD_LOW,
-				IconManager.SHIELD_ICON_SIZE, img_shield.scale_factor);
-			
-			set_shield_label(_("Scheduled snapshots are disabled"));
-			set_shield_subnote(_("Select the intervals for creating snapshots"));
+			status_card.set_shield(IconManager.SHIELD_LOW);
+			status_card.set_title(_("Scheduled snapshots are disabled"));
+			status_card.set_subtitle(_("Select the intervals for creating snapshots"));
 		}
 
 		chk_cron.sensitive = App.scheduled;

@@ -24,10 +24,6 @@
 using Gtk;
 using Gee;
 
-#if XAPP
-using XApp;
-#endif
-
 using TeeJee.Logging;
 using TeeJee.FileSystem;
 using TeeJee.JsonHelper;
@@ -38,9 +34,9 @@ using TeeJee.Misc;
 
 class RestoreBox : Gtk.Box{
 
+	private TaskProgressBox progress;
+
 	public Gtk.Label lbl_header;
-	
-	private Gtk.Spinner spinner;
 	public Gtk.Label lbl_msg;
 	public Gtk.Label lbl_status;
 	public Gtk.Label lbl_remaining;
@@ -65,130 +61,41 @@ class RestoreBox : Gtk.Box{
 		log_debug("RestoreBox: RestoreBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
 
-		// header
-		if (App.dry_run){
-			lbl_header = add_label_header(this, _("Comparing Files (Dry Run)..."), true);
-		}
-		else{
-			lbl_header = add_label_header(this, _("Restoring Snapshot..."), true);
-		}
+		progress = new TaskProgressBox(
+			App.dry_run ? _("Comparing Files (Dry Run)...") : _("Restoring Snapshot..."), true);
+		append(progress);
 
-		var hbox_status = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		add (hbox_status);
-		
-		spinner = new Gtk.Spinner();
-		spinner.active = true;
-		hbox_status.add(spinner);
-		
-		//lbl_msg
-		lbl_msg = add_label(hbox_status, _("Preparing..."));
-		lbl_msg.hexpand = true;
-		lbl_msg.ellipsize = Pango.EllipsizeMode.END;
-		lbl_msg.max_width_chars = 50;
-
-		lbl_remaining = add_label(hbox_status, "");
-
-		//progressbar
-		progressbar = new Gtk.ProgressBar();
-		//progressbar.set_size_request(-1,25);
-		//progressbar.show_text = true;
-		//progressbar.pulse_step = 0.1;
-		add (progressbar);
-
-		//lbl_status
-
-		lbl_status = add_label(this, "");
-		lbl_status.ellipsize = Pango.EllipsizeMode.MIDDLE;
-		lbl_status.max_width_chars = 45;
-		lbl_status.margin_bottom = 12;
-
-		// TODO: Add move to background button
-
-		var label = add_label(this, "");
-		label.vexpand = true;
-		
-		// add count labels ---------------------------------
-		
-		Gtk.SizeGroup sg_label = null;
-		Gtk.SizeGroup sg_value = null;
-
-		label = add_label(this, _("Files and directory counts:"), true);
-		label.margin_bottom = 6;
-		
-		lbl_unchanged = add_count_label(this, _("No Change"), ref sg_label, ref sg_value);
-		lbl_created = add_count_label(this, _("Created"), ref sg_label, ref sg_value);
-		lbl_deleted = add_count_label(this, _("Deleted"), ref sg_label, ref sg_value);
-		lbl_modified = add_count_label(this, _("Changed"), ref sg_label, ref sg_value, 12);
-
-		label = add_label(this, _("Changed items:"), true);
-		label.margin_bottom = 6;
-		
-		lbl_checksum = add_count_label(this, _("Checksum"), ref sg_label, ref sg_value);
-		lbl_size = add_count_label(this, _("Size"), ref sg_label, ref sg_value);
-		lbl_timestamp = add_count_label(this, _("Timestamp"), ref sg_label, ref sg_value);
-		lbl_permissions = add_count_label(this, _("Permissions"), ref sg_label, ref sg_value);
-		lbl_owner = add_count_label(this, _("Owner"), ref sg_label, ref sg_value);
-		lbl_group = add_count_label(this, _("Group"), ref sg_label, ref sg_value, 24);
+		lbl_header = progress.lbl_header;
+		lbl_msg = progress.lbl_msg;
+		lbl_status = progress.lbl_status;
+		lbl_remaining = progress.lbl_remaining;
+		progressbar = progress.progressbar;
+		lbl_unchanged = progress.lbl_unchanged;
+		lbl_created = progress.lbl_created;
+		lbl_deleted = progress.lbl_deleted;
+		lbl_modified = progress.lbl_modified;
+		lbl_checksum = progress.lbl_checksum;
+		lbl_size = progress.lbl_size;
+		lbl_timestamp = progress.lbl_timestamp;
+		lbl_permissions = progress.lbl_permissions;
+		lbl_owner = progress.lbl_owner;
+		lbl_group = progress.lbl_group;
 
 		log_debug("RestoreBox: RestoreBox(): exit");
     }
-
-	private Gtk.Label add_count_label(Gtk.Box box, string text,
-		ref Gtk.SizeGroup? sg_label, ref Gtk.SizeGroup? sg_value,
-		int add_margin_bottom = 0){
-			
-		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		box.add (hbox);
-
-		var label = add_label(hbox, text + ":");
-		label.xalign = (float) 1.0;
-		label.margin_start = 12;
-		label.margin_end = 6;
-
-		if (add_margin_bottom > 0){
-			label.margin_bottom = add_margin_bottom;
-		}
-
-		// add to size group
-		if (sg_label == null){
-			sg_label = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		}
-		sg_label.add_widget(label);
-
-		label = add_label(hbox, "");
-		label.xalign = (float) 0.0;
-
-		if (add_margin_bottom > 0){
-			label.margin_bottom = add_margin_bottom;
-		}
-
-		// add to size group
-		if (sg_value == null){
-			sg_value = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		}
-		sg_value.add_widget(label);
-
-		return label;
-	}
 
 	public bool restore(){
 
 		log_debug("RestoreBox: restore()");
 		
 		if (App.restore_current_system && !App.dry_run){
-			parent_window.hide();
+			parent_window.visible = false;
 		}
 
-		if (App.dry_run){
-			lbl_header.label = format_text(_("Comparing Files (Dry Run)..."), true, false, true);
-		}
-		else{
-			lbl_header.label = format_text(_("Restoring Snapshot..."), true, false, true);
-		}
+		progress.set_header(App.dry_run ? _("Comparing Files (Dry Run)...") : _("Restoring Snapshot..."));
 		
 		try {
 			thread_is_running = true;
@@ -243,9 +150,7 @@ class RestoreBox : Gtk.Box{
 				
 				progressbar.fraction = fraction;
 
-				#if XAPP
-				XApp.set_window_progress(parent_window, (int)(fraction * 100.0));
-				#endif
+				LauncherEntry.set_progress((int)(fraction * 100.0));
 			}
 
 			lbl_msg.label = App.progress_text;
@@ -267,12 +172,10 @@ class RestoreBox : Gtk.Box{
 			//gtk_do_events();
 		}
 
-		#if XAPP
-		XApp.set_window_progress(parent_window, 0);
-		#endif
+		LauncherEntry.set_progress(0);
 		
 		if (App.restore_current_system && !App.dry_run){
-			parent_window.show();
+			parent_window.visible = true;
 		}
 
 		log_debug("RestoreBox: restore(): exit");

@@ -32,57 +32,53 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
-class MainWindow : Gtk.Window{
+public delegate void MenuActionFunc();
+
+class MainWindow : AppWindow{
 
 	private Gtk.Box vbox_main;
+	private Gtk.HeaderBar header;
 
-	//snapshots
-	private Gtk.Toolbar toolbar;
-	private Gtk.ToolButton btn_backup;
-	private Gtk.ToolButton btn_restore;
-	private Gtk.ToolButton btn_delete_snapshot;
-	private Gtk.ToolButton btn_browse_snapshot;
-	private Gtk.ToolButton btn_settings;
-	private Gtk.ToolButton btn_wizard;
+	// header actions
+	private Gtk.Button btn_backup;
+	private Gtk.Button btn_restore;
+	private Gtk.Button btn_delete_snapshot;
+	private Gtk.Button btn_browse_snapshot;
+	private GLib.SimpleAction action_unpause;
+	private GLib.SimpleAction action_settings;
+	private GLib.SimpleAction action_wizard;
 
+	// content: the list, or an empty-state page
+	private Gtk.Stack content_stack;
 	private SnapshotListBox snapshot_list_box;
-	
-	//statusbar
-	private Gtk.ScrolledWindow statusbar;
-	private Gtk.Image img_shield;
-	private Gtk.Label lbl_shield;
-	private Gtk.Label lbl_shield_subnote;
-	private Gtk.Label lbl_snap_count;
-	private Gtk.Label lbl_snap_count_subnote;
-	private Gtk.Label lbl_free_space;
-	private Gtk.Label lbl_free_space_subnote;
-	private Gtk.ScrolledWindow scrolled_snap_count;
-	private Gtk.ScrolledWindow scrolled_free_space;
-	
+	private StatusPage status_page;
+	private Gtk.Button btn_status_action;
+	private bool status_action_opens_wizard = false;
+
+	// status area
+	private Gtk.Box status_area;
+	private StatusCard status_card;
+	private StatTile tile_snapshots;
+	private StatTile tile_free;
+
 	//timers
 	private uint tmr_init;
-	private int def_width = 800;
-	private int def_height = 600;
-
-    //private int TOOLBAR_ICON_SIZE = 24;
+	private int def_width = 900;
+	private int def_height = 640;
 
 	public MainWindow () {
 
 		log_debug("MainWindow: MainWindow()");
 		
-		this.title = AppName;
-        this.window_position = WindowPosition.CENTER;
-        this.modal = true;
+		this.title = "Timeshift";
         this.set_default_size (def_width, def_height);
-		this.delete_event.connect(on_delete_event);
-		this.icon = IconManager.lookup("timeshift",16);
+		this.close_request.connect(on_delete_event);
 
 	    //vbox_main
         vbox_main = new Gtk.Box(Orientation.VERTICAL, 0);
-        vbox_main.margin = 0;
-        add (vbox_main);
+        set_child(vbox_main);
 
-        init_ui_toolbar();
+        init_ui_header();
 
         init_ui_snapshot_list();
 
@@ -90,7 +86,7 @@ class MainWindow : Gtk.Window{
 
         if (App.live_system()){
 			btn_backup.sensitive = false;
-			btn_settings.sensitive = false;
+			action_settings.set_enabled(false);
 		}
 
 		tmr_init = Timeout.add(100, init_delayed);
@@ -129,97 +125,55 @@ class MainWindow : Gtk.Window{
 		return false;
 	}
 
-	private void init_ui_toolbar(){
-		
-		//toolbar
-		toolbar = new Gtk.Toolbar ();
-		toolbar.toolbar_style = ToolbarStyle.BOTH;
-		toolbar.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
-		vbox_main.add(toolbar);
+	private void init_ui_header(){
 
-        Gtk.Image img = new Gtk.Image.from_icon_name("document-save-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		btn_backup = new Gtk.ToolButton (img, null);
-		btn_backup.is_important = true;
-		btn_backup.label = _("Create");
-		btn_backup.set_tooltip_text (_("Create snapshot of current system"));
-        toolbar.add(btn_backup);
+		/* Create is the primary verb and keeps its label; Restore, Delete and
+		 * Browse are a linked icon group with tooltips. Settings and the
+		 * wizard are in the menu -- rare actions, and six labelled buttons do
+		 * not fit beside a title. */
 
-        btn_backup.clicked.connect (create_snapshot);
+		header = new Gtk.HeaderBar();
+		set_titlebar(header);
 
-		//btn_restore
-        img = new Gtk.Image.from_icon_name("document-open-recent-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		btn_restore = new Gtk.ToolButton (img, null);
-		btn_restore.is_important = true;
-		btn_restore.label = _("Restore");
-		btn_restore.set_tooltip_text (_("Restore selected snapshot"));
-        toolbar.add(btn_restore);
+		var box_create = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		btn_backup = Ui.add_icon_button(box_create, "document-save-symbolic", _("Create"),
+			_("Create snapshot of current system"));
+		btn_backup.add_css_class("suggested-action");
+		btn_backup.clicked.connect (create_snapshot);
+		header.pack_start(box_create);
 
+		var group = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		group.add_css_class("linked");
+		header.pack_start(group);
+
+		btn_restore = Ui.add_icon_only_button(group, "document-open-recent-symbolic",
+			_("Restore selected snapshot"));
 		btn_restore.clicked.connect (btn_restore_clicked);
 
-		//btn_delete_snapshot
-		img = new Gtk.Image.from_icon_name("edit-delete-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		btn_delete_snapshot = new Gtk.ToolButton (img, null);
-		btn_delete_snapshot.is_important = true;
-		btn_delete_snapshot.label = _("Delete");
-		btn_delete_snapshot.set_tooltip_text (_("Delete selected snapshot"));
-        toolbar.add(btn_delete_snapshot);
+		btn_delete_snapshot = Ui.add_icon_only_button(group, "edit-delete-symbolic",
+			_("Delete selected snapshot"));
+		btn_delete_snapshot.clicked.connect (delete_selected);
 
-        btn_delete_snapshot.clicked.connect (delete_selected);
-        
-	    //btn_browse_snapshot
-        img = new Gtk.Image.from_icon_name("folder-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		btn_browse_snapshot = new Gtk.ToolButton (img, null);
-		btn_browse_snapshot.is_important = true;
-		btn_browse_snapshot.label = _("Browse");
-		btn_browse_snapshot.set_tooltip_text (_("Browse selected snapshot"));
-        toolbar.add(btn_browse_snapshot);
+		btn_browse_snapshot = Ui.add_icon_only_button(group, "folder-symbolic",
+			_("Browse selected snapshot"));
+		btn_browse_snapshot.clicked.connect (browse_selected);
 
-        btn_browse_snapshot.clicked.connect (browse_selected);
-
-        //btn_settings
-        img = new Gtk.Image.from_icon_name("preferences-system-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		btn_settings = new Gtk.ToolButton (img, null);
-		btn_settings.is_important = true;
-		btn_settings.label = _("Settings");
-		btn_settings.set_tooltip_text (_("Settings"));
-        toolbar.add(btn_settings);
-
-        btn_settings.clicked.connect (btn_settings_clicked);
-
-        //btn_wizard
-        img = new Gtk.Image.from_icon_name("emblem-default-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		btn_wizard = new Gtk.ToolButton (img, null);
-		btn_wizard.is_important = true;
-		btn_wizard.label = _("Wizard");
-		btn_wizard.set_tooltip_text (_("Settings wizard"));
-        toolbar.add(btn_wizard);
-
-        btn_wizard.clicked.connect (btn_wizard_clicked);
-
-		// TODO: replace gtk icon names with desktop-neutral names
-		
-        //separator
-		var separator = new Gtk.SeparatorToolItem();
-		separator.set_draw (false);
-		separator.set_expand (true);
-		toolbar.add (separator);
-
-		//btn_hamburger
-        img = new Gtk.Image.from_icon_name("open-menu-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		var button = new Gtk.ToolButton (img, null);
-		button.label = _("Menu");
-		button.set_tooltip_text (_("Open Menu"));
-		toolbar.add(button);
-
-        // click event
-		button.clicked.connect(() => menu_extra_popup());
+		init_ui_menu();
 	}
 
 	private void init_ui_snapshot_list(){
-		
+
+		content_stack = new Gtk.Stack();
+		content_stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
+		content_stack.vexpand = true;
+		vbox_main.append(content_stack);
+
 		snapshot_list_box = new SnapshotListBox(this);
 		snapshot_list_box.vexpand = true;
-		vbox_main.add(snapshot_list_box);
+		snapshot_list_box.margin_start = Ui.Spacing.LG;
+		snapshot_list_box.margin_end = Ui.Spacing.LG;
+		snapshot_list_box.margin_top = Ui.Spacing.LG;
+		content_stack.add_named(snapshot_list_box, "list");
 
 		snapshot_list_box.delete_selected.connect(delete_selected);
 		
@@ -228,208 +182,114 @@ class MainWindow : Gtk.Window{
 		snapshot_list_box.browse_selected.connect(browse_selected);
 
 		snapshot_list_box.view_snapshot_log.connect(view_snapshot_log);
+
+		// empty state: no location, or a location with nothing on it
+		status_page = new StatusPage("drive-harddisk-symbolic", "", "");
+		content_stack.add_named(status_page, "empty");
+
+		btn_status_action = new Gtk.Button.with_label("");
+		btn_status_action.add_css_class("suggested-action");
+		btn_status_action.clicked.connect(() => {
+			if (status_action_opens_wizard){
+				btn_wizard_clicked();
+			}
+			else {
+				create_snapshot();
+			}
+		});
+		status_page.set_action(btn_status_action);
     }
 
 	private void init_ui_statusbar(){
 
-		// hbox_shield
-		var hbox_status = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		hbox_status.margin = 6;
-		hbox_status.margin_top = 0;
-		vbox_main.add(hbox_status);
-		
-		// scrolled
-		var scrolled = new Gtk.ScrolledWindow(null, null);
-		//scrolled.set_shadow_type (ShadowType.ETCHED_IN);
-		//scrolled.margin = 6;
-		//scrolled.margin_top = 0;
-		scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
-		scrolled.vscrollbar_policy = Gtk.PolicyType.NEVER;
-		hbox_status.add(scrolled);
-		statusbar = scrolled;
-		
-		// hbox_shield
-		var box = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		box.margin = 6;
-        //box.margin_right = 12;
-		scrolled.add (box);
+		/* One row: the protection status card taking the horizontal slack,
+		 * two stat tiles trailing. Nothing here may set vexpand -- the
+		 * content stack above absorbs the window's leftover height. */
 
-        // img_shield
-		img_shield = new Gtk.Image();
-		img_shield.surface = IconManager.lookup_surface(IconManager.SHIELD_HIGH, IconManager.SHIELD_ICON_SIZE, img_shield.scale_factor);
-		//img_shield.margin_bottom = 6;
-        box.add(img_shield);
+		status_area = new Gtk.Box(Orientation.HORIZONTAL, Ui.Spacing.MD);
+		set_margin_all(status_area, Ui.Spacing.LG);
+		status_area.margin_top = Ui.Spacing.MD;
+		vbox_main.append(status_area);
 
-		// status text
-		var vbox = new Gtk.Box(Orientation.VERTICAL, 6);
-		//vbox.margin_right = 6;
-        box.add (vbox);
-        
-		//lbl_shield
-		lbl_shield = add_label(vbox, "");
-		//lbl_shield.margin_top = 6;
-        lbl_shield.yalign = 0.5f;
-		lbl_shield.hexpand = true;
-		
-        //lbl_shield_subnote
-		lbl_shield_subnote = add_label(vbox, "");
-		lbl_shield_subnote.yalign = 0.5f;
-		lbl_shield_subnote.wrap = true;
-		lbl_shield_subnote.wrap_mode = Pango.WrapMode.WORD_CHAR;
-		lbl_shield_subnote.max_width_chars = 50;
-		//vbox.set_child_packing(lbl_shield, true, true, 0, PackType.START);
-		//vbox.set_child_packing(lbl_shield_subnote, true, false, 0, PackType.START);
+		status_card = new StatusCard();
+		status_card.set_shield(IconManager.SHIELD_HIGH);
+		status_area.append(status_card);
 
-		// snap_count
-		//vbox = new Gtk.Box(Orientation.VERTICAL, 6);
-		//vbox.set_no_show_all(true);
-        //box.add (vbox);
-        //vbox_snap_count = vbox;
+		tile_snapshots = new StatTile(_("Snapshots"));
+		status_area.append(tile_snapshots);
 
-		// scrolled
-        scrolled = new Gtk.ScrolledWindow(null, null);
-		//scrolled.set_shadow_type (ShadowType.ETCHED_IN);
-		scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
-		scrolled.vscrollbar_policy = Gtk.PolicyType.NEVER;
-		scrolled.set_no_show_all(true);
-		hbox_status.add (scrolled);
-		
-		vbox = new Gtk.Box(Orientation.VERTICAL, 6);
-		vbox.margin = 6;
-		vbox.margin_start = 12;
-		vbox.margin_end = 12;
-        scrolled.add(vbox);
-        scrolled_snap_count = scrolled;
+		tile_free = new StatTile(_("Available"));
+		status_area.append(tile_free);
 
-        var label = new Gtk.Label("<b>" + "0.0%" + "</b>");
-		label.set_use_markup(true);
-		label.justify = Gtk.Justification.CENTER;
-		vbox.pack_start(label, true, true, 0);
-		lbl_snap_count = label;
-		
-		label = new Gtk.Label(_("Snapshots"));
-		label.justify = Gtk.Justification.CENTER;
-		vbox.pack_start(label, false, false, 0);
-
-		label = new Gtk.Label("");
-		label.set_use_markup(true);
-		label.justify = Gtk.Justification.CENTER;
-		vbox.pack_start(label, false, false, 0);
-		lbl_snap_count_subnote = label;
-		
-		// free space
-		//vbox = new Gtk.Box(Orientation.VERTICAL, 6);
-		//vbox.set_no_show_all(true);
-        //box.add(vbox);
-        //vbox_free_space = vbox;
-
-        scrolled = new Gtk.ScrolledWindow(null, null);
-		//scrolled.set_shadow_type (ShadowType.ETCHED_IN);
-		scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
-		scrolled.vscrollbar_policy = Gtk.PolicyType.NEVER;
-		scrolled.set_no_show_all(true);
-		hbox_status.add (scrolled);
-		
-		vbox = new Gtk.Box(Orientation.VERTICAL, 6);
-		vbox.margin = 6;
-		vbox.margin_start = 12;
-		vbox.margin_end = 12;
-        scrolled.add(vbox);
-        scrolled_free_space = scrolled;
-
-		label = new Gtk.Label("<b>" + "0.0%" + "</b>");
-		label.set_use_markup(true);
-		label.justify = Gtk.Justification.CENTER;
-		vbox.pack_start(label, true, true, 0);
-		lbl_free_space = label;
-		
-		label = new Gtk.Label(_("Available"));
-		label.justify = Gtk.Justification.CENTER;
-		vbox.pack_start(label, false, false, 0);
-
-		label = new Gtk.Label("");
-		label.set_use_markup(true);
-		label.justify = Gtk.Justification.CENTER;
-		vbox.pack_start(label, false, false, 0);
-		lbl_free_space_subnote = label;
-		
 		// TODO: medium: add a refresh button for device when device is offline
 
 		// TODO: low: refresh device list automatically when a device is plugged in
 	}
-	
-    private bool menu_extra_popup(){
 
-		Gtk.Menu? menu_extra = new Gtk.Menu();
-		menu_extra.reserve_toggle_size = false;
+    private void init_ui_menu(){
 
-		Gtk.MenuItem menu_item = null;
+		/* GTK4 removes Gtk.Menu/Gtk.MenuItem. The hamburger is a Gtk.MenuButton
+		 * driven by a GMenu model, with the entries backed by GActions. */
+
+		var actions = new GLib.SimpleActionGroup();
+		var menu_model = new GLib.Menu();
+
+		var menu_setup = new GLib.Menu();
+		action_settings = add_menu_action(actions, "settings", btn_settings_clicked);
+		menu_setup.append(_("Settings"), "win.settings");
+		action_wizard = add_menu_action(actions, "wizard", btn_wizard_clicked);
+		menu_setup.append(_("Setup Wizard"), "win.wizard");
+		menu_model.append_section(null, menu_setup);
 
 		if (!App.live_system()){
-			// app logs
-			menu_item = create_menu_item(_("View TimeShift Logs"));
-			menu_extra.append(menu_item);
-			menu_item.activate.connect(btn_view_app_logs_clicked);
 
-			// pause snapshots
-			menu_item = create_menu_item(_("Pause Snapshots"));
-			menu_extra.append(menu_item);
+			add_menu_action(actions, "view-logs", btn_view_app_logs_clicked);
+			menu_model.append(_("View TimeShift Logs"), "win.view-logs");
 
-			Gtk.Menu? menu_pause = new Gtk.Menu();
-			Gtk.MenuItem? menu_pause_item = create_menu_item(_("Unpause"));
-			menu_pause_item.activate.connect(() => App.unpause_snapshots());
-			menu_pause_item.sensitive = App.snapshots_paused;
-			menu_pause.append(menu_pause_item);
+			action_unpause = add_menu_action(actions, "unpause", () => App.unpause_snapshots());
+			add_menu_action(actions, "pause-boot", () => App.pause_snapshots_for_this_boot());
+			add_menu_action(actions, "pause-30m", () => App.pause_snapshots_for(1800));
+			add_menu_action(actions, "pause-4h",  () => App.pause_snapshots_for(3600*4));
+			add_menu_action(actions, "pause-8h",  () => App.pause_snapshots_for(3600*8));
+			add_menu_action(actions, "pause-12h", () => App.pause_snapshots_for(3600*12));
 
-			menu_pause_item = create_menu_item(_("Pause until shutdown"));
-			menu_pause_item.activate.connect(() => App.pause_snapshots_for_this_boot());
-			menu_pause.append(menu_pause_item);
+			var menu_pause = new GLib.Menu();
+			menu_pause.append(_("Unpause"), "win.unpause");
+			menu_pause.append(_("Pause until shutdown"), "win.pause-boot");
+			menu_pause.append(_("Pause for 30min"), "win.pause-30m");
+			menu_pause.append(_("Pause for 4h"), "win.pause-4h");
+			menu_pause.append(_("Pause for 8h"), "win.pause-8h");
+			menu_pause.append(_("Pause for 12h"), "win.pause-12h");
 
-			menu_pause_item = create_menu_item(_("Pause for 30min"));
-			menu_pause_item.activate.connect(() => App.pause_snapshots_for(1800));
-			menu_pause.append(menu_pause_item);
-
-			menu_pause_item = create_menu_item(_("Pause for 4h"));
-			menu_pause_item.activate.connect(() => App.pause_snapshots_for(3600*4));
-			menu_pause.append(menu_pause_item);
-
-			menu_pause_item = create_menu_item(_("Pause for 8h"));
-			menu_pause_item.activate.connect(() => App.pause_snapshots_for(3600*8));
-			menu_pause.append(menu_pause_item);
-
-			menu_pause_item = create_menu_item(_("Pause for 12h"));
-			menu_pause_item.activate.connect(() => App.pause_snapshots_for(3600*12));
-			menu_pause.append(menu_pause_item);
-
-			menu_item.submenu = menu_pause;
+			menu_model.append_submenu(_("Pause Snapshots"), menu_pause);
 		}
 
-		// about
-		menu_item = create_menu_item(_("About"));
-		menu_extra.append(menu_item);
-		menu_item.activate.connect(btn_about_clicked);
-		
-		menu_extra.show_all();
+		add_menu_action(actions, "about", btn_about_clicked);
+		menu_model.append(_("About"), "win.about");
 
-		menu_extra.popup (null, null, null, 0, Gtk.get_current_event_time());
+		this.insert_action_group("win", actions);
 
-		return true;
+		var btn_menu = new Gtk.MenuButton();
+		btn_menu.icon_name = "open-menu-symbolic";
+		btn_menu.set_tooltip_text(_("Open Menu"));
+		btn_menu.set_menu_model(menu_model);
+		btn_menu.primary = true;
+		header.pack_end(btn_menu);
+
+		// "Unpause" is only meaningful while snapshots are actually paused
+		btn_menu.notify["active"].connect(() => {
+			if (action_unpause != null){
+				action_unpause.set_enabled(App.snapshots_paused);
+			}
+		});
 	}
 
-	private Gtk.MenuItem create_menu_item(string label_text, string tooltip_text = ""){
+	private GLib.SimpleAction add_menu_action(GLib.SimpleActionGroup actions, string name, owned MenuActionFunc callback){
 
-		Gtk.MenuItem menu_item = new Gtk.MenuItem();
-	
-		Gtk.Box box = new Gtk.Box(Orientation.HORIZONTAL, 3);
-		menu_item.add(box);
-
-		Gtk.Label label = new Gtk.Label(label_text);
-		label.xalign = (float) 0.0;
-		label.margin_end = 6;
-		label.set_tooltip_text((tooltip_text.length > 0) ? tooltip_text : label_text);
-		box.add(label);
-
-		return menu_item;
+		var action = new GLib.SimpleAction(name, null);
+		action.activate.connect(() => { callback(); });
+		actions.add_action(action);
+		return action;
 	}
 
 	private bool refresh_all(){
@@ -440,18 +300,45 @@ class MainWindow : Gtk.Window{
 
 		snapshot_list_box.refresh();
 		update_statusbar();
+		update_content_page();
 		
 		ui_sensitive(true);
 
 		return false;
 	}
 
-	private bool on_delete_event(Gdk.EventAny event){
+	/* The list, or an empty-state page that says what to do next. */
+	private void update_content_page(){
+
+		if (!App.repo.available()){
+			status_page.set_icon("drive-harddisk-symbolic");
+			status_page.set_title(App.repo.status_message);
+			status_page.set_description(App.repo.status_details);
+			btn_status_action.label = _("Select Snapshot Location");
+			btn_status_action.visible = !App.live_system();
+			status_action_opens_wizard = true;
+			content_stack.visible_child_name = "empty";
+		}
+		else if (!App.repo.has_snapshots()){
+			status_page.set_icon("camera-photo-symbolic");
+			status_page.set_title(_("No snapshots available"));
+			status_page.set_description(_("Create snapshots manually or enable scheduled snapshots to protect your system"));
+			btn_status_action.label = _("Create Snapshot");
+			btn_status_action.visible = !App.live_system();
+			status_action_opens_wizard = false;
+			content_stack.visible_child_name = "empty";
+		}
+		else {
+			content_stack.visible_child_name = "list";
+		}
+	}
+
+	private bool on_delete_event(){
 
 		// a browse mount should not outlive the window that opened it
 		browse_unmount_all();
 
-		this.delete_event.disconnect(on_delete_event); //disconnect this handler
+		this.close_request.disconnect(on_delete_event); //disconnect this handler
 
 		if (App.task.status == AppStatus.RUNNING){
 			log_error (_("Main window closed by user"));
@@ -484,17 +371,20 @@ class MainWindow : Gtk.Window{
 				dlg.destroy();
 				
 				if (response == Gtk.ResponseType.YES){
-					this.delete_event.connect(on_delete_event); // reconnect this handler
+					this.close_request.connect(on_delete_event); // reconnect this handler
 					btn_wizard_clicked(); // open wizard
 					return true; // keep window open
 				}
 				else{
+					notify_closed();
 					return false; // close window
 				}
 			}
 		}
 		
 		App.exit_app(0);
+
+		notify_closed();
 
 		return false;
 	}
@@ -527,7 +417,7 @@ class MainWindow : Gtk.Window{
 
 		var win = new BackupWindow();
 		win.set_transient_for(this);
-		win.destroy.connect(()=>{
+		win.closed.connect(()=>{
 			refresh_all();
 			ui_sensitive(true);
 		});
@@ -567,16 +457,15 @@ class MainWindow : Gtk.Window{
 
 		// confirm deletion ------------------
 
-        var confirm_dialog = new Gtk.MessageDialog(
-            this,
-            Gtk.DialogFlags.MODAL,
+        var confirm_dialog = new CustomMessageDialog(
+            _("Confirm Delete"),
+            _("Are you sure you want to delete this snapshot?"),
             Gtk.MessageType.QUESTION,
-            Gtk.ButtonsType.YES_NO,
-            _("Are you sure you want to delete this snapshot?")
+            this,
+            Gtk.ButtonsType.YES_NO
             );
 
         var confirm_response = confirm_dialog.run();
-        confirm_dialog.destroy();
 
         if (confirm_response != Gtk.ResponseType.YES) {
             return;
@@ -609,22 +498,21 @@ class MainWindow : Gtk.Window{
 		
 		var win = new DeleteWindow();
 		win.set_transient_for(this);
-		win.destroy.connect(()=>{
+		win.closed.connect(()=>{
 			refresh_all();
 			ui_sensitive(true);
 		});
 	}
 
 	public void mark_selected(){
-		
-		TreeIter iter;
+
 		bool is_success = true;
 
 		// check selected count ----------------
 
-		var sel = snapshot_list_box.treeview.get_selection();
-		
-		if (sel.count_selected_rows() == 0){
+		var selected = snapshot_list_box.selected_snapshots();
+
+		if (selected.size == 0){
 			
 			gtk_messagebox(
 				_("No Snapshots Selected"),
@@ -636,22 +524,16 @@ class MainWindow : Gtk.Window{
 
 		// get selected snapshots --------------------
 
-		var store = (Gtk.ListStore) snapshot_list_box.treeview.model;
-		bool iterExists = store.get_iter_first (out iter);
 		bool marked = false;
-		
-		while (iterExists && is_success) {
-			
-			if (sel.iter_is_selected (iter)){
-				
-				Snapshot bak;
-				store.get (iter, 0, out bak);
-				// mark for deletion
-				bak.mark_for_deletion();
-				// have any snapshots been marked?
-				marked = marked || bak.marked_for_deletion;
-			}
-			iterExists = store.iter_next (ref iter);
+
+		foreach(var bak in selected){
+
+			if (!is_success){ break; }
+
+			// mark for deletion
+			bak.mark_for_deletion();
+			// have any snapshots been marked?
+			marked = marked || bak.marked_for_deletion;
 		}
 
 		App.repo.load_snapshots();
@@ -956,9 +838,9 @@ class MainWindow : Gtk.Window{
 
 	public void browse_selected(){
 
-		var sel = snapshot_list_box.treeview.get_selection ();
-		
-		if (sel.count_selected_rows() == 0){
+		var selected = snapshot_list_box.selected_snapshots();
+
+		if (selected.size == 0){
 			
 			// For a remote repo, skip the existence probe: it is a full SSH
 			// round trip on the GTK main thread and would stall the click for
@@ -976,34 +858,21 @@ class MainWindow : Gtk.Window{
 			return;
 		}
 
-		TreeIter iter;
-		var store = (Gtk.ListStore) snapshot_list_box.treeview.model;
+		var bak = selected[0];
 
-		bool iterExists = store.get_iter_first (out iter);
-		
-		while (iterExists) {
-			if (sel.iter_is_selected (iter)){
-				
-				Snapshot bak;
-				store.get (iter, 0, out bak);
-
-				if (App.btrfs_mode){
-					browse_repo_path(bak.path);
-				}
-				else{
-					browse_repo_path(bak.path + "/localhost");
-				}
-				return;
-			}
-			iterExists = store.iter_next (ref iter);
+		if (App.btrfs_mode){
+			browse_repo_path(bak.path);
+		}
+		else{
+			browse_repo_path(bak.path + "/localhost");
 		}
 	}
 
 	public void view_snapshot_log(bool view_restore_log){
 		
-		var sel = snapshot_list_box.treeview.get_selection ();
-		
-		if (sel.count_selected_rows() == 0){
+		var selected = snapshot_list_box.selected_snapshots();
+
+		if (selected.size == 0){
 			gtk_messagebox(
 				_("Select Snapshot"),
 				_("Please select a snapshot to view the log!"),
@@ -1011,17 +880,9 @@ class MainWindow : Gtk.Window{
 			return;
 		}
 
-		TreeIter iter;
-		var store = (Gtk.ListStore) snapshot_list_box.treeview.model;
-
-		bool iterExists = store.get_iter_first (out iter);
-		
-		while (iterExists) {
-			
-			if (sel.iter_is_selected (iter)){
-				
-				Snapshot bak;
-				store.get (iter, 0, out bak);
+		{
+			{
+				var bak = selected[0];
 
 				string log_file_name = bak.rsync_log_file;
 				if (view_restore_log){
@@ -1054,18 +915,17 @@ class MainWindow : Gtk.Window{
 
 				if (file_exists(log_file_name) || file_exists(log_file_name + "-changes")){
 
-					this.hide();
+					this.visible = false;
 					
 					var win = new RsyncLogWindow(log_file_name);
 					win.set_transient_for(this);
-					win.destroy.connect(()=>{
-						this.show();
+					win.closed.connect(()=>{
+						this.visible = true;
 					});
 				}
 
 				return;
 			}
-			iterExists = store.iter_next (ref iter);
 		}
 	}
 
@@ -1093,7 +953,7 @@ class MainWindow : Gtk.Window{
 		
 			var win = new DeleteWindow();
 			win.set_transient_for(this);
-			win.destroy.connect(()=>{
+			win.closed.connect(()=>{
 				refresh_all();
 				ui_sensitive(true);
 			});
@@ -1106,24 +966,21 @@ class MainWindow : Gtk.Window{
 
 
 	private void restore(){
-		
-		TreeIter iter;
-		TreeSelection sel;
 
 		if (!App.mirror_system){
 
 			//check if single snapshot is selected -------------
 
-			sel = snapshot_list_box.treeview.get_selection();
-			
-			if (sel.count_selected_rows() == 0){
+			var selected = snapshot_list_box.selected_snapshots();
+
+			if (selected.size == 0){
 				gtk_messagebox(
 					_("No snapshots selected"),
 					_("Select the snapshot to restore"),
 					this, false);
 				return;
 			}
-			else if (sel.count_selected_rows() > 1){
+			else if (selected.size > 1){
 				gtk_messagebox(
 					_("Multiple snapshots selected"),
 					_("Select a single snapshot to restore"),
@@ -1133,18 +990,7 @@ class MainWindow : Gtk.Window{
 			
 			//get selected snapshot ------------------
 
-			Snapshot snapshot_to_restore = null;
-
-			var store = (Gtk.ListStore) snapshot_list_box.treeview.model;
-			bool iterExists = store.get_iter_first (out iter);
-			
-			while (iterExists) {
-				if (sel.iter_is_selected (iter)){
-					store.get (iter, 0, out snapshot_to_restore);
-					break;
-				}
-				iterExists = store.iter_next (ref iter);
-			}
+			Snapshot snapshot_to_restore = selected[0];
 
 			if ((snapshot_to_restore != null) && (snapshot_to_restore.marked_for_deletion)){
 				
@@ -1169,7 +1015,7 @@ class MainWindow : Gtk.Window{
 		window.set_transient_for (this);
 		//window.show_all();
 
-		window.destroy.connect(()=>{
+		window.closed.connect(()=>{
 			App.dry_run = false;
 			App.repo.load_snapshots();
 			refresh_all();
@@ -1180,18 +1026,18 @@ class MainWindow : Gtk.Window{
 
 		log_debug("MainWindow: btn_settings_clicked()");
 		
-		btn_settings.sensitive = false;
-		btn_wizard.sensitive = false;
+		action_settings.set_enabled(false);
+		action_wizard.set_enabled(false);
 
-		this.hide();
+		this.visible = false;
 
 		bool btrfs_mode_prev = App.btrfs_mode;
 		
 		var win = new SettingsWindow();
 		win.set_transient_for(this);
-		win.destroy.connect(()=>{
-			btn_settings.sensitive = true;
-			btn_wizard.sensitive = true;
+		win.closed.connect(()=>{
+			action_settings.set_enabled(!App.live_system());
+			action_wizard.set_enabled(true);
 			settings_changed(btrfs_mode_prev);
 		});
 	}
@@ -1200,18 +1046,18 @@ class MainWindow : Gtk.Window{
 
 		log_debug("MainWindow: btn_wizard_clicked()");
 		
-		btn_settings.sensitive = false;
-		btn_wizard.sensitive = false;
+		action_settings.set_enabled(false);
+		action_wizard.set_enabled(false);
 
-		this.hide();
+		this.visible = false;
 		
 		bool btrfs_mode_prev = App.btrfs_mode;
 		
 		var win = new SetupWizardWindow();
 		win.set_transient_for(this);
-		win.destroy.connect(()=>{
-			btn_settings.sensitive = true;
-			btn_wizard.sensitive = true;
+		win.closed.connect(()=>{
+			action_settings.set_enabled(!App.live_system());
+			action_wizard.set_enabled(true);
 			settings_changed(btrfs_mode_prev);
 		});
 	}
@@ -1227,7 +1073,7 @@ class MainWindow : Gtk.Window{
 			App.save_app_config();
 			App.repo.load_snapshots();
 			refresh_all();
-			this.show();
+			this.present();
 			return;
 		}
 
@@ -1248,7 +1094,7 @@ class MainWindow : Gtk.Window{
 		App.save_app_config();
 		App.repo.load_snapshots();
 		refresh_all();
-		this.show();
+		this.present();
 	}
 
 	private void btn_view_app_logs_clicked(){
@@ -1259,7 +1105,7 @@ class MainWindow : Gtk.Window{
 	private void btn_about_clicked (){
 		var dialog = new Gtk.AboutDialog();
 		dialog.set_transient_for(this);
-		dialog.set_program_name(AppName);
+		dialog.set_program_name("Timeshift");
 		dialog.set_comments(_("System Restore Utility"));
 		dialog.set_copyright("Copyright © 2012-21 Tony George (%s)".printf(AppAuthorEmail));
 		dialog.set_version(AppVersion);
@@ -1270,13 +1116,15 @@ class MainWindow : Gtk.Window{
 
 		// this overwrites the default behaviour of About Dialog
 		dialog.activate_link.connect(TeeJee.System.xdg_open);
-		dialog.run();
-		dialog.destroy();
+
+		/* GTK4 removes Gtk.Dialog.run(); the about window closes itself. */
+		dialog.set_modal(true);
+		dialog.present();
 	}
 
 	private void ui_sensitive(bool enable){
 		
-		toolbar.sensitive = enable;
+		header.sensitive = enable;
 		snapshot_list_box.treeview.sensitive = enable;
 		gtk_set_busy(!enable, this);
 	}
@@ -1300,34 +1148,32 @@ class MainWindow : Gtk.Window{
 		}
 
 		if (App.live_system()){
-			statusbar.visible = true;
-			statusbar.show_all();
+			status_area.visible = true;
 
-			img_shield.surface = IconManager.lookup_surface(IconManager.SHIELD_LIVE, IconManager.SHIELD_ICON_SIZE, img_shield.scale_factor);
-			set_shield_label(_("Live USB Mode (Restore Only)"));
-			set_shield_subnote("");
+			status_card.set_shield(IconManager.SHIELD_LIVE);
+			status_card.set_title(_("Live USB Mode (Restore Only)"));
+			status_card.set_subtitle("");
 
 			switch (status_code){
 			case SnapshotLocationStatus.NOT_SELECTED:
 			case SnapshotLocationStatus.NOT_AVAILABLE:
 			case SnapshotLocationStatus.NO_BTRFS_SYSTEM:
-				set_shield_subnote(details);
+				status_card.set_subtitle(details);
 				break;
 			
 			case SnapshotLocationStatus.HAS_SNAPSHOTS_NO_SPACE:
 			case SnapshotLocationStatus.HAS_SNAPSHOTS_HAS_SPACE:
-				set_shield_subnote(_("Snapshots available for restore"));
+				status_card.set_subtitle(_("Snapshots available for restore"));
 				break;
 
 			case SnapshotLocationStatus.NO_SNAPSHOTS_NO_SPACE:
 			case SnapshotLocationStatus.NO_SNAPSHOTS_HAS_SPACE:
-				set_shield_subnote(_("No snapshots found"));
+				status_card.set_subtitle(_("No snapshots found"));
 				break;
 			}
 		}
 		else{
-			statusbar.visible = true;
-			statusbar.show_all();
+			status_area.visible = true;
 
 			switch (status_code){
 			case SnapshotLocationStatus.READ_ONLY_FS:
@@ -1337,9 +1183,9 @@ class MainWindow : Gtk.Window{
 			case SnapshotLocationStatus.NO_BTRFS_SYSTEM:
 			case SnapshotLocationStatus.HAS_SNAPSHOTS_NO_SPACE:
 			case SnapshotLocationStatus.NO_SNAPSHOTS_NO_SPACE:
-				img_shield.surface = IconManager.lookup_surface(IconManager.SHIELD_LOW, IconManager.SHIELD_ICON_SIZE, img_shield.scale_factor);
-				set_shield_label(message);
-				set_shield_subnote(details);
+				status_card.set_shield(IconManager.SHIELD_LOW);
+				status_card.set_title(message);
+				status_card.set_subtitle(details);
 				break;
 
 			case SnapshotLocationStatus.NO_SNAPSHOTS_HAS_SPACE:
@@ -1349,10 +1195,10 @@ class MainWindow : Gtk.Window{
 					// is scheduled
 					if (App.repo.has_snapshots()){
 						// has snaps
-						img_shield.surface = IconManager.lookup_surface(IconManager.SHIELD_HIGH, IconManager.SHIELD_ICON_SIZE, img_shield.scale_factor);
-						//set_shield_label(_("System is protected"));
-						set_shield_label(_("Timeshift is active"));
-						set_shield_subnote("%s: %s\n%s: %s".printf(
+						status_card.set_shield(IconManager.SHIELD_HIGH);
+						//status_card.set_title(_("System is protected"));
+						status_card.set_title(_("Timeshift is active"));
+						status_card.set_subtitle("%s: %s\n%s: %s".printf(
 							_("Latest snapshot"),
 							(last_snapshot_date == null) ? _("None") : last_snapshot_date.format(App.date_format),
 							_("Oldest snapshot"),
@@ -1361,49 +1207,44 @@ class MainWindow : Gtk.Window{
 					}
 					else{
 						// no snaps
-						img_shield.surface = IconManager.lookup_surface(IconManager.SHIELD_HIGH, IconManager.SHIELD_ICON_SIZE, img_shield.scale_factor);
-						set_shield_label(_("Timeshift is active"));
-						set_shield_subnote(_("Snapshots will be created at selected intervals"));
+						status_card.set_shield(IconManager.SHIELD_HIGH);
+						status_card.set_title(_("Timeshift is active"));
+						status_card.set_subtitle(_("Snapshots will be created at selected intervals"));
 					}
 				}
 				else {
 					// not scheduled
 					if (App.repo.has_snapshots()){
 						// has snaps
-						img_shield.surface = IconManager.lookup_surface(IconManager.SHIELD_MED, IconManager.SHIELD_ICON_SIZE, img_shield.scale_factor);
-						set_shield_label(_("Scheduled snapshots are disabled"));
-						set_shield_subnote(_("Enable scheduled snapshots to protect your system"));
+						status_card.set_shield(IconManager.SHIELD_MED);
+						status_card.set_title(_("Scheduled snapshots are disabled"));
+						status_card.set_subtitle(_("Enable scheduled snapshots to protect your system"));
 					}
 					else{
 						// no snaps
-						img_shield.surface = IconManager.lookup_surface(IconManager.SHIELD_LOW, IconManager.SHIELD_ICON_SIZE, img_shield.scale_factor);
-						set_shield_label(_("No snapshots available"));
-						set_shield_subnote(_("Create snapshots manually or enable scheduled snapshots to protect your system"));
+						status_card.set_shield(IconManager.SHIELD_LOW);
+						status_card.set_title(_("No snapshots available"));
+						status_card.set_subtitle(_("Create snapshots manually or enable scheduled snapshots to protect your system"));
 					}
 				}
 				
 				break;
 			}
 
-			scrolled_snap_count.hide();
-			scrolled_free_space.hide();
+			tile_snapshots.visible = false;
+			tile_free.visible = false;
 			
 			switch (status_code){
 			case SnapshotLocationStatus.NO_SNAPSHOTS_NO_SPACE:
 			case SnapshotLocationStatus.NO_SNAPSHOTS_HAS_SPACE:
 			case SnapshotLocationStatus.HAS_SNAPSHOTS_NO_SPACE:
 			case SnapshotLocationStatus.HAS_SNAPSHOTS_HAS_SPACE:
-				scrolled_snap_count.no_show_all = false;
-				scrolled_snap_count.show_all();
-				
-				lbl_snap_count.label = format_text_large("%0d".printf(App.repo.snapshots.size));
-				string mode = App.btrfs_mode ? "btrfs" : "rsync";
-				lbl_snap_count_subnote.label = format_text(mode, false, true, false);
-				
-				scrolled_free_space.no_show_all = false;
-				scrolled_free_space.show_all();
-				
-				lbl_free_space.label = format_text_large("%s".printf(format_file_size(App.repo.free_bytes)));
+				tile_snapshots.visible = true;
+				tile_snapshots.set_value("%0d".printf(App.repo.snapshots.size));
+				tile_snapshots.set_subnote(App.btrfs_mode ? "btrfs" : "rsync");
+
+				tile_free.visible = true;
+				tile_free.set_value(format_file_size(App.repo.free_bytes));
 
 				string devname = "(??)";
 				if (App.repo.backend.is_remote){
@@ -1412,40 +1253,10 @@ class MainWindow : Gtk.Window{
 				else if ((App.repo != null) && (App.repo.device != null)){
 					devname = "%s".printf(App.repo.device.device);
 				}
-				lbl_free_space_subnote.label = format_text(devname, false, true, false);
+				tile_free.set_subnote(devname);
 				break;
 			}
 		}
 	}
 
-	// ui helpers --------
-	
-	private string format_text_large(string text){
-		
-		return "<span size='xx-large'><b>" + text + "</b></span>";
-	}
-	
-	private void set_shield_label(
-		string text, bool is_bold = true, bool is_italic = false, bool is_large = true){
-			
-		string msg = "<span%s%s%s>%s</span>".printf(
-			(is_bold ? " weight=\"bold\"" : ""),
-			(is_italic ? " style=\"italic\"" : ""),
-			(is_large ? " size=\"x-large\"" : ""),
-			escape_html(text));
-			
-		lbl_shield.label = msg;
-	}
-
-	private void set_shield_subnote(
-		string text, bool is_bold = false, bool is_italic = true, bool is_large = false){
-			
-		string msg = "<span%s%s%s>%s</span>".printf(
-			(is_bold ? " weight=\"bold\"" : ""),
-			(is_italic ? " style=\"italic\"" : ""),
-			(is_large ? " size=\"x-large\"" : ""),
-			escape_html(text));
-			
-		lbl_shield_subnote.label = msg;
-	}
 }

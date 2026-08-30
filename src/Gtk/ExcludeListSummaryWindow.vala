@@ -32,61 +32,46 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
-class ExcludeListSummaryWindow : Gtk.Window{
+class ExcludeListSummaryWindow : AppWindow {
 	
-	private Gtk.Box vbox_main;
 	private Gtk.Label lbl_list;
-	private Gtk.Button btn_close;
 	private bool for_restore = false;
 	
-	private int def_width = 500;
-	private int def_height = 450;
+	private int def_width = 560;
+	private int def_height = 480;
 
 	public ExcludeListSummaryWindow(bool _for_restore) {
 
 		log_debug("ExcludeListSummaryWindow: ExcludeListSummaryWindow()");
 		
 		this.title = _("Exclude List Summary");
-        this.window_position = WindowPosition.CENTER;
         this.modal = true;
         this.set_default_size (def_width, def_height);
-		this.icon = IconManager.lookup("timeshift",16);
+
+		this.close_request.connect(() => { notify_closed(); return false; });
 
 		for_restore = _for_restore;
+
+		var header = new Gtk.HeaderBar();
+		set_titlebar(header);
 		
-	    // vbox_main
-        vbox_main = new Gtk.Box(Orientation.VERTICAL, 6);
-        vbox_main.margin = 12;
-        add(vbox_main);
+        var vbox_main = new Gtk.Box(Orientation.VERTICAL, Ui.Spacing.SM);
+        Ui.as_page(vbox_main);
+        set_child(vbox_main);
 
-		add_label(vbox_main, _("Files &amp; directories matching the patterns below will be excluded. Patterns starting with a + will include the item instead of excluding."));
+		Ui.add_body(vbox_main, _("Files & directories matching the patterns below will be excluded. Patterns starting with a + will include the item instead of excluding."));
 
-		lbl_list = add_label_scrolled(vbox_main, "", true, true);
-
-		create_actions();
+		lbl_list = add_label_scrolled(vbox_main, "", false, true);
+		lbl_list.use_markup = false;
+		lbl_list.selectable = true;
+		((Gtk.ScrolledWindow) lbl_list.parent).add_css_class("ts-boxed-list");
 
 		refresh();
 		
-		show_all();
+		present();
 
 		log_debug("ExcludeListSummaryWindow: ExcludeListSummaryWindow(): exit");
     }
-    
-	private void create_actions(){
-		
-		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-        vbox_main.add(hbox);
-		var size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		
-		// close
-		
-		var img = new Image.from_stock("gtk-ok", Gtk.IconSize.BUTTON);
-		btn_close = add_button(hbox, _("OK"), "", size_group, img);
-
-        btn_close.clicked.connect(()=>{
-			this.destroy();
-		});
-	}
 
 	public void refresh(){
 
@@ -109,8 +94,3 @@ class ExcludeListSummaryWindow : Gtk.Window{
 		lbl_list.label = txt;
 	}
 }
-
-
-
-
-

@@ -32,9 +32,33 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
+/* Row object for the users list. GTK4 list widgets bind to GObjects rather than
+ * tree-model columns. */
+public enum UserChoice {
+	EXCLUDE_ALL,
+	INCLUDE_HIDDEN,
+	INCLUDE_ALL
+}
+
+public class UserRow : GLib.Object {
+
+	public SystemUser user { get; set; }
+	public bool include_hidden { get; set; }
+	public bool include_all { get; set; }
+	public bool exclude_all { get; set; }
+
+	public UserRow(SystemUser _user, bool _include_hidden, bool _include_all, bool _exclude_all){
+		user = _user;
+		include_hidden = _include_hidden;
+		include_all = _include_all;
+		exclude_all = _exclude_all;
+	}
+}
+
 class UsersBox : Gtk.Box{
 	
-	private Gtk.TreeView treeview;
+	private Gtk.ColumnView treeview;
+	private GLib.ListStore users_model;
 	private Gtk.ScrolledWindow scrolled_treeview;
 	private Gtk.Window parent_window;
 	private ExcludeBox exclude_box;
@@ -48,28 +72,21 @@ class UsersBox : Gtk.Box{
 		log_debug("UsersBox: UsersBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
 
 		restore_mode = _restore_mode;
 
 		exclude_box = _exclude_box;
 
-		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
-		add(box);
-		
-		add_label_header(this, _("User Home Directories"), true);
+		Ui.add_title(this, _("User Home Directories"));
 
-		// ------------------------
-		
-		var label = add_label(this, _("User home directories are excluded by default unless you enable them here"), false, true);
-		lbl_message = label;
+		lbl_message = Ui.add_dim_label(this, _("User home directories are excluded by default unless you enable them here"));
 
 		init_treeview();
 
 		box_btrfs = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
-		add(box_btrfs);
+		append(box_btrfs);
 
 		init_btrfs_home_option(box_btrfs);
 		
@@ -80,242 +97,165 @@ class UsersBox : Gtk.Box{
 
     private void init_treeview(){
 		
-		// treeview
-		treeview = new TreeView();
-		treeview.get_selection().mode = SelectionMode.MULTIPLE;
-		treeview.headers_visible = true;
-		treeview.reorderable = false;
-		treeview.set_tooltip_text(_("Click to edit. Drag and drop to re-order."));
-		//treeview.row_activated.connect(treeview_row_activated);
+		/* GTK4 deprecates Gtk.TreeView. SystemUser plus the three mutually
+		 * exclusive choices live on a UserRow inside a GLib.ListStore. */
+
+		users_model = new GLib.ListStore(typeof(UserRow));
+
+		treeview = new Gtk.ColumnView(new Gtk.MultiSelection(users_model));
+		treeview.set_tooltip_text(_("Click to change what is included for each user."));
 
 		// scrolled
-		var scrolled = new ScrolledWindow(null, null);
-		scrolled.set_shadow_type (ShadowType.ETCHED_IN);
-		scrolled.add (treeview);
-		scrolled.expand = true;
-		add(scrolled);
-		scrolled_treeview = scrolled;
-		
-		// column
-		var col = new TreeViewColumn();
-		col.title = _("User");
-		treeview.append_column(col);
+		scrolled_treeview = Ui.add_boxed_list(this, treeview);
 
-		// name
-		var cell_text = new CellRendererText ();
-		col.pack_start (cell_text, false);
-		
-		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter)=>{
-			SystemUser user;
-			model.get(iter, 0, out user);
-			((Gtk.CellRendererText)cell).text = user.name;
+		treeview.append_column(make_user_text_column(_("User"), true));
+		treeview.append_column(make_user_text_column(_("Home"), false));
+		treeview.append_column(make_user_toggle_column(_("Exclude All Files"), UserChoice.EXCLUDE_ALL));
+		treeview.append_column(make_user_toggle_column(_("Include Only Hidden Files"), UserChoice.INCLUDE_HIDDEN));
+		treeview.append_column(make_user_toggle_column(_("Include All Files"), UserChoice.INCLUDE_ALL));
+	}
+
+	private Gtk.ColumnViewColumn make_user_text_column(string title, bool show_name){
+
+		var factory = new Gtk.SignalListItemFactory();
+
+		factory.setup.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var lbl = new Gtk.Label("");
+			lbl.xalign = (float) 0.0;
+			list_item.set_child(lbl);
 		});
 
-		// column
-		col = new TreeViewColumn();
-		col.title = _("Home");
-		treeview.append_column(col);
-
-		// name
-		cell_text = new CellRendererText ();
-		col.pack_start (cell_text, false);
-		
-		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter)=>{
-			SystemUser user;
-			model.get(iter, 0, out user);
-			((Gtk.CellRendererText)cell).text = user.home_path;
+		factory.bind.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var lbl = (Gtk.Label) list_item.get_child();
+			var row = (UserRow) list_item.get_item();
+			lbl.label = show_name ? row.user.name : row.user.home_path;
 		});
 
-		// column -------------------------------------------------
-		
-		col = new TreeViewColumn();
-		col.title = _("Exclude All Files");
-		treeview.append_column(col);
-		
-		// radio_exclude
-		var cell_radio = new Gtk.CellRendererToggle();
-		cell_radio.radio = true;
-		cell_radio.xpad = 2;
-		cell_radio.activatable = true;
-		col.pack_start (cell_radio, false);
+		var col = new Gtk.ColumnViewColumn(title, factory);
+		col.expand = true;
+		return col;
+	}
 
-		col.set_attributes(cell_radio, "active", 3);
-		
-		cell_radio.toggled.connect((cell, path)=>{
+	private Gtk.ColumnViewColumn make_user_toggle_column(string title, UserChoice choice){
+
+		var factory = new Gtk.SignalListItemFactory();
+
+		factory.setup.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+
+			var chk = new Gtk.CheckButton();
+			chk.halign = Gtk.Align.CENTER;
+
+			chk.toggled.connect(() => {
+				if (!chk.active){ return; }
+
+				var row = chk.get_data<UserRow>("row");
+				if (row == null){ return; }
+
+				apply_user_choice(row, choice);
+			});
+
+			list_item.set_child(chk);
+		});
+
+		factory.bind.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var chk = (Gtk.CheckButton) list_item.get_child();
+			var row = (UserRow) list_item.get_item();
+
+			chk.steal_data<UserRow>("row");
+
+			switch (choice){
+			case UserChoice.EXCLUDE_ALL:
+				chk.active = row.exclude_all;
+				break;
+			case UserChoice.INCLUDE_HIDDEN:
+				chk.active = row.include_hidden;
+				break;
+			case UserChoice.INCLUDE_ALL:
+				chk.active = row.include_all;
+				break;
+			}
+
+			chk.set_data<UserRow>("row", row);
+		});
+
+		return new Gtk.ColumnViewColumn(title, factory);
+	}
+
+	private void apply_user_choice(UserRow row, UserChoice choice){
+
+		var user = row.user;
+
+		string exc_pattern = "%s/**".printf(user.home_path);
+		string inc_pattern = "+ %s/**".printf(user.home_path);
+		string inc_hidden_pattern = "+ %s/.**".printf(user.home_path);
+
+		if (user.has_encrypted_home){
+			inc_pattern = "+ /home/.ecryptfs/%s/***".printf(user.name);
+			exc_pattern = "/home/.ecryptfs/%s/***".printf(user.name);
+		}
+
+		switch (choice){
+
+		case UserChoice.EXCLUDE_ALL:
 
 			log_debug("cell_exclude.toggled()");
-			
-			var model = (Gtk.ListStore) treeview.model;
-			TreeIter iter;
-			
-			model.get_iter_from_string (out iter, path);
 
-			bool enabled;
-			model.get(iter, 3, out enabled);
-			
-			SystemUser user;
-			model.get(iter, 0, out user);
-
-			string exc_pattern = "%s/**".printf(user.home_path);
-			string inc_pattern = "+ %s/**".printf(user.home_path);
-			string inc_hidden_pattern = "+ %s/.**".printf(user.home_path);
-
-			if (user.has_encrypted_home){
-				inc_pattern = "+ /home/.ecryptfs/%s/***".printf(user.name);
-				exc_pattern = "/home/.ecryptfs/%s/***".printf(user.name);
+			if (!App.exclude_list_user.contains(exc_pattern)){
+				App.exclude_list_user.add(exc_pattern);
 			}
-			
-			enabled = !enabled;
-			
-			if (enabled){
-				if (!App.exclude_list_user.contains(exc_pattern)){
-					App.exclude_list_user.add(exc_pattern);
-				}
-				if (App.exclude_list_user.contains(inc_pattern)){
-					App.exclude_list_user.remove(inc_pattern);
-				}
-				if (App.exclude_list_user.contains(inc_hidden_pattern)){
-					App.exclude_list_user.remove(inc_hidden_pattern);
-				}
+			if (App.exclude_list_user.contains(inc_pattern)){
+				App.exclude_list_user.remove(inc_pattern);
 			}
+			if (App.exclude_list_user.contains(inc_hidden_pattern)){
+				App.exclude_list_user.remove(inc_hidden_pattern);
+			}
+			break;
 
-			this.refresh_treeview();
-			
-			//exclude_box.refresh_treeview();
-		});
-
-		// column -------------------------------------------------
-		
-		col = new TreeViewColumn();
-		col.title = _("Include Only Hidden Files");
-		treeview.append_column(col);
-		
-		// radio_include
-		cell_radio = new Gtk.CellRendererToggle();
-		cell_radio.radio = true;
-		cell_radio.xpad = 2;
-		cell_radio.activatable = true;
-		col.pack_start (cell_radio, false);
-
-		col.set_attributes(cell_radio, "active", 1);
-		
-		cell_radio.toggled.connect((cell, path)=>{
+		case UserChoice.INCLUDE_HIDDEN:
 
 			log_debug("cell_include.toggled()");
-			
-			var model = (Gtk.ListStore) treeview.model;
-			TreeIter iter;
-			
-			model.get_iter_from_string (out iter, path);
-
-			bool enabled;
-			model.get(iter, 1, out enabled);
-			
-			SystemUser user;
-			model.get(iter, 0, out user);
-
-			string exc_pattern = "%s/**".printf(user.home_path);
-			string inc_pattern = "+ %s/**".printf(user.home_path);
-			string inc_hidden_pattern = "+ %s/.**".printf(user.home_path);
-			
-			if (user.has_encrypted_home){
-				inc_pattern = "+ /home/.ecryptfs/%s/***".printf(user.name);
-				exc_pattern = "/home/.ecryptfs/%s/***".printf(user.name);
-			}
-			
-			enabled = !enabled;
-			
-			if (enabled){
-				
-				if (user.has_encrypted_home){
-					
-					string txt = _("Encrypted Home Directory");
-
-					string msg = _("Selected user has an encrypted home directory. It's not possible to include only hidden files.");
-					
-					gtk_messagebox(txt, msg, parent_window, true);
-
-					return;
-				}
-
-				if (!App.exclude_list_user.contains(inc_hidden_pattern)){
-					App.exclude_list_user.add(inc_hidden_pattern);
-				}
-
-				if (App.exclude_list_user.contains(inc_pattern)){
-					App.exclude_list_user.remove(inc_pattern);
-				}
-
-				if (App.exclude_list_user.contains(exc_pattern)){
-					App.exclude_list_user.remove(exc_pattern);
-				}
-			}
-
-			this.refresh_treeview();
-
-			//exclude_box.refresh_treeview();
-		});
-
-		// column --------------------------------------------
-		
-		col = new TreeViewColumn();
-		col.title = _("Include All Files");
-		treeview.append_column(col);
-
-		// radio_exclude
-		cell_radio = new Gtk.CellRendererToggle();
-		cell_radio.radio = true;
-		cell_radio.xpad = 2;
-		cell_radio.activatable = true;
-		col.pack_start (cell_radio, false);
-		
-		col.set_attributes(cell_radio, "active", 2);
-
-		cell_radio.toggled.connect((cell, path)=>{
-
-			var model = (Gtk.ListStore) treeview.model;
-			TreeIter iter;
-			model.get_iter_from_string (out iter, path);
-
-			bool enabled;
-			model.get(iter, 2, out enabled);
-			enabled = !enabled;
-			model.set(iter, 2, enabled);
-
-			SystemUser user;
-			model.get(iter, 0, out user);
-
-			string exc_pattern = "%s/**".printf(user.home_path);
-			string inc_pattern = "+ %s/**".printf(user.home_path);
-			string inc_hidden_pattern = "+ %s/.**".printf(user.home_path);
 
 			if (user.has_encrypted_home){
-				inc_pattern = "+ /home/.ecryptfs/%s/***".printf(user.name);
-				exc_pattern = "/home/.ecryptfs/%s/***".printf(user.name);
-			}
-			
-			if (enabled){
-				if (!App.exclude_list_user.contains(inc_pattern)){
-					App.exclude_list_user.add(inc_pattern);
-				}
-				if (App.exclude_list_user.contains(exc_pattern)){
-					App.exclude_list_user.remove(exc_pattern);
-				}
-				if (App.exclude_list_user.contains(inc_hidden_pattern)){
-					App.exclude_list_user.remove(inc_hidden_pattern);
-				}
+
+				string txt = _("Encrypted Home Directory");
+				string msg = _("Selected user has an encrypted home directory. It's not possible to include only hidden files.");
+
+				gtk_messagebox(txt, msg, parent_window, true);
+
+				this.refresh_treeview();
+				return;
 			}
 
-			this.refresh_treeview();
+			if (!App.exclude_list_user.contains(inc_hidden_pattern)){
+				App.exclude_list_user.add(inc_hidden_pattern);
+			}
+			if (App.exclude_list_user.contains(inc_pattern)){
+				App.exclude_list_user.remove(inc_pattern);
+			}
+			if (App.exclude_list_user.contains(exc_pattern)){
+				App.exclude_list_user.remove(exc_pattern);
+			}
+			break;
 
-			//exclude_box.refresh_treeview();
-		});
+		case UserChoice.INCLUDE_ALL:
 
-		col = new TreeViewColumn();
-		cell_text = new CellRendererText();
-		cell_text.width = 20;
-		col.pack_start (cell_text, false);
-		treeview.append_column(col);
+			if (!App.exclude_list_user.contains(inc_pattern)){
+				App.exclude_list_user.add(inc_pattern);
+			}
+			if (App.exclude_list_user.contains(exc_pattern)){
+				App.exclude_list_user.remove(exc_pattern);
+			}
+			if (App.exclude_list_user.contains(inc_hidden_pattern)){
+				App.exclude_list_user.remove(inc_hidden_pattern);
+			}
+			break;
+		}
+
+		this.refresh_treeview();
 	}
 
 	private void init_btrfs_home_option(Gtk.Box box){
@@ -324,7 +264,7 @@ class UsersBox : Gtk.Box{
 			
 			chk_include_btrfs_home = new Gtk.CheckButton.with_label(_("Restore @home subvolume"));
 
-			box.add(chk_include_btrfs_home);
+			box.append(chk_include_btrfs_home);
 
 			chk_include_btrfs_home.toggled.connect(()=>{
 				App.include_btrfs_home_for_restore = chk_include_btrfs_home.active; 
@@ -335,7 +275,7 @@ class UsersBox : Gtk.Box{
 
 			chk_include_btrfs_home = new Gtk.CheckButton.with_label(_("Include @home subvolume in backups"));
 			
-			box.add(chk_include_btrfs_home);
+			box.append(chk_include_btrfs_home);
 
 			chk_include_btrfs_home.toggled.connect(()=>{
 				App.include_btrfs_home_for_backup = chk_include_btrfs_home.active; 
@@ -349,14 +289,10 @@ class UsersBox : Gtk.Box{
 
 		if (App.btrfs_mode){
 
-			lbl_message.hide();
-			lbl_message.set_no_show_all(true);
+			lbl_message.visible = false;
 
-			scrolled_treeview.hide();
-			scrolled_treeview.set_no_show_all(true);
-
-			box_btrfs.set_no_show_all(false);
-			box_btrfs.show_all();
+			scrolled_treeview.visible = false;
+			box_btrfs.visible = true;
 			
 			if (restore_mode){
 				chk_include_btrfs_home.active = App.include_btrfs_home_for_restore;
@@ -366,28 +302,22 @@ class UsersBox : Gtk.Box{
 			}
 		}
 		else{
-			lbl_message.show();
-			lbl_message.set_no_show_all(false);
+			lbl_message.visible = true;
 
-			scrolled_treeview.show();
-			scrolled_treeview.set_no_show_all(false);
+			scrolled_treeview.visible = true;
 
 			refresh_treeview();
 			
-			box_btrfs.hide();
-			box_btrfs.set_no_show_all(true);
+			box_btrfs.visible = false;
 		}
 
-		show_all();
+		this.visible = true;
 	}
 	
 	private void refresh_treeview(){
 		
-		var model = new Gtk.ListStore(4, typeof(SystemUser), typeof(bool), typeof(bool), typeof(bool));
-		treeview.model = model;
+		users_model.remove_all();
 
-		TreeIter iter;
-		
 		foreach(var user in App.current_system_users.values){
 
 			if (user.is_system){ continue; }
@@ -418,11 +348,7 @@ class UsersBox : Gtk.Box{
 				}
 			}
 			
-			model.append(out iter);
-			model.set (iter, 0, user);
-			model.set (iter, 1, include_hidden);
-			model.set (iter, 2, include_all);
-			model.set (iter, 3, exclude_all);
+			users_model.append(new UserRow(user, include_hidden, include_all, exclude_all));
 		}
 
 		exclude_box.refresh_treeview();

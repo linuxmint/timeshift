@@ -32,10 +32,22 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
+/* Row object for the per-mount device drop-down. A GLib.ListStore cannot hold
+ * nulls, and the "Keep on Root Device" row has no Device, so the pair is
+ * wrapped. */
+public class RestoreDeviceOption : GLib.Object {
+
+	public Device? dev { get; set; }
+	public MountEntry entry { get; set; }
+
+	public RestoreDeviceOption(Device? _dev, MountEntry _entry){
+		dev = _dev;
+		entry = _entry;
+	}
+}
+
 class RestoreDeviceBox : Gtk.Box{
 
-	private Gtk.InfoBar infobar_location;
-	private Gtk.Label lbl_infobar_location;
 	private Gtk.Box option_box;
 	private Gtk.Label lbl_header_subvol;
 	private bool show_volume_name = false;
@@ -44,77 +56,69 @@ class RestoreDeviceBox : Gtk.Box{
 	private Gtk.SizeGroup sg_device = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 	private Gtk.SizeGroup sg_mount_options = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 	private Gtk.Window parent_window;
-    private Gtk.IconSize tooltip_size = Gtk.icon_size_register("ttip", 128, 128);
 
 	public RestoreDeviceBox (Gtk.Window _parent_window) {
 
 		log_debug("RestoreDeviceBox: RestoreDeviceBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
 
-		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		add(hbox);
+		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
+		append(hbox);
 
-		add_label_header(hbox, _("Select Target Device"), true);
+		var title = Ui.add_title(hbox, _("Select Target Device"));
+		title.hexpand = true;
+		title.margin_bottom = 0;
 
-		// buffer
-		var label = add_label(hbox, "");
-        label.hexpand = true;
-       
 		// refresh device button
-		
-		Gtk.SizeGroup size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		var btn_refresh = add_button(hbox, _("Refresh"), "", size_group, null);
+		var btn_refresh = Ui.add_icon_only_button(hbox, "view-refresh-symbolic", _("Refresh"));
+		btn_refresh.add_css_class("flat");
+		btn_refresh.valign = Gtk.Align.START;
         btn_refresh.clicked.connect(()=>{
 			App.update_partitions();
 			refresh();
 		});
 
-
 		if (App.mirror_system){
-			add_label(this,
+			Ui.add_dim_label(this,
 				_("Select the target devices where system will be cloned."));
 		}
 		else{
-			add_label(this,
+			Ui.add_dim_label(this,
 				_("Select the devices where files will be restored.") + "\n" +
 				_("Devices from which snapshot was created are pre-selected."));
 		}
 
 		// headings
 		
-		hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		hbox.margin_top = 12;
-		add(hbox);
+		hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
+		hbox.margin_top = Ui.Spacing.SM;
+		append(hbox);
 
-		label = add_label(hbox, _("Path") + "  ", true, true);
+		var label = Ui.add_caption(hbox, _("Path"));
 		label.xalign = (float) 0.0;
 		sg_mount_point.add_widget(label);
 		
-		label = add_label(hbox, _("Device") + "  ", true, true);
+		label = Ui.add_caption(hbox, _("Device"));
 		label.xalign = (float) 0.0;
 		sg_device.add_widget(label);
 
-		label = add_label(hbox, _("Subvolume"), true, true);
+		label = Ui.add_caption(hbox, _("Subvolume"));
 		label.xalign = (float) 0.5;
-		label.set_no_show_all(true);
 		lbl_header_subvol = label;
 
 		// options
 		
 		option_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
-		add(option_box);
+		option_box.hexpand = true;
+		append(option_box);
 
 		// bootloader
 		
 		add_boot_options();
 
-		// infobar
-		
-		create_infobar_location();
 
 		log_debug("RestoreDeviceBox: RestoreDeviceBox(): exit");
     }
@@ -143,28 +147,30 @@ class RestoreDeviceBox : Gtk.Box{
 			}
 		}
 
-		if (show_volume_name){
-			lbl_header_subvol.set_no_show_all(false);
-		}
 		lbl_header_subvol.visible = show_volume_name;
 
-		foreach(var item in option_box.get_children()){
-			option_box.remove(item);
+		/* GTK4 has no Container.get_children(); walk the sibling chain. */
+		var child = option_box.get_first_child();
+		while (child != null){
+			var next = child.get_next_sibling();
+			option_box.remove(child);
+			child = next;
 		}
 
 		foreach(MountEntry entry in App.mount_list){
 			add_device_selection_option(entry);
 		}
 
-		show_all();
+		this.visible = true;
 	}
 
 	private void add_device_selection_option(MountEntry entry){
 
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		option_box.add(box);
+		option_box.append(box);
 
-		var label = add_label(box, entry.mount_point, true);
+		var label = Ui.add_heading(box, entry.mount_point);
+		label.wrap = false;
 		sg_mount_point.add_widget(label);
 		
 		var combo = add_device_combo(box, entry);
@@ -178,86 +184,87 @@ class RestoreDeviceBox : Gtk.Box{
 			else {
 				txt = "%s".printf(entry.lvm_name());
 			}
-			label = add_label(box, txt, false);
+			label = Ui.add_body(box, txt, false);
 			sg_mount_options.add_widget(label);
 		}
 	}
 
-	private Gtk.ComboBox add_device_combo(Gtk.Box box, MountEntry entry){
+	private Gtk.DropDown add_device_combo(Gtk.Box box, MountEntry entry){
 
-		var combo = new Gtk.ComboBox();
-		box.add(combo);
+		/* GTK4 deprecates Gtk.ComboBox; a Gtk.DropDown with a factory replaces
+		 * the cell renderers and their data functions. */
 
-		var cell_pix = new Gtk.CellRendererPixbuf();
-		combo.pack_start (cell_pix, false);
+		var factory = new Gtk.SignalListItemFactory();
 
-		combo.set_cell_data_func (cell_pix, (cell_layout, cell, model, iter)=>{
-			Device dev;
-			//bool selected = combo.get_active_iter (out iter);
-			//if (!selected) { return; }
-			combo.model.get (iter, 0, out dev, -1);
+		factory.setup.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+
+			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+
+			var img = new Gtk.Image();
+			IconManager.set_image_icon(img, IconManager.ICON_HARDDRIVE, 16);
+			hbox.append(img);
+
+			var lbl = new Gtk.Label("");
+			lbl.xalign = (float) 0.0;
+			lbl.use_markup = true;
+			hbox.append(lbl);
+
+			list_item.set_child(hbox);
+		});
+
+		factory.bind.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var hbox = (Gtk.Box) list_item.get_child();
+			var img = (Gtk.Image) hbox.get_first_child();
+			var lbl = (Gtk.Label) img.get_next_sibling();
+			var option = (RestoreDeviceOption) list_item.get_item();
+			var dev = option.dev;
 
 			if (dev != null){
-
-				if (dev.type == "disk"){
-					((Gtk.CellRendererPixbuf)cell).icon_name = IconManager.ICON_HARDDRIVE;
-				}
-			
-				((Gtk.CellRendererPixbuf)cell).sensitive = (dev.type != "disk");
-				((Gtk.CellRendererPixbuf)cell).visible = (dev.type == "disk");
+				img.visible = (dev.type == "disk");
+				lbl.label = dev.description_simple_formatted();
+				lbl.sensitive = (dev.type != "disk");
+			}
+			else{
+				img.visible = false;
+				lbl.label = _("Keep on Root Device");
+				lbl.sensitive = true;
 			}
 		});
 
-		var cell_text = new Gtk.CellRendererText();
-		cell_text.xalign = (float) 0.0;
-		combo.pack_start (cell_text, false);
+		var combo = new Gtk.DropDown(null, null);
+		combo.factory = factory;
+		box.append(combo);
 
 		combo.has_tooltip = true;
 		combo.query_tooltip.connect((x, y, keyboard_tooltip, tooltip) => {
-			Device dev;
-			TreeIter iter;
-			bool selected = combo.get_active_iter (out iter);
-			if (!selected) { return true; }
-			combo.model.get (iter, 0, out dev, -1);
-			
-			tooltip.set_icon_from_icon_name(IconManager.ICON_HARDDRIVE, tooltip_size);
-			
-			if (dev != null){
-				tooltip.set_markup(dev.tooltip_text());
+
+			var option = combo.get_selected_item() as RestoreDeviceOption;
+			if (option == null) { return true; }
+
+			tooltip.set_icon_from_icon_name(IconManager.ICON_HARDDRIVE);
+
+			if (option.dev != null){
+				tooltip.set_markup(option.dev.tooltip_text());
 			}
 			else{
 				tooltip.set_markup(_("Keep this mount path on the root filesystem"));
 			}
-			
+
 			return true;
 		});
 
-		combo.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
-			Device dev;
-			model.get (iter, 0, out dev, -1);
-
-			if (dev != null){
-				((Gtk.CellRendererText)cell).markup = dev.description_simple_formatted();
-				((Gtk.CellRendererText)cell).sensitive = (dev.type != "disk");
-			}
-			else{
-				((Gtk.CellRendererText)cell).markup = _("Keep on Root Device");
-			}
-		});
-		
 		// populate combo
-		var model = new Gtk.ListStore(2, typeof(Device), typeof(MountEntry));
+		var model = new GLib.ListStore(typeof(RestoreDeviceOption));
 		combo.model = model;
-		
-		var active = -1;
-		var index = -1;
-		TreeIter iter;
+
+		uint active = Gtk.INVALID_LIST_POSITION;
+		int index = -1;
 
 		if (entry.mount_point != "/"){
 			index++;
-			model.append(out iter);
-			model.set (iter, 0, null);
-			model.set (iter, 1, entry);
+			model.append(new RestoreDeviceOption(null, entry));
 		}
 		
 		foreach(var dev in App.partitions){
@@ -285,47 +292,42 @@ class RestoreDeviceBox : Gtk.Box{
 			}
 			
 			index++;
-			model.append(out iter);
-			model.set (iter, 0, dev);
-			model.set (iter, 1, entry);
-		
+			model.append(new RestoreDeviceOption(dev, entry));
+
 			if (entry.device != null){
 				if (dev.uuid == entry.device.uuid){
-					active = index;
+					active = (uint) index;
 				}
 				else if (dev.has_parent() && (dev.parent.uuid == entry.device.uuid)){
-					active = index;
+					active = (uint) index;
 				}
 				else if (dev.has_children() && (dev.children[0].uuid == entry.device.uuid)){
 					// this will not occur since we are skipping parent devices in this loop
-					active = index;
+					active = (uint) index;
 				}
 			}
 		}
 
-		if ((active == -1) && (entry.mount_point != "/")){
+		if ((active == Gtk.INVALID_LIST_POSITION) && (entry.mount_point != "/")){
 			active = 0; // keep on root device
 		}
 
-		combo.active = active;
-		
-		combo.changed.connect((path) => {
+		combo.selected = active;
 
-			Device current_dev;
-			MountEntry current_entry;
-			
-			TreeIter iter_active;
-			bool selected = combo.get_active_iter (out iter_active);
-			if (!selected){
-				log_debug("device combo: active is -1");
+		combo.notify["selected"].connect(() => {
+
+			var option = combo.get_selected_item() as RestoreDeviceOption;
+			if (option == null){
+				log_debug("device combo: nothing selected");
 				return;
 			}
 
-			TreeIter iter_combo;
-			var store = (Gtk.ListStore) combo.model;
-			store.get(iter_active, 0, out current_dev, 1, out current_entry, -1);
+			var current_dev = option.dev;
+			var current_entry = option.entry;
 
-			if (current_dev.is_encrypted_partition()){
+			var store = (GLib.ListStore) combo.model;
+
+			if ((current_dev != null) && current_dev.is_encrypted_partition()){
 
 				log_debug("add_device_combo().changed: unlocking encrypted device..");
 				
@@ -343,21 +345,18 @@ class RestoreDeviceBox : Gtk.Box{
 
 						// reset to default device
 						
-						index = -1;
-						for (bool next = store.get_iter_first (out iter_combo); next;
-							next = store.iter_next (ref iter_combo)) {
+						for (uint i = 0; i < store.get_n_items(); i++) {
 
-							Device dev_iter;
-							store.get(iter_combo, 0, out dev_iter, -1);
-							index++;
-							
+							var opt_iter = (RestoreDeviceOption) store.get_item(i);
+							var dev_iter = opt_iter.dev;
+
 							if ((dev_iter != null) && (dev_iter.device == current_entry.device.device)){
-								combo.active = index;
+								combo.selected = i;
 							}
 						}
 					}
 					else{
-						combo.active = 0; // keep on root device
+						combo.selected = 0; // keep on root device
 					}
 					
 					return;
@@ -394,31 +393,17 @@ class RestoreDeviceBox : Gtk.Box{
 
 	private void add_boot_options(){
 
-		var hbox = new Gtk.ButtonBox(Gtk.Orientation.HORIZONTAL);
-		hbox.layout_style = Gtk.ButtonBoxStyle.START;
-        add(hbox);
+		var hbox = Ui.add_button_row(this, Gtk.Align.START);
+		hbox.margin_top = Ui.Spacing.XS;
 		
 		string tt = _("[For Experienced Users] Change these settings if the restored system fails to boot.");
 		var button = add_button(hbox, _("Bootloader Options (Advanced)"), tt, null, null);
-		button.margin = 10;
 		var btn_boot_options = button;
 
         btn_boot_options.clicked.connect(()=>{
 			var win = new BootOptionsWindow();
 			win.set_transient_for(parent_window);
 		});
-	}
-
-	private void create_infobar_location(){
-		
-		var infobar = new Gtk.InfoBar();
-		infobar.no_show_all = true;
-		add(infobar);
-		infobar_location = infobar;
-		
-		var content = (Gtk.Box) infobar.get_content_area ();
-		var label = add_label(content, "");
-		lbl_infobar_location = label;
 	}
 
 	public bool check_and_mount_devices(){

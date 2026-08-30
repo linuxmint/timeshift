@@ -32,84 +32,38 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
-class BootOptionsWindow : Gtk.Window{
+class BootOptionsWindow : AppWindow {
 	
-	private Gtk.Box vbox_main;
 	private BootOptionsBox boot_options_box;
-
-	private uint tmr_init;
 
 	public BootOptionsWindow() {
 
 		log_debug("BootOptionsWindow: BootOptionsWindow()");
 		
 		this.title = _("Bootloader Options");
-        this.window_position = WindowPosition.CENTER;
         this.modal = true;
-        //this.set_default_size (def_width, def_height);
-		this.icon = IconManager.lookup("timeshift",16);
+        this.set_default_size(520, -1);
 
-		this.delete_event.connect(on_delete_event);
+		this.close_request.connect(on_delete_event);
 
-	    // vbox_main
-        vbox_main = new Gtk.Box(Orientation.VERTICAL, 6);
-        vbox_main.margin = 12;
-        add(vbox_main);
+		var header = new Gtk.HeaderBar();
+		set_titlebar(header);
 
 		boot_options_box = new BootOptionsBox(this);
-		boot_options_box.margin = 0;
-		vbox_main.add(boot_options_box);
-		
-		create_actions();
+		Ui.as_page(boot_options_box);
+		boot_options_box.hexpand = true;
+		boot_options_box.vexpand = true;
+		set_child(boot_options_box);
 
-		show_all();
-
-		tmr_init = Timeout.add(100, init_delayed);
+		present();
 
 		log_debug("BootOptionsWindow: BootOptionsWindow(): exit");
     }
 
-	private bool init_delayed(){
+	private bool on_delete_event(){
 
-		if (tmr_init > 0){
-			Source.remove(tmr_init);
-			tmr_init = 0;
-		}
-
-		return false;
-	}
-	
-	private bool on_delete_event(Gdk.EventAny event){
-
-		//save_changes();
+		notify_closed();
 		
 		return false; // close window
 	}
-	
-	private void save_changes(){
-		//App.cron_job_update();
-	}
-	
-	private void create_actions(){
-		
-		var hbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
-		hbox.margin = 0;
-		hbox.margin_top = 24;
-        vbox_main.add(hbox);
-
-		var size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		
-		// close
-		var btn_close = add_button(hbox, _("Close"), "", size_group, null);
-		//hbox.set_child_packing(btn_close, false, true, 6, Gtk.PackType.END);
-		
-        btn_close.clicked.connect(()=>{
-			save_changes();
-			this.destroy();
-		});
-	}
-
 }
-
-
-

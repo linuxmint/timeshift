@@ -145,6 +145,12 @@ public class Main : GLib.Object{
 	public string date_format = "%Y-%m-%d %H:%M:%S";
 	public const string date_format_default = "%Y-%m-%d %H:%M:%S";
 
+	// appearance (GUI only; "system" defers to the desktop)
+	public string theme_mode = "system";     // system | light | dark
+	public string theme_accent = "system";   // system | a ThemeStyle preset key
+	public const string theme_mode_default = "system";
+	public const string theme_accent_default = "system";
+
 	public Gee.ArrayList<Snapshot> delete_list;
 	
 	public Snapshot snapshot_to_delete;
@@ -3582,6 +3588,8 @@ public class Main : GLib.Object{
 		}
 
 		config.set_string_member("date_format", date_format);
+		config.set_string_member("theme_mode", theme_mode);
+		config.set_string_member("theme_accent", theme_accent);
 		
 		Json.Array arr = new Json.Array();
 		foreach(string path in exclude_list_user){
@@ -3703,6 +3711,8 @@ public class Main : GLib.Object{
 		this.count_boot = json_get_int(config,"count_boot",count_boot);
 
 		this.date_format = json_get_string(config, "date_format", date_format_default);
+		this.theme_mode = json_get_string(config, "theme_mode", theme_mode_default);
+		this.theme_accent = json_get_string(config, "theme_accent", theme_accent_default);
 
 		Main.first_snapshot_size = json_get_uint64(config,"snapshot_size", Main.first_snapshot_size);
 			

@@ -234,10 +234,10 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 
 		if (pixbuf == null){
 			if (file_type == FileType.DIRECTORY) {
-				pixbuf = IconManager.lookup("folder", icon_size, false);
+				pixbuf = IconManager.lookup("folder", icon_size);
 			}
 			else{
-				pixbuf = IconManager.lookup("text-x-preview", icon_size, false);
+				pixbuf = IconManager.lookup("text-x-preview", icon_size);
 			}
 		}
 

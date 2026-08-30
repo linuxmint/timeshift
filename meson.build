@@ -11,22 +11,16 @@ project(
 dependencies = [
   dependency('glib-2.0'),
   dependency('gobject-2.0'),
-  dependency('gtk+-3.0'),
+  dependency('gtk4'),
   dependency('gio-2.0'),
   dependency('gio-unix-2.0'),
   dependency('json-glib-1.0'),
-  dependency('vte-2.91'),
+  dependency('vte-2.91-gtk4'),
   dependency('gee-0.8'),
   meson.get_compiler('vala').find_library('posix'),
   meson.get_compiler('c').find_library('m'),
 ]
 
-enable_xapp = get_option('xapp')
-if enable_xapp
-  xapp_dep = dependency('xapp')
-  add_project_arguments('-D', 'XAPP', language: 'vala')
-  dependencies += xapp_dep
-endif
 
 # Include the translations module
 i18n = import('i18n')
@@ -36,7 +30,6 @@ am_cflags = [
   '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
 ]
 add_project_arguments(am_cflags, language: 'c')
-add_project_arguments('-D', 'GTK3_18', language: 'vala')
 
 subdir('files')
 subdir('src')

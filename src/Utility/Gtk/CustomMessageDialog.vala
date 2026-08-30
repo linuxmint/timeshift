@@ -33,23 +33,22 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
-public class CustomMessageDialog : Gtk.Dialog {
-	
-	private Gtk.Box vbox_main;
+public class CustomMessageDialog : Gtk.Window {
+
 	private Gtk.Label lbl_msg;
 	private Gtk.ScrolledWindow sw_msg;
-	private Gtk.Button btn_ok;
-	private Gtk.Button btn_cancel;
-	private Gtk.Button btn_yes;
-	private Gtk.Button btn_no;
+	private Gtk.Box bbox;
 
 	private string msg_title;
 	private string msg_body;
 	private Gtk.MessageType msg_type;
 	private Gtk.ButtonsType buttons_type;
-	
-	public CustomMessageDialog(string _msg_title, string _msg_body, Gtk.MessageType _msg_type, Window? parent, Gtk.ButtonsType _buttons_type) {
-			
+
+	private Gtk.ResponseType response = Gtk.ResponseType.DELETE_EVENT;
+	private GLib.MainLoop? loop = null;
+
+	public CustomMessageDialog(string _msg_title, string _msg_body, Gtk.MessageType _msg_type, Gtk.Window? parent, Gtk.ButtonsType _buttons_type) {
+
 		set_transient_for(parent);
 		set_modal(true);
 
@@ -57,117 +56,173 @@ public class CustomMessageDialog : Gtk.Dialog {
 		msg_body = _msg_body;
 		msg_type = _msg_type;
 		buttons_type = _buttons_type;
-		
+
 		init_window();
-
-		lbl_msg.expand = true;
-		sw_msg.expand = true;
-		sw_msg.vscrollbar_policy = PolicyType.NEVER;
-
-		sw_msg.set_size_request(500, 150); // sets minimum size
-
-		show_all();
-
-		if (lbl_msg.get_allocated_height() > 400){
-			sw_msg.vscrollbar_policy = PolicyType.AUTOMATIC;
-			sw_msg.set_size_request(500, 400);
-		}
 	}
 
 	public void init_window () {
-		
-		this.title = "";
-		this.window_position = WindowPosition.CENTER_ON_PARENT;
-		this.icon = IconManager.lookup("timeshift", 16);
+
+		this.title = msg_title;
 		this.resizable = false;
-		this.deletable = false;
-		this.skip_taskbar_hint = true;
-		this.skip_pager_hint = true;
-		
-		//vbox_main
-		vbox_main = get_content_area () as Gtk.Box;
-		vbox_main.margin = 6;
 
-		//hbox_contents
-		var hbox_contents = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		hbox_contents.margin = 6;
-		vbox_main.add (hbox_contents);
+		/* Message-dialog chrome: a flat header carrying only the close button,
+		 * with the title set large in the body rather than in the bar. */
+		var hb = new Gtk.HeaderBar();
+		hb.add_css_class("flat");
+		hb.title_widget = new Gtk.Label("");
+		set_titlebar(hb);
 
-		string icon_name = "dialog-info";
-		
+		var vbox_main = new Gtk.Box(Orientation.VERTICAL, Ui.Spacing.MD);
+		set_margin_all(vbox_main, Ui.Spacing.LG);
+		vbox_main.margin_top = Ui.Spacing.SM;
+		this.set_child(vbox_main);
+
+		var hbox_contents = new Gtk.Box(Orientation.HORIZONTAL, Ui.Spacing.MD);
+		vbox_main.append(hbox_contents);
+
+		string icon_name = "dialog-information-symbolic";
+		string icon_class = "ts-accent";
+
 		switch(msg_type){
-		case Gtk.MessageType.INFO:
-			icon_name = "dialog-info";
-			break;
 		case Gtk.MessageType.WARNING:
-			icon_name = "dialog-warning";
+			icon_name = "dialog-warning-symbolic";
+			icon_class = "ts-warning";
 			break;
 		case Gtk.MessageType.QUESTION:
-			icon_name = "dialog-question";
+			icon_name = "dialog-question-symbolic";
 			break;
 		case Gtk.MessageType.ERROR:
-			icon_name = "dialog-error";
+			icon_name = "dialog-error-symbolic";
+			icon_class = "ts-error";
 			break;
-		case Gtk.MessageType.OTHER:
-			icon_name = "dialog-info";
+		default:
 			break;
 		}
 
 		// image ----------------
-		
-		var img = new Image.from_icon_name(icon_name, Gtk.IconSize.DIALOG);
-		hbox_contents.add(img);
-		
-		// label -------------------
 
-		var text = "<span weight=\"bold\" size=\"x-large\">%s</span>\n\n%s".printf(
-			escape_html(msg_title),
-			msg_body);
-		lbl_msg = new Gtk.Label(text);
+		var img = new Gtk.Image();
+		IconManager.set_image_icon(img, icon_name, 32);
+		img.pixel_size = 32;
+		img.valign = Gtk.Align.START;
+		img.add_css_class(icon_class);
+		hbox_contents.append(img);
+
+		// text -------------------
+
+		var vbox_text = new Gtk.Box(Orientation.VERTICAL, Ui.Spacing.XS);
+		vbox_text.hexpand = true;
+		hbox_contents.append(vbox_text);
+
+		var lbl_title = new Gtk.Label(msg_title);
+		lbl_title.add_css_class("ts-title-2");
+		lbl_title.xalign = 0.0f;
+		lbl_title.wrap = true;
+		lbl_title.wrap_mode = Pango.WrapMode.WORD_CHAR;
+		lbl_title.max_width_chars = 50;
+		vbox_text.append(lbl_title);
+
+		/* Body stays markup: callers already escape what they pass. */
+		lbl_msg = new Gtk.Label(msg_body);
+		lbl_msg.add_css_class("ts-body");
 		lbl_msg.xalign = 0.0f;
 		lbl_msg.yalign = 0.0f;
-		lbl_msg.max_width_chars = 70;
+		lbl_msg.max_width_chars = 60;
 		lbl_msg.wrap = true;
 		lbl_msg.wrap_mode = Pango.WrapMode.WORD_CHAR;
 		lbl_msg.use_markup = true;
+		lbl_msg.selectable = true;
+		lbl_msg.hexpand = true;
+		lbl_msg.vexpand = true;
 
-		//sw_msg
-		sw_msg = new Gtk.ScrolledWindow(null, null);
-		//sw_msg.set_shadow_type (ShadowType.ETCHED_IN);
-		sw_msg.add (lbl_msg);
+		sw_msg = new Gtk.ScrolledWindow();
+		sw_msg.set_child(lbl_msg);
 		sw_msg.hscrollbar_policy = PolicyType.NEVER;
-		sw_msg.vscrollbar_policy = PolicyType.NEVER;
-		//sw_msg.set_size_request(500, 400);
-		hbox_contents.add(sw_msg);
+		sw_msg.vscrollbar_policy = PolicyType.AUTOMATIC;
+		sw_msg.hexpand = true;
+		sw_msg.vexpand = true;
+		sw_msg.propagate_natural_height = true;
+		sw_msg.propagate_natural_width = true;
+		sw_msg.max_content_height = 400;
+		sw_msg.min_content_width = 420;
+		vbox_text.append(sw_msg);
 
 		// actions -------------------------
-		
+
+		bbox = Ui.add_button_row(vbox_main, Gtk.Align.END);
+
 		switch(buttons_type){
-		case Gtk.ButtonsType.NONE: break;
+		case Gtk.ButtonsType.NONE:
+			break;
 		case Gtk.ButtonsType.OK:
-			btn_ok = (Gtk.Button) add_button (_("OK"), Gtk.ResponseType.OK);
-			btn_ok.grab_focus();
+			add_action_button(_("OK"), Gtk.ResponseType.OK, true);
 			break;
 		case Gtk.ButtonsType.CLOSE:
-			btn_cancel = (Gtk.Button) add_button (_("Close"), Gtk.ResponseType.CLOSE);
-			btn_cancel.grab_focus();
+			add_action_button(_("Close"), Gtk.ResponseType.CLOSE, true);
 			break;
 		case Gtk.ButtonsType.CANCEL:
-			btn_cancel = (Gtk.Button) add_button (_("Cancel"), Gtk.ResponseType.CANCEL);
-			btn_cancel.grab_focus();
+			add_action_button(_("Cancel"), Gtk.ResponseType.CANCEL, true);
 			break;
 		case Gtk.ButtonsType.OK_CANCEL:
-			btn_ok = (Gtk.Button) add_button (_("OK"), Gtk.ResponseType.OK);
-			btn_cancel = (Gtk.Button) add_button (_("Cancel"), Gtk.ResponseType.CANCEL);
-			btn_ok.grab_focus();
+			add_action_button(_("Cancel"), Gtk.ResponseType.CANCEL, false);
+			add_action_button(_("OK"), Gtk.ResponseType.OK, true);
 			break;
 		case Gtk.ButtonsType.YES_NO:
-			btn_yes = (Gtk.Button) add_button (_("Yes"), Gtk.ResponseType.YES);
-			btn_no = (Gtk.Button) add_button (_("No"), Gtk.ResponseType.NO);
-			btn_yes.grab_focus();
+			add_action_button(_("No"), Gtk.ResponseType.NO, false);
+			add_action_button(_("Yes"), Gtk.ResponseType.YES, true);
 			break;
 		}
+
+		this.close_request.connect(() => {
+			response = Gtk.ResponseType.DELETE_EVENT;
+			quit_loop();
+			return false;
+		});
+	}
+
+	private void add_action_button(string label, Gtk.ResponseType response_id, bool is_default){
+
+		var button = new Gtk.Button.with_label(label);
+
+		if (is_default){
+			button.add_css_class("suggested-action");
+		}
+
+		button.clicked.connect(() => {
+			response = response_id;
+			quit_loop();
+			this.destroy();
+		});
+
+		bbox.append(button);
+
+		if (is_default){
+			button.grab_focus();
+		}
+	}
+
+	private void quit_loop(){
+		if ((loop != null) && loop.is_running()){
+			loop.quit();
+		}
+	}
+
+	public Gtk.ResponseType run(){
+
+		/* Replacement for Gtk.Dialog.run(), which GTK4 removes. Callers in the
+		 * core are synchronous, so block on a nested main loop. */
+
+		loop = new GLib.MainLoop();
+
+		/* Gtk.Window.destroy() shadows the inherited Gtk.Widget::destroy signal. */
+		ulong handler = ((Gtk.Widget) this).destroy.connect(() => { quit_loop(); });
+
+		this.present();
+		loop.run();
+
+		((Gtk.Widget) this).disconnect(handler);
+		loop = null;
+
+		return response;
 	}
 }
-
-

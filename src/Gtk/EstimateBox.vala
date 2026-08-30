@@ -24,10 +24,6 @@
 using Gtk;
 using Gee;
 
-#if XAPP
-using XApp;
-#endif
-
 using TeeJee.Logging;
 using TeeJee.FileSystem;
 using TeeJee.JsonHelper;
@@ -38,6 +34,7 @@ using TeeJee.Misc;
 
 class EstimateBox : Gtk.Box{
 	
+	private TaskProgressBox progress;
 	private Gtk.ProgressBar progressbar;
 	private Gtk.Window parent_window;
 	
@@ -46,31 +43,17 @@ class EstimateBox : Gtk.Box{
 		log_debug("EstimateBox: EstimateBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
-		
-		// header
-		add_label_header(this, _("Estimating System Size..."), true);
 
-		var hbox_status = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		add (hbox_status);
-		
-		var spinner = new Gtk.Spinner();
-		spinner.active = true;
-		hbox_status.add(spinner);
-		
-		//lbl_msg
-		var lbl_msg = add_label(hbox_status, _("Please wait..."));
-		lbl_msg.halign = Align.START;
-		lbl_msg.ellipsize = Pango.EllipsizeMode.END;
-		lbl_msg.max_width_chars = 50;
+		progress = new TaskProgressBox(_("Estimating System Size..."), false);
+		append(progress);
 
-		//progressbar
-		progressbar = new Gtk.ProgressBar();
+		progress.lbl_msg.label = _("Please wait...");
+		progress.lbl_status.visible = false;
+
+		progressbar = progress.progressbar;
 		progressbar.pulse_step = 0.01;
-		//progressbar.set_size_request(-1,25);
-		add (progressbar);
 
 		log_debug("EstimateBox: EstimateBox(): exit");
     }
@@ -86,15 +69,11 @@ class EstimateBox : Gtk.Box{
 
 		log_debug("EstimateBox: thread started");
 
-		#if XAPP
-		XApp.set_window_progress_pulse(parent_window, true);
-		#endif
+		LauncherEntry.set_progress_pulse(true);
 		progressbar.pulse();
 
 		App.estimate_system_size(progressbar.pulse);
 
-		#if XAPP
-		XApp.set_window_progress_pulse(parent_window, false);
-		#endif
+		LauncherEntry.set_progress_pulse(false);
 	}
 }

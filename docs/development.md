@@ -8,10 +8,10 @@ This documentation provides instructions for developing Timeshift.
 - help2man
 - gettext 
 - valac 
-- libvte-2.91-dev 
+- libgtk-4-dev
+- libvte-2.91-gtk4-dev
 - libgee-0.8-dev 
-- libjson-glib-dev 
-- libxapp-dev
+- libjson-glib-dev
 
 If you are using a Debian-based distribution, you can install these
 dependencies by running the following command in a terminal:
@@ -21,10 +21,10 @@ sudo apt install meson \
 help2man \
 gettext \
 valac \
-libvte-2.91-dev \
+libgtk-4-dev \
+libvte-2.91-gtk4-dev \
 libgee-0.8-dev \
-libjson-glib-dev \
-libxapp-dev
+libjson-glib-dev
 ``` 
 
 ## Building and Installing 

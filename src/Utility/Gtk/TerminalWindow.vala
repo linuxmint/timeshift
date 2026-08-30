@@ -57,7 +57,7 @@ public class TerminalWindow : Gtk.Window {
 		set_modal(true);
 		fullscreen();
 
-		this.delete_event.connect(()=>{
+		this.close_request.connect(()=>{
 			// do not allow window to close 
 			return true;
 		});
@@ -68,21 +68,20 @@ public class TerminalWindow : Gtk.Window {
 	public void init_window () {
 		
 		this.title = "";
-		this.icon = IconManager.lookup("timeshift",16);
 		this.resizable = true;
-		this.deletable = false;
 		
 		// vbox_main ---------------
 		
 		vbox_main = new Gtk.Box(Orientation.VERTICAL, 6);
 		vbox_main.set_size_request (def_width, def_height);
-		add (vbox_main);
+		set_child (vbox_main);
 
 		// terminal ----------------------
 		
 		term = new Vte.Terminal();
-		term.expand = true;
-		vbox_main.add(term);
+		term.hexpand = true;
+		term.vexpand = true;
+		vbox_main.append(term);
 
 		term.input_enabled = true;
 		term.backspace_binding = Vte.EraseBinding.AUTO;
@@ -94,19 +93,17 @@ public class TerminalWindow : Gtk.Window {
 		term.scroll_on_output = true;
 
 		// colors -----------------------------
-		
-		var color = Gdk.RGBA();
-		color.parse("#FFFFFF");
-		term.set_color_foreground(color);
 
-		color.parse("#404040");
-		term.set_color_background(color);
+		/* No explicit palette: with foreground and background left unset VTE
+		 * draws from the widget's style colours, so the terminal follows the
+		 * light/dark theme instead of staying a fixed grey slab in both. */
+		term.set_colors(null, null, null);
 		
 		// grab focus ----------------
 		
 		term.grab_focus();
-		
-		show_all();
+
+		present();
 	}
 
 	public void start_shell(){
@@ -116,24 +113,27 @@ public class TerminalWindow : Gtk.Window {
 
 		string[] env = Environ.get();
 		
-		try{
+		is_running = true;
 
-			is_running = true;
-
-			term.spawn_sync(
-				Vte.PtyFlags.DEFAULT, //pty_flags
-				TEMP_DIR, //working_directory
-				argv, //argv
-				env, //env
-				GLib.SpawnFlags.SEARCH_PATH, //spawn_flags
-				null, //child_setup
-				out child_pid,
-				null
-			);
-		}
-		catch (Error e) {
-			log_error (e.message);
-		}
+		/* VTE removed spawn_sync; spawn_async also sets up the child watch. */
+		term.spawn_async(
+			Vte.PtyFlags.DEFAULT, //pty_flags
+			TEMP_DIR, //working_directory
+			argv, //argv
+			env, //env
+			GLib.SpawnFlags.SEARCH_PATH, //spawn_flags
+			null, //child_setup
+			-1, //timeout
+			null, //cancellable
+			(terminal, pid, error) => {
+				if (error != null){
+					log_error (error.message);
+					is_running = false;
+					return;
+				}
+				child_pid = pid;
+			}
+		);
 	}
 
 	public void execute_script(string script_path, bool wait = false){
@@ -143,34 +143,35 @@ public class TerminalWindow : Gtk.Window {
 		
 		string[] env = Environ.get();
 
-		try{
+		is_running = true;
 
-			is_running = true;
-			
-			term.spawn_sync(
-				Vte.PtyFlags.DEFAULT, //pty_flags
-				TEMP_DIR, //working_directory
-				argv, //argv
-				env, //env
-				GLib.SpawnFlags.SEARCH_PATH, //spawn_flags
-				null, //child_setup
-				out child_pid,
-				null
-			);
+		term.child_exited.connect(script_exit);
 
-			term.watch_child(child_pid);
-	
-			term.child_exited.connect(script_exit);
-
-			if (wait){
-				while (is_running){
-					sleep(200);
-					gtk_do_events();
+		/* VTE removed spawn_sync; spawn_async also sets up the child watch. */
+		term.spawn_async(
+			Vte.PtyFlags.DEFAULT, //pty_flags
+			TEMP_DIR, //working_directory
+			argv, //argv
+			env, //env
+			GLib.SpawnFlags.SEARCH_PATH, //spawn_flags
+			null, //child_setup
+			-1, //timeout
+			null, //cancellable
+			(terminal, pid, error) => {
+				if (error != null){
+					log_error (error.message);
+					is_running = false;
+					return;
 				}
+				child_pid = pid;
 			}
-		}
-		catch (Error e) {
-			log_error (e.message);
+		);
+
+		if (wait){
+			while (is_running){
+				sleep(200);
+				gtk_do_events();
+			}
 		}
 	}
 
@@ -178,7 +179,7 @@ public class TerminalWindow : Gtk.Window {
 
 		is_running = false;
 		
-		this.hide();
+		this.visible = false;
 
 		//no need to check status again
 		

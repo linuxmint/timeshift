@@ -32,83 +32,51 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
-class BackupWindow : Gtk.Window{
-	
-	private Gtk.Box vbox_main;
-	private Gtk.Notebook notebook;
-	private Gtk.ButtonBox bbox_action;
-	
+class BackupWindow : WizardWindow {
+
 	// tabs
 	private EstimateBox estimate_box;
 	private BackupDeviceBox backup_dev_box;
 	private BackupBox backup_box;
-	private BackupFinishBox backup_finish_box;
+	private SummaryBox finish_box;
 
-	// actions
-	private Gtk.Button btn_prev;
-	private Gtk.Button btn_next;
-	private Gtk.Button btn_cancel;
+	// header actions
 	private Gtk.Button btn_pause;
-	private Gtk.Button btn_close;
+	private Gtk.Image img_pause;
+	private Gtk.Label lbl_pause;
 
 	private uint tmr_init;
-	private int def_width = 500;
-	private int def_height = 500;
 	private bool success = false;
 
 	public BackupWindow() {
 
+		base(_("Create Snapshot"), 560, 520);
+
 		log_debug("BackupWindow: BackupWindow()");
-		
-		this.title = _("Create Snapshot");
-        this.window_position = WindowPosition.CENTER;
-        this.modal = true;
-        this.set_default_size (def_width, def_height);
-		this.icon = IconManager.lookup("timeshift",16);
 
-		this.delete_event.connect(on_delete_event);
-
-	    // vbox_main
-        vbox_main = new Gtk.Box(Orientation.VERTICAL, 6);
-        vbox_main.margin = 0;
-        add(vbox_main);
-
-        this.resize(def_width, def_height);
-
-		// add notebook
-		notebook = add_notebook(vbox_main, false, false);
-
-		Gtk.Label label;
-		
-		label = new Gtk.Label(_("Estimate"));
 		estimate_box = new EstimateBox(this);
-		estimate_box.margin = 12;
-		notebook.append_page (estimate_box, label);
+		add_page(estimate_box);
 
-		label = new Gtk.Label(_("Location"));
 		backup_dev_box = new BackupDeviceBox(this);
-		backup_dev_box.margin = 12;
-		notebook.append_page (backup_dev_box, label);
+		add_page(backup_dev_box, false);
 
-		label = new Gtk.Label(_("Backup"));
 		backup_box = new BackupBox(this);
-		backup_box.margin = 12;
-		notebook.append_page (backup_box, label);
+		add_page(backup_box);
 
-		label = new Gtk.Label(_("Finish"));
-		backup_finish_box = new BackupFinishBox(this);
-		backup_finish_box.margin = 12;
-		notebook.append_page (backup_finish_box, label);
+		finish_box = new SummaryBox(_("Completed"));
+		add_page(finish_box);
 
-		create_actions();
+		create_pause_action();
 
-		show_all();
+		btn_finish.label = _("Close");
+
+		present();
 
 		tmr_init = Timeout.add(100, init_delayed);
 
 		log_debug("BackupWindow: BackupWindow(): exit");
-    }
-    
+	}
+
 	private bool init_delayed(){
 
 		if (tmr_init > 0){
@@ -120,110 +88,106 @@ class BackupWindow : Gtk.Window{
 
 		return false;
 	}
-	
-	private bool on_delete_event(Gdk.EventAny event){
 
-		save_changes();
-		
-		return false; // close window
+	private void create_pause_action(){
+
+		btn_pause = new Gtk.Button();
+		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
+		img_pause = new Gtk.Image.from_icon_name("media-playback-pause-symbolic");
+		lbl_pause = new Gtk.Label(_("Pause"));
+		box.append(img_pause);
+		box.append(lbl_pause);
+		btn_pause.set_child(box);
+		btn_pause.visible = false;
+		add_header_action(btn_pause, Gtk.PackType.END);
+
+		btn_pause.clicked.connect(() => {
+			if (App.task == null){ return; }
+			if (App.task.status == AppStatus.PAUSED){
+				App.task.resume();
+				backup_box.resume();
+				img_pause.icon_name = "media-playback-pause-symbolic";
+				lbl_pause.label = _("Pause");
+			}
+			else {
+				App.task.pause();
+				backup_box.pause();
+				img_pause.icon_name = "media-playback-start-symbolic";
+				lbl_pause.label = _("Resume");
+			}
+		});
 	}
-	
+
+	// WizardWindow contract -------------------------------------------
+
+	protected override bool handle_close(){
+		save_changes();
+		notify_closed();
+		return false;
+	}
+
+	protected override void on_cancel(){
+
+		if (App.task != null){
+			App.task.stop(AppStatus.CANCELLED);
+		}
+
+		close_self();
+	}
+
+	protected override void on_finish(){
+		save_changes();
+		close_self();
+	}
+
+	private Tabs[] route(){
+
+		Tabs[] r = {};
+
+		if (!App.btrfs_mode){
+			if (Main.first_snapshot_size == 0){ r += Tabs.ESTIMATE; }
+			r += Tabs.BACKUP_DEVICE;
+		}
+		r += Tabs.BACKUP;
+		r += Tabs.BACKUP_FINISH;
+
+		return r;
+	}
+
+	private string tab_title(Tabs tab){
+
+		switch (tab){
+		case Tabs.ESTIMATE:      return _("Estimate");
+		case Tabs.BACKUP_DEVICE: return _("Location");
+		case Tabs.BACKUP:        return _("Create");
+		default:                 return _("Finished");
+		}
+	}
+
+	protected override string[] step_titles(){
+
+		string[] titles = {};
+		foreach (var tab in route()){ titles += tab_title(tab); }
+		return titles;
+	}
+
+	protected override int current_step(){
+
+		var r = route();
+		for (int i = 0; i < r.length; i++){
+			if (r[i] == notebook.page){ return i; }
+		}
+		return -1;
+	}
+
 	private void save_changes(){
-		
+
 		App.cron_job_update();
 	}
-	
-	private void create_actions(){
-		
-		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		vbox_main.add(hbox);
-		 
-		var bbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
-		bbox.margin = 12;
-		bbox.spacing = 6;
-		bbox.hexpand = true;
-        hbox.add(bbox);
-        
-        bbox_action = bbox;
 
-		#if GTK3_18
-			bbox.set_layout (Gtk.ButtonBoxStyle.CENTER);	
-		#endif
-		
-		Gtk.SizeGroup size_group = null; //new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		
-		// previous
-		
-		btn_prev = add_button(bbox, _("Previous"), "", size_group, null);
-		
-        btn_prev.clicked.connect(()=>{
-			go_prev();
-		});
-
-		// next
-		
-		btn_next = add_button(bbox, _("Next"), "", size_group, null);
-
-        btn_next.clicked.connect(()=>{
-			go_next();
-		});
-
-		// close
-		
-		btn_close = add_button(bbox, _("Close"), "", size_group, null);
-
-        btn_close.clicked.connect(()=>{
-			save_changes();
-			this.destroy();
-		});
-
-		// cancel
-		
-		btn_cancel = add_button(bbox, _("Cancel"), "", size_group, null);
-
-        btn_cancel.clicked.connect(()=>{
-			if (App.task != null){
-				App.task.stop(AppStatus.CANCELLED);
-			}
-			
-			this.destroy(); // TODO: Show error page
-		});
-
-		// pause
-
-		btn_pause = add_button(bbox, _("Pause"), "", size_group, null);
-		btn_pause.clicked.connect(() => {
-			if (App.task != null){
-				if(AppStatus.PAUSED == App.task.status) {
-					App.task.resume();
-					this.backup_box.resume();
-					this.btn_pause.set_label(_("Pause"));
-				} else {
-					App.task.pause();
-					this.backup_box.pause();
-					this.btn_pause.set_label(_("Resume"));
-				}
-			}
-		});
-
-		action_buttons_set_no_show_all(true);
-	}
-
-	private void action_buttons_set_no_show_all(bool val){
-		
-		btn_prev.no_show_all = val;
-		btn_next.no_show_all = val;
-		btn_close.no_show_all = val;
-		btn_cancel.no_show_all = val;
-		btn_pause.no_show_all = val;
-	}
-	
-
-	// navigation
+	// navigation --------------------------------------------------------
 
 	private void go_first(){
-		
-		// set initial tab
 
 		if (App.btrfs_mode){
 			notebook.page = Tabs.BACKUP;
@@ -242,26 +206,13 @@ class BackupWindow : Gtk.Window{
 
 		initialize_tab();
 	}
-	
-	private void go_prev(){
-		
-		switch(notebook.page){
-		case Tabs.ESTIMATE:
-		case Tabs.BACKUP_DEVICE:
-		case Tabs.BACKUP:
-			// btn_previous is disabled for this page
-			break;
-		}
-		
-		initialize_tab();
-	}
-	
-	private void go_next(){
-		
+
+	protected override void go_next(){
+
 		if (!validate_current_tab()){
 			return;
 		}
-		
+
 		switch(notebook.page){
 		case Tabs.ESTIMATE:
 			notebook.page = Tabs.BACKUP_DEVICE;
@@ -273,10 +224,10 @@ class BackupWindow : Gtk.Window{
 			notebook.page = Tabs.BACKUP_FINISH;
 			break;
 		case Tabs.BACKUP_FINISH:
-			destroy();
+			close_self();
 			break;
 		}
-		
+
 		initialize_tab();
 	}
 
@@ -287,42 +238,29 @@ class BackupWindow : Gtk.Window{
 		log_msg("");
 		log_debug("page: %d".printf(notebook.page));
 
-		// show/hide actions -----------------------------------
+		// header first: the pages below block while they work
+		update_step_label();
 
-		action_buttons_set_no_show_all(false);
-		
 		switch(notebook.page){
 		case Tabs.ESTIMATE:
-			btn_prev.hide();
-			btn_next.hide();
-			btn_close.hide();
-			btn_cancel.show();
-			btn_pause.hide();
+			set_actions(false, false, false, true);
+			btn_pause.visible = false;
+			set_closable(true);
 			break;
 		case Tabs.BACKUP:
-			btn_prev.hide();
-			btn_next.hide();
-			btn_close.hide();
-			btn_cancel.show();
-			btn_pause.show();
+			set_actions(false, false, false, true);
+			btn_pause.visible = true;
+			set_closable(false);
 			break;
 		case Tabs.BACKUP_DEVICE:
-			btn_prev.show();
-			btn_next.show();
-			btn_close.show();
-			btn_cancel.hide();
-			btn_pause.hide();
-			btn_prev.sensitive = false;
-			btn_next.sensitive = true;
-			btn_close.sensitive = true;
+			set_actions(false, true, false, true);
+			btn_pause.visible = false;
+			set_closable(true);
 			break;
 		case Tabs.BACKUP_FINISH:
-			btn_prev.hide();
-			btn_next.hide();
-			btn_close.show();
-			btn_close.sensitive = true;
-			btn_cancel.hide();
-			btn_pause.hide();
+			set_actions(false, false, true, false);
+			btn_pause.visible = false;
+			set_closable(true);
 			break;
 		}
 
@@ -342,30 +280,41 @@ class BackupWindow : Gtk.Window{
 			go_next(); // close window
 			break;
 		case Tabs.BACKUP_FINISH:
-			backup_finish_box.update_message(success);
-            if (App.repo.status_code == SnapshotLocationStatus.HAS_SNAPSHOTS_NO_SPACE)
-            {
-                this.hide();
-                gtk_messagebox(App.repo.status_message, App.repo.status_details, this, true);
-                this.destroy();
-            }
-            else
-            {
-                backup_finish_box.update_message(success);
-                wait_and_close_window(1000, this);
-            }
+			show_finish(success);
+			if (App.repo.status_code == SnapshotLocationStatus.HAS_SNAPSHOTS_NO_SPACE){
+				this.visible = false;
+				gtk_messagebox(App.repo.status_message, App.repo.status_details, this, true);
+				close_self();
+			}
+			else {
+				gtk_wait(1000);
+				close_self();
+			}
 			break;
 		}
 	}
 
+	private void show_finish(bool success){
+
+		string txt = _("Snapshot Created");
+		if (!success){
+			txt += " " + _("With Errors");
+		}
+
+		finish_box.set_header(txt);
+		finish_box.set_outcome(success);
+		finish_box.set_body("");
+		finish_box.set_footer(_("Close window to exit"));
+	}
+
 	private bool validate_current_tab(){
-		
+
 		if (notebook.page == Tabs.BACKUP_DEVICE){
 			if (!App.repo.available() || !App.repo.has_space()){
-				
+
 				gtk_messagebox(App.repo.status_message,
 					App.repo.status_details, this, true);
-					
+
 				return false;
 			}
 		}
@@ -380,6 +329,3 @@ class BackupWindow : Gtk.Window{
 		BACKUP_FINISH = 3
 	}
 }
-
-
-

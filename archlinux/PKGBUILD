@@ -16,11 +16,11 @@ arch=('i686' 'x86_64' 'armv7h' 'aarch64')
 license=('gplv2')
 
 # required for build and run
-depends=('libgee>=0.18.0' 'libsoup' 'json-glib' 'desktop-file-utils' 'vte3' 'rsync') 
+depends=('libgee>=0.18.0' 'gtk4' 'json-glib' 'desktop-file-utils' 'vte4' 'rsync') 
 
 # required for build
 # dpkg is needed to parse version string
-makedepends=('vala' 'dpkg' 'diffutils' 'coreutils') 
+makedepends=('vala' 'meson' 'ninja' 'help2man' 'gettext' 'dpkg' 'diffutils' 'coreutils') 
 
 optdepends=(
   'cronie: scheduling'
@@ -37,13 +37,15 @@ prepare() {
 
 build() {
   set -u
-  make -C "${_srcdir}" -s -j1
+  # meson only -- there is no Makefile in this tree
+  meson setup --prefix=/usr "${_srcdir}/build" "${_srcdir}"
+  meson compile -C "${_srcdir}/build"
   set +u
 }
 
 package() {
   set -u
-  make -C "${_srcdir}" -j1 DESTDIR="${pkgdir}" install
+  DESTDIR="${pkgdir}" meson install -C "${_srcdir}/build"
   set +u
 }
 

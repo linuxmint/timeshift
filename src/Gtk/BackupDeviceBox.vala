@@ -32,18 +32,45 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
+/* Row object for the device tree. GTK4 builds hierarchies from a
+ * Gtk.TreeListModel over per-row child models rather than from a TreeStore. */
+public enum DeviceField {
+	TYPE,
+	SIZE,
+	FREE,
+	NAME,
+	LABEL
+}
+
+public class DeviceRow : GLib.Object {
+
+	public Device dev { get; set; }
+	public string icon { get; set; }
+	public bool selected { get; set; }
+	public GLib.ListStore children { get; set; }
+
+	public DeviceRow(Device _dev, string _icon){
+		dev = _dev;
+		icon = _icon;
+		selected = false;
+		children = new GLib.ListStore(typeof(DeviceRow));
+	}
+}
+
 class BackupDeviceBox : Gtk.Box{
 
-	private Gtk.TreeView tv_devices;
+	private Gtk.ColumnView tv_devices;
+	private GLib.ListStore device_root;
+	private Gtk.TreeListModel device_tree;
+	private Gtk.SingleSelection device_selection;
 	private Gtk.ScrolledWindow sw_devices;
 	private Gtk.Button btn_refresh;
-	private Gtk.InfoBar infobar_location;
-	private Gtk.Label lbl_infobar_location;
+	private Banner infobar_location;
 	private Gtk.Label lbl_common;
 
 	// remote (SSH) location
-	private Gtk.RadioButton opt_local;
-	private Gtk.RadioButton opt_ssh;
+	private Gtk.CheckButton opt_local;
+	private Gtk.CheckButton opt_ssh;
 	private Gtk.Box vbox_ssh;
 	private Gtk.Entry txt_ssh_url;
 	private Gtk.Entry txt_ssh_key;
@@ -57,23 +84,20 @@ class BackupDeviceBox : Gtk.Box{
 		log_debug("BackupDeviceBox: BackupDeviceBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
 
-		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		add(hbox);
+		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
+		append(hbox);
 
-		add_label_header(hbox, _("Select Snapshot Location"), true);
+		var title = Ui.add_title(hbox, _("Select Snapshot Location"));
+		title.hexpand = true;
+		title.margin_bottom = 0;
 
-		// buffer
-		var label = add_label(hbox, "");
-        label.hexpand = true;
-       
 		// refresh device button
-		
-		var size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		btn_refresh = add_button(hbox, _("Refresh"), "", size_group, null);
+		btn_refresh = Ui.add_icon_only_button(hbox, "view-refresh-symbolic", _("Refresh"));
+		btn_refresh.add_css_class("flat");
+		btn_refresh.valign = Gtk.Align.START;
         btn_refresh.clicked.connect(()=>{
 			App.update_partitions();
 			tv_devices_refresh();
@@ -114,7 +138,7 @@ class BackupDeviceBox : Gtk.Box{
 		
 		check_backup_location();
 
-		// must run last: the parent windows call show_all() on this box
+		// must run last: it depends on the widgets built above
 		update_location_widgets();
 	}
 
@@ -123,16 +147,17 @@ class BackupDeviceBox : Gtk.Box{
 	 * here makes remote locations available in the wizard too. */
 	private void init_location_type(){
 
-		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 12);
-		add(hbox);
+		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.SM);
+		append(hbox);
 
-		opt_local = new Gtk.RadioButton.with_label_from_widget(null, _("Local device"));
+		opt_local = new Gtk.CheckButton.with_label(_("Local device"));
 		opt_local.set_tooltip_text(_("Save snapshots to a disk attached to this computer"));
-		hbox.add(opt_local);
+		hbox.append(opt_local);
 
-		opt_ssh = new Gtk.RadioButton.with_label_from_widget(opt_local, _("Remote (SSH)"));
+		opt_ssh = new Gtk.CheckButton.with_label(_("Remote (SSH)"));
+		opt_ssh.set_group(opt_local);
 		opt_ssh.set_tooltip_text(_("Save snapshots to another computer over SSH"));
-		hbox.add(opt_ssh);
+		hbox.append(opt_ssh);
 
 		// toggled fires on both the activated and the deactivated button
 		opt_local.toggled.connect(()=>{
@@ -170,16 +195,15 @@ class BackupDeviceBox : Gtk.Box{
 	private void init_ssh_box(){
 
 		vbox_ssh = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
-		// parents call show_all(); no_show_all keeps this hidden in local mode
-		vbox_ssh.no_show_all = true;
-		add(vbox_ssh);
+		// hidden in local mode; visibility is set explicitly in GTK4
+		append(vbox_ssh);
 
 		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 
 		// location ------------------------------------------------
 
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		vbox_ssh.add(hbox);
+		vbox_ssh.append(hbox);
 
 		var label = add_label(hbox, _("Location"));
 		sg_label.add_widget(label);
@@ -188,17 +212,18 @@ class BackupDeviceBox : Gtk.Box{
 		txt_ssh_url.hexpand = true;
 		txt_ssh_url.placeholder_text = "user@host:/path";
 		txt_ssh_url.set_tooltip_text(_("Example") + ": user@nas:/backups");
-		hbox.add(txt_ssh_url);
+		hbox.append(txt_ssh_url);
 
-		txt_ssh_url.focus_out_event.connect((w, e) => {
+		var focus_txt_ssh_url = new Gtk.EventControllerFocus();
+		focus_txt_ssh_url.leave.connect(() => {
 			App.backup_ssh_url = txt_ssh_url.text.strip();
-			return false;
 		});
+		txt_ssh_url.add_controller(focus_txt_ssh_url);
 
 		// ssh key -------------------------------------------------
 
 		hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		vbox_ssh.add(hbox);
+		vbox_ssh.append(hbox);
 
 		label = add_label(hbox, _("SSH key"));
 		sg_label.add_widget(label);
@@ -207,12 +232,13 @@ class BackupDeviceBox : Gtk.Box{
 		txt_ssh_key.hexpand = true;
 		txt_ssh_key.placeholder_text = "/etc/timeshift/ssh/id_ed25519";
 		txt_ssh_key.set_tooltip_text(_("Private key used to connect. Use 'Set up with password' if you do not have one yet."));
-		hbox.add(txt_ssh_key);
+		hbox.append(txt_ssh_key);
 
-		txt_ssh_key.focus_out_event.connect((w, e) => {
+		var focus_txt_ssh_key = new Gtk.EventControllerFocus();
+		focus_txt_ssh_key.leave.connect(() => {
 			App.backup_ssh_key = txt_ssh_key.text.strip();
-			return false;
 		});
+		txt_ssh_key.add_controller(focus_txt_ssh_key);
 
 		var btn_browse = add_button(hbox, _("Browse"), "", null, null);
 		btn_browse.clicked.connect(()=>{
@@ -226,7 +252,7 @@ class BackupDeviceBox : Gtk.Box{
 		// port ----------------------------------------------------
 
 		hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		vbox_ssh.add(hbox);
+		vbox_ssh.append(hbox);
 
 		label = add_label(hbox, _("Port"));
 		sg_label.add_widget(label);
@@ -250,7 +276,7 @@ class BackupDeviceBox : Gtk.Box{
 		// test connection -----------------------------------------
 
 		hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		vbox_ssh.add(hbox);
+		vbox_ssh.append(hbox);
 
 		label = add_label(hbox, "");
 		sg_label.add_widget(label);
@@ -430,39 +456,34 @@ class BackupDeviceBox : Gtk.Box{
 
 	private void show_location_error(string message, string details){
 
-		lbl_infobar_location.label = "<span weight=\"bold\">%s</span>\n%s".printf(
-			escape_html(message), escape_html(details));
-
-		infobar_location.message_type = Gtk.MessageType.ERROR;
-		infobar_location.no_show_all = false;
-		infobar_location.show_all();
+		infobar_location.set_message("%s\n%s".printf(message, details), Gtk.MessageType.ERROR);
 	}
 
 	private string? browse_ssh_key(){
 
-		var dialog = new Gtk.FileChooserDialog(
-			_("Select SSH private key"), parent_window,
-			Gtk.FileChooserAction.OPEN,
-			"gtk-cancel", Gtk.ResponseType.CANCEL,
-			"gtk-open", Gtk.ResponseType.ACCEPT);
+		/* GTK4 replaces Gtk.FileChooserDialog with the async Gtk.FileDialog.
+		 * Callers here are synchronous, so block on a nested main loop. */
 
-		dialog.action = FileChooserAction.OPEN;
-		dialog.set_transient_for(parent_window);
-		dialog.local_only = true;
+		var dialog = new Gtk.FileDialog();
+		dialog.set_title(_("Select SSH private key"));
 		dialog.set_modal(true);
-		dialog.set_select_multiple(false);
 
 		string? selected = null;
+		var loop = new GLib.MainLoop();
 
-		var resp = dialog.run();
-		if (resp != Gtk.ResponseType.CANCEL){
-			var list = dialog.get_filenames();
-			if (list.length() > 0){
-				selected = list.nth_data(0);
+		dialog.open.begin(parent_window, null, (obj, res) => {
+			try {
+				var file = dialog.open.end(res);
+				if (file != null){ selected = file.get_path(); }
 			}
-		}
+			catch (Error e){
+				// the user cancelled, or the portal refused
+				log_debug(e.message);
+			}
+			loop.quit();
+		});
 
-		dialog.destroy();
+		loop.run();
 
 		return selected;
 	}
@@ -502,263 +523,225 @@ class BackupDeviceBox : Gtk.Box{
 		opt_ssh.active = is_ssh;
 
 		if (sw_devices != null){
-			sw_devices.no_show_all = is_ssh;
 			sw_devices.visible = !is_ssh;
 		}
 
 		btn_refresh.visible = !is_ssh;
-
-		vbox_ssh.no_show_all = !is_ssh;
 		vbox_ssh.visible = is_ssh;
 
 		if (is_ssh){
-			vbox_ssh.show_all();
+			vbox_ssh.visible = true;
 		}
 	}
 
 	private void init_tv_devices(){
-		
-		tv_devices = add_treeview(this);
+
+		/* GTK4 deprecates Gtk.TreeView/Gtk.TreeStore. The disk -> partition
+		 * hierarchy is now a Gtk.TreeListModel of DeviceRow, rendered by a
+		 * Gtk.ColumnView with a Gtk.TreeExpander in the first column. */
+
+		device_root = new GLib.ListStore(typeof(DeviceRow));
+
+		/* The -Wincompatible-pointer-types warning gcc emits here is a Vala
+		 * binding artifact: gtk4.vapi types the create-func's first parameter
+		 * as GLib.Object, while GTK's C typedef uses gpointer. Same ABI. */
+		device_tree = new Gtk.TreeListModel(device_root, false, true, (item) => {
+			var row = (DeviceRow) item;
+			return (row.children.get_n_items() > 0) ? row.children : null;
+		});
+
+		device_selection = new Gtk.SingleSelection(device_tree);
+		device_selection.autoselect = false;
+		device_selection.can_unselect = true;
+
+		tv_devices = new Gtk.ColumnView(device_selection);
 		tv_devices.vexpand = true;
 
-		// add_treeview() creates a ScrolledWindow and discards the reference;
-		// keep it so the device list can be hidden in remote mode
-		sw_devices = tv_devices.get_parent() as Gtk.ScrolledWindow;
-		tv_devices.headers_clickable = true;
-		//tv_devices.rules_hint = true;
-		tv_devices.activate_on_single_click = true;
-		//tv_devices.headers_clickable  = true;
-		
-		// device name
-		
-		Gtk.CellRendererPixbuf cell_pix;
-		Gtk.CellRendererToggle cell_radio;
-		Gtk.CellRendererText cell_text;
-		//var col = add_column_radio_and_text(tv_devices, _("Disk"), out cell_radio, out cell_text);
-		var col = add_column_icon_radio_text(tv_devices, _("Disk"),
-			out cell_pix, out cell_radio, out cell_text);
+		sw_devices = Ui.add_boxed_list(this, tv_devices);
 
+		tv_devices.append_column(make_disk_column());
+		tv_devices.append_column(make_device_text_column(_("Type"), DeviceField.TYPE));
+		tv_devices.append_column(make_device_text_column(_("Size"), DeviceField.SIZE));
+		tv_devices.append_column(make_device_text_column(_("Free"), DeviceField.FREE));
+		tv_devices.append_column(make_device_text_column(_("Name"), DeviceField.NAME));
+		tv_devices.append_column(make_device_text_column(_("Label"), DeviceField.LABEL));
+	}
+
+	private DeviceRow? row_at(uint position){
+
+		var list_row = device_tree.get_row(position);
+		return (list_row == null) ? null : (DeviceRow) list_row.get_item();
+	}
+
+	private void device_selected(DeviceRow row){
+
+		var dev = row.dev;
+
+		if ((App.repo.device == null) || (App.repo.device.uuid != dev.uuid)){
+			try_change_device(dev);
+		}
+
+		// refresh the radio state across the whole tree
+		update_device_selection_flags();
+	}
+
+	private void update_device_selection_flags(){
+
+		for (uint i = 0; i < device_tree.get_n_items(); i++){
+			var row = row_at(i);
+			if (row == null){ continue; }
+			row.selected = (App.repo.device != null) && (App.repo.device.uuid == row.dev.uuid);
+		}
+	}
+
+	private Gtk.ColumnViewColumn make_disk_column(){
+
+		var factory = new Gtk.SignalListItemFactory();
+
+		factory.setup.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+
+			var expander = new Gtk.TreeExpander();
+
+			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4);
+
+			var img = new Gtk.Image();
+			img.pixel_size = 16;
+			hbox.append(img);
+
+			var chk = new Gtk.CheckButton();
+			chk.set_group(null);
+			hbox.append(chk);
+
+			var lbl = new Gtk.Label("");
+			lbl.xalign = (float) 0.0;
+			hbox.append(lbl);
+
+			chk.toggled.connect(() => {
+				if (!chk.active){ return; }
+
+				var row = chk.get_data<DeviceRow>("row");
+				if (row == null){ return; }
+
+				device_selected(row);
+			});
+
+			expander.set_child(hbox);
+			list_item.set_child(expander);
+		});
+
+		factory.bind.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var expander = (Gtk.TreeExpander) list_item.get_child();
+			var list_row = (Gtk.TreeListRow) list_item.get_item();
+			var row = (DeviceRow) list_row.get_item();
+			var dev = row.dev;
+
+			expander.set_list_row(list_row);
+
+			var hbox = (Gtk.Box) expander.get_child();
+			var img = (Gtk.Image) hbox.get_first_child();
+			var chk = (Gtk.CheckButton) img.get_next_sibling();
+			var lbl = (Gtk.Label) chk.get_next_sibling();
+
+			img.visible = (dev.type == "disk");
+			IconManager.set_image_icon(img, row.icon, 16);
+
+			chk.visible = (dev.size_bytes > 10 * KB) && (dev.type != "disk")
+				&& (dev.children.size == 0);
+
+			chk.steal_data<DeviceRow>("row");
+			chk.active = row.selected;
+			chk.set_data<DeviceRow>("row", row);
+
+			if (dev.type == "disk"){
+				var txt = "%s %s".printf(dev.model, dev.vendor).strip();
+				if (txt.length == 0){
+					txt = "%s Disk".printf(format_file_size(dev.size_bytes));
+				}
+				lbl.label = txt.strip();
+			}
+			else {
+				lbl.label = dev.kname;
+			}
+
+			hbox.set_tooltip_markup(dev.tooltip_text());
+		});
+
+		var col = new Gtk.ColumnViewColumn(_("Disk"), factory);
 		col.resizable = true;
-		
-		col.set_cell_data_func(cell_pix, (cell_layout, cell, model, iter)=>{
-			Device dev;
-			model.get (iter, 0, out dev, -1);
+		col.fixed_width = 220;
+		return col;
+	}
 
-			((Gtk.CellRendererPixbuf)cell).visible = (dev.type == "disk");
-			
+	private Gtk.ColumnViewColumn make_device_text_column(string title, DeviceField field){
+
+		var factory = new Gtk.SignalListItemFactory();
+
+		factory.setup.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var lbl = new Gtk.Label("");
+			lbl.xalign = ((field == DeviceField.SIZE) || (field == DeviceField.FREE))
+				? (float) 1.0 : (float) 0.0;
+			list_item.set_child(lbl);
 		});
 
-        col.add_attribute(cell_pix, "icon-name", 2);
+		factory.bind.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var lbl = (Gtk.Label) list_item.get_child();
+			var list_row = (Gtk.TreeListRow) list_item.get_item();
+			var dev = ((DeviceRow) list_row.get_item()).dev;
 
-		col.set_cell_data_func(cell_radio, (cell_layout, cell, model, iter)=>{
-			Device dev;
-			bool selected;
-			model.get (iter, 0, out dev, 3, out selected, -1);
+			bool is_disk = (dev.type == "disk");
 
-			((Gtk.CellRendererToggle)cell).active = selected;
+			/* Build the text in an explicit local. A nested ternary mixing a
+			 * string literal with a function returning an owned string makes
+			 * Vala free the temporary before the label reads it, which rendered
+			 * the Free column as garbage bytes. */
+			string txt = "";
 
-			((Gtk.CellRendererToggle)cell).visible =
-				(dev.size_bytes > 10 * KB) && (dev.type != "disk") && (dev.children.size == 0);
-		});
-
-		//cell_radio.toggled.connect((path)=>{});
-
-		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
-			Device dev;
-			model.get (iter, 0, out dev, -1);
-
-			/*if (dev.type == "disk"){
-				var txt = "%s %s".printf(dev.model, dev.vendor).strip();
-				if (txt.length == 0){
-					txt = "%s Disk".printf(format_file_size(dev.size_bytes));
+			switch (field){
+			case DeviceField.TYPE:
+				txt = dev.fstype;
+				break;
+			case DeviceField.SIZE:
+				if (dev.size_bytes > 0){
+					txt = format_file_size(dev.size_bytes, false, "", true, 0);
 				}
-				else{
-					txt += " (%s Disk)".printf(format_file_size(dev.size_bytes));
+				break;
+			case DeviceField.FREE:
+				if (!is_disk && (dev.free_bytes > 0)){
+					txt = format_file_size(dev.free_bytes, false, "", true, 0);
 				}
-				(cell as Gtk.CellRendererText).text = txt.strip();
-			}
-			else {
-				(cell as Gtk.CellRendererText).text = dev.description_full_free();
-			}*/
-
-			if (dev.type == "disk"){
-				var txt = "%s %s".printf(dev.model, dev.vendor).strip();
-				if (txt.length == 0){
-					txt = "%s Disk".printf(format_file_size(dev.size_bytes));
-				}
-				((Gtk.CellRendererText)cell).text = txt.strip();
-			}
-			else {
-				((Gtk.CellRendererText)cell).text = dev.kname;
+				lbl.sensitive = !is_disk;
+				break;
+			case DeviceField.NAME:
+				if (!is_disk){ txt = dev.partlabel; }
+				lbl.sensitive = !is_disk;
+				break;
+			case DeviceField.LABEL:
+				if (!is_disk){ txt = dev.label; }
+				lbl.sensitive = !is_disk;
+				break;
 			}
 
-			//(cell as Gtk.CellRendererText).sensitive = (dev.type != "disk");
+			lbl.label = txt;
 		});
 
-		
-		// type
-		
-		col = add_column_text(tv_devices, _("Type"), out cell_text);
-
-		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
-			Device dev;
-			model.get (iter, 0, out dev, -1);
-			((Gtk.CellRendererText)cell).text = dev.fstype;
-
-			//(cell as Gtk.CellRendererText).sensitive = (dev.type != "disk");
-		});
-
-		// size
-		
-		col = add_column_text(tv_devices, _("Size"), out cell_text);
-		cell_text.xalign = (float) 1.0;
-		
-		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
-			Device dev;
-			model.get (iter, 0, out dev, -1);
-
-			((Gtk.CellRendererText)cell).text =
-					(dev.size_bytes > 0) ? format_file_size(dev.size_bytes, false, "", true, 0) : "";
-		});
-
-		// free
-		
-		col = add_column_text(tv_devices, _("Free"), out cell_text);
-		cell_text.xalign = (float) 1.0;
-		
-		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
-			Device dev;
-			model.get (iter, 0, out dev, -1);
-
-			if (dev.type == "disk"){
-				((Gtk.CellRendererText)cell).text = "";
-			}
-			else{
-				((Gtk.CellRendererText)cell).text =
-					(dev.free_bytes > 0) ? format_file_size(dev.free_bytes, false, "", true, 0) : "";
-			}
-
-			((Gtk.CellRendererText)cell).sensitive = (dev.type != "disk");
-		});
-
-		// name
-		
-		col = add_column_text(tv_devices, _("Name"), out cell_text);
-		cell_text.xalign = 0.0f;
-		
-		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
-			Device dev;
-			model.get (iter, 0, out dev, -1);
-
-			if (dev.type == "disk"){
-				((Gtk.CellRendererText)cell).text = "";
-			}
-			else{
-				((Gtk.CellRendererText)cell).text = dev.partlabel;
-			}
-
-			((Gtk.CellRendererText)cell).sensitive = (dev.type != "disk");
-		});
-
-		// label
-		
-		col = add_column_text(tv_devices, _("Label"), out cell_text);
-		cell_text.xalign = 0.0f;
-		
-		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
-			Device dev;
-			model.get (iter, 0, out dev, -1);
-
-			if (dev.type == "disk"){
-				((Gtk.CellRendererText)cell).text = "";
-			}
-			else{
-				((Gtk.CellRendererText)cell).text = dev.label;
-			}
-
-			((Gtk.CellRendererText)cell).sensitive = (dev.type != "disk");
-		});
-		
-		// buffer
-
-		col = add_column_text(tv_devices, "", out cell_text);
-		col.expand = true;
-		
-		/*// label
-		
-		col = add_column_text(tv_devices, _("Label"), out cell_text);
-
-		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
-			Device dev;
-			model.get (iter, 0, out dev, -1);
-			(cell as Gtk.CellRendererText).text = dev.label;
-
-			(cell as Gtk.CellRendererText).sensitive = (dev.type != "disk");
-		});*/
-
-		
-		
-		// events
-
-		tv_devices.row_activated.connect((path, column) => {
-			var store = (Gtk.TreeStore) tv_devices.model;
-			var selection = tv_devices.get_selection();
-
-			selection.selected_foreach((model, path, iter) => {
-				Device dev;
-				store.get (iter, 0, out dev);
-
-				if ((App.repo.device == null) || (App.repo.device.uuid != dev.uuid)){
-					try_change_device(dev);
-				}
-				else{
-					return;
-				}
-			});
-
-			store.foreach((model, path, iter) => {
-				Device dev;
-				store.get (iter, 0, out dev);
-				
-				if ((App.repo.device != null) && (App.repo.device.uuid == dev.uuid)){
-					store.set (iter, 3, true);
-					//tv_devices.get_selection().select_iter(iter);
-				}
-				else{
-					store.set (iter, 3, false);
-				}
-
-				return false; // continue
-			});
-		});
+		var col = new Gtk.ColumnViewColumn(title, factory);
+		col.resizable = true;
+		return col;
 	}
 
 	private void init_infobar_location(){
 		
-		var infobar = new Gtk.InfoBar();
-		infobar.no_show_all = true;
-		add(infobar);
-		infobar_location = infobar;
-		
-		var content = (Gtk.Box) infobar.get_content_area();
-		var label = add_label(content, "");
-		lbl_infobar_location = label;
+		infobar_location = new Banner();
+		append(infobar_location);
 
-		// scrolled
-		var scrolled = new Gtk.ScrolledWindow(null, null);
-		scrolled.set_shadow_type (ShadowType.ETCHED_IN);
-		scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
-		scrolled.vscrollbar_policy = Gtk.PolicyType.NEVER;
-		scrolled.set_size_request(-1, 100);
-		this.add(scrolled);
-		
-		label = new Gtk.Label("");
-		label.set_use_markup(true);
-		label.xalign = (float) 0.0;
-		label.wrap = true;
-		label.wrap_mode = Pango.WrapMode.WORD;
-		label.margin = 6;
-		scrolled.add(label);
+		var card = Ui.add_card(this);
+
+		var label = add_label_markup(card, "");
+		label.add_css_class("ts-dim");
 		lbl_common = label;
 	}
 
@@ -799,10 +782,7 @@ class BackupDeviceBox : Gtk.Box{
 					msg = _("Selected device does not have BTRFS partition");
 				}
 				
-				lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(msg);
-				infobar_location.message_type = Gtk.MessageType.ERROR;
-				infobar_location.no_show_all = false;
-				infobar_location.show_all();
+				infobar_location.set_message(msg, Gtk.MessageType.WARNING);
 			}
 		}
 		else if (dev.has_children()){
@@ -818,10 +798,7 @@ class BackupDeviceBox : Gtk.Box{
 		else {
 			
 			// ask user to select
-			lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(_("Select a partition on this disk"));
-			infobar_location.message_type = Gtk.MessageType.ERROR;
-			infobar_location.no_show_all = false;
-			infobar_location.show_all();
+			infobar_location.set_message(_("Select a partition on this disk"), Gtk.MessageType.INFO);
 		}
 	}
 
@@ -885,95 +862,70 @@ class BackupDeviceBox : Gtk.Box{
 			
 			switch (status_code){
 			case SnapshotLocationStatus.NOT_SELECTED:
-				lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(details);
-				infobar_location.message_type = Gtk.MessageType.ERROR;
-				infobar_location.no_show_all = false;
-				infobar_location.show_all();
+				infobar_location.set_message(details, Gtk.MessageType.INFO);
 				ok = false;
 				break;
 				
 			case SnapshotLocationStatus.NOT_AVAILABLE:
-				lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(message);
-				infobar_location.message_type = Gtk.MessageType.ERROR;
-				infobar_location.no_show_all = false;
-				infobar_location.show_all();
+				infobar_location.set_message(message, Gtk.MessageType.ERROR);
 				ok = false;
 				break;
 
 			case SnapshotLocationStatus.READ_ONLY_FS:
 			case SnapshotLocationStatus.HARDLINKS_NOT_SUPPORTED:
-				lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(message);
-				infobar_location.message_type = Gtk.MessageType.ERROR;
-				infobar_location.no_show_all = false;
-				infobar_location.show_all();
+				infobar_location.set_message(message, Gtk.MessageType.ERROR);
 				ok = false;
 				break;
 
 			case SnapshotLocationStatus.NO_BTRFS_SYSTEM:
-				lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(details);
-				infobar_location.message_type = Gtk.MessageType.ERROR;
-				infobar_location.no_show_all = false;
-				infobar_location.show_all();
+				infobar_location.set_message(details, Gtk.MessageType.ERROR);
 				ok = false;
 				break;
 
 			case SnapshotLocationStatus.NO_SNAPSHOTS_HAS_SPACE:
 			case SnapshotLocationStatus.NO_SNAPSHOTS_NO_SPACE:
-				lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(
-					_("There are no snapshots on this device"));
-				infobar_location.message_type = Gtk.MessageType.ERROR;
-				infobar_location.no_show_all = false;
-				infobar_location.show_all();
+				infobar_location.set_message(_("There are no snapshots on this device"), Gtk.MessageType.INFO);
 				//ok = false;
 				break;
 
 			case SnapshotLocationStatus.HAS_SNAPSHOTS_NO_SPACE:
 			case SnapshotLocationStatus.HAS_SNAPSHOTS_HAS_SPACE:
-				infobar_location.hide();
+				infobar_location.visible = false;
 				break;
 			}
 		}
 		else{
 			switch (status_code){
 				case SnapshotLocationStatus.NOT_SELECTED:
-					lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(details);
-					infobar_location.message_type = Gtk.MessageType.ERROR;
-					infobar_location.no_show_all = false;
-					infobar_location.show_all();
+					infobar_location.set_message(details, Gtk.MessageType.INFO);
 					ok = false;
 					break;
 					
 				case SnapshotLocationStatus.NOT_AVAILABLE:
+					infobar_location.set_message(message, Gtk.MessageType.ERROR);
+					ok = false;
+					break;
+
 				case SnapshotLocationStatus.HAS_SNAPSHOTS_NO_SPACE:
 				case SnapshotLocationStatus.NO_SNAPSHOTS_NO_SPACE:
-					lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(
-						message.replace("<","&lt;"));
-					infobar_location.message_type = Gtk.MessageType.ERROR;
-					infobar_location.no_show_all = false;
-					infobar_location.show_all();
+					infobar_location.set_message(message, Gtk.MessageType.WARNING);
 					ok = false;
 					break;
 
 				case SnapshotLocationStatus.READ_ONLY_FS:
 				case SnapshotLocationStatus.HARDLINKS_NOT_SUPPORTED:
-					lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(message);
-					infobar_location.message_type = Gtk.MessageType.ERROR;
-					infobar_location.no_show_all = false;
-					infobar_location.show_all();
+					infobar_location.set_message(message, Gtk.MessageType.ERROR);
 					ok = false;
 					break;
 
 				case SnapshotLocationStatus.NO_BTRFS_SYSTEM:
-					lbl_infobar_location.label = "<span weight=\"bold\">%s</span>".printf(details);
-					infobar_location.message_type = Gtk.MessageType.ERROR;
-					infobar_location.no_show_all = false;
-					infobar_location.show_all();
+					infobar_location.set_message(details, Gtk.MessageType.ERROR);
 					ok = false;
 					break;
 
 				case 3:
 				case 0:
-					infobar_location.hide();
+					infobar_location.visible = false;
 					// TODO: Show a disk icon with stats when selected device is OK
 					break;
 			}
@@ -984,38 +936,30 @@ class BackupDeviceBox : Gtk.Box{
 	}
 
 	private void tv_devices_refresh(){
-		
+
 		App.update_partitions();
 
-		var model = new Gtk.TreeStore(4,
-			typeof(Device),
-			typeof(string),
-			typeof(string),
-			typeof(bool));
-		
-		tv_devices.set_model (model);
-
-		TreeIter iter0;
+		device_root.remove_all();
 
 		foreach(var disk in App.partitions) {
-			
+
 			if (disk.type != "disk") { continue; }
 
-			model.append(out iter0, null);
-			model.set(iter0, 0, disk, -1);
-			model.set(iter0, 1, disk.tooltip_text(), -1);
-			model.set(iter0, 2, IconManager.ICON_HARDDRIVE, -1);
-			model.set(iter0, 3, false, -1);
+			var row0 = new DeviceRow(disk, IconManager.ICON_HARDDRIVE);
 
-			tv_append_child_volumes(ref model, ref iter0, disk);
+			/* Children must exist BEFORE the row joins the model: with
+			 * autoexpand set, Gtk.TreeListModel asks the create-func for
+			 * children at insertion time, and a row that answers "none" is
+			 * marked non-expandable for good. */
+			tv_append_child_volumes(row0, disk);
+
+			device_root.append(row0);
 		}
 
-		tv_devices.expand_all();
-		tv_devices.columns_autosize();
+		update_device_selection_flags();
 	}
 
-	private void tv_append_child_volumes(
-		ref Gtk.TreeStore model, ref Gtk.TreeIter iter0, Device parent){
+	private void tv_append_child_volumes(DeviceRow row0, Device parent){
 
 		foreach(var part in App.partitions) {
 
@@ -1035,32 +979,23 @@ class BackupDeviceBox : Gtk.Box{
 					continue;
 				}
 			}
-			
+
 			if (part.pkname == parent.kname) {
-				
-				TreeIter iter1;
-				model.append(out iter1, iter0);
-				model.set(iter1, 0, part, -1);
-				model.set(iter1, 1, part.tooltip_text(), -1);
-				model.set(iter1, 2, (part.fstype == "luks") ? "locked" : IconManager.ICON_HARDDRIVE, -1);
-				
+
+				var row1 = new DeviceRow(part,
+					(part.fstype == "luks") ? "changes-prevent-symbolic" : IconManager.ICON_HARDDRIVE);
+				row0.children.append(row1);
+
 				if (parent.fstype == "luks"){
 					// change parent's icon to unlocked
-					model.set(iter0, 2, "unlocked", -1);
+					row0.icon = "changes-allow-symbolic";
 				}
 
-				if ((App.repo.device != null) && (part.uuid == App.repo.device.uuid)){
-					model.set(iter1, 3, true, -1);
-				}
-				else{
-					model.set(iter1, 3, false, -1);
-				}
-
-				tv_append_child_volumes(ref model, ref iter1, part);
+				tv_append_child_volumes(row1, part);
 			}
 			else if ((part.kname == parent.kname) && (part.type == "disk")
 				&& part.has_linux_filesystem() && !part.has_children()){
-				
+
 				// partition-less disk with linux filesystem
 
 				// create a dummy partition
@@ -1070,18 +1005,9 @@ class BackupDeviceBox : Gtk.Box{
 				part2.pkname = part.device.replace("/dev/","");
 				part2.parent = part;
 
-				TreeIter iter1;
-				model.append(out iter1, iter0);
-				model.set(iter1, 0, part2, -1);
-				model.set(iter1, 1, part2.tooltip_text(), -1);
-				model.set(iter1, 2, (part2.fstype == "luks") ? "locked" : IconManager.ICON_HARDDRIVE, -1);
-				
-				if ((App.repo.device != null) && (part2.uuid == App.repo.device.uuid)){
-					model.set(iter1, 3, true, -1);
-				}
-				else{
-					model.set(iter1, 3, false, -1);
-				}
+				var row1 = new DeviceRow(part2,
+					(part2.fstype == "luks") ? "changes-prevent-symbolic" : IconManager.ICON_HARDDRIVE);
+				row0.children.append(row1);
 			}
 		}
 	}

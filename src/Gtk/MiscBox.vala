@@ -42,14 +42,15 @@ class MiscBox : Gtk.Box{
 		log_debug("MiscBox: MiscBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
 
 		restore_mode = _restore_mode;
 		
 		var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
-		this.add(vbox);
+		vbox.hexpand = true;
+		vbox.vexpand = true;
+		this.append(vbox);
 
 		// ------------------------
 		
@@ -64,83 +65,79 @@ class MiscBox : Gtk.Box{
 
 		log_debug("MiscBox: init_date_format_option()");
 
-		add_label_header(box, _("Date Format"), false);
+		Ui.add_heading(box, _("Date Format"));
 
-		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		box.add(hbox);
+		Ui.add_dim_label(box, _("How snapshot dates are shown in the list."));
 
-		var combo = new Gtk.ComboBox();
-		combo.hexpand = true;
-		hbox.add(combo);
+		var card = Ui.add_card(box);
 
-		var entry = new Gtk.Entry();
-		entry.hexpand = true;
-		hbox.add(entry);
-		
-		var cell_pix = new Gtk.CellRendererPixbuf();
-		combo.pack_start (cell_pix, false);
+		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, Ui.Spacing.XS);
+		card.append(hbox);
 
-		var cell_text = new Gtk.CellRendererText();
-		cell_text.xalign = (float) 0.0;
-		combo.pack_start (cell_text, false);
+		/* GTK4 deprecates Gtk.ComboBox; Gtk.DropDown over a Gtk.StringList of
+		 * the raw format strings, with a factory rendering a live preview. */
 
-		var now = new DateTime.local(2019, 8, 11, 20, 25, 43);
-
-		combo.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
-			
-			string txt;
-			model.get (iter, 0, out txt, -1);
-
-			((Gtk.CellRendererText)cell).text = (txt.length == 0) ? _("Custom") : now.format(txt);
-		});
-		
-		// populate combo
-		var model = new Gtk.ListStore(1, typeof(string));
-		combo.model = model;
-
-		int active = -1;
-		int index = -1;
-		TreeIter iter;
-		foreach(var fmt in new string[]{
+		var formats = new string[]{
 			"", // custom
 			"%Y-%m-%d %H:%M:%S", // 2019-08-11 20:00:00
 			"%Y-%m-%d %I:%M %p", // 2019-08-11 08:00 PM
 			"%d %b %Y %I:%M %p", // 11 Aug 2019 08:00 PM
 			"%Y %b %d, %I:%M %p", // 2019 Aug 11, 08:00 PM
 			"%c"                 // Sunday, 11 August 2019 08:00:00 PM IST
-			}){
-			
-			index++;
-			model.append(out iter);
-			model.set(iter, 0, fmt);
+			};
 
-			if (App.date_format == fmt){
-				active = index;
+		var now = new DateTime.local(2019, 8, 11, 20, 25, 43);
+
+		var factory = new Gtk.SignalListItemFactory();
+
+		factory.setup.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var lbl = new Gtk.Label("");
+			lbl.xalign = (float) 0.0;
+			list_item.set_child(lbl);
+		});
+
+		factory.bind.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var lbl = (Gtk.Label) list_item.get_child();
+			var str_obj = (Gtk.StringObject) list_item.get_item();
+			string txt = str_obj.get_string();
+			lbl.label = (txt.length == 0) ? _("Custom") : now.format(txt);
+		});
+
+		var combo = new Gtk.DropDown(new Gtk.StringList(formats), null);
+		combo.factory = factory;
+		combo.hexpand = true;
+		hbox.append(combo);
+
+		var entry = new Gtk.Entry();
+		entry.hexpand = true;
+		hbox.append(entry);
+
+		uint active = 0;
+		for (uint i = 0; i < formats.length; i++){
+			if (App.date_format == formats[i]){
+				active = i;
+				break;
 			}
 		}
-		
-		if (active < 0){
-			active = 0; 
-		}
-		
-		combo.active = active;
 
-		combo.changed.connect((path) => {
+		combo.selected = active;
 
-			TreeIter iter_active;
-			bool selected = combo.get_active_iter(out iter_active);
-			if (!selected){ return; }
-			
-			string txt;
-			model.get (iter_active, 0, out txt, -1);
+		combo.notify["selected"].connect(() => {
+
+			uint selected = combo.selected;
+			if (selected == Gtk.INVALID_LIST_POSITION){ return; }
+
+			string txt = formats[selected];
 
 			string fmt = Main.date_format_default;
 			if (txt.length > 0){
 				fmt = txt;
 			}
-			
+
 			entry.text = fmt;
-			
+
 			entry.sensitive = (txt.length == 0);
 
 			App.date_format = fmt;
@@ -148,15 +145,16 @@ class MiscBox : Gtk.Box{
 
 		entry.text = App.date_format;
 
-		entry.sensitive = (combo.active == 0);
+		entry.sensitive = (combo.selected == 0);
 
-		entry.focus_out_event.connect((entry1, event1) => {
+		var focus = new Gtk.EventControllerFocus();
+		focus.leave.connect(() => {
 			App.date_format = entry.text;
 			log_debug("saved date_format: %s".printf(App.date_format));
-			return false;
 		});
+		entry.add_controller(focus);
 		
-		show_all();
+		this.visible = true;
 
 		log_debug("MiscBox: init_date_format_option(): exit");
 	}
@@ -174,6 +172,6 @@ class MiscBox : Gtk.Box{
 			//chk_include_btrfs_home
 		}
 
-		show_all();
+		this.visible = true;
 	}
 }

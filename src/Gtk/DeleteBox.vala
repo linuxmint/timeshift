@@ -24,10 +24,6 @@
 using Gtk;
 using Gee;
 
-#if XAPP
-using XApp;
-#endif
-
 using TeeJee.Logging;
 using TeeJee.FileSystem;
 using TeeJee.JsonHelper;
@@ -37,7 +33,9 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class DeleteBox : Gtk.Box{
-	private Gtk.Spinner spinner;
+
+	private TaskProgressBox progress;
+
 	public Gtk.Label lbl_msg;
 	public Gtk.Label lbl_status;
 	public Gtk.Label lbl_remaining;
@@ -50,40 +48,16 @@ class DeleteBox : Gtk.Box{
 		log_debug("DeleteBox: DeleteBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
-		
-		// header
-		add_label_header(this, _("Deleting Snapshots..."), true);
 
-		var hbox_status = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		add (hbox_status);
-		
-		spinner = new Gtk.Spinner();
-		spinner.active = true;
-		hbox_status.add(spinner);
-		
-		//lbl_msg
-		lbl_msg = add_label(hbox_status, _("Preparing..."));
-		lbl_msg.hexpand = true;
-		lbl_msg.ellipsize = Pango.EllipsizeMode.END;
-		lbl_msg.max_width_chars = 45;
+		progress = new TaskProgressBox(_("Deleting Snapshots..."), false);
+		append(progress);
 
-		lbl_remaining = add_label(hbox_status, "");
-
-		//progressbar
-		progressbar = new Gtk.ProgressBar();
-		//progressbar.set_size_request(-1,25);
-		//progressbar.show_text = true;
-		//progressbar.pulse_step = 0.1;
-		add (progressbar);
-
-		//lbl_status
-		lbl_status = add_label(this, "");
-		lbl_status.ellipsize = Pango.EllipsizeMode.MIDDLE;
-		lbl_status.max_width_chars = 45;
-		lbl_status.margin_bottom = 12;
+		lbl_msg = progress.lbl_msg;
+		lbl_status = progress.lbl_status;
+		lbl_remaining = progress.lbl_remaining;
+		progressbar = progress.progressbar;
 
 		log_debug("DeleteBox: DeleteBox(): exit");
     }
@@ -104,14 +78,10 @@ class DeleteBox : Gtk.Box{
 				gtk_do_events();
 				sleep(200);
 
-				#if XAPP
-				XApp.set_window_progress_pulse(parent_window, true);
-				#endif
+				LauncherEntry.set_progress_pulse(true);
 			}
 
-			#if XAPP
-			XApp.set_window_progress_pulse(parent_window, false);
-			#endif
+			LauncherEntry.set_progress_pulse(false);
 		}
 		else{
 			
@@ -154,9 +124,7 @@ class DeleteBox : Gtk.Box{
 				if (fraction < 0.99){
 					progressbar.fraction = fraction;
 
-					#if XAPP
-					XApp.set_window_progress(parent_window, (int)(fraction * 100.0));
-					#endif
+					LauncherEntry.set_progress((int)(fraction * 100.0));
 				}
 
 				lbl_msg.label = App.delete_file_task.status_message;
@@ -166,9 +134,7 @@ class DeleteBox : Gtk.Box{
 				sleep(100);
 			}
 
-			#if XAPP
-			XApp.set_window_progress(parent_window, 0);
-			#endif
+			LauncherEntry.set_progress(0);
 		}
 		
 		//parent_window.destroy();

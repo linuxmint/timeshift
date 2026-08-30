@@ -32,9 +32,31 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
+/* Row object for the exclude list. GTK4 list widgets bind to GObjects rather
+ * than tree-model columns; include/exclude is still derived from the "+ "
+ * prefix, exactly as the tree model did. */
+public class ExcludePatternRow : GLib.Object {
+
+	public string pattern { get; set; }
+
+	public ExcludePatternRow(string _pattern){
+		pattern = _pattern;
+	}
+
+	public bool is_include(){
+		return pattern.has_prefix("+ ");
+	}
+
+	public string display_text(){
+		return pattern.has_prefix("+ ") ? pattern[2:pattern.length] : pattern;
+	}
+}
+
 class ExcludeBox : Gtk.Box{
 	
-	private Gtk.TreeView treeview;
+	private Gtk.ColumnView treeview;
+	private GLib.ListStore exclude_model;
+	private Gtk.MultiSelection exclude_selection;
 	private Gtk.Window parent_window;
 	private UsersBox users_box;
 	private Gtk.Label lbl_message;
@@ -44,20 +66,12 @@ class ExcludeBox : Gtk.Box{
 		log_debug("ExcludeBox: ExcludeBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
 
-		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		add(box);
-		
-		add_label_header(box, _("Include / Exclude Patterns"), true);
+		Ui.add_title(this, _("Include / Exclude Patterns"));
 
-		var buffer = add_label(box, "");
-		buffer.hexpand = true;
-
-		var label = add_label(box, _("Click to edit. Drag-drop to re-order."), false, true);
-		lbl_message = label;
+		lbl_message = Ui.add_dim_label(this, _("Click a pattern to edit it"));
 
 		init_treeview();
 
@@ -74,152 +88,140 @@ class ExcludeBox : Gtk.Box{
 	}
 
     private void init_treeview(){
-		
-		// treeview
-		treeview = new TreeView();
-		treeview.get_selection().mode = SelectionMode.MULTIPLE;
-		treeview.headers_visible = true;
-		//treeview.rules_hint = true;
-		treeview.reorderable = true;
-		treeview.set_tooltip_text(_("Click to edit. Drag and drop to re-order."));
-		//treeview.row_activated.connect(treeview_row_activated);
+
+		/* GTK4 deprecates Gtk.TreeView. This is a Gtk.ColumnView over a
+		 * GLib.ListStore of ExcludePatternRow: two radio columns for the
+		 * include/exclude choice and an editable pattern column. */
+
+		exclude_model = new GLib.ListStore(typeof(ExcludePatternRow));
+		exclude_selection = new Gtk.MultiSelection(exclude_model);
+
+		treeview = new Gtk.ColumnView(exclude_selection);
+		treeview.show_column_separators = false;
+		treeview.set_tooltip_text(_("Click to edit."));
 
 		// scrolled
-		var scrolled = new ScrolledWindow(null, null);
-		scrolled.set_shadow_type (ShadowType.ETCHED_IN);
-		scrolled.add (treeview);
-		scrolled.expand = true;
-		add(scrolled);
+		Ui.add_boxed_list(this, treeview);
 
-		// column
-		var col = new TreeViewColumn();
-		col.title = "+";
-		treeview.append_column(col);
-		
-		// radio_include
-		var cell_radio = new Gtk.CellRendererToggle();
-		cell_radio.xpad = 2;
-		cell_radio.radio = true;
-		cell_radio.activatable = true;
-		col.pack_start (cell_radio, false);
+		treeview.append_column(make_toggle_column(_("Include"), true));
+		treeview.append_column(make_toggle_column(_("Exclude"), false));
+		treeview.append_column(make_pattern_column());
+	}
 
-		col.set_attributes(cell_radio, "active", 2);
-		
-		cell_radio.toggled.connect((cell, path)=>{
+	private Gtk.ColumnViewColumn make_toggle_column(string title, bool for_include){
 
-			log_debug("cell_include.toggled()");
-			
-			var model = (Gtk.ListStore) treeview.model;
-			string pattern;
-			TreeIter iter;
+		var factory = new Gtk.SignalListItemFactory();
 
-			model.get_iter_from_string (out iter, path);
-			model.get (iter, 0, out pattern);
-			
-			if (!pattern.has_prefix("+ ")){
-				pattern = "+ %s".printf(pattern);
-			}
+		factory.setup.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
 
-			treeview_update_item(ref iter, pattern);
-			
-			save_changes();
-		});
+			var chk = new Gtk.CheckButton();
+			chk.halign = Gtk.Align.CENTER;
 
-		// column
-		col = new TreeViewColumn();
-		col.title = "-";
-		treeview.append_column(col);
+			chk.toggled.connect(() => {
+				if (!chk.active){ return; }
 
-		// radio_exclude
-		cell_radio = new Gtk.CellRendererToggle();
-		cell_radio.xpad = 2;
-		cell_radio.radio = true;
-		cell_radio.activatable = true;
-		col.pack_start (cell_radio, false);
-		
-		col.set_attributes(cell_radio, "active", 3);
+				var row = chk.get_data<ExcludePatternRow>("row");
+				if (row == null){ return; }
 
-		cell_radio.toggled.connect((cell, path)=>{
-
-			log_debug("cell_exclude.toggled()");
-			
-			var model = (Gtk.ListStore) treeview.model;
-			string pattern;
-			TreeIter iter;
-		
-			model.get_iter_from_string (out iter, path);
-			model.get (iter, 0, out pattern);
-
-			//bool exclude = true;
-
-			if (pattern.has_prefix("+ ")){
-				pattern = pattern[2:pattern.length];
-			}
-
-			treeview_update_item(ref iter, pattern);
-			
-			save_changes();
-		});
-		
-		// column
-		col = new TreeViewColumn();
-		col.title = _("Pattern");
-		treeview.append_column(col);
-		
-		// margin
-		var cell_text = new CellRendererText ();
-		cell_text.text = "";
-		col.pack_start (cell_text, false);
-
-		// icon
-		var cell_icon = new CellRendererPixbuf ();
-		col.pack_start (cell_icon, false);
-		col.set_attributes(cell_icon, "icon-name", 1);
-
-		// pattern
-		cell_text = new CellRendererText ();
-		col.pack_start (cell_text, false);
-		
-		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter)=>{
-			string pattern;
-			model.get (iter, 0, out pattern, -1);
-			((Gtk.CellRendererText)cell).text =
-				pattern.has_prefix("+ ") ? pattern[2:pattern.length] : pattern;
-		});
-
-		cell_text.editable = true;
-		cell_text.edited.connect ((path, new_text)=>{
-			TreeIter iter;
-			var model = (Gtk.ListStore) treeview.model;
-			model.get_iter_from_string (out iter, path);
-
-			bool include;
-			model.get (iter, 2, out include, -1);
-
-			string pattern = new_text;
-
-			if (include){
-				if (!pattern.has_prefix("+ ")){
-					pattern = "+ %s".printf(pattern);
+				if (for_include){
+					if (!row.pattern.has_prefix("+ ")){
+						row.pattern = "+ %s".printf(row.pattern);
+					}
 				}
-			}
-			else{
-				if (pattern.has_prefix("+ ")){
+				else{
+					if (row.pattern.has_prefix("+ ")){
+						row.pattern = row.pattern[2:row.pattern.length];
+					}
+				}
+
+				save_changes();
+			});
+
+			list_item.set_child(chk);
+		});
+
+		factory.bind.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var chk = (Gtk.CheckButton) list_item.get_child();
+			var row = (ExcludePatternRow) list_item.get_item();
+
+			chk.steal_data<ExcludePatternRow>("row");
+			chk.active = for_include ? row.is_include() : !row.is_include();
+			chk.set_data<ExcludePatternRow>("row", row);
+		});
+
+		var col = new Gtk.ColumnViewColumn(title, factory);
+		return col;
+	}
+
+	private Gtk.ColumnViewColumn make_pattern_column(){
+
+		var factory = new Gtk.SignalListItemFactory();
+
+		factory.setup.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+
+			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+
+			var img = new Gtk.Image();
+			img.pixel_size = 16;
+			hbox.append(img);
+
+			var editable = new Gtk.EditableLabel("");
+			editable.hexpand = true;
+			hbox.append(editable);
+
+			/* commit when editing ends, mirroring CellRendererText::edited */
+			editable.notify["editing"].connect(() => {
+
+				if (editable.editing){ return; }
+
+				var row = editable.get_data<ExcludePatternRow>("row");
+				if (row == null){ return; }
+
+				string pattern = editable.text;
+
+				if (row.is_include()){
+					if (!pattern.has_prefix("+ ")){
+						pattern = "+ %s".printf(pattern);
+					}
+				}
+				else if (pattern.has_prefix("+ ")){
 					pattern = pattern[2:pattern.length];
 				}
-			}
-			
-			model.set (iter, 0, pattern, -1);
-			
-			save_changes();
+
+				if (row.pattern != pattern){
+					row.pattern = pattern;
+					save_changes();
+				}
+			});
+
+			list_item.set_child(hbox);
 		});
+
+		factory.bind.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var hbox = (Gtk.Box) list_item.get_child();
+			var img = (Gtk.Image) hbox.get_first_child();
+			var editable = (Gtk.EditableLabel) img.get_next_sibling();
+			var row = (ExcludePatternRow) list_item.get_item();
+
+			editable.steal_data<ExcludePatternRow>("row");
+			img.set_from_icon_name(row.is_include() ? "list-add-symbolic" : "list-remove-symbolic");
+			editable.text = row.display_text();
+			editable.set_data<ExcludePatternRow>("row", row);
+		});
+
+		var col = new Gtk.ColumnViewColumn(_("Pattern"), factory);
+		col.expand = true;
+		return col;
 	}
 
 	private void init_actions(){
 
 
-		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
-		add(hbox);
+		var hbox = Ui.add_button_row(this, Gtk.Align.START);
 
 		var size_group = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 		var button = add_button(hbox, _("Add"), _("Add custom pattern"), size_group, null);
@@ -275,32 +277,26 @@ class ExcludeBox : Gtk.Box{
 	
     private void remove_clicked(){
 		
-		var sel = treeview.get_selection();
-		var store = (Gtk.ListStore) treeview.model;
+		var selected = new Gee.ArrayList<string>();
 
-		if (sel.count_selected_rows() == 0){
+		for (uint i = 0; i < exclude_model.get_n_items(); i++) {
+			if (exclude_selection.is_selected(i)){
+				var row = (ExcludePatternRow) exclude_model.get_item(i);
+				selected.add(row.pattern);
+			}
+		}
+
+		if (selected.size == 0){
 			string title = _("Items Not Selected");
 			string message = _("Select the items to be removed from the list");
 			gtk_messagebox(title, message, parent_window, true);
 			return;
 		}
-		
-		TreeIter iter;
-		var iter_list = new Gee.ArrayList<TreeIter?>();
-		
-		bool iterExists = store.get_iter_first (out iter);
-		while (iterExists) {
-			if (sel.iter_is_selected (iter)){
-				string pattern;
-				store.get (iter, 0, out pattern);
-				
-				App.exclude_list_user.remove(pattern);
-				iter_list.add(iter);
-				
-				log_debug("removed item: %s".printf(pattern));
-				Main.first_snapshot_size = 0; //re-calculate
-			}
-			iterExists = store.iter_next (ref iter);
+
+		foreach(var pattern in selected){
+			App.exclude_list_user.remove(pattern);
+			log_debug("removed item: %s".printf(pattern));
+			Main.first_snapshot_size = 0; //re-calculate
 		}
 		
 		refresh_treeview();
@@ -374,111 +370,93 @@ class ExcludeBox : Gtk.Box{
 
 		var list = new SList<string>();
 		
-		var dialog = new Gtk.FileChooserDialog(
-			_("Select file(s)"), parent_window,
-			Gtk.FileChooserAction.OPEN,
-			"gtk-cancel", Gtk.ResponseType.CANCEL,
-			"gtk-open", Gtk.ResponseType.ACCEPT);
-			
-		dialog.action = FileChooserAction.OPEN;
-		dialog.set_transient_for(parent_window);
-		dialog.local_only = true;
- 		dialog.set_modal (true);
- 		dialog.set_select_multiple (true);
+		/* GTK4 replaces Gtk.FileChooserDialog with the async Gtk.FileDialog.
+		 * Callers here are synchronous, so block on a nested main loop. */
 
-		var resp = dialog.run();
+		var dialog = new Gtk.FileDialog();
+		dialog.set_title(_("Select file(s)"));
+		dialog.set_modal(true);
 
-		if (resp != Gtk.ResponseType.CANCEL){
-			list = dialog.get_filenames();
-		}
-		
-		dialog.destroy();
+		var loop = new GLib.MainLoop();
 
-	 	return list;
+		dialog.open_multiple.begin(parent_window, null, (obj, res) => {
+			try {
+				var files = dialog.open_multiple.end(res);
+				if (files != null){
+					for (uint i = 0; i < files.get_n_items(); i++){
+						var file = (GLib.File) files.get_item(i);
+						if (file.get_path() != null){
+							list.append(file.get_path());
+						}
+					}
+				}
+			}
+			catch (Error e){
+				log_debug(e.message);
+			}
+			loop.quit();
+		});
+
+		loop.run();
+
+	 	return (owned) list;
 	}
 
 	private SList<string> browse_folder(){
 
 		var list = new SList<string>();
 		
-		var dialog = new Gtk.FileChooserDialog(
-			_("Select directory"), parent_window,
-			Gtk.FileChooserAction.SELECT_FOLDER,
-			"gtk-cancel", Gtk.ResponseType.CANCEL,
-			"gtk-open", Gtk.ResponseType.ACCEPT);
-			
-		dialog.action = FileChooserAction.SELECT_FOLDER;
-		dialog.local_only = true;
-		dialog.set_transient_for(parent_window);
- 		dialog.set_modal (true);
- 		dialog.set_select_multiple (false);
+		var dialog = new Gtk.FileDialog();
+		dialog.set_title(_("Select directory"));
+		dialog.set_modal(true);
 
-		var resp = dialog.run();
+		var loop = new GLib.MainLoop();
 
-		if (resp != Gtk.ResponseType.CANCEL){
-			list = dialog.get_filenames();
-		}
-		
-		dialog.destroy();
+		dialog.select_folder.begin(parent_window, null, (obj, res) => {
+			try {
+				var file = dialog.select_folder.end(res);
+				if ((file != null) && (file.get_path() != null)){
+					list.append(file.get_path());
+				}
+			}
+			catch (Error e){
+				log_debug(e.message);
+			}
+			loop.quit();
+		});
 
-	 	return list;
+		loop.run();
+
+	 	return (owned) list;
 	}
 
 	// helpers
 
 	public void refresh_treeview(){
-		
-		var model = new Gtk.ListStore(4, typeof(string), typeof(string), typeof(bool), typeof(bool));
-		treeview.model = model;
+
+		exclude_model.remove_all();
 
 		foreach(string pattern in App.exclude_list_user){
 			treeview_add_item(treeview, pattern);
 		}
 	}
 
-	private void treeview_add_item(Gtk.TreeView treeview, string pattern){
-		
+	private void treeview_add_item(Gtk.ColumnView treeview, string pattern){
+
 		log_debug("treeview_add_item(): %s".printf(pattern));
 
-		TreeIter iter;
-		var model = (Gtk.ListStore) treeview.model;
-		model.append(out iter);
-
-		bool include = pattern.has_prefix("+ ");
-
-		model.set (iter, 0, pattern);
-		model.set (iter, 1, include ? "list-add" : "list-remove");
-		model.set (iter, 2, include);
-		model.set (iter, 3, !include);
-
-		var adj = ((Gtk.Scrollable)treeview).get_hadjustment();
-		adj.value = adj.upper;
-	}
-
-	private void treeview_update_item(ref TreeIter iter, string pattern){
-		
-		log_debug("treeview_update_item(): %s".printf(pattern));
-
-	    bool include = pattern.has_prefix("+ ");
-
-		var model = (Gtk.ListStore) treeview.model;
-		model.set (iter, 0, pattern);
-		model.set (iter, 1, include ? "list-add" : "list-remove");
-		model.set (iter, 2, include);
-		model.set (iter, 3, !include);
+		exclude_model.append(new ExcludePatternRow(pattern));
 	}
 
 	public void save_changes(){
 
 		App.exclude_list_user.clear();
 
-		// add include patterns from treeview
-		TreeIter iter;
-		var store = (Gtk.ListStore) treeview.model;
-		bool iterExists = store.get_iter_first (out iter);
-		while (iterExists) {
-			string pattern;
-			store.get(iter, 0, out pattern);
+		// add include patterns from the list
+		for (uint i = 0; i < exclude_model.get_n_items(); i++) {
+
+			var row = (ExcludePatternRow) exclude_model.get_item(i);
+			string pattern = row.pattern;
 
 			if (!App.exclude_list_user.contains(pattern)
 				&& !App.exclude_list_default.contains(pattern)
@@ -486,8 +464,6 @@ class ExcludeBox : Gtk.Box{
 
 				App.exclude_list_user.add(pattern);
 			}
-			
-			iterExists = store.iter_next(ref iter);
 		}
 
 		log_debug("save_changes(): exclude_list_user:");

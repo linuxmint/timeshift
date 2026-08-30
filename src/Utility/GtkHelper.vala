@@ -11,37 +11,44 @@ namespace TeeJee.GtkHelper{
 
 	using Gtk;
 
-	// messages -----------
-	
+	// main loop -----------
+
 	public void gtk_do_events (){
 
-		/* Do pending events */
+		/* Do pending events.
+		 *
+		 * GTK4 removes gtk_events_pending()/gtk_main_iteration(). The GLib main
+		 * context underneath them is unchanged, so drive it directly. The core
+		 * runs long operations on a worker thread and spins here to keep the UI
+		 * alive, so this has to stay synchronous. */
 
-		while(Gtk.events_pending ())
-			Gtk.main_iteration ();
+		var context = GLib.MainContext.default();
+
+		while (context.pending()){
+			context.iteration(false);
+		}
 	}
 
 	public void gtk_set_busy (bool busy, Gtk.Window win) {
 
 		/* Show or hide busy cursor on window */
 
-		Gdk.Cursor? cursor = null;
-
-		if (busy){
-			cursor = new Gdk.Cursor.from_name(Gdk.Display.get_default(), "wait");
-		}
-		else{
-			cursor = new Gdk.Cursor.from_name(Gdk.Display.get_default(), "default");
-		}
-
-		var window = win.get_window ();
-
-		if (window != null) {
-			window.set_cursor (cursor);
-		}
+		win.set_cursor(new Gdk.Cursor.from_name(busy ? "wait" : "default", null));
 
 		gtk_do_events ();
 	}
+
+	public void set_margin_all (Gtk.Widget widget, int margin){
+
+		/* GTK4 has no "margin" shorthand; only the four edges. */
+
+		widget.margin_start = margin;
+		widget.margin_end = margin;
+		widget.margin_top = margin;
+		widget.margin_bottom = margin;
+	}
+
+	// messages -----------
 
 	public static void gtk_messagebox(string title, string message, Gtk.Window? parent_win, bool is_error = false){
 
@@ -49,212 +56,133 @@ namespace TeeJee.GtkHelper{
 
 		Gtk.MessageType type = is_error ? Gtk.MessageType.ERROR : Gtk.MessageType.INFO;
 
-		var dlg = new CustomMessageDialog(title,message,type,parent_win, Gtk.ButtonsType.OK);
+		var dlg = new CustomMessageDialog(title, message, type, parent_win, Gtk.ButtonsType.OK);
 		dlg.run();
-		dlg.destroy();
 	}
 
 	public string? gtk_inputbox(string title, string message, Gtk.Window? parent_win, bool mask_password = false){
 
-		/* Shows a simple input prompt */
+		/* Shows a simple input prompt.
+		 *
+		 * Callers (the LUKS passphrase prompt in Device.vala, for one) are
+		 * synchronous core code, so this blocks on a nested main loop rather
+		 * than returning a value asynchronously. */
 
-		//vbox_main
-        Gtk.Box vbox_main = new Gtk.Box(Orientation.VERTICAL, 0);
-        vbox_main.margin = 0;
-
-		//lbl_input
-		Gtk.Label lbl_input = new Gtk.Label(title);
-		lbl_input.xalign = (float) 0.0;
-		lbl_input.label = message;
-
-		//txt_input
-		Gtk.Entry txt_input = new Gtk.Entry();
-		txt_input.margin_top = 3;
-		txt_input.set_visibility(!mask_password);
-
-		//create dialog
-		var dlg = new Gtk.Dialog.with_buttons(title, parent_win, DialogFlags.MODAL);
+		var dlg = new Gtk.Window();
 		dlg.title = title;
-		dlg.set_default_size (300, -1);
+		dlg.set_default_size(420, -1);
+		dlg.modal = true;
+		dlg.resizable = false;
 		if (parent_win != null){
 			dlg.set_transient_for(parent_win);
-			dlg.set_modal(true);
 		}
 
-		//add widgets
-		var content = (Box) dlg.get_content_area ();
-		vbox_main.pack_start (lbl_input, false, true, 0);
-		vbox_main.pack_start (txt_input, false, true, 0);
-		content.add(vbox_main);
-		content.margin = 6;
-		
-		//add buttons
-		dlg.add_button(_("OK"),Gtk.ResponseType.OK);
-		dlg.add_button(_("Cancel"),Gtk.ResponseType.CANCEL);
-		
-		//keyboard shortcuts
-		txt_input.key_press_event.connect ((w, event) => {
-			if (event.keyval == 65293) {
-				dlg.response(Gtk.ResponseType.OK);
-				return true;
-			}
+		// same chrome as CustomMessageDialog: flat header, title in the body
+		var hb = new Gtk.HeaderBar();
+		hb.add_css_class("flat");
+		hb.title_widget = new Gtk.Label("");
+		dlg.set_titlebar(hb);
+
+		var vbox_main = new Gtk.Box(Orientation.VERTICAL, Ui.Spacing.SM);
+		set_margin_all(vbox_main, Ui.Spacing.LG);
+		vbox_main.margin_top = Ui.Spacing.SM;
+		dlg.set_child(vbox_main);
+
+		Ui.add_title(vbox_main, title, 2);
+
+		var lbl_input = Ui.add_body(vbox_main, message);
+
+		var txt_input = new Gtk.Entry();
+		txt_input.hexpand = true;
+		txt_input.set_visibility(!mask_password);
+		txt_input.activates_default = true;
+		vbox_main.append(txt_input);
+
+		var bbox = Ui.add_button_row(vbox_main, Gtk.Align.END);
+		bbox.margin_top = Ui.Spacing.XS;
+
+		var btn_cancel = new Gtk.Button.with_label(_("Cancel"));
+		bbox.append(btn_cancel);
+
+		var btn_ok = new Gtk.Button.with_label(_("OK"));
+		btn_ok.add_css_class("suggested-action");
+		bbox.append(btn_ok);
+
+		string? input_text = null;
+		var loop = new GLib.MainLoop();
+
+		/* Quit the nested loop explicitly at each exit. Hanging this off
+		 * Gtk.Widget::destroy would never fire: GTK4 emits that from dispose,
+		 * so a held reference keeps it from ever arriving and this prompt --
+		 * the LUKS passphrase one, among others -- would block forever. */
+		btn_ok.clicked.connect(() => {
+			input_text = txt_input.text;
+			dlg.destroy();
+			if (loop.is_running()){ loop.quit(); }
+		});
+
+		btn_cancel.clicked.connect(() => {
+			input_text = null;
+			dlg.destroy();
+			if (loop.is_running()){ loop.quit(); }
+		});
+
+		txt_input.activate.connect(() => {
+			input_text = txt_input.text;
+			dlg.destroy();
+			if (loop.is_running()){ loop.quit(); }
+		});
+
+		dlg.close_request.connect(() => {
+			input_text = null;
+			if (loop.is_running()){ loop.quit(); }
 			return false;
 		});
 
-		dlg.show_all();
-		int response = dlg.run();
-		string input_text = txt_input.text;
-		dlg.destroy();
+		dlg.present();
+		txt_input.grab_focus();
 
-		if (response == Gtk.ResponseType.CANCEL){
-			return null;
-		}
-		else{
-			return input_text;
-		}
+		loop.run();
+
+		return input_text;
 	}
 
-	public void wait_and_close_window(int milliseconds, Gtk.Window window){
+	public void gtk_wait(int milliseconds){
+
+		/* Pump the main loop for a while so a finished page stays readable
+		 * before its window closes. The caller closes the window itself --
+		 * destroying it here would skip the AppWindow.closed notification. */
+
 		gtk_do_events();
+
 		int millis = 0;
 		while(millis < milliseconds){
 			sleep(200);
 			millis += 200;
 			gtk_do_events();
 		}
-		window.destroy();
-	}
-	
-	// combo ---------
-	
-	public bool gtk_combobox_set_value (ComboBox combo, int index, string val){
-
-		/* Convenience function to set combobox value */
-
-		TreeIter iter;
-		string comboVal;
-		TreeModel model = (TreeModel) combo.model;
-
-		bool iterExists = model.get_iter_first (out iter);
-		while (iterExists){
-			model.get(iter, 1, out comboVal);
-			if (comboVal == val){
-				combo.set_active_iter(iter);
-				return true;
-			}
-			iterExists = model.iter_next (ref iter);
-		}
-
-		return false;
-	}
-
-	public string gtk_combobox_get_value (ComboBox combo, int index, string default_value){
-
-		/* Convenience function to get combobox value */
-
-		if ((combo.model == null) || (combo.active < 0)) { return default_value; }
-
-		TreeIter iter;
-		string val = "";
-		combo.get_active_iter (out iter);
-		TreeModel model = (TreeModel) combo.model;
-		model.get(iter, index, out val);
-
-		return val;
 	}
 
 	// utility ------------------
-
-	// add_notebook
-	public static Gtk.Notebook add_notebook(Gtk.Box box, bool show_tabs = true, bool show_border = true){
-
-        // notebook
-		var book = new Gtk.Notebook();
-		book.margin = 0;
-		book.show_tabs = show_tabs;
-		book.show_border = show_border;
-		
-		box.pack_start(book, true, true, 0);
-
-		return book;
-	}
-
-	// add_treeview
-	public static Gtk.TreeView add_treeview(Gtk.Box box, Gtk.SelectionMode selection_mode = Gtk.SelectionMode.SINGLE){
-
-		// TreeView
-		var treeview = new TreeView();
-		treeview.get_selection().mode = selection_mode;
-		treeview.show_expanders = true;
-		treeview.enable_tree_lines = true;
-
-		// ScrolledWindow
-		var scrollwin = new ScrolledWindow(null, null);
-		scrollwin.set_shadow_type (ShadowType.ETCHED_IN);
-		scrollwin.add (treeview);
-		scrollwin.expand = true;
-		box.add(scrollwin);
-
-		return treeview;
-	}
-
-	// add_column_text
-	public static Gtk.TreeViewColumn add_column_text(Gtk.TreeView treeview, string title, out Gtk.CellRendererText cell){
-			
-		// TreeViewColumn
-		var col = new Gtk.TreeViewColumn();
-		col.title = title;
-
-		cell = new Gtk.CellRendererText();
-		cell.xalign = (float) 0.0;
-		col.pack_start (cell, false);
-		treeview.append_column(col);
-
-		return col;
-	}
-
-	// add_column_icon_radio_text
-	public static Gtk.TreeViewColumn add_column_icon_radio_text(Gtk.TreeView treeview, string title,
-		out Gtk.CellRendererPixbuf cell_pix, out Gtk.CellRendererToggle cell_radio, out Gtk.CellRendererText cell_text){
-
-		// TreeViewColumn
-		var col = new Gtk.TreeViewColumn();
-		col.title = title;
-
-		cell_pix = new Gtk.CellRendererPixbuf();
-		cell_pix.xpad = 2;
-		col.pack_start (cell_pix, false);
-
-		cell_radio = new Gtk.CellRendererToggle();
-		cell_radio.xpad = 2;
-		cell_radio.radio = true;
-		cell_radio.activatable = true;
-		col.pack_start (cell_radio, false);
-		
-		cell_text = new Gtk.CellRendererText();
-		cell_text.xalign = (float) 0.0;
-		col.pack_start (cell_text, false);
-		treeview.append_column(col);
-
-		return col;
-	}
 
 	// add_label_scrolled
 	public static Gtk.Label add_label_scrolled(Gtk.Box box, string text, bool show_border = false, bool wrap = false, int ellipsize_chars = 40){
 
 		// ScrolledWindow
-		var scroll = new Gtk.ScrolledWindow(null, null);
+		var scroll = new Gtk.ScrolledWindow();
 		scroll.hscrollbar_policy = PolicyType.NEVER;
 		scroll.vscrollbar_policy = PolicyType.ALWAYS;
-		scroll.expand = true;
-		box.add(scroll);
-		
+		scroll.hexpand = true;
+		scroll.vexpand = true;
+		scroll.has_frame = show_border;
+		box.append(scroll);
+
 		var label = new Gtk.Label(text);
 		label.xalign = (float) 0.0;
 		label.yalign = (float) 0.0;
-		label.margin = 6;
+		set_margin_all(label, 6);
 		label.set_use_markup(true);
-		scroll.add(label);
+		scroll.set_child(label);
 
 		if (wrap){
 			label.wrap = true;
@@ -266,70 +194,48 @@ namespace TeeJee.GtkHelper{
 			label.max_width_chars = ellipsize_chars;
 		}
 
-		if (show_border){
-			scroll.set_shadow_type (ShadowType.ETCHED_IN);
-		}
-
 		return label;
 	}
 
-	// add_label
-	private Gtk.Label add_label(Gtk.Box box, string text, bool bold = false, bool italic = false, bool large = false){
-			
-		string msg = "<span%s%s%s>%s</span>".printf(
-			(bold ? " weight=\"bold\"" : ""),
-			(italic ? " style=\"italic\"" : ""),
-			(large ? " size=\"x-large\"" : ""),
-			text);
-			
-		var label = new Gtk.Label(msg);
+	// add_label: plain text. Styling is a .ts-* class (see Ui), never markup.
+	public static Gtk.Label add_label(Gtk.Box box, string text){
+
+		var label = new Gtk.Label(text);
+		label.xalign = (float) 0.0;
+		label.wrap = true;
+		label.wrap_mode = Pango.WrapMode.WORD;
+		box.append(label);
+		return label;
+	}
+
+	// add_label_markup: explicit opt-in for text that really is Pango markup
+	public static Gtk.Label add_label_markup(Gtk.Box box, string markup){
+
+		var label = new Gtk.Label(markup);
 		label.set_use_markup(true);
 		label.xalign = (float) 0.0;
 		label.wrap = true;
 		label.wrap_mode = Pango.WrapMode.WORD;
-		box.add(label);
-		return label;
-	}
-
-	public static string format_text(string text, bool bold = false, bool italic = false, bool large = false){
-
-		string msg = "<span%s%s%s>%s</span>".printf(
-			(bold ? " weight=\"bold\"" : ""),
-			(italic ? " style=\"italic\"" : ""),
-			(large ? " size=\"x-large\"" : ""),
-			escape_html(text));
-
-		return msg;
-	}
-
-	// add_label_header
-	public static Gtk.Label add_label_header(Gtk.Box box, string text, bool large_heading = false){
-
-		var label = add_label(box, escape_html(text), true, false, large_heading);
-		label.margin_bottom = 12;
+		box.append(label);
 		return label;
 	}
 
 	// add_checkbox
 	public static Gtk.CheckButton add_checkbox(Gtk.Box box, string text){
 
-		var chk = new Gtk.CheckButton.with_label(text);
-		chk.label = text;
-		box.add(chk);
+		/* GTK4's CheckButton is no longer a Gtk.Bin wrapping a Label, so the
+		 * markup-capable label is attached explicitly as its child. */
 
-		foreach(var child in chk.get_children()){
-			if (child is Gtk.Label){
-				var label = (Gtk.Label) child;
-				label.use_markup = true;
-				break;
-			}
-		}
-		
-		/*
-		chk.toggled.connect(()=>{
-			chk.active;
-		});
-		*/
+		var chk = new Gtk.CheckButton();
+
+		var label = new Gtk.Label(text);
+		label.use_markup = true;
+		label.xalign = (float) 0.0;
+		label.wrap = true;
+		label.wrap_mode = Pango.WrapMode.WORD;
+		chk.set_child(label);
+
+		box.append(chk);
 
 		return chk;
 	}
@@ -340,13 +246,7 @@ namespace TeeJee.GtkHelper{
 		var adj = new Gtk.Adjustment(val, min, max, step, step_page, 0);
 		var spin  = new Gtk.SpinButton(adj, step, digits);
 		spin.xalign = (float) 0.5;
-		box.add(spin);
-
-		/*
-		spin.value_changed.connect(()=>{
-			label.sensitive = spin.sensitive;
-		});
-		*/
+		box.append(spin);
 
 		return spin;
 	}
@@ -355,42 +255,28 @@ namespace TeeJee.GtkHelper{
 	public static Gtk.Button add_button(Gtk.Box box, string text, string tooltip, Gtk.SizeGroup? size_group, Gtk.Image? icon = null){
 
 		var button = new Gtk.Button();
-        box.add(button);
+		box.append(button);
 
-        button.set_label(text);
-        button.set_tooltip_text(tooltip);
+		button.set_tooltip_text(tooltip);
 
-        if (icon != null){
-			button.set_image(icon);
-			button.set_always_show_image(true);
+		if (icon != null){
+			/* GTK4 drops Button.set_image(); compose an explicit child. */
+			var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+			hbox.halign = Gtk.Align.CENTER;
+			hbox.append(icon);
+			hbox.append(new Gtk.Label(text));
+			button.set_child(hbox);
+		}
+		else{
+			button.set_label(text);
 		}
 
 		if (size_group != null){
 			size_group.add_widget(button);
 		}
 
-        return button;
+		return button;
 	}
-	
-	public static Gtk.ButtonBox add_button_box(Gtk.Container box, Gtk.Orientation orientation = Gtk.Orientation.HORIZONTAL,
-		Gtk.ButtonBoxStyle layout = Gtk.ButtonBoxStyle.CENTER, int spacing = 6){
 
-		var bbox = new Gtk.ButtonBox(orientation);
-		bbox.set_layout(layout);
-		bbox.set_spacing(spacing);
-		box.add(bbox);
-
-		/*
-		Gtk.ButtonBoxStyle.CENTER
-		CENTER - Buttons are centered in the box.
-		EDGE - Buttons are placed at the edges of the box.
-		END - Buttons are grouped towards the end of the box, (on the right for a HBox, or the bottom for a VBox).
-		EXPAND - Buttons expand to fill the box.
-		SPREAD - Buttons are evenly spread across the box.
-		START - Buttons are grouped towards the start of the box, (on the left for a HBox, or the top for a VBox).
-		*/
-		
-		return bbox;
-	}
 }
 

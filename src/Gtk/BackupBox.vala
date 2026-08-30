@@ -24,10 +24,6 @@
 using Gtk;
 using Gee;
 
-#if XAPP
-using XApp;
-#endif
-
 using TeeJee.Logging;
 using TeeJee.FileSystem;
 using TeeJee.JsonHelper;
@@ -37,8 +33,10 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 class BackupBox : Gtk.Box{
-	private Gtk.Box details_box;
-	private Gtk.Spinner spinner;
+
+	private TaskProgressBox progress;
+
+	// the polling loop below writes to these; they belong to `progress`
 	public Gtk.Label lbl_msg;
 	public Gtk.Label lbl_status;
 	public Gtk.Label lbl_remaining;
@@ -64,125 +62,38 @@ class BackupBox : Gtk.Box{
 		log_debug("BackupBox: BackupBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
-		
-		add_label_header(this, _("Creating Snapshot..."), true);
 
-		add_progress_area();
+		progress = new TaskProgressBox(_("Creating Snapshot..."), true);
+		append(progress);
 
-		// add count labels ---------------------------------
-		
-		Gtk.SizeGroup sg_label = null;
-		Gtk.SizeGroup sg_value = null;
-
-		details_box = new Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6);
-		add(details_box);
-
-		var label = add_label(details_box, _("File and directory counts:"), true);
-		label.margin_bottom = 6;
-		label.margin_top = 12;
-		
-		lbl_unchanged = add_count_label(details_box, _("No Change"), ref sg_label, ref sg_value);
-		lbl_created = add_count_label(details_box, _("Created"), ref sg_label, ref sg_value);
-		lbl_deleted = add_count_label(details_box, _("Deleted"), ref sg_label, ref sg_value);
-		lbl_modified = add_count_label(details_box, _("Changed"), ref sg_label, ref sg_value, 12);
-
-		label = add_label(details_box, _("Changed items:"), true);
-		label.margin_bottom = 6;
-		
-		lbl_checksum = add_count_label(details_box, _("Checksum"), ref sg_label, ref sg_value);
-		lbl_size = add_count_label(details_box, _("Size"), ref sg_label, ref sg_value);
-		lbl_timestamp = add_count_label(details_box, _("Timestamp"), ref sg_label, ref sg_value);
-		lbl_permissions = add_count_label(details_box, _("Permissions"), ref sg_label, ref sg_value);
-		lbl_owner = add_count_label(details_box, _("Owner"), ref sg_label, ref sg_value);
-		lbl_group = add_count_label(details_box, _("Group"), ref sg_label, ref sg_value, 24);
+		lbl_msg = progress.lbl_msg;
+		lbl_status = progress.lbl_status;
+		lbl_remaining = progress.lbl_remaining;
+		progressbar = progress.progressbar;
+		lbl_unchanged = progress.lbl_unchanged;
+		lbl_created = progress.lbl_created;
+		lbl_deleted = progress.lbl_deleted;
+		lbl_modified = progress.lbl_modified;
+		lbl_checksum = progress.lbl_checksum;
+		lbl_size = progress.lbl_size;
+		lbl_timestamp = progress.lbl_timestamp;
+		lbl_permissions = progress.lbl_permissions;
+		lbl_owner = progress.lbl_owner;
+		lbl_group = progress.lbl_group;
 
 		lbl_deleted.sensitive = false;
 
 		log_debug("BackupBox: BackupBox(): exit");
     }
 
-	private void add_progress_area(){
-		
-		var hbox_status = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		add (hbox_status);
-		
-		spinner = new Gtk.Spinner();
-		spinner.active = true;
-		hbox_status.add(spinner);
-		
-		//lbl_msg
-		lbl_msg = add_label(hbox_status, _("Preparing..."));
-		lbl_msg.hexpand = true;
-		lbl_msg.ellipsize = Pango.EllipsizeMode.END;
-		lbl_msg.max_width_chars = 50;
-
-		lbl_remaining = add_label(hbox_status, "");
-
-		//progressbar
-		progressbar = new Gtk.ProgressBar();
-		add (progressbar);
-
-		//lbl_status
-		lbl_status = add_label(this, "");
-		lbl_status.ellipsize = Pango.EllipsizeMode.MIDDLE;
-		lbl_status.max_width_chars = 45;
-		lbl_status.margin_bottom = 6;
-	}
-
 	public void pause() {
-		this.spinner.active = false;
-		this.lbl_msg.set_label(_("Paused"));
+		progress.set_paused(true);
 	}
 
 	public void resume() {
-		this.spinner.active = true;
-		this.lbl_msg.set_label("");
-	}
-
-	private Gtk.Label add_count_label(Gtk.Box box, string text,
-		ref Gtk.SizeGroup? sg_label, ref Gtk.SizeGroup? sg_value,
-		int add_margin_bottom = 0){
-			
-		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		box.add (hbox);
-
-		var label = add_label(hbox, text + ":");
-		label.xalign = (float) 1.0;
-		label.margin_start = 12;
-		label.margin_end = 6;
-		var text_label = label;
-		
-		if (add_margin_bottom > 0){
-			label.margin_bottom = add_margin_bottom;
-		}
-
-		// add to size group
-		if (sg_label == null){
-			sg_label = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		}
-		sg_label.add_widget(label);
-
-		label = add_label(hbox, "");
-		label.xalign = (float) 0.0;
-
-		if (add_margin_bottom > 0){
-			label.margin_bottom = add_margin_bottom;
-		}
-
-		// add to size group
-		if (sg_value == null){
-			sg_value = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		}
-		sg_value.add_widget(label);
-
-		label.notify["sensitive"].connect(()=>{
-			text_label.sensitive = label.sensitive;
-		});
-
-		return label;
+		progress.set_paused(false);
 	}
 
 	public bool take_snapshot(){
@@ -203,14 +114,10 @@ class BackupBox : Gtk.Box{
 				gtk_do_events();
 				sleep(200);
 
-				#if XAPP
-				XApp.set_window_progress_pulse(parent_window, true);
-				#endif
+				LauncherEntry.set_progress_pulse(true);
 			}
 
-			#if XAPP
-			XApp.set_window_progress_pulse(parent_window, false);
-			#endif
+			LauncherEntry.set_progress_pulse(false);
 		}
 		else{
 			
@@ -229,7 +136,7 @@ class BackupBox : Gtk.Box{
 
 				bool checking = App.space_check_task != null;
 
-				details_box.visible = !checking;
+				progress.set_counts_visible(!checking);
 
                 if (checking)
                 {
@@ -269,9 +176,7 @@ class BackupBox : Gtk.Box{
 				
 				if (fraction < 0.99){
 					progressbar.fraction = fraction;
-					#if XAPP
-					XApp.set_window_progress(parent_window, (int)(fraction * 100.0));
-					#endif
+					LauncherEntry.set_progress((int)(fraction * 100.0));
 				}
 
 				if(App.task.status == AppStatus.PAUSED) {
@@ -300,9 +205,7 @@ class BackupBox : Gtk.Box{
 				//gtk_do_events();
 			}
 
-			#if XAPP
-			XApp.set_window_progress(parent_window, 0);
-			#endif
+			LauncherEntry.set_progress(0);
 		}
 
 		return thread_status_success;

@@ -44,26 +44,25 @@ class RestoreSummaryBox : Gtk.Box{
 		log_debug("RestoreSummaryBox: RestoreSummaryBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
 
-		// devices
-		
-		add_label_header(this, _("Warning"), true);
+		/* The three texts come from the core as markup. */
 
-		lbl_devices = add_label(this, "", false, false, false);
+		var card = Ui.add_card(this);
 
-		// reboot warning
+		var hdr = Ui.add_heading(card, _("Warning"));
+		hdr.add_css_class("ts-warning");
 
-		lbl_reboot = add_label(this, "", true, false, false);
-		lbl_reboot.margin_bottom = 6;
-		
-		// disclaimer
-		
-		add_label_header(this, _("Disclaimer"), true);
-		
-		lbl_disclaimer = add_label(this, "", false, false, false);
+		lbl_devices = add_label_markup(card, "");
+
+		lbl_reboot = add_label_markup(card, "");
+		lbl_reboot.add_css_class("ts-heading");
+
+		Ui.add_title(this, _("Disclaimer"), 2);
+
+		lbl_disclaimer = add_label_markup(this, "");
+		lbl_disclaimer.add_css_class("ts-dim");
 
 
 		log_debug("RestoreSummaryBox: RestoreSummaryBox(): exit");

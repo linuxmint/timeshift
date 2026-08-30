@@ -16,7 +16,7 @@ Timeshift was originally developed and maintained by [Tony George](https://teeje
 
 His original repository is still available on [Github](https://github.com/teejee2008/timeshift).
 
-Nowadays Timeshift is part of the Xapp project which is a collection of cross-DE and cross-distributions applications which are maintained by [Linux Mint](https://www.linuxmint.com).
+Timeshift originates in the Xapp project, a collection of cross-DE and cross-distribution applications maintained by [Linux Mint](https://www.linuxmint.com). This GTK4 build no longer depends on libxapp, which is GTK3-only.
 
 ## Features
 

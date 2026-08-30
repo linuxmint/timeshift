@@ -33,11 +33,11 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
-public class RsyncLogWindow : Window {
+public class RsyncLogWindow : AppWindow {
 
 	//window
-	private int def_width = 800;
-	private int def_height = 600;
+	private int def_width = 900;
+	private int def_height = 640;
 
 	private RsyncLogBox logbox;
 	private string rsync_log_file;
@@ -47,33 +47,36 @@ public class RsyncLogWindow : Window {
 		log_debug("RsyncLogWindow: RsyncLogWindow()");
 		
 		this.title = _("Rsync Log Viewer");
-		this.window_position = Gtk.WindowPosition.CENTER_ON_PARENT;
 		this.set_default_size(def_width, def_height);
-		this.icon = IconManager.lookup("timeshift",16);
 		this.resizable = true;
 		this.modal = true;
 
-		this.delete_event.connect(on_delete_event);
+		this.close_request.connect(on_delete_event);
+
+		var header = new Gtk.HeaderBar();
+		set_titlebar(header);
 
 		rsync_log_file = _rsync_log_file;
 		
 		logbox = new RsyncLogBox(this);
-		this.add(logbox);
+		Ui.as_page(logbox);
+		this.set_child(logbox);
 		
-		show_all();
+		this.visible = true;
 
 		logbox.open_log(rsync_log_file);
 
 		log_debug("RsyncLogWindow: RsyncLogWindow(): exit");
 	}
 
-	private bool on_delete_event(Gdk.EventAny event){
+	private bool on_delete_event(){
 		
 		if (logbox.is_running){
 			return true; // keep window open
 		}
 		else{
-			this.delete_event.disconnect(on_delete_event); //disconnect this handler
+			this.close_request.disconnect(on_delete_event); //disconnect this handler
+			notify_closed();
 			return false; // close window
 		}
 	}

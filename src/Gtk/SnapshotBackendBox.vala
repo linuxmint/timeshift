@@ -34,8 +34,8 @@ using TeeJee.Misc;
 
 class SnapshotBackendBox : Gtk.Box{
 	
-	private Gtk.RadioButton opt_rsync;
-	private Gtk.RadioButton opt_btrfs;
+	private Gtk.CheckButton opt_rsync;
+	private Gtk.CheckButton opt_btrfs;
 	private Gtk.Label lbl_description;
 	private Gtk.Window parent_window;
 	
@@ -46,9 +46,8 @@ class SnapshotBackendBox : Gtk.Box{
 		log_debug("SnapshotBackendBox: SnapshotBackendBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
 
 		build_ui();
 
@@ -59,24 +58,24 @@ class SnapshotBackendBox : Gtk.Box{
 
 	private void build_ui(){
 
-		add_label_header(this, _("Select Snapshot Type"), true);
+		Ui.add_title(this, _("Select Snapshot Type"));
 
-		var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
-		//hbox.homogeneous = true;
-		add(vbox);
+		var vbox = Ui.add_card(this, Gtk.Orientation.VERTICAL, Ui.Spacing.XS);
 		
 		add_opt_rsync(vbox);
 
 		add_opt_btrfs(vbox);
 
 		add_description();
+
+		update_description();
 	}
 
 	private void add_opt_rsync(Gtk.Box hbox){
 
-		var opt = new RadioButton.with_label_from_widget(null, _("RSYNC"));
+		var opt = new Gtk.CheckButton.with_label(_("RSYNC"));
 		opt.set_tooltip_markup(_("Create snapshots using RSYNC tool and hard-links"));
-		hbox.add (opt);
+		hbox.append(opt);
 		opt_rsync = opt;
 
 		opt_rsync.toggled.connect(()=>{
@@ -92,9 +91,10 @@ class SnapshotBackendBox : Gtk.Box{
 
 	private void add_opt_btrfs(Gtk.Box hbox){
 
-		var opt = new RadioButton.with_label_from_widget(opt_rsync, _("BTRFS"));
+		var opt = new Gtk.CheckButton.with_label(_("BTRFS"));
+		opt.set_group(opt_rsync);
 		opt.set_tooltip_markup(_("Create snapshots using BTRFS"));
-		hbox.add (opt);
+		hbox.append(opt);
 		opt_btrfs = opt;
 
         if (!check_for_btrfs_tools()) {
@@ -138,20 +138,15 @@ class SnapshotBackendBox : Gtk.Box{
 
 	private void add_description(){
 
-		Gtk.Expander expander = new Gtk.Expander(_("Help"));
-		expander.use_markup = true;
-		expander.margin_top = 12;
-		this.add(expander);
-		
-		// scrolled
-		var scrolled = new ScrolledWindow(null, null);
-		scrolled.set_shadow_type (ShadowType.ETCHED_IN);
-		scrolled.margin_top = 6;
-		//scrolled.expand = true;
-		scrolled.set_size_request(-1,200);
+		/* Help text, always visible; scrolls when the window is short. */
+
+		var scrolled = new ScrolledWindow();
+		scrolled.has_frame = false;
+		scrolled.margin_top = Ui.Spacing.XS;
 		scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
 		scrolled.vscrollbar_policy = Gtk.PolicyType.AUTOMATIC;
-		expander.add(scrolled);
+		scrolled.vexpand = true;
+		this.append(scrolled);
 
 		var lbl = new Gtk.Label("");
 		lbl.set_use_markup(true);
@@ -159,14 +154,18 @@ class SnapshotBackendBox : Gtk.Box{
 		lbl.yalign = (float) 0.0;
 		lbl.wrap = true;
 		lbl.wrap_mode = Pango.WrapMode.WORD;
-		lbl.margin = 12;
+		lbl.add_css_class("ts-dim");
 		lbl.vexpand = true;
-		scrolled.add(lbl);
+		scrolled.set_child(lbl);
 
 		lbl_description = lbl;
 	}
 
 	private void update_description(){
+
+		/* The option buttons emit "toggled" while build_ui() is still running,
+		 * before add_description() has created the label. */
+		if (lbl_description == null){ return; }
 
 		string bullet = "• ";
 		

@@ -293,7 +293,7 @@ public class AppConsole : GLib.Object {
 		//	LOG_TIMESTAMP = true;
 		//}
 
-		//Gtk.init(ref args);
+		//Gtk.init();
 		//X.init_threads();
 	}
 

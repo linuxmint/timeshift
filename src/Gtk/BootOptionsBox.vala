@@ -35,7 +35,7 @@ using TeeJee.Misc;
 class BootOptionsBox : Gtk.Box{
 	
 	private Gtk.Box option_box;
-	private Gtk.ComboBox cmb_grub_dev;
+	private Gtk.DropDown cmb_grub_dev;
 
 	private Gtk.CheckButton chk_reinstall_grub;
 	private Gtk.CheckButton chk_update_initramfs;
@@ -47,13 +47,13 @@ class BootOptionsBox : Gtk.Box{
 		log_debug("BootOptionsBox: BootOptionsBox()");
 		
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
 		parent_window = _parent_window;
-		margin = 12;
+
+		Ui.add_dim_label(this, _("[For Experienced Users] Change these settings if the restored system fails to boot."));
 
 		// options
-		option_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
-		add(option_box);
+		option_box = Ui.add_card(this, Gtk.Orientation.VERTICAL, Ui.Spacing.XS);
 
 		add_bootloader_options();
 
@@ -64,53 +64,53 @@ class BootOptionsBox : Gtk.Box{
 
 	private void add_bootloader_options(){
 
-		// header
-		//var label = add_label_header(this, _("Select Bootloader Options"), true);
-
 		add_chk_reinstall_grub();
 		
-		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		hbox.margin_start = 12;
-        add (hbox);
+		var hbox = new Gtk.Box(Orientation.HORIZONTAL, Ui.Spacing.XS);
+		hbox.margin_start = Ui.Spacing.LG;
+		hbox.margin_bottom = Ui.Spacing.XS;
+        option_box.append(hbox);
 
-		//cmb_grub_dev
-		cmb_grub_dev = new ComboBox ();
-		cmb_grub_dev.hexpand = true;
-		hbox.add(cmb_grub_dev);
-		
-		var cell_text = new CellRendererText ();
-		cell_text.text = "";
-		cmb_grub_dev.pack_start(cell_text, false);
+		/* GTK4 deprecates Gtk.ComboBox; Device is already a GObject, so it can
+		 * go straight into a GLib.ListStore behind a Gtk.DropDown. */
 
-		cell_text = new CellRendererText();
-        cmb_grub_dev.pack_start(cell_text, false);
+		var factory = new Gtk.SignalListItemFactory();
 
-        cmb_grub_dev.set_cell_data_func(cell_text, (cell_layout, cell, model, iter)=>{
-			Device dev;
-			model.get (iter, 0, out dev, -1);
+		factory.setup.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var lbl = new Gtk.Label("");
+			lbl.xalign = (float) 0.0;
+			lbl.use_markup = true;
+			list_item.set_child(lbl);
+		});
+
+		factory.bind.connect((object) => {
+			var list_item = (Gtk.ListItem) object;
+			var lbl = (Gtk.Label) list_item.get_child();
+			var dev = (Device) list_item.get_item();
 
 			if (dev.type == "disk"){
-				//log_msg("desc:" + dev.description());
-				((Gtk.CellRendererText)cell).markup =
-					"<b>%s (MBR)</b>".printf(dev.description_formatted());
+				lbl.label = "<b>%s (MBR)</b>".printf(dev.description_formatted());
 			}
 			else{
-				((Gtk.CellRendererText)cell).text = dev.description();
+				lbl.label = GLib.Markup.escape_text(dev.description());
 			}
 		});
 
-		cmb_grub_dev.changed.connect(()=>{
+		cmb_grub_dev = new Gtk.DropDown(null, null);
+		cmb_grub_dev.factory = factory;
+		cmb_grub_dev.hexpand = true;
+		hbox.append(cmb_grub_dev);
+
+		cmb_grub_dev.notify["selected"].connect(()=>{
 			save_grub_device_selection();
 		});
 
 		/*string tt = "<b>" + _("** Advanced Users **") + "</b>\n\n"+ _("Skips bootloader (re)installation on target device.\nFiles in /boot directory on target partition will remain untouched.\n\nIf you are restoring a system that was bootable previously then it should boot successfully. Otherwise the system may fail to boot.");*/
 
-		hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
-        add (hbox);
-        
-		add_chk_update_initramfs(hbox);
+		add_chk_update_initramfs();
 
-		add_chk_update_grub(hbox);
+		add_chk_update_grub();
 	}
 
 	private void add_chk_reinstall_grub(){
@@ -118,25 +118,23 @@ class BootOptionsBox : Gtk.Box{
 		var chk = new CheckButton.with_label(_("(Re)install GRUB2 on:"));
 		chk.active = false;
 		chk.set_tooltip_markup(_("Re-installs the GRUB2 bootloader on the selected device."));
-		//chk.margin_bottom = 12;
-		add (chk);
+		option_box.append(chk);
 		chk_reinstall_grub = chk;
 
 		chk.toggled.connect(()=>{
 			cmb_grub_dev.sensitive = chk_reinstall_grub.active;
 			App.reinstall_grub2 = chk_reinstall_grub.active;
-			cmb_grub_dev.changed();
+			save_grub_device_selection();
 		});
 	}
 
-	private void add_chk_update_initramfs(Gtk.Box hbox){
+	private void add_chk_update_initramfs(){
 		
 		//chk_update_initramfs
 		var chk = new CheckButton.with_label(_("Update initramfs"));
 		chk.active = false;
 		chk.set_tooltip_markup(_("Re-generates initramfs for all installed kernels. This is generally not needed. Select this only if the restored system fails to boot."));
-		//chk.margin_bottom = 12;
-		add (chk);
+		option_box.append(chk);
 		chk_update_initramfs = chk;
 
 		chk.toggled.connect(()=>{
@@ -144,14 +142,13 @@ class BootOptionsBox : Gtk.Box{
 		});
 	}
 
-	private void add_chk_update_grub(Gtk.Box hbox){
+	private void add_chk_update_grub(){
 		
 		//chk_update_grub
 		var chk = new CheckButton.with_label(_("Update GRUB menu"));
 		chk.active = false;
 		chk.set_tooltip_markup(_("Updates the GRUB menu entries (recommended). This is safe to run and should be left selected."));
-		//chk.margin_bottom = 12;
-		add (chk);
+		option_box.append(chk);
 		chk_update_grub = chk;
 
 		chk.toggled.connect(()=>{
@@ -164,12 +161,8 @@ class BootOptionsBox : Gtk.Box{
 		App.grub_device = "";
 		
 		if (App.reinstall_grub2){
-			Device entry;
-			TreeIter iter;
-			bool ok = cmb_grub_dev.get_active_iter (out iter);
-			if (!ok) { return; } // not selected
-			TreeModel model = (TreeModel) cmb_grub_dev.model;
-			model.get(iter, 0, out entry);
+			var entry = cmb_grub_dev.get_selected_item() as Device;
+			if (entry == null) { return; } // not selected
 			App.grub_device = entry.device;
 		}
 	}
@@ -203,9 +196,8 @@ class BootOptionsBox : Gtk.Box{
 	
 	private void refresh_cmb_grub_dev(){
 		
-		var store = new Gtk.ListStore(2, typeof(Device), typeof(string));
+		var store = new GLib.ListStore(typeof(Device));
 
-		TreeIter iter;
 		foreach(Device dev in Device.get_block_devices_using_lsblk()) {
 			
 			// select disk and normal partitions, skip others (loop crypt rom lvm)
@@ -223,9 +215,7 @@ class BootOptionsBox : Gtk.Box{
 				continue;
 			}
 
-			store.append(out iter);
-			store.set (iter, 0, dev);
-			store.set (iter, 1, IconManager.ICON_HARDDRIVE);
+			store.append(dev);
 		}
 
 		cmb_grub_dev.model = store;
@@ -242,29 +232,24 @@ class BootOptionsBox : Gtk.Box{
 		log_debug("BootOptionsBox: cmb_grub_dev_select_default()");
 		
 		if (App.grub_device.length == 0){
-			cmb_grub_dev.active = -1;
+			cmb_grub_dev.selected = Gtk.INVALID_LIST_POSITION;
 			return;
 		}
 
-		TreeIter iter;
-		var store = (Gtk.ListStore) cmb_grub_dev.model;
-		int index = -1;
-		int active = -1;
-		
-		for (bool next = store.get_iter_first (out iter); next; next = store.iter_next (ref iter)) {
-			
-			Device dev_iter;
-			store.get(iter, 0, out dev_iter);
-			
-			index++;
-			
+		var store = (GLib.ListStore) cmb_grub_dev.model;
+		uint active = Gtk.INVALID_LIST_POSITION;
+
+		for (uint i = 0; i < store.get_n_items(); i++) {
+
+			var dev_iter = (Device) store.get_item(i);
+
 			if (dev_iter.device == App.grub_device){
-				active = index;
+				active = i;
 				break;
 			}
 		}
 
-		cmb_grub_dev.active = active;
+		cmb_grub_dev.selected = active;
 
 		log_debug("BootOptionsBox: cmb_grub_dev_select_default(): exit");
 	}

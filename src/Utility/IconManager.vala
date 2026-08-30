@@ -24,7 +24,6 @@
 
 using Gtk;
 using Gee;
-using Cairo;
 
 using TeeJee.Logging;
 using TeeJee.FileSystem;
@@ -51,9 +50,9 @@ public class IconManager : GLib.Object {
     public const string GENERIC_ICON_ISO = "media-cdrom";
     public const string GENERIC_ICON_PDF = "application-pdf";
 
-    public const string ICON_HARDDRIVE = "drive-harddisk";
+    public const string ICON_HARDDRIVE = "drive-harddisk-symbolic";
 
-    public const string SHIELD_LIVE= "media-optical";
+    public const string SHIELD_LIVE= "media-optical-symbolic";
     public const string SHIELD_LOW = "timeshift-shield-low";
     public const string SHIELD_MED = "timeshift-shield-med";
     public const string SHIELD_HIGH = "timeshift-shield-high";
@@ -78,25 +77,44 @@ public class IconManager : GLib.Object {
 
 		if (!GTK_INITIALIZED) { return; }
 		
-		theme = Gtk.IconTheme.get_default();
-		foreach(string path in search_paths){
-			theme.append_search_path(path);
-		}
+		var display = Gdk.Display.get_default();
+		if (display == null){ return; }
+
+		theme = Gtk.IconTheme.get_for_display(display);
+
+		/* Deliberately NOT theme.add_search_path(search_paths): our bundled
+		 * directory is a flat pile of files, not an icon theme. Registering it
+		 * makes has_icon() answer true for names no real theme provides, and
+		 * GTK then treats a *-symbolic.svg found that way as recolourable --
+		 * our hand-made ones do not follow the symbolic spec and render blank.
+		 * lookup_path() scans search_paths directly, so nothing needs this. */
 	}
 
-	public static Gdk.Pixbuf? lookup(string icon_name, int icon_size, bool symbolic = false, bool use_hardcoded = false, int scale = 1){
-		
-		Gdk.Pixbuf? pixbuf = null;
+	public static string? lookup_path(string icon_name, int icon_size, bool use_hardcoded = false, int scale = 1){
+
+		/* Resolve an icon name to a file on disk.
+		 *
+		 * The icon theme is tried first; GTK4 hands back a GtkIconPaintable, so
+		 * we take its backing file. Failing that, scan search_paths for the flat
+		 * SVG/PNG files this app bundles -- the GUI runs as root under pkexec and
+		 * so does not see the desktop user's icon theme. */
 
 		if (icon_name.length == 0){ return null; }
 
-		if (!use_hardcoded){
-			try {
-				pixbuf = theme.load_icon_for_scale(icon_name, icon_size, scale, Gtk.IconLookupFlags.FORCE_SIZE);
-				if (pixbuf != null){ return pixbuf; }
-			}
-			catch (Error e) {
-				log_debug(e.message);
+		/* has_icon() first: GTK4's lookup_icon() never returns null -- for an
+		 * unknown name it hands back the "image-missing" fallback, whose file
+		 * path would then win and hide our bundled copy. */
+
+		if (!use_hardcoded && (theme != null) && theme.has_icon(icon_name)){
+
+			var icon_info = theme.lookup_icon(icon_name, null, icon_size, scale,
+				Gtk.TextDirection.NONE, 0);
+
+			if (icon_info != null){
+				var file = icon_info.get_file();
+				if ((file != null) && (file.get_path() != null)){
+					return file.get_path();
+				}
 			}
 		}
 
@@ -107,46 +125,113 @@ public class IconManager : GLib.Object {
 				string img_file = path_combine(search_path, icon_name + ext);
 
 				if (file_exists(img_file)){
-
-					pixbuf = load_pixbuf_from_file(img_file, icon_size);
-					if (pixbuf != null){ return pixbuf; }
+					return img_file;
 				}
 			}
 		}
 
-		return pixbuf;
+		return null;
+	}
+
+	public static Gdk.Texture? lookup_texture_for_name(string icon_name, int icon_size, bool use_hardcoded = false, int scale = 1){
+
+		/* Gdk.Texture.for_pixbuf() is deprecated; load the file directly. */
+
+		string? path = lookup_path(icon_name, icon_size, use_hardcoded, scale);
+
+		if (path == null){ return null; }
+
+		try {
+			return Gdk.Texture.from_filename(path);
+		}
+		catch (Error e) {
+			log_debug("IconManager: %s".printf(e.message));
+			return null;
+		}
+	}
+
+	public static Gdk.Pixbuf? lookup(string icon_name, int icon_size, bool use_hardcoded = false, int scale = 1){
+
+		string? path = lookup_path(icon_name, icon_size, use_hardcoded, scale);
+
+		if (path == null){ return null; }
+
+		return load_pixbuf_from_file(path, icon_size);
 	}
 	
-	public static Gtk.Image? lookup_image(string icon_name, int icon_size, bool symbolic = false, bool use_hardcoded = false){
+	public static Gtk.Image? lookup_image(string icon_name, int icon_size, bool use_hardcoded = false){
 
 		if (icon_name.length == 0){ return null; }
 
         Gtk.Image image = new Gtk.Image();
 
-		Gdk.Pixbuf? pix = lookup(icon_name, icon_size, symbolic, use_hardcoded, image.scale_factor);
-		
-		if (pix == null){
-			pix = lookup(GENERIC_ICON_IMAGE_MISSING, icon_size, symbolic, use_hardcoded, image.scale_factor);
-		}
-
-        Cairo.Surface surf = Gdk.cairo_surface_create_from_pixbuf(pix, image.scale_factor, null);
-
-        image.set_from_surface(surf);
+        set_image_icon(image, icon_name, icon_size);
 
         return image;
 	}
 
-    public static Cairo.Surface? lookup_surface(string icon_name, int icon_size, int scale = 1, bool symbolic = false, bool use_hardcoded = false){
+    public static Gdk.Texture? lookup_texture(string icon_name, int icon_size, int scale = 1, bool use_hardcoded = false){
+
+        /* GTK4 renders from GdkPaintable; Gtk.Image.surface is gone. */
+
         if (icon_name.length == 0){ return null; }
-        
-        Gdk.Pixbuf? pix = lookup(icon_name, icon_size, symbolic, use_hardcoded, scale);
-        
-        if (pix == null){
-            pix = lookup(GENERIC_ICON_IMAGE_MISSING, icon_size, symbolic, use_hardcoded, scale);
+
+        var texture = lookup_texture_for_name(icon_name, icon_size, use_hardcoded, scale);
+
+        if (texture == null){
+            texture = lookup_texture_for_name(GENERIC_ICON_IMAGE_MISSING, icon_size, use_hardcoded, scale);
         }
 
-        return Gdk.cairo_surface_create_from_pixbuf(pix, scale, null);
+        return texture;
     }
+
+	public static void set_image_icon(Gtk.Image image, string icon_name, int icon_size){
+
+		/* Point a Gtk.Image at an icon, preferring lookup() over
+		 * Gtk.Image.from_icon_name().
+		 *
+		 * lookup() tries the icon theme first and then falls back to scanning
+		 * search_paths for the flat SVG/PNG files this app bundles in
+		 * /usr/share/timeshift/images. That fallback matters because the GUI
+		 * runs as root under pkexec and so does not pick up the desktop user's
+		 * icon theme: emblem-default-symbolic, for one, exists in Yaru but not
+		 * in Adwaita, and would otherwise render as nothing.
+		 *
+		 * Deliberately not lookup_texture(): that substitutes image-missing on
+		 * failure, which would hide a name the theme could still resolve. */
+
+		if (icon_name.length == 0){ return; }
+
+		image.pixel_size = icon_size;
+
+		/* Prefer the icon theme. set_from_icon_name() goes through GTK's own
+		 * lookup, which yields a Gtk.IconPaintable -- a Gtk.SymbolicPaintable
+		 * that recolours to the current foreground. Loading the same file into
+		 * a Gdk.Texture instead rasterises it as authored, so Adwaita's
+		 * #2e3436 symbolics come out near-black and vanish on a dark theme. */
+
+		if ((theme != null) && theme.has_icon(icon_name)){
+			image.set_from_icon_name(icon_name);
+			return;
+		}
+
+		/* Nothing in the theme provides this name -- fall back to the flat
+		 * SVG/PNG files bundled under /usr/share/timeshift/images. These do not
+		 * recolour, but they are mid-grey and stay legible either way.
+		 *
+		 * set_from_file() rather than a Gdk.Texture: Gdk.Texture.from_filename()
+		 * rasterises an SVG at its natural size, so a 16px source came out
+		 * blurred next to crisp themed icons once pixel_size scaled it up. */
+
+		string? path = lookup_path(icon_name, icon_size, false, image.scale_factor);
+
+		if (path != null){
+			image.set_from_file(path);
+		}
+		else {
+			image.set_from_icon_name(icon_name);
+		}
+	}
 
 	public static Gdk.Pixbuf? lookup_gicon(GLib.Icon? gicon, int icon_size){
 
@@ -154,71 +239,21 @@ public class IconManager : GLib.Object {
 
 		if (gicon == null){ return null; }
 		
-		try {
-			var icon_info = theme.lookup_by_gicon(gicon, icon_size, Gtk.IconLookupFlags.FORCE_SIZE);
-			if (icon_info != null){
-				pixbuf = icon_info.load_icon();
+		if (theme == null){ return null; }
+
+		var icon_info = theme.lookup_by_gicon(gicon, icon_size, 1,
+			Gtk.TextDirection.NONE, 0);
+
+		if (icon_info != null){
+			var file = icon_info.get_file();
+			if ((file != null) && (file.get_path() != null)){
+				pixbuf = load_pixbuf_from_file(file.get_path(), icon_size);
 			}
-		}
-		catch (Error e) {
-			log_debug(e.message);
 		}
 
 		return pixbuf;
 	}
 
-	public static Gdk.Pixbuf? add_emblem (Gdk.Pixbuf pixbuf, string icon_name, int emblem_size, bool emblem_symbolic, Gtk.CornerType corner_type) {
-
-		if (icon_name.length == 0){ return pixbuf; }
-
-        Gdk.Pixbuf? emblem = null;
-
-		var SMALL_EMBLEM_COLOR = Gdk.RGBA();
-		SMALL_EMBLEM_COLOR.parse("#000000");
-		SMALL_EMBLEM_COLOR.alpha = 1.0;
-
-		var EMBLEM_PADDING = 1;
-
-        try {
-            var icon_info = theme.lookup_icon (icon_name, emblem_size, Gtk.IconLookupFlags.FORCE_SIZE);
-            if (emblem_symbolic){
-				emblem = icon_info.load_symbolic(SMALL_EMBLEM_COLOR);
-			}
-			else{
-				emblem = icon_info.load_icon();
-			}
-        } catch (GLib.Error e) {
-            log_error("get_icon_emblemed(): %s".printf(e.message));
-            return pixbuf;
-        }
-
-        if (emblem == null)
-            return pixbuf;
-
-        var offset_x = EMBLEM_PADDING;
-
-        if ((corner_type == Gtk.CornerType.BOTTOM_RIGHT) || (corner_type == Gtk.CornerType.TOP_RIGHT)){
-			offset_x = pixbuf.width - emblem.width - EMBLEM_PADDING ;
-		}
-
-		var offset_y = EMBLEM_PADDING;
-
-		if ((corner_type == Gtk.CornerType.BOTTOM_LEFT) || (corner_type == Gtk.CornerType.BOTTOM_RIGHT)){
-			offset_y = pixbuf.height - emblem.height - EMBLEM_PADDING ;
-		}
-
-        var emblemed = pixbuf.copy();
-        
-        emblem.composite(emblemed, 
-			offset_x, offset_y, 
-			emblem_size, emblem_size,
-			offset_x, offset_y, 
-			1.0, 1.0, 
-			Gdk.InterpType.BILINEAR, 255);
-
-        return emblemed;
-    }
-    
     public static Gdk.Pixbuf? add_overlay(Gdk.Pixbuf pixbuf_base, Gdk.Pixbuf pixbuf_overlay) {
 
         int offset_x = (pixbuf_base.width - pixbuf_overlay.width) / 2 ;
