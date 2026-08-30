@@ -272,7 +272,7 @@ public class ThemeStyle : GLib.Object {
 
 	// stylesheet -------------------------------------------------------
 
-	public static string build_css(ThemePalette p, bool high_contrast = false){
+	public static string build_css(ThemePalette p, bool high_contrast = false, string? system_accent = null){
 
 		string rules = RULES;
 
@@ -292,7 +292,7 @@ public class ThemeStyle : GLib.Object {
 		/* Swatch rules come last: `.ts-swatch.blue` must beat
 		 * `button.ts-swatch` for background-color, and it does on specificity
 		 * alone, but keeping them after the base rule makes it robust. */
-		return define_colors(p) + rules + swatch_rules();
+		return define_colors(p) + system_accent_rule(system_accent) + rules + swatch_rules();
 	}
 
 	/* $NAME tokens -> px lengths, in one pass so no token is a prefix hazard
@@ -357,6 +357,17 @@ public class ThemeStyle : GLib.Object {
 		sb.append("\n");
 
 		return sb.str;
+	}
+
+	/* The "System" swatch previews what the desktop is asking for, which is not
+	 * the resolved accent when the user has picked a preset instead. */
+	private static string system_accent_rule(string? key){
+
+		var preset = (key == null) ? null : preset_by_key(key);
+		if (preset == null){ preset = preset_by_key(DEFAULT_ACCENT); }
+
+		return "@define-color ts_system_accent_bg %s;\n@define-color ts_system_accent_fg %s;\n\n".printf(
+			preset.bg, foreground_for(preset.bg));
 	}
 
 	/* One rule per preset so the picker's swatches show their own colour
@@ -457,8 +468,8 @@ button.ts-swatch {
 /* "System": the resolved desktop accent, with a dashed ring to say
  * "inherited" */
 button.ts-swatch.system {
-	background-color: @ts_accent_bg;
-	color: @ts_accent_fg;
+	background-color: @ts_system_accent_bg;
+	color: @ts_system_accent_fg;
 	border-color: @ts_dim_fg;
 	border-style: dashed;
 }

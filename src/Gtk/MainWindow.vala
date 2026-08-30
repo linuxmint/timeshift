@@ -152,7 +152,9 @@ class MainWindow : AppWindow{
 
 		btn_delete_snapshot = Ui.add_icon_only_button(group, "edit-delete-symbolic",
 			_("Delete selected snapshot"));
-		btn_delete_snapshot.add_css_class("destructive-action");
+		/* No .destructive-action here: as a permanent toolbar icon it renders
+		 * as a solid red block. The destructive styling lives on the Yes of
+		 * the confirmation, which is the point of no return. */
 		btn_delete_snapshot.clicked.connect (delete_selected);
 
 		btn_browse_snapshot = Ui.add_icon_only_button(group, "folder-symbolic",

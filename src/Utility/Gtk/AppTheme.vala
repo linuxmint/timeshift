@@ -249,7 +249,7 @@ public class AppTheme : GLib.Object {
 
 		if (provider != null){
 			var palette = ThemeStyle.resolve(dark, accent, hc);
-			provider.load_from_string(ThemeStyle.build_css(palette, hc));
+			provider.load_from_string(ThemeStyle.build_css(palette, hc, system_accent));
 			css_loaded = true;
 		}
 

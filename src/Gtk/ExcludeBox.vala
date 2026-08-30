@@ -189,6 +189,21 @@ class ExcludeBox : Gtk.Box{
 			editable.hexpand = true;
 			hbox.append(editable);
 
+			/* The editable cell swallows the press, so the row was never
+			 * selected and Remove / Move Up / Move Down could not be reached
+			 * with the mouse. Claim the press first (CAPTURE), select the row,
+			 * and let the label have the event afterwards so a second click
+			 * still starts editing. */
+			var pick = new Gtk.GestureClick();
+			pick.button = Gdk.BUTTON_PRIMARY;
+			pick.set_propagation_phase(Gtk.PropagationPhase.CAPTURE);
+			pick.pressed.connect(() => {
+				var row = editable.get_data<ExcludePatternRow>("row");
+				if (row == null){ return; }
+				select_row(row);
+			});
+			editable.add_controller(pick);
+
 			/* commit when editing ends, mirroring CellRendererText::edited */
 			editable.notify["editing"].connect(() => {
 
@@ -286,7 +301,6 @@ class ExcludeBox : Gtk.Box{
 		group.append(btn_add);
 
 		btn_remove = Ui.add_icon_only_button(group, "list-remove-symbolic", _("Remove selected patterns"));
-		btn_remove.add_css_class("destructive-action");
 		btn_remove.sensitive = false;
 		btn_remove.clicked.connect(() => { remove_clicked(); });
 
@@ -300,11 +314,22 @@ class ExcludeBox : Gtk.Box{
 		btn_down.sensitive = false;
 		btn_down.clicked.connect(() => { move_selected(1); });
 
-		var btn_summary = Ui.add_icon_only_button(group, "document-properties-symbolic", _("Show the effective exclude list"));
+		var btn_summary = Ui.add_icon_only_button(group, "view-list-symbolic", _("Show the effective exclude list"));
 		btn_summary.clicked.connect(() => {
 			save_changes();
 			new ExcludeListSummaryWindow(false);
 		});
+	}
+
+	/* Makes `row` the selection. */
+	private void select_row(ExcludePatternRow row){
+
+		for (uint i = 0; i < exclude_model.get_n_items(); i++){
+			if (exclude_model.get_item(i) == row){
+				exclude_selection.select_item(i, true);
+				return;
+			}
+		}
 	}
 
 	/* Remove needs a selection; the move buttons need exactly one row that has
@@ -325,8 +350,28 @@ class ExcludeBox : Gtk.Box{
 		}
 
 		btn_remove.sensitive = (count > 0);
-		btn_up.sensitive = (count == 1) && (first > 0);
-		btn_down.sensitive = (count == 1) && (first + 1 < n);
+		btn_up.sensitive = (count == 1) && (first > 0) && can_swap(first, first - 1);
+		btn_down.sensitive = (count == 1) && (first + 1 < n) && can_swap(first, first + 1);
+	}
+
+	/* save_changes() writes the list order back to App.exclude_list_user, but
+	 * it deliberately drops anything that is already one of Timeshift's
+	 * built-in default or home patterns: those are implicit and get re-added
+	 * for display afterwards, at the end. Their position therefore cannot be
+	 * persisted, so a move involving one would silently revert. Offer the move
+	 * only when it will actually stick. */
+	private bool position_persists(uint index){
+
+		if (index >= exclude_model.get_n_items()){ return false; }
+
+		string pattern = ((ExcludePatternRow) exclude_model.get_item(index)).pattern;
+
+		return !App.exclude_list_default.contains(pattern)
+			&& !App.exclude_list_home.contains(pattern);
+	}
+
+	private bool can_swap(uint a, uint b){
+		return position_persists(a) && position_persists(b);
 	}
 
 	/* Moves the selected pattern one place up (-1) or down (+1). */
@@ -342,6 +387,8 @@ class ExcludeBox : Gtk.Box{
 				count++;
 			}
 		}
+
+		log_debug("move_selected(): delta=%d count=%u from=%u n=%u".printf(delta, count, from, n));
 
 		if (count != 1){ return; }
 
@@ -521,10 +568,31 @@ class ExcludeBox : Gtk.Box{
 
 	public void refresh_treeview(){
 
+		/* Remember the selection: save_changes() ends up back here through
+		 * UsersBox.refresh(), so every commit -- including finishing an inline
+		 * edit or a move -- would otherwise clear it and leave the Remove and
+		 * Move buttons insensitive. */
+		var selected_patterns = new Gee.ArrayList<string>();
+
+		for (uint i = 0; i < exclude_model.get_n_items(); i++){
+			if (exclude_selection.is_selected(i)){
+				selected_patterns.add(((ExcludePatternRow) exclude_model.get_item(i)).pattern);
+			}
+		}
+
 		exclude_model.remove_all();
 
 		foreach(string pattern in App.exclude_list_user){
 			treeview_add_item(treeview, pattern);
+		}
+
+		foreach (var pattern in selected_patterns){
+			for (uint i = 0; i < exclude_model.get_n_items(); i++){
+				if (((ExcludePatternRow) exclude_model.get_item(i)).pattern == pattern){
+					exclude_selection.select_item(i, false);
+					break;
+				}
+			}
 		}
 
 		update_action_sensitivity();
@@ -561,6 +629,8 @@ class ExcludeBox : Gtk.Box{
 		}
 		log_debug("");
 
-		users_box.refresh();
+		if (users_box != null){
+			users_box.refresh();
+		}
 	}
 }

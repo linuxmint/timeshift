@@ -1,3 +1,20 @@
+timeshift-ssh (25.12.4+ssh7) resolute; urgency=medium
+
+  * Delete in the header is no longer styled as a solid red block; the
+    destructive styling stays on the confirmation
+  * Filters: clicking a pattern selects its row, so Remove and the new
+    Move Up / Move Down buttons can actually be reached with the mouse
+  * Filters: the selection survives an edit or a move instead of being
+    dropped when the list is rebuilt
+  * Filters: Move Up / Move Down are offered only when the move can be
+    persisted - Timeshift's built-in home and default patterns are
+    re-appended on save, so moving them would silently revert
+  * Appearance: the System accent swatch previews the desktop's accent
+    rather than the currently resolved one
+  * Use a clearer icon for the exclude-list summary
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 00:05:00 -0400
+
 timeshift-ssh (25.12.4+ssh6) resolute; urgency=medium
 
   * Fix a use-after-free that ran every time a device page was built
