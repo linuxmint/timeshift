@@ -179,6 +179,19 @@ public class CustomMessageDialog : Gtk.Window {
 			quit_loop();
 			return false;
 		});
+
+		// GTK4 windows have no Escape binding of their own
+		var keys = new Gtk.EventControllerKey();
+		keys.key_pressed.connect((keyval, keycode, state) => {
+			if (keyval == Gdk.Key.Escape){
+				response = Gtk.ResponseType.DELETE_EVENT;
+				quit_loop();
+				this.destroy();
+				return true;
+			}
+			return false;
+		});
+		((Gtk.Widget) this).add_controller(keys);
 	}
 
 	private void add_action_button(string label, Gtk.ResponseType response_id, bool is_default){

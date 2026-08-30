@@ -8,6 +8,9 @@ In BTRFS mode, snapshots are taken using the in-built features of the BTRFS file
 
 Timeshift is similar to applications like [rsnapshot](https://www.rsnapshot.org), [BackInTime](https://github.com/bit-team/backintime) and [TimeVault](https://wiki.ubuntu.com/TimeVault) but with different goals. It is designed to protect only system files and settings. User files such as documents, pictures and music are excluded. This ensures that your files remain unchanged when you restore your system to an earlier date. If you need a tool to back up your documents and files please take a look at the excellent [BackInTime](https://github.com/bit-team/backintime) application which is more configurable and provides options for saving user files.  
 
+> **Note:** the screenshots below show the previous GTK3 interface; this fork
+> now ships a GTK4 UI with header bars and a live light/dark theme.
+
 ![](images/main_window.png)
 
 # History
@@ -76,7 +79,7 @@ You can selectively include items for backup from the ***Settings*** window. Sel
 *   Applications like rsnapshot rotate a snapshot to the next level by creating a hard-linked copy. Creating a hard-linked copy may seem like a good idea but it is still a waste of disk space, since only files can be hard-linked and not directories. The duplicated directory structure can take up as much as 100 MB of space. Timeshift avoids this wastage by using tags for maintaining backup levels. Each snapshot will have only one copy on disk and is tagged as "daily", "monthly", etc. The snapshot location will have a set of folders for each backup level ("Monthly", "Daily", etc) with symbolic links pointing to the actual snapshots tagged with the level.
 
 ### System Restore
-* Snapshots can be restored by selecting a snapshot from the main window and clicking *Restore* button on the toolbar. 
+* Snapshots can be restored by selecting a snapshot from the main window and clicking the *Restore* button in the header bar. 
 
 * Snapshots can be restored either from the running system (online restore) or from another system that has Timeshift installed on it (offline restore). 
 
@@ -155,7 +158,7 @@ Install Timeshift from the repositories:
 
 ```sh
 sudo apt-get update
-sudo apt-get install timeshift
+sudo apt-get install ./timeshift-ssh_*.deb
 ```
 
 ### Fedora
@@ -170,7 +173,7 @@ sudo dnf install timeshift
 ### Arch
 
 ```sh
-sudo pacman -S timeshift
+cd archlinux && makepkg -si
 ```
 
 ### ALT
@@ -178,7 +181,7 @@ sudo pacman -S timeshift
 ```sh
 su -
 apt-get update
-apt-get install timeshift
+apt-get install ./timeshift-ssh_*.deb
 ```
 
 ## Removal

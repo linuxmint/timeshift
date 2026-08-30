@@ -41,7 +41,11 @@ public const string AppVersion = Constants.VERSION;
 public const string AppAuthor = "Tony George";
 public const string AppAuthorEmail = "teejeetech@gmail.com";
 
-const string GETTEXT_PACKAGE = "";
+/* Must match meson's -DGETTEXT_PACKAGE and the installed .mo basename.
+ * An empty string here silently overrode meson's define, so every _() call
+ * became g_dgettext("", ...) and none of the 74 shipped translations were ever
+ * loaded. */
+const string GETTEXT_PACKAGE = "timeshift";
 const string LOCALE_DIR = "/usr/share/locale";
 
 extern void exit(int exit_code);
@@ -106,7 +110,7 @@ public class AppGtk : GLib.Object {
 	private static void set_locale() {
 		
 		log_debug("setting locale...");
-		Intl.setlocale(GLib.LocaleCategory.MESSAGES, "timeshift");
+		Intl.setlocale(GLib.LocaleCategory.ALL, ""); // adopt the environment's locale
 		Intl.textdomain(GETTEXT_PACKAGE);
 		Intl.bind_textdomain_codeset(GETTEXT_PACKAGE, "utf-8");
 		Intl.bindtextdomain(GETTEXT_PACKAGE, LOCALE_DIR);

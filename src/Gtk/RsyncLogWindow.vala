@@ -56,6 +56,8 @@ public class RsyncLogWindow : AppWindow {
 		var header = new Gtk.HeaderBar();
 		set_titlebar(header);
 
+		Ui.close_on_escape(this); // blocked by on_delete_event while parsing
+
 		rsync_log_file = _rsync_log_file;
 		
 		logbox = new RsyncLogBox(this);

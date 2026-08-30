@@ -357,7 +357,7 @@ public class AppTheme : GLib.Object {
 	private static void subscribe(Gdk.Display display){
 
 		if (bus != null){
-			try {
+			{
 				bus_sub_id = bus.signal_subscribe(
 					"org.freedesktop.portal.Desktop",
 					"org.freedesktop.portal.Settings",
@@ -368,9 +368,6 @@ public class AppTheme : GLib.Object {
 					on_portal_signal);
 
 				log_debug("AppTheme: subscribed to portal SettingChanged");
-			}
-			catch (Error e) {
-				log_debug("AppTheme: could not subscribe to portal: %s".printf(e.message));
 			}
 		}
 		else {
@@ -502,6 +499,14 @@ public class AppTheme : GLib.Object {
 
 				if (dconf_timer != 0){ GLib.Source.remove(dconf_timer); }
 				dconf_timer = GLib.Timeout.add(300, () => {
+
+					/* read_appearance_gsettings() spawns gsettings and blocks.
+					 * This timer fires from any main-context iteration --
+					 * including the gtk_do_events() inside a backup/restore
+					 * progress loop and inside a modal dialog's nested loop --
+					 * so defer rather than stall the UI mid-operation. */
+					if (busy()){ return true; } // check again on the next tick
+
 					dconf_timer = 0;
 					read_appearance_gsettings();
 					refresh();
@@ -514,6 +519,15 @@ public class AppTheme : GLib.Object {
 		catch (Error e) {
 			log_debug("AppTheme: cannot watch dconf: %s".printf(e.message));
 		}
+	}
+
+	/* True while the app is doing work that pumps the main loop itself. */
+	private static bool busy(){
+
+		if (App == null){ return false; }
+
+		return App.thread_delete_running
+			|| ((App.task != null) && (App.task.status == AppStatus.RUNNING));
 	}
 
 	private static string read_gsetting(string prefix, string key, string schema = "org.gnome.desktop.interface"){

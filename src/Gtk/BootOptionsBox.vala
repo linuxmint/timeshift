@@ -40,7 +40,13 @@ class BootOptionsBox : Gtk.Box{
 	private Gtk.CheckButton chk_reinstall_grub;
 	private Gtk.CheckButton chk_update_initramfs;
 	private Gtk.CheckButton chk_update_grub;
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
+
+	/* Gtk.DropDown's internal GtkSingleSelection has autoselect = TRUE, so
+	 * assigning the model selects row 0 and notifies. Without this guard that
+	 * notification writes the first block device lsblk returned into
+	 * App.grub_device, overwriting the target Main.init_boot_options() chose. */
+	private bool updating = false;
 
 	public BootOptionsBox (Gtk.Window _parent_window) {
 
@@ -90,7 +96,13 @@ class BootOptionsBox : Gtk.Box{
 			var lbl = (Gtk.Label) list_item.get_child();
 			var dev = (Device) list_item.get_item();
 
-			if (dev.type == "disk"){
+			if (dev.device.length == 0){
+				// the "no device" sentinel; autoselect cannot leave a
+				// Gtk.DropDown unselected, so "none" needs a real row
+				lbl.label = _("Do not install");
+				Ui.set_text_style(lbl, "ts-dim");
+			}
+			else if (dev.type == "disk"){
 				lbl.label = "%s (MBR)".printf(dev.description());
 				Ui.set_text_style(lbl, "ts-heading");
 			}
@@ -106,6 +118,7 @@ class BootOptionsBox : Gtk.Box{
 		hbox.append(cmb_grub_dev);
 
 		cmb_grub_dev.notify["selected"].connect(()=>{
+			if (updating){ return; }
 			save_grub_device_selection();
 		});
 
@@ -165,8 +178,10 @@ class BootOptionsBox : Gtk.Box{
 		if (App.reinstall_grub2){
 			var entry = cmb_grub_dev.get_selected_item() as Device;
 			if (entry == null) { return; } // not selected
-			App.grub_device = entry.device;
+			App.grub_device = entry.device; // "" for the sentinel row
 		}
+
+		log_debug("BootOptionsBox: grub_device: %s".printf(App.grub_device));
 	}
 
 	private void refresh_options(){
@@ -200,6 +215,11 @@ class BootOptionsBox : Gtk.Box{
 		
 		var store = new GLib.ListStore(typeof(Device));
 
+		// index 0 represents "nothing selected"
+		var none = new Device();
+		none.device = "";
+		store.append(none);
+
 		foreach(Device dev in Device.get_block_devices_using_lsblk()) {
 			
 			// select disk and normal partitions, skip others (loop crypt rom lvm)
@@ -220,7 +240,9 @@ class BootOptionsBox : Gtk.Box{
 			store.append(dev);
 		}
 
+		updating = true;
 		cmb_grub_dev.model = store;
+		updating = false;
 
 		cmb_grub_dev_select_default();
 	}
@@ -233,13 +255,16 @@ class BootOptionsBox : Gtk.Box{
 		
 		log_debug("BootOptionsBox: cmb_grub_dev_select_default()");
 		
+		updating = true;
+
 		if (App.grub_device.length == 0){
-			cmb_grub_dev.selected = Gtk.INVALID_LIST_POSITION;
+			cmb_grub_dev.selected = 0; // the sentinel row
+			updating = false;
 			return;
 		}
 
 		var store = (GLib.ListStore) cmb_grub_dev.model;
-		uint active = Gtk.INVALID_LIST_POSITION;
+		uint active = 0; // fall back to the sentinel, never to a real disk
 
 		for (uint i = 0; i < store.get_n_items(); i++) {
 
@@ -252,6 +277,8 @@ class BootOptionsBox : Gtk.Box{
 		}
 
 		cmb_grub_dev.selected = active;
+
+		updating = false;
 
 		log_debug("BootOptionsBox: cmb_grub_dev_select_default(): exit");
 	}

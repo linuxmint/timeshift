@@ -34,7 +34,7 @@ using TeeJee.Misc;
 
 class RestoreBox : TaskProgressBox {
 
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 
 	private bool thread_is_running = false;
 

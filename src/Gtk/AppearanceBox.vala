@@ -32,7 +32,7 @@ using TeeJee.GtkHelper;
 
 class AppearanceBox : Gtk.Box {
 
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 
 	private Gtk.DropDown dd_mode;
 	private Gtk.Label lbl_hc;

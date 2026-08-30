@@ -42,6 +42,7 @@ public class TerminalWindow : AppWindow {
 	private Pid child_pid;
 	private Gtk.Window parent_win = null;
 	public bool is_running = false;
+	private bool child_exited_connected = false;
 	
 	// init
 	
@@ -149,7 +150,10 @@ public class TerminalWindow : AppWindow {
 
 		is_running = true;
 
-		term.child_exited.connect(script_exit);
+		if (!child_exited_connected){
+			term.child_exited.connect(script_exit);
+			child_exited_connected = true;
+		}
 
 		/* VTE removed spawn_sync; spawn_async also sets up the child watch. */
 		term.spawn_async(

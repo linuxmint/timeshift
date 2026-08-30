@@ -53,6 +53,13 @@ public class UserRow : GLib.Object {
 		include_all = _include_all;
 		exclude_all = _exclude_all;
 	}
+
+	/* Which of the three mutually exclusive columns is set. */
+	public UserChoice choice(){
+		if (include_all){ return UserChoice.INCLUDE_ALL; }
+		if (include_hidden){ return UserChoice.INCLUDE_HIDDEN; }
+		return UserChoice.EXCLUDE_ALL;
+	}
 }
 
 class UsersBox : Gtk.Box{
@@ -60,7 +67,7 @@ class UsersBox : Gtk.Box{
 	private Gtk.ColumnView treeview;
 	private GLib.ListStore users_model;
 	private Gtk.ScrolledWindow scrolled_treeview;
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 	private ExcludeBox exclude_box;
 	private Gtk.Box box_btrfs;
 	private Gtk.Label lbl_message;
@@ -148,10 +155,15 @@ class UsersBox : Gtk.Box{
 			chk.halign = Gtk.Align.CENTER;
 
 			chk.toggled.connect(() => {
-				if (!chk.active){ return; }
-
 				var row = chk.get_data<UserRow>("row");
 				if (row == null){ return; }
+
+				if (!chk.active){
+					// the three columns are a radio group: a click on the
+					// active one must not clear it
+					if (row.choice() == choice){ chk.active = true; }
+					return;
+				}
 
 				apply_user_choice(row, choice);
 			});

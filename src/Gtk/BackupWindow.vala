@@ -48,6 +48,10 @@ class BackupWindow : WizardWindow {
 	private uint tmr_init;
 	private bool success = false;
 
+	/* Fixed at go_first(): the estimate changes Main.first_snapshot_size, so a
+	 * recomputed route would renumber the steps underneath the user. */
+	private Tabs[] walked_route = {};
+
 	public BackupWindow() {
 
 		base(_("Create Snapshot"), 560, 520);
@@ -133,22 +137,33 @@ class BackupWindow : WizardWindow {
 			App.task.stop(AppStatus.CANCELLED);
 		}
 
-		close_self();
+		// the Location page's Cancel is the old Close: it must still persist
+		// whatever the user chose there
+		save_changes();
+
+		close_wizard();
 	}
 
 	protected override void on_finish(){
 		save_changes();
-		close_self();
+		close_wizard();
 	}
 
+	/* Mirrors go_first() + go_next(): only the pages actually walked. */
 	private Tabs[] route(){
 
 		Tabs[] r = {};
 
 		if (!App.btrfs_mode){
-			if (Main.first_snapshot_size == 0){ r += Tabs.ESTIMATE; }
-			r += Tabs.BACKUP_DEVICE;
+			if (Main.first_snapshot_size == 0){
+				r += Tabs.ESTIMATE;
+				r += Tabs.BACKUP_DEVICE;
+			}
+			else if (!App.repo.available() || !App.repo.has_space()){
+				r += Tabs.BACKUP_DEVICE;
+			}
 		}
+
 		r += Tabs.BACKUP;
 		r += Tabs.BACKUP_FINISH;
 
@@ -168,15 +183,14 @@ class BackupWindow : WizardWindow {
 	protected override string[] step_titles(){
 
 		string[] titles = {};
-		foreach (var tab in route()){ titles += tab_title(tab); }
+		foreach (var tab in walked_route){ titles += tab_title(tab); }
 		return titles;
 	}
 
 	protected override int current_step(){
 
-		var r = route();
-		for (int i = 0; i < r.length; i++){
-			if (r[i] == notebook.page){ return i; }
+		for (int i = 0; i < walked_route.length; i++){
+			if (walked_route[i] == notebook.page){ return i; }
 		}
 		return -1;
 	}
@@ -189,6 +203,8 @@ class BackupWindow : WizardWindow {
 	// navigation --------------------------------------------------------
 
 	private void go_first(){
+
+		walked_route = route();
 
 		if (App.btrfs_mode){
 			notebook.page = Tabs.BACKUP;
@@ -210,6 +226,8 @@ class BackupWindow : WizardWindow {
 
 	protected override void go_next(){
 
+		if (aborted){ return; }
+
 		if (!validate_current_tab()){
 			return;
 		}
@@ -225,7 +243,7 @@ class BackupWindow : WizardWindow {
 			notebook.page = Tabs.BACKUP_FINISH;
 			break;
 		case Tabs.BACKUP_FINISH:
-			close_self();
+			close_wizard();
 			break;
 		}
 
@@ -234,7 +252,7 @@ class BackupWindow : WizardWindow {
 
 	private void initialize_tab(){
 
-		if (notebook.page < 0){ return; }
+		if (aborted || (notebook.page < 0)){ return; }
 
 		log_msg("");
 		log_debug("page: %d".printf(notebook.page));
@@ -270,14 +288,17 @@ class BackupWindow : WizardWindow {
 		switch(notebook.page){
 		case Tabs.ESTIMATE:
 			estimate_box.estimate_system_size();
+			if (aborted){ return; } // cancelled while the estimate ran
 			go_next(); // validate and go next
 			break;
 		case Tabs.BACKUP_DEVICE:
 			backup_dev_box.refresh();
+			if (aborted){ return; }
 			go_next(); // validate and go next
 			break;
 		case Tabs.BACKUP:
 			success = backup_box.take_snapshot();
+			if (aborted){ return; }
 			go_next(); // close window
 			break;
 		case Tabs.BACKUP_FINISH:
@@ -285,11 +306,11 @@ class BackupWindow : WizardWindow {
 			if (App.repo.status_code == SnapshotLocationStatus.HAS_SNAPSHOTS_NO_SPACE){
 				this.visible = false;
 				gtk_messagebox(App.repo.status_message, App.repo.status_details, this, true);
-				close_self();
+				close_wizard();
 			}
 			else {
 				gtk_wait(1000);
-				close_self();
+				close_wizard();
 			}
 			break;
 		}

@@ -165,9 +165,9 @@ public class ThemeStyle : GLib.Object {
 
 		if ((hex.length != 7) || (hex[0] != '#')){ return; }
 
-		r = (double) hex.substring(1, 2).to_long(null, 16) / 255.0;
-		g = (double) hex.substring(3, 2).to_long(null, 16) / 255.0;
-		b = (double) hex.substring(5, 2).to_long(null, 16) / 255.0;
+		r = (double) long.parse(hex.substring(1, 2), 16) / 255.0;
+		g = (double) long.parse(hex.substring(3, 2), 16) / 255.0;
+		b = (double) long.parse(hex.substring(5, 2), 16) / 255.0;
 	}
 
 	// palettes ---------------------------------------------------------

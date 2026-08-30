@@ -121,7 +121,7 @@ class SettingsWindow : AppWindow{
 	/* Form pages read best at a bounded width; list pages take it all. */
 	private Gtk.Widget form_page(Gtk.Widget box){
 		Ui.as_page(box);
-		return new Clamp(box);
+		return new ContentClamp(box);
 	}
 
 	private Gtk.Widget list_page(Gtk.Widget box){

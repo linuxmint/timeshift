@@ -34,7 +34,7 @@ using TeeJee.Misc;
 
 class EstimateBox : TaskProgressBox {
 	
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 	
 	public EstimateBox (Gtk.Window _parent_window) {
 

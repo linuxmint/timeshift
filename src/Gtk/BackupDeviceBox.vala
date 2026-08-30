@@ -67,6 +67,13 @@ class BackupDeviceBox : Gtk.Box{
 	private Gtk.Button btn_refresh;
 	private Banner infobar_location;
 	private Gtk.Box card_common;
+
+	/* The per-row radios are plain check buttons in a recycled list, so GTK
+	 * cannot group them. These track the realised ones so a selection change
+	 * clears the previous row, and guard against re-entering the handler while
+	 * we do it. */
+	private Gee.ArrayList<Gtk.CheckButton> bound_checks = new Gee.ArrayList<Gtk.CheckButton>();
+	private bool updating_checks = false;
 	private Gtk.Box bullets_common;
 
 	// remote (SSH) location
@@ -78,7 +85,7 @@ class BackupDeviceBox : Gtk.Box{
 	private Gtk.SpinButton spin_ssh_port;
 	private Gtk.CheckButton chk_ssh_fake_super;
 	
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 
 	public BackupDeviceBox (Gtk.Window _parent_window) {
 
@@ -240,8 +247,7 @@ class BackupDeviceBox : Gtk.Box{
 		});
 		txt_ssh_key.add_controller(focus_txt_ssh_key);
 
-		var btn_browse = Ui.add_icon_only_button(new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0), "folder-open-symbolic", _("Browse"));
-		btn_browse.unparent();
+		var btn_browse = Ui.make_icon_button("folder-open-symbolic", _("Browse"));
 		grid.attach(btn_browse, 2, row, 1, 1);
 		row++;
 
@@ -602,6 +608,18 @@ class BackupDeviceBox : Gtk.Box{
 			if (row == null){ continue; }
 			row.selected = (App.repo.device != null) && (App.repo.device.uuid == row.dev.uuid);
 		}
+
+		/* GTK only re-binds rows it recycles, so a row already on screen keeps
+		 * whatever it was last given -- push the new state into the realised
+		 * radios or the previous selection stays ticked. */
+		updating_checks = true;
+
+		foreach (var chk in bound_checks){
+			var row = chk.get_data<DeviceRow>("row");
+			chk.active = (row != null) && row.selected;
+		}
+
+		updating_checks = false;
 	}
 
 	private Gtk.ColumnViewColumn make_disk_column(){
@@ -628,10 +646,21 @@ class BackupDeviceBox : Gtk.Box{
 			hbox.append(lbl);
 
 			chk.toggled.connect(() => {
-				if (!chk.active){ return; }
+				if (updating_checks){ return; }
 
 				var row = chk.get_data<DeviceRow>("row");
 				if (row == null){ return; }
+
+				if (!chk.active){
+					// these act as radios: clicking the selected row must not
+					// leave the list with nothing selected
+					if (row.selected){
+						updating_checks = true;
+						chk.active = true;
+						updating_checks = false;
+					}
+					return;
+				}
 
 				device_selected(row);
 			});
@@ -657,12 +686,19 @@ class BackupDeviceBox : Gtk.Box{
 			img.visible = (dev.type == "disk");
 			IconManager.set_image_icon(img, row.icon, 16);
 
-			chk.visible = (dev.size_bytes > 10 * KB) && (dev.type != "disk")
-				&& (dev.children.size == 0);
+			/* Disks and parents of unlocked volumes are selectable too:
+			 * try_change_device() resolves a disk to its first Linux/BTRFS
+			 * partition, and a LUKS parent to its unlocked child. Hiding the
+			 * radio for them made those branches unreachable. */
+			chk.visible = (dev.size_bytes > 10 * KB);
 
 			chk.steal_data<DeviceRow>("row");
+			updating_checks = true;
 			chk.active = row.selected;
+			updating_checks = false;
 			chk.set_data<DeviceRow>("row", row);
+
+			if (!bound_checks.contains(chk)){ bound_checks.add(chk); }
 
 			if (dev.type == "disk"){
 				var txt = "%s %s".printf(dev.model, dev.vendor).strip();
@@ -830,7 +866,7 @@ class BackupDeviceBox : Gtk.Box{
 
 			var dev = Device.find_device_in_list(App.partitions, pi.uuid);
 			
-			if (dev.has_children()){
+			if ((dev != null) && dev.has_children()){
 				
 				log_debug("has children");
 				
@@ -863,9 +899,6 @@ class BackupDeviceBox : Gtk.Box{
 		int status_code = App.repo.status_code;
 		
 		// TODO: call check on repo directly
-		
-		message = message;
-		details = details;
 		
 		if (App.live_system()){
 			

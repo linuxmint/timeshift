@@ -314,7 +314,9 @@ class MainWindow : AppWindow{
 			status_page.set_title(App.repo.status_message);
 			status_page.set_description(App.repo.status_details);
 			btn_status_action.label = _("Select Snapshot Location");
-			btn_status_action.visible = !App.live_system();
+			// restoring needs a location too, so this stays available on a
+			// live system -- it is the only way forward there
+			btn_status_action.visible = true;
 			status_action_opens_wizard = true;
 			content_stack.visible_child_name = "empty";
 		}
@@ -323,7 +325,7 @@ class MainWindow : AppWindow{
 			status_page.set_title(_("No snapshots available"));
 			status_page.set_description(_("Create snapshots manually or enable scheduled snapshots to protect your system"));
 			btn_status_action.label = _("Create Snapshot");
-			btn_status_action.visible = !App.live_system();
+			btn_status_action.visible = !App.live_system(); // cannot create on a live system
 			status_action_opens_wizard = false;
 			content_stack.visible_child_name = "empty";
 		}
@@ -331,8 +333,10 @@ class MainWindow : AppWindow{
 			content_stack.visible_child_name = "list";
 		}
 
-		// the empty state already says what is wrong; the card would repeat it
-		status_area.visible = (content_stack.visible_child_name == "list");
+		/* The empty state already repeats status_message/status_details, so the
+		 * card would say it twice -- except in live mode, where the card
+		 * carries the "Live USB Mode (Restore Only)" notice instead. */
+		status_area.visible = (content_stack.visible_child_name == "list") || App.live_system();
 	}
 
 	private bool on_delete_event(){
@@ -541,12 +545,15 @@ class MainWindow : AppWindow{
 
 		App.repo.load_snapshots();
 
-		string title = (marked ? "Marked " : "Unmarked ") + "for deletion";
-		string message = (marked ? "Snapshots will " : "Snapshots will not ") + "be removed during the next scheduled run";
+		/* Whole sentences: a runtime-concatenated string never reaches the
+		 * translation catalogue. */
+		string title = marked ? _("Marked for deletion") : _("Unmarked for deletion");
 
-		gtk_messagebox(_(title),
-			_(message),
-			this, false);
+		string message = marked
+			? _("Snapshots will be removed during the next scheduled run")
+			: _("Snapshots will not be removed during the next scheduled run");
+
+		gtk_messagebox(title, message, this, false);
 
 		snapshot_list_box.refresh();
 	}
@@ -1249,7 +1256,7 @@ class MainWindow : AppWindow{
 				tile_free.visible = true;
 				tile_free.set_value(format_file_size(App.repo.free_bytes));
 
-				string devname = "(??)";
+				string devname = _("unknown"); // was "(??)": ??) is a C trigraph for ]
 				if (App.repo.backend.is_remote){
 					devname = App.repo.backend.display_name;
 				}

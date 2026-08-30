@@ -50,6 +50,15 @@ public abstract class WizardWindow : AppWindow {
 
 	private bool closable = true;
 
+	/* True once the window is on its way out.
+	 *
+	 * The pages that do the real work (estimate, dry run, backup, restore,
+	 * delete) block while pumping the main loop, so a Cancel or a window close
+	 * during one of them returns control to initialize_tab() *after* the window
+	 * has gone. Without this check the state machine walked on and, in the
+	 * worst case, created a snapshot for a wizard the user had closed. */
+	protected bool aborted { get; private set; default = false; }
+
 	/* Finish is the primary action only on a last page that has no Next; a
 	 * Finish relabelled "Close" is never primary. */
 	protected bool finish_is_primary = true;
@@ -155,7 +164,7 @@ public abstract class WizardWindow : AppWindow {
 		page.hexpand = true;
 		page.vexpand = true;
 
-		Gtk.Widget host = clamp ? new Clamp(page) : page;
+		Gtk.Widget host = clamp ? new ContentClamp(page) : page;
 
 		notebook.append_page(host, null);
 	}
@@ -186,6 +195,15 @@ public abstract class WizardWindow : AppWindow {
 		}
 	}
 
+	/* Closes the wizard and stops the state machine. Use instead of
+	 * close_self() everywhere in a wizard. */
+	protected void close_wizard(){
+
+		aborted = true;
+
+		close_self();
+	}
+
 	protected void set_closable(bool value){
 
 		closable = value;
@@ -212,6 +230,8 @@ public abstract class WizardWindow : AppWindow {
 			on_cancel();
 			return true; // keep the window; on_cancel() decides
 		}
+
+		aborted = true;
 
 		return handle_close();
 	}

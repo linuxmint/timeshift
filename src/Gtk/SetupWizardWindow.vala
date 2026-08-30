@@ -124,12 +124,12 @@ class SetupWizardWindow : WizardWindow {
 			App.task.stop(AppStatus.CANCELLED);
 		}
 
-		close_self();
+		close_wizard();
 	}
 
 	protected override void on_finish(){
 		save_changes();
-		close_self();
+		close_wizard();
 	}
 
 	private Tabs[] route(){
@@ -218,6 +218,8 @@ class SetupWizardWindow : WizardWindow {
 
 	protected override void go_next(){
 
+		if (aborted){ return; }
+
 		if (!validate_current_tab()){
 			return;
 		}
@@ -238,7 +240,7 @@ class SetupWizardWindow : WizardWindow {
 
 		case Tabs.BACKUP_DEVICE:
 			if (App.live_system()){
-				close_self();
+				close_wizard();
 			}
 			else{
 				notebook.page = Tabs.SCHEDULE;
@@ -264,7 +266,7 @@ class SetupWizardWindow : WizardWindow {
 
 	private void initialize_tab(){
 
-		if (notebook.page < 0){
+		if (aborted || (notebook.page < 0)){
 			return;
 		}
 
@@ -304,6 +306,7 @@ class SetupWizardWindow : WizardWindow {
 			}
 			else{
 				estimate_box.estimate_system_size();
+				if (aborted){ return; } // closed while the estimate ran
 				go_next();
 			}
 			break;

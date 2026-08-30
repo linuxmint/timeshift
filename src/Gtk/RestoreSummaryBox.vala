@@ -37,7 +37,7 @@ class RestoreSummaryBox : Gtk.Box{
 	public Gtk.Label lbl_devices;
 	public Gtk.Label lbl_reboot;
 	public Gtk.Label lbl_disclaimer;
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 
 	public RestoreSummaryBox (Gtk.Window _parent_window) {
 

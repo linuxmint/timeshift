@@ -6,7 +6,7 @@ Build-Depends: debhelper-compat (= 13),
                gettext,
                gzip,
                valac,
-               libgtk-4-dev,
+               libgtk-4-dev (>= 4.12),
                libgee-0.8-dev,
                libjson-glib-dev,
                libvte-2.91-gtk4-dev,
@@ -19,8 +19,15 @@ Homepage: https://github.com/makeafide/timeshift
 
 Package: timeshift-ssh
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, rsync, debianutils, btrfs-progs | btrfs-tools, openssh-client
-Recommends: sshfs
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         rsync,
+         debianutils,
+         btrfs-progs | btrfs-tools,
+         openssh-client,
+         libglib2.0-bin,
+         hicolor-icon-theme
+Recommends: sshfs, pkexec | policykit-1, xdg-utils, libnotify-bin, cryptsetup
 Provides: timeshift (= ${binary:Version})
 Conflicts: timeshift
 Replaces: timeshift, timeshift-btrfs

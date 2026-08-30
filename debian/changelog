@@ -1,3 +1,30 @@
+timeshift-ssh (25.12.4+ssh6) resolute; urgency=medium
+
+  * Fix a use-after-free that ran every time a device page was built
+  * Bootloader Options no longer silently retargets GRUB to the first disk
+  * Cancelling during an estimate, dry run or delete now actually stops the
+    wizard instead of letting it continue on a closed window
+  * Whole disks and LUKS parents are selectable as a snapshot location again
+  * Restore the ordering of include/exclude patterns (Move Up / Move Down)
+  * Escape closes dialogs again; Bootloader Options and Exclude List Summary
+    regain a Close button
+  * Translations now load: the gettext domain was empty, so none of the 74
+    shipped translations were ever used
+  * Depend on libglib2.0-bin (gsettings) and require GTK >= 4.12
+  * Many smaller fixes: see the git log for the full audit
+
+ -- makeafide <willsmit4433@gmail.com>  Sat, 29 Aug 2026 23:35:00 -0400
+
+timeshift-ssh (25.12.4+ssh5) resolute; urgency=medium
+
+  * Port the GUI to GTK4 and redesign it: HeaderBars on every window,
+    a live-themed CSS palette (light/dark, accent and high-contrast follow
+    the desktop; Settings > Appearance picker), cards, boxed lists,
+    status pages and a step indicator in the wizards
+  * Fix the defects found by the redesign audit (see git log)
+
+ -- makeafide <willsmit4433@gmail.com>  Sat, 29 Aug 2026 23:05:00 -0400
+
 timeshift-ssh (25.12.4+ssh4) resolute; urgency=medium
 
   * Show snapshot size (total + unique) for both rsync and btrfs snapshots, in the GUI and CLI (--list)

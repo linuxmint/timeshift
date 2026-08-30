@@ -39,7 +39,7 @@ class SnapshotBackendBox : Gtk.Box{
 	private Gtk.Label lbl_description;
 	private Gtk.Box bullets_description;
 	private Gtk.Box description_box;
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 	
 	public signal void type_changed();
 

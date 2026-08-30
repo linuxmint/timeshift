@@ -34,7 +34,7 @@ using TeeJee.Misc;
 
 class MiscBox : Gtk.Box{
 	
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 	private bool restore_mode = false;
 
 	public MiscBox (Gtk.Window _parent_window, bool _restore_mode) {
@@ -141,6 +141,13 @@ class MiscBox : Gtk.Box{
 		entry.text = App.date_format;
 
 		entry.sensitive = (combo.selected == 0);
+
+		/* Commit as it is typed: focus-out alone loses the value when the
+		 * window is closed straight from the entry. */
+		entry.changed.connect(() => {
+			if (!entry.sensitive){ return; } // driven by the drop-down
+			App.date_format = entry.text;
+		});
 
 		var focus = new Gtk.EventControllerFocus();
 		focus.leave.connect(() => {

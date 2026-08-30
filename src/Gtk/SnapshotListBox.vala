@@ -51,8 +51,6 @@ class SnapshotListBox : Gtk.Box{
     private Gtk.ColumnViewColumn col_unshared;
     private Gtk.ColumnViewColumn col_system;
     private Gtk.ColumnViewColumn col_desc;
-	private int treeview_sort_column_index = 0;
-	private bool treeview_sort_column_desc = true;
 
 	private Gtk.PopoverMenu menu_snapshots;
 	private GLib.SimpleAction mi_browse;
@@ -61,7 +59,7 @@ class SnapshotListBox : Gtk.Box{
 	private GLib.SimpleAction mi_view_log_create;
 	private GLib.SimpleAction mi_view_log_restore;
 	
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 	private bool context_menu_enabled = true;
 
 	public signal void delete_selected();
@@ -170,6 +168,10 @@ class SnapshotListBox : Gtk.Box{
 
 		switch (field){
 
+		case SnapshotField.SIZE:
+		case SnapshotField.UNSHARED:
+			return "";
+
 		case SnapshotField.DATE:
 		case SnapshotField.SYSTEM:
 
@@ -272,6 +274,10 @@ class SnapshotListBox : Gtk.Box{
 		return col;
 	}
 
+	private string live_marker(){
+		return "[" + _("LIVE") + "] ";
+	}
+
 	private Gtk.ColumnViewColumn make_description_column(){
 
 		var factory = new Gtk.SignalListItemFactory();
@@ -293,8 +299,18 @@ class SnapshotListBox : Gtk.Box{
 				var bak = editable.get_data<Snapshot>("snapshot");
 				if (bak == null){ return; }
 
-				if (bak.description != editable.text){
-					bak.description = editable.text;
+				/* The live row is shown with a "[LIVE] " marker. Strip it
+				 * before committing, or every edit -- including one cancelled
+				 * with Escape -- writes the marker into the description and it
+				 * accretes: "[LIVE] [LIVE] ...". */
+				string txt = editable.text;
+				string marker = live_marker();
+				if (bak.live && txt.has_prefix(marker)){
+					txt = txt[marker.length : txt.length];
+				}
+
+				if (bak.description != txt){
+					bak.description = txt;
 					bak.update_control_file();
 				}
 			});
@@ -309,7 +325,7 @@ class SnapshotListBox : Gtk.Box{
 
 			editable.steal_data<Snapshot>("snapshot");
 			editable.text = bak.live
-				? "[" + _("LIVE") + "] " + bak.description : bak.description;
+				? live_marker() + bak.description : bak.description;
 			editable.sensitive = !bak.marked_for_deletion;
 			editable.set_data<Snapshot>("snapshot", bak);
 		});
@@ -447,6 +463,19 @@ class SnapshotListBox : Gtk.Box{
 
 		col_size.visible = !App.btrfs_mode || App.btrfs_qgroups_enabled;
 		col_unshared.visible = !App.btrfs_mode || App.btrfs_qgroups_enabled;
+	}
+
+	/* A Gtk.PopoverMenu parented with set_parent() is not part of the child
+	 * list GTK tears down, so it has to be released explicitly or finalizing
+	 * this box trips "still has children left". */
+	public override void dispose(){
+
+		if (menu_snapshots != null){
+			menu_snapshots.unparent();
+			menu_snapshots = null;
+		}
+
+		base.dispose();
 	}
 
 	/* Disables the right-click / Menu-key menu. GTK4 event controllers are

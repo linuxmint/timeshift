@@ -100,6 +100,12 @@ public class RsyncLogBox : Gtk.Box {
 	private Gtk.Window window;
 	private bool ui_built = false;
 
+	/* Emitted once the log has been parsed and the list is populated. The
+	 * restore wizard keeps its navigation disabled until then: parse_log_file()
+	 * pumps the main loop, so a second open_log() from there would start a
+	 * second parser thread over the same App.task and loglist. */
+	public signal void log_ready();
+
 	public RsyncLogBox(Gtk.Window _window) {
 		
 		GLib.Object(orientation: Gtk.Orientation.VERTICAL, spacing: Ui.Spacing.SM); // work-around
@@ -111,11 +117,22 @@ public class RsyncLogBox : Gtk.Box {
 
 	public void open_log(string _rsync_log_file){
 
+		if (thread_is_running){
+			log_debug("open_log(): parser already running, ignoring");
+			return;
+		}
+
 		rsync_log_file = _rsync_log_file;
 
 		/* A second open (the restore wizard's Back, then another dry run)
 		 * reuses the widgets: treeview_refresh() clears the model itself. */
 		if (ui_built){
+			// the filter entries and the column title depend on which log this
+			// is, so rebuild them rather than reusing the previous log's
+			refresh_filter_options();
+			col_name.title = is_restore_log ? _("File (system)") : _("File (snapshot)");
+			lbl_header.label = App.dry_run ? _("Confirm Actions") : _("Rsync Log");
+
 			vbox_progress.visible = true;
 			hbox_filter.visible = false;
 			vbox_list.visible = false;
@@ -186,6 +203,7 @@ public class RsyncLogBox : Gtk.Box {
 
 		parse_log_file();
 
+		log_ready();
 
 		log_debug("init_delayed(): finish");
 		
@@ -317,37 +335,6 @@ public class RsyncLogBox : Gtk.Box {
 		 * of RsyncLogFilter carries the key/label pair the old two-column
 		 * tree model held. */
 
-		var model = new GLib.ListStore(typeof(RsyncLogFilter));
-
-		model.append(new RsyncLogFilter("", _("All Files")));
-		model.append(new RsyncLogFilter("created", "%s".printf(App.dry_run ? _("Create") : _("Created"))));
-
-		if (is_restore_log){
-			model.append(new RsyncLogFilter("deleted", "%s".printf(App.dry_run ? _("Delete") : _("Deleted"))));
-		}
-
-		string txt = "";
-		if (App.dry_run){
-			txt = _("Restore");
-		}
-		else if (is_restore_log){
-			txt = _("Changed");
-		}
-		else{
-			txt = _("Changed");
-		}
-
-		model.append(new RsyncLogFilter("changed", "%s".printf(txt)));
-
-		if (!App.dry_run){
-			model.append(new RsyncLogFilter("checksum",    " └ %s".printf(_("Checksum"))));
-			model.append(new RsyncLogFilter("size",        " └ %s".printf(_("Size"))));
-			model.append(new RsyncLogFilter("timestamp",   " └ %s".printf(_("Timestamp"))));
-			model.append(new RsyncLogFilter("permissions", " └ %s".printf(_("Permissions"))));
-			model.append(new RsyncLogFilter("owner",       " └ %s".printf(_("Owner"))));
-			model.append(new RsyncLogFilter("group",       " └ %s".printf(_("Group"))));
-		}
-
 		var factory = new Gtk.SignalListItemFactory();
 
 		factory.setup.connect((object) => {
@@ -364,12 +351,43 @@ public class RsyncLogBox : Gtk.Box {
 			lbl.label = option.text;
 		});
 
-		var combo = new Gtk.DropDown(model, null);
+		var combo = new Gtk.DropDown(null, null);
 		combo.factory = factory;
 		hbox.append(combo);
 		cmb_filter = combo;
 
+		refresh_filter_options();
+	}
+
+	/* The entries depend on which log is open (dry run vs restore vs create),
+	 * so they are rebuilt whenever a log is loaded into an existing box. */
+	private void refresh_filter_options(){
+
+		var model = new GLib.ListStore(typeof(RsyncLogFilter));
+
+		model.append(new RsyncLogFilter("", _("All Files")));
+		model.append(new RsyncLogFilter("created", "%s".printf(App.dry_run ? _("Create") : _("Created"))));
+
+		if (is_restore_log){
+			model.append(new RsyncLogFilter("deleted", "%s".printf(App.dry_run ? _("Delete") : _("Deleted"))));
+		}
+
+		string txt = App.dry_run ? _("Restore") : _("Changed");
+
+		model.append(new RsyncLogFilter("changed", "%s".printf(txt)));
+
+		if (!App.dry_run){
+			model.append(new RsyncLogFilter("checksum",    " └ %s".printf(_("Checksum"))));
+			model.append(new RsyncLogFilter("size",        " └ %s".printf(_("Size"))));
+			model.append(new RsyncLogFilter("timestamp",   " └ %s".printf(_("Timestamp"))));
+			model.append(new RsyncLogFilter("permissions", " └ %s".printf(_("Permissions"))));
+			model.append(new RsyncLogFilter("owner",       " └ %s".printf(_("Owner"))));
+			model.append(new RsyncLogFilter("group",       " └ %s".printf(_("Group"))));
+		}
+
+		cmb_filter.model = model;
 		cmb_filter.selected = 0;
+		status_filter = "";
 	}
 
 	private uint tmr_action = 0;
@@ -392,7 +410,7 @@ public class RsyncLogBox : Gtk.Box {
 
 		clear_action_delayed();
 
-		name_filter = txt_pattern.text;
+		name_filter = txt_pattern.text.down();
 		
 		log_filter.changed(Gtk.FilterChange.DIFFERENT);
 		

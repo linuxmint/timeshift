@@ -11,7 +11,7 @@ project(
 dependencies = [
   dependency('glib-2.0'),
   dependency('gobject-2.0'),
-  dependency('gtk4', version: '>= 4.6'),
+  dependency('gtk4', version: '>= 4.12'), # Gtk.CssProvider.load_from_string
   dependency('gio-2.0'),
   dependency('gio-unix-2.0'),
   dependency('json-glib-1.0'),

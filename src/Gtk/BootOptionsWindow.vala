@@ -49,6 +49,13 @@ class BootOptionsWindow : AppWindow {
 		var header = new Gtk.HeaderBar();
 		set_titlebar(header);
 
+		var btn_close = new Gtk.Button.with_label(_("Close"));
+		btn_close.add_css_class("suggested-action");
+		btn_close.clicked.connect(() => { close_self(); });
+		header.pack_end(btn_close);
+
+		Ui.close_on_escape(this);
+
 		boot_options_box = new BootOptionsBox(this);
 		Ui.as_page(boot_options_box);
 		boot_options_box.hexpand = true;

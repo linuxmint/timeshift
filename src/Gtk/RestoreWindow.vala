@@ -76,6 +76,13 @@ class RestoreWindow : WizardWindow {
 		finish_box = new SummaryBox(_("Completed"));
 		add_page(finish_box);
 
+		log_box.log_ready.connect(() => {
+			if (aborted){ return; }
+			if (notebook.page == Tabs.SHOW_LOG){
+				set_actions(can_go_back(), true, false, true);
+			}
+		});
+
 		btn_finish.label = _("Close");
 		finish_is_primary = false;
 
@@ -136,12 +143,12 @@ class RestoreWindow : WizardWindow {
 		}
 
 		save_changes();
-		close_self();
+		close_wizard();
 	}
 
 	protected override void on_finish(){
 		save_changes();
-		close_self();
+		close_wizard();
 	}
 
 	private Tabs[] route(){
@@ -277,6 +284,8 @@ class RestoreWindow : WizardWindow {
 
 	protected override void go_next(){
 
+		if (aborted){ return; }
+
 		// finish any pending Gtk events before showing the next page
 		gtk_set_busy(true, this);
 		gtk_do_events();
@@ -317,7 +326,7 @@ class RestoreWindow : WizardWindow {
 			break;
 
 		case Tabs.FINISH:
-			close_self();
+			close_wizard();
 			break;
 		}
 
@@ -328,7 +337,7 @@ class RestoreWindow : WizardWindow {
 
 	private void initialize_tab(){
 
-		if (notebook.page < 0){ return; }
+		if (aborted || (notebook.page < 0)){ return; }
 
 		log_debug("initialize_tab: %d".printf(notebook.page));
 
@@ -368,6 +377,7 @@ class RestoreWindow : WizardWindow {
 		case Tabs.CHECK:
 			App.dry_run = true;
 			success = check_box.restore();
+			if (aborted){ return; } // cancelled during the dry run
 			go_next();
 			break;
 
@@ -378,6 +388,9 @@ class RestoreWindow : WizardWindow {
 			// "Error running Rsync" even on success. The two coincide for a
 			// local repo, which is why this went unnoticed.
 			if (file_exists(App.restore_log_file)){
+				// parse_log_file() pumps the main loop; leaving Back/Next live
+				// would let a second parser start over the same App.task
+				set_actions(false, false, false, true);
 				log_box.open_log(App.restore_log_file);
 			}
 			else{
@@ -398,6 +411,7 @@ class RestoreWindow : WizardWindow {
 		case Tabs.RESTORE:
 			App.dry_run = false;
 			success = restore_box.restore();
+			if (aborted){ return; }
 			go_next();
 			break;
 

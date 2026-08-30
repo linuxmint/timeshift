@@ -54,6 +54,13 @@ class ExcludeListSummaryWindow : AppWindow {
 
 		var header = new Gtk.HeaderBar();
 		set_titlebar(header);
+
+		var btn_close = new Gtk.Button.with_label(_("Close"));
+		btn_close.add_css_class("suggested-action");
+		btn_close.clicked.connect(() => { close_self(); });
+		header.pack_end(btn_close);
+
+		Ui.close_on_escape(this);
 		
         var vbox_main = new Gtk.Box(Orientation.VERTICAL, Ui.Spacing.SM);
         Ui.as_page(vbox_main);

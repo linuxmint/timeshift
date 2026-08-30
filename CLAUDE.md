@@ -6,7 +6,7 @@ Timeshift is a system restore tool for Linux, written in Vala against GTK4. It o
 
 ## Build
 
-Meson only — there is no Makefile and no direct `valac` invocation. (`archlinux/PKGBUILD` still calls `make`; it is stale and does not work.)
+Meson only — there is no Makefile and no direct `valac` invocation. `archlinux/PKGBUILD` also drives meson.
 
 ```bash
 meson setup build
@@ -38,7 +38,7 @@ Each entry file declares the global `public Main App;`. Everything else reaches 
 - `src/Core/Subvolume.vala` — btrfs `@` / `@home` subvolume operations.
 - `src/Utility/Device.vala` (~2100 lines) — the block-device model, built by parsing `lsblk`/`blkid`/`df`/`mount`. All partition, LUKS and LVM handling funnels through it.
 
-Boot sequence in both `main()`s: `set_locale()` → `Main.setup_env()` → `init_tmp()` → admin check → `new Main(args, gui_mode)` → `parse_arguments()` → `App.initialize()` → run → `App.exit_app()`. Note that `Main.parse_some_arguments()` (src/Core/Main.vala:549) parses a subset of the CLI flags a *second* time (it runs from the `Main` constructor, before `AppConsole.parse_arguments()`); a new CLI flag usually has to be added in both. `app_mode == ""` means GUI mode throughout the core.
+Boot sequence in both `main()`s: `set_locale()` → `Main.setup_env()` → (GUI only: `Gtk.init()` → `AppTheme.apply()`) → `init_tmp()` → admin check → `new Main(args, gui_mode)` → `parse_arguments()` → (GUI only: `AppTheme.set_preferences()`) → `App.initialize()` → run → `App.exit_app()`. Note that `Main.parse_some_arguments()` (src/Core/Main.vala:549) parses a subset of the CLI flags a *second* time (it runs from the `Main` constructor, before `AppConsole.parse_arguments()`); a new CLI flag usually has to be added in both. `app_mode == ""` means GUI mode throughout the core.
 
 ### Repository backend (local vs remote)
 
@@ -258,6 +258,6 @@ Neither binary escalates itself; both hard-exit with a message if not root. Esca
 ## Conventions when editing
 
 - A new `.vala` file must be added to the matching `sources_*` list in `src/meson.build`, and to `po/POTFILES` if it contains translatable strings.
-- Mark user-visible strings with `_()`. Regenerate `timeshift.pot` by running `./makepot` from the repo root. `makepot` passes no `--from-code`, so a **non-ASCII character inside a `_()` string aborts xgettext** and leaves the pot half-written — keep msgids ASCII.
+- Mark user-visible strings with `_()` — whole sentences, never runtime-concatenated fragments (those never reach the catalogue). `GETTEXT_PACKAGE` must stay `"timeshift"` in both entry files: an empty value silently overrides meson's define and disables every translation. Regenerate `timeshift.pot` by running `./makepot` from the repo root. `makepot` passes no `--from-code`, so a **non-ASCII character inside a `_()` string aborts xgettext** and leaves the pot half-written — keep msgids ASCII.
 - **Do not edit `po/*.po`** — translations are managed on Launchpad.
 - Vala sources indent with tabs; `.editorconfig` only governs `meson.build` files (2 spaces). Every `.vala` file carries the GPL-2.0-or-later header.

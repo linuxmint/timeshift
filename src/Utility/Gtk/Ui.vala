@@ -189,6 +189,23 @@ namespace Ui {
 		return spacer;
 	}
 
+	/* GTK4's Gtk.Window has no built-in Escape binding (Gtk.Dialog had one), so
+	 * every window that reads as a dialog wires it up explicitly. */
+	public void close_on_escape(Gtk.Window window){
+
+		var keys = new Gtk.EventControllerKey();
+
+		keys.key_pressed.connect((keyval, keycode, state) => {
+			if (keyval == Gdk.Key.Escape){
+				window.close();
+				return true;
+			}
+			return false;
+		});
+
+		((Gtk.Widget) window).add_controller(keys);
+	}
+
 	// controls -----------------------------------------------------------
 
 	/* Radio semantics via CheckButton.set_group(); pass null for the first. */
@@ -220,8 +237,14 @@ namespace Ui {
 		return button;
 	}
 
-	/* Icon-only button, tooltip carries the name. */
-	public Gtk.Button add_icon_only_button(Gtk.Box box, string icon_name, string tooltip){
+	/* Icon-only button with no parent, for callers that place it themselves
+	 * (Gtk.Grid.attach, HeaderBar packing).
+	 *
+	 * Building one into a throwaway box and calling unparent() afterwards is a
+	 * use-after-free: Vala releases the temporary parent at the end of the
+	 * statement, so the box is finalized with the button still attached and the
+	 * unparent then writes into freed memory. */
+	public Gtk.Button make_icon_button(string icon_name, string tooltip){
 
 		var button = new Gtk.Button();
 		button.tooltip_text = tooltip;
@@ -230,6 +253,13 @@ namespace Ui {
 		IconManager.set_image_icon(img, icon_name, 16);
 		button.set_child(img);
 
+		return button;
+	}
+
+	/* Icon-only button, tooltip carries the name. */
+	public Gtk.Button add_icon_only_button(Gtk.Box box, string icon_name, string tooltip){
+
+		var button = make_icon_button(icon_name, tooltip);
 		box.append(button);
 		return button;
 	}

@@ -104,7 +104,7 @@ namespace TeeJee.GtkHelper{
 
 		Ui.add_title(vbox_text, title, 2);
 
-		var lbl_input = Ui.add_body(vbox_text, message);
+		Ui.add_body(vbox_text, message);
 
 		var txt_input = new Gtk.Entry();
 		txt_input.hexpand = true;
@@ -152,6 +152,19 @@ namespace TeeJee.GtkHelper{
 			if (loop.is_running()){ loop.quit(); }
 			return false;
 		});
+
+		// Escape cancels, as it did when this was a Gtk.Dialog
+		var keys = new Gtk.EventControllerKey();
+		keys.key_pressed.connect((keyval, keycode, state) => {
+			if (keyval == Gdk.Key.Escape){
+				input_text = null;
+				dlg.destroy();
+				if (loop.is_running()){ loop.quit(); }
+				return true;
+			}
+			return false;
+		});
+		((Gtk.Widget) dlg).add_controller(keys);
 
 		dlg.present();
 		txt_input.grab_focus();

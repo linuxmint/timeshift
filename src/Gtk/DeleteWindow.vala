@@ -42,6 +42,10 @@ class DeleteWindow : WizardWindow {
 	private uint tmr_init;
 	private bool success = false;
 
+	/* The wizard starts at Delete when snapshots are already queued, so the
+	 * step list depends on where it was entered. */
+	private Tabs[] walked_route = {};
+
 	public DeleteWindow() {
 
 		base(_("Delete Snapshots"), 640, 520);
@@ -111,19 +115,34 @@ class DeleteWindow : WizardWindow {
 			App.delete_file_task.stop(AppStatus.CANCELLED);
 		}
 
-		close_self();
+		close_wizard();
 	}
 
 	protected override void on_finish(){
-		close_self();
+		close_wizard();
 	}
 
 	protected override string[] step_titles(){
-		return { _("Select"), _("Delete"), _("Finished") };
+
+		string[] titles = {};
+
+		foreach (var tab in walked_route){
+			switch (tab){
+			case Tabs.SNAPSHOT_LIST: titles += _("Select"); break;
+			case Tabs.DELETE:        titles += _("Delete"); break;
+			default:                 titles += _("Finished"); break;
+			}
+		}
+
+		return titles;
 	}
 
 	protected override int current_step(){
-		return notebook.page;
+
+		for (int i = 0; i < walked_route.length; i++){
+			if (walked_route[i] == notebook.page){ return i; }
+		}
+		return -1;
 	}
 
 	// navigation --------------------------------------------------------
@@ -131,9 +150,11 @@ class DeleteWindow : WizardWindow {
 	private void go_first(){
 
 		if ((App.delete_list.size == 0) && !App.thread_delete_running){
+			walked_route = { Tabs.SNAPSHOT_LIST, Tabs.DELETE, Tabs.DELETE_FINISH };
 			notebook.page = Tabs.SNAPSHOT_LIST;
 		}
 		else {
+			walked_route = { Tabs.DELETE, Tabs.DELETE_FINISH };
 			notebook.page = Tabs.DELETE;
 		}
 
@@ -141,6 +162,8 @@ class DeleteWindow : WizardWindow {
 	}
 
 	protected override void go_next(){
+
+		if (aborted){ return; }
 
 		if (!validate_current_tab()){
 			return;
@@ -157,7 +180,7 @@ class DeleteWindow : WizardWindow {
 			break;
 
 		case Tabs.DELETE_FINISH:
-			close_self();
+			close_wizard();
 			break;
 		}
 
@@ -166,7 +189,7 @@ class DeleteWindow : WizardWindow {
 
 	private void initialize_tab(){
 
-		if (notebook.page < 0){ return; }
+		if (aborted || (notebook.page < 0)){ return; }
 
 		log_msg("");
 		log_debug("page: %d".printf(notebook.page));
@@ -177,19 +200,16 @@ class DeleteWindow : WizardWindow {
 		case Tabs.DELETE:
 			// closing the window hides it; deletion continues in the background
 			set_actions(false, false, false, true);
-			this.set_tooltip_text(_("Closing this window hides it; files will be deleted in the background"));
 			set_closable(true);
 			break;
 
 		case Tabs.SNAPSHOT_LIST:
 			set_actions(false, true, false, true);
-			this.set_tooltip_text(null);
 			set_closable(true);
 			break;
 
 		case Tabs.DELETE_FINISH:
 			set_actions(false, false, true, false);
-			this.set_tooltip_text(null);
 			set_closable(true);
 			break;
 		}
@@ -202,12 +222,13 @@ class DeleteWindow : WizardWindow {
 			break;
 		case Tabs.DELETE:
 			success = delete_box.delete_snapshots();
+			if (aborted){ return; } // window hidden/cancelled during deletion
 			go_next();
 			break;
 		case Tabs.DELETE_FINISH:
 			show_finish(success);
 			gtk_wait(1000);
-			close_self();
+			close_wizard();
 			break;
 		}
 	}

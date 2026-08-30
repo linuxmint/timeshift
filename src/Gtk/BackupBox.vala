@@ -34,7 +34,7 @@ using TeeJee.Misc;
 
 class BackupBox : TaskProgressBox {
 
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 
 	private bool thread_is_running = false;
 	private bool thread_status_success = false;
@@ -98,15 +98,19 @@ class BackupBox : TaskProgressBox {
                 double fraction;
                 string task_stat_time_remaining;
 
-				bool checking = App.space_check_task != null;
+				/* Snapshot the reference: the worker thread clears
+				 * App.space_check_task the moment the space check ends, which
+				 * would otherwise null it between this test and the reads. */
+				var check_task = App.space_check_task;
+				bool checking = (check_task != null);
 
 				set_counts_visible(!checking);
 
                 if (checking)
                 {
-                    task_status_line = App.space_check_task.status_line;
-                    fraction = App.space_check_task.progress;
-                    task_stat_time_remaining = App.space_check_task.stat_time_remaining;
+                    task_status_line = check_task.status_line;
+                    fraction = check_task.progress;
+                    task_stat_time_remaining = check_task.stat_time_remaining;
                 }
                 else
                 {

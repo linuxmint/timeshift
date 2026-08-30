@@ -57,10 +57,12 @@ class ExcludeBox : Gtk.Box{
 	private Gtk.ColumnView treeview;
 	private GLib.ListStore exclude_model;
 	private Gtk.MultiSelection exclude_selection;
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 	private UsersBox users_box;
 	private Gtk.Label lbl_message;
 	private Gtk.Button btn_remove;
+	private Gtk.Button btn_up;
+	private Gtk.Button btn_down;
 	
 	public ExcludeBox (Gtk.Window _parent_window) {
 
@@ -102,7 +104,7 @@ class ExcludeBox : Gtk.Box{
 		exclude_model = new GLib.ListStore(typeof(ExcludePatternRow));
 		exclude_selection = new Gtk.MultiSelection(exclude_model);
 		exclude_selection.selection_changed.connect(() => {
-			btn_remove.sensitive = (exclude_selection.get_selection().get_size() > 0);
+			update_action_sensitivity();
 		});
 
 		treeview = new Gtk.ColumnView(exclude_selection);
@@ -128,10 +130,16 @@ class ExcludeBox : Gtk.Box{
 			chk.halign = Gtk.Align.CENTER;
 
 			chk.toggled.connect(() => {
-				if (!chk.active){ return; }
-
 				var row = chk.get_data<ExcludePatternRow>("row");
 				if (row == null){ return; }
+
+				if (!chk.active){
+					// Include/Exclude behave as a radio pair: re-tick rather
+					// than leaving the row with neither set
+					bool still_set = for_include ? row.is_include() : !row.is_include();
+					if (still_set){ chk.active = true; }
+					return;
+				}
 
 				if (for_include){
 					if (!row.pattern.has_prefix("+ ")){
@@ -282,11 +290,74 @@ class ExcludeBox : Gtk.Box{
 		btn_remove.sensitive = false;
 		btn_remove.clicked.connect(() => { remove_clicked(); });
 
+		/* Order is meaningful: rsync applies the filter list first-match-wins,
+		 * so an include has to be able to sit above a broader exclude. */
+		btn_up = Ui.add_icon_only_button(group, "go-up-symbolic", _("Move the selected pattern up"));
+		btn_up.sensitive = false;
+		btn_up.clicked.connect(() => { move_selected(-1); });
+
+		btn_down = Ui.add_icon_only_button(group, "go-down-symbolic", _("Move the selected pattern down"));
+		btn_down.sensitive = false;
+		btn_down.clicked.connect(() => { move_selected(1); });
+
 		var btn_summary = Ui.add_icon_only_button(group, "document-properties-symbolic", _("Show the effective exclude list"));
 		btn_summary.clicked.connect(() => {
 			save_changes();
 			new ExcludeListSummaryWindow(false);
 		});
+	}
+
+	/* Remove needs a selection; the move buttons need exactly one row that has
+	 * somewhere to go. */
+	private void update_action_sensitivity(){
+
+		if (btn_remove == null){ return; }
+
+		uint n = exclude_model.get_n_items();
+		uint count = 0;
+		uint first = 0;
+
+		for (uint i = 0; i < n; i++){
+			if (exclude_selection.is_selected(i)){
+				if (count == 0){ first = i; }
+				count++;
+			}
+		}
+
+		btn_remove.sensitive = (count > 0);
+		btn_up.sensitive = (count == 1) && (first > 0);
+		btn_down.sensitive = (count == 1) && (first + 1 < n);
+	}
+
+	/* Moves the selected pattern one place up (-1) or down (+1). */
+	private void move_selected(int delta){
+
+		uint n = exclude_model.get_n_items();
+		uint count = 0;
+		uint from = 0;
+
+		for (uint i = 0; i < n; i++){
+			if (exclude_selection.is_selected(i)){
+				if (count == 0){ from = i; }
+				count++;
+			}
+		}
+
+		if (count != 1){ return; }
+
+		int to = ((int) from) + delta;
+		if ((to < 0) || (to >= (int) n)){ return; }
+
+		var row = (ExcludePatternRow) exclude_model.get_item(from);
+		exclude_model.remove(from);
+		exclude_model.insert((uint) to, row);
+		exclude_selection.select_item((uint) to, true);
+
+		save_changes();
+
+		Main.first_snapshot_size = 0; // the filter list changed
+
+		update_action_sensitivity();
 	}
 
 	// actions
@@ -455,6 +526,8 @@ class ExcludeBox : Gtk.Box{
 		foreach(string pattern in App.exclude_list_user){
 			treeview_add_item(treeview, pattern);
 		}
+
+		update_action_sensitivity();
 	}
 
 	private void treeview_add_item(Gtk.ColumnView treeview, string pattern){

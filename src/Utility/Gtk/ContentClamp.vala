@@ -1,5 +1,5 @@
 /*
- * Clamp.vala
+ * ContentClamp.vala
  *
  * Copyright 2012-2018 Tony George <teejeetech@gmail.com>
  *
@@ -25,13 +25,16 @@
  * Pure GTK4: measure/size_allocate are overridden on the widget itself, no
  * layout manager involved. */
 
-public class Clamp : Gtk.Widget {
+/* Named ContentClamp, not Clamp: Vala derives the C macro name from the class,
+ * and a class called Clamp emits `#define CLAMP(obj)`, shadowing glib's
+ * CLAMP(x, low, high) in every file that includes the header. */
+public class ContentClamp : Gtk.Widget {
 
 	public int maximum_size { get; set; default = Ui.MAX_CONTENT_WIDTH; }
 
 	private Gtk.Widget? child = null;
 
-	public Clamp(Gtk.Widget child){
+	public ContentClamp(Gtk.Widget child){
 
 		this.child = child;
 		child.set_parent(this);
@@ -53,8 +56,11 @@ public class Clamp : Gtk.Widget {
 
 		if (child == null){ return; }
 
+		if (!child.should_layout()){ return; }
+
 		if (orientation == Gtk.Orientation.HORIZONTAL){
 			child.measure(orientation, for_size, out minimum, out natural, out minimum_baseline, out natural_baseline);
+			// never below the child's own minimum, or it would overflow us
 			natural = int.max(minimum, int.min(natural, maximum_size));
 		}
 		else {
@@ -66,7 +72,7 @@ public class Clamp : Gtk.Widget {
 
 	public override void size_allocate(int width, int height, int baseline){
 
-		if (child == null){ return; }
+		if ((child == null) || !child.should_layout()){ return; }
 
 		int min_w, nat_w, mb, nb;
 		child.measure(Gtk.Orientation.HORIZONTAL, -1, out min_w, out nat_w, out mb, out nb);

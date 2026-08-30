@@ -1,6 +1,8 @@
-find . -name "*.vala" > POTFILES
+# sorted and pruned so the pot is reproducible and never picks up the
+# generated config.vala from a build directory
+find . -path ./build -prune -o -path './obj-*' -prune -o -name "*.vala" -print | LC_ALL=C sort > POTFILES
 
-xgettext --language=C --keyword=_ --output=timeshift.pot --files-from=POTFILES --sort-output
+xgettext --language=C --keyword=_ --from-code=UTF-8 --output=timeshift.pot --files-from=POTFILES --sort-output
 xgettext --output=timeshift.pot --join-existing src/share/polkit-1/actions/*.policy
 
 rm POTFILES

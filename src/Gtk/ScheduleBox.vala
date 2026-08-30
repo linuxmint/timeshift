@@ -40,7 +40,7 @@ class ScheduleBox : Gtk.Box{
 
 	private Gtk.CheckButton chk_cron;
 	
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 	
 	public ScheduleBox (Gtk.Window _parent_window) {
 
@@ -66,13 +66,11 @@ class ScheduleBox : Gtk.Box{
 		chk_m.active = App.schedule_monthly;
 		chk_m.toggled.connect(()=>{
 			App.schedule_monthly = chk_m.active;
-			spin_m.sensitive = chk_m.active;
 			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
 		spin_m.set_value(App.count_monthly);
-		spin_m.sensitive = chk_m.active;
 		spin_m.value_changed.connect(()=>{
 			App.count_monthly = (int) spin_m.get_value();
 		});
@@ -84,13 +82,11 @@ class ScheduleBox : Gtk.Box{
 		chk_w.active = App.schedule_weekly;
 		chk_w.toggled.connect(()=>{
 			App.schedule_weekly = chk_w.active;
-			spin_w.sensitive = chk_w.active;
 			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
 		spin_w.set_value(App.count_weekly);
-		spin_w.sensitive = chk_w.active;
 		spin_w.value_changed.connect(()=>{
 			App.count_weekly = (int) spin_w.get_value();
 		});
@@ -102,13 +98,11 @@ class ScheduleBox : Gtk.Box{
 		chk_d.active = App.schedule_daily;
 		chk_d.toggled.connect(()=>{
 			App.schedule_daily = chk_d.active;
-			spin_d.sensitive = chk_d.active;
 			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
 		spin_d.set_value(App.count_daily);
-		spin_d.sensitive = chk_d.active;
 		spin_d.value_changed.connect(()=>{
 			App.count_daily = (int) spin_d.get_value();
 		});
@@ -120,13 +114,11 @@ class ScheduleBox : Gtk.Box{
 		chk_h.active = App.schedule_hourly;
 		chk_h.toggled.connect(()=>{
 			App.schedule_hourly = chk_h.active;
-			spin_h.sensitive = chk_h.active;
 			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
 		spin_h.set_value(App.count_hourly);
-		spin_h.sensitive = chk_h.active;
 		spin_h.value_changed.connect(()=>{
 			App.count_hourly = (int) spin_h.get_value();
 		});
@@ -138,13 +130,11 @@ class ScheduleBox : Gtk.Box{
 		chk_b.active = App.schedule_boot;
 		chk_b.toggled.connect(()=>{
 			App.schedule_boot = chk_b.active;
-			spin_b.sensitive = chk_b.active;
 			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
 		spin_b.set_value(App.count_boot);
-		spin_b.sensitive = chk_b.active;
 		spin_b.value_changed.connect(()=>{
 			App.count_boot = (int) spin_b.get_value();
 		});
@@ -200,13 +190,11 @@ class ScheduleBox : Gtk.Box{
 		var label = Ui.add_dim_label(hbox, _("Keep"));
 		label.set_tooltip_text(tt);
 
+		/* Deliberately always sensitive: a retention count can be set before
+		 * its level is enabled. */
 		var spin2 = add_spin(hbox, 1, 999, 10);
 		spin2.set_tooltip_text(tt);
 		sg_count.add_widget(spin2);
-		
-		spin2.notify["sensitive"].connect(()=>{
-			label.sensitive = spin2.sensitive;
-		});
 
 		spin = spin2;
 	}

@@ -34,7 +34,7 @@ using TeeJee.Misc;
 
 class DeleteBox : TaskProgressBox {
 
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 
 	public DeleteBox (Gtk.Window _parent_window) {
 

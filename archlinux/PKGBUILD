@@ -8,15 +8,19 @@ if ! [ -d src ]; then
 rsync -avh --delete --exclude=.git --exclude=archlinux --exclude=debian --exclude=release ../ src/
 fi
 
-pkgname='timeshift'
+pkgname='timeshift-ssh'
 pkgver="$(cd .. && dpkg-parsechangelog --show-field Version)"
 pkgrel='1'
-pkgdesc='System restore tool for Linux'
+pkgdesc='System restore tool for Linux, with remote SSH snapshot storage'
 arch=('i686' 'x86_64' 'armv7h' 'aarch64')
-license=('gplv2')
+license=('GPL-2.0-or-later')
 
 # required for build and run
-depends=('libgee>=0.18.0' 'gtk4' 'json-glib' 'desktop-file-utils' 'vte4' 'rsync') 
+depends=('libgee>=0.18.0' 'gtk4>=4.12' 'json-glib' 'desktop-file-utils' 'vte4' 'rsync'
+         'openssh' 'glib2' 'polkit' 'libnotify' 'xdg-utils')
+optdepends=('sshfs: browse snapshots stored on a remote host'
+            'cryptsetup: unlock LUKS-encrypted snapshot devices'
+            'btrfs-progs: BTRFS snapshot mode')
 
 # required for build
 # dpkg is needed to parse version string

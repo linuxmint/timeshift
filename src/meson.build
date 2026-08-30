@@ -56,7 +56,7 @@ sources_utility = files([
   'Utility/Gtk/Banner.vala',
   'Utility/Gtk/ThemeStyle.vala',
   'Utility/Gtk/Ui.vala',
-  'Utility/Gtk/Clamp.vala',
+  'Utility/Gtk/ContentClamp.vala',
   'Utility/Gtk/StatusPage.vala',
   'Utility/Gtk/StatTile.vala',
   'Utility/Gtk/StatusCard.vala',

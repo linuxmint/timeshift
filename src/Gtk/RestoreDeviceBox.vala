@@ -52,7 +52,7 @@ class RestoreDeviceBox : Gtk.Box{
 	private Gtk.Label lbl_header_subvol;
 	private bool show_volume_name = false;
 	private int option_rows = 0;
-	private Gtk.Window parent_window;
+	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 
 	public RestoreDeviceBox (Gtk.Window _parent_window) {
 
@@ -232,7 +232,8 @@ class RestoreDeviceBox : Gtk.Box{
 			}
 			else{
 				img.visible = false;
-				lbl.label = _("Keep on Root Device");
+				lbl.label = (option.entry.mount_point == "/")
+					? _("Select a device") : _("Keep on Root Device");
 				lbl.sensitive = true;
 			}
 		});
@@ -265,10 +266,12 @@ class RestoreDeviceBox : Gtk.Box{
 		uint active = Gtk.INVALID_LIST_POSITION;
 		int index = -1;
 
-		if (entry.mount_point != "/"){
-			index++;
-			model.append(new RestoreDeviceOption(null, entry));
-		}
+		/* Index 0 is always the "no device" row. For "/" it reads as a prompt
+		 * rather than an option: Gtk.DropDown autoselects row 0 and cannot be
+		 * left unselected, so without it the combo would display a real device
+		 * while entry.device stayed null. */
+		index++;
+		model.append(new RestoreDeviceOption(null, entry));
 		
 		foreach(var dev in App.partitions){
 			// skip disk and loop devices
