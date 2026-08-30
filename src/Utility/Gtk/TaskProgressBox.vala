@@ -39,7 +39,7 @@ public class TaskProgressBox : Gtk.Box {
 	public Gtk.Label lbl_status;
 
 	// counts panel
-	private Gtk.Box counts_box;
+	protected Gtk.Box counts_box;
 	public Gtk.Label lbl_unchanged;
 	public Gtk.Label lbl_created;
 	public Gtk.Label lbl_deleted;
@@ -84,13 +84,12 @@ public class TaskProgressBox : Gtk.Box {
 
 		// counts ------------------------------------------------------------
 
+		/* Always built, only sometimes shown: subclasses that hide the grid
+		 * still write to the labels, and set_counts_visible() flips it back. */
 		counts_box = Ui.add_card(this);
 		counts_box.margin_top = Ui.Spacing.SM;
 		counts_box.visible = show_counts;
-
-		if (show_counts){
-			build_counts(counts_box);
-		}
+		build_counts(counts_box);
 	}
 
 	private void build_counts(Gtk.Box box){

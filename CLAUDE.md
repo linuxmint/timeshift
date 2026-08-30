@@ -195,7 +195,12 @@ Surfaces: `Ui.add_card` (`.ts-card`), `Ui.add_boxed_list` (a scroller with
 `StatTile` (hero number), `TaskProgressBox` (spinner/progress/counts shared by
 backup, restore, delete, estimate and log parsing), `SummaryBox` (finish page),
 `Banner` (`Gtk.InfoBar` replacement; `set_message(text, MessageType)`, INFO for
-guidance, WARNING/ERROR for problems — plain text, no markup).
+guidance, WARNING/ERROR for problems — plain text, no markup),
+`PhaseList` (a `.ts-card` checklist: `add_phase(key, title)` then
+`set_active(key)`, which also ticks off everything above it) and `LogPane`
+(a collapsed "Show technical details" expander over a monospace `.ts-log`
+`Gtk.TextView` that caps its buffer and follows the tail only while the
+reader is already at the bottom — the only `Gtk.TextView` in the app).
 
 #### Windows
 
@@ -220,7 +225,16 @@ from Confirm and Summary; going back past the dry run re-runs it on Next, and
 (`BackupBox`, `RestoreBox`, `DeleteBox`, `EstimateBox`) *are*
 `TaskProgressBox` subclasses; their polling loops write to the inherited
 labels. `TerminalWindow` keeps its close button hidden until the script has
-exited.
+exited, and so does `RestoreProgressWindow`.
+
+Restore progress is `RestoreProgressBox` (`TaskProgressBox` + banner +
+`PhaseList` + `LogPane`, plus a `StatusCard` and three `StatTile`s in its
+`hero` form). `RestoreBox` *is* one, and is also the only driver: its
+main-thread polling loop writes into `view`, which is either the wizard page
+itself or the `RestoreProgressBox` inside the full-screen
+`RestoreProgressWindow` it puts up when the running system is being
+overwritten. That window replaced the full-screen VTE; `TerminalWindow` is
+still reachable with `TIMESHIFT_RESTORE_TERMINAL=1` under `--debug`.
 
 Lists use the GTK4 widgets, not the deprecated tree stack: `Gtk.ColumnView` /
 `Gtk.ListView` over a `GLib.ListStore`, with a `Gtk.SignalListItemFactory` per
@@ -253,7 +267,7 @@ Neither binary escalates itself; both hard-exit with a message if not root. Esca
 - Per-snapshot metadata: `info.json` inside each snapshot directory.
 - Log: `/var/log/timeshift/<timestamp>_{gui|<app_mode>}.log`. Lock: `/var/run/lock/timeshift/lock`, holding `<pid>;<app_mode>` so a second instance can report what the first is doing (`src/Utility/AppLock.vala`).
 - Scheduling is cron, not systemd: `CronTab` writes `/etc/cron.d` entries that invoke the **CLI** binary (`timeshift --check --scripted`, and `@reboot … sleep 10m && timeshift --create --scripted --tags B`). So GUI schedule changes are executed by `timeshift`, not `timeshift-gtk`.
-- Restore is script-driven: `Main.create_restore_scripts()` emits shell scripts run either on the console or inside a VTE `TerminalWindow`, covering chroot, `update-grub`, `update-initramfs` and `run-parts /etc/timeshift/restore-hooks.d`.
+- Restore is script-driven: `Main.create_restore_scripts()` emits shell scripts covering chroot, `update-grub`, `update-initramfs` and `run-parts /etc/timeshift/restore-hooks.d`. In GUI mode they run through `RestoreScriptTask` (an `RsyncTask` subclass that supplies the script instead of building one, so all the itemise parsing and every field the progress loops poll keep working); on the console they still go through `exec_script_sync`. Each step is announced with an untranslated `@@TS_PHASE:<key>` echo, emitted only when `app_mode == ""`, and recorded in `App.restore_phases` so the checklist lists exactly the steps that will run. `App.restore_phase` is the step running now — the script sets it through its markers, `restore_other_gui()` sets it directly for the two steps that happen in Vala (`fix_fstab`, `parse_log`). The script's rsync uses `-aiir`, matching `RsyncTask.build_script()`, so the line count tracks the file count; the denominator is the dry run's measured `status_line_count`, stashed in `App.restore_line_count_estimate`.
 
 ## Conventions when editing
 

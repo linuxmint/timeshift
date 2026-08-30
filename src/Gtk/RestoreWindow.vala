@@ -50,7 +50,9 @@ class RestoreWindow : WizardWindow {
 
 	public RestoreWindow() {
 
-		base(App.mirror_system ? _("Clone System") : _("Restore Snapshot"), 640, 560);
+		/* Taller than the other wizards: the restore page now carries a step
+		 * checklist above the counts, and 560 px put the counts below the fold. */
+		base(App.mirror_system ? _("Clone System") : _("Restore Snapshot"), 700, 680);
 
 		log_debug("RestoreWindow: RestoreWindow()");
 
@@ -378,6 +380,14 @@ class RestoreWindow : WizardWindow {
 			App.dry_run = true;
 			success = check_box.restore();
 			if (aborted){ return; } // cancelled during the dry run
+
+			/* The dry run just itemised every line the real run will print.
+			 * That measured count is a far better denominator for the
+			 * restore's progress bar than a guessed file count. */
+			if (success){
+				App.restore_line_count_estimate = App.task.status_line_count;
+			}
+
 			go_next();
 			break;
 

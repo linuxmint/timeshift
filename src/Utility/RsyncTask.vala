@@ -85,10 +85,59 @@ public class RsyncTask : AsyncTask{
 	public int64 count_unchanged;
 
 	public StringBuilder log;
-	
+
+	/* Raw output, kept for a UI that shows it. Off by default: a full-system
+	 * sync itemises hundreds of thousands of lines and nothing else wants
+	 * them. The pipes are read on worker threads and the buffer is emptied
+	 * from the main thread, so it is guarded and handed over in one go. */
+	public bool capture_output = false;
+	private Gee.ArrayList<string> pending;
+	private GLib.Mutex pending_mutex;
+
+	/* If the reader ever stops draining, drop the oldest rather than grow
+	 * without bound. */
+	private const int PENDING_MAX = 20000;
+
 	public RsyncTask(){
 		init_regular_expressions();
 		status_lines = new GLib.Queue<string>();
+		pending = new Gee.ArrayList<string>();
+		pending_mutex = GLib.Mutex();
+	}
+
+	protected void capture(string line){
+
+		if (!capture_output){ return; }
+
+		pending_mutex.lock();
+
+		pending.add(line);
+
+		while (pending.size > PENDING_MAX){
+			pending.remove_at(0);
+		}
+
+		pending_mutex.unlock();
+	}
+
+	/* Every line captured since the last call, oldest first. */
+	public string[] drain_output(){
+
+		string[] lines = {};
+
+		if (!capture_output){ return lines; }
+
+		if (pending_mutex.trylock()){
+
+			if (pending.size > 0){
+				lines = pending.to_array();
+				pending.clear();
+			}
+
+			pending_mutex.unlock();
+		}
+
+		return lines;
 	}
 
 	private void init_regular_expressions(){
@@ -469,6 +518,8 @@ public class RsyncTask : AsyncTask{
 		if ((line == null) || (line.length == 0)) {
 			return true;
 		}
+
+		capture(line);
 
 		status_line_count++;
 

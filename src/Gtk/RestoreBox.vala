@@ -32,19 +32,39 @@ using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
-class RestoreBox : TaskProgressBox {
+/* The wizard's restore page, and the driver behind both restore views.
+ *
+ * Restoring over the running system takes over the screen: the wizard goes
+ * away and RestoreProgressWindow appears, because there is no going back and
+ * nothing else to do until it finishes. Restoring anywhere else - and the dry
+ * run - stays on this page. Either way the work happens on a worker thread and
+ * this loop, on the main thread, is the only thing that touches widgets. */
+
+class RestoreBox : RestoreProgressBox {
 
 	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 
 	private bool thread_is_running = false;
 
+	/* Where the polling loop writes: this page, or the full-screen window's
+	 * copy of it. */
+	private RestoreProgressBox view;
+
+	private RestoreProgressWindow? fullscreen_win = null;
+
+	/* The checklist currently on screen. Compared by identity: Core publishes
+	 * a finished list in one assignment, so a new reference means new steps. */
+	private Gee.ArrayList<RestorePhase>? phases_shown = null;
+
 	public RestoreBox(Gtk.Window _parent_window) {
 
-		base(App.dry_run ? _("Comparing Files (Dry Run)...") : _("Restoring Snapshot..."), true);
+		base(App.dry_run ? _("Comparing Files (Dry Run)...") : _("Restoring Snapshot..."), false);
 
 		log_debug("RestoreBox: RestoreBox()");
 
 		parent_window = _parent_window;
+
+		view = this;
 
 		log_debug("RestoreBox: RestoreBox(): exit");
     }
@@ -52,13 +72,55 @@ class RestoreBox : TaskProgressBox {
 	public bool restore(){
 
 		log_debug("RestoreBox: restore()");
-		
-		if (App.restore_current_system && !App.dry_run){
+
+		// the debug terminal takes the screen itself; do not stack two windows
+		bool takeover = App.restore_current_system && !App.dry_run
+			&& !App.restore_uses_terminal();
+
+		string header = App.dry_run ? _("Comparing Files (Dry Run)...") : _("Restoring Snapshot...");
+
+		if (takeover){
+
+			/* Built and shown from the main thread, before any worker
+			 * starts. The wizard hides behind it and comes back only if the
+			 * restore returns instead of rebooting. */
+			fullscreen_win = new RestoreProgressWindow(parent_window, header);
+			fullscreen_win.is_running = true;
+			view = fullscreen_win.box;
+
+			if (App.snapshot_to_restore != null){
+				view.set_subtitle("%s ~ %s".printf(
+					App.snapshot_to_restore.name, App.snapshot_to_restore.description));
+			}
+
+			view.set_banner(
+				_("Do not turn off your computer. It will restart by itself once the restore is finished."),
+				Gtk.MessageType.WARNING);
+
+			fullscreen_win.present();
 			parent_window.visible = false;
 		}
+		else{
+			view = this;
+			set_header(header);
 
-		set_header(App.dry_run ? _("Comparing Files (Dry Run)...") : _("Restoring Snapshot..."));
-		
+			if (App.restore_current_system && !App.dry_run){
+				// the terminal is about to cover everything anyway
+				parent_window.visible = false;
+			}
+
+			if (!App.dry_run){
+				view.set_banner(
+					_("Do not interrupt the restore. The target system stays inconsistent until it finishes."),
+					Gtk.MessageType.WARNING);
+			}
+		}
+
+		view.clear_log();
+		phases_shown = null;
+
+		gtk_do_events();
+
 		try {
 			thread_is_running = true;
 			new Thread<void>.try ("restore", () => {restore_thread();});
@@ -81,7 +143,7 @@ class RestoreBox : TaskProgressBox {
 			
 			if (status_line != last_status_line){
 				
-				lbl_status.label = status_line;
+				view.lbl_status.label = status_line;
 				last_status_line = status_line;
 				status_line_counter = status_line_counter_default;
 			}
@@ -90,11 +152,9 @@ class RestoreBox : TaskProgressBox {
 				
 				if (status_line_counter < 0){
 					status_line_counter = status_line_counter_default;
-					lbl_status.label = "";
+					view.lbl_status.label = "";
 				}
 			}
-
-			// TODO: show estimated time remaining and file counts
 
 			double fraction = App.task.progress;
 
@@ -103,30 +163,28 @@ class RestoreBox : TaskProgressBox {
 			
 			if (remaining_counter == 0){
 				
-				lbl_remaining.label = App.task.stat_time_remaining + " " + _("remaining");
+				view.lbl_remaining.label = App.task.stat_time_remaining + " " + _("remaining");
 
 				remaining_counter = 10;
 			}	
 			
 			if (fraction < 0.99){
 				
-				progressbar.fraction = fraction;
+				view.progressbar.fraction = fraction;
 
 				LauncherEntry.set_progress((int)(fraction * 100.0));
 			}
 
-			lbl_msg.label = App.progress_text;
+			view.lbl_msg.label = App.progress_text;
 
-			lbl_unchanged.label = "%'d".printf(App.task.count_unchanged);
-			lbl_created.label = "%'d".printf(App.task.count_created);
-			lbl_deleted.label = "%'d".printf(App.task.count_deleted);
-			lbl_modified.label = "%'d".printf(App.task.count_modified);
-			lbl_checksum.label = "%'d".printf(App.task.count_checksum);
-			lbl_size.label = "%'d".printf(App.task.count_size);
-			lbl_timestamp.label = "%'d".printf(App.task.count_timestamp);
-			lbl_permissions.label = "%'d".printf(App.task.count_permissions);
-			lbl_owner.label = "%'d".printf(App.task.count_owner);
-			lbl_group.label = "%'d".printf(App.task.count_group);
+			view.update_counts(App.task);
+
+			// the checklist is only known once the scripts have been written
+			refresh_phases();
+
+			view.set_phase(App.restore_phase);
+
+			drain_output();
 
 			gtk_do_events();
 
@@ -134,8 +192,21 @@ class RestoreBox : TaskProgressBox {
 			//gtk_do_events();
 		}
 
+		drain_output();
+
+		// whatever the script did not announce, it got through
+		if (App.task.exit_code == 0){
+			view.complete_phases();
+		}
+
 		LauncherEntry.set_progress(0);
-		
+
+		if (fullscreen_win != null){
+			fullscreen_win.finish();
+			fullscreen_win = null;
+			view = this;
+		}
+
 		if (App.restore_current_system && !App.dry_run){
 			parent_window.visible = true;
 		}
@@ -144,7 +215,35 @@ class RestoreBox : TaskProgressBox {
 
 		return (App.task.exit_code == 0);
 	}
-	
+
+	/* The steps are decided by create_restore_scripts(), which runs on the
+	 * worker thread, so the list appears a moment after the page does. */
+	private void refresh_phases(){
+
+		if (App.restore_phases == phases_shown){ return; }
+
+		phases_shown = App.restore_phases;
+		view.set_phases(phases_shown);
+	}
+
+	/* Raw output comes from whichever task is producing it: the rsync task
+	 * during the sync, the script task during the bootloader and hook steps.
+	 * On a current-system restore they are the same object. */
+	private void drain_output(){
+
+		var rsync_task = App.task;
+
+		if (rsync_task != null){
+			view.append_log(rsync_task.drain_output());
+		}
+
+		var script_task = App.restore_script_task;
+
+		if ((script_task != null) && (script_task != rsync_task)){
+			view.append_log(script_task.drain_output());
+		}
+	}
+
 	private void restore_thread(){
 		
 		log_debug("RestoreBox: restore_thread()");

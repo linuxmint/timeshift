@@ -1,3 +1,20 @@
+timeshift-ssh (25.12.4+ssh10) resolute; urgency=medium
+
+  * Restoring the running system now shows a designed full-screen progress view instead of a raw VTE terminal: a step checklist, a real progress bar with ETA and current file, live created/changed/deleted counts, and the raw script output behind a 'Show technical details' pane
+  * The restore script announces each step with an @@TS_PHASE marker and runs through the new RestoreScriptTask, so bootloader and post-restore-hook steps are visible in the GUI on both restore paths
+  * Restore progress bar is now accurate: the script itemises with -aiir and the denominator is the dry run's measured line count instead of a guessed file count
+  * Restoring the current system no longer reports the stale dry-run task's counters and exit code, and now writes the parsed rsync -changes log
+  * The old full-screen terminal is still available with TIMESHIFT_RESTORE_TERMINAL=1 under --debug
+  * Fix a crash in the theme portal read: g_variant_new("(as)") needs a builder, not a string array, and aborted the process whenever a session bus answered
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 10:51:34 -0400
+
+timeshift-ssh (25.12.4+ssh9) resolute; urgency=medium
+
+  * Wire full build via build-all.sh (timeshift + apt-snapshot-guard)
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 10:15:41 -0400
+
 timeshift-ssh (25.12.4+ssh8) resolute; urgency=medium
 
   * Remote locations now report a type of remote-ssh-rsync instead of an unknown snapshot device: the log line reads 'remote-ssh-rsync (user@host)' and --list shows a Type row

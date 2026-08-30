@@ -291,7 +291,12 @@ public class AppTheme : GLib.Object {
 				"/org/freedesktop/portal/desktop",
 				"org.freedesktop.portal.Settings",
 				"ReadAll",
-				new GLib.Variant("(as)", new string[]{ "org.freedesktop.appearance" }),
+				/* Built explicitly: g_variant_new("(as)", ...) wants a
+				 * GVariantBuilder, not a string array, and handing it one
+				 * aborts the process the moment a session bus answers. */
+				new GLib.Variant.tuple({
+					new GLib.Variant.strv({ "org.freedesktop.appearance" })
+				}),
 				new GLib.VariantType("(a{sa{sv}})"),
 				GLib.DBusCallFlags.NONE,
 				2000,

@@ -185,6 +185,23 @@ public class Main : GLib.Object{
 	public DeleteFileTask delete_file_task;
 	public RsyncSpaceCheckTask space_check_task;
 
+	/* Restore progress, for the GUI to poll.
+	 *
+	 * restore_phases is the checklist: the steps this restore will actually
+	 * take, in order, filled by create_restore_scripts(). restore_phase is
+	 * the key of the step running now - set by the script through its
+	 * @@TS_PHASE markers, and directly by the steps that happen in Vala
+	 * rather than in the script. restore_script_task is whichever script is
+	 * running, so the log pane knows where to read raw output from. */
+	public Gee.ArrayList<RestorePhase> restore_phases = new Gee.ArrayList<RestorePhase>();
+	public string restore_phase = "";
+	public RestoreScriptTask? restore_script_task = null;
+
+	/* The dry run that precedes every rsync restore itemises exactly the
+	 * lines the real run will emit, which makes it a far better denominator
+	 * for the progress bar than a guessed file count. */
+	public int64 restore_line_count_estimate = 0;
+
 	public Gee.HashMap<string, SystemUser> current_system_users;
 	public string users_with_encrypted_home = "";
 	public string encrypted_home_dirs = "";
@@ -2700,6 +2717,33 @@ public class Main : GLib.Object{
 		log_debug("Main: get_restore_messages(): exit");
 	}
 
+	/* The checklist under construction. It is published to restore_phases in
+	 * one reference assignment once complete, because the GUI polls that
+	 * field from the main thread while this runs on a worker. */
+	private Gee.ArrayList<RestorePhase> phases_building = new Gee.ArrayList<RestorePhase>();
+
+	/* Records a step in the restore checklist and returns the line that makes
+	 * the script announce it. Nothing is echoed in console mode: there the
+	 * script's own output is the interface, and a marker would just be noise. */
+	private string phase_marker(string key, string title){
+
+		add_restore_phase(key, title);
+
+		if (app_mode != ""){ return ""; }
+
+		return "echo '%s%s' \n".printf(RestoreScriptTask.PHASE_MARKER, key);
+	}
+
+	/* A step that happens in Vala rather than in the script, so it has a row
+	 * in the checklist but no marker. */
+	private void add_restore_phase(string key, string title){
+		phases_building.add(new RestorePhase(key, title));
+	}
+
+	private void publish_restore_phases(){
+		restore_phases = phases_building;
+	}
+
 	private void create_restore_scripts(out string sh_sync, out string sh_finish){
 
 		log_debug("Main: create_restore_scripts()");
@@ -2707,6 +2751,15 @@ public class Main : GLib.Object{
 		string sh = "export LC_ALL=C.UTF-8\n";
 
 		// create scripts --------------------------------------
+
+		phases_building = new Gee.ArrayList<RestorePhase>();
+		restore_phases = new Gee.ArrayList<RestorePhase>();
+		restore_phase = "";
+
+		if (dry_run){
+			// measured by this very run; anything left over is from last time
+			restore_line_count_estimate = 0;
+		}
 
 		sh = "";
 		sh += "echo ''\n";
@@ -2717,11 +2770,18 @@ public class Main : GLib.Object{
 			sh += "echo '" + _("System will reboot after files are restored") + "'\n";
 		}
 		sh += "echo ''\n";
+		sh += phase_marker("prepare", _("Preparing"));
 		sh += "sleep 3s\n";
 
 		// run rsync ---------------------------------------
 
-		sh += "rsync -avir --force --delete --delete-before";
+		sh += phase_marker("sync_files",
+			dry_run ? _("Comparing files") : _("Restoring files"));
+
+		/* -aii, not -avi: the second -i itemises unchanged files too. That is
+		 * what RsyncTask.build_script() uses, and it is what makes the line
+		 * count track the file count, so the progress bar means something. */
+		sh += "rsync -aiir --force --delete --delete-before";
 
 		if (dry_run){
 			sh += " --dry-run";
@@ -2760,15 +2820,25 @@ public class Main : GLib.Object{
 		if (dry_run){
 			sh_sync = sh;
 			sh_finish = "";
+			publish_restore_phases();
 			return; // no need to continue
 		}
 
+		sh += phase_marker("flush", _("Flushing writes to disk"));
 		sh += "sync \n"; // sync file system
 
 		log_debug("rsync script:");
 		log_debug(sh);
 
 		sh_sync = sh;
+
+		/* Between the two scripts the other-device path fixes up the target's
+		 * fstab and parses the rsync log, in Vala. They are steps the user
+		 * waits through, so they belong in the checklist. */
+		if (!restore_current_system){
+			add_restore_phase("fix_fstab", _("Updating fstab and crypttab"));
+			add_restore_phase("parse_log", _("Parsing log file"));
+		}
 		
 		// chroot and re-install grub2 ---------------------
 
@@ -2789,6 +2859,7 @@ public class Main : GLib.Object{
 			//}
 
 			// bind system directories for chrooted system
+			sh += phase_marker("chroot_bind", _("Preparing target system"));
 			sh += "for i in dev dev/pts proc run sys; do mount --bind \"/$i\" \"%s$i\"; done \n".printf(restore_target_path);
 		}
 
@@ -2796,6 +2867,7 @@ public class Main : GLib.Object{
 			
 			sh += "sync \n";
 			sh += "echo '' \n";
+			sh += phase_marker("grub_install", _("Re-installing GRUB2 bootloader"));
 			sh += "echo '" + _("Re-installing GRUB2 bootloader...") + "' \n";
 
 			// search for other operating systems
@@ -2837,6 +2909,7 @@ public class Main : GLib.Object{
 
 		if (update_initramfs){
 			sh += "echo '' \n";
+			sh += phase_marker("initramfs", _("Rebuilding initramfs"));
 			sh += "echo '" + _("Generating initramfs...") + "' \n";
 			
 			if (target_distro.dist_type == "redhat"){
@@ -2854,6 +2927,7 @@ public class Main : GLib.Object{
 
 		if (update_grub){
 			sh += "echo '' \n";
+			sh += phase_marker("grub_menu", _("Updating GRUB menu"));
 			sh += "echo '" + _("Updating GRUB menu...") + "' \n";
 			
 			if (target_distro.dist_type == "redhat"){
@@ -2871,12 +2945,14 @@ public class Main : GLib.Object{
 		}
 		
 		// sync file systems
+		sh += phase_marker("fs_sync", _("Syncing file systems"));
 		sh += "echo '" + _("Syncing file systems...") + "' \n";
 		sh += "sync ; sleep 10s; \n";
 		sh += "echo '' \n";
 		
 		if (!restore_current_system){
 			// unmount chrooted system
+			sh += phase_marker("cleanup", _("Cleaning up"));
 			sh += "echo '" + _("Cleaning up...") + "' \n";
 			sh += "for i in dev/pts dev proc run sys; do umount -f \"%s$i\"; done \n".printf(restore_target_path);
 			sh += "sync \n";
@@ -2888,6 +2964,7 @@ public class Main : GLib.Object{
 		// Perform any post-restore actions
 		log_debug("Running post-restore tasks...");
 
+		sh += phase_marker("hooks", _("Running post-restore scripts"));
 		sh += "if [ -d \"/etc/timeshift/restore-hooks.d\" ]; then \n";
 		sh += "  run-parts --verbose /etc/timeshift/restore-hooks.d \n";
 		sh += "fi \n";
@@ -2896,6 +2973,7 @@ public class Main : GLib.Object{
 
 		if (restore_current_system){
 			sh += "echo '' \n";
+			sh += phase_marker("reboot", _("Restarting"));
 			sh += "echo '" + _("Rebooting system...") + "' \n";
 			sh += "sleep 5s \n";
 			sh += "reboot -f \n";
@@ -2903,6 +2981,8 @@ public class Main : GLib.Object{
 		}
 
 		sh_finish = sh;
+
+		publish_restore_phases();
 	}
 
 	private bool restore_current_console(string sh_sync, string sh_finish){
@@ -2928,17 +3008,84 @@ public class Main : GLib.Object{
 		return (ret_val == 0);
 	}
 
+	/* The full-screen VTE terminal is kept for debugging:
+	 * TIMESHIFT_RESTORE_TERMINAL=1 under --debug brings back the raw script
+	 * exactly as it used to be. The GUI asks too, so it knows not to put its
+	 * own progress window up underneath. */
+	public bool restore_uses_terminal(){
+
+		return LOG_DEBUG
+			&& (GLib.Environment.get_variable("TIMESHIFT_RESTORE_TERMINAL") != null);
+	}
+
+	/* Restoring over the running system.
+	 *
+	 * The whole script - sync, bootloader, hooks, reboot - runs as one unit,
+	 * because after rsync has overwritten / there is nothing left to make
+	 * further decisions with. What changed is that its output now drives
+	 * RestoreProgressWindow instead of scrolling past in a terminal.
+	 *
+	 * The task is assigned to App.task so the progress page reads this run's
+	 * counters and this run's exit code, rather than the finished dry run's. */
 	private bool restore_current_gui(string sh_sync, string sh_finish){
 
 		log_debug("Main: restore_current_gui()");
-		
+
 		string script = sh_sync + sh_finish;
-		string temp_script = save_bash_script_temp(script);
 
-		var dlg = new TerminalWindow.with_parent(parent_window);
-		dlg.execute_script(temp_script, true);
+		if (restore_uses_terminal()){
 
-		return true;
+			log_debug("Main: restore_current_gui(): using the terminal window");
+
+			string temp_script = save_bash_script_temp(script);
+
+			var dlg = new TerminalWindow.with_parent(parent_window);
+			dlg.execute_script(temp_script, true);
+
+			return true;
+		}
+
+		var script_task = new RestoreScriptTask();
+		script_task.script_text = script;
+		script_task.rsync_log_file = restore_log_file;
+		script_task.prg_count_total = restore_progress_total();
+
+		task = script_task;
+		restore_script_task = script_task;
+
+		script_task.execute();
+
+		while (script_task.status == AppStatus.RUNNING){
+
+			restore_phase = script_task.current_phase;
+
+			sleep(200);
+			gtk_do_events();
+		}
+
+		restore_script_task = null;
+
+		return (script_task.exit_code == 0);
+	}
+
+	/* How many itemised lines the restore is expected to print. The dry run
+	 * that precedes every rsync restore counted them exactly; the snapshot's
+	 * own file count is the fallback for the paths that skip it. */
+	private int64 restore_progress_total(){
+
+		if (restore_line_count_estimate > 0){
+			return restore_line_count_estimate;
+		}
+
+		if ((snapshot_to_restore != null) && (snapshot_to_restore.file_count > 0)){
+			return snapshot_to_restore.file_count;
+		}
+
+		if (Main.first_snapshot_count > 0){
+			return Main.first_snapshot_count;
+		}
+
+		return 500000;
 	}
 
 	private bool restore_other_console(string sh_sync, string sh_finish){
@@ -3004,6 +3151,7 @@ public class Main : GLib.Object{
 		task.delete_extra = true;
 		task.delete_excluded = false;
 		task.delete_after = true;
+		task.capture_output = true; // the progress page shows the raw output
 
 		task.dry_run = dry_run;
 	
@@ -3028,15 +3176,9 @@ public class Main : GLib.Object{
 
 		task.rsync_log_file = restore_log_file;
 
-		if ((snapshot_to_restore != null) && (snapshot_to_restore.file_count > 0)){
-			task.prg_count_total = snapshot_to_restore.file_count;
-		}
-		else if (Main.first_snapshot_count > 0){
-			task.prg_count_total = Main.first_snapshot_count;
-		}
-		else{
-			task.prg_count_total = 500000;
-		}
+		task.prg_count_total = restore_progress_total();
+
+		restore_phase = "sync_files";
 
 		task.execute();
 
@@ -3062,13 +3204,17 @@ public class Main : GLib.Object{
 
 		// update files after sync --------------------
 
+		restore_phase = "fix_fstab";
+
 		fix_fstab_file(restore_target_path);
 		fix_crypttab_file(restore_target_path);
 
+		restore_phase = "parse_log";
+
 		progress_text = _("Parsing log file...");
 		log_msg(progress_text);
-		var task = new RsyncTask();
-		task.parse_log(restore_log_file);
+		var log_task = new RsyncTask();
+		log_task.parse_log(restore_log_file);
 
 		// execute sh_finish ------------
 
@@ -3078,8 +3224,35 @@ public class Main : GLib.Object{
 
 		log_debug("executing sh_finish: ");
 		log_debug(sh_finish);
-		
-		int ret_val = exec_script_sync(sh_finish, null, null, false, false, false, true);
+
+		/* Run through the same task as the current-system restore so the
+		 * bootloader and hook steps reach the checklist and the output pane.
+		 * exec_script_sync() used to print them to the app's own stdout,
+		 * where a GUI user never saw them.
+		 *
+		 * App.task deliberately keeps pointing at the sync task: the counts
+		 * on screen belong to the files that were restored. No log file
+		 * either, or the inherited finish_task() would overwrite the sync's
+		 * "-changes" sidecar with this script's empty one. */
+		var script_task = new RestoreScriptTask();
+		script_task.script_text = sh_finish;
+		script_task.prg_count_total = 0; // must not disturb the progress bar
+
+		restore_script_task = script_task;
+
+		script_task.execute();
+
+		while (script_task.status == AppStatus.RUNNING){
+
+			restore_phase = script_task.current_phase;
+
+			sleep(200);
+			gtk_do_events();
+		}
+
+		restore_script_task = null;
+
+		int ret_val = script_task.exit_code;
 
 		log_debug("script exit code: %d".printf(ret_val));
 

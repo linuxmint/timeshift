@@ -482,5 +482,24 @@ button.ts-swatch image { -gtk-icon-size: 14px; }
 .ts-status-created { color: @ts_success; }
 .ts-status-changed { color: @ts_warning; }
 .ts-status-deleted { color: @ts_error; }
+
+/* progress checklist ---------------------------------------------- */
+
+.ts-phase-pending { color: @ts_dim_fg; }
+.ts-phase-done { color: @ts_success; }
+
+/* raw script output ----------------------------------------------- */
+
+.ts-log {
+	font-family: monospace;
+	font-size: 0.9em;
+	background-color: @ts_view_bg;
+	color: @ts_fg;
+}
+.ts-log text { background-color: @ts_view_bg; color: @ts_fg; }
+.ts-log-frame {
+	border: $BORDERpx solid @ts_border;
+	border-radius: $RADIUS_SMpx;
+}
 """;
 }
