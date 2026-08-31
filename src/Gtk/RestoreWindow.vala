@@ -443,22 +443,25 @@ class RestoreWindow : WizardWindow {
 	 * boilerplate advice. */
 	private void show_restore_outcome(){
 
-		string header = App.mirror_system ? _("Cloning") : _("Restore");
+		/* Whole msgids, not "Restore" + " " + "Failed": concatenated fragments
+		 * cannot be reassembled in languages with a different word order. */
+		string header;
 
 		var lines = new Gee.ArrayList<string>();
 
 		switch(App.restore_outcome){
 
 		case Main.RestoreOutcome.FAILED:
-			header += " " + _("Failed");
+			header = App.mirror_system ? _("Cloning Failed") : _("Restore Failed");
 			break;
 
 		case Main.RestoreOutcome.WARNINGS:
-			header += " " + _("Completed With Warnings");
+			header = App.mirror_system
+				? _("Cloning Completed With Warnings") : _("Restore Completed With Warnings");
 			break;
 
 		default:
-			header += " " + _("Completed");
+			header = App.mirror_system ? _("Cloning Completed") : _("Restore Completed");
 			break;
 		}
 
@@ -490,7 +493,9 @@ class RestoreWindow : WizardWindow {
 		 * that is the one case where its contents matter, and it is what was
 		 * missing when grub-install failed with nothing but an exit code. */
 		if (App.restore_failed_step.length > 0){
-			lines.add(_("Step output: %s").printf("/var/log/timeshift/restore-steps.log"));
+			// the real path, not a hardcoded one: for a remote repository the
+			// log lives wherever restore_log_file was actually placed
+			lines.add(_("Step output: %s").printf(App.restore_steps_log_file()));
 		}
 
 		finish_box.set_header(header);

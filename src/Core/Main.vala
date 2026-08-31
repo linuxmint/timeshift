@@ -2966,34 +2966,6 @@ public class Main : GLib.Object{
 		restore_phases = phases_building;
 	}
 
-	/* The retry loop around the restore's rsync, plus the guard that stops the
-	 * script dead if it ultimately fails.
-	 *
-	 * Both halves matter, and the second one more. Before this, rsync's exit
-	 * status was never looked at: a dropped wifi link mid-transfer fell through
-	 * to the finish script, which bind-mounts /dev and /proc into the target,
-	 * runs grub-install --force, regenerates the initramfs and reboots -- all
-	 * over a half-copied root filesystem, while reporting success. A two-second
-	 * blip could hand back an unbootable machine.
-	 *
-	 * rsync is idempotent and resumable, so retrying simply continues. The exit
-	 * codes are split by whether retrying can plausibly help:
-	 *
-	 *   0, 24    done (24 = source files vanished; harmless)
-	 *   10 12 30 35 255   socket/protocol/timeout/ssh -- the network. Retry for
-	 *                     as long as the user is willing to wait: a partially
-	 *                     restored system has no good ending, so a timer must
-	 *                     not be the thing that gives up on it.
-	 *   23       partial transfer, usually permissions rather than the link.
-	 *            Bounded, or a genuine permission fault would spin forever.
-	 *   *        usage error, disk full: retrying cannot help. Fail now.
-	 */
-	/* A file the script touches before it aborts.
-	 *
-	 * The console restore paths run through exec_script_sync(), which always
-	 * reports success -- its wrapper's trailing echo is the last command -- and
-	 * in verbose mode there is no captured output to scan either. A sentinel on
-	 * disk is the one signal that survives both. */
 	/* The title shown in the checklist for a phase key, so the finish screen
 	 * can name the failing step the way the user just saw it. */
 	private string restore_phase_title(string key){
@@ -3106,12 +3078,6 @@ public class Main : GLib.Object{
 		}
 	}
 
-	/* Put the rsync log somewhere that outlives the session.
-	 *
-	 * For a remote repository restore_log_file lives in TEMP_DIR, which in a
-	 * live recovery environment is tmpfs. The restore that most needs
-	 * explaining is exactly the one after which the machine is rebooted, and
-	 * the log went with it -- the target's own /var/log/timeshift was empty. */
 	/* Warn when a restored system has snaps but no way to launch them.
 	 *
 	 * Snapshots taken before /snap/bin was preserved contain every .snap
@@ -3172,6 +3138,12 @@ public class Main : GLib.Object{
 		restore_note(_("Fix on the restored system with: sudo apt install --reinstall snapd"));
 	}
 
+	/* Put the rsync log somewhere that outlives the session.
+	 *
+	 * For a remote repository restore_log_file lives in TEMP_DIR, which in a
+	 * live recovery environment is tmpfs. The restore that most needs
+	 * explaining is exactly the one after which the machine is rebooted, and
+	 * the log went with it -- the target's own /var/log/timeshift was empty. */
 	private void save_restore_log_to_target(){
 
 		if (restore_current_system){ return; } // the target is /; nothing to copy to
@@ -3204,6 +3176,12 @@ public class Main : GLib.Object{
 	/* Printed by the source probe's shell when rsync succeeded. */
 	private const string SOURCE_OK_MARKER = "@@TS_SOURCE_OK";
 
+	/* A file the script touches before it aborts.
+	 *
+	 * The console restore paths run through exec_script_sync(), which always
+	 * reports success -- its wrapper's trailing echo is the last command -- and
+	 * in verbose mode there is no captured output to scan either. A sentinel on
+	 * disk is the one signal that survives both. */
 	private string restore_failed_flag(){
 		return path_combine(file_parent(restore_log_file), ".timeshift-restore-failed");
 	}
@@ -3284,6 +3262,29 @@ public class Main : GLib.Object{
 		return true;
 	}
 
+	/* The retry loop around the restore's rsync, plus the guard that stops the
+	 * script dead if it ultimately fails.
+	 *
+	 * Both halves matter, and the second one more. Before this, rsync's exit
+	 * status was never looked at: a dropped wifi link mid-transfer fell through
+	 * to the finish script, which bind-mounts /dev and /proc into the target,
+	 * runs grub-install --force, regenerates the initramfs and reboots -- all
+	 * over a half-copied root filesystem, while reporting success. A two-second
+	 * blip could hand back an unbootable machine.
+	 *
+	 * rsync is idempotent and resumable, so retrying simply continues. The exit
+	 * codes are split by whether retrying can plausibly help:
+	 *
+	 *   0, 24    done (24 = source files vanished; harmless)
+	 *   10 12 30 35 255   socket/protocol/timeout/ssh -- the network. Retry for
+	 *                     as long as the user is willing to wait: a partially
+	 *                     restored system has no good ending, so a timer must
+	 *                     not be the thing that gives up on it.
+	 *   23       partial transfer, usually permissions rather than the link.
+	 *            Not retried at all: a retry re-scans the whole tree only to
+	 *            fail on the same files, so it becomes a warning instead.
+	 *   *        usage error, disk full: retrying cannot help. Fail now.
+	 */
 	private string restore_rsync_retry_block(){
 
 		string probe = repo_is_remote() ? repo.backend.reachability_command() : "";
@@ -3295,7 +3296,6 @@ public class Main : GLib.Object{
 		string sh = "";
 
 		sh += "ts_attempt=0\n";
-		sh += "ts_partial_fails=0\n";
 		sh += "while :; do\n";
 		sh += "  ts_attempt=$((ts_attempt + 1))\n";
 		sh += "  ts_run_rsync\n";
@@ -3380,8 +3380,8 @@ public class Main : GLib.Object{
 		if (restore_current_system){
 			log_debug("restoring current system");
 			
-			sh += "echo '" + _("Please do not interrupt the restore process!") + "'\n";
-			sh += "echo '" + _("System will reboot after files are restored") + "'\n";
+			sh += "echo '" + escape_single_quote(_("Please do not interrupt the restore process!")) + "'\n";
+			sh += "echo '" + escape_single_quote(_("System will reboot after files are restored")) + "'\n";
 		}
 		sh += "echo ''\n";
 		sh += phase_marker("prepare", _("Preparing"));
@@ -3570,7 +3570,7 @@ public class Main : GLib.Object{
 			sh += "if [ ! -e \"%sbin/sh\" ] && [ ! -e \"%susr/bin/sh\" ]; then \n".printf(
 				restore_target_path, restore_target_path);
 			sh += "  echo '%s'\"chroot_bind:1\"\n".printf(RestoreScriptTask.STEP_FAILED_MARKER);
-			sh += "  echo '" + _("The restored system has no shell; the boot loader steps cannot run.") + "' \n";
+			sh += "  echo '" + escape_single_quote(_("The restored system has no shell; the boot loader steps cannot run.")) + "' \n";
 			sh += "fi \n";
 		}
 
@@ -3579,7 +3579,7 @@ public class Main : GLib.Object{
 			sh += "sync \n";
 			sh += "echo '' \n";
 			sh += phase_marker("grub_install", _("Re-installing GRUB2 bootloader"));
-			sh += "echo '" + _("Re-installing GRUB2 bootloader...") + "' \n";
+			sh += "echo '" + escape_single_quote(_("Re-installing GRUB2 bootloader...")) + "' \n";
 
 			/* Check the ESP is really mounted before calling grub-install.
 			 *
@@ -3595,7 +3595,7 @@ public class Main : GLib.Object{
 
 				sh += "if ! mountpoint -q '%s'; then \n".printf(escape_single_quote(esp_path));
 				sh += "  echo '%s'\"grub_install:1\"\n".printf(RestoreScriptTask.STEP_FAILED_MARKER);
-				sh += "  echo '" + _("No EFI System Partition is mounted at /boot/efi; the boot loader cannot be installed.") + "' \n";
+				sh += "  echo '" + escape_single_quote(_("No EFI System Partition is mounted at /boot/efi; the boot loader cannot be installed.")) + "' \n";
 				sh += "else \n";
 			}
 
@@ -3605,7 +3605,7 @@ public class Main : GLib.Object{
 			sh += "  ts_step grub_install %s grub2-install --recheck --force %s \n".printf(chroot, grub_device);
 			sh += "else \n";
 			sh += "  echo '%s'\"grub_install:127\"\n".printf(RestoreScriptTask.STEP_FAILED_MARKER);
-			sh += "  echo '" + _("grub-install was not found in the restored system.") + "' \n";
+			sh += "  echo '" + escape_single_quote(_("grub-install was not found in the restored system.")) + "' \n";
 			sh += "fi \n";
 
 			if (snapshot_needs_esp() && !restore_current_system){
@@ -3623,7 +3623,7 @@ public class Main : GLib.Object{
 
 			sh += "echo '' \n";
 			sh += phase_marker("initramfs", _("Rebuilding initramfs"));
-			sh += "echo '" + _("Generating initramfs...") + "' \n";
+			sh += "echo '" + escape_single_quote(_("Generating initramfs...")) + "' \n";
 
 			/* dracut first, and explicitly generic.
 			 *
@@ -3643,7 +3643,7 @@ public class Main : GLib.Object{
 			sh += "  ts_step initramfs %s sh -c 'mkinitcpio -p /etc/mkinitcpio.d/*.preset' \n".printf(chroot);
 			sh += "else \n";
 			sh += "  echo '%s'\"initramfs:127\"\n".printf(RestoreScriptTask.STEP_FAILED_MARKER);
-			sh += "  echo '" + _("No initramfs tool was found in the restored system.") + "' \n";
+			sh += "  echo '" + escape_single_quote(_("No initramfs tool was found in the restored system.")) + "' \n";
 			sh += "fi \n";
 		}
 
@@ -3653,7 +3653,7 @@ public class Main : GLib.Object{
 
 			sh += "echo '' \n";
 			sh += phase_marker("grub_menu", _("Updating GRUB menu"));
-			sh += "echo '" + _("Updating GRUB menu...") + "' \n";
+			sh += "echo '" + escape_single_quote(_("Updating GRUB menu...")) + "' \n";
 
 			/* Was "if (redhat) ... if (arch) ... else ...", where the else bound
 			 * to the arch test -- so a redhat target ran grub2-mkconfig AND
@@ -3666,7 +3666,7 @@ public class Main : GLib.Object{
 			sh += "  ts_step grub_menu %s grub-mkconfig -o /boot/grub/grub.cfg \n".printf(chroot);
 			sh += "else \n";
 			sh += "  echo '%s'\"grub_menu:127\"\n".printf(RestoreScriptTask.STEP_FAILED_MARKER);
-			sh += "  echo '" + _("No GRUB configuration tool was found in the restored system.") + "' \n";
+			sh += "  echo '" + escape_single_quote(_("No GRUB configuration tool was found in the restored system.")) + "' \n";
 			sh += "fi \n";
 
 			sh += "sync \n";
@@ -3675,14 +3675,14 @@ public class Main : GLib.Object{
 
 		// sync file systems
 		sh += phase_marker("fs_sync", _("Syncing file systems"));
-		sh += "echo '" + _("Syncing file systems...") + "' \n";
+		sh += "echo '" + escape_single_quote(_("Syncing file systems...")) + "' \n";
 		sh += "sync ; sleep 10s; \n";
 		sh += "echo '' \n";
 
 		if (!restore_current_system){
 			// unmount chrooted system
 			sh += phase_marker("cleanup", _("Cleaning up"));
-			sh += "echo '" + _("Cleaning up...") + "' \n";
+			sh += "echo '" + escape_single_quote(_("Cleaning up...")) + "' \n";
 			// -R to match the --rbind above; a leftover submount would keep the
 			// target busy and make the unmount-then-fsck step refuse to run
 			sh += "for i in dev/pts dev proc run sys; do umount -R \"%s$i\" 2>/dev/null || umount -f \"%s$i\"; done \n".printf(
@@ -3706,7 +3706,7 @@ public class Main : GLib.Object{
 		if (restore_current_system){
 			sh += "echo '' \n";
 			sh += phase_marker("reboot", _("Restarting"));
-			sh += "echo '" + _("Rebooting system...") + "' \n";
+			sh += "echo '" + escape_single_quote(_("Rebooting system...")) + "' \n";
 			sh += "sleep 5s \n";
 			sh += "reboot -f \n";
 		}
@@ -3929,7 +3929,12 @@ public class Main : GLib.Object{
 
 		while (sync_task.status == AppStatus.RUNNING){
 
-			restore_phase = sync_task.current_phase;
+			/* current_phase is "" until the script emits its first marker;
+			 * overwriting the seeded value with that would blank the
+			 * checklist for the first moments of every restore. */
+			if (sync_task.current_phase.length > 0){
+				restore_phase = sync_task.current_phase;
+			}
 
 			if (sync_task.status_line.length > 0){
 
@@ -4203,7 +4208,7 @@ public class Main : GLib.Object{
 	private void check_and_repair_filesystems(){
 		
 		if (!restore_current_system){
-			string sh_fsck = "echo '" + _("Checking file systems for errors...") + "' \n";
+			string sh_fsck = "echo '" + escape_single_quote(_("Checking file systems for errors...")) + "' \n";
 
 			int checked = 0;
 
@@ -5125,20 +5130,6 @@ public class Main : GLib.Object{
 		return "";
 	}
 
-	/* Drop any mount entry that names the same device+subvolume as one of its
-	 * own ancestors.
-	 *
-	 * This is what destroyed a restore target: / and /home were both assigned
-	 * the root device, so <target>/home *was* <target>, and /boot and /boot/efi
-	 * were both the ESP. rsync's --delete then walked into the alias, found the
-	 * source's (excluded, therefore empty) home/ and deleted every top-level
-	 * directory of the target through it. The only survivors were the busy
-	 * mountpoints themselves.
-	 *
-	 * Assigning the root device to /home is how a user says "keep it on the
-	 * root device", so the entry is folded rather than refused -- the dropdown's
-	 * own null option means exactly the same thing. verify_no_aliased_mounts()
-	 * is the backstop for anything this does not anticipate. */
 	/* Did the system this snapshot came from boot via UEFI?
 	 *
 	 * The snapshot carries the original /etc/fstab (Snapshot.read_fstab_file),
@@ -5238,16 +5229,6 @@ public class Main : GLib.Object{
 		return rows;
 	}
 
-	/* Make the /boot/efi selection sane, whichever front end filled it in.
-	 *
-	 * The GUI filters its dropdown to real ESPs, but the console's map_devices()
-	 * defaults every unresolved mount point to the root device -- which for
-	 * /boot/efi means mounting the ext4 root a second time underneath itself.
-	 * The fold used to absorb that; it deliberately no longer does, so the
-	 * correction belongs here where both paths pass through.
-	 *
-	 * Clears a selection that is not an EFI System Partition, then falls back
-	 * to the ESP on the same disk as the root device. */
 	/* A device reference short enough for a table.
 	 *
 	 * fstab records these as "/dev/disk/by-uuid/<36-char uuid>" or "UUID=...",
@@ -5281,6 +5262,16 @@ public class Main : GLib.Object{
 		return txt;
 	}
 
+	/* Make the /boot/efi selection sane, whichever front end filled it in.
+	 *
+	 * The GUI filters its dropdown to real ESPs, but the console's map_devices()
+	 * defaults every unresolved mount point to the root device -- which for
+	 * /boot/efi means mounting the ext4 root a second time underneath itself.
+	 * The fold used to absorb that; it deliberately no longer does, so the
+	 * correction belongs here where both paths pass through.
+	 *
+	 * Clears a selection that is not an EFI System Partition, then falls back
+	 * to the ESP on the same disk as the root device. */
 	public void normalize_esp_selection(){
 
 		if (!snapshot_needs_esp()){ return; }
@@ -5351,6 +5342,20 @@ public class Main : GLib.Object{
 		}
 	}
 
+	/* Drop any mount entry that names the same device+subvolume as one of its
+	 * own ancestors.
+	 *
+	 * This is what destroyed a restore target: / and /home were both assigned
+	 * the root device, so <target>/home *was* <target>, and /boot and /boot/efi
+	 * were both the ESP. rsync's --delete then walked into the alias, found the
+	 * source's (excluded, therefore empty) home/ and deleted every top-level
+	 * directory of the target through it. The only survivors were the busy
+	 * mountpoints themselves.
+	 *
+	 * Assigning the root device to /home is how a user says "keep it on the
+	 * root device", so the entry is folded rather than refused -- the dropdown's
+	 * own null option means exactly the same thing. verify_no_aliased_mounts()
+	 * is the backstop for anything this does not anticipate. */
 	public void fold_aliased_mount_entries(){
 
 		mount_fold_notes.clear();

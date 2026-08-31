@@ -34,6 +34,10 @@
  *
  * So this shells out to nmcli, lsblk and udisksctl, which is what Core does
  * underneath anyway.
+ *
+ * Deliberately English-only, no _() marking: the recovery image ships no
+ * locale data (mmdebstrap --variant=important carries no language packs), so
+ * gettext could never translate these strings at runtime anyway.
  */
 
 using GLib;
@@ -57,7 +61,6 @@ public class RecoveryShell : GLib.Object {
 	private Vte.Terminal term;
 	private Gtk.Label term_title;
 	private Gtk.Button term_back;
-	private bool term_running = false;
 
 	private Gtk.ListBox drive_list;
 
@@ -156,7 +159,7 @@ public class RecoveryShell : GLib.Object {
 
 		/* Every button, not just the cards: page headers use plain Gtk.Button
 		 * and were left rendering in the light theme. */
-		button, .rs-btn {
+		button {
 			background-image: none;
 			background-color: #1f242e;
 			border: 1px solid #2f3644;
@@ -166,9 +169,9 @@ public class RecoveryShell : GLib.Object {
 			padding: $SPACE_S $SPACE_L;
 			transition: background-color 120ms ease, border-color 120ms ease;
 		}
-		button:hover, .rs-btn:hover   { background-color: #262d3a; border-color: #3b4353; }
-		button:active, .rs-btn:active { background-color: #1a1f28; }
-		button:disabled, .rs-btn:disabled {
+		button:hover   { background-color: #262d3a; border-color: #3b4353; }
+		button:active  { background-color: #1a1f28; }
+		button:disabled {
 			color: #5f6878; background-color: #191d25; border-color: #232834;
 		}
 		button.rs-primary { background-color: #4f80e8; border-color: #4f80e8; color: #ffffff; }
@@ -258,11 +261,11 @@ public class RecoveryShell : GLib.Object {
 
 	private static string px(int v) { return "%dpx".printf(v); }
 
-	/* replace() is plain substring substitution, so no token name may be a
-	 * prefix of another; the longer $SPACE_* names go first regardless. */
+	/* replace() is plain substring substitution. No token name is a substring
+	 * of another, which is what makes the order below irrelevant -- keep that
+	 * property when adding tokens, or replace the longer name first. */
 	private static string themed_css() {
 		return CSS
-			.replace("$SPACE_PAGE", px(SPACE_PAGE))
 			.replace("$SPACE_XS", px(SPACE_XS))
 			.replace("$SPACE_XL", px(SPACE_XL))
 			.replace("$SPACE_S", px(SPACE_S))
@@ -317,7 +320,7 @@ public class RecoveryShell : GLib.Object {
 		msg += "\n";
 		msg += "Options:\n";
 		msg += "\n";
-		msg += "  --h[elp]     Show all options\n";
+		msg += "  --help, -h   Show all options\n";
 		msg += "  --version    Print version number\n";
 		msg += "\n";
 		return msg;
@@ -566,6 +569,28 @@ public class RecoveryShell : GLib.Object {
 
 	/* Read the configured repository straight out of Timeshift's config, so the
 	 * front page can say where a restore would come from without starting it. */
+	/* One string key out of the seeded Timeshift config; "" when absent. */
+	private string timeshift_config_value(string key) {
+
+		string text = read_file("/etc/timeshift/timeshift.json");
+		if (text.length == 0) { return ""; }
+
+		try {
+			var parser = new Json.Parser();
+			parser.load_from_data(text);
+			var root = parser.get_root();
+			if (root == null) { return ""; }
+
+			var obj = root.get_object();
+			if (obj == null || !obj.has_member(key)) { return ""; }
+
+			return obj.get_string_member(key);
+		}
+		catch (Error e) {
+			return "";
+		}
+	}
+
 	private string snapshot_location() {
 
 		string text = read_file("/etc/timeshift/timeshift.json");
@@ -1257,7 +1282,6 @@ public class RecoveryShell : GLib.Object {
 		box.append(term);
 
 		term.child_exited.connect((status) => {
-			term_running = false;
 			term_back.label = "Back";
 		});
 
@@ -1269,7 +1293,6 @@ public class RecoveryShell : GLib.Object {
 		term_title.label = title;
 		stack.visible_child_name = "terminal";
 
-		term_running = true;
 		term_back.label = "Back (running)";
 
 		/* Set TERM explicitly. The shell is started by labwc from a profile with
@@ -1292,14 +1315,12 @@ public class RecoveryShell : GLib.Object {
 				null,
 				(terminal, pid, error) => {
 					if (error != null) {
-						term_running = false;
 						warning("could not start %s: %s", title, error.message);
 					}
 				}
 			);
 		}
 		catch (Error e) {
-			term_running = false;
 			warning("could not start %s: %s", title, e.message);
 		}
 
@@ -1707,12 +1728,23 @@ public class RecoveryShell : GLib.Object {
 
 			/* Unmultiplexed on purpose, exactly as the restore's own probe
 			 * now is: a client attaching to a wedged ControlMaster socket
-			 * never performs connect(), so ConnectTimeout would not apply. */
-			bool tcp = run_sync({ "ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5",
+			 * never performs connect(), so ConnectTimeout would not apply.
+			 *
+			 * Key and port come from the seeded config: probing with the
+			 * default key against a custom-key setup would report FAILED for
+			 * a repository the restore can actually reach. */
+			string key_file = timeshift_config_value("backup_ssh_key");
+			if (key_file.length == 0) { key_file = "/etc/timeshift/ssh/id_ed25519"; }
+			string port = timeshift_config_value("backup_ssh_port");
+
+			string[] ssh_cmd = { "ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5",
 			                     "-o", "ControlMaster=no", "-o", "ControlPath=none",
 			                     "-o", "StrictHostKeyChecking=no",
-			                     "-i", "/etc/timeshift/ssh/id_ed25519",
-			                     hostpart, "true" }, out o);
+			                     "-i", key_file };
+			if (port.length > 0) { ssh_cmd += "-p"; ssh_cmd += port; }
+			ssh_cmd += hostpart;
+			ssh_cmd += "true";
+			bool tcp = run_sync(ssh_cmd, out o);
 
 			b.append("  ping (ICMP):     %s\n".printf(icmp ? "answers" : "no reply"));
 			b.append("  ssh (TCP):       %s\n".printf(
@@ -1764,32 +1796,6 @@ public class RecoveryShell : GLib.Object {
 		fields.add(cur.str);
 
 		return fields.to_array();
-	}
-
-	private string device_ip(string dev) {
-		string o;
-		if (!run_sync({ "nmcli", "-t", "-f", "IP4.ADDRESS", "device", "show", dev }, out o)) {
-			return "";
-		}
-		foreach (string line in o.split("\n")) {
-			int idx = line.index_of(":");
-			if (idx > 0 && idx + 1 < line.length) {
-				string v = line.substring(idx + 1).strip();
-				if (v.length > 0 && v != "--") { return v; }
-			}
-		}
-		return "";
-	}
-
-	private bool has_saved_connection(string ssid) {
-		string o;
-		if (!run_sync({ "nmcli", "-t", "-f", "NAME", "connection", "show" }, out o)) {
-			return false;
-		}
-		foreach (string line in o.split("\n")) {
-			if (line.strip() == ssid) { return true; }
-		}
-		return false;
 	}
 
 	/* Fire-and-forget: reboot, poweroff. Nothing comes back from these. */

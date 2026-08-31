@@ -987,17 +987,16 @@ public class SshRepoBackend : RepoBackend {
 
 		if (control_path.length == 0){ return ""; }
 
-		// "ssh -O exit" is itself a mux client, so it is bounded by timeout(1)
-		// rather than trusted to return against a wedged master.
 		string cmd = "timeout 5 ssh %s -O exit %s >/dev/null 2>&1; ".printf(
 			ssh_options(false, false), q(host_spec()));
 
 		/* And remove the socket. A master that died without cleaning up leaves
 		 * one behind, which also stops /run/timeshift/<pid> from ever being
 		 * reaped (the reaper only calls rmdir). %C is expanded by ssh, so the
-		 * exact name is not known here. */
-		cmd += "rm -f '%s' 2>/dev/null; true".printf(escape_single_quote(
-			control_path.replace("%C", "*")));
+		 * exact name is not known here -- the glob must sit OUTSIDE the quotes
+		 * or the shell never expands it. */
+		cmd += "rm -f '%s'* 2>/dev/null; true".printf(escape_single_quote(
+			control_path.replace("%C", "")));
 
 		return cmd;
 	}

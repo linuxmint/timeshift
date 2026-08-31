@@ -405,7 +405,7 @@ public class AppConsole : GLib.Object {
 	 * output is the interface, streamed through unchanged. */
 	private bool run_recovery_tool(string args_line){
 
-		string tool = "/usr/sbin/timeshift-recovery";
+		string tool = RecoveryToolTask.TOOL;
 
 		if (!file_exists(tool)){
 			log_error(_("The timeshift-recovery package is not installed"));

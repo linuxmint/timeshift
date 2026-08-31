@@ -241,9 +241,8 @@ class RestoreBox : RestoreProgressBox {
 	 * one, and nothing to say whether the work already done is safe. */
 	private string reconnect_message(RestoreScriptTask task){
 
-		string msg = _("Connection lost - reconnecting");
-
-		msg += " (%s %s".printf(_("attempt"), task.reconnect_status);
+		/* One whole msgid; the parenthetical detail is data, assembled first. */
+		string detail = task.reconnect_status;
 
 		if (task.reconnect_since != null){
 
@@ -251,11 +250,11 @@ class RestoreBox : RestoreProgressBox {
 				/ GLib.TimeSpan.SECOND);
 
 			if (elapsed > 0){
-				msg += ", %s".printf(format_duration_short(elapsed));
+				detail += ", %s".printf(format_duration_short(elapsed));
 			}
 		}
 
-		msg += ")";
+		string msg = _("Connection lost - reconnecting (attempt %s)").printf(detail);
 
 		string meaning = App.rsync_exit_meaning_public(task.reconnect_code);
 		if (meaning.length > 0){
@@ -268,13 +267,15 @@ class RestoreBox : RestoreProgressBox {
 		return msg;
 	}
 
+	/* Deliberately untranslated: "5m 12s" is technical notation, and a bare
+	 * format string makes a meaningless msgid. */
 	private string format_duration_short(int seconds){
 
 		if (seconds < 60){
-			return _("%ds").printf(seconds);
+			return "%ds".printf(seconds);
 		}
 
-		return _("%dm %ds").printf(seconds / 60, seconds % 60);
+		return "%dm %ds".printf(seconds / 60, seconds % 60);
 	}
 
 	/* The steps are decided by create_restore_scripts(), which runs on the
