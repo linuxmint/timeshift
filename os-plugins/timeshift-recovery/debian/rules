@@ -1,0 +1,21 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+%:
+	dh $@
+
+# The refresh unit is a oneshot that takes the dpkg frontend lock, so the
+# maintainer scripts must NEVER start or restart it synchronously: apt holds
+# that lock while postinst runs, and the generated blocking restart deadlocks
+# the upgrade until the unit's start timeout. The dpkg trigger starts it with
+# --no-block, which is the only correct entry point.
+override_dh_installsystemd:
+	dh_installsystemd --no-start --no-restart-after-upgrade --no-stop-on-upgrade
+
+# The CLI and its helpers must be executable, or the tool and the refresh
+# trigger silently do nothing. dh_fixperms would otherwise normalise the
+# payload copied in from lib/ and sbin/ to 0644.
+execute_after_dh_fixperms:
+	chmod 0755 debian/timeshift-recovery/usr/sbin/timeshift-recovery
+	chmod 0755 debian/timeshift-recovery/usr/lib/timeshift-recovery/build-rootfs
+	chmod 0755 debian/timeshift-recovery/usr/lib/timeshift-recovery/place-payload

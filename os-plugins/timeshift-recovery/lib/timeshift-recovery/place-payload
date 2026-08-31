@@ -1,0 +1,378 @@
+#!/bin/sh
+# Resolve a target, put the payload there, and wire up GRUB.
+#
+# Two targets, two boot mechanisms, both casper-native:
+#
+#   partition  The payload sits at the root of its own filesystem and casper
+#              boots it directly (live-media=). The medium is a different block
+#              device from the one being restored, so nothing conflicts.
+#
+#   root       The payload is a small filesystem IMAGE on the root filesystem,
+#              booted through casper's iso-scan loopback path with toram.
+#
+#              The image is not an implementation detail, it is the whole point:
+#              casper's copy_live_to sizes a toram copy by the USED SPACE OF THE
+#              WHOLE MEDIUM. Pointed at the bare root partition it would try to
+#              copy the entire installed system into RAM and fail. Pointed at a
+#              loopback image it copies only the image.
+#
+# Invoked by timeshift-recovery; not intended to be run directly.
+set -eu
+
+. "${TSR_LIBDIR:-/usr/lib/timeshift-recovery}/common.sh"
+
+load_config
+validate_config
+require_root
+
+# A dry run previews placement for an environment that has not been built yet,
+# so the artefacts are allowed to be missing; a real run is not.
+if [ "${DRY_RUN:-0}" = "1" ] && [ ! -r "$SQUASHFS" ]; then
+	warn "no environment built yet; previewing placement with a nominal 700 MB image"
+	SQUASHFS_BYTES=734003200
+else
+	[ -r "$SQUASHFS" ] || die "no built environment at $SQUASHFS -- run 'timeshift-recovery build' first"
+	[ -r "$CACHE_BOOT/vmlinuz" ] || die "no kernel at $CACHE_BOOT/vmlinuz -- run 'timeshift-recovery build' first"
+	[ -r "$CACHE_BOOT/initrd.img" ] || die "no initramfs at $CACHE_BOOT/initrd.img -- run 'timeshift-recovery build' first"
+	SQUASHFS_BYTES=$(stat -c %s "$SQUASHFS")
+fi
+
+TARGET_KIND=""
+TARGET_DEV=""
+TARGET_UUID=""
+PAYLOAD_DIR=""
+PAYLOAD_PATH=""
+TORAM_EFFECTIVE=0
+CLEANUP_MOUNT=""
+CLEANUP_STAGE=""
+
+cleanup() {
+	if [ -n "$CLEANUP_MOUNT" ] && mountpoint -q "$CLEANUP_MOUNT" 2>/dev/null; then
+		umount "$CLEANUP_MOUNT" 2>/dev/null || true
+		rmdir "$CLEANUP_MOUNT" 2>/dev/null || true
+	fi
+	[ -n "$CLEANUP_STAGE" ] && rm -rf "$CLEANUP_STAGE"
+	return 0
+}
+trap cleanup EXIT INT TERM
+
+# --- confirmation -----------------------------------------------------------
+
+# Only ever asked before touching a partition table or formatting something.
+# Everything else this tool does is confined to files it owns.
+confirm_destructive() {
+	if [ "${ASSUME_YES:-0}" = "1" ] || [ "${DRY_RUN:-0}" = "1" ]; then
+		return 0
+	fi
+	printf '\n%s\n' "$1" >&2
+	printf 'Type YES to continue: ' >&2
+	read -r _answer < /dev/tty || _answer=""
+	[ "$_answer" = "YES" ] || die "aborted at user request"
+}
+
+# --- partition creation -----------------------------------------------------
+
+# Create a partition in the largest run of unallocated space on a disk. This
+# only ever consumes space that belongs to nobody: it does not shrink a mounted
+# filesystem, which ext4 cannot do anyway.
+create_partition() {
+	_disk=$1
+	_bytes=$2
+
+	require_tool sgdisk partprobe
+
+	_free=$(largest_free_space "$_disk")
+	[ "$_free" -ge "$_bytes" ] || \
+		die "only $(human_bytes "$_free") unallocated on $_disk, need $(human_bytes "$_bytes")"
+
+	confirm_destructive "About to create a $(human_bytes "$_bytes") partition in unallocated space on $_disk.
+This modifies the partition table. Existing partitions are not touched."
+
+	_before=$(lsblk -rno NAME "$_disk" | tail -n +2 | sort)
+
+	run sgdisk --new=0:0:+"$_bytes" \
+		--typecode=0:8300 \
+		--change-name=0:"Timeshift Recovery" \
+		"$_disk" >/dev/null
+
+	run partprobe "$_disk" || true
+	command -v udevadm >/dev/null 2>&1 && run udevadm settle || true
+
+	if [ "${DRY_RUN:-0}" = "1" ]; then
+		printf '/dev/DRYRUN\n'
+		return 0
+	fi
+
+	_after=$(lsblk -rno NAME "$_disk" | tail -n +2 | sort)
+	_new=$(printf '%s\n%s\n' "$_before" "$_after" | sort | uniq -u | head -n1)
+	[ -n "$_new" ] || die "created a partition on $_disk but could not identify it"
+
+	printf '/dev/%s\n' "$_new"
+}
+
+resolve_target() {
+	case "$TARGET" in
+		root)
+			TARGET_KIND=root
+			;;
+
+		auto)
+			_rootdev=$(root_device)
+			_disk=$(disk_of_partition "$_rootdev") || _disk=""
+			_want=$(to_bytes "$SIZE")
+
+			if [ -n "$_disk" ] && command -v parted >/dev/null 2>&1; then
+				_free=$(largest_free_space "$_disk")
+			else
+				_free=0
+			fi
+
+			if [ "$_free" -ge "$_want" ]; then
+				log "found $(human_bytes "$_free") unallocated on $_disk; creating a recovery partition"
+				TARGET_KIND=partition
+				TARGET_DEV=$(create_partition "$_disk" "$_want")
+			else
+				# The common case: a stock Ubuntu install fills its disk. Say so
+				# plainly rather than failing, and be explicit about the limit of
+				# the fallback.
+				log "no unallocated space on ${_disk:-the system disk} (largest free run $(human_bytes "$_free"), need $(human_bytes "$_want"))"
+				log "installing on the root filesystem instead. This survives a broken"
+				log "system - bad update, bad kernel, bad config - but not the loss of"
+				log "the root filesystem itself."
+				TARGET_KIND=root
+			fi
+			;;
+
+		/dev/*)
+			[ -b "$TARGET" ] || die "$TARGET is not a block device"
+			_type=$(lsblk -no TYPE "$TARGET" | head -n1)
+			case "$_type" in
+				part)
+					TARGET_KIND=partition
+					TARGET_DEV=$TARGET
+					;;
+				disk)
+					_sysdisk=$(disk_of_partition "$(root_device)" 2>/dev/null || echo "")
+					[ "$TARGET" != "$_sysdisk" ] || \
+						die "$TARGET is the system disk; refusing to repartition it. Use --target auto, or name an existing partition."
+					confirm_destructive "About to ERASE the whole disk $TARGET ($(lsblk -no MODEL "$TARGET" | head -n1 | sed 's/^ *//')).
+Every partition and all data on that disk will be destroyed."
+					require_tool sgdisk
+					run sgdisk --zap-all "$TARGET" >/dev/null
+					TARGET_KIND=partition
+					TARGET_DEV=$(create_partition "$TARGET" "$(to_bytes "$SIZE")")
+					;;
+				*)
+					die "$TARGET is a '$_type'; expected a partition or a whole disk"
+					;;
+			esac
+			;;
+
+		*)
+			die "invalid TARGET '$TARGET' (want: auto, root, /dev/sdXN or /dev/sdX)"
+			;;
+	esac
+}
+
+# --- toram ------------------------------------------------------------------
+
+decide_toram() {
+	case "${TORAM:-auto}" in
+		1) TORAM_EFFECTIVE=1 ;;
+		0) TORAM_EFFECTIVE=0 ;;
+		auto)
+			# Mandatory for the root target. casper mounts the medium and keeps
+			# it mounted; if the medium lives on the partition being restored,
+			# the restore cannot have it. Copying to RAM is what frees it.
+			[ "$TARGET_KIND" = "root" ] && TORAM_EFFECTIVE=1 || TORAM_EFFECTIVE=0
+			;;
+		*) die "invalid TORAM '$TORAM' (want: auto, 1 or 0)" ;;
+	esac
+
+	[ "$TORAM_EFFECTIVE" = "1" ] || return 0
+
+	# casper's own check is MemFree+Cached against the medium's used space; it
+	# fails the copy and carries on from the medium, which for the root target
+	# means a restore that cannot write. Refuse up front instead.
+	_ram=$(total_ram_bytes)
+	_need=$((SQUASHFS_BYTES + 2147483648))
+	[ "$_ram" -ge "$_need" ] && return 0
+
+	_msg="this machine has $(human_bytes "$_ram") of RAM; booting the $(human_bytes "$SQUASHFS_BYTES") environment into RAM wants at least $(human_bytes "$_need")"
+	if [ "$TARGET_KIND" = "root" ]; then
+		die "$_msg.
+Install to a dedicated partition instead (--target /dev/sdXN), or free some space
+on the system disk so 'auto' can create one."
+	fi
+	warn "$_msg; booting from the medium instead"
+	TORAM_EFFECTIVE=0
+}
+
+# --- placement --------------------------------------------------------------
+
+place_on_partition() {
+	if findmnt -no TARGET --source "$TARGET_DEV" >/dev/null 2>&1; then
+		die "$TARGET_DEV is mounted at $(findmnt -no TARGET --source "$TARGET_DEV" | head -n1); unmount it first"
+	fi
+	[ "$TARGET_DEV" != "$(root_device)" ] || die "$TARGET_DEV is the root filesystem; refusing to format it"
+
+	confirm_destructive "About to format $TARGET_DEV as ext4 (label TSRECOVERY).
+All data on that partition will be destroyed."
+
+	require_tool mkfs.ext4
+	run mkfs.ext4 -q -F -L TSRECOVERY "$TARGET_DEV"
+
+	if [ "${DRY_RUN:-0}" = "1" ]; then
+		PAYLOAD_DIR=/dry-run
+		PAYLOAD_PATH=""
+		return 0
+	fi
+
+	CLEANUP_MOUNT=$(mktemp -d)
+	run mount "$TARGET_DEV" "$CLEANUP_MOUNT"
+	PAYLOAD_DIR=$CLEANUP_MOUNT
+
+	# The payload owns the whole filesystem, so GRUB's paths into it need no prefix.
+	PAYLOAD_PATH=""
+}
+
+place_on_root() {
+	run mkdir -p "$STATE"
+
+	# Do not assume the state directory is on /. A separate /var is ordinary,
+	# and GRUB has to search for whichever filesystem actually holds the payload.
+	_probe=$(existing_ancestor "$STATE")
+	_mp=$(findmnt -no TARGET -T "$_probe")
+	TARGET_DEV=$(findmnt -no SOURCE -T "$_probe")
+	_fstype=$(findmnt -no FSTYPE -T "$_probe")
+
+	# The payload has to survive a reboot to be worth anything, and GRUB has to
+	# be able to read it. Neither is true of a RAM-backed or stacked filesystem,
+	# and the failure would otherwise show up as a boot entry pointing at
+	# nothing, discovered at the worst possible moment.
+	case "$_fstype" in
+		tmpfs|ramfs|overlay|squashfs|zfs|nfs*|cifs|fuse*)
+			die "$STATE is on a $_fstype filesystem ($_mp), which GRUB cannot boot from.
+Point TARGET at a real partition, or move the state directory onto one."
+			;;
+	esac
+	[ -b "$TARGET_DEV" ] || \
+		die "$STATE is on '$TARGET_DEV', which is not a block device GRUB can read"
+
+	if [ "$_mp" = "/" ]; then
+		PAYLOAD_PATH=$STATE
+	else
+		PAYLOAD_PATH=${STATE#"$_mp"}
+	fi
+
+	PAYLOAD_DIR=$STATE
+}
+
+# Build the loopback medium for the root target: a small ext4 image holding the
+# squashfs. mkfs.ext4 -d populates it from a staging directory, so this needs no
+# loop device and no mount at build time.
+build_medium_image() {
+	_img=$PAYLOAD_DIR/recovery.img
+	require_tool mkfs.ext4
+
+	# Sized to the squashfs plus filesystem overhead and a little slack; the
+	# image is copied into RAM at boot, so every wasted megabyte is RAM wasted.
+	_bytes=$(awk -v s="$SQUASHFS_BYTES" 'BEGIN{ printf "%d", s * 1.15 + 33554432 }')
+
+	step "Building loopback medium ($(human_bytes "$_bytes"))"
+
+	if [ "${DRY_RUN:-0}" = "1" ]; then
+		printf '  [dry-run] mkfs.ext4 -d <staged casper tree> %s\n' "$_img" >&2
+		return 0
+	fi
+
+	CLEANUP_STAGE=$(mktemp -d)
+	mkdir -p "$CLEANUP_STAGE/casper" "$CLEANUP_STAGE/.disk"
+	cp -f "$SQUASHFS" "$CLEANUP_STAGE/$PAYLOAD_SQUASHFS_REL"
+	printf 'Timeshift Recovery Environment\n' > "$CLEANUP_STAGE/.disk/info"
+
+	rm -f "$_img.new"
+	run mkfs.ext4 -q -F -L TSRECOVERY -d "$CLEANUP_STAGE" "$_img.new" "$((_bytes / 1024))k"
+	# Rename into place: a power loss mid-copy would otherwise leave a truncated
+	# image that GRUB still happily offers to boot.
+	run mv -f "$_img.new" "$_img"
+
+	rm -rf "$CLEANUP_STAGE"
+	CLEANUP_STAGE=""
+}
+
+copy_payload() {
+	step "Copying payload to ${TARGET_DEV:-$PAYLOAD_DIR}"
+
+	run mkdir -p "$PAYLOAD_DIR/boot"
+
+	# GRUB reads the kernel and initramfs itself, so they are always plain files
+	# on a filesystem it understands -- never inside the loopback image.
+	for _pair in "vmlinuz:$PAYLOAD_KERNEL_REL" "initrd.img:$PAYLOAD_INITRD_REL"; do
+		_src=${_pair%%:*}
+		_dst=${_pair#*:}
+		run cp -f "$CACHE_BOOT/$_src" "$PAYLOAD_DIR/$_dst.new"
+		run mv -f "$PAYLOAD_DIR/$_dst.new" "$PAYLOAD_DIR/$_dst"
+	done
+
+	case "$TARGET_KIND" in
+		partition)
+			run mkdir -p "$PAYLOAD_DIR/casper" "$PAYLOAD_DIR/.disk"
+			run cp -f "$SQUASHFS" "$PAYLOAD_DIR/$PAYLOAD_SQUASHFS_REL.new"
+			run mv -f "$PAYLOAD_DIR/$PAYLOAD_SQUASHFS_REL.new" "$PAYLOAD_DIR/$PAYLOAD_SQUASHFS_REL"
+			if [ "${DRY_RUN:-0}" != "1" ]; then
+				printf 'Timeshift Recovery Environment\n' > "$PAYLOAD_DIR/.disk/info"
+			fi
+			;;
+		root)
+			build_medium_image
+			;;
+	esac
+
+	[ "${DRY_RUN:-0}" = "1" ] || sync
+}
+
+# --- main -------------------------------------------------------------------
+
+resolve_target
+decide_toram
+
+case "$TARGET_KIND" in
+	partition) place_on_partition ;;
+	root)      place_on_root ;;
+esac
+
+copy_payload
+
+if [ "${DRY_RUN:-0}" = "1" ]; then
+	TARGET_UUID="DRY-RUN-UUID"
+else
+	TARGET_UUID=$(blkid -s UUID -o value "$TARGET_DEV" 2>/dev/null || true)
+	[ -n "$TARGET_UUID" ] || die "could not read the filesystem UUID of $TARGET_DEV"
+fi
+
+if [ -e "$DISABLED" ]; then
+	# 'timeshift-recovery disable' dropped the boot entry on purpose; an
+	# automatic re-place (the dpkg trigger's upgrade) must not undo that.
+	step "Skipping GRUB entry ('timeshift-recovery disable' is in effect)"
+else
+	write_grub
+fi
+
+if [ "${DRY_RUN:-0}" != "1" ]; then
+	# Record what actually went in, read back from the build rather than from
+	# what the caller believed it was installing.
+	if [ -r "$CACHE/build-info" ]; then
+		# shellcheck disable=SC1091
+		. "$CACHE/build-info"
+	fi
+	TS_PACKAGE=${TS_PACKAGE:-unknown}
+	TS_VERSION=${TS_VERSION:-unknown}
+	save_state
+	clear_stale
+fi
+
+cleanup
+CLEANUP_MOUNT=""
+
+step "Recovery environment installed"

@@ -1,0 +1,38 @@
+Source: apt-snapshot-guard
+Section: admin
+Priority: optional
+Maintainer: makeafide <willsmit4433@gmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+Homepage: https://github.com/makeafide/timeshift
+
+Package: apt-snapshot-guard
+Architecture: all
+Depends: ${misc:Depends},
+         timeshift-ssh | timeshift
+Recommends: zenity
+Description: Force a Timeshift snapshot before apt changes the system
+ apt-snapshot-guard installs a DPkg::Pre-Invoke hook so that a Timeshift
+ snapshot is created automatically before apt applies any package change:
+ install, reinstall, remove, purge, upgrade, full-upgrade / dist-upgrade
+ and autoremove.
+ .
+ Because the hook lives in libapt's dpkg run, it fires for every frontend
+ that drives dpkg: apt and apt-get on the command line, aptdaemon (the
+ GUI Software Updater and PackageKit) and unattended-upgrades. Metadata
+ refreshes (apt update), simulations and download-only runs never change
+ packages and so never trigger a snapshot.
+ .
+ The guard is fail-closed: apt does not change packages without a snapshot.
+ If the snapshot cannot be created you are prompted on a terminal (the
+ default answer aborts), and with no terminal - the GUI Software Updater,
+ PackageKit or unattended-upgrades - the operation is aborted outright. To
+ proceed without a snapshot for a single run, set a one-shot bypass flag
+ first: "sudo touch /run/apt-snapshot-guard.bypass".
+ .
+ For interactive GUI updates (the Software Updater / GNOME Software via
+ aptdaemon and PackageKit), where there is no terminal, a failed snapshot
+ instead raises a graphical zenity dialog on the desktop asking whether to
+ continue without a restore point. unattended-upgrades never prompts and
+ always aborts on failure.

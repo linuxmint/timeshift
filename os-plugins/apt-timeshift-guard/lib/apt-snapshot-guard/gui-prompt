@@ -1,0 +1,94 @@
+#!/bin/bash
+# apt-snapshot-guard gui-prompt -- ask the desktop user, graphically, whether to
+# proceed after a failed pre-change snapshot. Invoked as root by pre-invoke when
+# an interactive GUI frontend (aptdaemon / PackageKit) has no controlling
+# terminal to prompt on.
+#
+# Usage:  gui-prompt "<reason text>"  ["<timeout seconds>"]
+# Exit:   0  -> user chose to continue WITHOUT a restore point
+#         non-zero -> abort (cancel / closed / timeout / no session / no zenity)
+
+set -u
+
+REASON=${1:-"A software update wants to change packages."}
+TIMEOUT=${2:-120}
+
+ZENITY=$(command -v zenity 2>/dev/null) || exit 3
+
+# --- find the active graphical login session (Wayland or X11) -----------------
+user= ; uid= ; stype= ; sdisplay=
+if command -v loginctl >/dev/null 2>&1; then
+	for sid in $(loginctl list-sessions --no-legend 2>/dev/null | awk '{print $1}'); do
+		active=$(loginctl show-session "$sid" -p Active --value 2>/dev/null)
+		[ "$active" = "yes" ] || continue
+		t=$(loginctl show-session "$sid" -p Type --value 2>/dev/null)
+		case "$t" in
+			wayland|x11|mir) ;;
+			*) continue ;;
+		esac
+		user=$(loginctl show-session "$sid" -p Name --value 2>/dev/null)
+		uid=$(loginctl show-session "$sid" -p User --value 2>/dev/null)
+		stype=$t
+		sdisplay=$(loginctl show-session "$sid" -p Display --value 2>/dev/null)
+		break
+	done
+fi
+
+# No graphical session -> caller must fall back to aborting.
+[ -n "$user" ] && [ -n "$uid" ] || exit 4
+
+runtime="/run/user/${uid}"
+[ -d "$runtime" ] || exit 4
+
+# --- reconstruct the session environment (no protected /proc reads needed) ----
+env_args=( "XDG_RUNTIME_DIR=${runtime}" \
+           "DBUS_SESSION_BUS_ADDRESS=unix:path=${runtime}/bus" )
+
+if [ "$stype" = "wayland" ]; then
+	# first wayland-* socket in the runtime dir (usually wayland-0)
+	wl=
+	for s in "$runtime"/wayland-*; do
+		case "$s" in *.lock) continue ;; esac
+		[ -S "$s" ] && { wl=$(basename "$s"); break; }
+	done
+	[ -n "$wl" ] && env_args+=( "WAYLAND_DISPLAY=${wl}" )
+	# GDK prefers wayland but fall back to X if the socket is missing
+	env_args+=( "GDK_BACKEND=wayland,x11" )
+fi
+
+if [ -n "$sdisplay" ]; then
+	env_args+=( "DISPLAY=${sdisplay}" )
+	# best-effort XAUTHORITY for X11 / XWayland
+	xauth=
+	shell_pid=$(pgrep -u "$uid" -x gnome-shell 2>/dev/null | head -1)
+	if [ -n "$shell_pid" ] && [ -r "/proc/$shell_pid/environ" ]; then
+		xauth=$(tr '\0' '\n' < "/proc/$shell_pid/environ" 2>/dev/null \
+			| sed -n 's/^XAUTHORITY=//p' | head -1)
+	fi
+	[ -z "$xauth" ] && [ -f "/home/${user}/.Xauthority" ] && xauth="/home/${user}/.Xauthority"
+	[ -n "$xauth" ] && env_args+=( "XAUTHORITY=${xauth}" )
+fi
+
+# --- show the dialog as the desktop user -------------------------------------
+text="${REASON}
+
+The pre-change Timeshift snapshot FAILED, so there is no restore point.
+
+Continue and change packages anyway, or cancel the update?"
+
+z_args=( --question --no-wrap
+         --title="Software update - no restore point"
+         --icon=drive-harddisk
+         --ok-label="Continue anyway"
+         --cancel-label="Cancel update"
+         --default-cancel
+         --text="$text" )
+# zenity treats --timeout=0 as "no timeout given"; only pass a positive value.
+[ "${TIMEOUT:-0}" -gt 0 ] 2>/dev/null && z_args+=( --timeout="$TIMEOUT" )
+
+sudo -u "$user" env "${env_args[@]}" "$ZENITY" "${z_args[@]}"
+rc=$?
+
+# zenity: 0 = OK (continue), 1 = cancel/closed, 5 = timeout. Only 0 proceeds.
+[ "$rc" -eq 0 ] && exit 0
+exit 1

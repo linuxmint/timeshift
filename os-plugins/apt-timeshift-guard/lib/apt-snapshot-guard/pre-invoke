@@ -1,0 +1,199 @@
+#!/bin/bash
+# apt-snapshot-guard -- force a Timeshift snapshot before apt applies changes.
+#
+# Invoked as a DPkg::Pre-Invoke hook (see /etc/apt/apt.conf.d/05snapshot-guard),
+# so it runs as root, once per dpkg-changing apt run, before the first unpack.
+#
+# Policy (fail-CLOSED): the apt operation must NOT proceed without a snapshot.
+#   * Snapshot succeeds            -> proceed.
+#   * Bypass flag present          -> skip snapshot, proceed (flag is one-shot).
+#   * Snapshot fails, terminal     -> prompt; default No; PROMPT_TIMEOUT -> abort.
+#   * Snapshot fails, no terminal  -> abort (GUI updater / unattended-upgrades).
+# Exit 0 lets apt continue; any non-zero exit makes apt abort the run.
+
+set -u
+
+CONFIG=/etc/apt-snapshot-guard/config
+LOG=/var/log/apt-snapshot-guard.log
+STAMP=/run/apt-snapshot-guard.last
+LOCK=/run/apt-snapshot-guard.lock
+BYPASS=/run/apt-snapshot-guard.bypass
+GUIHELPER=/usr/lib/apt-snapshot-guard/gui-prompt
+
+# --- defaults (overridable via $CONFIG) --------------------------------------
+ENABLED=1              # 0 disables the guard entirely
+WINDOW=90              # seconds; skip if a guard snapshot was taken this recently
+TIMEOUT=900           # seconds; hard cap on the snapshot command
+PROMPT_TIMEOUT=60     # seconds; unanswered terminal prompt defaults to No (abort)
+GUI_PROMPT=1          # 1 = offer a graphical bypass for GUI updater / PackageKit
+GUI_PROMPT_TIMEOUT=120 # seconds; unanswered graphical dialog aborts (0 = wait)
+TAGS=O                # Timeshift tag for guard snapshots (O = on-demand)
+
+[ -r "$CONFIG" ] && . "$CONFIG"
+
+# Master off switch (config, or APT_SNAPSHOT_GUARD=off in a root environment).
+case "${APT_SNAPSHOT_GUARD:-}" in
+	off|0|no) ENABLED=0 ;;
+esac
+
+log() {
+	# to the logfile (best effort) and to apt's stderr
+	printf '%s apt-snapshot-guard: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >>"$LOG" 2>/dev/null
+	printf 'apt-snapshot-guard: %s\n' "$*" >&2
+}
+
+# Fail-closed decision when the snapshot could not be created.
+# Prompts on a controlling terminal; otherwise aborts.
+snapshot_failed() {
+	log "$1"
+	if [ -e /dev/tty ] && { : >/dev/tty; } 2>/dev/null; then
+		{
+			printf '\n'
+			printf 'apt-snapshot-guard: the pre-change Timeshift snapshot FAILED.\n'
+			printf 'apt-snapshot-guard: if you continue there will be NO restore point.\n'
+			printf 'apt-snapshot-guard: Continue WITHOUT a restore point? [y/N] '
+		} >/dev/tty 2>/dev/null
+		ans=
+		if read -r -t "$PROMPT_TIMEOUT" ans </dev/tty 2>/dev/null; then
+			case "$ans" in
+				y|Y|yes|YES|Yes)
+					log "user chose to continue without a restore point."
+					exit 0
+					;;
+			esac
+			log "aborted by user; apt will not proceed."
+		else
+			printf '\n' >/dev/tty 2>/dev/null
+			log "no answer within ${PROMPT_TIMEOUT}s; aborting (fail-closed)."
+		fi
+		exit 1
+	fi
+	# No terminal. For an interactive GUI frontend, offer a graphical bypass;
+	# unattended-upgrades and everything else stay fail-closed (no popups).
+	case "${frontend:-}" in
+		"Software Updater (aptdaemon)"|PackageKit)
+			if [ "$GUI_PROMPT" = "1" ] && [ -x "$GUIHELPER" ]; then
+				log "no terminal; asking the desktop user graphically (${frontend})."
+				reason="A software update wants to ${operation:-change packages} via ${frontend}."
+				if "$GUIHELPER" "$reason" "$GUI_PROMPT_TIMEOUT" >>"$LOG" 2>&1; then
+					log "user chose to continue without a restore point (GUI)."
+					exit 0
+				fi
+				log "aborted via graphical dialog (cancel / timeout / no session)."
+				exit 1
+			fi
+			;;
+	esac
+
+	# No terminal and no graphical bypass available (unattended-upgrades, etc.).
+	log "no terminal to prompt; aborting the apt operation (fail-closed)."
+	log "set the bypass flag to proceed without a snapshot:"
+	log "  sudo touch ${BYPASS}   # single use"
+	exit 1
+}
+
+[ "$ENABLED" = "1" ] || exit 0
+
+# --- one-shot bypass flag ----------------------------------------------------
+# Lets the user deliberately proceed without a snapshot for a single run.
+if [ -e "$BYPASS" ]; then
+	rm -f "$BYPASS" 2>/dev/null
+	log "bypass flag present -- skipping snapshot for this run (flag consumed)."
+	exit 0
+fi
+
+# --- dedupe: one guard snapshot per WINDOW seconds ---------------------------
+# A single apt transaction can invoke dpkg more than once (e.g. trigger
+# processing); this collapses those into one snapshot.
+now=$(date +%s)
+if [ -f "$STAMP" ]; then
+	last=$(cat "$STAMP" 2>/dev/null || echo 0)
+	case "$last" in *[!0-9]*|'') last=0 ;; esac
+	if [ $((now - last)) -lt "$WINDOW" ]; then
+		log "recent guard snapshot ${last} (< ${WINDOW}s ago) -- skipping."
+		exit 0
+	fi
+fi
+
+# Nothing to snapshot with if the tool is missing -> treat as a failure.
+if ! command -v timeshift >/dev/null 2>&1; then
+	snapshot_failed "timeshift not found on PATH."
+fi
+
+# --- best-effort context for the snapshot comment ----------------------------
+# Walk the process ancestry to find the apt-family command that triggered us,
+# so the snapshot records WHY it was taken (which operation, which frontend).
+caller=unknown
+frontend=apt
+cmdline=
+pid=$PPID
+i=0
+while [ "$pid" -gt 1 ] 2>/dev/null && [ "$i" -lt 12 ]; do
+	comm=$(cat "/proc/$pid/comm" 2>/dev/null || echo)
+	case "$comm" in
+		apt|apt-get|aptd|unattended-upgr*|packagekitd|synaptic|aptitude)
+			# full command line, NULs -> spaces; keep a trimmed copy for display
+			cmdline=$(tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null)
+			caller=$(printf '%s' "$cmdline" | cut -c1-70)
+			[ -n "$caller" ] || caller="$comm"
+			case "$comm" in
+				unattended-upgr*) frontend="unattended-upgrades" ;;
+				aptd)             frontend="Software Updater (aptdaemon)" ;;
+				packagekitd)      frontend="PackageKit" ;;
+				synaptic)         frontend="Synaptic" ;;
+				aptitude)         frontend="aptitude" ;;
+				*)                frontend="apt" ;;
+			esac
+			break
+			;;
+	esac
+	pid=$(awk '{print $4}' "/proc/$pid/stat" 2>/dev/null || echo 1)
+	i=$((i + 1))
+done
+
+# Derive the operation (the "why") from the command line where it is visible.
+# aptdaemon/PackageKit do not expose the verb in argv, so those fall back to
+# the generic "package change".
+operation="package change"
+case " $cmdline " in
+	*" full-upgrade "*|*" dist-upgrade "*) operation="full-upgrade" ;;
+	*" upgrade "*)                         operation="upgrade" ;;
+	*" dselect-upgrade "*)                 operation="dselect-upgrade" ;;
+	*"--reinstall"*|*" reinstall "*)       operation="reinstall" ;;
+	*" install "*)                         operation="install" ;;
+	*" autoremove "*|*" auto-remove "*)    operation="autoremove" ;;
+	*" autopurge "*)                       operation="autopurge" ;;
+	*" purge "*)                           operation="purge" ;;
+	*" remove "*|*" deinstall "*)          operation="remove" ;;
+esac
+
+# The snapshot's own description explains why it exists.
+comment="Auto-snapshot before ${operation} via ${frontend} [${caller}]"
+
+# --- take the snapshot (serialized; one at a time) ---------------------------
+log "creating snapshot before ${operation} via ${frontend}: ${caller}"
+
+# flock avoids two overlapping apt runs racing on the snapshot.
+run_snapshot() {
+	timeout "$TIMEOUT" timeshift --create --scripted \
+		--tags "$TAGS" --comments "$comment" >>"$LOG" 2>&1
+}
+
+rc=0
+if command -v flock >/dev/null 2>&1; then
+	# subshell so the fd/flock scope is tidy
+	( flock -w "$TIMEOUT" 9 || exit 75; run_snapshot ) 9>"$LOCK"
+	rc=$?
+	[ "$rc" = "75" ] && log "timed out waiting for the snapshot lock."
+else
+	run_snapshot
+	rc=$?
+fi
+
+if [ "$rc" -ne 0 ]; then
+	snapshot_failed "timeshift --create exited $rc."
+fi
+
+echo "$now" > "$STAMP" 2>/dev/null
+log "snapshot complete; proceeding with apt."
+exit 0

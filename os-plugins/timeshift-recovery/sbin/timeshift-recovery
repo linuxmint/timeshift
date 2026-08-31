@@ -1,0 +1,486 @@
+#!/bin/sh
+# Provision and maintain a bootable Timeshift recovery environment.
+#
+# Timeshift snapshots kept on a remote host cannot be restored from a system
+# that will not boot: the restore tool, the network stack and the wireless
+# driver all live on the broken root filesystem. This builds a small environment
+# that carries its own copies, places it where GRUB can reach it, and keeps it in
+# step with the installed Timeshift.
+set -eu
+
+. "${TSR_LIBDIR:-/usr/lib/timeshift-recovery}/common.sh"
+
+VERSION=1.0.0
+
+# --- usage ------------------------------------------------------------------
+
+usage() {
+	cat <<'EOF'
+Usage: timeshift-recovery <command> [options]
+
+Commands:
+  build             Build the recovery environment into the local cache
+  install           Build if needed, place the payload, and wire up GRUB
+  upgrade           Rebuild and re-place an already installed environment
+  enable            Restore the GRUB entry after 'disable' (instant)
+  disable           Remove the GRUB entry, keep the payload for 'enable'
+  status            Show what is installed and whether it is current
+  reboot            Boot into the recovery environment once, now
+  remove            Remove the payload and the GRUB entry
+  help              Show this message
+  version           Print the version
+
+Options:
+  --target TARGET   auto (default), root, /dev/sdXN, or /dev/sdX
+  --size SIZE       Partition size when one is created (default 6G)
+  --hotkey KEY      Key to press at startup (default r)
+  --hotkey-style S  hidden (default), countdown, menu, or none
+  --timeout N       Seconds GRUB waits for the hotkey (default 3)
+  --scale N         Display scale for the recovery GUI (default auto)
+  --hint H          Boot-screen hint while GRUB waits for the hotkey:
+                    splash (default), text, or none
+  --timeshift-deb P Use this .deb instead of repacking the installed Timeshift
+  --firmware F      full (default) or slim - see the config file
+  --no-ssh-key      Do not embed SSH key material in the environment
+  --no-wifi-creds   Do not embed saved Wi-Fi networks
+  --no-tailscale-state  Do not embed the Tailscale node identity
+  --machine         With 'status': print KEY=value lines for scripts
+  --yes             Do not ask before writing a partition table
+  --dry-run         Show what would happen, change nothing
+  --debug           Trace every command
+
+Defaults come from /etc/timeshift-recovery/config.
+
+Examples:
+  timeshift-recovery install                  # provision, choosing a target
+  timeshift-recovery install --target root    # never touch the partition table
+  timeshift-recovery status                   # is my rescue environment current?
+  timeshift-recovery reboot                   # try it, without changing boot
+EOF
+}
+
+# --- argument parsing -------------------------------------------------------
+
+COMMAND=""
+DRY_RUN=0
+ASSUME_YES=0
+FROM_TRIGGER=0
+MACHINE=0
+TIMESHIFT_DEB=""
+
+# Overrides are collected separately so they can be applied AFTER the config
+# file is read; otherwise loading the config would overwrite them.
+O_TARGET=""; O_SIZE=""; O_HOTKEY=""; O_HOTKEY_STYLE=""; O_TIMEOUT=""; O_EMBED=""
+O_SCALE=""
+O_HINT=""
+O_FIRMWARE=""; O_WIFI=""; O_TAILSCALE=""
+
+[ $# -gt 0 ] || { usage; exit 1; }
+
+COMMAND=$1
+shift
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--target)        O_TARGET=${2:?--target needs a value}; shift 2 ;;
+		--target=*)      O_TARGET=${1#*=}; shift ;;
+		--size)          O_SIZE=${2:?--size needs a value}; shift 2 ;;
+		--size=*)        O_SIZE=${1#*=}; shift ;;
+		--hotkey)        O_HOTKEY=${2:?--hotkey needs a value}; shift 2 ;;
+		--hotkey=*)      O_HOTKEY=${1#*=}; shift ;;
+		--hotkey-style)  O_HOTKEY_STYLE=${2:?--hotkey-style needs a value}; shift 2 ;;
+		--hotkey-style=*) O_HOTKEY_STYLE=${1#*=}; shift ;;
+		--timeout)       O_TIMEOUT=${2:?--timeout needs a value}; shift 2 ;;
+		--timeout=*)     O_TIMEOUT=${1#*=}; shift ;;
+		--scale)         O_SCALE=${2:?--scale needs a value}; shift 2 ;;
+		--scale=*)       O_SCALE=${1#*=}; shift ;;
+		--hint)          O_HINT=${2:?--hint needs a value}; shift 2 ;;
+		--hint=*)        O_HINT=${1#*=}; shift ;;
+		--timeshift-deb) TIMESHIFT_DEB=${2:?--timeshift-deb needs a value}; shift 2 ;;
+		--timeshift-deb=*) TIMESHIFT_DEB=${1#*=}; shift ;;
+		--no-ssh-key)       O_EMBED=0; shift ;;
+		--no-wifi-creds)    O_WIFI=0; shift ;;
+		--no-tailscale-state) O_TAILSCALE=0; shift ;;
+		--firmware)      O_FIRMWARE=${2:?--firmware needs a value}; shift 2 ;;
+		--firmware=*)    O_FIRMWARE=${1#*=}; shift ;;
+		--machine)       MACHINE=1; shift ;;
+		--yes|-y)        ASSUME_YES=1; shift ;;
+		--dry-run|-n)    DRY_RUN=1; shift ;;
+		--from-trigger)  FROM_TRIGGER=1; shift ;;
+		--debug)         set -x; shift ;;
+		--help|-h)       usage; exit 0 ;;
+		*)               die "unknown option '$1' (try: timeshift-recovery help)" ;;
+	esac
+done
+
+load_config
+
+# Command line beats the config file.
+[ -n "$O_TARGET" ]       && TARGET=$O_TARGET
+[ -n "$O_SIZE" ]         && SIZE=$O_SIZE
+[ -n "$O_HOTKEY" ]       && HOTKEY=$O_HOTKEY
+[ -n "$O_HOTKEY_STYLE" ] && HOTKEY_STYLE=$O_HOTKEY_STYLE
+[ -n "$O_TIMEOUT" ]      && TIMEOUT=$O_TIMEOUT
+[ -n "$O_SCALE" ]        && SCALE=$O_SCALE
+[ -n "$O_HINT" ]         && HINT=$O_HINT
+[ -n "$O_EMBED" ]        && EMBED_SSH_KEY=$O_EMBED
+[ -n "$O_WIFI" ]         && EMBED_WIFI_CREDS=$O_WIFI
+[ -n "$O_TAILSCALE" ]    && EMBED_TAILSCALE_STATE=$O_TAILSCALE
+[ -n "$O_FIRMWARE" ]     && FIRMWARE=$O_FIRMWARE
+
+# Tells the helpers these values are final; see load_config().
+TSR_OPTS_APPLIED=1
+export TSR_OPTS_APPLIED
+
+export TARGET SIZE HOTKEY HOTKEY_STYLE TIMEOUT SCALE HINT EMBED_SSH_KEY TORAM EXTRA_PACKAGES
+export FIRMWARE EMBED_WIFI_CREDS EMBED_TAILSCALE_STATE
+export DRY_RUN ASSUME_YES TIMESHIFT_DEB TSR_LIBDIR="${TSR_LIBDIR:-$LIBDIR}"
+
+# --- the key warning --------------------------------------------------------
+
+# Shown at install and repeated by status. Embedding the key is what makes an
+# unattended restore possible on a machine that is already broken; the cost is
+# real and belongs in front of the user, not in a README.
+ssh_key_warning() {
+	_embedded=""
+	[ "${EMBED_SSH_KEY:-1}" = "1" ] && [ -d /etc/timeshift/ssh ] && \
+		_embedded="$_embedded\n    - the SSH key from /etc/timeshift/ssh (reaches your snapshots)"
+	[ "${EMBED_WIFI_CREDS:-1}" = "1" ] && [ -d /etc/NetworkManager/system-connections ] && \
+		_embedded="$_embedded\n    - saved Wi-Fi passphrases from NetworkManager"
+	[ "${EMBED_TAILSCALE_STATE:-1}" = "1" ] && [ -f /var/lib/tailscale/tailscaled.state ] && \
+		_embedded="$_embedded\n    - the Tailscale node identity (joins your tailnet as this machine)"
+
+	[ -n "$_embedded" ] || return 0
+
+	printf '\n  NOTE: this environment carries credentials so a restore never stops to\n' >&2
+	printf '  ask for them on a machine that is already broken:\n' >&2
+	printf '%b\n' "$_embedded" >&2
+	cat >&2 <<'EOF'
+
+  All of it is readable by anyone who can boot this machine or read the
+  recovery media. Restrict the SSH key on the backup host so a leaked
+  recovery key can read snapshots but cannot write or delete them:
+
+      # ~/.ssh/authorized_keys on the backup host
+      restrict,command="rrsync -ro /path/to/snapshots" ssh-ed25519 AAAA...
+
+  Opt out per item with: --no-ssh-key, --no-wifi-creds, --no-tailscale-state
+
+EOF
+}
+
+# --- commands ---------------------------------------------------------------
+
+cmd_build() {
+	require_root build
+	take_lock
+	"$LIBDIR/build-rootfs"
+}
+
+cmd_install() {
+	require_root install
+	take_lock
+	validate_config
+
+	# An explicit install means the user wants it bootable again; a leftover
+	# disable must not silently suppress the GRUB entry being written.
+	run rm -f "$DISABLED"
+
+	# Reuse a cached build only when it matches the Timeshift now installed;
+	# otherwise the environment would ship a version that is already behind.
+	_need_build=1
+	if [ -r "$SQUASHFS" ] && [ -r "$CACHE/build-info" ]; then
+		_cached=$( . "$CACHE/build-info" 2>/dev/null; printf '%s' "${TS_VERSION:-}" )
+		_host=$(host_timeshift_pkg 2>/dev/null | awk '{print $2}')
+		if [ -n "$_cached" ] && [ "$_cached" = "$_host" ]; then
+			log "reusing the cached environment (timeshift $_cached)"
+			_need_build=0
+		fi
+	fi
+
+	[ "$_need_build" = "1" ] && "$LIBDIR/build-rootfs"
+
+	"$LIBDIR/place-payload"
+
+	ssh_key_warning
+	cmd_status
+}
+
+cmd_upgrade() {
+	require_root upgrade
+	take_lock
+
+	if ! load_state; then
+		if [ "$FROM_TRIGGER" = "1" ]; then
+			# Nothing was ever installed; a package upgrade is not the moment to
+			# start provisioning one unasked.
+			log "no recovery environment installed; nothing to upgrade"
+			exit 0
+		fi
+		die "no recovery environment installed. Run 'timeshift-recovery install' first."
+	fi
+
+	_host=$(host_timeshift_pkg 2>/dev/null | awk '{print $2}')
+	if [ "$FROM_TRIGGER" = "1" ] && [ "${TS_VERSION:-}" = "$_host" ] && ! is_stale; then
+		log "recovery environment already matches timeshift $_host; nothing to do"
+		exit 0
+	fi
+
+	step "Upgrading the recovery environment (${TS_VERSION:-unknown} -> ${_host:-unknown})"
+
+	# Re-place onto whatever it was installed on. Never re-resolve the target:
+	# an upgrade must not quietly move the environment, or repartition anything.
+	TARGET=$TARGET_KIND
+	[ "$TARGET_KIND" = "partition" ] && TARGET=$TARGET_DEV
+	export TARGET
+	ASSUME_YES=1
+	export ASSUME_YES
+
+	"$LIBDIR/build-rootfs"
+	"$LIBDIR/place-payload"
+
+	log "recovery environment upgraded"
+}
+
+cmd_disable() {
+	require_root disable
+	take_lock
+	load_state || die "no recovery environment installed. Run 'timeshift-recovery install' first."
+
+	if [ -e "$DISABLED" ] && [ ! -e "$GRUB_ENTRY" ]; then
+		log "already disabled"
+		return 0
+	fi
+
+	step "Disabling the recovery boot entry"
+	run rm -f "$GRUB_ENTRY" "$GRUB_DROPIN" "$GRUB_SPLASH"
+	require_tool update-grub
+	run update-grub >/dev/null 2>&1 || warn "update-grub failed; check /boot/grub/grub.cfg by hand"
+
+	if [ "$DRY_RUN" != "1" ]; then
+		mkdir -p "$STATE"
+		date -Is > "$DISABLED"
+	fi
+
+	log "recovery entry disabled; the payload is kept"
+	log "restore it with: sudo timeshift-recovery enable"
+}
+
+cmd_enable() {
+	require_root enable
+	take_lock
+	load_state || die "no recovery environment installed. Run 'timeshift-recovery install' first."
+
+	# The entry is only worth writing if what it boots is still there.
+	case "$TARGET_KIND" in
+		root)
+			for _f in recovery.img "$PAYLOAD_KERNEL_REL" "$PAYLOAD_INITRD_REL"; do
+				[ -r "$STATE/$_f" ] || \
+					die "the payload is gone from $PAYLOAD_PATH; run 'timeshift-recovery install'"
+			done
+			;;
+		partition)
+			blkid -U "$TARGET_UUID" >/dev/null 2>&1 || \
+				warn "cannot find the recovery partition (UUID $TARGET_UUID) right now; enabling anyway"
+			;;
+	esac
+
+	if [ -e "$GRUB_ENTRY" ] && [ ! -e "$DISABLED" ]; then
+		log "already enabled"
+		return 0
+	fi
+
+	step "Enabling the recovery boot entry"
+	run rm -f "$DISABLED"
+	write_grub
+
+	log "recovery entry enabled; press '$HOTKEY' at startup"
+}
+
+# KEY=value on stdout, for the timeshift CLI/GUI wrappers. Absence of an
+# installation is data here, not an error, so this always exits 0.
+cmd_status_machine() {
+	_host_ver=$(host_timeshift_pkg 2>/dev/null | awk '{print $2}')
+	printf 'HOST_VERSION=%s\n' "${_host_ver:-unknown}"
+	printf 'CACHE_PRESENT=%s\n' "$([ -r "$SQUASHFS" ] && echo 1 || echo 0)"
+	printf 'GRUB_ENTRY_PRESENT=%s\n' "$([ -e "$GRUB_ENTRY" ] && echo 1 || echo 0)"
+
+	if ! load_state; then
+		printf 'INSTALLED=0\nDISABLED=0\nSTALE=0\n'
+		return 0
+	fi
+
+	_style=$(effective_grub_setting style)
+	_timeout=$(effective_grub_setting timeout)
+
+	_grub_ok=0
+	if [ -e "$GRUB_ENTRY" ]; then
+		if [ "$HOTKEY_STYLE" = "none" ]; then
+			_grub_ok=1   # deliberate: reachable via 'timeshift-recovery reboot'
+		elif [ "$_timeout" -ge 1 ] 2>/dev/null; then
+			_grub_ok=1
+		fi
+	fi
+
+	_stale=0
+	if [ "${TS_VERSION:-}" != "$_host_ver" ] || is_stale; then _stale=1; fi
+
+	printf 'INSTALLED=1\n'
+	printf 'DISABLED=%s\n' "$([ -e "$DISABLED" ] && echo 1 || echo 0)"
+	printf 'STALE=%s\n' "$_stale"
+	printf 'ENV_VERSION=%s\n' "${TS_VERSION:-unknown}"
+	printf 'TARGET_KIND=%s\n' "${TARGET_KIND:-}"
+	printf 'TARGET_DEV=%s\n' "${TARGET_DEV:-}"
+	printf 'PAYLOAD_PATH=%s\n' "${PAYLOAD_PATH:-}"
+	printf 'INSTALLED_AT=%s\n' "${INSTALLED_AT:-}"
+	printf 'HOTKEY=%s\n' "$HOTKEY"
+	printf 'HOTKEY_STYLE=%s\n' "$HOTKEY_STYLE"
+	printf 'HINT=%s\n' "${HINT:-splash}"
+	printf 'GRUB_TIMEOUT_EFFECTIVE=%s\n' "$_timeout"
+	printf 'GRUB_OK=%s\n' "$_grub_ok"
+}
+
+cmd_status() {
+	if [ "$MACHINE" = "1" ]; then
+		cmd_status_machine
+		return 0
+	fi
+
+	if ! load_state; then
+		printf 'target:    (not installed)\n'
+		printf '\nRun "sudo timeshift-recovery install" to provision the recovery environment.\n'
+		return 0
+	fi
+
+	case "$TARGET_KIND" in
+		partition) printf 'target:    %s (dedicated partition)\n' "$TARGET_DEV" ;;
+		root)      printf 'target:    %s (root filesystem, %s)\n' "$TARGET_DEV" "$PAYLOAD_PATH" ;;
+	esac
+
+	if [ -r "$SQUASHFS" ]; then
+		printf 'size:      %s\n' "$(human_bytes "$(stat -c %s "$SQUASHFS")")"
+	fi
+	printf 'toram:     %s\n' "$([ "${TORAM_EFFECTIVE:-0}" = "1" ] && echo yes || echo no)"
+	printf 'installed: %s\n' "${INSTALLED_AT:-unknown}"
+
+	_host_line=$(host_timeshift_pkg 2>/dev/null || echo "unknown unknown")
+	_host_ver=$(printf '%s' "$_host_line" | awk '{print $2}')
+
+	printf 'env:       %s %s\n' "${TS_PACKAGE:-unknown}" "${TS_VERSION:-unknown}"
+	if [ "${TS_VERSION:-}" = "$_host_ver" ] && ! is_stale; then
+		printf 'host:      %s  [current]\n' "$_host_ver"
+	else
+		printf 'host:      %s  [STALE - run: sudo timeshift-recovery upgrade]\n' "$_host_ver"
+	fi
+
+	# The hotkey is the entire access path, so check what GRUB will ACTUALLY do
+	# rather than what this tool wrote. Another drop-in sorting after ours, or a
+	# hand edit, can quietly reset the timeout and make R stop working.
+	_style=$(effective_grub_setting style)
+	_timeout=$(effective_grub_setting timeout)
+
+	if [ ! -e "$GRUB_ENTRY" ] && [ -e "$DISABLED" ]; then
+		printf 'grub:      disabled (payload kept)  [run: sudo timeshift-recovery enable]\n'
+	elif [ ! -e "$GRUB_ENTRY" ]; then
+		printf 'grub:      MISSING %s  [the entry is gone - run: sudo timeshift-recovery install]\n' "$GRUB_ENTRY"
+	elif [ "$HOTKEY_STYLE" = "none" ]; then
+		printf 'grub:      entry present, no boot changes (hotkey disabled)\n'
+		printf '           reach it with: sudo timeshift-recovery reboot\n'
+	elif [ "$_timeout" -lt 1 ] 2>/dev/null; then
+		printf "grub:      hotkey '%s'  [BROKEN - effective GRUB_TIMEOUT is %s]\n" "$HOTKEY" "$_timeout"
+		printf '           GRUB reads no keys with no timeout, so the hotkey does nothing.\n'
+		printf '           Something is overriding %s.\n' "$GRUB_DROPIN"
+	else
+		printf "grub:      hotkey '%s', style=%s, timeout=%ss  [ok]\n" "$HOTKEY" "$_style" "$_timeout"
+	fi
+
+	_creds=""
+	[ "${EMBED_SSH_KEY:-1}" = "1" ] && [ -d /etc/timeshift/ssh ] && _creds="SSH key"
+	[ "${EMBED_WIFI_CREDS:-1}" = "1" ] && [ -d /etc/NetworkManager/system-connections ] && \
+		_creds="${_creds:+$_creds, }Wi-Fi passphrases"
+	[ "${EMBED_TAILSCALE_STATE:-1}" = "1" ] && [ -f /var/lib/tailscale/tailscaled.state ] && \
+		_creds="${_creds:+$_creds, }Tailscale identity"
+	[ -n "$_creds" ] && \
+		printf 'embedded:  %s  [readable by anyone who can boot this machine]\n' "$_creds"
+
+	printf 'firmware:  %s\n' "${FIRMWARE:-full}"
+}
+
+cmd_reboot() {
+	require_root reboot
+	load_state || die "no recovery environment installed. Run 'timeshift-recovery install' first."
+	[ -e "$GRUB_ENTRY" ] || die "the GRUB entry is missing; run 'timeshift-recovery install'"
+
+	require_tool grub-reboot
+
+	# One shot: this sets the NEXT boot only, so it proves the entry works
+	# without depending on the hotkey or changing the default.
+	run grub-reboot timeshift-recovery || die "grub-reboot failed; is the entry in /boot/grub/grub.cfg?"
+
+	if [ "$DRY_RUN" = "1" ]; then
+		log "[dry-run] would reboot now"
+		return 0
+	fi
+
+	if [ "$ASSUME_YES" != "1" ]; then
+		printf '\nThe next boot only will enter the recovery environment.\nReboot now? [y/N] ' >&2
+		read -r _a < /dev/tty || _a=""
+		case "$_a" in
+			[Yy]*) ;;
+			*) log "not rebooting; the next boot will still enter recovery"; return 0 ;;
+		esac
+	fi
+
+	run systemctl reboot
+}
+
+cmd_remove() {
+	require_root remove
+	take_lock
+
+	if load_state; then
+		case "$TARGET_KIND" in
+			root)
+				step "Removing the payload from $PAYLOAD_PATH"
+				run rm -f "$STATE/recovery.img" "$STATE/$PAYLOAD_KERNEL_REL" "$STATE/$PAYLOAD_INITRD_REL"
+				run rmdir "$STATE/boot" 2>/dev/null || true
+				;;
+			partition)
+				# Leave the partition itself alone. Deleting it would rewrite the
+				# partition table on the way out, which is not something a removal
+				# should do unasked; say what is left instead.
+				log "the recovery partition $TARGET_DEV is left in place"
+				log "delete it yourself if you want the space back"
+				;;
+		esac
+	else
+		log "no recorded installation; cleaning up GRUB only"
+	fi
+
+	step "Removing the GRUB entry"
+	run rm -f "$GRUB_ENTRY" "$GRUB_DROPIN" "$GRUB_SPLASH"
+	require_tool update-grub
+	run update-grub >/dev/null 2>&1 || warn "update-grub failed; check /boot/grub/grub.cfg by hand"
+
+	run rm -f "$INSTALLED" "$STALE" "$DISABLED"
+
+	log "recovery environment removed; normal boot is restored"
+}
+
+case "$COMMAND" in
+	build)     cmd_build ;;
+	install)   cmd_install ;;
+	upgrade)   cmd_upgrade ;;
+	enable)    cmd_enable ;;
+	disable)   cmd_disable ;;
+	status)    cmd_status ;;
+	reboot)    cmd_reboot ;;
+	remove)    cmd_remove ;;
+	help|--help|-h) usage ;;
+	version|--version)
+		# The packaged version, not the hardcoded fallback: the two drifted.
+		_v=$(dpkg-query -W -f='${Version}' timeshift-recovery 2>/dev/null || true)
+		printf 'timeshift-recovery %s\n' "${_v:-$VERSION}"
+		;;
+	*)         die "unknown command '$COMMAND' (try: timeshift-recovery help)" ;;
+esac

@@ -1,0 +1,12 @@
+// apt-snapshot-guard: force a Timeshift snapshot before any package change.
+//
+// DPkg::Pre-Invoke runs once per dpkg-changing apt run, after the download
+// phase and before the first unpack. It therefore covers install, reinstall,
+// remove, purge, upgrade, full-upgrade / dist-upgrade and autoremove, and
+// fires for every frontend that drives dpkg through libapt: apt, apt-get,
+// aptdaemon (the GUI Software Updater / PackageKit), and unattended-upgrades.
+//
+// Pure metadata refreshes (`apt update`) use APT::Update::Pre-Invoke and are
+// deliberately NOT hooked here -- no packages change. Simulations (-s) and
+// --download-only never reach dpkg, so they never trigger a snapshot.
+DPkg::Pre-Invoke { "/usr/lib/apt-snapshot-guard/pre-invoke"; };

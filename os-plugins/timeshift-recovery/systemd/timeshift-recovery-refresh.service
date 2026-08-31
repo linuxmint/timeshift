@@ -1,0 +1,29 @@
+[Unit]
+Description=Refresh the Timeshift recovery environment
+Documentation=man:timeshift-recovery(8)
+# Provisioning downloads packages; without a network this run would only fail
+# slowly and leave the stale flag set for the next boot to retry.
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+
+# Started with --no-block from a dpkg trigger, so this unit runs while apt may
+# still be mid-transaction. Take the dpkg lock first: that waits the apt run out
+# instead of racing it, and rebuilding against a half-applied package set would
+# produce an environment that matches nothing.
+ExecStart=/usr/bin/flock /var/lib/dpkg/lock-frontend /usr/sbin/timeshift-recovery upgrade --from-trigger
+
+# A rebuild is a full debootstrap: minutes, not seconds.
+TimeoutStartSec=3600
+
+# Never make a failed refresh block the boot or a package operation. The stale
+# flag survives, status keeps reporting it, and the next trigger retries.
+SuccessExitStatus=0
+
+Nice=10
+IOSchedulingClass=idle
+
+[Install]
+WantedBy=multi-user.target

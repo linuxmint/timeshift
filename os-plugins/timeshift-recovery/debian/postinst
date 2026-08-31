@@ -1,0 +1,40 @@
+#!/bin/sh
+# Handle the dpkg trigger fired when Timeshift itself changes.
+#
+# This runs inside a dpkg transaction, so it must stay cheap and must NOT
+# provision: building an environment runs apt in a chroot and downloads
+# hundreds of megabytes. Mark the environment stale and hand off to a systemd
+# unit, which takes the dpkg lock and so waits for the current apt run to
+# finish rather than racing it.
+set -e
+
+STATE_DIR=/var/lib/timeshift-recovery
+
+case "$1" in
+	triggered)
+		# Only meaningful once an environment has actually been installed.
+		if [ -f "$STATE_DIR/installed" ]; then
+			mkdir -p "$STATE_DIR"
+			date -Is > "$STATE_DIR/stale" 2>/dev/null || : > "$STATE_DIR/stale"
+
+			# --no-block: never hold up the dpkg transaction. The unit itself
+			# blocks on the dpkg lock before doing any work.
+			if [ -d /run/systemd/system ]; then
+				systemctl start --no-block timeshift-recovery-refresh.service \
+					>/dev/null 2>&1 || true
+			fi
+		fi
+		;;
+
+	configure)
+		# Deliberately does not provision. Building an environment needs the
+		# network and several minutes, neither of which belongs in an install.
+		if [ ! -f "$STATE_DIR/installed" ]; then
+			echo "timeshift-recovery: run 'sudo timeshift-recovery install' to provision the recovery environment."
+		fi
+		;;
+esac
+
+#DEBHELPER#
+
+exit 0

@@ -1,0 +1,38 @@
+#!/bin/sh
+# Drop the machine-specific GRUB files this package's CLI wrote.
+#
+# They are generated at install time, not shipped, so dpkg does not know about
+# them. Leaving them behind would leave a menu entry pointing at a payload that
+# is no longer maintained -- and, worse, a boot hotkey that lands nowhere.
+set -e
+
+GRUB_ENTRY=/etc/grub.d/42_timeshift_recovery
+GRUB_DEFAULT=/etc/default/grub.d/timeshift-recovery.cfg
+GRUB_SPLASH=/boot/grub/timeshift-recovery-splash.png
+
+case "$1" in
+	remove|purge)
+		removed=0
+		rm -f "$GRUB_SPLASH"
+		for f in "$GRUB_ENTRY" "$GRUB_DEFAULT"; do
+			if [ -e "$f" ]; then rm -f "$f"; removed=1; fi
+		done
+
+		# Only regenerate if we actually changed something, and never fail the
+		# removal over it.
+		if [ "$removed" = 1 ] && command -v update-grub >/dev/null 2>&1; then
+			update-grub >/dev/null 2>&1 || true
+		fi
+		;;
+esac
+
+case "$1" in
+	purge)
+		rm -rf /var/lib/timeshift-recovery /var/cache/timeshift-recovery
+		rm -rf /etc/timeshift-recovery
+		;;
+esac
+
+#DEBHELPER#
+
+exit 0

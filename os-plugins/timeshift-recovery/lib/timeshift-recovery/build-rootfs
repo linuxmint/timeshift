@@ -1,0 +1,997 @@
+#!/bin/sh
+# Build the recovery root filesystem and squash it.
+#
+# The environment is built from the host's OWN apt sources, so it always
+# matches the installed release, architecture and mirror. Nothing here may
+# hardcode a release name, a kernel version or a piece of hardware.
+#
+# Invoked by timeshift-recovery; not intended to be run directly.
+set -eu
+
+. "${TSR_LIBDIR:-/usr/lib/timeshift-recovery}/common.sh"
+
+load_config
+require_root
+require_tool mmdebstrap mksquashfs
+
+# --- what we are building against -------------------------------------------
+
+CODENAME=$(host_codename)
+[ -n "$CODENAME" ] || die "cannot read VERSION_CODENAME from /etc/os-release"
+ARCH=$(host_arch)
+
+# Feed mmdebstrap the host's own sources verbatim rather than reconstructing a
+# mirror URL. That carries the security suite and any local mirror choice with
+# it, which a hand-built "http://archive.ubuntu.com" would silently drop.
+SOURCES=$(mktemp)
+trap 'rm -f "$SOURCES" 2>/dev/null; for d in "${REPACK_DIR:-}" "${TS_REPACK_DIR:-}" "${SEED_DIR:-}"; do [ -n "$d" ] && rm -rf "$d"; done' EXIT INT TERM
+
+if [ -s /etc/apt/sources.list ] && grep -qE '^\s*deb\s' /etc/apt/sources.list 2>/dev/null; then
+	cat /etc/apt/sources.list >> "$SOURCES"
+fi
+for f in /etc/apt/sources.list.d/*.sources; do
+	[ -e "$f" ] || continue
+	# Only the distribution's own archives. A third-party PPA in the recovery
+	# environment is a way to fail a build for a reason unrelated to recovery.
+	if grep -qiE 'ubuntu\.com|ubuntu-ports|debian\.org' "$f"; then
+		cat "$f" >> "$SOURCES"
+		printf '\n' >> "$SOURCES"
+	fi
+done
+[ -s "$SOURCES" ] || die "found no usable apt sources to build the environment from"
+
+# --- package set ------------------------------------------------------------
+
+# Match the host's kernel flavour rather than assuming -generic: a machine on an
+# HWE or low-latency kernel should get the same drivers in recovery.
+#
+# Filter on INSTALLED status, not just on the name. dpkg-query happily lists
+# packages it merely knows about, and on a stock desktop that includes
+# linux-image-fb-* -- a framebuffer-only kernel that would boot this graphical
+# environment to a black screen.
+KERNEL_FLAVOUR=$(uname -r)
+KERNEL_FLAVOUR=${KERNEL_FLAVOUR##*-}
+
+KERNEL_META=$(dpkg-query -W -f='${binary:Package} ${db:Status-Status}\n' 'linux-image-*' 2>/dev/null \
+	| awk '$2 == "installed" { print $1 }' \
+	| grep -vE '^linux-image-[0-9]' \
+	| grep -vE '(^|-)unsigned-' \
+	| grep -E "(^|-)${KERNEL_FLAVOUR}(-|\$)" \
+	| head -n1)
+
+[ -n "$KERNEL_META" ] || KERNEL_META="linux-image-$KERNEL_FLAVOUR"
+apt-cache show "$KERNEL_META" >/dev/null 2>&1 || KERNEL_META=linux-image-generic
+
+# Mirror the host's firmware packages instead of pulling all of linux-firmware.
+# Note this saves less than it looks: Ubuntu installs nearly every
+# linux-firmware-* package, so the mirrored set is still ~660 MB. FIRMWARE=slim
+# below prunes the installed files afterwards, which is where the real saving is.
+FIRMWARE_PKGS=$(dpkg-query -W -f='${binary:Package} ${db:Status-Status}\n' 'linux-firmware*' 2>/dev/null \
+	| awk '$2 == "installed" { printf "%s%s", sep, $1; sep = "," }')
+[ -n "$FIRMWARE_PKGS" ] || FIRMWARE_PKGS=linux-firmware
+
+case "${FIRMWARE:-full}" in
+	full|slim) ;;
+	*) die "invalid FIRMWARE '${FIRMWARE}' (want: full or slim)" ;;
+esac
+
+PACKAGES="$KERNEL_META,initramfs-tools,casper,systemd-sysv,dbus"
+# rfkill: a laptop's wireless switch left off is an invisible dead end.
+# cron: timeshift's startup dependency check aborts outright without crontab.
+PACKAGES="$PACKAGES,network-manager,wpasupplicant,iw,rfkill,ca-certificates,cron"
+PACKAGES="$PACKAGES,$FIRMWARE_PKGS"
+# labwc is a small wlroots compositor. Unlike a kiosk compositor it handles
+# multiple toplevels, which matters because timeshift-gtk opens its own windows
+# on top of the recovery shell.
+# wlr-randr: labwc's rc.xml has no output-scale setting (labwc-config(5) knows
+# only a magnifier scale), so the only way to scale the session is the
+# wlr-output-management protocol. 44 KB, and its deps are already here.
+PACKAGES="$PACKAGES,labwc,seatd,fonts-dejavu-core,xwayland,wlr-randr"
+PACKAGES="$PACKAGES,rsync,openssh-client,e2fsprogs,dosfstools,ntfs-3g"
+PACKAGES="$PACKAGES,gdisk,parted,cryptsetup,lvm2,btrfs-progs,udisks2,polkitd"
+# mdadm: without it a RAID array is never assembled, so a md-backed root simply
+# does not appear in the device list and the machine cannot be restored at all.
+# xfsprogs/f2fs-tools: Timeshift runs "fsck -y" on every target device after a
+# restore, and with no fsck.xfs / fsck.f2fs that call fails on those targets.
+PACKAGES="$PACKAGES,mdadm,xfsprogs,f2fs-tools"
+PACKAGES="$PACKAGES,sudo,less,nano,psmisc,iputils-ping,curl"
+
+if [ -n "${EXTRA_PACKAGES:-}" ]; then
+	for p in $EXTRA_PACKAGES; do PACKAGES="$PACKAGES,$p"; done
+fi
+
+# --- the Timeshift build to put in the environment --------------------------
+
+# Repack the host's INSTALLED Timeshift rather than fetching one. That is what
+# keeps the environment in exact lockstep with the system it has to rescue,
+# without needing the source tree or a package repository.
+if [ -n "${TIMESHIFT_DEB:-}" ]; then
+	[ -r "$TIMESHIFT_DEB" ] || die "--timeshift-deb: cannot read $TIMESHIFT_DEB"
+	TS_DEB=$TIMESHIFT_DEB
+	TS_PACKAGE=$(dpkg-deb -f "$TS_DEB" Package)
+	TS_VERSION=$(dpkg-deb -f "$TS_DEB" Version)
+	log "using Timeshift package from $TS_DEB ($TS_PACKAGE $TS_VERSION)"
+else
+	# set always succeeds, so the emptiness check below is what actually
+	# catches "no timeshift installed".
+	set -- $(host_timeshift_pkg)
+	TS_PACKAGE=${1:-}
+	TS_VERSION=${2:-}
+	[ -n "$TS_PACKAGE" ] || die "no installed timeshift package found; pass --timeshift-deb PATH"
+
+	require_tool dpkg-repack
+
+	if [ "${DRY_RUN:-0}" = "1" ]; then
+		TS_DEB="(dpkg-repack of the installed $TS_PACKAGE)"
+	else
+		REPACK_DIR=$(mktemp -d)
+		step "Repacking installed $TS_PACKAGE $TS_VERSION"
+		( cd "$REPACK_DIR" && dpkg-repack "$TS_PACKAGE" >/dev/null 2>&1 ) \
+			|| die "dpkg-repack failed for $TS_PACKAGE"
+		TS_DEB=$(find "$REPACK_DIR" -name '*.deb' | head -n1)
+		[ -n "$TS_DEB" ] || die "dpkg-repack produced no .deb for $TS_PACKAGE"
+	fi
+fi
+
+# --- Tailscale, repacked from the host --------------------------------------
+
+# Tailscale comes from pkgs.tailscale.com, which the source filter above
+# deliberately excludes from the chroot. Repack the installed package instead:
+# same trick as Timeshift, no third-party repo in the build, exact version match.
+TAILSCALE_DEB=""
+if [ "${EMBED_TAILSCALE_STATE:-1}" = "1" ]; then
+	if dpkg-query -W -f='${db:Status-Status}' tailscale 2>/dev/null | grep -q installed; then
+		if [ "${DRY_RUN:-0}" = "1" ]; then
+			TAILSCALE_DEB="(dpkg-repack of the installed tailscale)"
+		elif command -v dpkg-repack >/dev/null 2>&1; then
+			TS_REPACK_DIR=$(mktemp -d)
+			step "Repacking installed tailscale"
+			( cd "$TS_REPACK_DIR" && dpkg-repack tailscale >/dev/null 2>&1 ) \
+				|| warn "dpkg-repack failed for tailscale; the environment will have no tailnet access"
+			TAILSCALE_DEB=$(find "$TS_REPACK_DIR" -name '*.deb' 2>/dev/null | head -n1)
+		fi
+	else
+		log "tailscale is not installed on this host; skipping tailnet support"
+	fi
+fi
+
+# --- seed files placed inside the environment -------------------------------
+
+SEED_DIR=$(mktemp -d)
+mkdir -p "$SEED_DIR/etc/systemd/system/getty@tty1.service.d" \
+         "$SEED_DIR/root" "$SEED_DIR/etc/timeshift"
+
+# Autologin root on tty1. casper's own user-setup targets a display manager,
+# and this environment has none, so the session is started from the console.
+cat > "$SEED_DIR/etc/systemd/system/getty@tty1.service.d/autologin.conf" <<'EOF'
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin root --noclear %I $TERM
+EOF
+
+# Start the compositor on login at the console, and only there: a serial or SSH
+# login should still land on a plain shell for troubleshooting.
+cat > "$SEED_DIR/root/.profile" <<'EOF'
+# Recovery environment: bring up the graphical shell on the console.
+# Any other tty stays a plain shell, which is what you want when the GUI is the
+# thing that is broken.
+if [ -z "${WAYLAND_DISPLAY:-}" ] && [ "$(tty)" = "/dev/tty1" ]; then
+	export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/0}"
+	mkdir -p "$XDG_RUNTIME_DIR" && chmod 700 "$XDG_RUNTIME_DIR"
+
+	# wlroots needs a seat. Running as root on a VT, libseat's builtin backend
+	# talks to the kernel directly and needs no seatd daemon.
+	export LIBSEAT_BACKEND=builtin
+	export XDG_SESSION_TYPE=wayland
+
+	# wlroots refuses EGL under software rendering unless this is set. On a
+	# machine whose graphics are part of what is broken -- exactly the machine
+	# this environment exists for -- that refusal would mean no GUI at all.
+	export WLR_RENDERER_ALLOW_SOFTWARE=1
+
+	# There is no accessibility bus here; without this every GTK program prints
+	# a D-Bus error on startup.
+	export GTK_A11Y=none
+
+	# The cursor theme is in the image, but wlroots warns unless it is named.
+	export XCURSOR_THEME=Adwaita
+	export XCURSOR_SIZE=24
+
+	exec /usr/lib/timeshift-recovery/session
+fi
+EOF
+chmod 0644 "$SEED_DIR/root/.profile"
+
+# --- session supervision ------------------------------------------------------
+
+# Two things can die, and until now each left the user somewhere useless:
+#
+#   the launcher   -> labwc keeps running with no windows: a black screen with
+#                     nothing to click and no prompt
+#   the compositor -> .profile fell through to a bare root prompt
+#
+# Neither is acceptable in a tool people reach for when the machine is already
+# broken, so both are supervised. The inner loop lives in the labwc -s command,
+# the outer loop restarts labwc itself.
+mkdir -p "$SEED_DIR/usr/lib/timeshift-recovery"
+
+cat > "$SEED_DIR/usr/lib/timeshift-recovery/session" <<'EOF'
+#!/bin/sh
+# Outer supervisor: keep a compositor on the screen.
+set -u
+
+LOG=/tmp/timeshift-recovery-session.log
+starts=0
+window_start=$(date +%s)
+
+log() { printf '%s %s
+' "$(date -Is)" "$*" >> "$LOG" 2>/dev/null || true; }
+
+log "session supervisor starting"
+
+while :; do
+	now=$(date +%s)
+	# Reset the counter once a run has lasted a while: a session that ran for
+	# ten minutes and then died is not a crash loop.
+	if [ $(( now - window_start )) -gt 30 ]; then
+		starts=0
+		window_start=$now
+	fi
+
+	starts=$(( starts + 1 ))
+	if [ "$starts" -gt 5 ]; then
+		cat <<'MSG'
+
+  The graphical recovery menu could not stay running.
+
+  You can still restore from this console - the GUI is only a front end:
+
+      timeshift --list                 show available snapshots
+      timeshift --restore              restore, choosing interactively
+
+  Details: /tmp/timeshift-recovery-session.log
+  To try the menu again:  /usr/lib/timeshift-recovery/session
+
+MSG
+		log "giving up after repeated rapid failures"
+		exit 1
+	fi
+
+	log "starting compositor (attempt $starts)"
+
+	# -S, not -s: labwc terminates when its session command exits. The inner
+	# supervisor normally loops forever so labwc stays up; when it gives up,
+	# labwc comes down with it and this loop restarts the whole session.
+	if labwc -S /usr/lib/timeshift-recovery/launcher >> "$LOG" 2>&1; then
+		log "compositor exited cleanly"
+	else
+		log "compositor exited with status $?"
+	fi
+
+	# Second attempt onwards, drop to the pure-software renderer: it never
+	# touches EGL, so it survives hardware the GL path cannot drive.
+	if [ "$starts" -ge 2 ] && [ "${WLR_RENDERER:-}" != "pixman" ]; then
+		log "retrying with the software renderer"
+		WLR_RENDERER=pixman
+		export WLR_RENDERER
+	fi
+
+	sleep 1
+done
+EOF
+chmod 0755 "$SEED_DIR/usr/lib/timeshift-recovery/session"
+
+# The helper reads this inside the running environment, where the host's
+# /etc/timeshift-recovery/config does not exist -- so carry the resolved value
+# in, or a SCALE set on the host would silently never apply.
+mkdir -p "$SEED_DIR/etc/timeshift-recovery"
+printf 'SCALE=%s\n' "${SCALE:-auto}" > "$SEED_DIR/etc/timeshift-recovery/config"
+
+cat > "$SEED_DIR/usr/lib/timeshift-recovery/set-scale" <<'EOF'
+#!/bin/sh
+# Work out a sane display scale and apply it to the compositor.
+#
+# The panel this environment is most likely to be used on is a laptop screen,
+# and modern ones are ~250 DPI. GTK renders at 1x unless told otherwise, which
+# puts the whole UI at about a third of its intended physical size -- unusable
+# on the machine someone is trying to rescue.
+#
+# labwc has no output scale in its config (labwc-config(5) knows only a
+# magnifier), so the scale has to go through the wlr-output-management
+# protocol, which is what wlr-randr speaks. If that fails for any reason we
+# fall back to GDK_SCALE, which is integer-only but always works -- and,
+# because the shell and timeshift-gtk both inherit this environment, reaches
+# the restore wizard too.
+set -u
+
+CONFIG=/etc/timeshift-recovery/config
+LOG=/tmp/timeshift-recovery-session.log
+
+log() { printf '%s set-scale: %s\n' "$(date -Is)" "$1" >> "$LOG" 2>&1 || true; }
+
+# Round px/mm into a scale on quarter steps, targeting the 96 DPI that desktop
+# UIs are drawn for.
+#
+# The bias is 0.4, not 0.5: rounding to nearest turns a 252 DPI panel into
+# 2.75 where 2.5 is already generous; rounding up only past 0.6 of a step
+# still reaches 1.75 for a 166 DPI panel.
+#
+# Clamped to [1, 2]: below 1 nothing is readable, and above 2 the logical
+# height drops below what the restore wizard needs -- this laptop's 2880x1920
+# panel would compute 2.5 (1152x768, where the wizard once clipped) but runs
+# comfortably at the capped 2.0 (1440x960).
+scale_for() { # px mm
+	awk -v px="$1" -v mm="$2" 'BEGIN {
+		if (mm <= 0 || px <= 0) { print "1"; exit }
+		dpi = px / (mm / 25.4)
+		s = int(dpi / 96 * 4 + 0.4) / 4
+		if (s < 1) s = 1
+		if (s > 2) s = 2
+		printf "%.2f\n", s
+	}'
+}
+
+# A connector directory names itself cardN-eDP-1; wlr-randr calls that eDP-1.
+connector_name() { basename "$1" | sed 's/^card[0-9]*-//'; }
+
+# EDID bytes 21 and 22 are the screen size in whole centimetres. Some panels
+# and most virtual outputs report 0, which is the "cannot tell" case.
+edid_mm() { # edid-file  axis(21|22)
+	[ -r "$1" ] || { echo 0; return; }
+	od -An -tu1 -j "$2" -N1 "$1" 2>/dev/null | tr -d ' \n' | sed 's/^$/0/' \
+		| awk '{ print $1 * 10 }'
+}
+
+resolved=""
+
+# 1. explicit override, for correcting a wrong guess without a rebuild
+if [ -n "${TIMESHIFT_RECOVERY_SCALE:-}" ]; then
+	resolved=$TIMESHIFT_RECOVERY_SCALE
+	log "using TIMESHIFT_RECOVERY_SCALE=$resolved"
+fi
+
+# 2. the image's own config
+if [ -z "$resolved" ] && [ -r "$CONFIG" ]; then
+	cfg=$(sed -n 's/^[[:space:]]*SCALE=//p' "$CONFIG" | tail -1 | tr -d '"'"'"' ')
+	if [ -n "$cfg" ] && [ "$cfg" != "auto" ]; then
+		resolved=$cfg
+		log "using SCALE=$resolved from $CONFIG"
+	fi
+fi
+
+applied=0
+fallback=""
+
+for drm in /sys/class/drm/card*-*; do
+	[ -r "$drm/status" ] || continue
+	[ "$(cat "$drm/status" 2>/dev/null)" = "connected" ] || continue
+
+	name=$(connector_name "$drm")
+
+	if [ -n "$resolved" ]; then
+		s=$resolved
+	else
+		mode=$(head -1 "$drm/modes" 2>/dev/null)
+		px=${mode%%x*}
+		mm=$(edid_mm "$drm/edid" 21)
+		s=$(scale_for "${px:-0}" "${mm:-0}")
+		log "$name: mode=${mode:-none} width=${mm}mm -> scale $s"
+	fi
+
+	# Integer, for the fallback and the cursor. Same downward bias as
+	# scale_for(): plain rounding turns 2.5 into 3, which is the "everything
+	# huge, nothing fits" end that the quarter-step formula deliberately
+	# avoids picking.
+	[ -z "$fallback" ] && fallback=$(awk -v s="$s" 'BEGIN { printf "%d\n", (s + 0.4) }')
+
+	if [ "$s" = "1" ] || [ "$s" = "1.00" ]; then
+		applied=1
+		continue
+	fi
+
+	if wlr-randr --output "$name" --scale "$s" >> "$LOG" 2>&1; then
+		log "$name: applied scale $s"
+		applied=1
+	else
+		log "$name: wlr-randr failed"
+	fi
+done
+
+if [ "$applied" != "1" ] && [ -n "$fallback" ] && [ "$fallback" != "1" ]; then
+	log "falling back to GDK_SCALE=$fallback"
+	export GDK_SCALE="$fallback"
+	export XCURSOR_SIZE=$(( 24 * fallback ))
+fi
+EOF
+chmod 0755 "$SEED_DIR/usr/lib/timeshift-recovery/set-scale"
+
+cat > "$SEED_DIR/usr/lib/timeshift-recovery/launcher" <<'EOF'
+#!/bin/sh
+# Inner supervisor: keep the menu on screen inside a running compositor.
+#
+# Without this a crash of the launcher leaves labwc up with no windows -- a
+# black screen offering nothing at all, which is worse than a prompt because
+# there is not even anywhere to type.
+set -u
+
+LOG=/tmp/timeshift-recovery-session.log
+starts=0
+window_start=$(date +%s)
+
+while :; do
+	now=$(date +%s)
+	if [ $(( now - window_start )) -gt 30 ]; then
+		starts=0
+		window_start=$now
+	fi
+
+	starts=$(( starts + 1 ))
+	if [ "$starts" -gt 5 ]; then
+		printf '%s launcher failed repeatedly; ending the session\n' "$(date -Is)" >> "$LOG" 2>&1 || true
+		# Exiting brings labwc down with us -- it was started with -S, which
+		# terminates the compositor when its session command exits. That hands
+		# the problem to the outer supervisor, which restarts the whole session
+		# and switches to the software renderer on the retry.
+		#
+		# Do NOT try to fall back to a terminal emulator here: the image ships
+		# none, so that path would exec nothing and hang on a black screen.
+		exit 1
+	fi
+
+	printf '%s starting launcher (attempt %s)\n' "$(date -Is)" "$starts" >> "$LOG" 2>&1 || true
+
+	# Sourced, not executed: the GDK_SCALE fallback has to land in THIS
+	# shell's environment so the menu and the timeshift-gtk it spawns both
+	# inherit it. Runs here rather than in .profile because wlr-randr needs a
+	# compositor to talk to, and by this point labwc is up.
+	. /usr/lib/timeshift-recovery/set-scale || true
+
+	timeshift-recovery-shell >> "$LOG" 2>&1 || true
+	sleep 1
+done
+EOF
+chmod 0755 "$SEED_DIR/usr/lib/timeshift-recovery/launcher"
+
+# Tell the user which environment they are in, and that it is disposable.
+cat > "$SEED_DIR/etc/motd" <<'EOF'
+
+  Timeshift Recovery Environment
+  ------------------------------
+  This environment runs entirely from RAM. Nothing you change here is kept.
+  Its only job is to get you online and restore a snapshot to the real system.
+
+EOF
+
+cat > "$SEED_DIR/root/build-info" <<EOF
+built:     $(date -Is)
+host:      $(hostname 2>/dev/null || echo unknown)
+release:   $CODENAME ($ARCH)
+kernel:    $KERNEL_META
+timeshift: $TS_PACKAGE $TS_VERSION
+EOF
+
+# --- make NetworkManager actually manage the hardware ------------------------
+
+# Ubuntu ships /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf
+# reading "unmanaged-devices=*,except:type:wifi,except:type:gsm,except:type:cdma"
+# -- ETHERNET IS UNMANAGED. On a desktop install netplan hands wired devices to
+# NM; a minimal environment has no netplan config, so nothing does, and nmtui
+# comes up with an empty connection list and no way to get online. /etc wins
+# over /usr/lib, so this drop-in is the override.
+mkdir -p "$SEED_DIR/etc/NetworkManager/conf.d" "$SEED_DIR/etc/netplan"
+
+cat > "$SEED_DIR/etc/NetworkManager/conf.d/10-recovery-manage-all.conf" <<'EOF'
+# Recovery environment: NetworkManager owns every interface.
+# Overrides the distribution default, which leaves ethernet unmanaged.
+[keyfile]
+unmanaged-devices=none
+EOF
+
+# Belt and braces: state the renderer outright so netplan cannot hand devices to
+# systemd-networkd instead. Mode 0600 or netplan warns on every boot.
+cat > "$SEED_DIR/etc/netplan/01-recovery-nm.yaml" <<'EOF'
+# Recovery environment: everything is NetworkManager's.
+network:
+  version: 2
+  renderer: NetworkManager
+EOF
+chmod 0600 "$SEED_DIR/etc/netplan/01-recovery-nm.yaml"
+
+# --- make GTK apps dark ------------------------------------------------------
+
+# There is no settings daemon here, so GTK falls back to a light theme. That is
+# not just the launcher's problem: timeshift-gtk is what actually performs the
+# restore, and it rendered as a white slab on a dark screen.
+# GTK4 reads settings.ini from XDG_CONFIG_DIRS (/etc/xdg), NOT /etc/gtk-4.0 --
+# a file there is simply never read. GTK3 does use /etc/gtk-3.0.
+for gtkdir in etc/xdg/gtk-4.0 etc/gtk-3.0; do
+	mkdir -p "$SEED_DIR/$gtkdir"
+	cat > "$SEED_DIR/$gtkdir/settings.ini" <<'EOF'
+[Settings]
+gtk-application-prefer-dark-theme=1
+EOF
+done
+
+# --- silence a check that cannot apply here ---------------------------------
+
+# casper-md5check verifies an ISO against md5sum.txt. This environment is not an
+# ISO and ships no such file, so the unit always fails and paints a red FAILED
+# across the boot of a tool people reach for when something is already wrong.
+# Mask it rather than leave a permanent false alarm.
+mkdir -p "$SEED_DIR/etc/systemd/system"
+ln -sf /dev/null "$SEED_DIR/etc/systemd/system/casper-md5check.service"
+
+# --- bring the tailnet up ----------------------------------------------------
+
+# --accept-routes is the entire point and is NOT the Linux default: without it
+# the subnet route to the backup host's network is ignored and the repository
+# stays unreachable even though the tailnet is up.
+if [ -n "${TAILSCALE_DEB:-}" ]; then
+	cat > "$SEED_DIR/etc/systemd/system/timeshift-recovery-tailscale.service" <<'EOF'
+[Unit]
+Description=Join the tailnet for remote snapshot access
+After=network-online.target tailscaled.service
+Wants=network-online.target
+Requires=tailscaled.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# --accept-routes: the backup host is reached over a peer's advertised subnet
+# route. Without this flag the route is ignored and the restore cannot see it.
+ExecStart=/usr/bin/tailscale up --accept-routes --timeout=30s
+# Never fail the boot over this. There may be no network yet, and the recovery
+# shell offers Connect and Log in buttons for exactly that case.
+SuccessExitStatus=0 1
+[Install]
+WantedBy=multi-user.target
+EOF
+
+	mkdir -p "$SEED_DIR/etc/systemd/system/multi-user.target.wants"
+	ln -sf /etc/systemd/system/timeshift-recovery-tailscale.service \
+		"$SEED_DIR/etc/systemd/system/multi-user.target.wants/timeshift-recovery-tailscale.service"
+fi
+
+# --- release the medium after a toram boot -----------------------------------
+
+# When the environment is booted from an image on the root filesystem, casper's
+# iso-scan hook mounts that partition at /isodevice and loop-mounts the image
+# from it. Both survive into the running system, which would leave the very
+# partition we are here to restore pinned busy.
+#
+# With toram the environment is already entirely in RAM, so neither is needed.
+# Release them at boot -- but only ever by ASKING: umount and losetup -d both
+# fail with EBUSY when something is genuinely still using them, and that refusal
+# is the safety net. Nothing here forces or lazily detaches.
+mkdir -p "$SEED_DIR/usr/lib/timeshift-recovery" "$SEED_DIR/etc/systemd/system"
+
+cat > "$SEED_DIR/usr/lib/timeshift-recovery/release-medium" <<'EOF'
+#!/bin/sh
+# Free the boot medium so the disk it lives on can be restored.
+set -eu
+
+# Only safe once the environment is running from RAM. Without toram the medium
+# still holds the filesystem we are executing from.
+grep -qw toram /proc/cmdline || {
+	echo "not a toram boot; leaving the medium mounted"
+	exit 0
+}
+
+released=0
+
+if mountpoint -q /isodevice 2>/dev/null; then
+	if umount /isodevice 2>/dev/null; then
+		echo "released /isodevice"
+		released=1
+	else
+		echo "could not release /isodevice; something is still using it" >&2
+	fi
+fi
+
+# Detach loop devices whose backing file is gone with the mount above. A busy
+# loop returns EBUSY and is left exactly as it is.
+for loop in $(losetup -O NAME -n 2>/dev/null || true); do
+	back=$(losetup -O BACK-FILE -n "$loop" 2>/dev/null | tr -d ' ') || continue
+	case "$back" in
+		*recovery.img*|*"(deleted)")
+			if losetup -d "$loop" 2>/dev/null; then
+				echo "detached $loop"
+				released=1
+			fi
+			;;
+	esac
+done
+
+[ "$released" = 1 ] && echo "boot medium released; its disk can now be restored"
+exit 0
+EOF
+chmod 0755 "$SEED_DIR/usr/lib/timeshift-recovery/release-medium"
+
+cat > "$SEED_DIR/etc/systemd/system/timeshift-recovery-release-medium.service" <<'EOF'
+[Unit]
+Description=Release the Timeshift recovery boot medium
+DefaultDependencies=no
+After=local-fs.target
+Before=multi-user.target
+ConditionKernelCommandLine=toram
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/lib/timeshift-recovery/release-medium
+# Never block the boot over this. If the medium cannot be released the
+# environment still works; only a restore to that particular disk is affected,
+# and the recovery shell reports it.
+SuccessExitStatus=0 1
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+mkdir -p "$SEED_DIR/etc/systemd/system/multi-user.target.wants"
+ln -sf /etc/systemd/system/timeshift-recovery-release-medium.service \
+	"$SEED_DIR/etc/systemd/system/multi-user.target.wants/timeshift-recovery-release-medium.service"
+
+# --- seed the snapshot configuration ----------------------------------------
+
+# Carry the host's Timeshift configuration in, so the environment already knows
+# where the snapshots live. Without this the user has to retype an SSH URL on a
+# machine that will not boot.
+if [ -r /etc/timeshift/timeshift.json ]; then
+	cp /etc/timeshift/timeshift.json "$SEED_DIR/etc/timeshift/timeshift.json"
+	log "seeded /etc/timeshift/timeshift.json (snapshot location preconfigured)"
+
+	# Force dark in the COPY only -- never touch the host's own preference.
+	#
+	# Timeshift does not follow gtk-application-prefer-dark-theme: AppTheme
+	# resolves theme_mode itself and then WRITES that setting (AppTheme.vala),
+	# so seeding GTK settings cannot reach it. With theme_mode=system and no
+	# portal or dconf in this environment it resolves to light, and the restore
+	# window comes up as a white slab in front of a dark launcher.
+	if grep -q '"theme_mode"' "$SEED_DIR/etc/timeshift/timeshift.json"; then
+		sed -i -E 's/("theme_mode"[[:space:]]*:[[:space:]]*)"[^"]*"/\1"dark"/' \
+			"$SEED_DIR/etc/timeshift/timeshift.json"
+	else
+		# json-glib writes one key per line, so inserting after the opening
+		# brace is safe.
+		sed -i '0,/{/s//{\n  "theme_mode" : "dark",/' \
+			"$SEED_DIR/etc/timeshift/timeshift.json"
+	fi
+	grep -q '"theme_mode"[[:space:]]*:[[:space:]]*"dark"' \
+		"$SEED_DIR/etc/timeshift/timeshift.json" \
+		|| die "could not set theme_mode=dark in the seeded Timeshift config"
+else
+	warn "no /etc/timeshift/timeshift.json on this host; the environment will start unconfigured"
+fi
+
+if [ "${EMBED_SSH_KEY:-1}" = "1" ] && [ -d /etc/timeshift/ssh ]; then
+	mkdir -p "$SEED_DIR/etc/timeshift/ssh"
+	cp -a /etc/timeshift/ssh/. "$SEED_DIR/etc/timeshift/ssh/"
+	chmod 700 "$SEED_DIR/etc/timeshift/ssh"
+	find "$SEED_DIR/etc/timeshift/ssh" -type f -exec chmod 600 {} +
+	log "embedded SSH key material from /etc/timeshift/ssh"
+fi
+
+# Saved Wi-Fi networks, so the environment joins a known network by itself. On a
+# machine that will not boot, typing a WPA passphrase is exactly the kind of step
+# that turns a recovery into a dead end. NM refuses world-readable keyfiles, so
+# the 0600 is required, not just prudent.
+if [ "${EMBED_WIFI_CREDS:-1}" = "1" ] && command -v nmcli >/dev/null 2>&1; then
+
+	# Ask NetworkManager where its profiles actually are rather than assuming.
+	# /etc/NetworkManager/system-connections is EMPTY on modern Ubuntu: since
+	# "netplan everywhere", the passphrase lives in /etc/netplan/*.yaml and
+	# netplan generates the keyfile into /run. Copying only from /etc silently
+	# embedded nothing while status claimed the passphrases were included.
+	mkdir -p "$SEED_DIR/etc/NetworkManager/system-connections"
+	wifi_count=0
+
+	nmcli -t -f TYPE,FILENAME connection show 2>/dev/null | while IFS= read -r entry; do
+		conn_type=${entry%%:*}
+		conn_file=${entry#*:}
+
+		# Only real networks. loopback and the tailnet's own tun profile are
+		# noise, and copying tailscale0 would fight the tailscaled unit.
+		case "$conn_type" in
+			802-11-wireless|802-3-ethernet) ;;
+			*) continue ;;
+		esac
+		[ -r "$conn_file" ] || continue
+
+		dest="$SEED_DIR/etc/NetworkManager/system-connections/$(basename "$conn_file")"
+		cp -a "$conn_file" "$dest"
+
+		# Drop interface-name so a saved network still matches when the rescue
+		# happens through a USB adapter rather than the built-in radio.
+		sed -i '/^interface-name=/d' "$dest"
+
+		# Reconnect by itself, forever. A restore pulls gigabytes over this
+		# link; if wifi drops and NetworkManager gives up after its default
+		# handful of tries, the transfer stalls with nobody to click Connect.
+		# The restore's own retry loop waits for the link -- this is what brings
+		# the link back.
+		sed -i '/^autoconnect=/d; /^autoconnect-retries=/d' "$dest"
+		sed -i 's/^\[connection\]/[connection]\nautoconnect=true\nautoconnect-retries=0/' "$dest"
+
+		chmod 600 "$dest"
+	done
+
+	chmod 700 "$SEED_DIR/etc/NetworkManager/system-connections"
+	wifi_count=$(find "$SEED_DIR/etc/NetworkManager/system-connections" \
+		-type f -name '*.nmconnection' 2>/dev/null | wc -l)
+
+	if [ "$wifi_count" -gt 0 ]; then
+		log "embedded $wifi_count saved network connection(s)"
+	else
+		# Say so. A credential feature that quietly copies nothing is worse than
+		# one that is switched off, because status reports it as embedded.
+		warn "EMBED_WIFI_CREDS is on but NetworkManager reported no wifi or ethernet profiles;"
+		warn "the environment will have to be given a network by hand."
+	fi
+fi
+
+# Tailscale node identity. This is what makes a restore work away from home: the
+# backup host sits on 10.2.45.0/24, which a tailnet peer advertises as a subnet
+# route, so an environment on the tailnet reaches it from anywhere and the
+# snapshot URL needs no change at all.
+if [ "${EMBED_TAILSCALE_STATE:-1}" = "1" ] && [ -f /var/lib/tailscale/tailscaled.state ]; then
+	mkdir -p "$SEED_DIR/var/lib/tailscale"
+	cp -a /var/lib/tailscale/tailscaled.state "$SEED_DIR/var/lib/tailscale/"
+	[ -d /var/lib/tailscale/profile-data ] && \
+		cp -a /var/lib/tailscale/profile-data "$SEED_DIR/var/lib/tailscale/"
+	chmod 700 "$SEED_DIR/var/lib/tailscale"
+	find "$SEED_DIR/var/lib/tailscale" -type f -exec chmod 600 {} +
+	log "embedded Tailscale node identity from /var/lib/tailscale"
+fi
+
+# --- build ------------------------------------------------------------------
+
+step "Building recovery root filesystem ($CODENAME/$ARCH)"
+log "kernel:    $KERNEL_META"
+log "firmware:  ${FIRMWARE:-full} ($(printf '%s' "$FIRMWARE_PKGS" | tr ',' ' '))"
+log "timeshift: $TS_PACKAGE $TS_VERSION"
+
+if [ "${DRY_RUN:-0}" = "1" ]; then
+	printf '  [dry-run] mmdebstrap --variant=important --arch=%s --include=%s %s %s -\n' \
+		"$ARCH" "$PACKAGES" "$CODENAME" "$ROOTFS" >&2
+	printf '  [dry-run] mksquashfs %s %s -comp zstd\n' "$ROOTFS" "$SQUASHFS" >&2
+	exit 0
+fi
+
+rm -rf "$ROOTFS"
+mkdir -p "$ROOTFS" "$CACHE_BOOT"
+
+# copy-in takes several sources and a destination, so both debs go in one hook.
+# Built as a single string because an unquoted ${VAR:+--customize-hook=...}
+# word-splits and hands mmdebstrap fragments instead of one argument.
+COPY_DEBS="copy-in $TS_DEB"
+[ -n "${TAILSCALE_DEB:-}" ] && COPY_DEBS="$COPY_DEBS $TAILSCALE_DEB"
+COPY_DEBS="$COPY_DEBS /tmp/"
+
+# Hooks run in the order given: the Timeshift deb and the seed files land first,
+# so the configuration steps below act on a chroot that already has both.
+mmdebstrap \
+	--variant=important \
+	--arch="$ARCH" \
+	--include="$PACKAGES" \
+	--customize-hook="$COPY_DEBS" \
+	--customize-hook="sync-in $SEED_DIR /" \
+	--customize-hook='chroot "$1" sh -c "apt-get install -y --no-install-recommends /tmp/*.deb && rm -f /tmp/*.deb"' \
+	--customize-hook='chroot "$1" sh -c "systemctl enable NetworkManager.service >/dev/null 2>&1 || true"' \
+	--customize-hook='chroot "$1" sh -c "passwd -d root >/dev/null 2>&1 || true"' \
+	--customize-hook='chroot "$1" sh -c "update-initramfs -u -k all || update-initramfs -c -k all"' \
+	"$CODENAME" "$ROOTFS" - < "$SOURCES" \
+	|| die "mmdebstrap failed to build the recovery root filesystem"
+
+# --- FIRMWARE=slim: prune firmware down to what this machine needs -----------
+
+# Firmware is ~660 MB of a ~1.1 GiB image, and that size is not academic: the
+# root-filesystem target boots with toram, which needs RAM >= image + 2 GB. Slim
+# brings 4 GB machines into range.
+#
+# Keep two sets: blobs referenced by modules loaded RIGHT NOW, and every wifi and
+# ethernet blob regardless. The second set matters because a USB NIC or a dock is
+# exactly the thing someone plugs in halfway through a rescue, and its driver was
+# never loaded at build time.
+if [ "${FIRMWARE:-full}" = "slim" ]; then
+	step "Pruning firmware (FIRMWARE=slim)"
+
+	FW_DIR=$ROOTFS/usr/lib/firmware
+	if [ -d "$FW_DIR" ]; then
+		before=$(du -sm "$FW_DIR" 2>/dev/null | cut -f1)
+
+		keep=$(mktemp)
+		# Blobs the currently loaded modules ask for.
+		lsmod 2>/dev/null | awk 'NR > 1 { print $1 }' | while read -r mod; do
+			modinfo -F firmware "$mod" 2>/dev/null
+		done | sed 's|^|/|' | sort -u >> "$keep"
+
+		# Whole trees for anything that carries a network, kept wholesale.
+		for dir in mediatek iwlwifi ath10k ath11k ath12k ath9k_htc ath6k \
+			brcm rtw88 rtw89 rtlwifi rtl_nic rtl_bt intel/ibt \
+			libertas mrvl mwlwifi ti-connectivity qca cypress \
+			e100 bnx2 bnx2x tigon liquidio qed netronome; do
+			[ -e "$FW_DIR/$dir" ] && printf '/%s\n' "$dir" >> "$keep"
+		done
+
+		# Walk the top level and drop anything not named above. Comparing whole
+		# path prefixes avoids deleting e.g. "ath9k_htc" while keeping "ath".
+		( cd "$FW_DIR" && find . -mindepth 1 -maxdepth 1 | sed 's|^\./||' ) \
+		| while read -r entry; do
+			if grep -qxF "/$entry" "$keep"; then continue; fi
+			if grep -q "^/$entry/" "$keep"; then continue; fi
+			rm -rf "${FW_DIR:?}/$entry"
+		done
+		rm -f "$keep"
+
+		after=$(du -sm "$FW_DIR" 2>/dev/null | cut -f1)
+		log "firmware: ${before} MB -> ${after} MB"
+
+		# The environment is useless if it cannot drive this machine's own wifi.
+		# Verify rather than assume the keep-list covered it.
+		wifi_mod=$(lsmod 2>/dev/null | awk 'NR > 1 { print $1 }' \
+			| while read -r m; do
+				modinfo -F filename "$m" 2>/dev/null | grep -q '/net/wireless/' && echo "$m"
+			done | head -n1)
+		if [ -n "$wifi_mod" ]; then
+			for fw in $(modinfo -F firmware "$wifi_mod" 2>/dev/null); do
+				[ -e "$FW_DIR/$fw" ] || \
+					die "FIRMWARE=slim pruned $fw, needed by the wifi driver $wifi_mod"
+			done
+			log "wifi firmware for $wifi_mod survived the prune"
+		fi
+	fi
+fi
+
+# --- verify the environment can actually do its job -------------------------
+
+# The environment is only useful if it can restore and if it presents a way to
+# do so. Both are easy to lose silently: dpkg-repack faithfully repacks whatever
+# Timeshift is INSTALLED, so a host running a build that predates the recovery
+# shell yields an environment that boots to an empty compositor with no
+# launcher, and nothing else in this script would notice.
+step "Verifying the environment"
+
+for required in \
+	usr/bin/timeshift \
+	usr/bin/timeshift-gtk \
+	usr/bin/timeshift-recovery-shell \
+	usr/bin/nmtui \
+	usr/bin/labwc \
+	usr/bin/wlr-randr \
+	usr/bin/rsync \
+	usr/bin/ssh \
+	usr/bin/nmcli \
+	usr/bin/crontab \
+	usr/sbin/rfkill; do
+	[ -e "$ROOTFS/$required" ] || \
+		die "the built environment has no /$required.
+The installed $TS_PACKAGE ($TS_VERSION) may predate it -- pass a newer package with
+--timeshift-deb, or upgrade Timeshift on this host first."
+done
+
+[ -e "$ROOTFS/etc/timeshift/timeshift.json" ] || \
+	warn "the environment has no snapshot configuration; it will start unconfigured"
+
+# A config that points at an SSH location is useless without the key that opens
+# it: the environment boots, shows the right remote URL on the front page, and
+# then fails authentication at restore time with no password prompt to answer
+# (the backend runs ssh with BatchMode=yes).
+if grep -q '"backup_location_type"[[:space:]]*:[[:space:]]*"ssh"' \
+	"$ROOTFS/etc/timeshift/timeshift.json" 2>/dev/null; then
+
+	for cred in etc/timeshift/ssh/id_ed25519 etc/timeshift/ssh/known_hosts; do
+		[ -e "$ROOTFS/$cred" ] || die "the snapshot location is an SSH host but /$cred is missing.
+The environment would boot and then fail to authenticate. Build without --no-ssh-key,
+or set up the key on this host first."
+	done
+fi
+
+# NetworkManager managing nothing is the difference between a rescue and a brick.
+[ -e "$ROOTFS/etc/NetworkManager/conf.d/10-recovery-manage-all.conf" ] || \
+	die "the NetworkManager override is missing; ethernet would be unmanaged and the environment could not get online"
+
+# The session supervisors are what keep a crash from stranding someone at a
+# prompt or a black screen. Missing or non-executable, the environment silently
+# reverts to the old one-shot behaviour.
+for sup in usr/lib/timeshift-recovery/session usr/lib/timeshift-recovery/launcher; do
+	[ -x "$ROOTFS/$sup" ] || die "$sup is missing or not executable; a crash would strand the user"
+done
+
+# Verified here as well as at seed time: this is the difference between the
+# restore window being legible and being a white slab.
+grep -q '"theme_mode"[[:space:]]*:[[:space:]]*"dark"' \
+	"$ROOTFS/etc/timeshift/timeshift.json" 2>/dev/null \
+	|| warn "the environment's Timeshift config is not set to the dark theme"
+
+if [ -n "${TAILSCALE_DEB:-}" ]; then
+	[ -e "$ROOTFS/usr/bin/tailscale" ] || \
+		die "tailscale was repacked but is not in the built environment"
+fi
+
+# --- release the chroot's pseudo-filesystems --------------------------------
+
+# mmdebstrap does not always unmount the chroot's /proc -- it warns
+# "umount /proc failed" and carries on. That matters enormously here: the mount
+# is the HOST's proc, so mksquashfs would walk every host process into the
+# image. Left unnoticed it produces a bloated image built partly from host
+# runtime state, which is both wrong and a disclosure risk.
+step "Releasing the chroot's pseudo-filesystems"
+
+# Deepest first, so a nested mount never blocks its parent.
+findmnt -rno TARGET | grep "^$ROOTFS/" | sort -r | while read -r mnt; do
+	log "unmounting $mnt"
+	umount "$mnt" 2>/dev/null || umount -l "$mnt" 2>/dev/null || true
+done
+
+# Verify rather than hope. Squashing a live /proc is bad enough that this is
+# worth failing the build over.
+remaining=$(findmnt -rno TARGET | grep "^$ROOTFS/" || true)
+[ -z "$remaining" ] || die "still mounted inside the chroot, refusing to squash it:
+$remaining"
+
+# Only /proc and /sys are pure mountpoints: anything in them after the unmount
+# is host state that leaked through. /run and /dev are NOT checked - a built
+# chroot legitimately has device nodes in /dev and empty lock directories in
+# /run left by package postinsts.
+for pseudo in proc sys; do
+	if [ -n "$(ls -A "$ROOTFS/$pseudo" 2>/dev/null | head -n1)" ]; then
+		die "$ROOTFS/$pseudo is not empty after unmounting; refusing to squash host runtime state into the image"
+	fi
+done
+
+# --- extract the boot pair --------------------------------------------------
+
+step "Extracting kernel and initramfs"
+
+KERNEL_SRC=$(find "$ROOTFS/boot" -maxdepth 1 -name 'vmlinuz-*' | sort -V | tail -n1)
+INITRD_SRC=$(find "$ROOTFS/boot" -maxdepth 1 -name 'initrd.img-*' | sort -V | tail -n1)
+[ -n "$KERNEL_SRC" ] || die "no kernel in the built environment (expected $ROOTFS/boot/vmlinuz-*)"
+[ -n "$INITRD_SRC" ] || die "no initramfs in the built environment (expected $ROOTFS/boot/initrd.img-*)"
+
+# casper's initramfs hook is what makes the squashfs bootable at all. If it is
+# missing the entry would boot to an initramfs prompt, which is a confusing way
+# to discover the problem at 2am.
+if command -v lsinitramfs >/dev/null 2>&1; then
+	lsinitramfs "$INITRD_SRC" 2>/dev/null | grep -q casper \
+		|| die "the generated initramfs contains no casper hooks; the environment would not boot"
+fi
+
+cp -f "$KERNEL_SRC" "$CACHE_BOOT/vmlinuz"
+cp -f "$INITRD_SRC" "$CACHE_BOOT/initrd.img"
+chmod 0644 "$CACHE_BOOT/vmlinuz" "$CACHE_BOOT/initrd.img"
+log "kernel:    $(basename "$KERNEL_SRC")"
+
+# --- squash -----------------------------------------------------------------
+
+step "Compressing the environment"
+
+# /boot is excluded: the kernel and initramfs are placed beside the squashfs,
+# where GRUB can read them, and carrying a second copy inside would cost tens of
+# megabytes for nothing.
+rm -f "$SQUASHFS"
+# Deliberately no -e for /proc, /sys, /run or /dev. mksquashfs -e drops the
+# DIRECTORY, not just its contents, and systemd needs those mountpoints to exist
+# to mount over at boot. The unmount-and-verify step above is what keeps host
+# state out; excluding the mountpoints as well would trade one bug for a worse one.
+mksquashfs "$ROOTFS" "$SQUASHFS" \
+	-comp zstd -Xcompression-level 19 \
+	-noappend -no-progress \
+	-e boot/vmlinuz-\* boot/initrd.img-\* \
+	|| die "mksquashfs failed"
+
+# Record what went in, so status and upgrade can compare without unsquashing.
+cat > "$CACHE/build-info" <<EOF
+BUILT_AT=$(date -Is)
+CODENAME=$CODENAME
+ARCH=$ARCH
+KERNEL_META=$KERNEL_META
+TS_PACKAGE=$TS_PACKAGE
+TS_VERSION=$TS_VERSION
+EMBED_SSH_KEY=${EMBED_SSH_KEY:-1}
+EOF
+
+# The staging tree is a full root filesystem and serves no purpose once squashed.
+rm -rf "$ROOTFS"
+
+step "Built $(human_bytes "$(stat -c %s "$SQUASHFS")") environment at $SQUASHFS"

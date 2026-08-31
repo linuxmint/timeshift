@@ -1,0 +1,8 @@
+# Rebuild the recovery environment whenever Timeshift itself changes, so the
+# rescue environment never lags behind the system it has to rescue.
+#
+# noawait: the trigger only marks state and hands off to a systemd unit. It
+# must never re-provision inline -- provisioning runs apt in a chroot, and this
+# fires in the middle of a dpkg transaction.
+interest-noawait /usr/bin/timeshift
+interest-noawait /usr/bin/timeshift-gtk

@@ -1,0 +1,42 @@
+Source: timeshift-recovery
+Section: admin
+Priority: optional
+Maintainer: makeafide <willsmit4433@gmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+Homepage: https://github.com/makeafide/timeshift
+
+Package: timeshift-recovery
+Architecture: all
+Depends: ${misc:Depends},
+         timeshift-ssh | timeshift,
+         grub2-common,
+         util-linux,
+         coreutils
+Recommends: mmdebstrap,
+            squashfs-tools,
+            dpkg-repack,
+            parted,
+            gdisk,
+            e2fsprogs
+Suggests: imagemagick
+Description: Provision a bootable Timeshift recovery environment
+ timeshift-recovery builds a minimal Ubuntu recovery environment on this
+ machine, places it on a dedicated partition (or on the root filesystem
+ when there is no unallocated space), and adds a GRUB entry that boots it
+ when R is pressed at startup.
+ .
+ The environment exists to solve one problem: Timeshift snapshots stored
+ on a remote host over SSH cannot be restored from a system that will not
+ boot, because the restore tool, the network stack and the wireless driver
+ all live on the broken root filesystem. The recovery environment carries
+ its own copy of all three, plus the snapshot location already configured,
+ so a restore needs nothing but the machine itself.
+ .
+ The environment is built with mmdebstrap against this host's own apt
+ sources, so it always matches the installed release and architecture, and
+ it mirrors the host's linux-firmware packages so the hardware it has to
+ rescue is the hardware it supports. A dpkg trigger rebuilds it whenever a
+ new Timeshift is installed, so the rescue environment never lags behind
+ the system it is meant to rescue.

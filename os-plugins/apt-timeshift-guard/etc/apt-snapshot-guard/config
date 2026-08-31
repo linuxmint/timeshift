@@ -1,0 +1,39 @@
+# apt-snapshot-guard configuration (sourced as /bin/sh).
+# Controls the DPkg::Pre-Invoke hook in /etc/apt/apt.conf.d/05snapshot-guard.
+#
+# Policy is fail-CLOSED: apt does not change packages without a snapshot.
+# If the snapshot fails, you are prompted on a terminal (default No aborts);
+# with no terminal (GUI Software Updater, PackageKit, unattended-upgrades) the
+# operation is aborted. To proceed without a snapshot for a single run, set the
+# one-shot bypass flag first:
+#
+#   sudo touch /run/apt-snapshot-guard.bypass
+#   sudo apt install <pkg>        # snapshot skipped once; flag auto-removed
+
+# Master switch. 0 disables the guard entirely (apt runs with no snapshot).
+ENABLED=1
+
+# Collapse repeated dpkg invocations within one transaction into a single
+# snapshot: skip if a guard snapshot was taken this many seconds ago.
+WINDOW=90
+
+# Hard cap (seconds) on the timeshift --create call.
+TIMEOUT=900
+
+# Seconds to wait for an answer at the interactive (terminal) failure prompt.
+# No answer within this window is treated as "No" and aborts the operation.
+PROMPT_TIMEOUT=60
+
+# Graphical bypass for interactive GUI updates (Software Updater / PackageKit)
+# when the snapshot fails and there is no terminal to prompt on.
+#   1 = show a zenity dialog to the desktop user (Continue anyway / Cancel).
+#   0 = no dialog; a failed snapshot aborts the GUI update too.
+# unattended-upgrades never shows a dialog regardless of this setting.
+GUI_PROMPT=1
+
+# Seconds to wait for an answer at the graphical dialog. No answer aborts.
+# 0 = wait indefinitely (only safe if someone is at the machine).
+GUI_PROMPT_TIMEOUT=120
+
+# Timeshift tag applied to guard snapshots (O = on-demand).
+TAGS=O

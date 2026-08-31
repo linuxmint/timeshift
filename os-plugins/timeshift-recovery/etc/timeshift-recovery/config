@@ -1,0 +1,113 @@
+# timeshift-recovery configuration (sourced as /bin/sh).
+#
+# Defaults for "timeshift-recovery install". Every value here can be overridden
+# per-run by the matching command-line flag.
+
+# Where to place the recovery payload.
+#   auto        create a partition if there is unallocated space, else use the
+#               root filesystem (see SIZE below)
+#   root        always use the root filesystem, never touch the partition table
+#   /dev/sdXN   use this existing partition (it is reformatted)
+#   /dev/sdX    whole disk, e.g. a USB stick (it is repartitioned)
+TARGET=auto
+
+# Size of the partition to create when TARGET=auto finds unallocated space.
+# Ignored when the payload lands on the root filesystem. Roughly three times
+# the squashfs leaves room for a kernel and a future, larger environment.
+SIZE=6G
+
+# Key to press at startup to boot the recovery environment. A single letter, or
+# one of the aliases "backspace", "tab", "delete". GRUB matches it while the
+# hidden/countdown timeout is running, and boots the entry immediately.
+HOTKEY=r
+
+# How the boot menu behaves, written to /etc/default/grub.d/timeshift-recovery.cfg.
+#   hidden      boot screen looks unchanged; R still works (no on-screen hint)
+#   countdown   shows a one-line countdown, so the hotkey is discoverable
+#   menu        always show the full GRUB menu
+#   none        write no drop-in at all and leave boot completely untouched.
+#               NOTE: Ubuntu ships GRUB_TIMEOUT=0, which reads no keys, so with
+#               "none" the hotkey does nothing -- reach the environment with
+#               "timeshift-recovery reboot" instead.
+HOTKEY_STYLE=hidden
+
+# What the otherwise-black screen shows while GRUB waits for the hotkey
+# (hidden style only; countdown and menu draw their own UI).
+#   splash   full-screen image: Timeshift logo + "Press R for System Recovery"
+#   text     a plain one-line "Press R for Timeshift Recovery"
+#   none     keep the screen black
+HINT=splash
+
+# Seconds GRUB waits for the hotkey before booting normally. Must be > 0 or the
+# hotkey is never read. This is added to every boot.
+TIMEOUT=3
+
+# SCALE — display scale for the recovery GUI.
+#
+#   auto   work it out from the panel's resolution and physical size, aiming
+#          for the ~96 DPI desktop UIs are drawn for. A modern laptop panel is
+#          around 250 DPI, where an unscaled GUI is about a third of its
+#          intended size and effectively unusable.
+#   <num>  a fixed scale, e.g. 2 or 2.5. Fractional values need the
+#          compositor; if that fails the nearest integer is used instead.
+#
+# TIMESHIFT_RECOVERY_SCALE in the environment overrides both, so a wrong guess
+# can be corrected from the recovery terminal without rebuilding the image.
+SCALE=auto
+
+# Copy the host's SSH key for the snapshot repository into the environment, so
+# a restore never blocks asking for credentials on a machine that is already
+# broken.
+#
+# The key is then readable by anyone who can boot this machine or read the
+# recovery media. Restrict it on the backup host so a leaked recovery key can
+# read snapshots but not write or delete them:
+#
+#   # ~/.ssh/authorized_keys on the backup host
+#   restrict,command="rrsync -ro /path/to/snapshots" ssh-ed25519 AAAA...
+#
+# "timeshift-recovery status" keeps showing this while it is enabled.
+EMBED_SSH_KEY=1
+
+# Copy the squashfs into RAM at boot and release the medium.
+#   auto  on when the payload is on the root filesystem, off otherwise
+#   1/0   force
+#
+# This is not optional for the root-filesystem target: casper holds the medium
+# mounted read-only, and if the medium IS the root partition then a restore
+# cannot get a writable mount of the partition it has to rewrite.
+TORAM=auto
+
+# How much firmware to ship.
+#   full  mirror the host's linux-firmware* packages (~660 MB of a ~1.1 GiB image)
+#   slim  keep only firmware for modules loaded on this machine, plus every wifi
+#         and ethernet blob (a USB NIC or dock is what gets plugged in mid-rescue)
+#
+# Size is not cosmetic here: the root-filesystem target boots with toram, which
+# needs RAM >= image + 2 GB. slim brings 4 GB machines into range.
+FIRMWARE=full
+
+# Copy the host's saved Wi-Fi networks (/etc/NetworkManager/system-connections)
+# into the environment so it joins a known network by itself. On a machine that
+# will not boot, typing a WPA passphrase is a step that can end the recovery.
+#
+# The passphrases are then readable by anyone who can boot this machine, exactly
+# like EMBED_SSH_KEY above.
+EMBED_WIFI_CREDS=1
+
+# Copy the host's Tailscale node identity (/var/lib/tailscale) so the
+# environment joins your tailnet unattended, and repack the host's tailscale
+# package into the image.
+#
+# This is what makes a restore work away from home: if a tailnet peer advertises
+# the subnet your backup host is on, the environment reaches it from anywhere and
+# the snapshot URL needs no change. The bring-up unit passes --accept-routes,
+# without which that route is ignored.
+#
+# The node key is readable by anyone who can boot this machine. It is only ever
+# used while the real host is down.
+EMBED_TAILSCALE_STATE=1
+
+# Extra packages to include in the environment, space separated. The base set
+# already covers networking, storage, filesystems and the GUI.
+EXTRA_PACKAGES=""

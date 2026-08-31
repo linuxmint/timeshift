@@ -1,0 +1,11 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+%:
+	dh $@
+
+# Ensure the hook helper is executable in the installed package
+# (dh_fixperms would otherwise normalise it to 0644).
+execute_after_dh_fixperms:
+	chmod 0755 debian/apt-snapshot-guard/usr/lib/apt-snapshot-guard/pre-invoke
+	chmod 0755 debian/apt-snapshot-guard/usr/lib/apt-snapshot-guard/gui-prompt
