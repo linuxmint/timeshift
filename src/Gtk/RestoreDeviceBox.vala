@@ -264,6 +264,7 @@ class RestoreDeviceBox : Gtk.Box{
 		combo.model = model;
 
 		uint active = Gtk.INVALID_LIST_POSITION;
+		uint esp_fallback = Gtk.INVALID_LIST_POSITION;
 		int index = -1;
 
 		/* Index 0 is always the "no device" row. For "/" it reads as a prompt
@@ -292,13 +293,38 @@ class RestoreDeviceBox : Gtk.Box{
 					}
 				}
 
+				/* Only real EFI System Partitions for /boot/efi. Offering
+				 * anything else here is how a restore silently ends up with no
+				 * ESP mounted and an unbootable disk. */
+				if (entry.mount_point == "/boot/efi"){
+					if (!dev.is_efi_system_partition()){
+						continue;
+					}
+				}
+
 				if (dev.has_children()){
 					continue; // skip parent partitions of unlocked volumes (luks)
 				}
 			}
+			else if (entry.mount_point == "/boot/efi"){
+				continue; // a whole disk is never an ESP
+			}
 			
 			index++;
 			model.append(new RestoreDeviceOption(dev, entry));
+
+			/* Fall back to the ESP on the same disk as the root device.
+			 *
+			 * The original ESP's UUID never exists on a fresh target, so the
+			 * match above cannot fire and this used to drop through to
+			 * "Keep on Root Device" -- which for an ESP means "no ESP", and
+			 * grub-install then failed at the very end of a 14 GB restore. */
+			if ((entry.mount_point == "/boot/efi") && (esp_fallback == Gtk.INVALID_LIST_POSITION)){
+				if ((App.dst_root != null) && dev.has_parent() && App.dst_root.has_parent()
+					&& (dev.parent.device == App.dst_root.parent.device)){
+					esp_fallback = (uint) index;
+				}
+			}
 
 			if (entry.device != null){
 				if (dev.uuid == entry.device.uuid){
@@ -314,8 +340,16 @@ class RestoreDeviceBox : Gtk.Box{
 			}
 		}
 
-		if ((active == Gtk.INVALID_LIST_POSITION) && (entry.mount_point != "/")){
-			active = 0; // keep on root device
+		if (active == Gtk.INVALID_LIST_POSITION){
+
+			// an ESP on the root's own disk beats "keep on root", which is not
+			// a meaningful answer for /boot/efi
+			if (esp_fallback != Gtk.INVALID_LIST_POSITION){
+				active = esp_fallback;
+			}
+			else if (entry.mount_point != "/"){
+				active = 0; // keep on root device
+			}
 		}
 
 		combo.selected = active;
@@ -416,7 +450,15 @@ class RestoreDeviceBox : Gtk.Box{
 
 		// check if we are restoring the current system
 		
-		if (App.dst_root == App.sys_root){
+		/* App.restore_current_system, not "dst_root == sys_root".
+		 *
+		 * That was a reference comparison, while restore_current_system
+		 * compares the device path and uuid. Two Device objects for the same
+		 * partition from different update_partitions() passes are different
+		 * instances, so the two could disagree -- and then this function would
+		 * mount a target under /run/timeshift while the restore itself wrote
+		 * to /. */
+		if (App.restore_current_system){
 			return true; // all required devices are already mounted
 		}
 		
@@ -480,6 +522,37 @@ class RestoreDeviceBox : Gtk.Box{
 					return false;
 				}
 			}
+		}
+
+		/* An EFI System Partition is mandatory when the snapshot came from a
+		 * UEFI system.
+		 *
+		 * Without one mounted at /boot/efi, the snapshot's ESP payload is
+		 * restored as ordinary files onto the root filesystem and grub-install
+		 * aborts with "cannot find EFI directory". Everything else about the
+		 * restore succeeds, so the failure only shows up at the very end -- or
+		 * at the next boot. */
+		if (App.snapshot_needs_esp() && (App.assigned_esp() == null)){
+
+			string disk = "";
+			if ((App.dst_root != null) && App.dst_root.has_parent()){
+				disk = App.dst_root.parent.device;
+			}
+
+			string msg = _("This snapshot is from a system that boots with UEFI, so it needs an EFI System Partition mounted at /boot/efi.") + "\n\n";
+
+			if (disk.length > 0){
+				msg += _("No EFI System Partition was found on %s.").printf(disk) + "\n\n";
+			}
+			else {
+				msg += _("No EFI System Partition was selected.") + "\n\n";
+			}
+
+			msg += _("Create a 1 GB partition of type 'EFI System' on the target disk, format it as FAT32, and run the restore again.");
+
+			gtk_messagebox(_("EFI System Partition required"), msg, parent_window, true);
+
+			return false;
 		}
 
 		//check if grub device selected ---------------

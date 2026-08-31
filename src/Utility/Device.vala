@@ -213,6 +213,49 @@ public class Device : GLib.Object{
 		}
 	}
 
+	/* The GPT partition type GUID for an EFI System Partition. */
+	private const string ESP_TYPE_GUID = "c12a7328-f81f-11d2-ba4b-00a0c93ec93b";
+
+	/* Cached because this shells out, and the restore page asks repeatedly
+	 * while the user changes the device dropdowns. */
+	private int _is_esp = -1;
+
+	/* Is this partition an EFI System Partition?
+	 *
+	 * Decided by the GPT type GUID, not by the filesystem: plenty of vfat
+	 * partitions are not ESPs, and mounting the wrong one at /boot/efi is how
+	 * a restore ends up unbootable.
+	 *
+	 * PARTTYPE is asked for here rather than added to the main lsblk query,
+	 * whose output is matched by one positional regex with an ancient-lsblk
+	 * fallback -- a bad place to add a column for the sake of a handful of
+	 * partitions on one page. Falls back to the filesystem type when PARTTYPE
+	 * is unavailable (MBR, or an lsblk too old to report it). */
+	public bool is_efi_system_partition(){
+
+		if (_is_esp >= 0){ return (_is_esp == 1); }
+
+		_is_esp = 0;
+
+		if (type != "part"){ return false; }
+
+		string std_out, std_err;
+		int status = exec_sync("lsblk --nodeps --noheadings --output PARTTYPE '%s'".printf(
+			escape_single_quote(device)), out std_out, out std_err);
+
+		string guid = ((status == 0) && (std_out != null)) ? std_out.strip().down() : "";
+
+		if (guid.length > 0){
+			_is_esp = (guid == ESP_TYPE_GUID) ? 1 : 0;
+		}
+		else {
+			// no partition table type to go on; the filesystem is all we have
+			_is_esp = (fstype.down() == "vfat") ? 1 : 0;
+		}
+
+		return (_is_esp == 1);
+	}
+
 	public bool is_encrypted_partition(){
 		return (type == "part") && fstype.down().contains("luks");
 	}

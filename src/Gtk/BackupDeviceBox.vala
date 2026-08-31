@@ -333,8 +333,14 @@ class BackupDeviceBox : Gtk.Box{
 			App.backup_ssh_url, App.backup_ssh_key, App.backup_ssh_port,
 			App.backup_ssh_fake_super, parent_window);
 
-		// an explicit test should really re-probe, not reuse the cache
+		/* The constructor already ran check_status(), and with it the
+		 * capability probes -- so invalidating afterwards cleared a cache that
+		 * had just been refilled. If the link faltered during that first
+		 * probe, the wrong reason ("read-only", "hard-links not supported")
+		 * stuck for the rest of the session and only a SECOND press of Test
+		 * connection would clear it. Re-probe here instead. */
 		App.repo.invalidate_capability_cache();
+		App.repo.check_status();
 
 		check_backup_location();
 

@@ -281,8 +281,12 @@ namespace TeeJee.ProcessHelper{
 		script.append ("#!/usr/bin/env bash\n");
 		script.append ("\n");
 		if (force_locale){
-			script.append("LANG=C\n");
-			script.append("LC_ALL=C.UTF-8\n");
+			/* export, or these are shell-local and every command the script
+			 * runs still gets the user's locale -- which is the opposite of
+			 * what "force_locale" claims, and quietly breaks the output
+			 * matching that callers depend on. */
+			script.append("export LANG=C\n");
+			script.append("export LC_ALL=C.UTF-8\n");
 		}
 		script.append ("\n");
 		script.append ("%s\n".printf(commands));

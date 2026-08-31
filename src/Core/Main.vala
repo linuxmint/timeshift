@@ -202,6 +202,70 @@ public class Main : GLib.Object{
 	 * for the progress bar than a guessed file count. */
 	public int64 restore_line_count_estimate = 0;
 
+	/* How the last restore actually ended.
+	 *
+	 * A bare bool collapsed every distinct cause into "Completed With Errors"
+	 * with no way to say which, so a 13 GB restore that worked and a bootloader
+	 * step that failed looked identical -- and both looked like a lost restore.
+	 */
+	public enum RestoreOutcome { OK, WARNINGS, FAILED }
+
+	public RestoreOutcome restore_outcome = RestoreOutcome.OK;
+
+	/* Human-readable lines explaining the outcome: which files rsync skipped,
+	 * which finish step failed, what to do next.
+	 *
+	 * Not "restore_messages": get_restore_messages() is an unrelated function
+	 * that builds the *pre*-restore confirmation text, and the two reading
+	 * alike cost real time during the audit. */
+	public Gee.ArrayList<string> restore_outcome_messages = new Gee.ArrayList<string>();
+
+	/* Set when a step AFTER the transfer failed. The remedy is completely
+	 * different from a failed transfer -- the files are restored and only this
+	 * step needs redoing -- so the two are tracked apart. */
+	public string restore_failed_step = "";
+	public string restore_failed_step_rc = "";
+
+	/* Mount entries folded away because they duplicated an ancestor's device.
+	 * Kept apart from restore_outcome_messages because the fold happens when
+	 * the devices are mounted, which is before the restore -- and therefore
+	 * before restore_outcome_reset() runs. */
+	public Gee.ArrayList<string> mount_fold_notes = new Gee.ArrayList<string>();
+
+	/* Reset at the start of every restore. Without this a second attempt in the
+	 * same session inherits the first one's verdict. */
+	public void restore_outcome_reset(){
+		restore_outcome = RestoreOutcome.OK;
+		restore_outcome_messages.clear();
+		restore_failed_step = "";
+		restore_failed_step_rc = "";
+
+		// what was folded is part of explaining the result
+		foreach(string line in mount_fold_notes){
+			restore_outcome_messages.add(line);
+		}
+	}
+
+	public void restore_note(string line){
+		if ((line.length > 0) && !restore_outcome_messages.contains(line)){
+			restore_outcome_messages.add(line);
+		}
+	}
+
+	/* A restore that finished but could not do everything. Never downgrades a
+	 * verdict that is already FAILED. */
+	public void restore_warn(string line){
+		if (restore_outcome == RestoreOutcome.OK){
+			restore_outcome = RestoreOutcome.WARNINGS;
+		}
+		restore_note(line);
+	}
+
+	public void restore_fail(string line){
+		restore_outcome = RestoreOutcome.FAILED;
+		restore_note(line);
+	}
+
 	public Gee.HashMap<string, SystemUser> current_system_users;
 	public string users_with_encrypted_home = "";
 	public string encrypted_home_dirs = "";
@@ -647,6 +711,18 @@ public class Main : GLib.Object{
 				case "--setup-ssh-key":
 					app_mode = "setup-ssh-key";
 					break;
+
+				case "--recovery-status":
+					app_mode = "recovery-status";
+					break;
+
+				case "--recovery-enable":
+					app_mode = "recovery-enable";
+					break;
+
+				case "--recovery-disable":
+					app_mode = "recovery-disable";
+					break;
 			}
 		}
 	}
@@ -746,6 +822,16 @@ public class Main : GLib.Object{
 		exclude_list_default.add("/var/lib/dhcpcd/*");
 		exclude_list_default.add("/var/lib/docker/*");
 		exclude_list_default.add("/var/lib/schroot/*");
+		// The recovery environment's build cache and placed payload: a multi-
+		// gigabyte squashfs plus a kernel and initramfs. Snapshotting them is
+		// pointless - "timeshift-recovery build" reproduces the lot - and
+		// actively harmful in two ways. Over a remote repository the transfer
+		// can exceed apt-snapshot-guard's timeout, and because that guard is
+		// fail-closed, a snapshot that times out blocks apt entirely. Restoring
+		// them would also be wrong: the payload must match the Timeshift
+		// installed now, not the one current when the snapshot was taken.
+		exclude_list_default.add("/var/cache/timeshift-recovery/*");
+		exclude_list_default.add("/var/lib/timeshift-recovery/*");
 		exclude_list_default.add("/lost+found");
 		exclude_list_default.add("/timeshift/*");
 		exclude_list_default.add("/timeshift-btrfs/*");
@@ -765,7 +851,29 @@ public class Main : GLib.Object{
 		exclude_list_default.add("/var/log/timeshift-btrfs/*");
 		exclude_list_default.add("/swapfile");
 		exclude_list_default.add("/swap.img"); // Ubuntu's default since 17.04
-		exclude_list_default.add("/snap/*");
+		/* Snaps: skip the mounted squashfs contents, keep the symlinks.
+		 *
+		 * "/snap/*" alone was a kilobyte too broad. Besides the read-only
+		 * mountpoints it also swept up the only two things snapd keeps in
+		 * /snap as REAL files: /snap/bin/* (every snap command is a symlink
+		 * there to /usr/bin/snap) and /snap/<name>/current. Without them a
+		 * restored system has all 2.6 GB of .snap payloads, working mount
+		 * units and correct desktop files -- and still answers "requires the
+		 * firefox snap to be installed", because /usr/bin/firefox is a shim
+		 * that tests /snap/bin/firefox.
+		 *
+		 * The exclusion is still right about the mounted content: there is no
+		 * --one-file-system anywhere, so rsync would otherwise walk the
+		 * decompressed squashfs -- 153,354 entries here versus 78, and the 78
+		 * total 1,124 bytes.
+		 *
+		 * Order matters and these are read first-match-wins, so the includes
+		 * must precede the exclude. The exclude is one level deeper than the
+		 * old rule on purpose: /snap/<name> must stay traversable for
+		 * "current" to be reachable. */
+		exclude_list_default.add("+ /snap/bin/***");
+		exclude_list_default.add("+ /snap/*/current");
+		exclude_list_default.add("- /snap/*/*");
 
 		// The names above cover the common cases (/swapfile on Debian,
 		// /swap.img on Ubuntu) and still apply when swap is switched off but
@@ -1122,7 +1230,9 @@ public class Main : GLib.Object{
 		return null;
 	}
 
-	public bool save_exclude_list_for_restore(string output_path){
+	/* Writes the filter rsync will use. The destination is restore_exclude_file
+	 * and always was: the old output_path parameter was never read. */
+	public bool save_exclude_list_for_restore(){
 
 		log_debug("Main: save_exclude_list_for_restore()");
 		
@@ -2076,36 +2186,47 @@ public class Main : GLib.Object{
 
 		bool status = true;
 
+		int done = 0;
+
 		foreach(var bak in delete_list){
-			bak.mark_for_deletion();
+			bak.set_marked_for_deletion(true);
 		}
 		
 		while (delete_list.size > 0){
 
 			var bak = delete_list[0];
-			bak.mark_for_deletion(); // mark for deletion again since initial list may have changed
+			bak.set_marked_for_deletion(true); // the initial list may have changed
 
-			if (btrfs_mode){
-				status = bak.remove(true); // wait till complete
+			/* Recomputed every pass: the main window can queue more
+			 * snapshots while this thread is still working. */
+			int total = done + delete_list.size;
 
+			// the page has no other way to know which snapshot is going
+			progress_text = _("Deleting snapshot %d of %d: %s").printf(
+				done + 1, total, bak.name);
+
+			// assigned before remove() so the progress page polls a live task
+			delete_file_task = bak.delete_file_task;
+
+			bool ok = bak.remove(true); // wait till complete
+
+			// one failure must not be erased by the next success
+			if (!ok){ status = false; }
+
+			if (ok && btrfs_mode){
 				var message = "%s '%s'".printf(_("Removed"), bak.name);
 				OSDNotify.notify_send("TimeShift", message, 10000, "low");
 			}
-			else{
-
-				delete_file_task = bak.delete_file_task;
-				delete_file_task.prg_count_total = (int64) Main.first_snapshot_count;
-			
-				status = bak.remove(true); // wait till complete
-
-				if (delete_file_task.status != AppStatus.CANCELLED){
-					var message = "%s '%s' (%s)".printf(_("Removed"), bak.name, delete_file_task.stat_time_elapsed);
-					OSDNotify.notify_send("TimeShift", message, 10000, "low");
-				}
+			else if (ok){
+				var message = "%s '%s' (%s)".printf(_("Removed"), bak.name, delete_file_task.stat_time_elapsed);
+				OSDNotify.notify_send("TimeShift", message, 10000, "low");
 			}
 
 			delete_list.remove(bak);
+			done++;
 		}
+
+		progress_text = "";
 
 		thread_delete_running = false;
 		thread_delete_success = status;
@@ -2235,11 +2356,39 @@ public class Main : GLib.Object{
 
 	public string restore_log_file{
 		owned get {
+
+			/* On the target itself whenever the target is not the running
+			 * system.
+			 *
+			 * TEMP_DIR is tmpfs in a live recovery environment, and an -aiir
+			 * log of a whole root filesystem is hundreds of megabytes of RAM.
+			 * When that tmpfs fills, the .timeshift-restore-failed sentinel --
+			 * which lives beside this file, and is the one signal that stops a
+			 * failed restore from installing a boot loader -- cannot be written
+			 * either. Fail-closed must not depend on free RAM.
+			 *
+			 * It is safe on the target: /var/log/timeshift/* is in the restore
+			 * exclude list and --delete-excluded is off, so rsync leaves it
+			 * alone. It also means the log survives the reboot, on the restored
+			 * system, where the last restore's log was simply missing before. */
+			if (!restore_current_system
+				&& (mount_point_restore != null)
+				&& (mount_point_restore.length > 0)){
+
+				return path_combine(restore_target_path, "var/log/timeshift/rsync-log-restore");
+			}
+
 			if (repo_is_remote()){
 				return path_combine(TEMP_DIR, "rsync-log-restore");
 			}
 			return restore_source_path + "/rsync-log-restore";
 		}
+	}
+
+	/* Output of the post-transfer steps (bootloader, initramfs, hooks), beside
+	 * the rsync log on the restored system. */
+	public string restore_steps_log_file(){
+		return path_combine(file_parent(restore_log_file), "restore-steps.log");
 	}
 
 	public string restore_exclude_file{
@@ -2470,7 +2619,18 @@ public class Main : GLib.Object{
 			}
 			else{
 				reinstall_grub2 = true;
-				update_initramfs = false;
+
+				/* Restoring onto different devices means every UUID changes,
+				 * and a hostonly initramfs built on the source machine waits
+				 * forever for devices that are not there. Ubuntu's dracut
+				 * bakes in "devexists-/dev/disk/by-uuid/<source ESP>" and
+				 * drops to emergency mode when it never appears -- a restore
+				 * that copied every byte correctly still would not boot.
+				 *
+				 * Restoring over the running system keeps its own UUIDs, so
+				 * the existing initramfs stays valid. */
+				update_initramfs = !restore_current_system;
+
 				update_grub = true;
 			}
 		}
@@ -2664,6 +2824,55 @@ public class Main : GLib.Object{
 			txt += "\n";
 		}
 
+		/* Say so when a selection was folded, on the page where the user can
+		 * still change it. Silently mounting one device at two mount points is
+		 * what wiped a restore target. */
+		foreach(string note in mount_fold_notes){
+			txt += "\n" + note + "\n";
+		}
+
+		/* The layout the snapshot came from, against what is about to be
+		 * mounted. Without this, a missing EFI System Partition was invisible
+		 * until grub-install failed at the very end with a bare exit code. */
+		var layout = validate_restore_layout();
+
+		if (layout.size > 0){
+
+			/* Widths from this table's own contents, and the original device
+			 * shortened first. A full "/dev/disk/by-uuid/<36 chars>" made the
+			 * table wider than the panel, so the header wrapped onto two lines
+			 * and every row broke in half. */
+			int w_mnt = _("Mount").length;
+			int w_org = _("Was on").length;
+			int w_dev = _("Device").length;
+
+			foreach(var row in layout){
+
+				string org = short_device_ref(row.original);
+
+				if (row.mount_point.length > w_mnt){ w_mnt = row.mount_point.length; }
+				if (org.length > w_org){ w_org = org.length; }
+				if (row.assigned.length > w_dev){ w_dev = row.assigned.length; }
+			}
+
+			txt += "\n" + _("Original layout of this snapshot") + "\n\n";
+
+			string fmt = "%%-%ds  %%-%ds  %%-%ds  %%s".printf(w_mnt, w_org, w_dev);
+
+			txt += fmt.printf(_("Mount"), _("Was on"), _("Device"), _("Status"));
+			txt += "\n";
+
+			txt += string.nfill(w_mnt, '-') + "  " + string.nfill(w_org, '-')
+				+ "  " + string.nfill(w_dev, '-') + "  " + string.nfill(8, '-');
+			txt += "\n";
+
+			foreach(var row in layout){
+				txt += fmt.printf(row.mount_point, short_device_ref(row.original),
+					(row.assigned.length > 0) ? row.assigned : "-", row.status);
+				txt += "\n";
+			}
+		}
+
 		if (formatted){
 			msg += "<span size=\"medium\"><tt>%s</tt></span>".printf(txt);
 		}
@@ -2725,6 +2934,19 @@ public class Main : GLib.Object{
 	/* Records a step in the restore checklist and returns the line that makes
 	 * the script announce it. Nothing is echoed in console mode: there the
 	 * script's own output is the interface, and a marker would just be noise. */
+	/* The marker on its own, without registering another checklist step.
+	 *
+	 * Needed because the retry loop re-runs rsync INSIDE the already-announced
+	 * sync_files phase: no new phase marker was ever emitted, so the "Connection
+	 * lost - reconnecting" banner stayed up for the rest of a transfer that had
+	 * long since resumed. */
+	private string phase_marker_echo(string key){
+
+		if (app_mode != ""){ return ""; }
+
+		return "echo '%s%s' \n".printf(RestoreScriptTask.PHASE_MARKER, key);
+	}
+
 	private string phase_marker(string key, string title){
 
 		add_restore_phase(key, title);
@@ -2742,6 +2964,398 @@ public class Main : GLib.Object{
 
 	private void publish_restore_phases(){
 		restore_phases = phases_building;
+	}
+
+	/* The retry loop around the restore's rsync, plus the guard that stops the
+	 * script dead if it ultimately fails.
+	 *
+	 * Both halves matter, and the second one more. Before this, rsync's exit
+	 * status was never looked at: a dropped wifi link mid-transfer fell through
+	 * to the finish script, which bind-mounts /dev and /proc into the target,
+	 * runs grub-install --force, regenerates the initramfs and reboots -- all
+	 * over a half-copied root filesystem, while reporting success. A two-second
+	 * blip could hand back an unbootable machine.
+	 *
+	 * rsync is idempotent and resumable, so retrying simply continues. The exit
+	 * codes are split by whether retrying can plausibly help:
+	 *
+	 *   0, 24    done (24 = source files vanished; harmless)
+	 *   10 12 30 35 255   socket/protocol/timeout/ssh -- the network. Retry for
+	 *                     as long as the user is willing to wait: a partially
+	 *                     restored system has no good ending, so a timer must
+	 *                     not be the thing that gives up on it.
+	 *   23       partial transfer, usually permissions rather than the link.
+	 *            Bounded, or a genuine permission fault would spin forever.
+	 *   *        usage error, disk full: retrying cannot help. Fail now.
+	 */
+	/* A file the script touches before it aborts.
+	 *
+	 * The console restore paths run through exec_script_sync(), which always
+	 * reports success -- its wrapper's trailing echo is the last command -- and
+	 * in verbose mode there is no captured output to scan either. A sentinel on
+	 * disk is the one signal that survives both. */
+	/* The title shown in the checklist for a phase key, so the finish screen
+	 * can name the failing step the way the user just saw it. */
+	private string restore_phase_title(string key){
+
+		if (restore_phases != null){
+			foreach(var phase in restore_phases){
+				if (phase.key == key){ return phase.title; }
+			}
+		}
+
+		return key;
+	}
+
+	/* The progress page needs this too, to say what the drop actually was. */
+	public string rsync_exit_meaning_public(string code){
+		return rsync_exit_meaning(code);
+	}
+
+	private string rsync_exit_meaning(string code){
+
+		switch(code){
+		case "1":
+			return _("rsync reported a syntax or usage error.");
+		case "2":
+			return _("rsync protocol mismatch with the snapshot location.");
+		case "3":
+			return _("rsync could not read the files it was asked to copy.");
+		case "5":
+			return _("rsync could not be started on the snapshot location.");
+		case "11":
+			return _("rsync could not write to the target. It may be full or read-only.");
+		case "23":
+			return _("Some files could not be transferred.");
+		case "24":
+			return _("Some files vanished while they were being copied.");
+		case "10":
+		case "12":
+		case "30":
+		case "35":
+		case "255":
+			return _("The connection to the snapshot location was lost.");
+		default:
+			return "";
+		}
+	}
+
+	/* Turn the transfer's own account of itself into the outcome.
+	 *
+	 * sh_sync ends with "sync" on both the clean and the warning paths, so its
+	 * exit code alone cannot tell them apart -- the WARNINGS marker and the
+	 * sentinel are what carry that, which is why they are read here. */
+	private void collect_transfer_result(RestoreScriptTask t){
+
+		foreach(string line in t.error_lines){
+			restore_note(line);
+		}
+
+		if (t.error_line_count > t.error_lines.size){
+			restore_note(_("... and %d more").printf(t.error_line_count - t.error_lines.size));
+		}
+
+		bool aborted = file_exists(restore_failed_flag()) || (t.failure_code.length > 0);
+
+		if (aborted || (t.exit_code != 0)){
+
+			string code = (t.failure_code.length > 0)
+				? t.failure_code
+				: t.exit_code.to_string();
+
+			restore_fail(_("The snapshot could not be copied to the target (rsync exit code %s).").printf(code));
+			restore_note(rsync_exit_meaning(code));
+			restore_note(_("The target is incomplete and must not be booted. Re-run the restore."));
+			return;
+		}
+
+		if (t.had_warnings){
+			restore_warn(_("Some files could not be copied. Everything else was restored."));
+		}
+	}
+
+	/* A step after the transfer failed.
+	 *
+	 * Deliberately a warning and not a failure: the files are on the disk. The
+	 * remedy -- reinstall the bootloader -- has nothing in common with re-running
+	 * a lost restore, and reporting both as "Completed With Errors" is what made
+	 * the original failure impossible to act on. */
+	private void collect_finish_result(RestoreScriptTask t){
+
+		if (t.failed_step.length == 0){
+
+			if (t.exit_code != 0){
+				restore_warn(_("A step after the restore did not finish cleanly."));
+			}
+
+			return;
+		}
+
+		restore_failed_step = t.failed_step;
+		restore_failed_step_rc = t.failed_step_rc;
+
+		restore_warn(_("Your files were restored, but the step \"%s\" failed (exit code %s).").printf(
+			restore_phase_title(t.failed_step), t.failed_step_rc));
+
+		if ((t.failed_step == "grub_install") || (t.failed_step == "grub_menu")){
+			restore_note(_("The boot loader was not installed, so the restored system will not start on its own."));
+			restore_note(_("Boot from a live USB, mount the restored system and re-install GRUB."));
+		}
+		else if (t.failed_step == "initramfs"){
+			restore_note(_("The initramfs was not rebuilt. The restored system may fail to boot."));
+		}
+	}
+
+	/* Put the rsync log somewhere that outlives the session.
+	 *
+	 * For a remote repository restore_log_file lives in TEMP_DIR, which in a
+	 * live recovery environment is tmpfs. The restore that most needs
+	 * explaining is exactly the one after which the machine is rebooted, and
+	 * the log went with it -- the target's own /var/log/timeshift was empty. */
+	/* Warn when a restored system has snaps but no way to launch them.
+	 *
+	 * Snapshots taken before /snap/bin was preserved contain every .snap
+	 * payload, working mount units and the right desktop files -- and no
+	 * /snap/bin, so every snap command fails with a message that wrongly says
+	 * the snap is not installed. Nothing here reconstructs the links:
+	 * /snap/<name>/current could be derived from the mount units, but the
+	 * /snap/bin entries come from each snap's own metadata, which is snapd's
+	 * business and would drift from it. */
+	private void check_snap_links_restored(){
+
+		if (restore_current_system){ return; } // its own /snap is untouched
+		if (dry_run){ return; }
+
+		string snaps_dir = path_combine(restore_target_path, "var/lib/snapd/snaps");
+
+		if (!dir_exists(snaps_dir)){ return; } // no snapd on this system
+
+		// an empty snaps dir means nothing to launch in the first place
+		if (dir_list_names(snaps_dir).size == 0){ return; }
+
+		if (!dir_exists(path_combine(restore_target_path, "snap/bin"))){
+
+			restore_warn(_("Snap applications will not start: this snapshot was taken before /snap/bin was included in backups."));
+			restore_note(_("Run 'sudo snap refresh' on the restored system to rebuild them."));
+		}
+
+		check_snap_confine_capabilities();
+	}
+
+	/* snap-confine without its file capabilities breaks every snap.
+	 *
+	 * The capabilities live in a security.capability xattr, and snapshots taken
+	 * before rsync was given -X never captured one -- so the binary restores
+	 * intact, setuid, and still refuses to run with "snap-confine is packaged
+	 * without necessary permissions". Nothing here re-applies them: the correct
+	 * values belong to the snapd package and hard-coding a table would go stale
+	 * the first time upstream changed it. */
+	private void check_snap_confine_capabilities(){
+
+		string binary = path_combine(restore_target_path, "usr/lib/snapd/snap-confine");
+
+		if (!file_exists(binary)){ return; }
+
+		// no getcap: cannot tell, so say nothing rather than warn wrongly
+		if (!cmd_exists("getcap")){
+			log_debug("getcap not available; skipping the snap-confine capability check");
+			return;
+		}
+
+		string std_out, std_err;
+		exec_script_sync("getcap '%s'".printf(escape_single_quote(binary)),
+			out std_out, out std_err, true);
+
+		if ((std_out != null) && std_out.contains("cap_")){ return; } // intact
+
+		restore_warn(_("Snap applications will not start: this snapshot predates extended-attribute support, so snap-confine lost its file capabilities."));
+		restore_note(_("Fix on the restored system with: sudo apt install --reinstall snapd"));
+	}
+
+	private void save_restore_log_to_target(){
+
+		if (restore_current_system){ return; } // the target is /; nothing to copy to
+		if (dry_run){ return; }
+		if (!file_exists(restore_log_file)){ return; }
+
+		string dir = path_combine(restore_target_path, "var/log/timeshift");
+
+		// already written there directly; nothing to copy
+		if (file_parent(restore_log_file) == remove_trailing_slash(dir)){
+			restore_note(_("Log on the restored system: %s").printf(
+				"/var/log/timeshift/" + file_basename(restore_log_file)));
+			return;
+		}
+
+		if (!dir_exists(dir) && !dir_create(dir)){ return; }
+
+		string name = "%s_restore_rsync_log".printf(
+			new DateTime.now_local().format("%Y-%m-%d_%H-%M-%S"));
+
+		string dest = path_combine(dir, name);
+
+		if (file_copy(restore_log_file, dest)){
+			log_msg(_("Restore log saved to %s").printf(dest));
+			restore_note(_("Log on the restored system: %s").printf(
+				"/var/log/timeshift/" + name));
+		}
+	}
+
+	/* Printed by the source probe's shell when rsync succeeded. */
+	private const string SOURCE_OK_MARKER = "@@TS_SOURCE_OK";
+
+	private string restore_failed_flag(){
+		return path_combine(file_parent(restore_log_file), ".timeshift-restore-failed");
+	}
+
+	/* Can the snapshot actually be read, and does it contain anything?
+	 *
+	 * rsync reports a missing source directory, an unreadable one and a handful
+	 * of skipped files all as exit 23, and 23 is the "carry on to the finish
+	 * steps" path. By then --delete has already run against the target. So the
+	 * source is listed first, and a source that is missing OR empty stops the
+	 * restore while the target is still intact.
+	 *
+	 * --list-only without -r lists one level, so this costs a single round trip
+	 * rather than a walk of the whole snapshot. */
+	private bool restore_source_is_readable(out string error_message){
+
+		error_message = "";
+
+		if (mirror_system){
+			return true; // cloning the running system; the source is /
+		}
+
+		string src = "%s%s".printf(
+			repo_is_remote() ? repo.backend.rsync_prefix() : "",
+			restore_source_path + "/localhost/");
+
+		string cmd = "rsync --list-only";
+
+		if (repo_is_remote()){
+
+			cmd += " --numeric-ids";
+			cmd += " -e '%s'".printf(escape_single_quote(repo.backend.rsync_rsh()));
+
+			string remote_rsync = repo.backend.rsync_remote_path();
+			if (remote_rsync.length > 0){
+				cmd += " --rsync-path='%s'".printf(escape_single_quote(remote_rsync));
+			}
+		}
+
+		cmd += " '%s'".printf(escape_single_quote(src));
+
+		/* exec_script_sync() always returns 0 -- its wrapper's trailing echo is
+		 * the last command -- so the shell reports success in the output
+		 * instead of in the status. */
+		cmd += " && echo '%s'".printf(SOURCE_OK_MARKER);
+
+		log_debug("probing restore source: %s".printf(cmd));
+
+		string std_out, std_err;
+		exec_script_sync(cmd, out std_out, out std_err);
+
+		if ((std_out == null) || !std_out.contains(SOURCE_OK_MARKER)){
+
+			error_message = _("The snapshot location could not be listed.");
+
+			string detail = ((std_err == null) ? "" : std_err.strip());
+			if (detail.length > 0){
+				error_message += " " + detail.split("\n")[0];
+			}
+
+			return false;
+		}
+
+		int entries = 0;
+		foreach(string line in std_out.split("\n")){
+			if (line.strip().length == 0){ continue; }
+			if (line.contains(SOURCE_OK_MARKER)){ continue; }
+			entries++;
+		}
+
+		/* One entry is the directory itself. A snapshot with nothing in it
+		 * would restore as "delete everything on the target". */
+		if (entries < 2){
+			error_message = _("The snapshot appears to be empty. Restoring it would erase the target.");
+			return false;
+		}
+
+		return true;
+	}
+
+	private string restore_rsync_retry_block(){
+
+		string probe = repo_is_remote() ? repo.backend.reachability_command() : "";
+
+		/* Emitted into the script rather than called from Vala: the retry loop
+		 * runs inside the generated shell, long after this function returned. */
+		string drop = repo_is_remote() ? repo.backend.drop_master_command() : "";
+
+		string sh = "";
+
+		sh += "ts_attempt=0\n";
+		sh += "ts_partial_fails=0\n";
+		sh += "while :; do\n";
+		sh += "  ts_attempt=$((ts_attempt + 1))\n";
+		sh += "  ts_run_rsync\n";
+		sh += "  ts_rc=$?\n";
+		sh += "  case $ts_rc in\n";
+		sh += "    0|24) break ;;\n";
+		/* 23 = "some files could not be transferred", the rest succeeded.
+		 * Almost always a permission or special-file problem, which retrying
+		 * cannot fix -- and each retry would re-scan the entire tree. So it is
+		 * a warning: carry on to the finish steps, and let the summary name the
+		 * files that were skipped. */
+		sh += "    23)\n";
+		sh += "      echo '%s'\n".printf(RestoreScriptTask.WARNINGS_MARKER);
+		sh += "      break\n";
+		sh += "      ;;\n";
+		sh += "    10|12|30|35|255)\n";
+		// "<attempt>:<rsync exit code>", so the banner can say what happened
+		sh += "      echo '%s'\"$ts_attempt:$ts_rc\"\n".printf(RestoreScriptTask.RECONNECT_MARKER);
+		sh += "      echo \"Connection lost (rsync exit $ts_rc). Waiting for the snapshot location...\"\n";
+		sh += "      echo 'The transfer resumes where it stopped; nothing already copied is lost.'\n";
+
+		/* Drop the shared ssh connection before probing.
+		 *
+		 * The master that carried the dead transfer is still resident, and
+		 * every later ssh -- including the probe below -- would attach to it
+		 * over its unix socket, where ConnectTimeout does not apply. That is
+		 * an indefinite block, not a retry. */
+		if (drop.length > 0){
+			sh += "      %s\n".printf(drop);
+		}
+
+		if (probe.length > 0){
+			// Wait for the host to answer again rather than burning attempts
+			// against a link that is still down. Capped per round so a
+			// permanently dead host still cycles and keeps the UI informed.
+			sh += "      ts_wait=0\n";
+			sh += "      while [ $ts_wait -lt 60 ]; do\n";
+			sh += "        if %s >/dev/null 2>&1; then break; fi\n".printf(probe);
+			sh += "        ts_wait=$((ts_wait + 1))\n";
+			sh += "        sleep 5\n";
+			sh += "      done\n";
+		}
+		else {
+			sh += "      sleep 5\n";
+		}
+
+		sh += "      echo 'Retrying...'\n";
+		// re-announce the phase so the reconnect banner clears
+		sh += "      %s".printf(phase_marker_echo("sync_files"));
+		sh += "      ;;\n";
+		sh += "    *)\n";
+		sh += "      echo '%s'$ts_rc\n".printf(RestoreScriptTask.FAILED_MARKER);
+		sh += "      echo 'The target is INCOMPLETE and must not be booted. Re-run the restore.'\n";
+		sh += "      touch '%s'\n".printf(escape_single_quote(restore_failed_flag()));
+		sh += "      exit 1\n";
+		sh += "      ;;\n";
+		sh += "  esac\n";
+		sh += "done\n";
+
+		return sh;
 	}
 
 	private void create_restore_scripts(out string sh_sync, out string sh_finish){
@@ -2781,11 +3395,55 @@ public class Main : GLib.Object{
 		/* -aii, not -avi: the second -i itemises unchanged files too. That is
 		 * what RsyncTask.build_script() uses, and it is what makes the line
 		 * count track the file count, so the progress bar means something. */
-		sh += "rsync -aiir --force --delete --delete-before";
+		/* Wrapped in a function, not a variable: the command embeds
+		 * single-quoted paths and an -e '...' option, and re-expanding that
+		 * from a string would need eval and would mangle any path with a
+		 * space. A function preserves the quoting exactly. */
+		sh += "ts_run_rsync() {\n";
+		/* -X: extended attributes.
+		 *
+		 * rsync's archive mode is "-rlptgoD (no -A,-X,-U,-N,-H)", so without
+		 * this every security.capability xattr is silently dropped. That is not
+		 * cosmetic: /usr/lib/snapd/snap-confine carries ten file capabilities,
+		 * and a restored copy without them fails with "snap-confine is packaged
+		 * without necessary permissions", which breaks EVERY snap on the
+		 * system. ping and mtr-packet lose cap_net_raw the same way.
+		 *
+		 * --fake-super only stores non-user xattrs when --xattrs is given, so
+		 * for a remote repository the two work together: the capability is
+		 * kept as user.rsync.security.capability on the far side and expanded
+		 * back to a real security.capability on restore, which succeeds
+		 * because the restore runs as root locally. */
+		/* -H: preserve hard links.
+		 *
+		 * Also omitted by archive mode. Without it every hardlinked path is
+		 * copied as an independent file -- 138 files in /usr/bin and /usr/lib
+		 * alone on a stock Ubuntu -- so a restored system silently stops
+		 * sharing inodes it used to share, and the snapshot is larger than the
+		 * source it came from.
+		 *
+		 * Links are detected by (device, inode) within the transferred tree
+		 * only, so --link-dest's cross-snapshot sharing cannot leak in and
+		 * link two paths that were never linked on the source. */
+		sh += "rsync -aiirXH --force --delete --delete-before";
 
 		if (dry_run){
 			sh += " --dry-run";
 		}
+
+		/* --partial-dir, not bare --partial: --partial leaves a TRUNCATED file
+		 * at its real path, which on a system restore is precisely the
+		 * corruption this is meant to prevent. A partial dir keeps the
+		 * incomplete copy aside until it is whole, and rsync excludes it from
+		 * --delete automatically.
+		 *
+		 * --timeout catches a connection that has hung rather than dropped;
+		 * ssh's ServerAlive* (see RepoBackend.ssh_options) only catches a link
+		 * that is actually dead. */
+		if (!dry_run){
+			sh += " --partial-dir=.timeshift-partial";
+		}
+		sh += " --timeout=120";
 
 		// Pulling from a remote repository: the target stays local, only the
 		// source is remote. Numeric ids are required across the SSH boundary,
@@ -2808,14 +3466,16 @@ public class Main : GLib.Object{
 		sh += " --exclude-from='%s'".printf(escape_single_quote(restore_exclude_file));
 
 		if (mirror_system){
-			sh += " '%s' '%s' \n".printf("/", escape_single_quote(restore_target_path));
+			sh += " '%s' '%s'\n}\n".printf("/", escape_single_quote(restore_target_path));
 		}
 		else{
-			sh += " '%s%s' '%s' \n".printf(
+			sh += " '%s%s' '%s'\n}\n".printf(
 				repo_is_remote() ? repo.backend.rsync_prefix() : "",
 				escape_single_quote(restore_source_path + "/localhost/"),
 				escape_single_quote(restore_target_path));
 		}
+
+		sh += restore_rsync_retry_block();
 
 		if (dry_run){
 			sh_sync = sh;
@@ -2845,60 +3505,112 @@ public class Main : GLib.Object{
 		log_debug("reinstall_grub2=%s".printf(reinstall_grub2.to_string()));
 		log_debug("grub_device=%s".printf((grub_device == null) ? "null" : grub_device));
 
-		var target_distro = LinuxDistro.get_dist_info(restore_target_path);
-		
+		/* No LinuxDistro.get_dist_info(restore_target_path) here.
+		 *
+		 * This function runs BEFORE rsync, so on a freshly formatted target
+		 * there is no /etc/lsb-release to read and every distro test below
+		 * silently took the generic branch. The steps now ask the restored
+		 * system at run time which tools it actually has, which is both correct
+		 * whenever this is built and distro-agnostic. */
+
 		sh = "";
 
 		string chroot = "";
 		if (!restore_current_system){
-			//if ((current_distro.dist_type == "arch") && cmd_exists("arch-chroot")){
-				//chroot += "arch-chroot \"%s\"".printf(restore_target_path);
-			//}
-			//else{
-				chroot += "chroot \"%s\"".printf(restore_target_path);
-			//}
+			chroot += "chroot \"%s\"".printf(restore_target_path);
+		}
 
-			// bind system directories for chrooted system
+		/* Announce a failed step instead of ignoring it.
+		 *
+		 * Every step here used to run unguarded, and the script's status was
+		 * whatever the last command happened to return -- so a grub-install
+		 * that failed on a half-restored target was completely invisible and
+		 * the user was told the restore had merely "Completed With Errors". */
+		/* Where each step's own output goes.
+		 *
+		 * ts_step used to record nothing but the exit code, so when
+		 * grub-install failed the one line that said WHY -- "cannot find EFI
+		 * directory" -- was never written anywhere, and the diagnosis needed a
+		 * disk-image autopsy. Next to the rsync log, on the restored system,
+		 * so it survives the reboot. */
+		sh += "TS_STEP_LOG='%s'\n".printf(escape_single_quote(restore_steps_log_file()));
+		sh += "mkdir -p \"$(dirname \"$TS_STEP_LOG\")\" 2>/dev/null\n";
+
+		sh += "ts_step() {\n";
+		sh += "  ts_key=$1; shift\n";
+		// tee, so the output still reaches the progress pane as well as the log
+		sh += "  \"$@\" 2>&1 | tee -a \"$TS_STEP_LOG\"\n";
+		sh += "  ts_rc=${PIPESTATUS[0]}\n";
+		sh += "  if [ $ts_rc -ne 0 ]; then\n";
+		sh += "    echo \"$ts_key failed with exit code $ts_rc\" >> \"$TS_STEP_LOG\"\n";
+		sh += "    echo '%s'\"$ts_key:$ts_rc\"\n".printf(RestoreScriptTask.STEP_FAILED_MARKER);
+		sh += "  fi\n";
+		sh += "  return $ts_rc\n";
+		sh += "}\n";
+
+		// does the restored system have this command?
+		sh += "ts_has() {\n";
+		sh += "  %s sh -c \"command -v $1 >/dev/null 2>&1\"\n".printf(chroot);
+		sh += "}\n";
+
+		if (!restore_current_system){
+
 			sh += phase_marker("chroot_bind", _("Preparing target system"));
-			sh += "for i in dev dev/pts proc run sys; do mount --bind \"/$i\" \"%s$i\"; done \n".printf(restore_target_path);
+
+			/* --rbind, not --bind: /sys/firmware/efi/efivars is a mount of its
+			 * own beneath /sys, and without it grub-install inside the chroot
+			 * reports "EFI variables are not supported on this system" and
+			 * quietly skips the UEFI boot entry -- leaving a restored disk the
+			 * firmware will not boot. */
+			sh += "for i in dev dev/pts proc run sys; do mount --rbind \"/$i\" \"%s$i\" 2>/dev/null || mount --bind \"/$i\" \"%s$i\"; done \n".printf(
+				restore_target_path, restore_target_path);
+
+			/* Without a shell in the target every chroot below fails one by
+			 * one with a confusing error each. Say it once, plainly. */
+			sh += "if [ ! -e \"%sbin/sh\" ] && [ ! -e \"%susr/bin/sh\" ]; then \n".printf(
+				restore_target_path, restore_target_path);
+			sh += "  echo '%s'\"chroot_bind:1\"\n".printf(RestoreScriptTask.STEP_FAILED_MARKER);
+			sh += "  echo '" + _("The restored system has no shell; the boot loader steps cannot run.") + "' \n";
+			sh += "fi \n";
 		}
 
 		if (reinstall_grub2 && (grub_device != null) && (grub_device.length > 0)){
-			
+
 			sh += "sync \n";
 			sh += "echo '' \n";
 			sh += phase_marker("grub_install", _("Re-installing GRUB2 bootloader"));
 			sh += "echo '" + _("Re-installing GRUB2 bootloader...") + "' \n";
 
-			// search for other operating systems
-			//sh += "chroot \"%s\" os-prober \n".printf(restore_target_path);
-			
-			// re-install grub ---------------
+			/* Check the ESP is really mounted before calling grub-install.
+			 *
+			 * grub-install resolves --efi-directory to <target>/boot/efi and
+			 * requires it to be a mount point on a FAT filesystem. When it is
+			 * merely a directory -- which is what a restore with no ESP
+			 * assigned produces -- it aborts with "cannot find EFI directory"
+			 * and returns a bare 1, with no hint of which of its many failure
+			 * modes was hit. Say it plainly instead. */
+			if (snapshot_needs_esp() && !restore_current_system){
 
-			if (target_distro.dist_type == "redhat"){
+				string esp_path = restore_target_path + "boot/efi";
 
-				// this will run only in clone mode
-				//sh += "%s grub2-install %s \n".printf(chroot, grub_device);
-				sh += "%s grub2-install --recheck --force %s \n".printf(chroot, grub_device);
-
-				/* NOTE:
-				 * grub2-install should NOT be run on Fedora EFI systems 
-				 * https://fedoraproject.org/wiki/GRUB_2
-				 * Instead following packages should be reinstalled:
-				 * dnf reinstall grub2-efi grub2-efi-modules shim
-				 *
-				 * Bootloader installation will be skipped while restoring in GUI mode.
-				 * Fedora seems to boot correctly even after installing new
-				 * kernels and restoring a snapshot with an older kernel.
-				*/
-			}
-			else {
-				//sh += "%s grub-install %s \n".printf(chroot, grub_device);
-				sh += "%s grub-install --recheck --force %s \n".printf(chroot, grub_device);
+				sh += "if ! mountpoint -q '%s'; then \n".printf(escape_single_quote(esp_path));
+				sh += "  echo '%s'\"grub_install:1\"\n".printf(RestoreScriptTask.STEP_FAILED_MARKER);
+				sh += "  echo '" + _("No EFI System Partition is mounted at /boot/efi; the boot loader cannot be installed.") + "' \n";
+				sh += "else \n";
 			}
 
-			// create new grub menu
-			//sh += "chroot \"%s\" grub-mkconfig -o /boot/grub/grub.cfg \n".printf(restore_target_path);
+			sh += "if ts_has grub-install; then \n";
+			sh += "  ts_step grub_install %s grub-install --recheck --force %s \n".printf(chroot, grub_device);
+			sh += "elif ts_has grub2-install; then \n";
+			sh += "  ts_step grub_install %s grub2-install --recheck --force %s \n".printf(chroot, grub_device);
+			sh += "else \n";
+			sh += "  echo '%s'\"grub_install:127\"\n".printf(RestoreScriptTask.STEP_FAILED_MARKER);
+			sh += "  echo '" + _("grub-install was not found in the restored system.") + "' \n";
+			sh += "fi \n";
+
+			if (snapshot_needs_esp() && !restore_current_system){
+				sh += "fi \n"; // closes the mountpoint test
+			}
 		}
 		else{
 			log_debug("skipping sh_grub: reinstall_grub2=%s, grub_device=%s".printf(
@@ -2908,53 +3620,73 @@ public class Main : GLib.Object{
 		// update initramfs --------------
 
 		if (update_initramfs){
+
 			sh += "echo '' \n";
 			sh += phase_marker("initramfs", _("Rebuilding initramfs"));
 			sh += "echo '" + _("Generating initramfs...") + "' \n";
-			
-			if (target_distro.dist_type == "redhat"){
-				sh += "%s dracut -f -v \n".printf(chroot);
-			}
-			else if (target_distro.dist_type == "arch"){
-				sh += "%s mkinitcpio -p /etc/mkinitcpio.d/*.preset\n".printf(chroot);
-			}
-			else{
-				sh += "%s update-initramfs -u -k all \n".printf(chroot);
-			}
+
+			/* dracut first, and explicitly generic.
+			 *
+			 * On Ubuntu 26.04 update-initramfs is only a shim over dracut and
+			 * gives no way to ask for a non-hostonly image -- and a hostonly
+			 * rebuild here would be doubly wrong, because dracut would read
+			 * the bind-mounted /proc, /sys and /dev of the RECOVERY
+			 * environment and bake those devices in instead of the target's.
+			 * --no-hostonly produces an image that boots on whatever hardware
+			 * the restore actually landed on, which is the whole point. */
+			sh += "if ts_has dracut; then \n";
+			sh += "  ts_step initramfs %s dracut --force --no-hostonly --regenerate-all \n".printf(chroot);
+			sh += "elif ts_has update-initramfs; then \n";
+			sh += "  ts_step initramfs %s update-initramfs -u -k all \n".printf(chroot);
+			sh += "elif ts_has mkinitcpio; then \n";
+			// the glob has to expand inside the target, not out here
+			sh += "  ts_step initramfs %s sh -c 'mkinitcpio -p /etc/mkinitcpio.d/*.preset' \n".printf(chroot);
+			sh += "else \n";
+			sh += "  echo '%s'\"initramfs:127\"\n".printf(RestoreScriptTask.STEP_FAILED_MARKER);
+			sh += "  echo '" + _("No initramfs tool was found in the restored system.") + "' \n";
+			sh += "fi \n";
 		}
-		
+
 		// update grub menu --------------
 
 		if (update_grub){
+
 			sh += "echo '' \n";
 			sh += phase_marker("grub_menu", _("Updating GRUB menu"));
 			sh += "echo '" + _("Updating GRUB menu...") + "' \n";
-			
-			if (target_distro.dist_type == "redhat"){
-				sh += "%s grub2-mkconfig -o /boot/grub2/grub.cfg \n".printf(chroot);
-			}
-			if (target_distro.dist_type == "arch"){
-				sh += "%s grub-mkconfig -o /boot/grub/grub.cfg \n".printf(chroot);
-			}
-			else{
-				sh += "%s update-grub \n".printf(chroot);
-			}
+
+			/* Was "if (redhat) ... if (arch) ... else ...", where the else bound
+			 * to the arch test -- so a redhat target ran grub2-mkconfig AND
+			 * update-grub. */
+			sh += "if ts_has update-grub; then \n";
+			sh += "  ts_step grub_menu %s update-grub \n".printf(chroot);
+			sh += "elif ts_has grub2-mkconfig; then \n";
+			sh += "  ts_step grub_menu %s grub2-mkconfig -o /boot/grub2/grub.cfg \n".printf(chroot);
+			sh += "elif ts_has grub-mkconfig; then \n";
+			sh += "  ts_step grub_menu %s grub-mkconfig -o /boot/grub/grub.cfg \n".printf(chroot);
+			sh += "else \n";
+			sh += "  echo '%s'\"grub_menu:127\"\n".printf(RestoreScriptTask.STEP_FAILED_MARKER);
+			sh += "  echo '" + _("No GRUB configuration tool was found in the restored system.") + "' \n";
+			sh += "fi \n";
 
 			sh += "sync \n";
 			sh += "echo '' \n";
 		}
-		
+
 		// sync file systems
 		sh += phase_marker("fs_sync", _("Syncing file systems"));
 		sh += "echo '" + _("Syncing file systems...") + "' \n";
 		sh += "sync ; sleep 10s; \n";
 		sh += "echo '' \n";
-		
+
 		if (!restore_current_system){
 			// unmount chrooted system
 			sh += phase_marker("cleanup", _("Cleaning up"));
 			sh += "echo '" + _("Cleaning up...") + "' \n";
-			sh += "for i in dev/pts dev proc run sys; do umount -f \"%s$i\"; done \n".printf(restore_target_path);
+			// -R to match the --rbind above; a leftover submount would keep the
+			// target busy and make the unmount-then-fsck step refuse to run
+			sh += "for i in dev/pts dev proc run sys; do umount -R \"%s$i\" 2>/dev/null || umount -f \"%s$i\"; done \n".printf(
+				restore_target_path, restore_target_path);
 			sh += "sync \n";
 		}
 
@@ -2966,7 +3698,7 @@ public class Main : GLib.Object{
 
 		sh += phase_marker("hooks", _("Running post-restore scripts"));
 		sh += "if [ -d \"/etc/timeshift/restore-hooks.d\" ]; then \n";
-		sh += "  run-parts --verbose /etc/timeshift/restore-hooks.d \n";
+		sh += "  ts_step hooks run-parts --verbose /etc/timeshift/restore-hooks.d \n";
 		sh += "fi \n";
 
 		// reboot if required -----------------------------------
@@ -2977,7 +3709,6 @@ public class Main : GLib.Object{
 			sh += "echo '" + _("Rebooting system...") + "' \n";
 			sh += "sleep 5s \n";
 			sh += "reboot -f \n";
-			//sh_reboot += "shutdown -r now \n";
 		}
 
 		sh_finish = sh;
@@ -3005,7 +3736,16 @@ public class Main : GLib.Object{
 			log_to_file(std_err);
 		}
 
-		return (ret_val == 0);
+		// exec_script_sync() cannot report the script's real status, so the
+		// sentinel is what actually decides this.
+		bool ok_script = (ret_val == 0) && !file_exists(restore_failed_flag());
+
+		if (!ok_script){
+			restore_fail(_("The snapshot could not be copied to the target."));
+			restore_note(_("The target is incomplete and must not be booted. Re-run the restore."));
+		}
+
+		return ok_script;
 	}
 
 	/* The full-screen VTE terminal is kept for debugging:
@@ -3065,7 +3805,16 @@ public class Main : GLib.Object{
 
 		restore_script_task = null;
 
-		return (script_task.exit_code == 0);
+		/* One task ran both halves here, so both verdicts come from it. The
+		 * transfer is read first: if it failed the script aborted before the
+		 * finish steps, and there is no step failure to report. */
+		collect_transfer_result(script_task);
+
+		if (restore_outcome != RestoreOutcome.FAILED){
+			collect_finish_result(script_task);
+		}
+
+		return (restore_outcome != RestoreOutcome.FAILED);
 	}
 
 	/* How many itemised lines the restore is expected to print. The dry run
@@ -3136,7 +3885,16 @@ public class Main : GLib.Object{
 			log_to_file(std_err);
 		}
 
-		return (ret_val == 0);
+		// exec_script_sync() cannot report the script's real status, so the
+		// sentinel is what actually decides this.
+		bool ok_script = (ret_val == 0) && !file_exists(restore_failed_flag());
+
+		if (!ok_script){
+			restore_fail(_("The snapshot could not be copied to the target."));
+			restore_note(_("The target is incomplete and must not be booted. Re-run the restore."));
+		}
+
+		return ok_script;
 	}
 
 	private bool restore_other_gui(string sh_sync, string sh_finish){
@@ -3145,47 +3903,35 @@ public class Main : GLib.Object{
 		
 		progress_text = _("Building file list...");
 
-		task = new RsyncTask();
-		task.relative = false;
-		task.verbose = true;
-		task.delete_extra = true;
-		task.delete_excluded = false;
-		task.delete_after = true;
-		task.capture_output = true; // the progress page shows the raw output
+		/* sh_sync, not a second transfer built here.
+		 *
+		 * This function used to accept sh_sync and ignore it, constructing its
+		 * own RsyncTask instead -- so the retry loop, the exit-code
+		 * classification and the .timeshift-restore-failed sentinel that
+		 * create_restore_scripts() builds were all dead code on the one path a
+		 * recovery environment ever uses, and the sentinel check at the bottom
+		 * of this function could never fire. The two transfers had drifted
+		 * apart as well (--delete-before here, --delete-after there).
+		 *
+		 * RestoreScriptTask extends RsyncTask, so the counters, the progress
+		 * bar, status_line and the "-changes" sidecar all keep working. */
+		var sync_task = new RestoreScriptTask();
+		sync_task.script_text = sh_sync;
+		sync_task.rsync_log_file = restore_log_file;
+		sync_task.prg_count_total = restore_progress_total();
 
-		task.dry_run = dry_run;
-	
-		if (mirror_system){
-			task.source_path = "/";
-		}
-		else{
-			// pulling from the repository: only the source side is remote
-			task.source_path = "%s%s".printf(
-				repo_is_remote() ? repo.backend.rsync_prefix() : "",
-				path_combine(snapshot_to_restore.path, "localhost"));
-		}
-
-		task.dest_path = restore_target_path;
-
-		if (repo_is_remote() && !mirror_system){
-			task.rsh = repo.backend.rsync_rsh();
-			task.rsync_path = repo.backend.rsync_remote_path();
-		}
-		
-		task.exclude_from_file = restore_exclude_file;
-
-		task.rsync_log_file = restore_log_file;
-
-		task.prg_count_total = restore_progress_total();
+		task = sync_task;
+		restore_script_task = sync_task;
 
 		restore_phase = "sync_files";
 
-		task.execute();
+		sync_task.execute();
 
-		while (task.status == AppStatus.RUNNING){
-			sleep(1000);
+		while (sync_task.status == AppStatus.RUNNING){
 
-			if (task.status_line.length > 0){
+			restore_phase = sync_task.current_phase;
+
+			if (sync_task.status_line.length > 0){
 
 				if (dry_run){
 					progress_text = _("Comparing files with rsync...");
@@ -3194,12 +3940,27 @@ public class Main : GLib.Object{
 					progress_text = _("Syncing files with rsync...");
 				}
 			}
-			
+
+			sleep(200);
 			gtk_do_events();
 		}
 
+		restore_script_task = null;
+
+		collect_transfer_result(sync_task);
+
 		if (dry_run){
-			return true; // no need to continue
+			return (sync_task.exit_code == 0); // no need to continue
+		}
+
+		/* The gate that was missing. A failed transfer used to fall straight
+		 * through into the fstab rewrite, grub-install, update-initramfs and
+		 * finally fsck -- all on a half-copied filesystem. */
+		if (restore_outcome == RestoreOutcome.FAILED){
+
+			log_error(_("Skipping the bootloader steps: the files were not restored"));
+			restore_note(_("The bootloader steps were skipped."));
+			return false;
 		}
 
 		// update files after sync --------------------
@@ -3252,11 +4013,11 @@ public class Main : GLib.Object{
 
 		restore_script_task = null;
 
-		int ret_val = script_task.exit_code;
+		log_debug("script exit code: %d".printf(script_task.exit_code));
 
-		log_debug("script exit code: %d".printf(ret_val));
+		collect_finish_result(script_task);
 
-		return (ret_val == 0);
+		return (restore_outcome != RestoreOutcome.FAILED);
 	}
 
 	private void fix_fstab_file(string target_path){
@@ -3275,6 +4036,10 @@ public class Main : GLib.Object{
 		log_debug("updating entries (1/2)...");
 		
 		foreach(var mnt in mount_list){
+
+			// a folded or unassigned entry stays on the root filesystem
+			if (mnt.device == null){ continue; }
+
 			// find existing
 			var entry = FsTabEntry.find_entry_by_mount_point(fstab_list, mnt.mount_point);
 
@@ -3415,17 +4180,56 @@ public class Main : GLib.Object{
 		log_debug("Main: fix_crypttab_file(): exit");
 	}
 
+	/* Is this block device mounted anywhere right now?
+	 *
+	 * Read from /proc/mounts rather than from our own bookkeeping: the point is
+	 * to catch a mount we did not make or did not manage to remove. */
+	private bool device_is_mounted(string device_path){
+
+		string mounts = file_read("/proc/mounts");
+
+		foreach(string line in mounts.split("\n")){
+
+			var parts = line.split(" ");
+
+			if (parts.length < 2){ continue; }
+
+			if (parts[0] == device_path){ return true; }
+		}
+
+		return false;
+	}
+
 	private void check_and_repair_filesystems(){
 		
 		if (!restore_current_system){
 			string sh_fsck = "echo '" + _("Checking file systems for errors...") + "' \n";
+
+			int checked = 0;
+
 			foreach(var mnt in mount_list){
-				if (mnt.device != null) {
-					sh_fsck += "fsck -y %s \n".printf(mnt.device.device);
+
+				if (mnt.device == null) { continue; }
+
+				/* Never on a mounted filesystem. "fsck -y" answers yes to
+				 * e2fsck's "The filesystem is mounted. If you continue you
+				 * WILL cause SEVERE damage" prompt, so a stale bind mount left
+				 * under the target would turn this repair into the thing it is
+				 * meant to prevent. */
+				if (device_is_mounted(mnt.device.device)){
+					log_error(_("Not checking %s: it is still mounted").printf(mnt.device.device));
+					continue;
 				}
+
+				sh_fsck += "fsck -y %s \n".printf(mnt.device.device);
+				checked++;
 			}
+
 			sh_fsck += "echo '' \n";
-			exec_script_sync(sh_fsck, null, null, false, false, false, true);
+
+			if (checked > 0){
+				exec_script_sync(sh_fsck, null, null, false, false, false, true);
+			}
 		}
 	}
 
@@ -3437,15 +4241,54 @@ public class Main : GLib.Object{
 		// exception handler that is no longer reachable
 		thr_success = false;
 
+		restore_outcome_reset();
+
+		/* Before a single byte is written or deleted. An aliased mount turns
+		 * rsync --delete into "erase the target", so this runs ahead of
+		 * everything, including the dry run. */
+		if (!verify_no_aliased_mounts()){
+			thread_restore_running = false;
+			return false;
+		}
+
 		{
 			log_debug("source_path=%s".printf(restore_source_path));
 			log_debug("target_path=%s".printf(restore_target_path));
 			
 			string sh_sync, sh_finish;
 			create_restore_scripts(out sh_sync, out sh_finish);
-			
-			save_exclude_list_for_restore(restore_source_path);
 
+			/* rsync answers 23 both for "a few files were skipped" and for
+			 * "I could not open the exclude file" -- and 23 is the warning
+			 * path, which continues to the finish steps. Checking the write
+			 * here is what keeps those two apart. */
+			if (!save_exclude_list_for_restore()){
+				restore_fail(_("The list of files to exclude could not be written to %s.").printf(
+					restore_exclude_file));
+				restore_note(_("Nothing was changed on the target."));
+				log_error(_("Failed to write the restore exclude list"));
+				thread_restore_running = false;
+				return false;
+			}
+
+			/* Same reasoning: a source that cannot be listed also yields 23,
+			 * having deleted the target on the way. Ask first. */
+			string probe_error;
+			if (!restore_source_is_readable(out probe_error)){
+				restore_fail(_("The snapshot could not be read from %s.").printf(restore_source_path));
+				restore_note(probe_error);
+				restore_note(_("Nothing was changed on the target."));
+				log_error(probe_error);
+				thread_restore_running = false;
+				return false;
+			}
+
+			// rsync will not create the directory its --log-file lives in
+			dir_create(file_parent(restore_log_file));
+
+			// Stale from a previous failed attempt would fail this run before
+			// it starts.
+			file_delete(restore_failed_flag());
 			file_delete(restore_log_file);
 			file_delete(restore_log_file + "-changes");
 			file_delete(restore_log_file + ".gz");
@@ -3502,14 +4345,53 @@ public class Main : GLib.Object{
 
 			if (!dry_run){
 
-				log_msg(_("Restore completed"));
-				thr_success = true;
+				check_snap_links_restored();
+
+				/* The log first: everything below can fail, and this is the
+				 * only record of what the transfer actually did. */
+				save_restore_log_to_target();
+
+				switch(restore_outcome){
+				case RestoreOutcome.FAILED:
+					log_error(_("Restore failed"));
+					break;
+				case RestoreOutcome.WARNINGS:
+					log_msg(_("Restore completed with warnings"));
+					break;
+				default:
+					log_msg(_("Restore completed"));
+					break;
+				}
+
+				foreach(string line in restore_outcome_messages){
+					log_msg("  " + line);
+				}
+
+				/* Was "thr_success = true" unconditionally, with ok assigned
+				 * and never read -- which is why "timeshift --restore" exited
+				 * 0 even when nothing had been restored. */
+				thr_success = ok && (restore_outcome != RestoreOutcome.FAILED);
 
 				log_msg(string.nfill(78, '-'));
 
-				unmount_target_device(false);
+				bool unmounted = unmount_target_device(false);
 
-				check_and_repair_filesystems();
+				/* fsck only when the restore worked AND the target is really
+				 * unmounted. "fsck -y" on a mounted filesystem answers yes to
+				 * "you WILL cause SEVERE damage", and this used to run on
+				 * every restore including a failed one. */
+				if (thr_success && unmounted){
+					check_and_repair_filesystems();
+				}
+				else if (!unmounted){
+					log_error(_("Skipping the file system check: the target is still mounted"));
+				}
+				else {
+					log_msg(_("Skipping the file system check: the restore did not complete"));
+				}
+			}
+			else {
+				thr_success = ok;
 			}
 		}
 
@@ -4222,6 +5104,367 @@ public class Main : GLib.Object{
 		sys_subvolumes = Subvolume.detect_subvolumes_for_system_by_path("/", null, parent_window);
 	}
 
+	/* The mount options mount_target_devices() will actually use for an entry.
+	 *
+	 * Shared with fold_aliased_mount_entries(), which has to compare the
+	 * *effective* subvolume: on btrfs, / and /home legitimately live on one
+	 * device as subvol=@ and subvol=@home, and folding those would be wrong. */
+	private string restore_mount_options(MountEntry mnt){
+
+		if ((mnt.device != null) && (mnt.device.fstype == "btrfs")){
+
+			if (mnt.mount_point == "/"){
+				return "subvol=@";
+			}
+
+			if (include_btrfs_home_for_restore && (mnt.mount_point == "/home")){
+				return "subvol=@home";
+			}
+		}
+
+		return "";
+	}
+
+	/* Drop any mount entry that names the same device+subvolume as one of its
+	 * own ancestors.
+	 *
+	 * This is what destroyed a restore target: / and /home were both assigned
+	 * the root device, so <target>/home *was* <target>, and /boot and /boot/efi
+	 * were both the ESP. rsync's --delete then walked into the alias, found the
+	 * source's (excluded, therefore empty) home/ and deleted every top-level
+	 * directory of the target through it. The only survivors were the busy
+	 * mountpoints themselves.
+	 *
+	 * Assigning the root device to /home is how a user says "keep it on the
+	 * root device", so the entry is folded rather than refused -- the dropdown's
+	 * own null option means exactly the same thing. verify_no_aliased_mounts()
+	 * is the backstop for anything this does not anticipate. */
+	/* Did the system this snapshot came from boot via UEFI?
+	 *
+	 * The snapshot carries the original /etc/fstab (Snapshot.read_fstab_file),
+	 * and a /boot/efi entry in it is that system saying so. This matters
+	 * because an EFI System Partition is not optional: without one mounted,
+	 * grub-install resolves --efi-directory to a plain directory, refuses to
+	 * write anything, and the restored disk will not boot -- which is exactly
+	 * how a complete, error-free 14 GB restore still produced an unbootable
+	 * machine. */
+	public bool snapshot_needs_esp(){
+
+		if (mirror_system){
+			return using_efi_boot(); // cloning: the running system decides
+		}
+
+		if (snapshot_to_restore == null){ return false; }
+
+		foreach(var entry in snapshot_to_restore.fstab_list){
+			if (entry.mount_point == "/boot/efi"){ return true; }
+		}
+
+		return false;
+	}
+
+	/* The device currently assigned to /boot/efi, if any. */
+	public Device? assigned_esp(){
+
+		foreach(var mnt in mount_list){
+			if (mnt.mount_point == "/boot/efi"){ return mnt.device; }
+		}
+
+		return null;
+	}
+
+	public class LayoutRow : GLib.Object {
+		public string mount_point;
+		public string original;   // what the snapshot's fstab named
+		public string assigned;   // what the restore will mount, or ""
+		public string status;     // "ok" | "on root" | "missing"
+		public bool blocking;
+
+		public LayoutRow(string mount_point, string original, string assigned,
+			string status, bool blocking){
+
+			this.mount_point = mount_point;
+			this.original = original;
+			this.assigned = assigned;
+			this.status = status;
+			this.blocking = blocking;
+		}
+	}
+
+	/* Compare the layout the snapshot was taken from against what the restore
+	 * is actually going to mount.
+	 *
+	 * Only / and /boot/efi block: everything else genuinely does work living on
+	 * the root filesystem, and saying otherwise would train people to click
+	 * past the warning that matters. */
+	public Gee.ArrayList<LayoutRow> validate_restore_layout(){
+
+		var rows = new Gee.ArrayList<LayoutRow>();
+
+		if (snapshot_to_restore == null){ return rows; }
+
+		foreach(var entry in snapshot_to_restore.fstab_list){
+
+			if (!entry.is_for_system_directory()){ continue; }
+			if (entry.mount_point == "swap"){ continue; }
+
+			var mnt = MountEntry.find_entry_by_mount_point(mount_list, entry.mount_point);
+
+			string assigned = ((mnt != null) && (mnt.device != null))
+				? mnt.device.device : "";
+
+			string status;
+			bool blocking = false;
+
+			if (assigned.length > 0){
+				status = _("ok");
+			}
+			else if (entry.mount_point == "/"){
+				status = _("NOT SELECTED");
+				blocking = true;
+			}
+			else if (entry.mount_point == "/boot/efi"){
+				status = _("MISSING");
+				blocking = true;
+			}
+			else {
+				status = _("on root");
+			}
+
+			rows.add(new LayoutRow(entry.mount_point, entry.device_string,
+				assigned, status, blocking));
+		}
+
+		return rows;
+	}
+
+	/* Make the /boot/efi selection sane, whichever front end filled it in.
+	 *
+	 * The GUI filters its dropdown to real ESPs, but the console's map_devices()
+	 * defaults every unresolved mount point to the root device -- which for
+	 * /boot/efi means mounting the ext4 root a second time underneath itself.
+	 * The fold used to absorb that; it deliberately no longer does, so the
+	 * correction belongs here where both paths pass through.
+	 *
+	 * Clears a selection that is not an EFI System Partition, then falls back
+	 * to the ESP on the same disk as the root device. */
+	/* A device reference short enough for a table.
+	 *
+	 * fstab records these as "/dev/disk/by-uuid/<36-char uuid>" or "UUID=...",
+	 * which is 50 characters of mostly-noise; the leading digits are enough to
+	 * recognise which partition is meant. A plain /dev/sda1 is already short
+	 * and is left alone. */
+	private string short_device_ref(string reference){
+
+		string txt = reference.strip();
+
+		if (txt.has_prefix("/dev/disk/by-uuid/")){
+			txt = txt.substring("/dev/disk/by-uuid/".length);
+		}
+		else if (txt.down().has_prefix("uuid=")){
+			txt = txt.substring(5);
+		}
+		else if (txt.has_prefix("/dev/disk/by-label/")){
+			txt = txt.substring("/dev/disk/by-label/".length);
+		}
+		else {
+			return txt; // /dev/sda1 and friends are fine as they are
+		}
+
+		/* ASCII "..", not a single-character ellipsis: printf's %-14s pads by
+		 * BYTES, and a 3-byte U+2026 counts as three, so the column after it
+		 * lost two spaces and the table stopped lining up. */
+		if (txt.length > 12){
+			txt = txt.substring(0, 10) + "..";
+		}
+
+		return txt;
+	}
+
+	public void normalize_esp_selection(){
+
+		if (!snapshot_needs_esp()){ return; }
+
+		MountEntry? esp_entry = null;
+
+		foreach(var mnt in mount_list){
+			if (mnt.mount_point == "/boot/efi"){ esp_entry = mnt; break; }
+		}
+
+		if (esp_entry == null){ return; }
+
+		if (esp_entry.device != null){
+
+			string reject = "";
+
+			if (!esp_entry.device.is_efi_system_partition()){
+				reject = _("%s is not an EFI System Partition and cannot hold /boot/efi.").printf(
+					esp_entry.device.device);
+			}
+			/* And it must be on the disk being restored to.
+			 *
+			 * Both front ends default an unresolved /boot/efi to whatever
+			 * matched the snapshot's fstab, which on the machine running the
+			 * restore is THIS computer's own ESP. Writing the restored
+			 * system's boot loader onto the live machine's EFI partition would
+			 * damage the very system someone is using to perform the rescue. */
+			else if ((dst_root != null) && dst_root.has_parent()
+				&& esp_entry.device.has_parent()
+				&& (esp_entry.device.parent.device != dst_root.parent.device)){
+
+				reject = _("%s is on a different disk from the root device and will not be used for /boot/efi.").printf(
+					esp_entry.device.device);
+			}
+
+			if (reject.length > 0){
+
+				log_msg(reject);
+
+				if (!mount_fold_notes.contains(reject)){
+					mount_fold_notes.add(reject);
+				}
+
+				esp_entry.device = null;
+			}
+		}
+
+		if (esp_entry.device != null){ return; }
+
+		if ((dst_root == null) || !dst_root.has_parent()){ return; }
+
+		foreach(var dev in partitions){
+
+			if (!dev.has_parent()){ continue; }
+			if (dev.parent.device != dst_root.parent.device){ continue; }
+			if (!dev.is_efi_system_partition()){ continue; }
+
+			esp_entry.device = dev;
+
+			string msg = _("Using %s as the EFI System Partition for /boot/efi.").printf(dev.device);
+			log_msg(msg);
+
+			if (!mount_fold_notes.contains(msg)){
+				mount_fold_notes.add(msg);
+			}
+
+			break;
+		}
+	}
+
+	public void fold_aliased_mount_entries(){
+
+		mount_fold_notes.clear();
+
+		// parents before children, so an ancestor is always seen first
+		mount_list.sort((a,b) => {
+			return strcmp(a.mount_point, b.mount_point);
+		});
+
+		foreach(var mnt in mount_list){
+
+			if ((mnt.device == null) || (mnt.mount_point == "/")){ continue; }
+
+			/* Never the ESP. Folding /boot/efi onto the root device is not a
+			 * shorthand for anything -- it means no EFI System Partition gets
+			 * mounted, the snapshot's ESP payload lands as ordinary files on
+			 * ext4, and grub-install then fails with "cannot find EFI
+			 * directory". validate_restore_layout() reports it as an error
+			 * instead. */
+			if (mnt.mount_point == "/boot/efi"){ continue; }
+
+			foreach(var parent in mount_list){
+
+				if (parent == mnt){ break; } // sorted: nothing after this is an ancestor
+
+				if (parent.device == null){ continue; }
+
+				// an ancestor of this mount point, not merely a name prefix
+				if (!mount_point_is_under(mnt.mount_point, parent.mount_point)){ continue; }
+
+				if (parent.device.uuid != mnt.device.uuid){ continue; }
+
+				if (restore_mount_options(parent) != restore_mount_options(mnt)){ continue; }
+
+				string msg = _("%s and %s were both set to %s. %s will stay on %s.").printf(
+					parent.mount_point, mnt.mount_point, mnt.device.device,
+					mnt.mount_point, parent.mount_point);
+
+				log_msg(msg);
+
+				if (!mount_fold_notes.contains(msg)){
+					mount_fold_notes.add(msg);
+				}
+
+				/* null is exactly what the device dropdown's "Keep on Root
+				 * Device" option stores, so the entry keeps its row in the UI
+				 * and simply stops being mounted a second time. Removing it
+				 * outright would make the dropdown disappear if the user
+				 * stepped back to change it. */
+				mnt.device = null;
+				break;
+			}
+		}
+	}
+
+	/* True when child is at or below parent in the directory tree.
+	 * A plain has_prefix() would call /boot-backup a child of /boot. */
+	private bool mount_point_is_under(string child, string parent){
+
+		if (parent == "/"){ return child != "/"; }
+
+		if (child == parent){ return true; }
+
+		return child.has_prefix(parent + "/");
+	}
+
+	/* The backstop for the aliasing bug, independent of how the mount list was
+	 * built: after mounting and before anything is deleted, no nested mount
+	 * point may BE one of its own ancestors.
+	 *
+	 * Compares (st_dev, st_ino) rather than the mount list, so it catches an
+	 * alias arriving by any route -- a stale mount, a bind, a device that
+	 * resolved to the same thing under two names. A subdirectory of the target
+	 * shares st_dev with it but never st_ino, so an ordinary layout passes. */
+	public bool verify_no_aliased_mounts(){
+
+		if (restore_current_system){
+			// nothing was mounted by us; / is the target by definition
+			return true;
+		}
+
+		string root = remove_trailing_slash(restore_target_path);
+
+		Posix.Stat st_root;
+		if (Posix.stat(root, out st_root) != 0){
+			restore_fail(_("The restore target could not be read: %s").printf(root));
+			return false;
+		}
+
+		foreach(var mnt in mount_list){
+
+			if (mnt.mount_point == "/"){ continue; }
+
+			string path = root + mnt.mount_point;
+
+			Posix.Stat st;
+			if (Posix.stat(path, out st) != 0){ continue; }
+
+			if ((st.st_dev == st_root.st_dev) && (st.st_ino == st_root.st_ino)){
+
+				restore_fail(_("%s is the same directory as the root of the restore target.").printf(
+					mnt.mount_point));
+				restore_note(_("Restoring would delete the target's contents through it. Nothing was changed."));
+				restore_note(_("Select 'Keep on Root Device' for %s, or choose a different device.").printf(
+					mnt.mount_point));
+
+				log_error(_("Aliased mount detected: %s resolves to the restore target itself").printf(path));
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	public bool mount_target_devices(Gtk.Window? parent_win = null){
 		/* Note:
 		 * Target device will be mounted explicitly to /run/timeshift/<pid>/restore
@@ -4234,6 +5477,12 @@ public class Main : GLib.Object{
 			return false;
 		}
 	
+		/* Two mount points sharing one device would alias one directory onto
+		 * another, and rsync --delete would then wipe the target through the
+		 * alias. Fold them before a single mount happens. */
+		fold_aliased_mount_entries();
+		normalize_esp_selection();
+
 		//check and create restore mount point for restore
 		mount_point_restore = mount_point_app + "/restore";
 		dir_create(mount_point_restore);
@@ -4310,18 +5559,7 @@ public class Main : GLib.Object{
 				}
 			}
 
-			string mount_options = "";
-			
-			if (mnt.device.fstype == "btrfs"){
-				if (mnt.mount_point == "/"){
-					mount_options = "subvol=@";
-				}
-				if (include_btrfs_home_for_restore){
-					if (mnt.mount_point == "/home"){
-						mount_options = "subvol=@home";
-					}
-				}
-			}
+			string mount_options = restore_mount_options(mnt);
 
 			if (!Device.mount(mnt.device.uuid, mount_point_restore + mnt.mount_point, mount_options)){
 				return false;
@@ -4331,18 +5569,23 @@ public class Main : GLib.Object{
 		return true;
 	}
 
-	public void unmount_target_device(bool exit_on_error = true){
+	/* Returns whether the target really is unmounted now.
+	 *
+	 * The result used to be discarded, and check_and_repair_filesystems() then
+	 * ran "fsck -y" regardless -- on filesystems that could still be mounted. */
+	public bool unmount_target_device(bool exit_on_error = true){
 		
-		if (mount_point_restore == null) { return; }
+		if (mount_point_restore == null) { return true; }
 
 		log_debug("unmount_target_device()");
 		
 		//unmount the target device only if it was mounted by application
 		if (mount_point_restore.has_prefix(mount_point_app)){   //always true
-			unmount_device(mount_point_restore, exit_on_error);
+			return unmount_device(mount_point_restore, exit_on_error);
 		}
 		else{
 			//don't unmount
+			return true;
 		}
 	}
 
@@ -5054,8 +6297,23 @@ public class Main : GLib.Object{
 
 				string stale = "/run/timeshift/%s".printf(name);
 
-				exec_script_sync("rmdir '%s'/* 2>/dev/null; rmdir '%s' 2>/dev/null\nexit 0\n".printf(
-					escape_single_quote(stale), escape_single_quote(stale)),
+				/* The ssh control socket has to go first.
+				 *
+				 * rmdir cannot remove a socket, so a master that was killed
+				 * rather than shut down left one behind -- and with it a
+				 * directory that could never be reaped. Those accumulate for
+				 * the life of the boot, and if the kernel later recycles that
+				 * pid onto a new Timeshift, the new run's ControlPath points
+				 * straight at the old socket.
+				 *
+				 * Deliberately narrow: only ssh-* directly inside a directory
+				 * whose pid is gone. The mount points under it are handled by
+				 * cleanup_unmount_devices(), and must not be rm -rf'd here. */
+				exec_script_sync(
+					("rm -f '%s'/ssh-* 2>/dev/null; " +
+					 "rmdir '%s'/* 2>/dev/null; rmdir '%s' 2>/dev/null\nexit 0\n").printf(
+						escape_single_quote(stale), escape_single_quote(stale),
+						escape_single_quote(stale)),
 					null, null, true);
 			}
 		}

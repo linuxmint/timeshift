@@ -175,7 +175,17 @@ class RestoreBox : RestoreProgressBox {
 				LauncherEntry.set_progress((int)(fraction * 100.0));
 			}
 
-			view.lbl_msg.label = App.progress_text;
+			/* A dropped link must not look like a hang. While the script is
+			 * waiting for the snapshot location to answer, say so instead of
+			 * leaving the last progress line frozen on screen -- that stale
+			 * frame is exactly what makes a working retry look like a crash. */
+			var rtask = App.restore_script_task;
+			if ((rtask != null) && (rtask.reconnect_status.length > 0)){
+				view.lbl_msg.label = reconnect_message(rtask);
+			}
+			else {
+				view.lbl_msg.label = App.progress_text;
+			}
 
 			view.update_counts(App.task);
 
@@ -213,7 +223,58 @@ class RestoreBox : RestoreProgressBox {
 
 		log_debug("RestoreBox: restore(): exit");
 
-		return (App.task.exit_code == 0);
+		/* The dry run has no outcome of its own -- it only measures. The real
+		 * run reports what Main decided, which is the only thing that knows
+		 * the difference between a lost transfer and a failed bootloader step;
+		 * App.task.exit_code alone could not tell them apart. */
+		if (App.dry_run){
+			return (App.task.exit_code == 0);
+		}
+
+		return (App.restore_outcome != Main.RestoreOutcome.FAILED);
+	}
+
+	/* What the restore is waiting for, and for how long.
+	 *
+	 * The old banner was a fixed "Connection lost - reconnecting (3)", which
+	 * looks exactly like a hang: no way to tell a working retry from a stuck
+	 * one, and nothing to say whether the work already done is safe. */
+	private string reconnect_message(RestoreScriptTask task){
+
+		string msg = _("Connection lost - reconnecting");
+
+		msg += " (%s %s".printf(_("attempt"), task.reconnect_status);
+
+		if (task.reconnect_since != null){
+
+			var elapsed = (int) (new DateTime.now_local().difference(task.reconnect_since)
+				/ GLib.TimeSpan.SECOND);
+
+			if (elapsed > 0){
+				msg += ", %s".printf(format_duration_short(elapsed));
+			}
+		}
+
+		msg += ")";
+
+		string meaning = App.rsync_exit_meaning_public(task.reconnect_code);
+		if (meaning.length > 0){
+			msg += " - " + meaning;
+		}
+
+		// cancelling here is safe, and that is not otherwise obvious
+		msg += "\n" + _("The transfer resumes where it stopped; nothing already copied is lost.");
+
+		return msg;
+	}
+
+	private string format_duration_short(int seconds){
+
+		if (seconds < 60){
+			return _("%ds").printf(seconds);
+		}
+
+		return _("%dm %ds").printf(seconds / 60, seconds % 60);
 	}
 
 	/* The steps are decided by create_restore_scripts(), which runs on the

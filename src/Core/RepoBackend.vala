@@ -70,6 +70,14 @@ public abstract class RepoBackend : GLib.Object {
 
 	public abstract bool remove_dir_recursive(string path);
 
+	/* The same removal as remove_dir_recursive(), expressed as a shell command
+	 * that prints one line per entry removed. A DeleteFileTask runs this and
+	 * counts the lines, which is the only way the delete page can show progress
+	 * for a repository it does not own the filesystem of. */
+	public virtual string remove_dir_recursive_command(string path){
+		return "rm -rfv '%s'".printf(escape_single_quote(path));
+	}
+
 	public abstract bool create_symlink(string target, string link_path);
 
 	public abstract bool rename(string src_path, string dst_path);
@@ -104,6 +112,13 @@ public abstract class RepoBackend : GLib.Object {
 
 	/* Value for rsync's --rsync-path option. Empty unless --fake-super is needed. */
 	public virtual string rsync_remote_path(){
+		return "";
+	}
+
+	/* A shell command that succeeds when the repository is reachable, for a
+	 * restore script to poll while it waits out a network outage. Empty for a
+	 * local repository, which cannot go away mid-transfer. */
+	public virtual string reachability_command(){
 		return "";
 	}
 
@@ -153,6 +168,17 @@ public abstract class RepoBackend : GLib.Object {
 	}
 
 	public virtual void cleanup(){
+	}
+
+	/* Drop any shared connection so the next operation starts a new one.
+	 * Only the SSH backend has one; for everything else this is a no-op. */
+	public virtual void drop_master(){
+	}
+
+	/* The same thing as a shell fragment, for scripts that outlive the call.
+	 * Empty when the backend has no shared connection to drop. */
+	public virtual string drop_master_command(){
+		return "";
 	}
 
 	/* Shared df parser. Reads the numbers from the first data line of df -B1. */
@@ -547,7 +573,18 @@ public class SshRepoBackend : RepoBackend {
 		return path_combine(key_dir(), "known_hosts");
 	}
 
-	private string ssh_options(bool stdin_used = false){
+	/* no_mux: force a fresh connection instead of attaching to the shared
+	 * ControlMaster socket.
+	 *
+	 * This matters more than it looks. When a link dies mid-transfer the
+	 * master process stays resident holding a dead TCP session, and a client
+	 * attaching to it over the unix socket never performs a connect(2) -- so
+	 * ConnectTimeout does not apply and the client simply blocks. Every ssh
+	 * here runs through spawn_sync, which has no timeout of its own, so a
+	 * wedged master turns the restore's "is the host back yet?" probe into an
+	 * indefinite wait that can never dial afresh. That is exactly how a
+	 * recovered network still looked unreachable. */
+	private string ssh_options(bool stdin_used = false, bool no_mux = false){
 
 		// Verify against the hosts the user confirmed during setup, and keep
 		// root's personal known_hosts out of it. accept-new remains the
@@ -582,7 +619,11 @@ public class SshRepoBackend : RepoBackend {
 			opts += " -i '%s'".printf(escape_single_quote(key_file));
 		}
 
-		if (control_path.length > 0){
+		if (no_mux){
+			// never reuse, never create a master
+			opts += " -o ControlMaster=no -o ControlPath=none";
+		}
+		else if (control_path.length > 0){
 			opts += " -o ControlMaster=auto -o ControlPath='%s' -o ControlPersist=60".printf(
 				escape_single_quote(control_path));
 		}
@@ -779,6 +820,21 @@ public class SshRepoBackend : RepoBackend {
 		return (run_remote("rm -rf %s".printf(q(path)), out std_out, out std_err) == 0);
 	}
 
+	/* Quoted twice, the same way run_remote() does it: q() for the remote
+	 * shell, then escape_single_quote() for the local shell that runs the
+	 * task script. ssh_command() carries -n, so ssh cannot eat the task's
+	 * stdin, and the ControlMaster options make this ride the connection the
+	 * repository already opened. */
+	public override string remove_dir_recursive_command(string path){
+
+		string remote_cmd = "rm -rfv %s".printf(q(path));
+
+		return "%s %s '%s'".printf(
+			ssh_command(),
+			q(host_spec()),
+			escape_single_quote(remote_cmd));
+	}
+
 	public override bool create_symlink(string target, string link_path){
 		string std_out, std_err;
 		return (run_remote("ln -sfn %s %s".printf(q(target), q(link_path)),
@@ -905,6 +961,57 @@ public class SshRepoBackend : RepoBackend {
 
 	public override string rsync_remote_path(){
 		return fake_super ? "rsync --fake-super" : "";
+	}
+
+	/* -n here (unlike rsync_rsh): this probe must not touch the script's stdin.
+	 *
+	 * Deliberately unmultiplexed. The whole point of this command is to answer
+	 * "can a NEW connection be made?", and a client that attaches to the
+	 * existing ControlMaster socket answers a different question -- and hangs
+	 * instead of honouring ConnectTimeout when that master is wedged. With
+	 * ControlPath=none the probe always dials, and always returns within
+	 * ConnectTimeout. */
+	public override string reachability_command(){
+		return "ssh %s %s true".printf(ssh_options(false, true), host_spec());
+	}
+
+	/* Tear down the shared connection so the next operation dials afresh.
+	 *
+	 * Called when something has already gone wrong with the link: the master
+	 * may be holding a dead session that every subsequent client would attach
+	 * to and block on. "ssh -O exit" is itself a mux client, so it is bounded
+	 * by timeout(1) rather than trusted to return, and the socket is removed
+	 * afterwards in case the master was gone but its socket file was not --
+	 * a leftover socket also stops the directory from ever being reaped. */
+	public override string drop_master_command(){
+
+		if (control_path.length == 0){ return ""; }
+
+		// "ssh -O exit" is itself a mux client, so it is bounded by timeout(1)
+		// rather than trusted to return against a wedged master.
+		string cmd = "timeout 5 ssh %s -O exit %s >/dev/null 2>&1; ".printf(
+			ssh_options(false, false), q(host_spec()));
+
+		/* And remove the socket. A master that died without cleaning up leaves
+		 * one behind, which also stops /run/timeshift/<pid> from ever being
+		 * reaped (the reaper only calls rmdir). %C is expanded by ssh, so the
+		 * exact name is not known here. */
+		cmd += "rm -f '%s' 2>/dev/null; true".printf(escape_single_quote(
+			control_path.replace("%C", "*")));
+
+		return cmd;
+	}
+
+	public override void drop_master(){
+
+		string cmd = drop_master_command();
+
+		if (cmd.length == 0){ return; }
+
+		string std_out, std_err;
+		exec_script_sync(cmd, out std_out, out std_err, true);
+
+		master_started = false;
 	}
 
 	public override bool probe_writable(string path){

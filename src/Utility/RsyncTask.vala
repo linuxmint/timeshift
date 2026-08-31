@@ -240,7 +240,32 @@ public class RsyncTask : AsyncTask{
 		
 		var cmd = "export LC_ALL=C.UTF-8\n";
 
-		cmd += "rsync -aii";
+		/* -X: extended attributes.
+		 *
+		 * rsync's archive mode is "-rlptgoD (no -A,-X,-U,-N,-H)", so without
+		 * this every security.capability xattr is silently dropped. That is not
+		 * cosmetic: /usr/lib/snapd/snap-confine carries ten file capabilities,
+		 * and a restored copy without them fails with "snap-confine is packaged
+		 * without necessary permissions", which breaks EVERY snap on the
+		 * system. ping and mtr-packet lose cap_net_raw the same way.
+		 *
+		 * --fake-super only stores non-user xattrs when --xattrs is given, so
+		 * for a remote repository the two work together: the capability is
+		 * kept as user.rsync.security.capability on the far side and expanded
+		 * back to a real security.capability on restore, which succeeds
+		 * because the restore runs as root locally. */
+		/* -H: preserve hard links.
+		 *
+		 * Also omitted by archive mode. Without it every hardlinked path is
+		 * copied as an independent file -- 138 files in /usr/bin and /usr/lib
+		 * alone on a stock Ubuntu -- so a restored system silently stops
+		 * sharing inodes it used to share, and the snapshot is larger than the
+		 * source it came from.
+		 *
+		 * Links are detected by (device, inode) within the transferred tree
+		 * only, so --link-dest's cross-snapshot sharing cannot leak in and
+		 * link two paths that were never linked on the source. */
+		cmd += "rsync -aiiXH";
 
 		//if (!dry_run){
 		//	cmd += "i";
@@ -279,6 +304,23 @@ public class RsyncTask : AsyncTask{
 
 		if (rsync_path.length > 0){
 			cmd += " --rsync-path='%s'".printf(escape_single_quote(rsync_path));
+		}
+
+		/* Survive a network blip rather than losing the whole transfer.
+		 *
+		 * --partial-dir (not bare --partial) keeps an interrupted file aside
+		 * instead of leaving a truncated one at its real path, and rsync
+		 * excludes that directory from --delete by itself. --timeout catches a
+		 * connection that has hung rather than dropped, which ssh's
+		 * ServerAlive* keepalives do not.
+		 *
+		 * Remote only: a local copy cannot lose its link, and adding a partial
+		 * dir there would change long-standing behaviour for no gain. */
+		if (rsh.length > 0){
+			if (!dry_run){
+				cmd += " --partial-dir=.timeshift-partial";
+			}
+			cmd += " --timeout=120";
 		}
 
 		//cmd += " --numeric-ids";
@@ -326,7 +368,52 @@ public class RsyncTask : AsyncTask{
 		cmd += " '%s/'".printf(escape_single_quote(source_path));
 
 		cmd += " '%s/'".printf(escape_single_quote(dest_path));
-		
+
+		/* Retry a remote transfer a few times so a brief wifi drop does not
+		 * lose a snapshot. rsync resumes, so a retry continues rather than
+		 * starting over.
+		 *
+		 * Deliberately BOUNDED and short, unlike the restore's unbounded loop:
+		 * apt-snapshot-guard caps "timeshift --create" at 900s and is
+		 * fail-closed, so a long retry here would burn that budget and then
+		 * block apt outright -- turning a two-second blip into a stuck package
+		 * manager. Three quick attempts ride out a blip with room to spare.
+		 *
+		 * Only network-ish exit codes are retried; 0 and 24 are success, and
+		 * anything else (usage error, disk full) cannot be helped by trying
+		 * again. The final attempt's status is the script's status, so the
+		 * existing exit-code handling in Main keeps working unchanged. */
+		if (rsh.length > 0){
+
+			string retry = "";
+			retry += "ts_backup_rsync() {\n%s\n}\n".printf(cmd);
+			retry += "ts_try=0\n";
+			retry += "while :; do\n";
+			retry += "  ts_try=$((ts_try + 1))\n";
+			retry += "  ts_backup_rsync\n";
+			retry += "  ts_rc=$?\n";
+			retry += "  case $ts_rc in\n";
+			retry += "    0|24) break ;;\n";
+			retry += "    10|12|30|35|255)\n";
+			retry += "      if [ $ts_try -ge 3 ]; then break; fi\n";
+			retry += "      echo \"rsync exit $ts_rc; retrying ($ts_try)\" 1>&2\n";
+			retry += "      sleep 5\n";
+			retry += "      ;;\n";
+			retry += "    *) break ;;\n";
+			retry += "  esac\n";
+			retry += "done\n";
+			/* NOT "exit $ts_rc": save_bash_script_temp() appends
+			 *     exitCode=$?
+			 *     echo ${exitCode} > status
+			 * and AsyncTask.exit_code is read from that status file. Exiting
+			 * here would skip both, leaving exit_code at -1 and breaking the
+			 * success/failure handling in Main. A subshell sets $? for the
+			 * wrapper without ending the script. */
+			retry += "( exit $ts_rc )\n";
+
+			return retry;
+		}
+
 		return cmd;
 	}
 

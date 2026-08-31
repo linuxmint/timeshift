@@ -426,12 +426,77 @@ class RestoreWindow : WizardWindow {
 			break;
 
 		case Tabs.FINISH:
-			show_finish(success, "", "");
+			show_restore_outcome();
 			// do not auto-close the restore window
 			break;
 		}
 
 		gtk_do_events();
+	}
+
+	/* What actually happened, in the user's words.
+	 *
+	 * This page used to be show_finish(success, "", "") -- a bare bool with an
+	 * empty header and an empty body, so a restore that copied everything and
+	 * only failed to install a boot loader was indistinguishable from one that
+	 * copied nothing, and both said "Completed With Errors" over the same
+	 * boilerplate advice. */
+	private void show_restore_outcome(){
+
+		string header = App.mirror_system ? _("Cloning") : _("Restore");
+
+		var lines = new Gee.ArrayList<string>();
+
+		switch(App.restore_outcome){
+
+		case Main.RestoreOutcome.FAILED:
+			header += " " + _("Failed");
+			break;
+
+		case Main.RestoreOutcome.WARNINGS:
+			header += " " + _("Completed With Warnings");
+			break;
+
+		default:
+			header += " " + _("Completed");
+			break;
+		}
+
+		foreach(string line in App.restore_outcome_messages){
+			lines.add(line);
+		}
+
+		if (App.restore_outcome == Main.RestoreOutcome.OK){
+
+			if (App.btrfs_mode && App.restore_current_system){
+				lines.add(_("Restored subvolumes will become active after system is restarted."));
+				lines.add(_("You can continue working on the current system. After restart, the current system will be visible as a new snapshot. This snapshot can be restored later if required, to 'undo' the restore."));
+			}
+
+			if (!App.btrfs_mode){
+				lines.add(_("If the restored system fails to boot, then boot from the Live CD/USB, install Timeshift, and try restoring another snapshot."));
+			}
+		}
+
+		/* Re-running is cheap and safe, and nothing said so: rsync is
+		 * incremental and the transfer keeps a --partial-dir, so a second run
+		 * continues instead of re-copying everything. Without this, cancelling
+		 * a stalled restore looks like throwing away hours of work. */
+		if (App.restore_outcome == Main.RestoreOutcome.FAILED){
+			lines.add(_("Running the restore again resumes from where it stopped; the files already copied are kept."));
+		}
+
+		/* The step log is named only when something went wrong with a step --
+		 * that is the one case where its contents matter, and it is what was
+		 * missing when grub-install failed with nothing but an exit code. */
+		if (App.restore_failed_step.length > 0){
+			lines.add(_("Step output: %s").printf("/var/log/timeshift/restore-steps.log"));
+		}
+
+		finish_box.set_header(header);
+		finish_box.set_outcome(App.restore_outcome == Main.RestoreOutcome.OK);
+		finish_box.set_bullets(lines.to_array());
+		finish_box.set_footer(_("Close window to exit"));
 	}
 
 	private void show_finish(bool success, string message_header, string message_body){

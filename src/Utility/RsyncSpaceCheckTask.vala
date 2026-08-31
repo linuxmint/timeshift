@@ -83,7 +83,8 @@ public class RsyncSpaceCheckTask : AsyncTask{
 	protected override string build_script() {
 		var cmd = "export LC_ALL=C.UTF-8\n";
 
-		cmd += "rsync -aii";
+		// -X and -H to match the real transfer, or the estimate drifts from it
+		cmd += "rsync -aiiXH";
 
 		cmd += " --recursive";
 

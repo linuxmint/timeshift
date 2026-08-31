@@ -44,6 +44,9 @@ class DeleteBox : TaskProgressBox {
 
 		parent_window = _parent_window;
 
+		// a pulse of the default size at a 100ms tick is frantic
+		progressbar.pulse_step = 0.02;
+
 		log_debug("DeleteBox: DeleteBox(): exit");
     }
 
@@ -55,11 +58,17 @@ class DeleteBox : TaskProgressBox {
 			App.delete_begin();
 		}
 
+		/* btrfs deletes a subvolume at a time with nothing to count, so the
+		 * only honest bar is a pulsing one; the message carries which
+		 * snapshot of how many is going. */
 		if (App.btrfs_mode){
 			
+			lbl_remaining.label = "";
+
 			while (App.thread_delete_running){
 				
 				lbl_msg.label = App.progress_text;
+				progressbar.pulse();
 				gtk_do_events();
 				sleep(200);
 
@@ -79,9 +88,23 @@ class DeleteBox : TaskProgressBox {
 			
 			while (App.thread_delete_running){
 
-				status_line = App.delete_file_task.status_line;
+				/* Taken once per pass: the delete thread swaps in the next
+				 * snapshot's task between snapshots. */
+				var task = App.delete_file_task;
 
-				if (status_line != last_status_line){
+				if (task == null){
+					gtk_do_events();
+					sleep(100);
+					continue;
+				}
+
+				/* An empty read means the task's mutex was busy, not that
+				 * there is nothing to show - keep the last line instead of
+				 * blinking it away. The decay below still clears a line that
+				 * has genuinely gone stale. */
+				status_line = task.status_line;
+
+				if ((status_line.length > 0) && (status_line != last_status_line)){
 					lbl_status.label = status_line;
 					last_status_line = status_line;
 					status_line_counter = status_line_counter_default;
@@ -94,31 +117,46 @@ class DeleteBox : TaskProgressBox {
 					}
 				}
 
-				double fraction = App.delete_file_task.progress;
-
-				// time remaining
 				remaining_counter--;
-				
-				if (remaining_counter == 0){
-					
-					lbl_remaining.label = App.delete_file_task.stat_time_remaining + " " + _("remaining");
 
+				if (task.prg_count_total > 0){
+
+					double fraction = task.progress;
+
+					if (remaining_counter == 0){
+						lbl_remaining.label = task.stat_time_remaining + " " + _("remaining");
+					}
+
+					if (fraction < 0.99){
+						progressbar.fraction = fraction;
+
+						LauncherEntry.set_progress((int)(fraction * 100.0));
+					}
+				}
+				else {
+					/* No file count for this snapshot, so a fraction would be
+					 * a fiction: pulse and report what has gone so far. */
+					progressbar.pulse();
+
+					if (remaining_counter == 0){
+						lbl_remaining.label = _("%lld items removed").printf(task.status_line_count);
+					}
+
+					LauncherEntry.set_progress_pulse(true);
+				}
+
+				if (remaining_counter == 0){
 					remaining_counter = 10;
 				}
-					
-				if (fraction < 0.99){
-					progressbar.fraction = fraction;
 
-					LauncherEntry.set_progress((int)(fraction * 100.0));
-				}
-
-				lbl_msg.label = App.delete_file_task.status_message;
+				lbl_msg.label = App.progress_text;
 
 				gtk_do_events();
 
 				sleep(100);
 			}
 
+			LauncherEntry.set_progress_pulse(false);
 			LauncherEntry.set_progress(0);
 		}
 		

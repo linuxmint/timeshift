@@ -53,6 +53,7 @@ class MainWindow : AppWindow{
 	private SnapshotListBox snapshot_list_box;
 	private StatusPage status_page;
 	private Gtk.Button btn_status_action;
+	private Gtk.Button btn_status_retry;
 	private bool status_action_opens_wizard = false;
 
 	// status area
@@ -198,7 +199,21 @@ class MainWindow : AppWindow{
 				create_snapshot();
 			}
 		});
-		status_page.set_action(btn_status_action);
+
+		/* A dropped network used to leave "Select Snapshot Location" as the
+		 * only way forward -- i.e. walk the whole setup wizard again, at the
+		 * exact moment someone is trying to rescue a machine. Retry asks the
+		 * same location again. */
+		btn_status_retry = new Gtk.Button.with_label(_("Retry"));
+		btn_status_retry.visible = false;
+		btn_status_retry.clicked.connect(retry_location);
+
+		var action_row = new Gtk.Box(Orientation.HORIZONTAL, Ui.Spacing.SM);
+		action_row.halign = Align.CENTER;
+		action_row.append(btn_status_retry);
+		action_row.append(btn_status_action);
+
+		status_page.set_action(action_row);
     }
 
 	private void init_ui_statusbar(){
@@ -293,6 +308,34 @@ class MainWindow : AppWindow{
 		return action;
 	}
 
+	/* Ask the configured location again, without reconfiguring it.
+	 *
+	 * Drops the shared ssh connection first: after a link failure the master
+	 * process can still be resident holding a dead session, and every new
+	 * client attaches to it over a unix socket where ConnectTimeout does not
+	 * apply -- so without this, Retry would block instead of dialling. The
+	 * capability cache is cleared too, since it latches its verdict for the
+	 * process lifetime and a drop mid-probe would otherwise pin a wrong
+	 * reason ("read-only", "no hard-links") no matter how healthy the link. */
+	private void retry_location(){
+
+		btn_status_retry.sensitive = false;
+		status_page.set_description(_("Contacting the snapshot location..."));
+		gtk_do_events();
+
+		App.repo.backend.drop_master();
+		App.repo.invalidate_capability_cache();
+		App.repo.check_status();
+
+		if (App.repo.available()){
+			App.repo.load_snapshots();
+		}
+
+		btn_status_retry.sensitive = true;
+
+		refresh_all();
+	}
+
 	private bool refresh_all(){
 
 		/* updates statusbar messages and snapshot list after backup device is changed */
@@ -320,6 +363,8 @@ class MainWindow : AppWindow{
 			// live system -- it is the only way forward there
 			btn_status_action.visible = true;
 			status_action_opens_wizard = true;
+			// only a remote location can come back on its own
+			btn_status_retry.visible = App.repo.backend.is_remote;
 			content_stack.visible_child_name = "empty";
 		}
 		else if (!App.repo.has_snapshots()){
@@ -328,6 +373,7 @@ class MainWindow : AppWindow{
 			status_page.set_description(_("Create snapshots manually or enable scheduled snapshots to protect your system"));
 			btn_status_action.label = _("Create Snapshot");
 			btn_status_action.visible = !App.live_system(); // cannot create on a live system
+			btn_status_retry.visible = false;
 			status_action_opens_wizard = false;
 			content_stack.visible_child_name = "empty";
 		}

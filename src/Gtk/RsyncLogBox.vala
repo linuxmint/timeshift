@@ -536,7 +536,17 @@ public class RsyncLogBox : Gtk.Box {
 		
 		gtk_set_busy(true, window);
 
-		log_model.remove_all();
+		/* Build the rows detached, then splice them in as ONE operation.
+		 *
+		 * log_model has a FilterListModel and the ColumnView attached, so every
+		 * append() emits items_changed and cascades through both. Appending row
+		 * by row is fine for a few hundred; a restore log carries a couple of
+		 * hundred THOUSAND, and the cascade turns into effectively quadratic
+		 * work -- the UI freezes at 100% CPU showing the last painted frame,
+		 * which looks exactly like a hang partway through parsing.
+		 *
+		 * splice() emits once, whatever the row count. */
+		var rows = new GenericArray<Object>();
 
 		var spath = "%s/localhost".printf(file_parent(rsync_log_file));
 		
@@ -600,8 +610,10 @@ public class RsyncLogBox : Gtk.Box {
 			}
 			
 			// add row
-			log_model.append(new RsyncLogRow(item, relpath, status, status_icon));
+			rows.add(new RsyncLogRow(item, relpath, status, status_icon));
 		}
+
+		log_model.splice(0, log_model.get_n_items(), rows.data);
 
 		log_filter.changed(Gtk.FilterChange.DIFFERENT);
 

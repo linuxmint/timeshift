@@ -578,26 +578,13 @@ public class Snapshot : GLib.Object{
 		var message = _("Removing") + " '%s'...".printf(name);
 		log_msg(message);
 
-		// A remote snapshot is removed by the repository backend; there is no
-		// local path for rm to walk.
-		if ((repo != null) && repo.backend.is_remote){
-
-			bool ok = repo.backend.remove_dir_recursive(path);
-
-			if (ok){
-				log_msg("%s '%s'".printf(_("Removed"), name));
-			}
-			else{
-				log_error(_("Failed to remove") + ": '%s'".printf(path));
-			}
-
-			log_msg(string.nfill(78, '-'));
-			return ok;
-		}
-		
-		delete_file_task.dest_path = "%s/".printf(path);
+		/* Local and remote both run through the task: a remote repository
+		 * supplies the removal as a command to run over its own connection,
+		 * so the progress page has a live task to poll either way. */
+		delete_file_task.backend = (repo == null) ? null : repo.backend;
+		delete_file_task.dest_path = path;
 		delete_file_task.status_message = message;
-		delete_file_task.prg_count_total = Main.first_snapshot_count;
+		delete_file_task.prg_count_total = delete_progress_total();
 		delete_file_task.execute();
 
 		if (wait){
@@ -616,13 +603,46 @@ public class Snapshot : GLib.Object{
 
 			stdout.printf(string.nfill(80, ' ') + "\r");
 			stdout.flush();
-
-			message = "%s '%s'".printf(_("Removed"), name);	
-			log_msg(message);
-			log_msg(string.nfill(78, '-'));
+		}
+		else {
+			return true; // the caller polls the task for the outcome
 		}
 
-		return true;
+		if (delete_file_task.status == AppStatus.CANCELLED){
+			log_msg(_("Cancelled"));
+			log_msg(string.nfill(78, '-'));
+			return false;
+		}
+
+		/* Ask the repository whether the tree is gone rather than trusting
+		 * the task's exit code: AsyncTask's working directory is named for
+		 * the second it was created in, so two tasks born in the same second
+		 * share one status file and read_exit_code() can return a stale one. */
+		bool gone = (repo == null) ? !dir_exists(path) : !repo.backend.dir_exists(path);
+
+		if (gone){
+			log_msg("%s '%s'".printf(_("Removed"), name));
+		}
+		else {
+			log_error(_("Failed to remove") + ": '%s'".printf(path));
+		}
+
+		log_msg(string.nfill(78, '-'));
+
+		return gone;
+	}
+
+	/* Lines rm -v is expected to print, one per file and directory. The
+	 * snapshot's own count is exact; the system estimate is the fallback for
+	 * snapshots written before it was recorded. Zero means unknown - the
+	 * progress page pulses instead of showing a fraction of nothing. */
+	private int64 delete_progress_total(){
+
+		if (file_count > 0){ return file_count; }
+
+		if (Main.first_snapshot_count > 0){ return Main.first_snapshot_count; }
+
+		return 0;
 	}
 
 	public bool remove_btrfs(){
@@ -669,28 +689,41 @@ public class Snapshot : GLib.Object{
 		return true;
 	}
 	
+	/* Flips the mark - this is the menu action. The delete path must use
+	 * set_marked_for_deletion(true) instead: it marks the same snapshot more
+	 * than once, and a toggle would clear the trigger file it just wrote,
+	 * leaving a half-deleted snapshot that nothing ever comes back to. */
 	public void mark_for_deletion(){
-		
+		set_marked_for_deletion(!marked_for_deletion);
+	}
+
+	public void set_marked_for_deletion(bool marked){
+
 		string delete_trigger_file = path + "/delete";
 
 		if (repo == null){
-			if (!file_exists(delete_trigger_file)){
-				file_write(delete_trigger_file, "");
-				marked_for_deletion = true;
-			} else {
-				file_delete(delete_trigger_file);
-				marked_for_deletion = false;
+			if (marked){
+				if (!file_exists(delete_trigger_file)){
+					file_write(delete_trigger_file, "");
+				}
 			}
+			else if (file_exists(delete_trigger_file)){
+				file_delete(delete_trigger_file);
+			}
+			marked_for_deletion = marked;
 			return;
 		}
 
-		if (!repo.backend.file_exists(delete_trigger_file)){
-			repo.backend.file_write(delete_trigger_file, "");
-			marked_for_deletion = true;
-		} else {
-			repo.backend.file_delete(delete_trigger_file);
-			marked_for_deletion = false;
+		if (marked){
+			if (!repo.backend.file_exists(delete_trigger_file)){
+				repo.backend.file_write(delete_trigger_file, "");
+			}
 		}
+		else if (repo.backend.file_exists(delete_trigger_file)){
+			repo.backend.file_delete(delete_trigger_file);
+		}
+
+		marked_for_deletion = marked;
 	}
 
 	// size (rsync only; btrfs size comes from live qgroup queries, see Main.query_subvolume_quota)

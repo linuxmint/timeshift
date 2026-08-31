@@ -35,6 +35,12 @@ public class DeleteFileTask : AsyncTask{
 	public bool verbose = true;
 	public bool use_rsync = false;
 
+	/* The repository the path belongs to. Null means a plain local path and
+	 * a plain local rm; a remote backend supplies the command that removes
+	 * the tree on its own host, so this task streams and counts that output
+	 * exactly as it does a local one. */
+	public RepoBackend? backend = null;
+
 	//private
 	private string source_path = ""; 
 		
@@ -102,6 +108,9 @@ public class DeleteFileTask : AsyncTask{
 			
 			cmd += " '%s/'".printf(escape_single_quote(source_path));
 			cmd += " '%s/'".printf(escape_single_quote(dest_path));
+		}
+		else if (backend != null){
+			cmd += backend.remove_dir_recursive_command(remove_trailing_slash(dest_path));
 		}
 		else{
 			cmd += "rm -rf";
