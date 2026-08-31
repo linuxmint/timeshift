@@ -11,9 +11,7 @@ Package: timeshift-recovery
 Architecture: all
 Depends: ${misc:Depends},
          timeshift-ssh | timeshift,
-         grub2-common,
-         util-linux,
-         coreutils
+         grub2-common
 Recommends: mmdebstrap,
             squashfs-tools,
             dpkg-repack,

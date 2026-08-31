@@ -29,7 +29,7 @@ for f in ./usr/sbin/timeshift-recovery \
 	./usr/lib/timeshift-recovery/logo.png \
 	./etc/timeshift-recovery/config \
 	./etc/logrotate.d/timeshift-recovery \
-	./lib/systemd/system/timeshift-recovery-refresh.service \
+	./usr/lib/systemd/system/timeshift-recovery-refresh.service \
 	./usr/share/man/man8/timeshift-recovery.8.gz \
 	./usr/share/doc/timeshift-recovery/copyright \
 	./usr/share/doc/timeshift-recovery/changelog.gz; do
