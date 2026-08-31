@@ -415,6 +415,55 @@ wrote a `\r` progress line to stdout from inside the core *even under
 `--scripted`*, which is why `apt-snapshot-guard` redirects everything to its
 log. The core reports numbers; the client decides whether to draw them.
 
+### Restore (`internal/restore/`) -- NOT YET CLEARED FOR USE
+
+The restore path is implemented and unit-tested, but **no `--restore` command is
+wired up and none should be until it has been exercised in a VM**. It is the one
+path where a mistake destroys data rather than producing a wrong answer.
+
+What is there: the two script generators (`BuildSyncScript`,
+`BuildFinishScript`), the marker protocol and its `Tracker`, the layout-safety
+cluster, and fstab/crypttab rewriting.
+
+The split follows the one the Vala code already has. `create_restore_scripts()`
+emits `sh_sync`, which transfers files, and `sh_finish`, which fixes the system.
+The first belongs to whichever engine stored the snapshot; the second does not
+care which engine produced the files and lives here. Both are generated shell
+rather than exec calls, deliberately: they run under chroot and must survive the
+reboot boundary.
+
+Three independent safety layers, and they must stay independent:
+
+1. `FoldAliasedMountEntries` collapses entries that would mount one device twice
+   at nested points. It uses `MountPointIsUnder`, not a prefix test -- a prefix
+   test makes `/boot-backup` a child of `/boot`.
+2. `Validate` reports the plan and blocks on exactly two things: no root device,
+   and a missing or unusable ESP when the snapshot needs one. A missing `/home`
+   device gives a bootable system with an empty home; a missing root gives a
+   system that does not boot.
+3. `VerifyNoAliasedMounts` stats the mounted result and refuses if any nested
+   mount point IS the target root. It compares `(st_dev, st_ino)` rather than
+   consulting the mount list, so it catches an alias arriving by ANY route.
+
+The first two reason about intent, the third about reality. Run the third after
+mounting and before anything is deleted.
+
+Exit-code policy in the retry block, which is not obvious and is tested:
+`0` and `24` succeed, `23` **warns and carries on to the finish steps**
+(retrying cannot fix a permission problem and would re-scan the whole tree),
+`10|12|30|35|255` retry after dropping the ssh master, anything else touches the
+`.timeshift-restore-failed` sentinel and aborts *before* the bootloader steps.
+
+`internal/restore` tests run the generated scripts with real rsync against real
+directories, which is the only way to catch a quoting mistake or a marker that
+never fires. They take ~25s, because the scripts contain real `sleep 3s` and
+`sleep 10s`.
+
+Still outstanding before restore can be offered: the golden diff of the
+generated script against `Main.create_restore_scripts()` output for the same
+inputs, and a VM restore to the running system, to another device, and from
+btrfs.
+
 ### Verifying the write path
 
 The snapshot format is a two-way contract, so check it in both directions. The
