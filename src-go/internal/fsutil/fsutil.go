@@ -213,10 +213,15 @@ type SizeOpts struct {
 }
 
 // DefaultSizeOpts renders sizes the way `timeshift --list` does: decimal units,
-// one decimal, a unit suffix. Verified against real output -- 10.8 GB,
-// 157.2 MB, 29.9 TB.
+// one decimal, a unit suffix, and thousands grouping.
+//
+// Grouping is not a guess. The CLI prints its minimum-free-space message as
+// "Not enough disk space (< 1,000 MB)" -- MIN_FREE_SPACE is 1e9, which is NOT
+// greater than unit_g, so it falls to the MB branch and comes out as 1000 with
+// a separator. That comma is the Vala printf "%\'" flag under the user's
+// locale, and reproducing it is what makes the output match.
 func DefaultSizeOpts() SizeOpts {
-	return SizeOpts{ShowUnits: true, Decimals: 1}
+	return SizeOpts{ShowUnits: true, Decimals: 1, Group: true}
 }
 
 // FormatSize renders a byte count, reproducing TeeJee's format_file_size().

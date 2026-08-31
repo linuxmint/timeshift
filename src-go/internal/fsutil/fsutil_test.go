@@ -20,9 +20,9 @@ func TestFormatSizeMatchesTeeJee(t *testing.T) {
 		// The boundary is strictly greater-than in format_file_size(), so a
 		// round 1000 stays in bytes. This looks like an off-by-one and is the
 		// behaviour every existing snapshot listing already has.
-		{1000, d, "1000 B"},
+		{1000, d, "1,000 B"},
 		{1001, d, "1.0 KB"},
-		{1000 * 1000, d, "1000.0 KB"},
+		{1000 * 1000, d, "1,000.0 KB"},
 		{1000*1000 + 1, d, "1.0 MB"},
 
 		// Values in the shape `timeshift --list` prints on this machine.
@@ -41,6 +41,10 @@ func TestFormatSizeMatchesTeeJee(t *testing.T) {
 		// A pinned unit overrides the automatic choice.
 		{5_000_000_000, SizeOpts{Unit: "m", ShowUnits: true, Decimals: 1}, "5000.0 MB"},
 		{5_000_000_000, SizeOpts{Unit: "k", ShowUnits: true, Decimals: 0}, "5000000 KB"},
+
+		// The exact string `timeshift --list` prints for MIN_FREE_SPACE: 1e9 is
+		// not GREATER than unit_g, so it renders in MB, grouped, no decimals.
+		{1_000_000_000, SizeOpts{ShowUnits: true, Group: true}, "1,000 MB"},
 
 		// No units, no decimals.
 		{2_500_000, SizeOpts{Decimals: 2}, "2.50"},

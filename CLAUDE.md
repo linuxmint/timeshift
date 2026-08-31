@@ -296,9 +296,39 @@ project.
 
 Landed so far: `internal/sysexec` (argv-based command runner with real exit
 codes, line streaming, process-group signals, nice/ionice), `internal/logging`
-(session log at `/var/log/timeshift/<ts>_<mode>.log`, 0600, pruned at 500), 
+(session log at `/var/log/timeshift/<ts>_<mode>.log`, 0600, pruned at 500),
 `internal/fsutil` (file helpers, `FormatSize` reproducing `format_file_size()`),
-and `internal/config`.
+`internal/config`, `internal/block` (the device model), `internal/textui` (the
+console tables) and the engine layer below. `timeshift --list` and
+`--list-devices` are implemented and produce **byte-identical** output to the
+Vala binary, verified against both a live SSH repository and a local one.
+
+### The engine layer
+
+There is no storage abstraction in the Vala core: the mode is the boolean
+`App.btrfs_mode` and every mode-sensitive operation is an `if (btrfs_mode)`
+branch repeated some forty times, while local-versus-remote is a second,
+unrelated axis handled by `RepoBackend`. `internal/engines` replaces both with
+one named `Engine` per storage strategy; `internal/engines/timeshift` is the
+rsync/btrfs/SSH behaviour every existing installation is already using, and it
+owns the on-disk layout (`timeshift/snapshots`, `info.json`, `exclude.list`).
+
+Four boundaries hold it together, and breaking any of them re-creates the
+problem:
+
+- **`Reporter` is the only way an engine talks outward.** It never learns
+  whether a GUI is attached, which is what retires the `Gtk.Window?` parameter
+  threaded through `restore_snapshot()` and all five `SnapshotRepo` constructors.
+- **The engine restores the payload; the host restores the system.** That line
+  already exists as the `sh_sync` / `sh_finish` split; GRUB does not care which
+  engine produced the files.
+- **`Caps` drives the UI**, never `if engine == "timeshift"`.
+- **Engine-specific metadata rides in `Snapshot.EngineData`**, so the host never
+  has to know what a subvolume is.
+
+Tags and retention stay OUT of the engine: the O/B/H/D/W/M set and the `count_*`
+limits are Timeshift policy, not storage mechanics, so a new engine inherits the
+scheduling behaviour instead of reimplementing it.
 
 Two things in here are contracts rather than taste:
 
@@ -331,6 +361,19 @@ already hit once:
 and by the client library, never typed). The Go `timeshift` CLI is built but
 **not installed** — the Vala binary still owns `/usr/bin/timeshift` until the
 consumer cutover.
+
+Output compatibility is checked by running both binaries and diffing, not by
+reading the Vala source and hoping. Two details found that way and worth
+keeping: `print_grid()` pads every cell with two trailing spaces including the
+last on a line, so every row carries trailing whitespace; and the separator rule
+is a fixed 78 dashes that does not track the table width. `internal/textui`
+reproduces both deliberately.
+
+Two output differences from the Vala CLI are intentional and will not be
+"fixed": the Go CLI does not echo core log lines to stdout (Vala prints
+`Mounted '/dev/x' at '/run/timeshift/<pid>/backup'` from inside `Device.mount`),
+and it does not run `cron_job_update()` on exit, so listing snapshots no longer
+has the side effect of rewriting `/etc/cron.d`.
 
 ## Running as root
 
