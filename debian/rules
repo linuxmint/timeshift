@@ -9,7 +9,14 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-override_dh_usrlocal: 
+override_dh_usrlocal:
+
+# The Go compiler emits DWARF in compressed sections, which dwz(1) cannot read.
+# It does not skip the file -- it fails, and takes the whole build down with it
+# (Debian #931891). Exclude the daemon by name so the three Vala binaries are
+# still compressed.
+override_dh_dwz:
+	dh_dwz -Xtimeshiftd
 
 %:
 	dh $@

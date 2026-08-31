@@ -1,0 +1,25 @@
+building file list ... done
+>f+++++++++ created-file.txt
+cd+++++++++ created-dir/
+hf+++++++++ hardlinked-file.txt
+>f.st...... size-and-time-changed.txt
+>fcst...... checksum-changed.txt
+>f..t...... timestamp-changed.txt
+.f...p..... permissions-changed.txt
+.f....o.... owner-changed.txt
+.f.....g... group-changed.txt
+.f......u.. access-time-changed.txt
+.f.......a. acl-changed.txt
+.f........x xattr-changed.txt
+.f          unchanged-file.txt
+.d          unchanged-dir/
+hf          unchanged-hardlink.txt
+<f+++++++++ received-file.txt
+*deleting   gone.txt
+*deleting   gone-dir/
+cL+++++++++ created-symlink -> /target
+.L..t...... symlink-timestamp.txt -> /target
+
+Number of files: 20
+Total file size: 123,456 bytes
+total size is 123,456  speedup is 1.00

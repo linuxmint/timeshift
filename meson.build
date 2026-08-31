@@ -33,6 +33,7 @@ add_project_arguments(am_cflags, language: 'c')
 
 subdir('files')
 subdir('src')
+subdir('src-go')
 # After src/: consumes config_header from there. Before docs/man: that subdir
 # references the timeshift_recovery_shell target by name, and only when
 # -Dman=true -- so getting this order wrong fails the packaging build while a
