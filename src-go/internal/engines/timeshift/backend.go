@@ -46,6 +46,19 @@ type Backend interface {
 	// TestConnection reports whether the repository is reachable.
 	TestConnection(ctx context.Context) (string, error)
 
+	// MakeDir creates a directory and its parents.
+	MakeDir(ctx context.Context, p string) error
+
+	// WriteFile writes a file, replacing it if it exists.
+	WriteFile(ctx context.Context, p string, data []byte) error
+
+	// RemoveCommand is the argv that deletes a tree verbosely, so progress can
+	// be counted from its output.
+	RemoveCommand(p string) []string
+
+	// Remove deletes a tree without reporting progress.
+	Remove(ctx context.Context, p string) error
+
 	// Close releases anything held open, such as an SSH master connection.
 	Close() error
 }
@@ -491,4 +504,81 @@ func parseDFLine(out string) (size, used, available uint64, err error) {
 // everything local is an argv element.
 func shellQuote(s string) string {
 	return "'" + strings.ReplaceAll(s, "'", `'\''`) + "'"
+}
+
+/* The write surface.
+ *
+ * Separated from the read methods above because the read path landed first and
+ * because a future read-only backend -- an archive being browsed, say -- can
+ * implement one without the other.
+ */
+
+// MakeDir creates a directory and its parents.
+func (b *LocalBackend) MakeDir(ctx context.Context, p string) error {
+	return os.MkdirAll(p, 0755)
+}
+
+// WriteFile writes a file, replacing it if it exists.
+func (b *LocalBackend) WriteFile(ctx context.Context, p string, data []byte) error {
+	if err := os.MkdirAll(filepath.Dir(p), 0755); err != nil {
+		return err
+	}
+	return os.WriteFile(p, data, 0644)
+}
+
+// RemoveCommand is the argv that removes a directory tree, one line of output
+// per path so progress can be counted.
+func (b *LocalBackend) RemoveCommand(p string) []string {
+	return []string{"rm", "-rfv", p}
+}
+
+// Remove deletes a directory tree.
+func (b *LocalBackend) Remove(ctx context.Context, p string) error {
+	return os.RemoveAll(p)
+}
+
+func (b *SSHBackend) MakeDir(ctx context.Context, p string) error {
+	code, _, stderr, err := b.remote(ctx, "mkdir -p "+shellQuote(p))
+	if err != nil {
+		return err
+	}
+	if code != 0 {
+		return fmt.Errorf("timeshift: mkdir %s: %s", p, strings.TrimSpace(stderr))
+	}
+	return nil
+}
+
+// WriteFile pipes the content through ssh's stdin.
+//
+// stdinUsed is true in SSHOptions, which drops -n. With -n ssh reads from
+// /dev/null and the remote file comes out empty -- silently, and only
+// discovered when a restore has nothing to exclude.
+func (b *SSHBackend) WriteFile(ctx context.Context, p string, data []byte) error {
+	argv := append([]string{"ssh"}, b.SSHOptions(true, false)...)
+	argv = append(argv, b.HostSpec(),
+		"mkdir -p "+shellQuote(path.Dir(p))+" && cat > "+shellQuote(p))
+	code, _, stderr, err := b.Runner.Run(ctx, argv, string(data))
+	if err != nil {
+		return err
+	}
+	if code != 0 {
+		return fmt.Errorf("timeshift: write %s: %s", p, strings.TrimSpace(stderr))
+	}
+	return nil
+}
+
+func (b *SSHBackend) RemoveCommand(p string) []string {
+	argv := append([]string{"ssh"}, b.SSHOptions(false, false)...)
+	return append(argv, b.HostSpec(), "rm -rfv "+shellQuote(p))
+}
+
+func (b *SSHBackend) Remove(ctx context.Context, p string) error {
+	code, _, stderr, err := b.remote(ctx, "rm -rf "+shellQuote(p))
+	if err != nil {
+		return err
+	}
+	if code != 0 {
+		return fmt.Errorf("timeshift: remove %s: %s", p, strings.TrimSpace(stderr))
+	}
+	return nil
 }

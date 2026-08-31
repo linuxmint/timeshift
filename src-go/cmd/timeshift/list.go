@@ -75,43 +75,7 @@ func snapshotSize(n int64) string {
 	return fsutil.FormatSize(uint64(n), fsutil.DefaultSizeOpts())
 }
 
-// locationFromConfig turns the stored configuration into an engine Location.
+// locationFromConfig defers to the engine, which owns these config keys.
 func locationFromConfig(c config.Config, devices []*block.Device) (engines.Location, string, string, error) {
-	loc := engines.Location{
-		Name:      "default",
-		Type:      c.BackupLocationType,
-		BtrfsMode: c.BtrfsMode,
-	}
-
-	if c.Remote() {
-		user, host, port, p, err := tsengine.ParseURL(c.BackupSSHURL)
-		if err != nil {
-			return loc, "", "", err
-		}
-		if c.BackupSSHPort > 0 {
-			// An explicit port in the config overrides one in the URL.
-			port = c.BackupSSHPort
-		}
-		loc.SSH = engines.SSHLocation{
-			User: user, Host: host, Port: port, Path: p,
-			KeyFile:   c.BackupSSHKey,
-			FakeSuper: c.BackupSSHFakeSuper,
-		}
-		loc.MountPath = p
-		return loc, "", "", nil
-	}
-
-	loc.Type = "local"
-	loc.DeviceUUID = c.BackupDeviceUUID
-
-	dev := block.FindByUUID(devices, c.BackupDeviceUUID)
-	if dev == nil {
-		// Configured but not attached. The engine still opens, and Status()
-		// reports why it is unusable rather than the caller guessing.
-		return loc, "", "", nil
-	}
-	if len(dev.MountPoints) > 0 {
-		loc.MountPath = dev.MountPoints[0].Path
-	}
-	return loc, dev.NameWithParent(), dev.UUID, nil
+	return tsengine.LocationFromConfig(c, devices)
 }

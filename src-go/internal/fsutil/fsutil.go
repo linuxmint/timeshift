@@ -276,6 +276,16 @@ func FormatSize(size uint64, o SizeOpts) string {
 	}
 }
 
+// GroupDigits renders an integer with thousands separators.
+//
+// Distinct from FormatSize: that scales into KB/MB/GB, which is wrong for a
+// count of files. Using FormatSize with Unit "k" to get grouping divides the
+// value by a thousand, which is how a progress display once reported 223,000
+// entries as "223".
+func GroupDigits(n int64) string {
+	return group(strconv.FormatInt(n, 10))
+}
+
 // group inserts commas every three digits of the integer part.
 func group(s string) string {
 	intPart, frac := s, ""

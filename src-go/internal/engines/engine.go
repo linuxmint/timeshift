@@ -315,3 +315,52 @@ func (s Snapshot) HasTag(tag string) bool {
 	}
 	return false
 }
+
+/* Reporting.
+ *
+ * These types live here rather than in the daemon's job package so an engine
+ * depends on nothing above it. The daemon adapts its own Reporter onto this
+ * interface; an engine cannot tell the difference, and cannot learn whether
+ * anybody is watching -- which is the whole point.
+ */
+
+// Phase is one step of an operation, for the checklist a client draws. Key is
+// untranslated ASCII so matching stays locale-independent; Title is for people.
+type Phase struct {
+	Key   string
+	Title string
+}
+
+// Progress is what a client renders while work runs.
+type Progress struct {
+	// Percent is 0..1. Zero with Total zero means indeterminate.
+	Percent float64
+	Count   int64
+	Total   int64
+	// ETASeconds is -1 when it cannot be estimated yet.
+	ETASeconds int64
+	StatusLine string
+	Counters   map[string]int64
+}
+
+// Reporter is the only channel an engine has to the outside world.
+type Reporter interface {
+	SetPhases(phases []Phase)
+	Phase(key string)
+	Progress(p Progress)
+	Log(line string)
+	Note(msg string)
+	Warn(msg string)
+	Cancelled() bool
+}
+
+// NopReporter discards everything, for callers that just want the result.
+type NopReporter struct{}
+
+func (NopReporter) SetPhases([]Phase) {}
+func (NopReporter) Phase(string)      {}
+func (NopReporter) Progress(Progress) {}
+func (NopReporter) Log(string)        {}
+func (NopReporter) Note(string)       {}
+func (NopReporter) Warn(string)       {}
+func (NopReporter) Cancelled() bool   { return false }

@@ -298,10 +298,45 @@ Landed so far: `internal/sysexec` (argv-based command runner with real exit
 codes, line streaming, process-group signals, nice/ionice), `internal/logging`
 (session log at `/var/log/timeshift/<ts>_<mode>.log`, 0600, pruned at 500),
 `internal/fsutil` (file helpers, `FormatSize` reproducing `format_file_size()`),
-`internal/config`, `internal/block` (the device model), `internal/textui` (the
-console tables) and the engine layer below. `timeshift --list` and
-`--list-devices` are implemented and produce **byte-identical** output to the
+`internal/config`, `internal/block` (the device model), `internal/distro`,
+`internal/textui` (the console tables), `internal/rsyncx` (argv construction and
+itemise parsing), `internal/jobs`, `internal/ipc`, and the engine layer below.
+
+`timeshift --list` and `--list-devices` produce **byte-identical** output to the
 Vala binary, verified against both a live SSH repository and a local one.
+`--create`, `--watch`, `--estimate` and `--delete` run through the daemon.
+
+### The daemon, and what it is for
+
+`timeshiftd` owns the config, the job queue and the event hub, and serves them
+over `/run/timeshift/daemon.sock`. That is what retires `AppLock`.
+
+In the Vala build a running backup's state lives in one process's `Main` object
+and `Main.vala:374` refuses a second instance, so a snapshot started by
+`apt-snapshot-guard` cannot be watched at all -- and the message is wrong, because
+`--create` sets `app_mode` to `"ondemand"` while the friendly branch at `:377`
+only tests for `"backup"`.
+
+Now a job is an object with an id and its progress is broadcast.
+`jobs.subscribe` returns the job's current state -- phases, counters, the tail of
+the log -- and *then* streams what happens next, with no gap, because the
+subscription is registered before the snapshot is taken. Joining halfway looks
+the same as having been there.
+
+Two rules keep it safe, and both are tested:
+
+- **One worker runs one mutating job at a time, FIFO.** That single writer
+  replaces `AppLock`, enforced in one place rather than by every caller. A second
+  `--create` is queued and its id returned; with `attach_existing` it joins the
+  running one instead, so two apt frontends racing end up watching one snapshot
+  rather than taking two.
+- **A subscriber that stops reading is dropped, never waited for.** If publishing
+  blocked, a GUI that stopped reading would stall the backup it was watching.
+  Watching must not be able to affect the thing being watched.
+
+Access is decided by `SO_PEERCRED`: root gets everything, a member of the
+`timeshift` group gets the read-only subset, anyone else is refused. The policy
+is an injectable `Authorizer` rather than a hard-wired rule.
 
 ### The engine layer
 
@@ -374,6 +409,36 @@ Two output differences from the Vala CLI are intentional and will not be
 `Mounted '/dev/x' at '/run/timeshift/<pid>/backup'` from inside `Device.mount`),
 and it does not run `cron_job_update()` on exit, so listing snapshots no longer
 has the side effect of rewriting `/etc/cron.d`.
+
+Console progress is also a client concern now. `Main.create_snapshot_with_rsync`
+wrote a `\r` progress line to stdout from inside the core *even under
+`--scripted`*, which is why `apt-snapshot-guard` redirects everything to its
+log. The core reports numbers; the client decides whether to draw them.
+
+### Verifying the write path
+
+The snapshot format is a two-way contract, so check it in both directions. The
+sequence that proved it, against a disposable loopback repository:
+
+```sh
+truncate -s 60G repo.img && mkfs.ext4 -qF repo.img && sudo mount -o loop repo.img repo
+# point a config at its UUID, then:
+sudo timeshiftd --config <copy> --socket /tmp/tsd.sock &
+sudo timeshift --socket /tmp/tsd.sock --create --tags O --comments "..."
+```
+
+What that established, and what to re-check after touching the write path:
+
+- The **Vala** binary lists a Go-written snapshot correctly -- it reads the
+  `info.json`, and computes Size and Unique with its own `du` walk. Drop a
+  `timeshift.json` next to the Vala binary to point it at a test repository
+  (`Main.vala:301`).
+- A second snapshot of a 9.3 GB system adds ~150 MB, because `--link-dest`
+  hard-links everything unchanged. If that number looks like the whole system,
+  the link-dest is wrong -- most likely carrying a `host:` prefix, which rsync
+  resolves on the receiving side and so must not have.
+- `file_count` in the control file should match what the Vala snapshots of the
+  same machine carry, within the noise of files that came and went.
 
 ## Running as root
 

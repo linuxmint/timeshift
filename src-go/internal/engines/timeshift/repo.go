@@ -315,3 +315,25 @@ func (r *Repo) PrintStatus(ctx context.Context, w *strings.Builder, deviceName, 
 	w.WriteString("\n")
 	return nil
 }
+
+// mkdirp creates a directory in the repository.
+func (r *Repo) mkdirp(ctx context.Context, p string) error {
+	return r.Backend.MakeDir(ctx, p)
+}
+
+// writeFile writes a file into the repository.
+func (r *Repo) writeFile(ctx context.Context, p string, data []byte) error {
+	return r.Backend.WriteFile(ctx, p, data)
+}
+
+// removeCommand is the argv that deletes a tree with one line of output per
+// path removed.
+func (r *Repo) removeCommand(p string) []string { return r.Backend.RemoveCommand(p) }
+
+// streamCommand runs a command, handing every line of its output to onLine.
+func (r *Repo) streamCommand(ctx context.Context, argv []string, onLine func(string)) (int, error) {
+	if r.Deps.Runner == nil {
+		return -1, fmt.Errorf("timeshift: no command runner")
+	}
+	return r.Deps.Runner.Stream(ctx, argv, func(_ string, line string) { onLine(line) })
+}

@@ -19,13 +19,44 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/makeafide/timeshift/src-go/internal/block"
 	"github.com/makeafide/timeshift/src-go/internal/config"
 	"github.com/makeafide/timeshift/src-go/internal/engines"
 	tsengine "github.com/makeafide/timeshift/src-go/internal/engines/timeshift"
+	"github.com/makeafide/timeshift/src-go/internal/ipc"
 	"github.com/makeafide/timeshift/src-go/internal/sysexec"
 )
+
+/* The retention levels, and their single-letter aliases.
+ *
+ * --tags takes the letters: O ondemand, B boot, H hourly, D daily, W weekly,
+ * M monthly. apt-snapshot-guard passes "O".
+ */
+var tagLetters = map[string]string{
+	"O": "ondemand", "B": "boot", "H": "hourly",
+	"D": "daily", "W": "weekly", "M": "monthly",
+}
+
+// expandTags turns "O,D" or "OD" into the level names.
+func expandTags(spec string) []string {
+	var out []string
+	seen := map[string]bool{}
+	for _, part := range strings.FieldsFunc(spec, func(r rune) bool {
+		return r == ',' || r == ' '
+	}) {
+		for _, letter := range part {
+			name, ok := tagLetters[strings.ToUpper(string(letter))]
+			if !ok || seen[name] {
+				continue
+			}
+			seen[name] = true
+			out = append(out, name)
+		}
+	}
+	return out
+}
 
 // version is stamped by the build; see src-go/go-build.sh.
 var version = "dev"
@@ -37,6 +68,12 @@ func main() {
 func run(args []string) int {
 	mode := ""
 	configPath := config.SystemPath
+	socket := ipc.SocketPath
+	scripted := false
+	comments := ""
+	jobID := ""
+	var tags []string
+	var names []string
 
 	for i := 0; i < len(args); i++ {
 		switch args[i] {
@@ -50,6 +87,51 @@ func run(args []string) int {
 			mode = "list-devices"
 		case "--list", "--list-snapshots":
 			mode = "list-snapshots"
+		case "--create":
+			mode = "create"
+		case "--watch":
+			mode = "watch"
+		case "--estimate":
+			mode = "estimate"
+		case "--delete":
+			mode = "delete"
+		case "--scripted":
+			scripted = true
+		case "--comments", "--comment":
+			if i+1 >= len(args) {
+				fmt.Fprintln(os.Stderr, "timeshift: --comments needs a value")
+				return 1
+			}
+			i++
+			comments = args[i]
+		case "--tags":
+			if i+1 >= len(args) {
+				fmt.Fprintln(os.Stderr, "timeshift: --tags needs a value")
+				return 1
+			}
+			i++
+			tags = expandTags(args[i])
+		case "--snapshot", "--snapshot-name":
+			if i+1 >= len(args) {
+				fmt.Fprintln(os.Stderr, "timeshift: --snapshot needs a name")
+				return 1
+			}
+			i++
+			names = append(names, args[i])
+		case "--job":
+			if i+1 >= len(args) {
+				fmt.Fprintln(os.Stderr, "timeshift: --job needs an id")
+				return 1
+			}
+			i++
+			jobID = args[i]
+		case "--socket":
+			if i+1 >= len(args) {
+				fmt.Fprintln(os.Stderr, "timeshift: --socket needs a path")
+				return 1
+			}
+			i++
+			socket = args[i]
 		case "--config":
 			/* Bounds-checked, unlike AppConsole.parse_arguments(), where every
 			 * value-taking flag does args[++k] with no check at all -- so a
@@ -81,6 +163,26 @@ func run(args []string) int {
 	runner := sysexec.NewSimple(sysexec.New(nil))
 
 	switch mode {
+	case "create":
+		/* AttachExisting: two apt frontends racing to snapshot should watch one
+		 * job rather than take two snapshots of the same moment. */
+		return runCreate(socket, ipc.CreateParams{
+			Tags: tags, Comments: comments, AttachExisting: true,
+		}, scripted)
+
+	case "watch":
+		return runWatch(socket, jobID, scripted)
+
+	case "estimate":
+		return runEstimate(socket, scripted)
+
+	case "delete":
+		if len(names) == 0 {
+			fmt.Fprintln(os.Stderr, "timeshift: --delete needs --snapshot NAME")
+			return 1
+		}
+		return runDelete(socket, names, scripted)
+
 	case "list-snapshots":
 		found, err := listSnapshotsCmd(ctx, configPath, runner)
 		if err != nil {
@@ -119,12 +221,22 @@ Syntax: timeshift [options]
 
 Options:
 
+  --create          Take a snapshot now
+  --watch           Watch the snapshot already running
+  --estimate        Measure the system size
+  --delete          Delete a snapshot (with --snapshot NAME)
   --list            List snapshots
   --list-devices    List available devices
+  --tags LETTERS    Retention levels for --create: O B H D W M
+  --comments TEXT   Description for --create
+  --snapshot NAME   Snapshot to act on
+  --job ID          Job to watch
+  --scripted        No progress bar; for unattended use
+  --socket PATH     Daemon socket (default %s)
   --config PATH     Path to timeshift.json (default %s)
   --help, -h        Show all options
   --version         Print version number
-`, version, config.SystemPath)
+`, version, ipc.SocketPath, config.SystemPath)
 }
 
 // listSnapshotsCmd wires the config to the engine and prints the listing.
