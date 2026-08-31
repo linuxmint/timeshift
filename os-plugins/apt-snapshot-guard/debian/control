@@ -10,7 +10,7 @@ Homepage: https://github.com/makeafide/timeshift
 Package: apt-snapshot-guard
 Architecture: all
 Depends: ${misc:Depends},
-         timeshift-ssh | timeshift
+         timeshift | timeshift-ssh
 Recommends: zenity
 Description: Force a Timeshift snapshot before apt changes the system
  apt-snapshot-guard installs a DPkg::Pre-Invoke hook so that a Timeshift
@@ -29,7 +29,8 @@ Description: Force a Timeshift snapshot before apt changes the system
  default answer aborts), and with no terminal - the GUI Software Updater,
  PackageKit or unattended-upgrades - the operation is aborted outright. To
  proceed without a snapshot for a single run, set a one-shot bypass flag
- first: "sudo touch /run/apt-snapshot-guard.bypass".
+ first ("sudo touch /run/apt-snapshot-guard.bypass") or run the command
+ with APT_SNAPSHOT_GUARD=off in the environment.
  .
  For interactive GUI updates (the Software Updater / GNOME Software via
  aptdaemon and PackageKit), where there is no terminal, a failed snapshot

@@ -35,8 +35,14 @@ else
 	version="$head.$((tail + 1))"
 
 	distro=$(. /etc/os-release 2>/dev/null && echo "${VERSION_CODENAME:-unstable}")
-	name=$(git config user.name 2>/dev/null || echo "$USER")
-	email=$(git config user.email 2>/dev/null || echo "$USER@$(hostname)")
+	me=${USER:-$(id -un)}
+	name=$(git config user.name 2>/dev/null || echo "$me")
+	email=$(git config user.email 2>/dev/null || echo "$me@$(hostname)")
+
+	# Keep the outgoing changelog so a failed build can roll the bump back
+	# instead of burning the version number.
+	orig=$(mktemp)
+	cp debian/changelog "$orig"
 
 	tmp=$(mktemp)
 	{
@@ -50,11 +56,26 @@ else
 		cat debian/changelog
 	} > "$tmp"
 	mv "$tmp" debian/changelog
+	# mktemp files are 0600 and mv preserves that; the changelog is source.
+	chmod 0644 debian/changelog
 	echo "==> debian/changelog: $current -> $version"
 fi
 
+rollback() {
+	# A failed build or a failed verification must not burn the version:
+	# restore the changelog and drop the partial artifacts, so the next run
+	# bumps from the same place.
+	if [ "${NO_BUMP:-0}" != "1" ] && [ -f "${orig:-}" ]; then
+		cp -f "$orig" debian/changelog
+		chmod 0644 debian/changelog
+		rm -f "../${package}_${version}_"* 2>/dev/null || true
+		echo "==> build failed; debian/changelog restored to $current" >&2
+	fi
+	exit 1
+}
+
 echo "==> building $package $version"
-dpkg-buildpackage -b -us -uc
+dpkg-buildpackage -b -us -uc || rollback
 
 # Architecture: all packages produce ..._all.deb regardless of the host arch.
 if grep -qi '^Architecture:[[:space:]]*all[[:space:]]*$' debian/control; then
@@ -67,6 +88,7 @@ deb="../${package}_${version}_${arch}.deb"
 [ -f "$deb" ] || { echo "error: expected $deb was not produced" >&2; exit 1; }
 
 echo
-sh check-deb.sh "$deb"
+sh check-deb.sh "$deb" || rollback
+[ -n "${orig:-}" ] && rm -f "$orig" || true
 echo
 echo "==> built: $(cd .. && pwd)/${deb#../}"

@@ -58,14 +58,24 @@ fi
 
 if [ -n "$sdisplay" ]; then
 	env_args+=( "DISPLAY=${sdisplay}" )
-	# best-effort XAUTHORITY for X11 / XWayland
+	# best-effort XAUTHORITY for X11 / XWayland: read it out of the user's
+	# session process, whichever desktop shell that is.
 	xauth=
-	shell_pid=$(pgrep -u "$uid" -x gnome-shell 2>/dev/null | head -1)
+	shell_pid=
+	for donor in gnome-shell plasmashell cinnamon xfce4-session mate-session lxqt-session sway; do
+		shell_pid=$(pgrep -u "$uid" -x "$donor" 2>/dev/null | head -1)
+		[ -n "$shell_pid" ] && break
+	done
 	if [ -n "$shell_pid" ] && [ -r "/proc/$shell_pid/environ" ]; then
 		xauth=$(tr '\0' '\n' < "/proc/$shell_pid/environ" 2>/dev/null \
 			| sed -n 's/^XAUTHORITY=//p' | head -1)
 	fi
-	[ -z "$xauth" ] && [ -f "/home/${user}/.Xauthority" ] && xauth="/home/${user}/.Xauthority"
+	if [ -z "$xauth" ]; then
+		# getent, not /home/$user: system accounts and directory-served homes
+		# live elsewhere.
+		home=$(getent passwd "$user" 2>/dev/null | cut -d: -f6)
+		[ -n "$home" ] && [ -f "${home}/.Xauthority" ] && xauth="${home}/.Xauthority"
+	fi
 	[ -n "$xauth" ] && env_args+=( "XAUTHORITY=${xauth}" )
 fi
 
@@ -86,8 +96,17 @@ z_args=( --question --no-wrap
 # zenity treats --timeout=0 as "no timeout given"; only pass a positive value.
 [ "${TIMEOUT:-0}" -gt 0 ] 2>/dev/null && z_args+=( --timeout="$TIMEOUT" )
 
-sudo -u "$user" env "${env_args[@]}" "$ZENITY" "${z_args[@]}"
-rc=$?
+# runuser first: it ships in util-linux (effectively always present) and
+# involves no sudo policy. sudo is the fallback; with neither, abort closed.
+if command -v runuser >/dev/null 2>&1; then
+	runuser -u "$user" -- env "${env_args[@]}" "$ZENITY" "${z_args[@]}"
+	rc=$?
+elif command -v sudo >/dev/null 2>&1; then
+	sudo -u "$user" env "${env_args[@]}" "$ZENITY" "${z_args[@]}"
+	rc=$?
+else
+	exit 3
+fi
 
 # zenity: 0 = OK (continue), 1 = cancel/closed, 5 = timeout. Only 0 proceeds.
 [ "$rc" -eq 0 ] && exit 0

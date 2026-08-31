@@ -52,7 +52,7 @@ run() {
 }
 
 require_root() {
-	[ "$(id -u)" = "0" ] || die "must be run as root (try: sudo timeshift-recovery $*)"
+	[ "$(id -u)" = "0" ] || die "must be run as root (try: sudo timeshift-recovery${*:+ $*})"
 }
 
 # One mutating run at a time. Without this the GUI's button, the dpkg
@@ -60,7 +60,12 @@ require_root() {
 # cache directory, or write the GRUB entry twice. Held for the process
 # lifetime; fd 9 is otherwise unused.
 take_lock() {
-	command -v flock >/dev/null 2>&1 || return 0
+	if ! command -v flock >/dev/null 2>&1; then
+		# util-linux is a dependency, so this is a broken system; say so
+		# rather than silently running unserialised.
+		warn "flock not found; proceeding without the run lock"
+		return 0
+	fi
 	exec 9> /run/timeshift-recovery.lock
 	flock -n 9 || die "another timeshift-recovery run is already active"
 }
@@ -128,9 +133,12 @@ load_config() {
 }
 
 validate_config() {
-	case "$HOTKEY_STYLE" in
+	# ${VAR:-} throughout: this can run in a helper process where the CLI
+	# exported the config (TSR_OPTS_APPLIED=1) -- under set -u a missing
+	# export must read as invalid, not abort as an unbound variable.
+	case "${HOTKEY_STYLE:-}" in
 		hidden|countdown|menu|none) ;;
-		*) die "invalid HOTKEY_STYLE '$HOTKEY_STYLE' (want: hidden, countdown, menu, none)" ;;
+		*) die "invalid HOTKEY_STYLE '${HOTKEY_STYLE:-}' (want: hidden, countdown, menu, none)" ;;
 	esac
 
 	case "${HINT:-splash}" in
@@ -140,14 +148,14 @@ validate_config() {
 
 	# GRUB accepts a single letter or one of three aliases; anything else is
 	# silently ignored at boot, which would look like the hotkey just not working.
-	case "$HOTKEY" in
+	case "${HOTKEY:-}" in
 		backspace|tab|delete) ;;
 		[a-zA-Z]) ;;
-		*) die "invalid HOTKEY '$HOTKEY' (want: a single letter, or backspace/tab/delete)" ;;
+		*) die "invalid HOTKEY '${HOTKEY:-}' (want: a single letter, or backspace/tab/delete)" ;;
 	esac
 
-	case "$TIMEOUT" in
-		''|*[!0-9]*) die "invalid TIMEOUT '$TIMEOUT' (want: a whole number of seconds)" ;;
+	case "${TIMEOUT:-}" in
+		''|*[!0-9]*) die "invalid TIMEOUT '${TIMEOUT:-}' (want: a whole number of seconds)" ;;
 	esac
 
 	if [ "$HOTKEY_STYLE" != "none" ] && [ "$TIMEOUT" -lt 1 ]; then
@@ -493,7 +501,10 @@ write_grub() {
 	# Catch a malformed entry here rather than at boot, where the failure mode
 	# is a machine that drops to a GRUB rescue prompt.
 	if command -v grub-script-check >/dev/null 2>&1; then
-		sh "$_tmp" | grub-script-check || die "generated GRUB entry is not valid GRUB script"
+		if ! sh "$_tmp" | grub-script-check; then
+			rm -f "$_tmp"
+			die "generated GRUB entry is not valid GRUB script"
+		fi
 	fi
 
 	if [ "${DRY_RUN:-0}" = "1" ]; then

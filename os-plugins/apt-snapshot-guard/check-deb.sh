@@ -20,8 +20,10 @@ CTRL=$(dpkg-deb --ctrl-tarfile "$DEB" | tar -tf - | sed 's|^\./||' | grep -v '^$
 # Required files.
 for f in ./etc/apt/apt.conf.d/05snapshot-guard \
 	./etc/apt-snapshot-guard/config \
+	./etc/logrotate.d/apt-snapshot-guard \
 	./usr/lib/apt-snapshot-guard/pre-invoke \
 	./usr/lib/apt-snapshot-guard/gui-prompt \
+	./usr/share/doc/apt-snapshot-guard/copyright \
 	./usr/share/doc/apt-snapshot-guard/changelog.gz; do
 	printf '%s\n' "$LIST" | grep -q " $f\$" && ok "$f" || bad "MISSING $f"
 done
@@ -43,7 +45,20 @@ if printf '%s\n' "$CTRL" | grep -qx conffiles; then
 		printf '%s\n' "$CONFF" | grep -qx "$c" && ok "conffile: $c" || bad "not a conffile: $c"
 	done
 else
-	bad "no conffiles member — /etc files would be overwritten silently on upgrade"
+	bad "no conffiles member -- /etc files would be overwritten silently on upgrade"
+fi
+
+# Shell syntax of everything we ship (the helpers are bash, the config is sh).
+TMPD=$(mktemp -d)
+trap 'rm -rf "$TMPD"' EXIT
+if dpkg-deb -x "$DEB" "$TMPD" 2>/dev/null; then
+	for s in usr/lib/apt-snapshot-guard/pre-invoke usr/lib/apt-snapshot-guard/gui-prompt; do
+		[ -r "$TMPD/$s" ] || continue
+		bash -n "$TMPD/$s" 2>/dev/null && ok "bash -n: $s" || bad "SYNTAX ERROR: $s"
+	done
+	sh -n "$TMPD/etc/apt-snapshot-guard/config" 2>/dev/null \
+		&& ok "sh -n: etc/apt-snapshot-guard/config" \
+		|| bad "SYNTAX ERROR: etc/apt-snapshot-guard/config"
 fi
 
 # Control metadata.
@@ -53,7 +68,7 @@ printf '%s\n' "$INFO" | grep -q 'Recommends:.*zenity'            && ok "Recommen
 
 # No maintainer scripts (none are needed; one could interfere with apt hooks).
 if printf '%s\n' "$CTRL" | grep -Eq '^(preinst|postinst|prerm|postrm)$'; then
-	bad "MAINTAINER SCRIPT PRESENT — none expected for this package:"
+	bad "MAINTAINER SCRIPT PRESENT -- none expected for this package:"
 	printf '%s\n' "$CTRL" | grep -E '^(preinst|postinst|prerm|postrm)$' | sed 's/^/          /'
 else
 	ok "no maintainer scripts"

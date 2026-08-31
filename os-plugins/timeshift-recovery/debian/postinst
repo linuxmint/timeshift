@@ -14,7 +14,6 @@ case "$1" in
 	triggered)
 		# Only meaningful once an environment has actually been installed.
 		if [ -f "$STATE_DIR/installed" ]; then
-			mkdir -p "$STATE_DIR"
 			date -Is > "$STATE_DIR/stale" 2>/dev/null || : > "$STATE_DIR/stale"
 
 			# --no-block: never hold up the dpkg transaction. The unit itself
@@ -27,6 +26,14 @@ case "$1" in
 		;;
 
 	configure)
+		# Artifacts built by an older version were left world-readable, and
+		# they embed the SSH key, Wi-Fi passphrases and Tailscale identity.
+		# Tighten quietly on upgrade; new builds create them 0600 themselves.
+		for f in /var/cache/timeshift-recovery/filesystem.squashfs \
+		         /var/lib/timeshift-recovery/recovery.img; do
+			if [ -f "$f" ]; then chmod 0600 "$f" || true; fi
+		done
+
 		# Deliberately does not provision. Building an environment needs the
 		# network and several minutes, neither of which belongs in an install.
 		if [ ! -f "$STATE_DIR/installed" ]; then

@@ -1,0 +1,8 @@
+/var/log/apt-snapshot-guard.log {
+	monthly
+	rotate 6
+	compress
+	missingok
+	notifempty
+	create 0640 root root
+}

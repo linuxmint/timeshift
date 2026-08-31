@@ -26,13 +26,16 @@ case "$1" in
 		;;
 esac
 
+#DEBHELPER#
+
+# After the debhelper snippets: /etc/timeshift-recovery/config is a conffile,
+# and dpkg's own purge bookkeeping should run before its directory vanishes.
 case "$1" in
 	purge)
 		rm -rf /var/lib/timeshift-recovery /var/cache/timeshift-recovery
 		rm -rf /etc/timeshift-recovery
+		rm -f /var/log/timeshift-recovery.log
 		;;
 esac
-
-#DEBHELPER#
 
 exit 0

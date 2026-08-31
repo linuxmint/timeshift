@@ -2,6 +2,12 @@
 *~
 build/
 dist/
+# dpkg-buildpackage drops the plugin artifacts in os-plugins/ (belt to the
+# braces of os-plugins/.gitignore, so a deleted subdir ignore cannot expose them)
+os-plugins/*.deb
+os-plugins/*.ddeb
+os-plugins/*.changes
+os-plugins/*.buildinfo
 .bzr
 *.c
 debian/.debhelper/

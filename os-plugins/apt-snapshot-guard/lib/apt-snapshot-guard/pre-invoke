@@ -36,6 +36,14 @@ case "${APT_SNAPSHOT_GUARD:-}" in
 	off|0|no) ENABLED=0 ;;
 esac
 
+# The config is sourced shell; a typo'd value would otherwise corrupt the
+# arithmetic and timeout(1) calls that the fail-closed logic depends on.
+num_or() { case "${1:-}" in ''|*[!0-9]*) echo "$2" ;; *) echo "$1" ;; esac; }
+WINDOW=$(num_or "$WINDOW" 90)
+TIMEOUT=$(num_or "$TIMEOUT" 900)
+PROMPT_TIMEOUT=$(num_or "$PROMPT_TIMEOUT" 60)
+GUI_PROMPT_TIMEOUT=$(num_or "$GUI_PROMPT_TIMEOUT" 120)
+
 log() {
 	# to the logfile (best effort) and to apt's stderr
 	printf '%s apt-snapshot-guard: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >>"$LOG" 2>/dev/null
@@ -115,11 +123,6 @@ if [ -f "$STAMP" ]; then
 	fi
 fi
 
-# Nothing to snapshot with if the tool is missing -> treat as a failure.
-if ! command -v timeshift >/dev/null 2>&1; then
-	snapshot_failed "timeshift not found on PATH."
-fi
-
 # --- best-effort context for the snapshot comment ----------------------------
 # Walk the process ancestry to find the apt-family command that triggered us,
 # so the snapshot records WHY it was taken (which operation, which frontend).
@@ -147,7 +150,10 @@ while [ "$pid" -gt 1 ] 2>/dev/null && [ "$i" -lt 12 ]; do
 			break
 			;;
 	esac
-	pid=$(awk '{print $4}' "/proc/$pid/stat" 2>/dev/null || echo 1)
+	# /proc/PID/status, not stat field 4: a comm containing spaces (e.g.
+	# "Web Content") shifts every stat field and derails the walk.
+	pid=$(awk '/^PPid:/ { print $2 }' "/proc/$pid/status" 2>/dev/null || echo 1)
+	[ -n "$pid" ] || pid=1
 	i=$((i + 1))
 done
 
@@ -170,6 +176,12 @@ esac
 # The snapshot's own description explains why it exists.
 comment="Auto-snapshot before ${operation} via ${frontend} [${caller}]"
 
+# Checked only now, AFTER frontend/operation are known: snapshot_failed uses
+# both to decide whether a graphical bypass is appropriate.
+if ! command -v timeshift >/dev/null 2>&1; then
+	snapshot_failed "timeshift not found on PATH."
+fi
+
 # --- take the snapshot (serialized; one at a time) ---------------------------
 log "creating snapshot before ${operation} via ${frontend}: ${caller}"
 
@@ -186,6 +198,7 @@ if command -v flock >/dev/null 2>&1; then
 	rc=$?
 	[ "$rc" = "75" ] && log "timed out waiting for the snapshot lock."
 else
+	log "flock not available; taking the snapshot without serialisation."
 	run_snapshot
 	rc=$?
 fi
@@ -194,6 +207,9 @@ if [ "$rc" -ne 0 ]; then
 	snapshot_failed "timeshift --create exited $rc."
 fi
 
-echo "$now" > "$STAMP" 2>/dev/null
+# Stamped NOW, not with the pre-snapshot time: a snapshot that takes longer
+# than WINDOW would otherwise re-open the window it just closed, and the next
+# dpkg invocation in the same transaction would snapshot again.
+date +%s > "$STAMP" 2>/dev/null
 log "snapshot complete; proceeding with apt."
 exit 0

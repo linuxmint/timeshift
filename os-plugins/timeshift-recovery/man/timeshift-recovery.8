@@ -1,0 +1,130 @@
+.TH TIMESHIFT-RECOVERY 8 "August 2026" "timeshift-recovery" "System Administration"
+.SH NAME
+timeshift-recovery \- provision a bootable Timeshift recovery environment
+.SH SYNOPSIS
+.B timeshift-recovery
+.I command
+.RI [ options ]
+.SH DESCRIPTION
+Timeshift snapshots kept on a remote host cannot be restored from a system
+that will not boot: the restore tool, the network stack and the wireless
+driver all live on the broken root filesystem.
+.B timeshift-recovery
+builds a small environment that carries its own copies, places it where GRUB
+can reach it, and keeps it in step with the installed Timeshift. Pressing the
+hotkey (default
+.BR r )
+while the machine starts boots the environment.
+.PP
+The environment is built with
+.BR mmdebstrap (1)
+against this host's own apt sources, so it always matches the installed
+release and architecture. Timeshift itself is repacked from the installed
+package with
+.BR dpkg-repack (1),
+and a dpkg trigger rebuilds the environment whenever Timeshift changes.
+.SH COMMANDS
+.TP
+.B build
+Build the recovery environment into the local cache.
+.TP
+.B install
+Build if needed, place the payload, and wire up GRUB.
+.TP
+.B upgrade
+Rebuild and re-place an already installed environment.
+.TP
+.B enable
+Restore the GRUB entry after \fBdisable\fR (instant; the payload never moved).
+.TP
+.B disable
+Remove the GRUB entry but keep the payload, so \fBenable\fR is instant.
+The disabled state survives package upgrades and the automatic refresh.
+.TP
+.B status
+Show what is installed and whether it is current. With
+.BR \-\-machine ,
+print KEY=value lines for scripts.
+.TP
+.B reboot
+Boot into the recovery environment once, now, without changing the default.
+.TP
+.B remove
+Remove the payload, the GRUB entry, and the cached environment image
+(which embeds credentials).
+.TP
+.B help, version
+Show the usage message, or print the package version.
+.SH OPTIONS
+.TP
+.BI \-\-target " TARGET"
+.BR auto " (default), " root ,
+a partition such as \fI/dev/sdXN\fR, or a whole disk \fI/dev/sdX\fR.
+.TP
+.BI \-\-size " SIZE"
+Partition size when one is created (default 6G).
+.TP
+.BI \-\-hotkey " KEY"
+Key to press at startup (default r).
+.TP
+.BI \-\-hotkey\-style " STYLE"
+.BR hidden " (default), " countdown ", " menu ", or " none .
+.TP
+.BI \-\-timeout " N"
+Seconds GRUB waits for the hotkey (default 3).
+.TP
+.BI \-\-scale " N"
+Display scale for the recovery GUI (default auto).
+.TP
+.BI \-\-hint " H"
+Boot-screen hint while GRUB waits for the hotkey:
+.BR splash " (default), " text ", or " none .
+.TP
+.BI \-\-timeshift\-deb " PATH"
+Use this .deb instead of repacking the installed Timeshift.
+.TP
+.BI \-\-firmware " F"
+.BR full " (default) or " slim .
+.TP
+.B \-\-no\-ssh\-key, \-\-no\-wifi\-creds, \-\-no\-tailscale\-state
+Do not embed the corresponding credential in the environment.
+.TP
+.B \-\-machine
+With \fBstatus\fR: print KEY=value lines for scripts.
+.TP
+.B \-\-yes, \-y
+Do not ask before writing a partition table.
+.TP
+.B \-\-dry\-run, \-n
+Show what would happen, change nothing.
+.TP
+.B \-\-debug
+Trace every command.
+.SH SECURITY
+Unless opted out, the environment embeds the SSH key from
+.IR /etc/timeshift/ssh ,
+saved Wi-Fi passphrases, and the Tailscale node identity, so an unattended
+restore works on a machine that is already broken. They are readable by
+anyone who can boot this machine or read the recovery media. Restrict the
+key on the backup host, for example in its authorized_keys:
+.PP
+.nf
+    restrict,command="rrsync -ro /path/to/snapshots" ssh-ed25519 AAAA...
+.fi
+.SH FILES
+.TP
+.I /etc/timeshift-recovery/config
+Defaults for every option above.
+.TP
+.I /var/cache/timeshift-recovery/
+The built environment image (root-only; embeds credentials).
+.TP
+.I /var/lib/timeshift-recovery/
+Installed-state records and, for the root-filesystem target, the payload.
+.TP
+.I /var/log/timeshift-recovery.log
+Session log.
+.SH SEE ALSO
+.BR timeshift (1),
+.BR mmdebstrap (1),
+.BR dpkg-repack (1)

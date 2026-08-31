@@ -23,22 +23,54 @@ ARCH=$(host_arch)
 # Feed mmdebstrap the host's own sources verbatim rather than reconstructing a
 # mirror URL. That carries the security suite and any local mirror choice with
 # it, which a hand-built "http://archive.ubuntu.com" would silently drop.
+#
+# Filter by TRANSPORT, not by host name: an allowlist of archive.ubuntu.com
+# would drop exactly the local and regional mirrors this is meant to preserve.
+# cdrom: and file: sources cannot serve a build and are the only exclusions.
+# (mmdebstrap downloads with the host's apt, so Signed-By keys resolve here.)
 SOURCES=$(mktemp)
-trap 'rm -f "$SOURCES" 2>/dev/null; for d in "${REPACK_DIR:-}" "${TS_REPACK_DIR:-}" "${SEED_DIR:-}"; do [ -n "$d" ] && rm -rf "$d"; done' EXIT INT TERM
+CLEAN_ROOTFS=0
 
-if [ -s /etc/apt/sources.list ] && grep -qE '^\s*deb\s' /etc/apt/sources.list 2>/dev/null; then
-	cat /etc/apt/sources.list >> "$SOURCES"
+cleanup() {
+	rm -f "$SOURCES" 2>/dev/null
+	for d in "${REPACK_DIR:-}" "${TS_REPACK_DIR:-}" "${SEED_DIR:-}"; do
+		[ -n "$d" ] && rm -rf "$d"
+	done
+	# A failed build must not leave the staged rootfs behind: it holds the
+	# seeded credentials at whatever permissions the failure caught them in.
+	# Unmount anything a failed mmdebstrap left first, and never let rm cross
+	# a mount boundary -- a lingering chroot /proc is the HOST's proc.
+	if [ "$CLEAN_ROOTFS" = "1" ] && [ -d "$ROOTFS" ]; then
+		findmnt -rno TARGET | awk -v p="$ROOTFS/" 'index($0, p) == 1' | sort -r \
+		| while read -r _m; do
+			umount "$_m" 2>/dev/null || umount -l "$_m" 2>/dev/null || true
+		done
+		rm -rf --one-file-system "$ROOTFS" 2>/dev/null || true
+	fi
+	return 0
+}
+trap cleanup EXIT INT TERM
+
+if [ -s /etc/apt/sources.list ]; then
+	grep -E '^[[:space:]]*deb(-src)?[[:space:]].*https?://' /etc/apt/sources.list >> "$SOURCES" 2>/dev/null || true
+	printf '\n' >> "$SOURCES"
 fi
 for f in /etc/apt/sources.list.d/*.sources; do
 	[ -e "$f" ] || continue
-	# Only the distribution's own archives. A third-party PPA in the recovery
-	# environment is a way to fail a build for a reason unrelated to recovery.
-	if grep -qiE 'ubuntu\.com|ubuntu-ports|debian\.org' "$f"; then
+	if grep -qiE '^URIs:.*https?://' "$f"; then
 		cat "$f" >> "$SOURCES"
 		printf '\n' >> "$SOURCES"
 	fi
 done
-[ -s "$SOURCES" ] || die "found no usable apt sources to build the environment from"
+# Classic one-line sources are still common alongside deb822.
+for f in /etc/apt/sources.list.d/*.list; do
+	[ -e "$f" ] || continue
+	grep -E '^[[:space:]]*deb(-src)?[[:space:]].*https?://' "$f" >> "$SOURCES" 2>/dev/null || true
+	printf '\n' >> "$SOURCES"
+done
+# Not just -s: the collection above can leave blank separator lines behind.
+grep -qE '^([[:space:]]*deb|URIs:)' "$SOURCES" 2>/dev/null \
+	|| die "found no usable apt sources to build the environment from"
 
 # --- package set ------------------------------------------------------------
 
@@ -60,7 +92,13 @@ KERNEL_META=$(dpkg-query -W -f='${binary:Package} ${db:Status-Status}\n' 'linux-
 	| head -n1)
 
 [ -n "$KERNEL_META" ] || KERNEL_META="linux-image-$KERNEL_FLAVOUR"
-apt-cache show "$KERNEL_META" >/dev/null 2>&1 || KERNEL_META=linux-image-generic
+if ! apt-cache show "$KERNEL_META" >/dev/null 2>&1; then
+	# Last resort, and it does not exist on every port -- verify rather than
+	# hand mmdebstrap a package name that fails an hour into the build.
+	KERNEL_META=linux-image-generic
+	apt-cache show "$KERNEL_META" >/dev/null 2>&1 \
+		|| die "no kernel metapackage found for flavour '$KERNEL_FLAVOUR' (and no linux-image-generic on this architecture)"
+fi
 
 # Mirror the host's firmware packages instead of pulling all of linux-firmware.
 # Note this saves less than it looks: Ubuntu installs nearly every
@@ -224,8 +262,7 @@ LOG=/tmp/timeshift-recovery-session.log
 starts=0
 window_start=$(date +%s)
 
-log() { printf '%s %s
-' "$(date -Is)" "$*" >> "$LOG" 2>/dev/null || true; }
+log() { printf '%s session: %s\n' "$(date -Is)" "$*" >> "$LOG" 2>/dev/null || true; }
 
 log "session supervisor starting"
 
@@ -288,8 +325,9 @@ mkdir -p "$SEED_DIR/etc/timeshift-recovery"
 printf 'SCALE=%s\n' "${SCALE:-auto}" > "$SEED_DIR/etc/timeshift-recovery/config"
 
 cat > "$SEED_DIR/usr/lib/timeshift-recovery/set-scale" <<'EOF'
-#!/bin/sh
 # Work out a sane display scale and apply it to the compositor.
+# SOURCED by the launcher, never executed: the GDK_SCALE fallback must land in
+# the caller's environment. No shebang and no exec bit, on purpose.
 #
 # The panel this environment is most likely to be used on is a laptop screen,
 # and modern ones are ~250 DPI. GTK renders at 1x unless told otherwise, which
@@ -307,7 +345,7 @@ set -u
 CONFIG=/etc/timeshift-recovery/config
 LOG=/tmp/timeshift-recovery-session.log
 
-log() { printf '%s set-scale: %s\n' "$(date -Is)" "$1" >> "$LOG" 2>&1 || true; }
+log() { printf '%s set-scale: %s\n' "$(date -Is)" "$*" >> "$LOG" 2>/dev/null || true; }
 
 # Round px/mm into a scale on quarter steps, targeting the 96 DPI that desktop
 # UIs are drawn for.
@@ -403,7 +441,7 @@ if [ "$applied" != "1" ] && [ -n "$fallback" ] && [ "$fallback" != "1" ]; then
 	export XCURSOR_SIZE=$(( 24 * fallback ))
 fi
 EOF
-chmod 0755 "$SEED_DIR/usr/lib/timeshift-recovery/set-scale"
+chmod 0644 "$SEED_DIR/usr/lib/timeshift-recovery/set-scale"
 
 cat > "$SEED_DIR/usr/lib/timeshift-recovery/launcher" <<'EOF'
 #!/bin/sh
@@ -418,6 +456,8 @@ LOG=/tmp/timeshift-recovery-session.log
 starts=0
 window_start=$(date +%s)
 
+log() { printf '%s launcher: %s\n' "$(date -Is)" "$*" >> "$LOG" 2>/dev/null || true; }
+
 while :; do
 	now=$(date +%s)
 	if [ $(( now - window_start )) -gt 30 ]; then
@@ -427,7 +467,7 @@ while :; do
 
 	starts=$(( starts + 1 ))
 	if [ "$starts" -gt 5 ]; then
-		printf '%s launcher failed repeatedly; ending the session\n' "$(date -Is)" >> "$LOG" 2>&1 || true
+		log "failed repeatedly; ending the session"
 		# Exiting brings labwc down with us -- it was started with -S, which
 		# terminates the compositor when its session command exits. That hands
 		# the problem to the outer supervisor, which restarts the whole session
@@ -438,7 +478,7 @@ while :; do
 		exit 1
 	fi
 
-	printf '%s starting launcher (attempt %s)\n' "$(date -Is)" "$starts" >> "$LOG" 2>&1 || true
+	log "starting (attempt $starts)"
 
 	# Sourced, not executed: the GDK_SCALE fallback has to land in THIS
 	# shell's environment so the menu and the timeshift-gtk it spawns both
@@ -664,12 +704,20 @@ else
 	warn "no /etc/timeshift/timeshift.json on this host; the environment will start unconfigured"
 fi
 
+# What actually went in, not what the config asked for: build-info records
+# these so 'status' reports the built image truthfully. An install run with
+# --no-wifi-creds must not be described as carrying the passphrases.
+SSH_EMBEDDED=0
+TAILSCALE_EMBEDDED=0
+wifi_count=0
+
 if [ "${EMBED_SSH_KEY:-1}" = "1" ] && [ -d /etc/timeshift/ssh ]; then
 	mkdir -p "$SEED_DIR/etc/timeshift/ssh"
 	cp -a /etc/timeshift/ssh/. "$SEED_DIR/etc/timeshift/ssh/"
 	chmod 700 "$SEED_DIR/etc/timeshift/ssh"
 	find "$SEED_DIR/etc/timeshift/ssh" -type f -exec chmod 600 {} +
 	log "embedded SSH key material from /etc/timeshift/ssh"
+	SSH_EMBEDDED=1
 fi
 
 # Saved Wi-Fi networks, so the environment joins a known network by itself. On a
@@ -684,11 +732,12 @@ if [ "${EMBED_WIFI_CREDS:-1}" = "1" ] && command -v nmcli >/dev/null 2>&1; then
 	# netplan generates the keyfile into /run. Copying only from /etc silently
 	# embedded nothing while status claimed the passphrases were included.
 	mkdir -p "$SEED_DIR/etc/NetworkManager/system-connections"
-	wifi_count=0
 
 	nmcli -t -f TYPE,FILENAME connection show 2>/dev/null | while IFS= read -r entry; do
 		conn_type=${entry%%:*}
-		conn_file=${entry#*:}
+		# nmcli -t backslash-escapes separators inside values; a filename with
+		# a literal colon arrives as '\:' and would fail the -r test below.
+		conn_file=$(printf '%s' "${entry#*:}" | sed 's/\\\(.\)/\1/g')
 
 		# Only real networks. loopback and the tailnet's own tun profile are
 		# noise, and copying tailscale0 would fight the tailscaled unit.
@@ -717,6 +766,8 @@ if [ "${EMBED_WIFI_CREDS:-1}" = "1" ] && command -v nmcli >/dev/null 2>&1; then
 	done
 
 	chmod 700 "$SEED_DIR/etc/NetworkManager/system-connections"
+	# Recounted from disk: the copy loop above runs in a pipeline subshell,
+	# so a counter incremented inside it would be lost.
 	wifi_count=$(find "$SEED_DIR/etc/NetworkManager/system-connections" \
 		-type f -name '*.nmconnection' 2>/dev/null | wc -l)
 
@@ -730,10 +781,10 @@ if [ "${EMBED_WIFI_CREDS:-1}" = "1" ] && command -v nmcli >/dev/null 2>&1; then
 	fi
 fi
 
-# Tailscale node identity. This is what makes a restore work away from home: the
-# backup host sits on 10.2.45.0/24, which a tailnet peer advertises as a subnet
-# route, so an environment on the tailnet reaches it from anywhere and the
-# snapshot URL needs no change at all.
+# Tailscale node identity. This is what makes a restore work away from home:
+# when the backup host sits on a private LAN that a tailnet peer advertises as
+# a subnet route, an environment on the tailnet reaches it from anywhere and
+# the snapshot URL needs no change at all.
 if [ "${EMBED_TAILSCALE_STATE:-1}" = "1" ] && [ -f /var/lib/tailscale/tailscaled.state ]; then
 	mkdir -p "$SEED_DIR/var/lib/tailscale"
 	cp -a /var/lib/tailscale/tailscaled.state "$SEED_DIR/var/lib/tailscale/"
@@ -742,6 +793,7 @@ if [ "${EMBED_TAILSCALE_STATE:-1}" = "1" ] && [ -f /var/lib/tailscale/tailscaled
 	chmod 700 "$SEED_DIR/var/lib/tailscale"
 	find "$SEED_DIR/var/lib/tailscale" -type f -exec chmod 600 {} +
 	log "embedded Tailscale node identity from /var/lib/tailscale"
+	TAILSCALE_EMBEDDED=1
 fi
 
 # --- build ------------------------------------------------------------------
@@ -758,8 +810,12 @@ if [ "${DRY_RUN:-0}" = "1" ]; then
 	exit 0
 fi
 
-rm -rf "$ROOTFS"
+rm -rf --one-file-system "$ROOTFS"
 mkdir -p "$ROOTFS" "$CACHE_BOOT"
+# The staging tree carries the seeded credentials; keep it root-only for the
+# whole build, and let the trap clean it up if the build dies.
+chmod 0700 "$ROOTFS"
+CLEAN_ROOTFS=1
 
 # copy-in takes several sources and a destination, so both debs go in one hook.
 # Built as a single string because an unquoted ${VAR:+--customize-hook=...}
@@ -819,7 +875,9 @@ if [ "${FIRMWARE:-full}" = "slim" ]; then
 		( cd "$FW_DIR" && find . -mindepth 1 -maxdepth 1 | sed 's|^\./||' ) \
 		| while read -r entry; do
 			if grep -qxF "/$entry" "$keep"; then continue; fi
-			if grep -q "^/$entry/" "$keep"; then continue; fi
+			# Literal prefix match, like the -xF above -- a firmware name must
+			# never be read as a regex.
+			if awk -v p="/$entry/" 'index($0, p) == 1 { f = 1 } END { exit !f }' "$keep"; then continue; fi
 			rm -rf "${FW_DIR:?}/$entry"
 		done
 		rm -f "$keep"
@@ -918,15 +976,16 @@ fi
 # runtime state, which is both wrong and a disclosure risk.
 step "Releasing the chroot's pseudo-filesystems"
 
-# Deepest first, so a nested mount never blocks its parent.
-findmnt -rno TARGET | grep "^$ROOTFS/" | sort -r | while read -r mnt; do
+# Deepest first, so a nested mount never blocks its parent. Literal prefix
+# match (awk index), not a regex: the path must never be interpreted.
+findmnt -rno TARGET | awk -v p="$ROOTFS/" 'index($0, p) == 1' | sort -r | while read -r mnt; do
 	log "unmounting $mnt"
 	umount "$mnt" 2>/dev/null || umount -l "$mnt" 2>/dev/null || true
 done
 
 # Verify rather than hope. Squashing a live /proc is bad enough that this is
 # worth failing the build over.
-remaining=$(findmnt -rno TARGET | grep "^$ROOTFS/" || true)
+remaining=$(findmnt -rno TARGET | awk -v p="$ROOTFS/" 'index($0, p) == 1' || true)
 [ -z "$remaining" ] || die "still mounted inside the chroot, refusing to squash it:
 $remaining"
 
@@ -980,7 +1039,13 @@ mksquashfs "$ROOTFS" "$SQUASHFS" \
 	-e boot/vmlinuz-\* boot/initrd.img-\* \
 	|| die "mksquashfs failed"
 
+# The image embeds the SSH key, Wi-Fi passphrases and the Tailscale identity;
+# world-readable would hand them to any local account.
+chmod 0600 "$SQUASHFS"
+
 # Record what went in, so status and upgrade can compare without unsquashing.
+# The EMBED_* values here are what was ACTUALLY embedded in this build, which
+# is what status must report -- not whatever the config says today.
 cat > "$CACHE/build-info" <<EOF
 BUILT_AT=$(date -Is)
 CODENAME=$CODENAME
@@ -988,10 +1053,14 @@ ARCH=$ARCH
 KERNEL_META=$KERNEL_META
 TS_PACKAGE=$TS_PACKAGE
 TS_VERSION=$TS_VERSION
-EMBED_SSH_KEY=${EMBED_SSH_KEY:-1}
+EMBED_SSH_KEY=$SSH_EMBEDDED
+EMBED_WIFI_CREDS=$([ "$wifi_count" -gt 0 ] && echo 1 || echo 0)
+WIFI_PROFILES=$wifi_count
+EMBED_TAILSCALE_STATE=$TAILSCALE_EMBEDDED
 EOF
 
 # The staging tree is a full root filesystem and serves no purpose once squashed.
-rm -rf "$ROOTFS"
+rm -rf --one-file-system "$ROOTFS"
+CLEAN_ROOTFS=0
 
 step "Built $(human_bytes "$(stat -c %s "$SQUASHFS")") environment at $SQUASHFS"

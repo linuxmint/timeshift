@@ -145,7 +145,10 @@ ssh_key_warning() {
 	_embedded=""
 	[ "${EMBED_SSH_KEY:-1}" = "1" ] && [ -d /etc/timeshift/ssh ] && \
 		_embedded="$_embedded\n    - the SSH key from /etc/timeshift/ssh (reaches your snapshots)"
-	[ "${EMBED_WIFI_CREDS:-1}" = "1" ] && [ -d /etc/NetworkManager/system-connections ] && \
+	# nmcli, not /etc/NetworkManager/system-connections: on modern Ubuntu that
+	# directory is empty (netplan keeps keyfiles in /run) and the build asks
+	# NetworkManager where the profiles really are.
+	[ "${EMBED_WIFI_CREDS:-1}" = "1" ] && command -v nmcli >/dev/null 2>&1 && \
 		_embedded="$_embedded\n    - saved Wi-Fi passphrases from NetworkManager"
 	[ "${EMBED_TAILSCALE_STATE:-1}" = "1" ] && [ -f /var/lib/tailscale/tailscaled.state ] && \
 		_embedded="$_embedded\n    - the Tailscale node identity (joins your tailnet as this machine)"
@@ -310,7 +313,6 @@ cmd_status_machine() {
 		return 0
 	fi
 
-	_style=$(effective_grub_setting style)
 	_timeout=$(effective_grub_setting timeout)
 
 	_grub_ok=0
@@ -338,6 +340,17 @@ cmd_status_machine() {
 	printf 'HINT=%s\n' "${HINT:-splash}"
 	printf 'GRUB_TIMEOUT_EFFECTIVE=%s\n' "$_timeout"
 	printf 'GRUB_OK=%s\n' "$_grub_ok"
+
+	# What the built image actually carries (recorded at build time); absent
+	# for images built before the record had these keys.
+	if [ -r "$CACHE/build-info" ]; then
+		( . "$CACHE/build-info" 2>/dev/null
+		  [ -n "${EMBED_WIFI_CREDS:-}" ] || exit 0
+		  printf 'EMBED_SSH_KEY=%s\n' "${EMBED_SSH_KEY:-0}"
+		  printf 'EMBED_WIFI_CREDS=%s\n' "${EMBED_WIFI_CREDS:-0}"
+		  printf 'WIFI_PROFILES=%s\n' "${WIFI_PROFILES:-0}"
+		  printf 'EMBED_TAILSCALE_STATE=%s\n' "${EMBED_TAILSCALE_STATE:-0}" )
+	fi
 }
 
 cmd_status() {
@@ -394,12 +407,26 @@ cmd_status() {
 		printf "grub:      hotkey '%s', style=%s, timeout=%ss  [ok]\n" "$HOTKEY" "$_style" "$_timeout"
 	fi
 
+	# Report what the built image ACTUALLY carries, from the build record;
+	# only an image built before the record had these keys falls back to the
+	# predictive config heuristics.
+	_e_ssh=""; _e_wifi=""; _e_ts=""
+	if [ -r "$CACHE/build-info" ]; then
+		set -- $( . "$CACHE/build-info" 2>/dev/null; \
+			printf '%s %s %s' "${EMBED_SSH_KEY:--}" "${EMBED_WIFI_CREDS:--}" "${EMBED_TAILSCALE_STATE:--}" )
+		_e_ssh=${1:--}; _e_wifi=${2:--}; _e_ts=${3:--}
+	fi
+	[ "$_e_ssh" = "0" ] || [ "$_e_ssh" = "1" ] || \
+		_e_ssh=$([ "${EMBED_SSH_KEY:-1}" = "1" ] && [ -d /etc/timeshift/ssh ] && echo 1 || echo 0)
+	[ "$_e_wifi" = "0" ] || [ "$_e_wifi" = "1" ] || \
+		_e_wifi=$([ "${EMBED_WIFI_CREDS:-1}" = "1" ] && command -v nmcli >/dev/null 2>&1 && echo 1 || echo 0)
+	[ "$_e_ts" = "0" ] || [ "$_e_ts" = "1" ] || \
+		_e_ts=$([ "${EMBED_TAILSCALE_STATE:-1}" = "1" ] && [ -f /var/lib/tailscale/tailscaled.state ] && echo 1 || echo 0)
+
 	_creds=""
-	[ "${EMBED_SSH_KEY:-1}" = "1" ] && [ -d /etc/timeshift/ssh ] && _creds="SSH key"
-	[ "${EMBED_WIFI_CREDS:-1}" = "1" ] && [ -d /etc/NetworkManager/system-connections ] && \
-		_creds="${_creds:+$_creds, }Wi-Fi passphrases"
-	[ "${EMBED_TAILSCALE_STATE:-1}" = "1" ] && [ -f /var/lib/tailscale/tailscaled.state ] && \
-		_creds="${_creds:+$_creds, }Tailscale identity"
+	[ "$_e_ssh" = "1" ] && _creds="SSH key"
+	[ "$_e_wifi" = "1" ] && _creds="${_creds:+$_creds, }Wi-Fi passphrases"
+	[ "$_e_ts" = "1" ] && _creds="${_creds:+$_creds, }Tailscale identity"
 	[ -n "$_creds" ] && \
 		printf 'embedded:  %s  [readable by anyone who can boot this machine]\n' "$_creds"
 
@@ -408,6 +435,7 @@ cmd_status() {
 
 cmd_reboot() {
 	require_root reboot
+	take_lock   # grub-reboot writes grubenv; serialise like every other mutation
 	load_state || die "no recovery environment installed. Run 'timeshift-recovery install' first."
 	[ -e "$GRUB_ENTRY" ] || die "the GRUB entry is missing; run 'timeshift-recovery install'"
 
@@ -463,6 +491,15 @@ cmd_remove() {
 	run update-grub >/dev/null 2>&1 || warn "update-grub failed; check /boot/grub/grub.cfg by hand"
 
 	run rm -f "$INSTALLED" "$STALE" "$DISABLED"
+
+	# The cached image embeds credentials; 'remove' means gone, and must not
+	# depend on a later 'apt purge' to stop leaving them on disk.
+	if [ -e "$SQUASHFS" ] || [ -e "$CACHE/build-info" ]; then
+		step "Removing the cached environment (it embeds credentials)"
+		run rm -f "$SQUASHFS" "$CACHE/build-info"
+		run rm -f "$CACHE_BOOT/vmlinuz" "$CACHE_BOOT/initrd.img"
+		rmdir "$CACHE_BOOT" "$CACHE" 2>/dev/null || true
+	fi
 
 	log "recovery environment removed; normal boot is restored"
 }

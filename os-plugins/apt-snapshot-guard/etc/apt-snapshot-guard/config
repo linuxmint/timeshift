@@ -9,6 +9,14 @@
 #
 #   sudo touch /run/apt-snapshot-guard.bypass
 #   sudo apt install <pkg>        # snapshot skipped once; flag auto-removed
+#
+# The environment variable APT_SNAPSHOT_GUARD=off (also: 0, no) disables the
+# guard for that one invocation, e.g.:
+#
+#   sudo APT_SNAPSHOT_GUARD=off apt install <pkg>
+#
+# Both bypasses exist for deliberate use; anything that can set them already
+# has root, so they widen no privilege.
 
 # Master switch. 0 disables the guard entirely (apt runs with no snapshot).
 ENABLED=1

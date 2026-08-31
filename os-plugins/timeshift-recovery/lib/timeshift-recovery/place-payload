@@ -90,7 +90,11 @@ This modifies the partition table. Existing partitions are not touched."
 
 	_before=$(lsblk -rno NAME "$_disk" | tail -n +2 | sort)
 
-	run sgdisk --new=0:0:+"$_bytes" \
+	# sgdisk's bare +N end specifier counts SECTORS; only a K/M/G/T suffix
+	# makes it a size. Feeding it bytes asks for ~512x the intended partition.
+	_mib=$((_bytes / 1048576))
+
+	run sgdisk --new=0:0:+"${_mib}M" \
 		--typecode=0:8300 \
 		--change-name=0:"Timeshift Recovery" \
 		"$_disk" >/dev/null
@@ -211,8 +215,9 @@ on the system disk so 'auto' can create one."
 # --- placement --------------------------------------------------------------
 
 place_on_partition() {
-	if findmnt -no TARGET --source "$TARGET_DEV" >/dev/null 2>&1; then
-		die "$TARGET_DEV is mounted at $(findmnt -no TARGET --source "$TARGET_DEV" | head -n1); unmount it first"
+	_mounted_at=$(findmnt -no TARGET --source "$TARGET_DEV" 2>/dev/null | head -n1)
+	if [ -n "$_mounted_at" ]; then
+		die "$TARGET_DEV is mounted at $_mounted_at; unmount it first"
 	fi
 	[ "$TARGET_DEV" != "$(root_device)" ] || die "$TARGET_DEV is the root filesystem; refusing to format it"
 
@@ -286,13 +291,19 @@ build_medium_image() {
 		return 0
 	fi
 
-	CLEANUP_STAGE=$(mktemp -d)
+	# Stage next to the cache, not in /tmp: on a tmpfs /tmp (the systemd
+	# default) this copy would put the whole ~1 GiB environment in RAM.
+	CLEANUP_STAGE=$(mktemp -d "$CACHE/stage.XXXXXX")
 	mkdir -p "$CLEANUP_STAGE/casper" "$CLEANUP_STAGE/.disk"
 	cp -f "$SQUASHFS" "$CLEANUP_STAGE/$PAYLOAD_SQUASHFS_REL"
 	printf 'Timeshift Recovery Environment\n' > "$CLEANUP_STAGE/.disk/info"
 
+	# 0600 from the first byte: the image embeds the SSH key, Wi-Fi
+	# passphrases and Tailscale identity, and must never be world-readable.
 	rm -f "$_img.new"
+	( umask 077; : > "$_img.new" )
 	run mkfs.ext4 -q -F -L TSRECOVERY -d "$CLEANUP_STAGE" "$_img.new" "$((_bytes / 1024))k"
+	run chmod 0600 "$_img.new"
 	# Rename into place: a power loss mid-copy would otherwise leave a truncated
 	# image that GRUB still happily offers to boot.
 	run mv -f "$_img.new" "$_img"
@@ -319,6 +330,9 @@ copy_payload() {
 		partition)
 			run mkdir -p "$PAYLOAD_DIR/casper" "$PAYLOAD_DIR/.disk"
 			run cp -f "$SQUASHFS" "$PAYLOAD_DIR/$PAYLOAD_SQUASHFS_REL.new"
+			# The squashfs embeds credentials; keep it unreadable to non-root
+			# even when this partition gets auto-mounted by a file manager.
+			run chmod 0600 "$PAYLOAD_DIR/$PAYLOAD_SQUASHFS_REL.new"
 			run mv -f "$PAYLOAD_DIR/$PAYLOAD_SQUASHFS_REL.new" "$PAYLOAD_DIR/$PAYLOAD_SQUASHFS_REL"
 			if [ "${DRY_RUN:-0}" != "1" ]; then
 				printf 'Timeshift Recovery Environment\n' > "$PAYLOAD_DIR/.disk/info"

@@ -28,7 +28,10 @@ for f in ./usr/sbin/timeshift-recovery \
 	./usr/lib/timeshift-recovery/splash.png \
 	./usr/lib/timeshift-recovery/logo.png \
 	./etc/timeshift-recovery/config \
+	./etc/logrotate.d/timeshift-recovery \
 	./lib/systemd/system/timeshift-recovery-refresh.service \
+	./usr/share/man/man8/timeshift-recovery.8.gz \
+	./usr/share/doc/timeshift-recovery/copyright \
 	./usr/share/doc/timeshift-recovery/changelog.gz; do
 	printf '%s\n' "$LIST" | grep -q " $f\$" && ok "$f" || bad "MISSING $f"
 done
@@ -89,17 +92,21 @@ if printf '%s\n' "$CTRL" | grep -qx triggers; then
 		&& ok "trigger on the timeshift binaries" \
 		|| bad "triggers file present but does not watch /usr/bin/timeshift"
 else
-	bad "no triggers member — the environment would never refresh itself"
+	bad "no triggers member -- the environment would never refresh itself"
 fi
 
 # Every documented config key must actually ship, or a user setting it in
-# /etc silently does nothing.
+# /etc silently does nothing. This list must grow with load_config().
 if [ -r "$TMPD/etc/timeshift-recovery/config" ]; then
-	for key in TARGET SIZE HOTKEY HOTKEY_STYLE TIMEOUT EMBED_SSH_KEY TORAM \
-		FIRMWARE EMBED_WIFI_CREDS EMBED_TAILSCALE_STATE; do
+	for key in TARGET SIZE HOTKEY HOTKEY_STYLE TIMEOUT SCALE HINT EMBED_SSH_KEY \
+		TORAM FIRMWARE EMBED_WIFI_CREDS EMBED_TAILSCALE_STATE EXTRA_PACKAGES; do
 		grep -qE "^$key=" "$TMPD/etc/timeshift-recovery/config" \
 			&& ok "config key: $key" || bad "config key missing: $key"
 	done
+	# The config is sourced as /bin/sh; a syntax error would kill every command.
+	sh -n "$TMPD/etc/timeshift-recovery/config" 2>/dev/null \
+		&& ok "sh -n: etc/timeshift-recovery/config" \
+		|| bad "SYNTAX ERROR: etc/timeshift-recovery/config"
 fi
 
 # The config must be a conffile or a user's target/hotkey resets on upgrade.
@@ -108,7 +115,7 @@ if printf '%s\n' "$CTRL" | grep -qx conffiles; then
 		&& ok "conffile: /etc/timeshift-recovery/config" \
 		|| bad "not a conffile: /etc/timeshift-recovery/config"
 else
-	bad "no conffiles member — the config would be overwritten silently on upgrade"
+	bad "no conffiles member -- the config would be overwritten silently on upgrade"
 fi
 
 # postrm must clean up the GRUB files the CLI wrote. dpkg does not know about
@@ -118,11 +125,18 @@ printf '%s\n' "$POSTRM" | grep -q '42_timeshift_recovery' \
 	&& ok "postrm removes the GRUB entry" \
 	|| bad "postrm does not remove /etc/grub.d/42_timeshift_recovery"
 
+# postinst is what tightens artifact permissions on upgrade and reacts to the
+# refresh trigger; its absence would be silent.
+printf '%s\n' "$CTRL" | grep -qx postinst \
+	&& ok "postinst present" || bad "no postinst member"
+
 # Control metadata.
 printf '%s\n' "$INFO" | grep -q '^ Package: timeshift-recovery$' && ok "Package: timeshift-recovery" || bad "wrong Package name"
 printf '%s\n' "$INFO" | grep -q 'Depends:.*timeshift'   && ok "Depends: timeshift"      || bad "missing Depends on timeshift"
 printf '%s\n' "$INFO" | grep -q 'Depends:.*grub2-common' && ok "Depends: grub2-common"  || bad "missing Depends on grub2-common"
 printf '%s\n' "$INFO" | grep -q 'Recommends:.*mmdebstrap' && ok "Recommends: mmdebstrap" || bad "missing Recommends: mmdebstrap"
+# The native-resolution splash render (the sharp path) needs ImageMagick.
+printf '%s\n' "$INFO" | grep -q 'Suggests:.*imagemagick' && ok "Suggests: imagemagick" || bad "missing Suggests: imagemagick"
 
 echo
 if [ "$fail" -eq 0 ]; then
