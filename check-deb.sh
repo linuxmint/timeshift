@@ -20,13 +20,15 @@ CTRL=$(dpkg-deb --ctrl-tarfile "$DEB" | tar -tf - | sed 's|^\./||' | grep -v '^$
 # Floor, not a target: the GTK4 port removed 19 bundled images (icons are now
 # resolved from the theme), so a complete package is ~97 files.
 n=$(printf '%s\n' "$LIST" | grep -c '^-' || true)
-[ "$n" -ge 90 ] && ok "file count: $n" || bad "only $n files shipped (looks empty/partial)"
+[ "$n" -ge 92 ] && ok "file count: $n" || bad "only $n files shipped (looks empty/partial)"
 
 for f in ./usr/bin/timeshift ./usr/bin/timeshift-gtk ./usr/bin/timeshift-launcher \
+	./usr/bin/timeshift-recovery-shell \
 	./usr/share/applications/timeshift-gtk.desktop \
 	./usr/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy \
 	./etc/timeshift/default.json \
 	./usr/share/man/man1/timeshift.1.gz ./usr/share/man/man1/timeshift-gtk.1.gz \
+	./usr/share/man/man1/timeshift-recovery-shell.1.gz \
 	./usr/share/metainfo/com.linuxmint.timeshift.metainfo.xml; do
 	printf '%s\n' "$LIST" | grep -q " $f\$" && ok "$f" || bad "MISSING $f"
 done

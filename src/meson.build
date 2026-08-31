@@ -42,7 +42,8 @@ sources_utility = files([
   'Utility/OSDNotify.vala',
   'Utility/RestoreScriptTask.vala',
   'Utility/RsyncSpaceCheckTask.vala',
-  'Utility/RsyncTask.vala',
+  'Utility/RecoveryToolTask.vala',
+    'Utility/RsyncTask.vala',
   'Utility/SystemUser.vala',
   'Utility/TimeoutCounter.vala',
   'Utility/TeeJee.FileSystem.vala',
@@ -84,7 +85,8 @@ sources_gtk = files([
   'Gtk/ExcludeListSummaryWindow.vala',
   'Gtk/MainWindow.vala',
   'Gtk/MiscBox.vala',
-  'Gtk/RestoreBox.vala',
+  'Gtk/RecoveryBox.vala',
+    'Gtk/RestoreBox.vala',
   'Gtk/RestoreDeviceBox.vala',
   'Gtk/RestoreProgressBox.vala',
   'Gtk/RestoreProgressWindow.vala',
@@ -123,6 +125,17 @@ timeshift = executable('timeshift',
 
 timeshift_gtk = executable('timeshift-gtk',
   sources_app_gtk + sources_core + sources_utility + sources_gtk,
+  config_header,
+  dependencies: dependencies,
+  install: true,
+  vala_args: vala_opts
+)
+
+# The launcher shown inside the recovery environment. Built from its own single
+# source rather than sources_core: it must keep working when Timeshift's own
+# state does not load, which is the situation the environment exists for.
+timeshift_recovery_shell = executable('timeshift-recovery-shell',
+  files(['Recovery/RecoveryShell.vala']),
   config_header,
   dependencies: dependencies,
   install: true,

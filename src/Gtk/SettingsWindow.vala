@@ -44,6 +44,7 @@ class SettingsWindow : AppWindow{
 	private ExcludeBox exclude_box;
 	private UsersBox users_box;
 	private MiscBox misc_box;
+	private RecoveryBox recovery_box;
 	private AppearanceBox appearance_box;
 	
 	private uint tmr_init;
@@ -102,6 +103,13 @@ class SettingsWindow : AppWindow{
 		stack.add_titled (form_page(appearance_box), "appearance", _("Appearance"));
 
 		stack.add_titled (form_page(misc_box), "misc", _("Misc"));
+
+		/* Managing the host's bootloader from inside the booted recovery
+		 * environment makes no sense, so the page stays off a live system. */
+		if (!App.live_system()){
+			recovery_box = new RecoveryBox(this);
+			stack.add_titled (form_page(recovery_box), "recovery", _("Recovery"));
+		}
 
 		backend_box.type_changed.connect(()=>{
 			page_filters.visible = !App.btrfs_mode;

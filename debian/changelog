@@ -1,3 +1,151 @@
+timeshift-ssh (25.12.4+ssh31) resolute; urgency=medium
+
+  * Recovery: enable/disable verbs, machine-readable status, run lock
+  * timeshift CLI/GUI: manage the recovery environment (status, enable, disable, install)
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 21:35:45 -0400
+
+timeshift-ssh (25.12.4+ssh30) resolute; urgency=medium
+
+  * Recovery shell: center modal dialogs; storage list hugs its rows
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 20:31:07 -0400
+
+timeshift-ssh (25.12.4+ssh29) resolute; urgency=medium
+
+  * Recovery shell: modern dark redesign (tokens, badges, themed terminal, focus rings)
+  * Recovery scaling: cap auto compositor scale at 2.0
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 20:20:05 -0400
+
+timeshift-ssh (25.12.4+ssh28) resolute; urgency=medium
+
+  * Recovery: scale the session to the display. A modern laptop panel is ~250 DPI and the GUI rendered at 1x, about a third of its intended size. The scale is computed from the panel's EDID and applied with wlr-randr, falling back to GDK_SCALE - which the shell and the timeshift-gtk it spawns both inherit
+  * Recovery: add SCALE to the config and --scale to the CLI, with TIMESHIFT_RECOVERY_SCALE as a runtime override
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 19:25:27 -0400
+
+timeshift-ssh (25.12.4+ssh27) resolute; urgency=medium
+
+  * Recovery: command-line options were parsed, exported, and then discarded - the helper scripts re-ran load_config, resetting --target, --size, --hotkey, --timeout, --firmware and the embed flags back to defaults before anything read them
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 19:00:39 -0400
+
+timeshift-ssh (25.12.4+ssh26) resolute; urgency=medium
+
+  * Release build for real-hardware recovery install and Press-R boot test
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 18:56:38 -0400
+
+timeshift-ssh (25.12.4+ssh25) resolute; urgency=medium
+
+  * Backup/restore: preserve hard links (-H). Archive mode omits them, so every hardlinked path was stored and restored as an independent copy - 138 files in /usr/bin and /usr/lib alone on a stock Ubuntu
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 18:51:01 -0400
+
+timeshift-ssh (25.12.4+ssh24) resolute; urgency=medium
+
+  * Backup/restore: transfer extended attributes (-X). rsync's archive mode omits them, so every security.capability was silently dropped - a restored snap-confine lost its ten file capabilities and broke every snap on the system, and ping/mtr-packet lost cap_net_raw
+  * Restore: warn when the restored snap-confine has no file capabilities, which is what any snapshot taken before -X produces
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 18:30:09 -0400
+
+timeshift-ssh (25.12.4+ssh23) resolute; urgency=medium
+
+  * Backup/restore: keep /snap/bin and /snap/<name>/current - excluding all of /snap also dropped the symlinks every snap command resolves through, so a restored system had all its .snap payloads and still reported the snap was not installed
+  * Restore: warn when the target has snap payloads but no /snap/bin, which is what restoring a snapshot taken before this change produces
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 18:03:08 -0400
+
+timeshift-ssh (25.12.4+ssh22) resolute; urgency=medium
+
+  * Restore: rebuild the initramfs when restoring onto different devices - a hostonly dracut image from the source machine waits for its old ESP UUID and drops the restored system into emergency mode
+  * Restore: regenerate with dracut --no-hostonly so the image boots on the hardware the restore landed on, not on the recovery environment's bind-mounted devices
+  * Restore: clear the reconnect banner when the transfer resumes - the retry re-runs inside the announced phase, so no new phase marker was emitted and the notice stayed up
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 17:15:04 -0400
+
+timeshift-ssh (25.12.4+ssh21) resolute; urgency=medium
+
+  * Recovery: Diagnostics reports ICMP and TCP reachability separately, shows which interface the backup host routes over, and calls out the ping-answers-but-ssh-does-not case
+  * Recovery: Network page can turn tailnet subnet routes on and off, for when a peer's advertised route shadows a working direct path to the backup host
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 16:39:37 -0400
+
+timeshift-ssh (25.12.4+ssh20) resolute; urgency=medium
+
+  * Restore: the reconnect probe no longer shares the ssh ControlMaster socket - a client attaching to a wedged master never performs connect(2), so ConnectTimeout did not apply and the probe blocked instead of dialling afresh
+  * Restore: drop the shared ssh connection before each reconnect attempt, and remove stale control sockets that rmdir could never reap
+  * Restore: reconnect banner now shows the attempt, elapsed time and what the drop was, and states that re-running resumes
+  * Add a Retry action when a remote snapshot location is unavailable, instead of only offering to reconfigure it
+  * Fix the capability cache being invalidated after the probe that filled it, which pinned a wrong reason for the whole session
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 16:37:02 -0400
+
+timeshift-ssh (25.12.4+ssh19) resolute; urgency=medium
+
+  * Restore: require an EFI System Partition when the snapshot came from a UEFI system - it was defaulting to 'keep on root', so the ESP was never mounted, the snapshot's EFI payload landed on ext4 and grub-install failed with 'cannot find EFI directory'
+  * Restore: never use an ESP on a different disk from the root device - both front ends defaulted to the ESP of the machine running the restore, which would overwrite the live system's boot loader
+  * Restore: show the snapshot's original layout against the target selection, and block on a missing / or /boot/efi
+  * Restore: capture each post-restore step's output to /var/log/timeshift/restore-steps.log on the restored system
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 15:53:06 -0400
+
+timeshift-ssh (25.12.4+ssh18) resolute; urgency=medium
+
+  * Restore: fold mount points that duplicate an ancestor's device, and abort if an aliased mount reaches the transfer (this erased a restore target through <target>/home)
+  * Restore: run the hardened sync script on the restore-to-another-device path, which previously discarded it along with the retry loop and the fail-closed sentinel
+  * Restore: check rsync's exit code before the fstab rewrite, grub-install and fsck; report OK/warnings/failure with detail instead of a bare 'Completed With Errors'
+  * Restore: never run fsck -y on a still-mounted target; write the rsync log onto the restored system so a failure can be diagnosed after a reboot
+  * Restore: report a failed finish step by name; pick grub/initramfs tools from the target at run time; bind /sys recursively so UEFI grub-install sees efivars
+  * Recovery: add mdadm/xfsprogs/f2fs-tools, verify the SSH key is embedded, mount drives with mount(8), unlock LUKS and activate LVM, surface a child's exit status
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 15:06:48 -0400
+
+timeshift-ssh (25.12.4+ssh17) resolute; urgency=medium
+
+  * Recovery shell: scroll the menu and pin the power buttons, so a low-resolution fallback screen cannot clip the launcher
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 13:58:54 -0400
+
+timeshift-ssh (25.12.4+ssh16) resolute; urgency=medium
+
+  * Restore: retry and resume across network drops, and refuse to run grub-install on a half-restored target
+  * Backup: bounded retry plus --partial-dir/--timeout for remote transfers
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 13:28:50 -0400
+
+timeshift-ssh (25.12.4+ssh15) resolute; urgency=medium
+
+  * Restore: populate the log list with a single splice instead of one append per row - a 200k-row restore log froze the UI at 100% CPU showing a stale frame
+  * Recovery shell: async network reads and live throughput on the network page
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 13:02:06 -0400
+
+timeshift-ssh (25.12.4+ssh14) resolute; urgency=medium
+
+  * Session supervision: restart the launcher and compositor on crash instead of stranding the user; force dark theme in the environment; fix wifi credential enumeration
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 12:36:41 -0400
+
+timeshift-ssh (25.12.4+ssh13) resolute; urgency=medium
+
+  * Recovery environment refinement: native network page, Tailscale for off-LAN restore, embedded wifi credentials, in-app dialogs, FIRMWARE=slim
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 12:15:01 -0400
+
+timeshift-ssh (25.12.4+ssh12) resolute; urgency=medium
+
+  * Recovery shell: state every colour explicitly so the launcher renders correctly with whatever GTK theme the recovery environment happens to have
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 11:48:19 -0400
+
+timeshift-ssh (25.12.4+ssh11) resolute; urgency=medium
+
+  * Exclude the recovery environment's build cache and payload from snapshots: they are large, reproducible build artifacts, and over a remote repository the transfer can exceed apt-snapshot-guard's timeout and block apt entirely
+
+ -- makeafide <willsmit4433@gmail.com>  Sun, 30 Aug 2026 11:36:50 -0400
+
 timeshift-ssh (25.12.4+ssh10) resolute; urgency=medium
 
   * Restoring the running system now shows a designed full-screen progress view instead of a raw VTE terminal: a step checklist, a real progress bar with ETA and current file, live created/changed/deleted counts, and the raw script output behind a 'Show technical details' pane

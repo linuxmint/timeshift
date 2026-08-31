@@ -207,6 +207,20 @@ public class AppConsole : GLib.Object {
 					App.app_mode = "setup-ssh-key";
 					break;
 
+				case "--recovery-status":
+					App.app_mode = "recovery-status";
+					LOG_TIMESTAMP = false;
+					LOG_DEBUG = false;
+					break;
+
+				case "--recovery-enable":
+					App.app_mode = "recovery-enable";
+					break;
+
+				case "--recovery-disable":
+					App.app_mode = "recovery-disable";
+					break;
+
 				case "--snapshot-url":
 				case "--remote":
 					App.cmd_ssh_url = args[++k];
@@ -363,6 +377,18 @@ public class AppConsole : GLib.Object {
 				LOG_ENABLE = true;
 				return setup_ssh_key();
 
+			case "recovery-status":
+				LOG_ENABLE = true;
+				return run_recovery_tool("status");
+
+			case "recovery-enable":
+				LOG_ENABLE = true;
+				return run_recovery_tool("enable --yes");
+
+			case "recovery-disable":
+				LOG_ENABLE = true;
+				return run_recovery_tool("disable --yes");
+
 			default:
 				return true;
 		}
@@ -371,6 +397,28 @@ public class AppConsole : GLib.Object {
 	private static string version_message (){
 		string msg = "%s %s\n".printf( AppName, AppVersion);
 		return msg;
+	}
+
+	/* The recovery environment is provisioned by a separate tool
+	 * (timeshift-recovery) so its failure modes can never take the restore
+	 * path down with them. These commands only wrap it: the tool's own
+	 * output is the interface, streamed through unchanged. */
+	private bool run_recovery_tool(string args_line){
+
+		string tool = "/usr/sbin/timeshift-recovery";
+
+		if (!file_exists(tool)){
+			log_error(_("The timeshift-recovery package is not installed"));
+			log_msg(_("Install it to provision a bootable recovery environment"));
+			return false;
+		}
+
+		/* exec_script_sync()'s wrapper ends with a successful echo, so the
+		 * explicit exit is what carries the tool's real status back. */
+		int rc = exec_script_sync("%s %s\nexit $?\n".printf(tool, args_line),
+			null, null, false, false, true, true);
+
+		return (rc == 0);
 	}
 
 	private static string help_message (){
@@ -386,6 +434,7 @@ public class AppConsole : GLib.Object {
 		msg += "  timeshift --restore [OPTIONS]\n";
 		msg += "  timeshift --delete-[all] [OPTIONS]\n";
 		msg += "  timeshift --list-{snapshots|devices} [OPTIONS]\n";
+		msg += "  timeshift --recovery-{status|enable|disable}\n";
 		msg += "\n";
 		msg += _("Options") + ":\n";
 		msg += "\n";
@@ -410,6 +459,11 @@ public class AppConsole : GLib.Object {
 		msg += _("Delete") + ":\n";
 		msg += "  --delete                   " + _("Delete snapshot") + "\n";
 		msg += "  --delete-all               " + _("Delete all snapshots") + "\n";
+		msg += "\n";
+		msg += _("Recovery Environment") + ":\n";
+		msg += "  --recovery-status          " + _("Show the press-R recovery environment status") + "\n";
+		msg += "  --recovery-enable          " + _("Restore the recovery boot entry (after disable)") + "\n";
+		msg += "  --recovery-disable         " + _("Remove the recovery boot entry, keep the payload") + "\n";
 		msg += "\n";
 		msg += _("Global") + ":\n";
 		msg += "  --snapshot-device <device> " + _("Specify backup device (default: config)") + "\n";
@@ -523,12 +577,20 @@ public class AppConsole : GLib.Object {
 		print_grid(grid, right_align);
 	}
 
-	private Gee.ArrayList<Device> list_all_devices(){
+	/* include_esp: /boot/efi needs EFI System Partitions, which are vfat and so
+	 * fail has_linux_filesystem() -- without this the console could not offer
+	 * the one kind of device that mount point accepts. */
+	private Gee.ArrayList<Device> list_all_devices(bool include_esp = false){
 
 		//add devices
 		var device_list = new Gee.ArrayList<Device>();
 		foreach(var dev in Device.get_block_devices_using_lsblk()) {
-			if (dev.has_linux_filesystem()){
+			if (include_esp){
+				if (dev.is_efi_system_partition()){
+					device_list.add(dev);
+				}
+			}
+			else if (dev.has_linux_filesystem()){
 				device_list.add(dev);
 			}
 		}
@@ -673,6 +735,24 @@ public class AppConsole : GLib.Object {
 			map_devices();
 
 			select_grub_device();
+		}
+
+		/* Before the confirmation, not at mount time: the fold changes which
+		 * devices get written to, so it belongs in the list the user is being
+		 * asked to approve. */
+		App.fold_aliased_mount_entries();
+		App.normalize_esp_selection();
+
+		/* Same rule as the GUI: a UEFI snapshot without an EFI System
+		 * Partition restores every file and then produces a disk the firmware
+		 * cannot boot. Fail here rather than after copying 14 GB. */
+		if (App.snapshot_needs_esp() && (App.assigned_esp() == null)){
+
+			log_error(_("This snapshot is from a system that boots with UEFI, so it needs an EFI System Partition mounted at /boot/efi."));
+			log_error(_("No EFI System Partition was selected."));
+			log_msg(_("Create a 1 GB partition of type 'EFI System' on the target disk, format it as FAT32, and run the restore again."));
+
+			return false;
 		}
 
 		confirm_restore();
@@ -1065,7 +1145,7 @@ public class AppConsole : GLib.Object {
 				log_msg("");
 				log_msg(_("Select '%s' device (default = %s)").printf(
 					mnt.mount_point, default_device) + ":\n");
-				var device_list = list_all_devices();
+				var device_list = list_all_devices(mnt.mount_point == "/boot/efi");
 				log_msg("");
 
 				int attempts = 0;
