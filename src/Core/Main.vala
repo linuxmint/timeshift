@@ -463,7 +463,13 @@ public class Main : GLib.Object{
 	public bool check_dependencies(out string msg){
 		log_debug("Main: check_dependencies()");
 		
-		string[] dependencies = { "rsync","/sbin/blkid","df","mount","umount","fuser","crontab","cp","rm","touch","ln","sync", "run-parts"}; //"shutdown","chroot",
+		/* "crontab" was here, and the app refused to start without it. The
+		 * schedule belongs to timeshiftd now, and the only thing left that
+		 * reaches for cron is the sweep that removes what older versions wrote
+		 * -- which deletes files under /etc/cron.d directly and treats an
+		 * absent crontab(1) as an empty crontab. Requiring the binary would
+		 * mean depending on a cron daemon that nothing here uses. */
+		string[] dependencies = { "rsync","/sbin/blkid","df","mount","umount","fuser","cp","rm","touch","ln","sync", "run-parts"}; //"shutdown","chroot",
 
 		msg = "";
 		foreach(string cmd_tool in dependencies){
@@ -6101,26 +6107,27 @@ public class Main : GLib.Object{
 		}
 
 		CronTab.remove_script_file("timeshift-hourly", "hourly");
-			
-		// start update ---------------------------
-		
-		if (scheduled){
-			
-			//hourly
-			CronTab.add_script_file("timeshift-hourly", "d", "0 * * * * root timeshift --check --scripted", stop_cron_emails);
-			
-			//boot
-			if (schedule_boot){
-				CronTab.add_script_file("timeshift-boot", "d", "@reboot root sleep 10m && timeshift --create --scripted --tags B", stop_cron_emails);
-			}
-			else{
-				CronTab.remove_script_file("timeshift-boot", "d");
-			}
-		}
-		else{
-			CronTab.remove_script_file("timeshift-hourly", "d");
-			CronTab.remove_script_file("timeshift-boot", "d");
-		}
+
+		/* The schedule belongs to timeshiftd now.
+		 *
+		 * This method used to WRITE /etc/cron.d/timeshift-hourly and
+		 * timeshift-boot. It must not any more: cron would start a second
+		 * timeshift process alongside the daemon, and two processes taking
+		 * snapshots of the same machine is exactly the collision the daemon
+		 * exists to remove.
+		 *
+		 * It is kept, and still called from the same places, because it is the
+		 * only thing that removes what older versions wrote -- and this build
+		 * is upgraded onto machines that have those files. Every call is now a
+		 * sweep. The daemon does the same sweep at startup and postinst does it
+		 * at install time, so an entry recreated by a downgrade is picked up
+		 * whichever way round the machine ends up.
+		 *
+		 * The scheduling settings themselves are untouched: they are read from
+		 * timeshift.json by the daemon, which is where they always lived. */
+
+		CronTab.remove_script_file("timeshift-hourly", "d");
+		CronTab.remove_script_file("timeshift-boot", "d");
 	}
 	
 	// cleanup

@@ -51,6 +51,13 @@ development machine (a LUKS-on-LVM disk, the checksum/owner/group itemise
 columns) are hand-written and labelled as such in each directory's `README.md`.
 Prefer extending the corpus over inventing fixtures inline.
 
+Some tests need root and skip cleanly without it — the btrfs ones build a real
+filesystem on a loopback file:
+
+```bash
+cd src-go && sudo env "PATH=$PATH" "HOME=$HOME" go test ./... -count=1
+```
+
 ## Architecture
 
 Two binaries share one core (`src/meson.build`): `AppConsole.vala` or `AppGtk.vala` + `sources_core` + `sources_utility` (+ `sources_gtk` for the GUI).
@@ -503,6 +510,109 @@ snapshot), deleting a subvolume that contains a nested one, NOT mistaking an
 ordinary directory for a subvolume, refusing to restore over a live subvolume,
 and the qgroup cleanup with quotas actually enabled.
 
+### The scheduler (`internal/schedule/`)
+
+`timeshiftd` owns the timer. This was `cron` plus `Main.check_create_snapshot()`
+plus `SnapshotRepo.auto_remove()`.
+
+cron ran the whole CLI once an hour to ask a question whose answer was almost
+always "nothing", and a cron-driven run had nowhere to report to -- a client
+could not attach to it, which is the defect this port exists to remove. A
+scheduled backup now goes through the same `jobs.Queue` as any other, so
+`timeshift --watch` attaches to it exactly like a hand-started one.
+
+**Ticking often is safe, and that is a property of the decisions, not luck.**
+Every test is an age comparison -- "is the newest hourly snapshot more than an
+hour old" -- which gives the same answer whether it is asked once an hour or
+twelve times, and only one of those twelve can find it true. The obvious
+alternative, firing on the hour boundary, silently skips an hour whenever the
+machine is asleep or the daemon restarts across it. Default interval 10 minutes.
+
+Three details carried over verbatim, each of which looks wrong until you know
+why:
+
+- **The grace minute.** Every interval cutoff is `now - interval + 1 minute`.
+  Without it a check starting at 10:00:02 finds the 09:00:01 snapshot 59:59 old,
+  declines, and skips the hour entirely.
+- **Tag rotation.** If a snapshot under an hour old already exists, a due level
+  is satisfied by adding its tag rather than copying the system. This is why
+  enabling all five levels on a fresh install yields ONE snapshot tagged BHDWM
+  and not five identical copies. At most one snapshot is created per check.
+- **Retention removes tags, not snapshots.** A snapshot left with no tags is
+  what the prune step then deletes. One snapshot commonly carries several
+  levels, so "the daily limit was exceeded" must not remove a copy that is also
+  this week's weekly.
+
+Retention's two rules are different shapes, and that is in the original too:
+boot is count-only, while hourly/daily/weekly/monthly need BOTH count and age
+(the count doubles as the window length in that level's own unit -- 
+`count_hourly = 6` means "keep six" and "keep six hours"). Commented snapshots
+are spared by the interval levels but **not** by boot. That asymmetry looks like
+an oversight and is kept anyway: boot has no age window to eventually release a
+snapshot, so a commented boot snapshot would otherwise be immortal.
+
+`PlanRetention` returns a plan instead of acting, and the daemon logs the whole
+plan with reasons before applying it. This is the only routine that deletes
+backups on its own initiative; being able to read afterwards exactly what it
+decided is the difference between a bug that can be diagnosed and one that can
+only be regretted.
+
+Two deliberate differences from the original, both fail-safe and both nailed
+down by a test:
+
+- An **invalid snapshot does not count** towards a level's limit. The original
+  counted it, which inflates the total and can untag -- and so delete -- a good
+  snapshot to make room for a broken one.
+- **Rotation picks the newest** eligible snapshot. The original walked its list
+  oldest-first and took the first match, so the tag landed on the older of two
+  copies inside the window, and the outcome depended on the caller's sort order.
+
+Also fixed here, and worth knowing because it is silent: a control file whose
+`created` field will not parse used to leave the snapshot dated to the epoch
+while still marked valid, so retention read it as older than everything and
+deleted it. `created` is **unix seconds**, not a formatted date. The date now
+falls back to the directory name, which *is* the timestamp, and a snapshot
+datable from neither is marked invalid rather than dated to zero -- an invalid
+snapshot is never pruned without positive evidence that it is incomplete.
+
+`startup_delay_interval_mins` (default 10) holds the first check back after
+boot, which is what `@reboot ... sleep 10m` used to do. The original declared
+the field and never used it. It is **read but not written**: while the Vala GUI
+is still installed there are two writers of `timeshift.json` and the Vala one
+drops every key it does not know, so writing it would make it appear and vanish
+depending on which program last saved.
+
+**Losing cron loses a real safety net** -- cron ran whether or not our code was
+healthy, and a dead `timeshiftd` now means no snapshots with nothing to notice.
+`schedule.status` over IPC and `timeshift --schedule-status` are the
+replacement: they report when the scheduler last ran, what it decided and
+whether the loop is alive at all.
+
+### The unit and the group
+
+`timeshiftd.service` is `Type=notify` -- `sdNotify` in `cmd/timeshiftd/notify.go`
+is twenty lines writing `READY=1` to `$NOTIFY_SOCKET`, so systemd knows the
+daemon is ready when the socket is actually listening rather than when the
+process forked. `TimeoutStopSec=1h`, because on SIGTERM it stops accepting
+connections and lets a running backup finish.
+
+The unit carries **no sandboxing directives**, deliberately: the list of things
+it would normally be confined away from is exactly its job -- it reads every
+file on the system, mounts block devices, unlocks LUKS containers and during a
+restore replaces the running system including systemd itself.
+
+`debian/postinst` creates the `timeshift` system group, whose members get the
+read-only IPC subset so watching an apt-driven backup needs no pkexec. Nobody is
+added to it; read-only still exposes the device layout and snapshot paths, so
+membership is a deliberate grant. `postrm` removes the group only on purge and
+only if it is empty (`delgroup` refuses otherwise), so a remove-and-reinstall
+does not silently revoke it.
+
+`check-deb.sh` used to fail on the mere presence of a maintainer script. Now
+that the unit forces one to exist, it checks the invariant that guard was
+really protecting: **no maintainer script may mention `/etc/timeshift`**, which
+is where the SSH keys that open the backup repository live.
+
 ### Verifying the write path
 
 The snapshot format is a two-way contract, so check it in both directions. The
@@ -538,7 +648,7 @@ Neither binary escalates itself; both hard-exit with a message if not root. Esca
 - **Local-run override**: if a `timeshift.json` (and/or a `share/` directory) sits next to the executable, it is used instead of the system one (src/Core/Main.vala:301). This is the way to test config changes without touching `/etc`.
 - Per-snapshot metadata: `info.json` inside each snapshot directory.
 - Log: `/var/log/timeshift/<timestamp>_{gui|<app_mode>}.log`. Lock: `/var/run/lock/timeshift/lock`, holding `<pid>;<app_mode>` so a second instance can report what the first is doing (`src/Utility/AppLock.vala`).
-- Scheduling is cron, not systemd: `CronTab` writes `/etc/cron.d` entries that invoke the **CLI** binary (`timeshift --check --scripted`, and `@reboot … sleep 10m && timeshift --create --scripted --tags B`). So GUI schedule changes are executed by `timeshift`, not `timeshift-gtk`.
+- Scheduling is **`timeshiftd`**, not cron and not a systemd timer. `Main.cron_job_update()` still exists and is still called, but it only ever *removes* now: it sweeps the `/etc/cron.d/timeshift-{hourly,boot}` drop-ins older versions wrote. `debian/postinst` and the daemon's own startup do the same sweep, so an entry that reappears -- a downgrade, or an older GUI -- is picked up whichever way round the machine ends up. `crontab` is no longer in the dependency check at `src/Core/Main.vala:466` and `cron` is no longer a `Depends`.
 - Restore is script-driven: `Main.create_restore_scripts()` emits shell scripts covering chroot, `update-grub`, `update-initramfs` and `run-parts /etc/timeshift/restore-hooks.d`. In GUI mode they run through `RestoreScriptTask` (an `RsyncTask` subclass that supplies the script instead of building one, so all the itemise parsing and every field the progress loops poll keep working); on the console they still go through `exec_script_sync`. Each step is announced with an untranslated `@@TS_PHASE:<key>` echo, emitted only when `app_mode == ""`, and recorded in `App.restore_phases` so the checklist lists exactly the steps that will run. `App.restore_phase` is the step running now — the script sets it through its markers, `restore_other_gui()` sets it directly for the two steps that happen in Vala (`fix_fstab`, `parse_log`). The script's rsync uses `-aiir`, matching `RsyncTask.build_script()`, so the line count tracks the file count; the denominator is the dry run's measured `status_line_count`, stashed in `App.restore_line_count_estimate`.
 
 ## Recovery environment (`src-recovery/`)
@@ -556,6 +666,14 @@ The provisioner builds a bootable rescue environment.
 `/usr/sbin/timeshift-recovery` is POSIX sh with two helpers in
 `/usr/lib/timeshift-recovery/` (`build-rootfs`, `place-payload`) over a sourced
 `common.sh`.
+
+The built image enables `timeshiftd.service`. The enable hook must stay
+**after** the deb-install hook -- the unit has to be unpacked before
+`systemctl enable` can see it -- and both the daemon and its unit are in the
+verify loop, which exists so that repacking an older Timeshift fails loudly
+instead of booting an environment with no working core. `cron` is deliberately
+not in the package list any more: the schedule belongs to `timeshiftd`, and a
+recovery environment has nothing to schedule.
 
 `build-rootfs` runs `mmdebstrap` against the **host's own** apt sources (fed on
 stdin, deb822 and all), so the environment always matches the installed release,

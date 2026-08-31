@@ -95,6 +95,10 @@ func run(args []string) int {
 			mode = "estimate"
 		case "--delete":
 			mode = "delete"
+		case "--check":
+			mode = "check"
+		case "--schedule-status":
+			mode = "schedule-status"
 		case "--scripted":
 			scripted = true
 		case "--comments", "--comment":
@@ -153,10 +157,21 @@ func run(args []string) int {
 		return 0
 	}
 
-	// Both binaries refuse to run as anyone but root, and say so the same way.
-	if err := requireRoot(os.Geteuid()); err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		return 1
+	/* Root, except for the commands that only watch.
+	 *
+	 * The original refused every invocation from a non-root user, which is why
+	 * seeing whether a backup was running meant a pkexec prompt. These two go
+	 * to the daemon and ask it questions; the daemon decides for itself who may
+	 * ask, from the peer credentials on the socket, and a member of the
+	 * timeshift group may. Refusing here as well would make that grant
+	 * unreachable. */
+	switch mode {
+	case "watch", "schedule-status":
+	default:
+		if err := requireRoot(os.Geteuid()); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return 1
+		}
 	}
 
 	ctx := context.Background()
@@ -175,6 +190,12 @@ func run(args []string) int {
 
 	case "estimate":
 		return runEstimate(socket, scripted)
+
+	case "check":
+		return runCheck(socket, scripted)
+
+	case "schedule-status":
+		return runScheduleStatus(socket)
 
 	case "delete":
 		if len(names) == 0 {
@@ -222,11 +243,13 @@ Syntax: timeshift [options]
 Options:
 
   --create          Take a snapshot now
+  --check           Take a scheduled snapshot if one is due
   --watch           Watch the snapshot already running
   --estimate        Measure the system size
   --delete          Delete a snapshot (with --snapshot NAME)
   --list            List snapshots
   --list-devices    List available devices
+  --schedule-status Report when the scheduler last ran
   --tags LETTERS    Retention levels for --create: O B H D W M
   --comments TEXT   Description for --create
   --snapshot NAME   Snapshot to act on

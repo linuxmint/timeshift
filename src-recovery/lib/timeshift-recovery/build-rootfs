@@ -141,8 +141,9 @@ esac
 
 PACKAGES="$KERNEL_META,initramfs-tools,casper,systemd-sysv,dbus"
 # rfkill: a laptop's wireless switch left off is an invisible dead end.
-# cron: timeshift's startup dependency check aborts outright without crontab.
-PACKAGES="$PACKAGES,network-manager,wpasupplicant,iw,rfkill,ca-certificates,cron"
+# cron is deliberately absent: timeshiftd owns the schedule, and a recovery
+# environment has nothing to schedule anyway.
+PACKAGES="$PACKAGES,network-manager,wpasupplicant,iw,rfkill,ca-certificates"
 PACKAGES="$PACKAGES,$FIRMWARE_PKGS"
 # labwc is a small wlroots compositor. Unlike a kiosk compositor it handles
 # multiple toplevels, which matters because timeshift-gtk opens its own windows
@@ -860,6 +861,7 @@ mmdebstrap \
 	--customize-hook="sync-in $SEED_DIR /" \
 	--customize-hook='chroot "$1" sh -c "apt-get install -y --no-install-recommends /tmp/*.deb && rm -f /tmp/*.deb"' \
 	--customize-hook='chroot "$1" sh -c "systemctl enable NetworkManager.service >/dev/null 2>&1 || true"' \
+	--customize-hook='chroot "$1" sh -c "systemctl enable timeshiftd.service >/dev/null 2>&1 || true"' \
 	--customize-hook='chroot "$1" sh -c "passwd -d root >/dev/null 2>&1 || true"' \
 	--customize-hook='chroot "$1" sh -c "update-initramfs -u -k all || update-initramfs -c -k all"' \
 	"$CODENAME" "$ROOTFS" - < "$SOURCES" \
@@ -940,13 +942,14 @@ for required in \
 	usr/bin/timeshift \
 	usr/bin/timeshift-gtk \
 	usr/bin/timeshift-recovery-shell \
+	usr/libexec/timeshift/timeshiftd \
+	usr/lib/systemd/system/timeshiftd.service \
 	usr/bin/nmtui \
 	usr/bin/labwc \
 	usr/bin/wlr-randr \
 	usr/bin/rsync \
 	usr/bin/ssh \
 	usr/bin/nmcli \
-	usr/bin/crontab \
 	usr/sbin/rfkill; do
 	[ -e "$ROOTFS/$required" ] || \
 		die "the built environment has no /$required.

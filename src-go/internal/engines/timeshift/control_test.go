@@ -1,6 +1,7 @@
 package timeshift
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"testing"
@@ -239,4 +240,78 @@ func indexOf(s, sub string) int {
 		}
 	}
 	return -1
+}
+
+// A snapshot whose control file has an unusable date must not end up dated to
+// the epoch: retention compares against windows, so a zero time reads as older
+// than everything and the snapshot would be untagged and deleted because one
+// field would not parse.
+func TestSnapshotDateFallsBackToTheDirectoryName(t *testing.T) {
+	dir := t.TempDir()
+	name := "2026-03-15_12-00-00"
+	snapDir := filepath.Join(dir, "timeshift", "snapshots", name)
+	if err := os.MkdirAll(snapDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	// "created" holds a human-readable date, which the format does not use.
+	control := `{
+  "created" : "2026-03-15 12:00:00",
+  "sys-uuid" : "u",
+  "tags" : "ondemand",
+  "type" : "rsync"
+}`
+	if err := os.WriteFile(filepath.Join(snapDir, "info.json"), []byte(control), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(snapDir, "exclude.list"), nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	repo := &Repo{Backend: &LocalBackend{}, MountPath: dir}
+	list, err := repo.List(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(list) != 1 {
+		t.Fatalf("got %d snapshots, want 1", len(list))
+	}
+
+	want := time.Date(2026, 3, 15, 12, 0, 0, 0, time.Local)
+	if !list[0].Created.Equal(want) {
+		t.Fatalf("Created = %v, want %v from the directory name", list[0].Created, want)
+	}
+	if !list[0].Valid {
+		t.Fatal("a snapshot datable from its name should still be valid")
+	}
+}
+
+// When neither source gives a date, the snapshot is marked invalid rather than
+// dated to the epoch. An invalid snapshot is never pruned without positive
+// evidence that it is incomplete, which is the safe end state.
+func TestUndatableSnapshotIsMarkedInvalid(t *testing.T) {
+	dir := t.TempDir()
+	snapDir := filepath.Join(dir, "timeshift", "snapshots", "not-a-timestamp")
+	if err := os.MkdirAll(snapDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(snapDir, "info.json"),
+		[]byte(`{ "tags" : "ondemand", "type" : "rsync" }`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(snapDir, "exclude.list"), nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	repo := &Repo{Backend: &LocalBackend{}, MountPath: dir}
+	list, err := repo.List(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(list) != 1 {
+		t.Fatalf("got %d snapshots, want 1", len(list))
+	}
+	if list[0].Valid {
+		t.Fatal("a snapshot with no determinable date must not be treated as valid")
+	}
 }

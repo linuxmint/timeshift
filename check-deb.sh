@@ -20,7 +20,7 @@ CTRL=$(dpkg-deb --ctrl-tarfile "$DEB" | tar -tf - | sed 's|^\./||' | grep -v '^$
 # Floor, not a target: the GTK4 port removed 19 bundled images (icons are now
 # resolved from the theme), so a complete package is ~97 files.
 n=$(printf '%s\n' "$LIST" | grep -c '^-' || true)
-[ "$n" -ge 93 ] && ok "file count: $n" || bad "only $n files shipped (looks empty/partial)"
+[ "$n" -ge 100 ] && ok "file count: $n" || bad "only $n files shipped (looks empty/partial)"
 
 for f in ./usr/bin/timeshift ./usr/bin/timeshift-gtk ./usr/bin/timeshift-launcher \
 	./usr/bin/timeshift-recovery-shell \
@@ -44,12 +44,44 @@ printf '%s\n' "$CTRL" | grep -qx conffiles \
 	     || bad "conffiles present but missing /etc/timeshift/default.json"; } \
 	|| bad "no conffiles member — default.json would be overwritten silently on upgrade"
 
-if printf '%s\n' "$CTRL" | grep -Eq '^(preinst|postinst|prerm|postrm)$'; then
-	bad "MAINTAINER SCRIPT PRESENT — audit before shipping: could delete /etc/timeshift/ssh/"
-	printf '%s\n' "$CTRL" | grep -E '^(preinst|postinst|prerm|postrm)$' | sed 's/^/          /'
-else
-	ok "no maintainer scripts (SSH key directory cannot be touched on remove/purge)"
+# Maintainer scripts exist now -- the systemd unit needs enable/start snippets,
+# and postinst creates the socket group and sweeps the obsolete cron drop-ins.
+#
+# The thing this check was really guarding stays guarded, and more precisely
+# than before: NOTHING in a maintainer script may touch /etc/timeshift. That
+# directory holds the SSH keys that open the backup repository, and a script
+# that removed it on purge would take the only way back to the snapshots with
+# it. Naming the directory at all is the failure, whatever the surrounding code
+# claims to do with it.
+scripts=$(printf '%s\n' "$CTRL" | grep -E '^(preinst|postinst|prerm|postrm)$' || true)
+if [ -n "$scripts" ]; then
+	touched=""
+	for sc in $scripts; do
+		if dpkg-deb -I "$DEB" "$sc" 2>/dev/null | grep -q '/etc/timeshift'; then
+			touched="$touched $sc"
+		fi
+	done
+	if [ -n "$touched" ]; then
+		bad "maintainer script mentions /etc/timeshift (SSH keys live there):$touched"
+	else
+		ok "maintainer scripts do not touch /etc/timeshift"
+	fi
 fi
+
+printf '%s\n' "$LIST" | grep -q ' ./usr/lib/systemd/system/timeshiftd.service$' \
+	&& ok "timeshiftd.service shipped" \
+	|| bad "MISSING timeshiftd.service — nothing would start the daemon"
+
+dpkg-deb -I "$DEB" postinst 2>/dev/null | grep -q 'addgroup --system timeshift' \
+	&& ok "postinst creates the timeshift socket group" \
+	|| bad "postinst does not create the timeshift group — group members cannot watch a backup"
+
+# The cron sweep. Without it both schedulers fire and two timeshift processes
+# take snapshots of the same machine, which is the collision the daemon exists
+# to remove.
+dpkg-deb -I "$DEB" postinst 2>/dev/null | grep -q '/etc/cron.d/timeshift-hourly' \
+	&& ok "postinst retires the obsolete cron drop-ins" \
+	|| bad "postinst does not remove /etc/cron.d/timeshift-* — cron would schedule alongside the daemon"
 
 printf '%s\n' "$INFO" | grep -q '^ Package: timeshift-ssh$' && ok "Package: timeshift-ssh" || bad "wrong Package name"
 printf '%s\n' "$INFO" | grep -q 'Conflicts:.*timeshift'     && ok "Conflicts: timeshift"    || bad "missing Conflicts: timeshift"

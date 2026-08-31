@@ -41,3 +41,11 @@ timeshift_go = custom_target('timeshift-go',
   build_always_stale: true,
   install: false,
 )
+
+# The unit. dh_installsystemd finds units the upstream build system installed
+# and generates the enable/start maintainer-script snippets from them, so there
+# is nothing to add in debian/ for this.
+install_data(
+  'systemd/timeshiftd.service',
+  install_dir : get_option('prefix') / 'lib/systemd/system',
+)

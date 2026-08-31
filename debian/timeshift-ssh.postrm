@@ -1,0 +1,20 @@
+#!/bin/sh
+# postrm for timeshift-ssh
+set -e
+
+case "$1" in
+    purge)
+        # The group is removed only on purge, and only if it is empty.
+        #
+        # An administrator who added people to it did so deliberately, and a
+        # remove-then-reinstall would otherwise silently revoke that. delgroup
+        # refuses a group that still has members, which is the check.
+        if getent group timeshift >/dev/null; then
+            delgroup --system timeshift >/dev/null 2>&1 || true
+        fi
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

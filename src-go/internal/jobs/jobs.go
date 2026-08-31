@@ -212,6 +212,12 @@ type Job struct {
 	// paused is signalled by Pause and awaited by the runner.
 	pausedFlag atomic.Bool
 
+	// done is closed when the job reaches a terminal state, so a caller can
+	// wait for it without subscribing to the event stream. The scheduler is
+	// the caller that needs this: it has to know a snapshot finished before it
+	// reports the check done, and it wants no part of the event fan-out.
+	done chan struct{}
+
 	hub *Hub
 }
 
@@ -240,6 +246,9 @@ func (j *Job) Snapshot(withLog bool) Snapshot {
 	}
 	return s
 }
+
+// Done is closed when the job reaches a terminal state.
+func (j *Job) Done() <-chan struct{} { return j.done }
 
 // State returns the current state.
 func (j *Job) State() State {
@@ -402,6 +411,7 @@ func (q *Queue) Submit(kind Kind, run RunFunc) (*Job, error) {
 		outcome: OutcomeOK,
 		log:     logging.NewRing(logRingSize),
 		hub:     q.hub,
+		done:    make(chan struct{}),
 	}
 
 	q.mu.Lock()
@@ -534,6 +544,7 @@ func (q *Queue) run(p *pendingJob) {
 	q.current = nil
 	q.mu.Unlock()
 
+	close(j.done)
 	q.hub.publish(final)
 }
 

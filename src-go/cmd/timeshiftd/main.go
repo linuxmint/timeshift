@@ -11,6 +11,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -21,6 +22,7 @@ import (
 	"github.com/makeafide/timeshift/src-go/internal/config"
 	"github.com/makeafide/timeshift/src-go/internal/ipc"
 	"github.com/makeafide/timeshift/src-go/internal/logging"
+	"github.com/makeafide/timeshift/src-go/internal/schedule"
 
 	// Registers the engine every existing installation is using. Which engines
 	// exist is decided by this import list and nothing else.
@@ -38,6 +40,15 @@ func main() {
 		socketPath  = flag.String("socket", ipc.SocketPath, "unix socket to listen on")
 		checkConfig = flag.Bool("check-config", false,
 			"parse the configuration, report it, and exit without starting the daemon")
+		noSchedule = flag.Bool("no-schedule", false,
+			"serve requests but do not run the scheduler")
+		interval = flag.Duration("schedule-interval", schedule.DefaultInterval,
+			"how often to check whether a scheduled snapshot is due")
+		/* -1, not 0, for "not given". Zero is a delay someone may legitimately
+		 * ask for -- it is what you want when starting the daemon by hand to
+		 * see what it decides -- and a sentinel of 0 makes that unrequestable. */
+		startupDelay = flag.Duration("startup-delay", -1,
+			"hold the first scheduled check back after starting (default: from the configuration)")
 	)
 	flag.Usage = usage
 	flag.Parse()
@@ -91,6 +102,24 @@ func main() {
 	d := newDaemon(log, *configPath, cfg)
 	defer d.queue.Close()
 
+	/* Retire cron before doing anything else.
+	 *
+	 * Leaving the drop-ins in place means both schedulers fire, and the cron
+	 * one starts a second timeshift process -- exactly the collision this port
+	 * exists to remove. postinst does this too; doing it here as well covers
+	 * the case that matters during the transition, where the Vala GUI is still
+	 * installed and rewrites the drop-in whenever its settings window closes.
+	 *
+	 * A failure here is reported and not fatal: refusing to start the daemon
+	 * because of a stale cron file would leave the machine with no scheduler at
+	 * all, which is worse than having two. */
+	if removed, err := schedule.RemoveLegacyCron("/"); err != nil {
+		log.Warn("could not remove the legacy cron entries", "err", err)
+	} else if len(removed) > 0 {
+		log.Info("removed the legacy cron entries; the daemon owns the schedule now",
+			"files", removed)
+	}
+
 	/* The group is created by debian/postinst. A missing one is not an error:
 	 * it means root-only access, which is a valid configuration and the one in
 	 * place before the package has ever been installed. */
@@ -117,6 +146,33 @@ func main() {
 		}
 	}()
 
+	ctx, stopScheduler := context.WithCancel(context.Background())
+	defer stopScheduler()
+
+	if !*noSchedule {
+		delay := *startupDelay
+		if delay < 0 {
+			delay = time.Duration(cfg.StartupDelayIntervalMins) * time.Minute
+		}
+		d.ticker = &schedule.Ticker{
+			Interval:     *interval,
+			StartupDelay: delay,
+			Enabled: func() bool {
+				c := d.config()
+				return c.Scheduled()
+			},
+			Paused: d.pauseState,
+			Check:  d.scheduledCheck,
+			Log:    log,
+		}
+		go d.ticker.Run(ctx)
+		log.Info("scheduler started", "interval", *interval, "startup_delay", delay)
+	} else {
+		log.Info("scheduler disabled by --no-schedule")
+	}
+
+	sdNotify("READY=1\nSTATUS=Waiting for work")
+
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 	sig := <-stop
@@ -126,6 +182,8 @@ func main() {
 	 * way through leaves a partial snapshot directory, which is the worst thing
 	 * to leave behind. */
 	log.Info("shutting down", "signal", sig.String())
+	sdNotify("STOPPING=1\nSTATUS=Finishing the running job")
+	stopScheduler()
 	server.Close()
 
 	if active := d.queue.Active(); active != nil {
@@ -208,7 +266,11 @@ Options:
   --check-config    parse the configuration, report it, and exit
   --config PATH     path to timeshift.json (default %s)
   --socket PATH     unix socket to listen on (default %s)
+  --no-schedule     serve requests but do not run the scheduler
+  --schedule-interval D
+                    how often to check whether a snapshot is due (default %s)
+  --startup-delay D hold the first check back after starting
   --debug           log at debug level
   --version         print the version and exit
-`, version, config.SystemPath, ipc.SocketPath)
+`, version, config.SystemPath, ipc.SocketPath, schedule.DefaultInterval)
 }

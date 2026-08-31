@@ -1,0 +1,50 @@
+#!/bin/sh
+# postinst for timeshift-ssh
+set -e
+
+case "$1" in
+    configure)
+        # The socket group.
+        #
+        # Members get read-only access to the daemon: they can list snapshots
+        # and watch a backup that is already running, which is the whole point
+        # -- seeing what apt-snapshot-guard is doing to your machine should not
+        # need a pkexec prompt. They cannot start, delete or restore anything.
+        #
+        # Read-only still exposes the device layout and snapshot paths, so
+        # nobody is added to it here. Granting it is a deliberate act:
+        #   sudo usermod -aG timeshift <user>
+        if ! getent group timeshift >/dev/null; then
+            addgroup --system timeshift >/dev/null
+        fi
+
+        # Retire the cron drop-ins the Vala scheduler wrote.
+        #
+        # The daemon owns the schedule now, and leaving these in place would
+        # start a second timeshift process on the hour -- the single-instance
+        # collision this release exists to remove.
+        #
+        # Only files that actually invoke timeshift are removed. A file of the
+        # same name that does not is somebody else's, and deleting it would be
+        # damage that is very hard to trace back to this package.
+        for f in /etc/cron.d/timeshift-hourly \
+                 /etc/cron.d/timeshift-boot \
+                 /etc/cron.hourly/timeshift-hourly; do
+            if [ -f "$f" ] && grep -qE 'timeshift(-btrfs)? --(check|create|backup)' "$f"; then
+                rm -f "$f"
+            fi
+        done
+        ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+        ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

@@ -1,0 +1,47 @@
+[Unit]
+Description=Timeshift core daemon
+Documentation=man:timeshift(1)
+
+# The daemon owns the snapshot schedule, so it needs the clock to be right
+# before it starts comparing snapshot ages against it. A machine whose clock
+# jumps forward after the first check would otherwise decide every level was
+# overdue and take a snapshot it did not need.
+After=time-sync.target local-fs.target
+Wants=time-sync.target
+
+[Service]
+Type=notify
+NotifyAccess=main
+ExecStart=/usr/libexec/timeshift/timeshiftd
+
+# A snapshot to a remote repository can run for hours, and shutting the daemon
+# down mid-transfer leaves a partial snapshot directory behind. On SIGTERM it
+# stops accepting connections and lets the running job finish, so the stop
+# timeout has to be generous enough to allow that.
+KillSignal=SIGTERM
+TimeoutStopSec=1h
+
+Restart=on-failure
+RestartSec=30s
+
+# Snapshots are background work. Losing the race against whatever the user is
+# actually doing is the correct outcome.
+Nice=10
+IOSchedulingClass=idle
+
+# The socket lives here and is created by the daemon with the timeshift group,
+# so a member of that group can watch a backup without pkexec.
+RuntimeDirectory=timeshift
+RuntimeDirectoryMode=0755
+
+# No sandboxing directives.
+#
+# This is deliberate and worth stating, because the list of things this service
+# would normally be confined away from is exactly its job: it reads every file
+# on the system, writes to arbitrary mount points, mounts and unmounts block
+# devices, unlocks LUKS containers and, during a restore, replaces the running
+# system including systemd itself. ProtectSystem or PrivateDevices here would
+# not harden it, they would break it.
+
+[Install]
+WantedBy=multi-user.target

@@ -86,6 +86,7 @@ const (
 	MethodSnapshotDelete = "snapshot.delete"
 	MethodEstimateRun    = "estimate.run"
 	MethodScheduleCheck  = "schedule.check"
+	MethodScheduleStatus = "schedule.status"
 	MethodJobsList       = "jobs.list"
 	MethodJobsGet        = "jobs.get"
 	MethodJobsSubscribe  = "jobs.subscribe"

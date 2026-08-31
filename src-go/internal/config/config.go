@@ -66,6 +66,12 @@ type Config struct {
 	ScheduleHourly  bool
 	ScheduleBoot    bool
 
+	// StartupDelayIntervalMins holds the first scheduled check back after the
+	// machine boots. The original declared this field and never used it: the
+	// delay was hard-coded into the cron line as "sleep 10m". Now that the
+	// daemon owns the timer the field does the job it was named for.
+	StartupDelayIntervalMins int
+
 	CountMonthly int
 	CountWeekly  int
 	CountDaily   int
@@ -107,21 +113,23 @@ const EngineDefault = "timeshift"
 // initialisers in Main.vala and files/timeshift.json.
 func Defaults() Config {
 	return Config{
-		BackupLocationType: "local",
-		DoFirstRun:         true,
-		StopCronEmails:     true,
-		CountMonthly:       2,
-		CountWeekly:        3,
-		CountDaily:         5,
-		CountHourly:        6,
-		CountBoot:          5,
-		DateFormat:         DefaultDateFormat,
-		ThemeMode:          "system",
-		ThemeAccent:        "system",
-		Exclude:            []string{},
-		ExcludeApps:        []string{},
-		Engine:             EngineDefault,
-		present:            map[string]bool{},
+		BackupLocationType:       "local",
+		DoFirstRun:               true,
+		StopCronEmails:           true,
+		StartupDelayIntervalMins: 10,
+
+		CountMonthly: 2,
+		CountWeekly:  3,
+		CountDaily:   5,
+		CountHourly:  6,
+		CountBoot:    5,
+		DateFormat:   DefaultDateFormat,
+		ThemeMode:    "system",
+		ThemeAccent:  "system",
+		Exclude:      []string{},
+		ExcludeApps:  []string{},
+		Engine:       EngineDefault,
+		present:      map[string]bool{},
 	}
 }
 
@@ -264,6 +272,8 @@ func Unmarshal(raw []byte) (Config, error) {
 	bl("schedule_hourly", &c.ScheduleHourly)
 	bl("schedule_boot", &c.ScheduleBoot)
 
+	in("startup_delay_interval_mins", &c.StartupDelayIntervalMins)
+
 	in("count_monthly", &c.CountMonthly)
 	in("count_weekly", &c.CountWeekly)
 	in("count_daily", &c.CountDaily)
@@ -361,6 +371,15 @@ func Marshal(c Config) []byte {
 	kv("schedule_daily", boolStr(c.ScheduleDaily))
 	kv("schedule_hourly", boolStr(c.ScheduleHourly))
 	kv("schedule_boot", boolStr(c.ScheduleBoot))
+
+	/* startup_delay_interval_mins is READ but never written.
+	 *
+	 * While the Vala GUI is still installed there are two writers of this
+	 * file, and the Vala one drops every key it does not know. Writing a
+	 * Go-only key would make it appear and vanish depending on which program
+	 * last saved, churning a file people put in configuration management. It
+	 * is read here so it can be set by hand, and it will start being written
+	 * when the Vala core goes and there is one writer again. */
 
 	kv("count_monthly", strconv.Itoa(c.CountMonthly))
 	kv("count_weekly", strconv.Itoa(c.CountWeekly))

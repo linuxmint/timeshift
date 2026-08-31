@@ -15,6 +15,7 @@ import (
 	tsengine "github.com/makeafide/timeshift/src-go/internal/engines/timeshift"
 	"github.com/makeafide/timeshift/src-go/internal/ipc"
 	"github.com/makeafide/timeshift/src-go/internal/jobs"
+	"github.com/makeafide/timeshift/src-go/internal/schedule"
 	"github.com/makeafide/timeshift/src-go/internal/sysexec"
 )
 
@@ -26,6 +27,10 @@ type daemon struct {
 	queue      *jobs.Queue
 	mountRoot  string
 	tempDir    string
+
+	// ticker owns the schedule. Nil when the daemon runs with scheduling
+	// switched off from the command line.
+	ticker *schedule.Ticker
 
 	mu  sync.RWMutex
 	cfg config.Config
@@ -137,20 +142,22 @@ func (a reporterAdapter) Cancelled() bool { return a.r.Cancelled() }
 // repository is root. Watching a backup is reading.
 func (d *daemon) methods() map[string]ipc.Method {
 	return map[string]ipc.Method{
-		ipc.MethodSystemInfo:    {ReadOnly: true, Fn: d.systemInfo},
-		ipc.MethodEnginesList:   {ReadOnly: true, Fn: d.enginesList},
-		ipc.MethodConfigGet:     {ReadOnly: true, Fn: d.configGet},
-		ipc.MethodDevicesList:   {ReadOnly: true, Fn: d.devicesList},
-		ipc.MethodRepoStatus:    {ReadOnly: true, Fn: d.repoStatus},
-		ipc.MethodSnapshotsList: {ReadOnly: true, Fn: d.snapshotsList},
-		ipc.MethodJobsList:      {ReadOnly: true, Fn: d.jobsList},
-		ipc.MethodJobsGet:       {ReadOnly: true, Fn: d.jobsGet},
-		ipc.MethodJobsSubscribe: {ReadOnly: true, Fn: d.jobsSubscribe},
+		ipc.MethodSystemInfo:     {ReadOnly: true, Fn: d.systemInfo},
+		ipc.MethodEnginesList:    {ReadOnly: true, Fn: d.enginesList},
+		ipc.MethodConfigGet:      {ReadOnly: true, Fn: d.configGet},
+		ipc.MethodDevicesList:    {ReadOnly: true, Fn: d.devicesList},
+		ipc.MethodRepoStatus:     {ReadOnly: true, Fn: d.repoStatus},
+		ipc.MethodSnapshotsList:  {ReadOnly: true, Fn: d.snapshotsList},
+		ipc.MethodJobsList:       {ReadOnly: true, Fn: d.jobsList},
+		ipc.MethodJobsGet:        {ReadOnly: true, Fn: d.jobsGet},
+		ipc.MethodJobsSubscribe:  {ReadOnly: true, Fn: d.jobsSubscribe},
+		ipc.MethodScheduleStatus: {ReadOnly: true, Fn: d.scheduleStatus},
 
 		ipc.MethodJobsCancel:     {Fn: d.jobsCancel},
 		ipc.MethodSnapshotCreate: {Fn: d.snapshotCreate},
 		ipc.MethodSnapshotDelete: {Fn: d.snapshotDelete},
 		ipc.MethodEstimateRun:    {Fn: d.estimateRun},
+		ipc.MethodScheduleCheck:  {Fn: d.scheduleCheck},
 	}
 }
 
@@ -369,16 +376,7 @@ func (d *daemon) snapshotDelete(ctx context.Context, _ *ipc.Conn, params json.Ra
 	}
 
 	job, err := d.queue.Submit(jobs.KindDelete, func(ctx context.Context, r jobs.Reporter) (jobs.Outcome, error) {
-		repo, _, _, err := d.openRepo(ctx)
-		if err != nil {
-			return jobs.OutcomeFailed, err
-		}
-		defer repo.Close()
-
-		if err := repo.Delete(ctx, in.Names, reporterAdapter{r}); err != nil {
-			return jobs.OutcomeFailed, err
-		}
-		return jobs.OutcomeOK, nil
+		return d.runDelete(ctx, r, in.Names)
 	})
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeBusy, "%v", err)
@@ -431,4 +429,19 @@ func (d *daemon) buildExcludes() []string {
 	return tsengine.BuildBackupExcludes(tsengine.ExcludeInput{
 		UserPatterns: cfg.Exclude,
 	})
+}
+
+// runDelete is the body of a delete job, shared by the IPC method and by
+// retention.
+func (d *daemon) runDelete(ctx context.Context, r jobs.Reporter, names []string) (jobs.Outcome, error) {
+	repo, _, _, err := d.openRepo(ctx)
+	if err != nil {
+		return jobs.OutcomeFailed, err
+	}
+	defer repo.Close()
+
+	if err := repo.Delete(ctx, names, reporterAdapter{r}); err != nil {
+		return jobs.OutcomeFailed, err
+	}
+	return jobs.OutcomeOK, nil
 }

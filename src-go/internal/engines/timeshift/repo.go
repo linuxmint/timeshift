@@ -6,6 +6,7 @@ import (
 	"path"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/makeafide/timeshift/src-go/internal/engines"
 	"github.com/makeafide/timeshift/src-go/internal/fsutil"
@@ -159,6 +160,26 @@ func (r *Repo) buildSnapshot(name, dir string, files map[string]string) engines.
 	}
 
 	s.Created = c.Created
+
+	/* A snapshot with no usable date must never be dated to the epoch.
+	 *
+	 * Retention compares dates against windows, so a zero time reads as "older
+	 * than everything" and the snapshot is untagged and then deleted -- because
+	 * one field of its control file would not parse.
+	 *
+	 * The directory name IS the timestamp, so there is a second source for it.
+	 * If that fails too the snapshot is marked invalid, which is the safe end
+	 * state: pruning an invalid snapshot needs positive evidence that it is
+	 * incomplete, and a snapshot holding a control file never provides it.
+	 */
+	if s.Created.IsZero() {
+		if t, err := time.ParseInLocation(NameLayout, name, time.Local); err == nil {
+			s.Created = t
+		} else {
+			s.Valid = false
+		}
+	}
+
 	s.Tags = c.Tags
 	s.Description = c.Description
 	s.SysUUID = c.SysUUID
