@@ -362,18 +362,33 @@ mmdebstrap downloads with the *host's* apt.
 
 ### The recovery shell
 
-`src/Recovery/RecoveryShell.vala` builds `timeshift-recovery-shell` from a single
-source — deliberately **not** from `sources_core`. Reaching `Device` means
-linking `Main`, the god object that owns all config and discovered state and that
-`AppTheme` reaches through the global `App`; the launcher would then fail to
-start for any reason Timeshift itself fails to start, which is the situation the
-environment exists for. It shells out to `lsblk -J` and `udisksctl` instead,
-which is what `Device` does underneath anyway. 146 KB against `timeshift-gtk`'s
-4.1 MB.
+`src-recovery/shell/` builds `timeshift-recovery-shell` from its own sources and
+its own dependency list — deliberately **no** `sources_core`, no
+`src/Utility/`, not even `vala_opts`. Reaching `Device` means linking `Main`,
+the god object that owns all config and discovered state and that `AppTheme`
+reaches through the global `App`; the launcher would then fail to start for any
+reason Timeshift itself fails to start, which is the situation the environment
+exists for. It shells out to `lsblk -J`, `mount` and `cryptsetup` instead, which
+is what `Device` does underneath anyway. 520 KB against `timeshift-gtk`'s 4.1 MB.
+
+Layout: `RecoveryApp` (`main()`), `RecoveryWindow` (the hub: window, page stack,
+navigation, dialogs, `launch_app`), `RecoveryTheme` (layout tokens + the CSS,
+restated rather than shared because `ThemeStyle` reaches `Main`), `Modal`
+(hand-rolled — `Gtk.AlertDialog` spawns its own toplevel, which under bare labwc
+gets no decoration and none of this stylesheet), `Page` (abstract base with
+`key()`/`build()`/`on_shown()` plus `page_header`/`section`), one class per
+screen (`HomePage`, `NetworkPage`, `DrivesPage`, `TerminalPage`,
+`DiagnosticsPage`), and three namespaces with no GTK in them: `Sh` (subprocess),
+`SysInfo` (files, mounts, JSON, formatting), `Tailscale`.
+
+A page holds a reference to `RecoveryWindow` and nothing else, so the only way
+one page reaches another is a method named there. Pages that read machine state
+refresh in `on_shown()` rather than making every caller remember to.
+`Constants.VERSION` is the single thing it takes from generated code.
 
 ## Conventions when editing
 
-- A new `.vala` file must be added to the matching `sources_*` list in `src/meson.build`, and to `po/POTFILES` if it contains translatable strings.
+- A new `.vala` file under `src/` must be added to the matching `sources_*` list in `src/meson.build`, and to `po/POTFILES` if it contains translatable strings. The recovery shell is the exception: files under `src-recovery/shell/` go in that directory's own `files([...])` list, are English-only by design (the image ships no locale data), and must stay out of `po/POTFILES`.
 - Mark user-visible strings with `_()` — whole sentences, never runtime-concatenated fragments (those never reach the catalogue). `GETTEXT_PACKAGE` must stay `"timeshift"` in both entry files: an empty value silently overrides meson's define and disables every translation. Regenerate `timeshift.pot` by running `./makepot` from the repo root. `makepot` passes no `--from-code`, so a **non-ASCII character inside a `_()` string aborts xgettext** and leaves the pot half-written — keep msgids ASCII.
 - **Do not edit `po/*.po`** — translations are managed on Launchpad.
 - Vala sources indent with tabs; `.editorconfig` only governs `meson.build` files (2 spaces). Every `.vala` file carries the GPL-2.0-or-later header.

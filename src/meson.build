@@ -131,17 +131,6 @@ timeshift_gtk = executable('timeshift-gtk',
   vala_args: vala_opts
 )
 
-# The launcher shown inside the recovery environment. Built from its own single
-# source rather than sources_core: it must keep working when Timeshift's own
-# state does not load, which is the situation the environment exists for.
-timeshift_recovery_shell = executable('timeshift-recovery-shell',
-  files(['Recovery/RecoveryShell.vala']),
-  config_header,
-  dependencies: dependencies,
-  install: true,
-  vala_args: vala_opts
-)
-
 install_data(
   sources : 'timeshift-launcher',
   install_dir : get_option('bindir')
