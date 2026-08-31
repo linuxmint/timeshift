@@ -34,6 +34,24 @@ case "$1" in
 			if [ -f "$f" ]; then chmod 0600 "$f" || true; fi
 		done
 
+		# The file trigger is NOT delivered when timeshift and this package
+		# are upgraded in the same apt transaction: dpkg clears pending
+		# triggers for a package it is about to configure. Catch the
+		# staleness here so the refresh still happens promptly rather than
+		# waiting for the boot-time run of the refresh unit.
+		if [ -f "$STATE_DIR/installed" ] && [ -r /var/cache/timeshift-recovery/build-info ]; then
+			built=$(. /var/cache/timeshift-recovery/build-info 2>/dev/null; printf '%s' "${TS_VERSION:-}")
+			host=$(dpkg-query -W -f='${Version}' timeshift-ssh 2>/dev/null \
+				|| dpkg-query -W -f='${Version}' timeshift 2>/dev/null || true)
+			if [ -n "$built" ] && [ -n "$host" ] && [ "$built" != "$host" ]; then
+				date -Is > "$STATE_DIR/stale" 2>/dev/null || : > "$STATE_DIR/stale"
+				if [ -d /run/systemd/system ]; then
+					systemctl start --no-block timeshift-recovery-refresh.service \
+						>/dev/null 2>&1 || true
+				fi
+			fi
+		fi
+
 		# Deliberately does not provision. Building an environment needs the
 		# network and several minutes, neither of which belongs in an install.
 		if [ ! -f "$STATE_DIR/installed" ]; then

@@ -1,3 +1,21 @@
+timeshift-recovery (1.0.26) resolute; urgency=medium
+
+  * Normalise classic one-line apt sources to deb822 for the mmdebstrap stream (mixed formats in one file are rejected by apt)
+
+ -- makeafide <willsmit4433@gmail.com>  Mon, 31 Aug 2026 07:58:51 -0400
+
+timeshift-recovery (1.0.25) resolute; urgency=medium
+
+  * Refresh promptly when timeshift and this package upgrade in one apt transaction (the file trigger is cleared by dpkg in that case)
+
+ -- makeafide <willsmit4433@gmail.com>  Mon, 31 Aug 2026 07:57:02 -0400
+
+timeshift-recovery (1.0.24) resolute; urgency=medium
+
+  * Production audit: root-only credential artifacts, remove clears the cache, sgdisk sector fix, truthful embed status, apt source handling, man page, logrotate, copyright
+
+ -- makeafide <willsmit4433@gmail.com>  Mon, 31 Aug 2026 07:54:31 -0400
+
 timeshift-recovery (1.0.23) resolute; urgency=medium
 
   * Version number retired: minted by an accidental rebuild whose artifacts

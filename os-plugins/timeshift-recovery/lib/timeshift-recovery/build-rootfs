@@ -51,10 +51,36 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-if [ -s /etc/apt/sources.list ]; then
-	grep -E '^[[:space:]]*deb(-src)?[[:space:]].*https?://' /etc/apt/sources.list >> "$SOURCES" 2>/dev/null || true
-	printf '\n' >> "$SOURCES"
-fi
+# mmdebstrap writes its stdin into a single .sources file, so one-line and
+# deb822 formats must not be mixed in the stream -- apt rejects the file.
+# Normalise every classic "deb [opts] URI suite comps" line to a deb822 stanza.
+lines_to_deb822() {
+	awk '{
+		i = 2; signedby = ""; archs = ""
+		if ($2 ~ /^\[/) {
+			opt = ""
+			while (i <= NF) { opt = opt " " $i; if ($i ~ /\]$/) { i++; break }; i++ }
+			gsub(/[][]/, "", opt)
+			n = split(opt, kv, " ")
+			for (j = 1; j <= n; j++) {
+				if (kv[j] ~ /^signed-by=/) { sub(/^signed-by=/, "", kv[j]); signedby = kv[j] }
+				if (kv[j] ~ /^arch=/)      { sub(/^arch=/, "", kv[j]); archs = kv[j] }
+			}
+		}
+		uri = $i; i++
+		suite = $i; i++
+		comps = ""
+		for (; i <= NF; i++) comps = comps (comps == "" ? "" : " ") $i
+		print "Types: " $1
+		print "URIs: " uri
+		print "Suites: " suite
+		if (comps != "")    print "Components: " comps
+		if (signedby != "") print "Signed-By: " signedby
+		if (archs != "")    { gsub(/,/, " ", archs); print "Architectures: " archs }
+		print ""
+	}'
+}
+
 for f in /etc/apt/sources.list.d/*.sources; do
 	[ -e "$f" ] || continue
 	if grep -qiE '^URIs:.*https?://' "$f"; then
@@ -63,13 +89,13 @@ for f in /etc/apt/sources.list.d/*.sources; do
 	fi
 done
 # Classic one-line sources are still common alongside deb822.
-for f in /etc/apt/sources.list.d/*.list; do
+for f in /etc/apt/sources.list /etc/apt/sources.list.d/*.list; do
 	[ -e "$f" ] || continue
-	grep -E '^[[:space:]]*deb(-src)?[[:space:]].*https?://' "$f" >> "$SOURCES" 2>/dev/null || true
-	printf '\n' >> "$SOURCES"
+	grep -E '^[[:space:]]*deb(-src)?[[:space:]].*https?://' "$f" 2>/dev/null \
+		| lines_to_deb822 >> "$SOURCES" || true
 done
 # Not just -s: the collection above can leave blank separator lines behind.
-grep -qE '^([[:space:]]*deb|URIs:)' "$SOURCES" 2>/dev/null \
+grep -qE '^(URIs:|Types:)' "$SOURCES" 2>/dev/null \
 	|| die "found no usable apt sources to build the environment from"
 
 # --- package set ------------------------------------------------------------
