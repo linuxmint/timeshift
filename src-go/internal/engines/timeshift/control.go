@@ -33,12 +33,16 @@ type ControlFile struct {
 	Type          string // "rsync" or "btrfs"
 	SizeBytes     int64  // -1 when not computed
 	UnsharedBytes int64  // -1 when not computed
-	Subvolumes    map[string]Subvolume
+	Subvolumes    map[string]SubvolumeRecord
 	present       map[string]bool
 }
 
-// Subvolume is one btrfs subvolume recorded in a control file.
-type Subvolume struct {
+// SubvolumeRecord is one btrfs subvolume as RECORDED in a control file.
+//
+// Distinct from Subvolume, which is a live subvolume on a mounted filesystem:
+// this one is metadata read back from info.json, and its sizes are whatever was
+// true when the snapshot was written.
+type SubvolumeRecord struct {
 	Name          string
 	ID            int64
 	TotalBytes    int64
@@ -101,7 +105,7 @@ func ParseControlFile(raw []byte) (*ControlFile, error) {
 		Type:          "rsync", // the default on read, for files predating the key
 		SizeBytes:     -1,
 		UnsharedBytes: -1,
-		Subvolumes:    map[string]Subvolume{},
+		Subvolumes:    map[string]SubvolumeRecord{},
 		present:       make(map[string]bool, len(obj)),
 	}
 	for k := range obj {
@@ -161,7 +165,7 @@ func ParseControlFile(raw []byte) (*ControlFile, error) {
 				if len(fields) < 5 {
 					continue
 				}
-				sv := Subvolume{Name: fields[0], DeviceUUID: fields[4]}
+				sv := SubvolumeRecord{Name: fields[0], DeviceUUID: fields[4]}
 				sv.ID, _ = strconv.ParseInt(fields[1], 10, 64)
 				sv.TotalBytes, _ = strconv.ParseInt(fields[2], 10, 64)
 				sv.UnsharedBytes, _ = strconv.ParseInt(fields[3], 10, 64)

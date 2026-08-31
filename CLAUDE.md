@@ -464,6 +464,45 @@ generated script against `Main.create_restore_scripts()` output for the same
 inputs, and a VM restore to the running system, to another device, and from
 btrfs.
 
+### btrfs mode
+
+`internal/engines/timeshift/btrfs.go`. A btrfs snapshot is not a copy:
+`btrfs subvolume snapshot` makes a subvolume sharing every extent with the
+original, so it is instant and free until something is written. There is no file
+transfer, no per-file progress, and no exclude list -- a subvolume snapshot
+takes the whole subvolume or nothing.
+
+Only the Ubuntu-style layout is handled, `@` plus optionally `@home`, and a
+repository with other names is refused rather than half-handled. That is not new;
+the names are hard-coded through the Vala core too.
+
+btrfs and a remote repository are mutually exclusive. `Engine.ValidateLocation`
+now *reports* the conflict, where the Vala core turned btrfs off silently during
+config load -- so someone who chose both got rsync snapshots and was never told.
+`Open` still forces it off as a backstop.
+
+Two things worth knowing before debugging a "hang":
+
+- **`btrfs subvolume sync` blocks for about thirty seconds.** It waits for the
+  kernel's cleaner thread to finish removing the subvolume, and that runs on the
+  commit interval. Measured at 31.0s for a single empty subvolume on a 512 MB
+  loopback filesystem. Nothing is wrong.
+- Because that is one blocking call rather than a sequence of quick failures,
+  `CleanupQGroup` puts its deadline on the **context**, not on a clock check
+  between retries -- a clock check would never fire.
+
+The tests build a real btrfs filesystem on a loopback file and operate on it, so
+they need root and skip without it:
+
+```sh
+sudo env "PATH=$PATH" "HOME=$HOME" go test ./internal/engines/timeshift/ -run Btrfs -v
+```
+
+They cover copy-on-write semantics (writing to the source must not change the
+snapshot), deleting a subvolume that contains a nested one, NOT mistaking an
+ordinary directory for a subvolume, refusing to restore over a live subvolume,
+and the qgroup cleanup with quotas actually enabled.
+
 ### Verifying the write path
 
 The snapshot format is a two-way contract, so check it in both directions. The

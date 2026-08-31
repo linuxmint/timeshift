@@ -9,6 +9,7 @@ package timeshift
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"path"
 
@@ -40,6 +41,24 @@ func (Engine) Caps() engines.Caps {
 		Browse:       true,
 		UnsharedSize: true,
 	}
+}
+
+// ErrBtrfsRemote reports the one combination this engine cannot do.
+var ErrBtrfsRemote = errors.New(
+	"timeshift: btrfs mode needs a local filesystem; a remote repository can only store rsync snapshots")
+
+// ValidateLocation reports whether a location is one this engine can use.
+//
+// btrfs mode and a remote repository are mutually exclusive, and saying so is
+// better than the Vala behaviour of silently turning btrfs off during config
+// load: a user who chose btrfs and then chose a remote location got rsync
+// snapshots without ever being told. A client calls this to explain the
+// conflict at the point the choice is made.
+func (Engine) ValidateLocation(loc engines.Location) error {
+	if loc.BtrfsMode && loc.Type == "ssh" {
+		return ErrBtrfsRemote
+	}
+	return nil
 }
 
 // Open connects to a repository.
@@ -78,9 +97,10 @@ func (Engine) Open(ctx context.Context, loc engines.Location, deps engines.Deps)
 			FakeSuper:   s.FakeSuper,
 			ControlPath: controlPath(deps.MountRoot, s),
 		}
-		// btrfs snapshots are subvolume operations on a local filesystem; they
-		// cannot happen over rsync to another host. Forced here as well as in
-		// the config loader, so an engine opened directly cannot get it wrong.
+		/* Forced here as well as in the config loader, so an engine opened
+		 * directly cannot get it wrong. ValidateLocation is what a client
+		 * calls to be TOLD about the conflict; this is the backstop that makes
+		 * the wrong combination harmless rather than merely reported. */
 		repo.BtrfsMode = false
 
 	case "local", "":
