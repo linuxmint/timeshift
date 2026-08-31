@@ -16,7 +16,7 @@ set -eu
 cd "$(dirname "$0")"
 root=$PWD
 guard_dir=os-plugins/apt-snapshot-guard
-recovery_dir=os-plugins/timeshift-recovery
+recovery_dir=src-recovery
 DIST="$root/dist"
 mkdir -p "$DIST"
 

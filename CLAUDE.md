@@ -269,12 +269,21 @@ Neither binary escalates itself; both hard-exit with a message if not root. Esca
 - Scheduling is cron, not systemd: `CronTab` writes `/etc/cron.d` entries that invoke the **CLI** binary (`timeshift --check --scripted`, and `@reboot … sleep 10m && timeshift --create --scripted --tags B`). So GUI schedule changes are executed by `timeshift`, not `timeshift-gtk`.
 - Restore is script-driven: `Main.create_restore_scripts()` emits shell scripts covering chroot, `update-grub`, `update-initramfs` and `run-parts /etc/timeshift/restore-hooks.d`. In GUI mode they run through `RestoreScriptTask` (an `RsyncTask` subclass that supplies the script instead of building one, so all the itemise parsing and every field the progress loops poll keep working); on the console they still go through `exec_script_sync`. Each step is announced with an untranslated `@@TS_PHASE:<key>` echo, emitted only when `app_mode == ""`, and recorded in `App.restore_phases` so the checklist lists exactly the steps that will run. `App.restore_phase` is the step running now — the script sets it through its markers, `restore_other_gui()` sets it directly for the two steps that happen in Vala (`fix_fstab`, `parse_log`). The script's rsync uses `-aiir`, matching `RsyncTask.build_script()`, so the line count tracks the file count; the denominator is the dry run's measured `status_line_count`, stashed in `App.restore_line_count_estimate`.
 
-## Recovery environment (`os-plugins/timeshift-recovery/`)
+## Recovery environment (`src-recovery/`)
 
-A third binary package, built by `build-all.sh` stage 3, that provisions a
-bootable rescue environment. `/usr/sbin/timeshift-recovery` is POSIX sh with two
-helpers in `/usr/lib/timeshift-recovery/` (`build-rootfs`, `place-payload`) over
-a sourced `common.sh`.
+All recovery code lives in `src-recovery/`: the provisioner package below, and
+the launcher UI shown inside the environment (`src-recovery/shell/`, see "The
+recovery shell"). The provisioner is its own deb and is built by
+`build-all.sh` stage 3 by running `src-recovery/build-deb.sh`; **do not add a
+`meson.build` at `src-recovery/`'s root** -- `debian/rules` is a bare `dh $@`,
+and debhelper would autodetect it and try to `meson setup` a shell-script
+package. The shell's meson file lives one level down, in
+`src-recovery/shell/meson.build`.
+
+The provisioner builds a bootable rescue environment.
+`/usr/sbin/timeshift-recovery` is POSIX sh with two helpers in
+`/usr/lib/timeshift-recovery/` (`build-rootfs`, `place-payload`) over a sourced
+`common.sh`.
 
 `build-rootfs` runs `mmdebstrap` against the **host's own** apt sources (fed on
 stdin, deb822 and all), so the environment always matches the installed release,
