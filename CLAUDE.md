@@ -269,6 +269,99 @@ Neither binary escalates itself; both hard-exit with a message if not root. Esca
 - Scheduling is cron, not systemd: `CronTab` writes `/etc/cron.d` entries that invoke the **CLI** binary (`timeshift --check --scripted`, and `@reboot … sleep 10m && timeshift --create --scripted --tags B`). So GUI schedule changes are executed by `timeshift`, not `timeshift-gtk`.
 - Restore is script-driven: `Main.create_restore_scripts()` emits shell scripts covering chroot, `update-grub`, `update-initramfs` and `run-parts /etc/timeshift/restore-hooks.d`. In GUI mode they run through `RestoreScriptTask` (an `RsyncTask` subclass that supplies the script instead of building one, so all the itemise parsing and every field the progress loops poll keep working); on the console they still go through `exec_script_sync`. Each step is announced with an untranslated `@@TS_PHASE:<key>` echo, emitted only when `app_mode == ""`, and recorded in `App.restore_phases` so the checklist lists exactly the steps that will run. `App.restore_phase` is the step running now — the script sets it through its markers, `restore_other_gui()` sets it directly for the two steps that happen in Vala (`fix_fstab`, `parse_log`). The script's rsync uses `-aiir`, matching `RsyncTask.build_script()`, so the line count tracks the file count; the denominator is the dry run's measured `status_line_count`, stashed in `App.restore_line_count_estimate`.
 
+## Recovery environment (`os-plugins/timeshift-recovery/`)
+
+A third binary package, built by `build-all.sh` stage 3, that provisions a
+bootable rescue environment. `/usr/sbin/timeshift-recovery` is POSIX sh with two
+helpers in `/usr/lib/timeshift-recovery/` (`build-rootfs`, `place-payload`) over
+a sourced `common.sh`.
+
+`build-rootfs` runs `mmdebstrap` against the **host's own** apt sources (fed on
+stdin, deb822 and all), so the environment always matches the installed release,
+arch and mirror. Two details are load-bearing:
+
+- The kernel metapackage is chosen from packages that are actually **installed**,
+  not merely known to dpkg. Filtering on name alone picks up `linux-image-fb-*`
+  on a stock desktop — a framebuffer-only kernel that boots the graphical
+  environment to a black screen.
+- Firmware mirrors the host's own `linux-firmware*` set rather than pulling all
+  of `linux-firmware` (over a gigabyte for hardware this machine does not have).
+
+Timeshift itself goes in via `dpkg-repack` of the installed package, which is
+what keeps the environment in exact version lockstep without needing a repo.
+
+### Two targets, two casper mechanisms
+
+`place-payload` picks a target and, critically, a different boot mechanism for
+each:
+
+- **partition** — payload at the root of its own filesystem,
+  `boot=casper live-media=/dev/disk/by-uuid/<uuid> live-media-path=casper`.
+- **root** — payload is an ext4 **image** (`mkfs.ext4 -d`, no loop device needed
+  at build time) booted through `iso-scan/filename=` **plus `toram`**.
+
+The image is not incidental. casper's `copy_live_to` sizes a `toram` copy by
+`fs_size` of the **whole medium**: pointed at the bare root partition it tries to
+copy the entire installed system into RAM and fails the free-space check.
+Pointed at a loopback image it copies only the image. `toram` is then mandatory
+for this target for a second reason — casper keeps the medium mounted, and a
+restore has to write to that same partition.
+
+`iso-scan` mounts the holding partition at `/isodevice` and nothing unmounts it,
+so the environment ships `timeshift-recovery-release-medium.service`, which after
+a confirmed `toram` boot releases `/isodevice` and detaches the loop. It only
+ever *asks*: `umount` and `losetup -d` return EBUSY when something is still using
+them, and that refusal is the safety net.
+
+### GRUB
+
+`/etc/grub.d/42_timeshift_recovery` (from `grub-entry.in`, sed-substituted and
+validated with `grub-script-check` before install) plus
+`/etc/default/grub.d/timeshift-recovery.cfg`. Both are written by the CLI, not
+shipped, so they are **not conffiles**; `postrm` removes them.
+
+The hotkey needs `GRUB_TIMEOUT > 0` — GRUB reads no keyboard at all with no
+timeout, and Ubuntu ships `0`. `status` recomputes the **effective** value by
+replaying `grub-mkconfig`'s own logic (`/etc/default/grub`, then
+`/etc/default/grub.d/*.cfg` in glob order, last wins) rather than trusting what
+this tool wrote, because another drop-in sorting after ours silently breaks the
+only access path.
+
+### Refresh
+
+`debian/triggers` watches `/usr/bin/timeshift*`. The trigger must **not**
+provision inline — it fires mid-dpkg-transaction and provisioning runs apt in a
+chroot. It marks state and starts `timeshift-recovery-refresh.service`, which
+takes `flock /var/lib/dpkg/lock-frontend` first so it waits the apt run out
+instead of racing it. This shares those apt runs with `apt-snapshot-guard`, which
+is fail-closed, so the refresh must stay off that critical path.
+
+The trigger is **not delivered** when timeshift and timeshift-recovery are
+upgraded in the same apt transaction — dpkg clears pending triggers for a
+package it is about to configure. `postinst configure` therefore compares
+build-info's `TS_VERSION` against the installed timeshift and marks
+stale/starts the unit itself; the unit is also `WantedBy=multi-user.target` as
+a boot-time retry (its own `--from-trigger` version check makes that a no-op
+when current).
+
+mmdebstrap writes its stdin into a single `.sources` file, so the collected
+host sources must be a single format: classic one-line `deb` entries are
+converted to deb822 stanzas (`lines_to_deb822` in build-rootfs). The filter is
+by transport (http/https only), not an archive-host allowlist — local mirrors
+and third-party repos with host-resolvable `Signed-By` keys work because
+mmdebstrap downloads with the *host's* apt.
+
+### The recovery shell
+
+`src/Recovery/RecoveryShell.vala` builds `timeshift-recovery-shell` from a single
+source — deliberately **not** from `sources_core`. Reaching `Device` means
+linking `Main`, the god object that owns all config and discovered state and that
+`AppTheme` reaches through the global `App`; the launcher would then fail to
+start for any reason Timeshift itself fails to start, which is the situation the
+environment exists for. It shells out to `lsblk -J` and `udisksctl` instead,
+which is what `Device` does underneath anyway. 146 KB against `timeshift-gtk`'s
+4.1 MB.
+
 ## Conventions when editing
 
 - A new `.vala` file must be added to the matching `sources_*` list in `src/meson.build`, and to `po/POTFILES` if it contains translatable strings.

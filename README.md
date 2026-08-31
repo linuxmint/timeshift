@@ -99,6 +99,104 @@ You can selectively include items for backup from the ***Settings*** window. Sel
 
 - Scripts can be run at the end of a restore job for anything that may need to be done prior to rebooting. The location for these scripts is `/etc/timeshift/restore-hooks.d`.  Note: the script(s) will be run from the restored filesystem.
 
+### Recovery Environment
+
+Snapshots kept on a remote host over SSH survive the disk, but they cannot be
+restored from a system that will not boot: the restore tool, the network stack
+and the wireless driver all live on the broken root filesystem.
+
+The `timeshift-recovery` package closes that gap. It builds a small Ubuntu
+recovery environment on the machine, places it where GRUB can reach it, and adds
+a boot entry behind a hotkey:
+
+```sh
+sudo apt install ./timeshift-recovery_*.deb
+sudo timeshift-recovery install
+```
+
+Press **R** at startup to boot straight into it. During GRUB's short wait the
+screen shows a splash with the Timeshift logo and a "Press R for System
+Recovery" label, rendered at the panel's native resolution at install time
+(`HINT=splash` in the config; `text` and `none` are the alternatives, and
+ImageMagick on the host is what enables the native render). Inside is a small
+launcher with four things: connect wifi or ethernet, mount a drive, restore a
+snapshot, and a root terminal. `SCALE` (or `--scale`) overrides the GUI scale
+the environment picks for HiDPI panels.
+
+The environment is built with `mmdebstrap` against the host's own apt sources,
+so it always matches the installed release and architecture, and it mirrors the
+host's `linux-firmware` packages so the hardware it has to rescue is the hardware
+it supports. The snapshot location, and by default the SSH key, are carried in,
+so a restore needs nothing but the machine itself.
+
+A dpkg trigger rebuilds it whenever a new Timeshift is installed, so the rescue
+environment never lags behind the system it is meant to rescue.
+
+```sh
+timeshift-recovery status     # what is installed, and is it current
+timeshift-recovery upgrade    # rebuild against the current Timeshift
+timeshift-recovery disable    # remove the boot entry, keep the payload
+timeshift-recovery enable     # put the boot entry back (instant)
+timeshift-recovery reboot     # boot into it once, without changing boot
+timeshift-recovery remove     # remove the payload, entry and cached image
+```
+
+`status --machine` prints `KEY=value` lines for scripts. The same management
+is available from Timeshift itself: `timeshift --recovery-status`,
+`--recovery-enable` and `--recovery-disable` on the CLI, and a **Recovery**
+page in the GUI's Settings that can also install the environment with live
+build output. A disabled entry stays disabled across package upgrades and the
+automatic refresh.
+
+Where it lands depends on the disk. Given unallocated space it creates a
+dedicated partition, which survives even the loss of the root filesystem.
+Otherwise -- the usual case, since a stock Ubuntu install fills its disk -- it
+falls back to an image on the root filesystem, which survives a bad update, a
+bad kernel or a bad config, but not the loss of that filesystem. `--target`
+overrides the choice; `--target /dev/sdX` writes a USB stick.
+
+**The embedded SSH key is a real trade-off.** It is what makes an unattended
+restore possible on a machine that is already broken, and it is readable by
+anyone who can boot that machine. Restrict it on the backup host so a leaked
+recovery key can read snapshots but not write or delete them:
+
+```
+# ~/.ssh/authorized_keys on the backup host
+restrict,command="rrsync -ro /path/to/snapshots" ssh-ed25519 AAAA...
+```
+
+Or install with `--no-ssh-key` and supply credentials at recovery time.
+`--no-wifi-creds` and `--no-tailscale-state` opt out of the other embedded
+credentials the same way, and `timeshift-recovery status` reports what the
+built image actually carries. On disk the image is readable by root only.
+
+### Snapshot Guard for apt
+
+The `apt-snapshot-guard` package (shipped alongside, from
+`os-plugins/apt-snapshot-guard/`) installs a `DPkg::Pre-Invoke` hook that
+takes a Timeshift snapshot automatically before apt applies **any** package
+change - install, remove, upgrade, autoremove - from every frontend that
+drives dpkg: apt on the command line, the GUI Software Updater, PackageKit
+and unattended-upgrades.
+
+It is fail-closed: no snapshot, no package change. On a terminal a failed
+snapshot prompts (default No); GUI updates raise a zenity dialog; unattended
+runs abort outright. For a deliberate exception, either
+`sudo touch /run/apt-snapshot-guard.bypass` (one-shot) or run the command
+with `APT_SNAPSHOT_GUARD=off`. Configuration lives in
+`/etc/apt-snapshot-guard/config`.
+
+### Building the packages
+
+`./build-all.sh "changelog line"` builds all three debs (`timeshift-ssh`,
+`apt-snapshot-guard`, `timeshift-recovery`), verifies each with its
+`check-deb.sh`, and collects them in `dist/`. `TS_MSG` / `GUARD_MSG` /
+`RECOVERY_MSG` override the shared changelog bullets per package, and
+`NO_BUMP=1` rebuilds the current versions without a new changelog entry.
+
+Note that installing a deb resets any apt hold, so after every install of the
+fork re-run: `sudo apt-mark hold timeshift-ssh`.
+
 ## Supported System Configurations
 
 - **Normal** - OS installed on non-encrypted partitions
