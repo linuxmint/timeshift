@@ -64,7 +64,7 @@ func TestAnAutomaticDeleteRefusesASnapshotThatStillHasAControlFile(t *testing.T)
 	}
 
 	rep := &recordingReporter{}
-	if err := repo.Delete(context.Background(), []string{"2026-08-20_09-00-01"}, DeleteOpts{}, rep); err != nil {
+	if err := repo.Delete(context.Background(), []string{"2026-08-20_09-00-01"}, engines.DeleteOptions{}, rep); err != nil {
 		t.Fatalf("Delete: %v", err)
 	}
 
@@ -87,7 +87,7 @@ func TestAnExplicitDeleteRemovesAnInvalidSnapshot(t *testing.T) {
 	os.Remove(filepath.Join(dir, "exclude.list"))
 
 	rep := &recordingReporter{}
-	if err := repo.Delete(context.Background(), []string{"2026-08-20_09-00-01"}, DeleteOpts{Explicit: true}, rep); err != nil {
+	if err := repo.Delete(context.Background(), []string{"2026-08-20_09-00-01"}, engines.DeleteOptions{Explicit: true}, rep); err != nil {
 		t.Fatalf("Delete: %v", err)
 	}
 
@@ -111,7 +111,7 @@ func TestAnAutomaticDeleteRemovesASnapshotWithNoControlFile(t *testing.T) {
 	}
 
 	rep := &recordingReporter{}
-	if err := repo.Delete(context.Background(), []string{"2026-08-20_09-00-01"}, DeleteOpts{}, rep); err != nil {
+	if err := repo.Delete(context.Background(), []string{"2026-08-20_09-00-01"}, engines.DeleteOptions{}, rep); err != nil {
 		t.Fatalf("Delete: %v", err)
 	}
 
@@ -130,7 +130,7 @@ func TestAnAutomaticDeleteRemovesAValidSnapshot(t *testing.T) {
 	dir := snapshotDir(root, "2026-08-20_09-00-01")
 
 	rep := &recordingReporter{}
-	if err := repo.Delete(context.Background(), []string{"2026-08-20_09-00-01"}, DeleteOpts{}, rep); err != nil {
+	if err := repo.Delete(context.Background(), []string{"2026-08-20_09-00-01"}, engines.DeleteOptions{}, rep); err != nil {
 		t.Fatalf("Delete: %v", err)
 	}
 
@@ -152,7 +152,7 @@ func TestAnAutomaticDeleteRefusesWhenTheListCannotBeRead(t *testing.T) {
 	_ = root
 
 	rep := &recordingReporter{}
-	err := repo.Delete(context.Background(), []string{"2026-08-20_09-00-01"}, DeleteOpts{}, rep)
+	err := repo.Delete(context.Background(), []string{"2026-08-20_09-00-01"}, engines.DeleteOptions{}, rep)
 	if err == nil {
 		t.Fatal("deleted without a readable snapshot list")
 	}

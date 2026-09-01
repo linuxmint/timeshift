@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net"
 	"os"
 	"path/filepath"
 	"strings"
@@ -419,5 +420,42 @@ func TestClientDoneOnServerClose(t *testing.T) {
 	case <-c.Done():
 	case <-time.After(5 * time.Second):
 		t.Fatal("client did not notice the daemon going away")
+	}
+}
+
+/* A daemon that is running but will not talk to us must not be reported as
+ * absent.
+ *
+ * The socket is 0660 root:timeshift, so anyone outside that group is refused by
+ * connect(2) with EACCES. Calling that "not running" sends a person off to
+ * start a service that is already up, which is the one instruction guaranteed
+ * to stop them finding the real answer -- group membership. */
+func TestDialDistinguishesPermissionFromAbsence(t *testing.T) {
+	dir := t.TempDir()
+
+	// Absent: nothing is listening.
+	missing := filepath.Join(dir, "absent.sock")
+	if _, err := Dial(missing); !errors.Is(err, ErrNoDaemon) {
+		t.Errorf("Dial on a missing socket = %v, want ErrNoDaemon", err)
+	}
+
+	// Present but forbidden. Root bypasses permission checks, so this can only
+	// be observed as an ordinary user.
+	if os.Geteuid() == 0 {
+		t.Skip("root is not refused by socket permissions")
+	}
+
+	forbidden := filepath.Join(dir, "forbidden.sock")
+	l, err := net.Listen("unix", forbidden)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer l.Close()
+	if err := os.Chmod(forbidden, 0o000); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := Dial(forbidden); !errors.Is(err, ErrNotPermitted) {
+		t.Errorf("Dial on a forbidden socket = %v, want ErrNotPermitted", err)
 	}
 }

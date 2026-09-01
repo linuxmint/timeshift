@@ -24,7 +24,6 @@ import (
 	"github.com/makeafide/timeshift/src-go/internal/block"
 	"github.com/makeafide/timeshift/src-go/internal/config"
 	"github.com/makeafide/timeshift/src-go/internal/engines"
-	tsengine "github.com/makeafide/timeshift/src-go/internal/engines/timeshift"
 	"github.com/makeafide/timeshift/src-go/internal/ipc"
 	"github.com/makeafide/timeshift/src-go/internal/sysexec"
 )
@@ -363,11 +362,7 @@ func listSnapshotsCmd(ctx context.Context, configPath string, runner sysexec.Sim
 	}
 	defer repository.Close()
 
-	repo, ok := repository.(*tsengine.Repo)
-	if !ok {
-		return false, fmt.Errorf("timeshift: engine %q does not provide a console listing", engine.ID())
-	}
-	repo.FirstSnapshotSize = cfg.SnapshotSize
+	repository.SetFirstSnapshotSize(cfg.SnapshotSize)
 
-	return listSnapshots(ctx, os.Stdout, repo, deviceName, deviceUUID)
+	return listSnapshots(ctx, os.Stdout, repository, deviceName, deviceUUID)
 }

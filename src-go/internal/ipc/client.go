@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -17,6 +18,14 @@ import (
 // is the one failure worth acting on: start the daemon, or explain that it is
 // not running, rather than reporting a generic connection error.
 var ErrNoDaemon = errors.New("ipc: timeshiftd is not running")
+
+/* ErrNotPermitted is a daemon that IS running and will not talk to us.
+ *
+ * The socket is mode 0660, root:timeshift, so a caller outside that group is
+ * refused by connect(2) with EACCES. Reporting that as "not running" sends a
+ * person off to start a service that is already up -- the one thing that
+ * guarantees they will not find the real problem, which is group membership. */
+var ErrNotPermitted = errors.New("ipc: not permitted to talk to timeshiftd")
 
 // Client is a connection to the daemon.
 //
@@ -47,6 +56,9 @@ func Dial(path string) (*Client, error) {
 	}
 	conn, err := net.DialTimeout("unix", path, 5*time.Second)
 	if err != nil {
+		if errors.Is(err, os.ErrPermission) {
+			return nil, fmt.Errorf("%w: %s", ErrNotPermitted, path)
+		}
 		var opErr *net.OpError
 		if errors.As(err, &opErr) {
 			return nil, fmt.Errorf("%w: %s", ErrNoDaemon, path)

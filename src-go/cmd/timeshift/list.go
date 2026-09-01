@@ -26,11 +26,18 @@ import (
 
 // listSnapshots writes the status block and table, and reports whether any
 // snapshot was found.
-func listSnapshots(ctx context.Context, w io.Writer, repo *tsengine.Repo, deviceName, deviceUUID string) (bool, error) {
-	var header strings.Builder
-	if err := repo.PrintStatus(ctx, &header, deviceName, deviceUUID); err != nil {
+func listSnapshots(ctx context.Context, w io.Writer, repo engines.Repository, deviceName, deviceUUID string) (bool, error) {
+	raw, err := repo.ConsoleStatus(ctx, deviceName, deviceUUID)
+	if err != nil {
 		return false, err
 	}
+	var view tsengine.StatusView
+	if err := json.Unmarshal(raw, &view); err != nil {
+		return false, err
+	}
+
+	var header strings.Builder
+	tsengine.RenderStatus(&header, view)
 	io.WriteString(w, header.String())
 
 	snapshots, err := repo.List(ctx)
@@ -89,11 +96,21 @@ func listSnapshotsViaDaemon(socket string, w io.Writer) (found, served bool, err
 		return false, true, err
 	}
 
+	/* A daemon too old to send the header fields cannot serve this listing.
+	 *
+	 * Rendering what it did send would print "Device : Not Selected" over a
+	 * perfectly good repository, which is worse than not using the daemon at
+	 * all. Fall back to opening the repository ourselves -- the same fail-open
+	 * rule as a daemon that is not running. Normally unreachable, since the
+	 * unit is restarted on upgrade, but a daemon left running across one is
+	 * exactly the case nobody tests. */
+	if len(st.View) == 0 {
+		return false, false, nil
+	}
+
 	var view tsengine.StatusView
-	if len(st.View) > 0 {
-		if err := json.Unmarshal(st.View, &view); err != nil {
-			return false, true, err
-		}
+	if err := json.Unmarshal(st.View, &view); err != nil {
+		return false, true, err
 	}
 
 	var header strings.Builder

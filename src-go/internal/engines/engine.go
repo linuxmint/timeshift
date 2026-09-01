@@ -43,6 +43,7 @@ package engines
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"time"
 )
@@ -89,12 +90,21 @@ type Caps struct {
 	// the "Unique" column. rsync computes it with a hardlink walk; an engine
 	// with content-addressed storage may not be able to at all.
 	UnsharedSize bool
-	// WholeVolumeRestore means restore swaps a whole subvolume rather than
-	// transferring files, so there is no per-file progress to report.
-	WholeVolumeRestore bool
-	// Encryption means the engine encrypts at rest by itself.
-	Encryption bool
 }
+
+/* WholeVolumeRestore and Encryption used to be declared here. Nothing set
+ * them and nothing read them, and a capability in that state is worse than an
+ * absent one: it reads as a firm "no" to any client that branches on it. That
+ * is not hypothetical -- Browse was declared TRUE with no browse method behind
+ * it, which would have made a client show a button that returns unknown_method.
+ *
+ * WholeVolumeRestore also cannot be answered here even in principle. Whether a
+ * restore swaps a subvolume or transfers files depends on the REPOSITORY's mode,
+ * which is not known until Open, and Caps belongs to the Engine. Reintroducing
+ * it means putting it where the answer exists, not where it was convenient.
+ *
+ * Add a capability back in the same change that gives it both a setter and a
+ * reader. */
 
 // Location is a configured place to store snapshots. Exactly one of Device or
 // SSH is meaningful, per Type.
@@ -199,6 +209,8 @@ type PassphraseRequest struct {
 
 // Repository is one open repository.
 type Repository interface {
+	// ---- reading ----
+
 	// Status reports whether the repository is usable and why not.
 	Status(ctx context.Context) (Status, error)
 
@@ -213,8 +225,125 @@ type Repository interface {
 	// FreeBytes is the space available for new snapshots.
 	FreeBytes(ctx context.Context) (uint64, error)
 
+	/* ConsoleStatus is the engine's own header presentation, opaque to the
+	 * host: a location's description is engine-shaped ("Mode: RSYNC", a device
+	 * and UUID, a remote URL) and the host has no business knowing which. It
+	 * travels as raw JSON for the same reason Snapshot.EngineData does, and is
+	 * decoded by whoever renders it. */
+	ConsoleStatus(ctx context.Context, deviceName, deviceUUID string) (json.RawMessage, error)
+
+	// ReadSnapshotFile reads one file from inside a snapshot, e.g. its fstab.
+	ReadSnapshotFile(ctx context.Context, snapshotPath, name string) ([]byte, error)
+
+	// ---- writing ----
+
+	// Create takes a snapshot.
+	Create(ctx context.Context, req CreateRequest, rep Reporter) (Snapshot, error)
+
+	// Delete removes snapshots. See DeleteOptions for why the caller has to
+	// say whether a person asked for this.
+	Delete(ctx context.Context, names []string, opts DeleteOptions, rep Reporter) error
+
+	// Estimate measures what a snapshot would transfer, returning the size in
+	// bytes and the line count that is the progress denominator for a real run.
+	Estimate(ctx context.Context, req EstimateRequest, rep Reporter) (bytes, lines int64, err error)
+
+	// SetTags replaces a snapshot's retention levels.
+	SetTags(ctx context.Context, name string, tags []string) error
+
+	// AddTag adds one retention level, used by the scheduler's rotation.
+	AddTag(ctx context.Context, name, tag string) error
+
+	// SetDescription sets a snapshot's comment.
+	SetDescription(ctx context.Context, name, description string) error
+
+	// SetMarkedForDeletion flags a snapshot for removal.
+	SetMarkedForDeletion(ctx context.Context, name string, marked bool) error
+
+	// ---- restore ----
+
+	/* TransferSource describes how to READ a snapshot's payload, which is the
+	 * only thing the host restore path needs from the engine. Everything after
+	 * the transfer -- fstab, bootloader, initramfs -- belongs to the host and
+	 * does not care which engine produced the files. */
+	TransferSource(payloadPath string) TransferSource
+
+	// ---- lifecycle ----
+
+	/* SetFirstSnapshotSize supplies the estimated size of a first snapshot, so
+	 * free-space checks mean something on a repository that holds none yet. */
+	SetFirstSnapshotSize(n uint64)
+
 	// Close releases connections and mounts.
 	Close() error
+}
+
+// CreateRequest is what to snapshot.
+type CreateRequest struct {
+	// Tags are the retention levels this snapshot belongs to.
+	Tags []string
+
+	// Comments is the description. apt-snapshot-guard puts the apt command
+	// line here.
+	Comments string
+
+	// Source is the tree to copy, "/" in every real use.
+	Source string
+
+	// Excludes are the filter rules, already ordered by the host.
+	Excludes []string
+
+	// SysUUID and SysDistro identify the system being snapshotted. A snapshot
+	// whose SysUUID differs from the running system's was taken elsewhere and
+	// is not a link-dest candidate.
+	SysUUID   string
+	SysDistro string
+
+	// AppVersion is recorded in the control file.
+	AppVersion string
+
+	// DryRun changes nothing on disk. Everything else is identical, which is
+	// what makes it a truthful rehearsal.
+	DryRun bool
+
+	// EstimatedLines is the progress denominator, from a previous dry run.
+	// Zero means the client should show an indeterminate bar.
+	EstimatedLines int64
+}
+
+// EstimateRequest is what to measure.
+type EstimateRequest struct {
+	Source   string
+	Excludes []string
+}
+
+// DeleteOptions says why a deletion is happening.
+//
+// The zero value is the guarded one, on purpose: a caller that has not thought
+// about it gets the safe behaviour.
+type DeleteOptions struct {
+	/* Explicit marks a deletion a PERSON asked for by name, which may remove
+	 * anything. An automatic deletion -- retention, prune -- may not remove a
+	 * snapshot the repository merely believes is invalid.
+	 *
+	 * "Invalid" is not evidence. A dropped SSH link makes every snapshot in a
+	 * remote repository read as invalid, and the Vala code learned this by
+	 * having auto_remove() delete an entire repository afterwards. Positive
+	 * evidence that a snapshot is incomplete is the ABSENCE of its control
+	 * file. */
+	Explicit bool
+}
+
+// TransferSource is how the host reads a snapshot's payload.
+type TransferSource struct {
+	// Path is the source argument, host-prefixed for a remote repository.
+	Path string
+
+	// RSH is the transport command, empty for a local repository.
+	RSH string
+
+	// RemoteShellPath is the --rsync-path value, when the remote needs one.
+	RemoteShellPath string
 }
 
 // Status is a repository's health, and is what a client renders as its status

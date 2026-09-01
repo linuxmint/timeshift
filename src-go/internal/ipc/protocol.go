@@ -118,12 +118,10 @@ type EngineInfo struct {
 // Caps is the engine capability set, mirrored onto the wire so a client can ask
 // what an engine can do instead of recognising its name.
 type Caps struct {
-	Incremental        bool `json:"incremental"`
-	Remote             bool `json:"remote"`
-	Browse             bool `json:"browse"`
-	UnsharedSize       bool `json:"unshared_size"`
-	WholeVolumeRestore bool `json:"whole_volume_restore"`
-	Encryption         bool `json:"encryption"`
+	Incremental  bool `json:"incremental"`
+	Remote       bool `json:"remote"`
+	Browse       bool `json:"browse"`
+	UnsharedSize bool `json:"unshared_size"`
 }
 
 // CreateParams is snapshot.create's input.

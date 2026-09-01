@@ -79,7 +79,7 @@ func (d *daemon) snapshotRestore(ctx context.Context, _ *ipc.Conn, params json.R
 
 // restoreDeps are the pieces the job needs that the plan does not carry.
 type restoreDeps struct {
-	repo *tsengine.Repo
+	repo engines.Repository
 }
 
 // buildRestorePlan resolves the request against the repository and the system.
@@ -149,9 +149,15 @@ func (d *daemon) buildRestorePlan(ctx context.Context, in ipc.RestoreParams) (*r
 	}
 
 	cfg := d.config()
+
+	/* One call, three values. They are only correct together: a remote source
+	 * needs its host prefix AND its transport AND, when the far side cannot
+	 * preserve ownership as itself, its --rsync-path. */
+	src := repo.TransferSource(payload)
+
 	req := restore.Request{
 		SnapshotName:     snap.Name,
-		SnapshotPath:     repo.RsyncSource(payload),
+		SnapshotPath:     src.Path,
 		SnapshotDir:      snap.Path,
 		Mounts:           mounts,
 		CurrentSystem:    in.CurrentSystem,
@@ -164,8 +170,8 @@ func (d *daemon) buildRestorePlan(ctx context.Context, in ipc.RestoreParams) (*r
 		DryRun:           in.DryRun,
 		Excludes:         tsengine.BuildRestoreExcludes(cfg.Exclude, snapshotExcludes(ctx, repo, snap)),
 		Remote:           cfg.Remote(),
-		RSH:              repo.RsyncRSH(),
-		RsyncPath:        repo.RsyncPath(),
+		RSH:              src.RSH,
+		RsyncPath:        src.RemoteShellPath,
 		MountRoot:        path.Join(d.mountRoot, "restore"),
 		TempDir:          d.tempDir,
 		FSTypeByUUID:     restore.FSTypes(mounts, devices),
@@ -258,8 +264,8 @@ func (a restoreReporter) Warn(msg string) { a.r.Note(msg) }
 
 // readSnapshotFile reads one file out of a snapshot, through the backend so it
 // works for a remote repository too.
-func (d *daemon) readSnapshotFile(ctx context.Context, repo *tsengine.Repo, payload, name string) string {
-	raw, err := repo.Backend.ReadFile(ctx, path.Join(payload, name))
+func (d *daemon) readSnapshotFile(ctx context.Context, repo engines.Repository, payload, name string) string {
+	raw, err := repo.ReadSnapshotFile(ctx, payload, name)
 	if err != nil {
 		d.log.Debug("snapshot file not readable", "file", name, "err", err)
 		return ""
@@ -268,8 +274,8 @@ func (d *daemon) readSnapshotFile(ctx context.Context, repo *tsengine.Repo, payl
 }
 
 // snapshotExcludes reads the exclude list recorded when the snapshot was taken.
-func snapshotExcludes(ctx context.Context, repo *tsengine.Repo, snap *engines.Snapshot) []string {
-	raw, err := repo.Backend.ReadFile(ctx, path.Join(snap.Path, "exclude.list"))
+func snapshotExcludes(ctx context.Context, repo engines.Repository, snap *engines.Snapshot) []string {
+	raw, err := repo.ReadSnapshotFile(ctx, snap.Path, "exclude.list")
 	if err != nil {
 		return nil
 	}

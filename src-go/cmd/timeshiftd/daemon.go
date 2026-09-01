@@ -62,7 +62,7 @@ func (d *daemon) config() config.Config {
 // rather than the daemon holding one open. A repository on a removable disk or
 // at the end of an SSH link is not a resource worth keeping warm across hours
 // of idleness, and a stale handle is worse than a new one.
-func (d *daemon) openRepo(ctx context.Context) (*tsengine.Repo, string, string, error) {
+func (d *daemon) openRepo(ctx context.Context) (engines.Repository, string, string, error) {
 	cfg := d.config()
 
 	var devices []*block.Device
@@ -93,13 +93,8 @@ func (d *daemon) openRepo(ctx context.Context) (*tsengine.Repo, string, string, 
 		return nil, "", "", err
 	}
 
-	repo, ok := repository.(*tsengine.Repo)
-	if !ok {
-		repository.Close()
-		return nil, "", "", fmt.Errorf("engine %q is not the timeshift engine", engine.ID())
-	}
-	repo.FirstSnapshotSize = cfg.SnapshotSize
-	return repo, deviceName, deviceUUID, nil
+	repository.SetFirstSnapshotSize(cfg.SnapshotSize)
+	return repository, deviceName, deviceUUID, nil
 }
 
 // reporterAdapter presents the daemon's job Reporter as the engine's.
@@ -184,12 +179,10 @@ func (d *daemon) systemInfo(ctx context.Context, c *ipc.Conn, _ json.RawMessage)
 			ID:          e.ID(),
 			DisplayName: e.DisplayName(),
 			Caps: ipc.Caps{
-				Incremental:        caps.Incremental,
-				Remote:             caps.Remote,
-				Browse:             caps.Browse,
-				UnsharedSize:       caps.UnsharedSize,
-				WholeVolumeRestore: caps.WholeVolumeRestore,
-				Encryption:         caps.Encryption,
+				Incremental:  caps.Incremental,
+				Remote:       caps.Remote,
+				Browse:       caps.Browse,
+				UnsharedSize: caps.UnsharedSize,
 			},
 		})
 	}
@@ -260,13 +253,9 @@ func (d *daemon) repoStatus(ctx context.Context, _ *ipc.Conn, _ json.RawMessage)
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
 	}
-	view, err := repo.StatusView(ctx, deviceName, deviceUUID)
+	rawView, err := repo.ConsoleStatus(ctx, deviceName, deviceUUID)
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
-	}
-	rawView, err := json.Marshal(view)
-	if err != nil {
-		return nil, ipc.Errf(ipc.CodeInternal, "%v", err)
 	}
 
 	return ipc.RepoStatus{
@@ -380,7 +369,7 @@ func (d *daemon) estimateRun(ctx context.Context, _ *ipc.Conn, _ json.RawMessage
 		}
 		defer repo.Close()
 
-		size, lines, err := repo.Estimate(ctx, tsengine.EstimateRequest{
+		size, lines, err := repo.Estimate(ctx, engines.EstimateRequest{
 			Excludes: d.buildExcludes(),
 		}, reporterAdapter{r})
 		if err != nil {
@@ -442,7 +431,7 @@ func (d *daemon) runCreate(ctx context.Context, r jobs.Reporter, tags []string, 
 		sysUUID = sysRoot.UUID
 	}
 
-	_, err = repo.Create(ctx, tsengine.CreateRequest{
+	_, err = repo.Create(ctx, engines.CreateRequest{
 		Tags:     tags,
 		Comments: comments,
 		Excludes: d.buildExcludes(),
@@ -482,7 +471,7 @@ func (d *daemon) runDelete(ctx context.Context, r jobs.Reporter, names []string,
 	}
 	defer repo.Close()
 
-	opts := tsengine.DeleteOpts{Explicit: explicit}
+	opts := engines.DeleteOptions{Explicit: explicit}
 	if err := repo.Delete(ctx, names, opts, reporterAdapter{r}); err != nil {
 		return jobs.OutcomeFailed, err
 	}

@@ -23,39 +23,6 @@ const NameLayout = "2006-01-02_15-04-05"
 // btrfs snapshots use "@" and "@home" instead.
 const PayloadDir = "localhost"
 
-// CreateRequest describes a snapshot to take.
-type CreateRequest struct {
-	// Tags are the retention levels this snapshot belongs to.
-	Tags []string
-
-	// Comments is the description. apt-snapshot-guard puts the apt command
-	// line here.
-	Comments string
-
-	// Source is the tree to copy, "/" in every real use.
-	Source string
-
-	// Excludes are the filter rules, already ordered by BuildBackupExcludes.
-	Excludes []string
-
-	// SysUUID and SysDistro identify the system being snapshotted. A snapshot
-	// whose SysUUID differs from the running system's was taken elsewhere and
-	// is not a link-dest candidate.
-	SysUUID   string
-	SysDistro string
-
-	// AppVersion is recorded in the control file.
-	AppVersion string
-
-	// DryRun changes nothing on disk. Everything else is identical, which is
-	// what makes it a truthful rehearsal.
-	DryRun bool
-
-	// EstimatedLines is the progress denominator, from a previous dry run.
-	// Zero means the client should show an indeterminate bar.
-	EstimatedLines int64
-}
-
 // createPhases is the checklist a client draws for a snapshot.
 var createPhases = []jobsPhase{
 	{Key: "prepare", Title: "Preparing"},
@@ -80,7 +47,7 @@ func CreatePhases() []engines.Phase {
 }
 
 // Create takes a snapshot.
-func (r *Repo) Create(ctx context.Context, req CreateRequest, rep engines.Reporter) (engines.Snapshot, error) {
+func (r *Repo) Create(ctx context.Context, req engines.CreateRequest, rep engines.Reporter) (engines.Snapshot, error) {
 	rep.SetPhases(CreatePhases())
 	rep.Phase("prepare")
 
@@ -225,18 +192,12 @@ func (r *Repo) Create(ctx context.Context, req CreateRequest, rep engines.Report
 	}, nil
 }
 
-// EstimateRequest describes a dry run used to size the next snapshot.
-type EstimateRequest struct {
-	Source   string
-	Excludes []string
-}
-
 // Estimate measures how much a snapshot would transfer, and how many lines it
 // would emit -- which is the progress denominator for the real run.
 //
 // The destination is an empty directory, so every file counts as new: that is
 // the point. It measures the whole system, not the delta.
-func (r *Repo) Estimate(ctx context.Context, req EstimateRequest, rep engines.Reporter) (int64, int64, error) {
+func (r *Repo) Estimate(ctx context.Context, req engines.EstimateRequest, rep engines.Reporter) (int64, int64, error) {
 	rep.SetPhases([]engines.Phase{{Key: "estimate", Title: "Estimating system size"}})
 	rep.Phase("estimate")
 
@@ -286,7 +247,7 @@ func (r *Repo) Estimate(ctx context.Context, req EstimateRequest, rep engines.Re
 // refuseIncomplete drops names that an automatic caller must not remove.
 //
 // A snapshot the repository lists as invalid, but which still holds an
-// info.json, is kept and reported. See DeleteOpts.Explicit.
+// info.json, is kept and reported. See engines.DeleteOptions.Explicit.
 func (r *Repo) refuseIncomplete(ctx context.Context, names []string, rep engines.Reporter) ([]string, error) {
 	list, err := r.List(ctx)
 	if err != nil {
@@ -315,30 +276,11 @@ func (r *Repo) refuseIncomplete(ctx context.Context, names []string, rep engines
 	return keep, nil
 }
 
-// DeleteOpts says why a deletion is happening.
-//
-// The zero value is the guarded one, on purpose: a caller that has not thought
-// about it gets the safe behaviour.
-type DeleteOpts struct {
-	/* Explicit marks a deletion a PERSON asked for by name, which may remove
-	 * anything. An automatic deletion -- retention, prune -- may not remove a
-	 * snapshot the repository merely believes is invalid.
-	 *
-	 * The distinction is SnapshotRepo.remove_invalid()'s, and the reason is
-	 * that "invalid" is not evidence. A dropped SSH link makes every snapshot
-	 * in a remote repository read as invalid, and the Vala code learned this by
-	 * having auto_remove() delete an entire repository afterwards. Positive
-	 * evidence that a snapshot is incomplete is the ABSENCE of its control
-	 * file; a snapshot that still has one is being called invalid for some
-	 * other reason, and software must not act on that alone. */
-	Explicit bool
-}
-
 // Delete removes snapshots.
 //
 // Progress is per line of `rm -rfv` output, which is one line per removed path
 // -- the same line-counting contract as a transfer.
-func (r *Repo) Delete(ctx context.Context, names []string, opts DeleteOpts, rep engines.Reporter) error {
+func (r *Repo) Delete(ctx context.Context, names []string, opts engines.DeleteOptions, rep engines.Reporter) error {
 
 	/* The backstop for an automatic caller. Nothing in the tree prunes invalid
 	 * snapshots today, so this refuses nothing yet -- which is exactly why it

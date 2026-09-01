@@ -1,10 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/makeafide/timeshift/src-go/internal/fsutil"
@@ -161,7 +161,13 @@ func group(n int64) string { return fsutil.GroupDigits(n) }
 func connect(socket string) (*ipc.Client, error) {
 	c, err := ipc.Dial(socket)
 	if err != nil {
-		if strings.Contains(err.Error(), ipc.ErrNoDaemon.Error()) {
+		if errors.Is(err, ipc.ErrNotPermitted) {
+			return nil, fmt.Errorf(
+				"not permitted to talk to timeshiftd (socket %s).\n"+
+					"Run as root, or join the 'timeshift' group for read-only access:\n"+
+					"  sudo usermod -aG timeshift $USER   (then log out and back in)", socket)
+		}
+		if errors.Is(err, ipc.ErrNoDaemon) {
 			return nil, fmt.Errorf(
 				"timeshiftd is not running (socket %s).\n"+
 					"Start it with: sudo systemctl start timeshiftd", socket)
