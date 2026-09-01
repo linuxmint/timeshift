@@ -46,13 +46,16 @@ GUI_PROMPT_TIMEOUT=120
 # Timeshift tag applied to guard snapshots (O = on-demand).
 TAGS=O
 
-# Drive the snapshot through timeshiftd when it is listening (1) or always use
-# the `timeshift` on PATH (0).
+# Name the daemon's socket explicitly when it is already listening (1), or just
+# run the `timeshift` on PATH (0).
 #
-# The daemon path makes an apt-driven snapshot watchable: `timeshift --watch`,
-# or the GUI, can attach to it while apt waits here. Set this to 0 to pin the
-# old behaviour, in which the snapshot runs as a private process that nothing
-# else can see into.
+# Both do the same work now: /usr/bin/timeshift always goes through timeshiftd,
+# and starts it if it is not running. What 1 buys is that a snapshot which
+# overruns TIMEOUT can be CANCELLED, instead of being left to run on holding the
+# repository write lock.
+#
+# Either way the snapshot is watchable -- `timeshift --watch`, or the GUI, can
+# attach to it while apt waits here.
 #USE_DAEMON=1
 
 # --- environment-only overrides ---------------------------------------------
@@ -60,11 +63,12 @@ TAGS=O
 # Not settings so much as test hooks; both have sensible defaults and neither
 # normally needs changing.
 #
-#   TS_CLIENT   the daemon client to run    (default /usr/libexec/timeshift/timeshift)
+#   TS_CLIENT   the client to run           (default /usr/bin/timeshift)
 #   TS_SOCKET   the daemon socket to use    (default /run/timeshift/daemon.sock)
 #
 # Setting TS_CLIENT to a stub and USE_DAEMON=0 is how the fallback path can be
-# exercised without a daemon.
+# exercised without a daemon. The hook's own tests do exactly that; see
+# tests/run-tests.sh.
 
 # --- a note on 0 --------------------------------------------------------------
 #

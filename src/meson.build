@@ -105,10 +105,6 @@ sources_gtk = files([
   'Gtk/UsersBox.vala',
 ])
 
-sources_app_console = files([
-  'AppConsole.vala',
-])
-
 sources_app_gtk = files([
   'AppGtk.vala',
 ])
@@ -118,13 +114,12 @@ vala_opts = [
   '--pkg', 'ioprio'
 ]
 
-timeshift = executable('timeshift',
-  sources_app_console + sources_core + sources_utility,
-  config_header,
-  dependencies: dependencies,
-  install: true,
-  vala_args: vala_opts
-)
+# There is no Vala `timeshift` any more.
+#
+# /usr/bin/timeshift is the Go CLI (src-go/meson.build). AppConsole.vala went
+# with it: it reached the Vala core directly, so keeping it would have meant
+# keeping that core alive for a binary nobody installs. timeshift-gtk still
+# links sources_core, and will until it finishes becoming a socket client.
 
 timeshift_gtk = executable('timeshift-gtk',
   sources_app_gtk + sources_core + sources_utility + sources_gtk,

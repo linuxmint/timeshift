@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-01 00:22-0400\n"
+"POT-Creation-Date: 2026-09-01 08:55-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,13 +16,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: src/AppConsole.vala:726
-#, c-format
-msgid ""
-"\n"
-"Press ENTER to continue..."
-msgstr ""
 
 #: src/Core/SnapshotRepo.vala:773
 #, c-format
@@ -49,24 +42,24 @@ msgstr ""
 msgid "%lld seconds"
 msgstr ""
 
-#: src/Core/Main.vala:5498
+#: src/Core/Main.vala:5452
 #, c-format
 msgid "%s and %s were both set to %s. %s will stay on %s."
 msgstr ""
 
-#: src/Core/Main.vala:5397
+#: src/Core/Main.vala:5351
 #, c-format
 msgid "%s is not an EFI System Partition and cannot hold /boot/efi."
 msgstr ""
 
-#: src/Core/Main.vala:5411
+#: src/Core/Main.vala:5365
 #, c-format
 msgid ""
 "%s is on a different disk from the root device and will not be used for /"
 "boot/efi."
 msgstr ""
 
-#: src/Core/Main.vala:5564
+#: src/Core/Main.vala:5518
 #, c-format
 msgid "%s is the same directory as the root of the restore target."
 msgstr ""
@@ -74,16 +67,6 @@ msgstr ""
 #: src/Gtk/JobMonitorWindow.vala:135
 #, c-format
 msgid "%s remaining"
-msgstr ""
-
-#: src/AppConsole.vala:1190
-#, c-format
-msgid "'%s' will be on '%s'"
-msgstr ""
-
-#: src/AppConsole.vala:1187
-#, c-format
-msgid "'%s' will be on root device"
 msgstr ""
 
 #: src/Gtk/BootOptionsBox.vala:133
@@ -94,24 +77,24 @@ msgstr ""
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr ""
 
-#: src/Core/Main.vala:3132
+#: src/Core/Main.vala:3086
 #, c-format
 msgid "... and %d more"
 msgstr ""
 
-#: src/Core/Main.vala:5170
+#: src/Core/Main.vala:5124
 msgid "/ is mapped to device"
 msgstr ""
 
-#: src/Core/Main.vala:5192
+#: src/Core/Main.vala:5146
 msgid "/boot is mapped to device"
 msgstr ""
 
-#: src/Core/Main.vala:5203
+#: src/Core/Main.vala:5157
 msgid "/boot/efi is mapped to device"
 msgstr ""
 
-#: src/Core/Main.vala:5181
+#: src/Core/Main.vala:5135
 msgid "/home is mapped to device"
 msgstr ""
 
@@ -131,14 +114,8 @@ msgstr ""
 msgid "A snapshot is being created by the Timeshift service."
 msgstr ""
 
-#: src/Core/Main.vala:3165
+#: src/Core/Main.vala:3119
 msgid "A step after the restore did not finish cleanly."
-msgstr ""
-
-#: src/AppConsole.vala:959 src/AppConsole.vala:1030 src/AppConsole.vala:1170
-#: src/AppConsole.vala:1273 src/AppConsole.vala:1324 src/AppConsole.vala:1370
-#: src/AppConsole.vala:1388
-msgid "Aborted."
 msgstr ""
 
 #: src/Gtk/MainWindow.vala:482
@@ -169,10 +146,6 @@ msgstr ""
 msgid "Add a pattern, files or folders"
 msgstr ""
 
-#: src/AppConsole.vala:449
-msgid "Add tags to snapshot (default: O)"
-msgstr ""
-
 #: src/Utility/CronTab.vala:312
 msgid "Added cron task"
 msgstr ""
@@ -185,7 +158,7 @@ msgstr ""
 msgid "Admin access is required to backup and restore system files."
 msgstr ""
 
-#: src/Core/Main.vala:5570
+#: src/Core/Main.vala:5524
 #, c-format
 msgid "Aliased mount detected: %s resolves to the restore target itself"
 msgstr ""
@@ -216,15 +189,11 @@ msgid ""
 "An update is pending; it is applied automatically after package upgrades."
 msgstr ""
 
-#: src/AppConsole.vala:474
-msgid "Answer YES to all confirmation prompts"
-msgstr ""
-
-#: src/Core/Main.vala:4936
+#: src/Core/Main.vala:4890
 msgid "App config loaded"
 msgstr ""
 
-#: src/Core/Main.vala:4791
+#: src/Core/Main.vala:4745
 msgid "App config saved"
 msgstr ""
 
@@ -232,11 +201,7 @@ msgstr ""
 msgid "Appearance"
 msgstr ""
 
-#: src/AppConsole.vala:113
-msgid "Application needs admin access."
-msgstr ""
-
-#: src/Core/Main.vala:5708
+#: src/Core/Main.vala:5662
 msgid "Application will exit"
 msgstr ""
 
@@ -264,7 +229,7 @@ msgstr ""
 msgid "BTRFS Snapshots"
 msgstr ""
 
-#: src/Core/Main.vala:2795 src/Core/Main.vala:2799
+#: src/Core/Main.vala:2749 src/Core/Main.vala:2753
 msgid "BTRFS device is not mounted"
 msgstr ""
 
@@ -286,15 +251,11 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: src/AppConsole.vala:445
-msgid "Backup"
-msgstr ""
-
-#: src/Core/Main.vala:2770
+#: src/Core/Main.vala:2724
 msgid "Backup Device"
 msgstr ""
 
-#: src/Core/Main.vala:2765
+#: src/Core/Main.vala:2719
 msgid "Backup device not specified!"
 msgstr ""
 
@@ -310,11 +271,11 @@ msgstr ""
 msgid "Boot device not selected"
 msgstr ""
 
-#: src/Core/Main.vala:3179
+#: src/Core/Main.vala:3133
 msgid "Boot from a live USB, mount the restored system and re-install GRUB."
 msgstr ""
 
-#: src/Core/Main.vala:1478
+#: src/Core/Main.vala:1432
 msgid "Boot snapshot failed!"
 msgstr ""
 
@@ -323,7 +284,7 @@ msgid ""
 "Boot snapshots are created with a delay of 10 minutes after system startup."
 msgstr ""
 
-#: src/Core/Main.vala:1459
+#: src/Core/Main.vala:1413
 msgid "Boot snapshots are enabled"
 msgstr ""
 
@@ -353,11 +314,11 @@ msgid ""
 "Browsing a remote snapshot needs the %s package, which is not installed."
 msgstr ""
 
-#: src/Core/Main.vala:4009
+#: src/Core/Main.vala:3963
 msgid "Building file list..."
 msgstr ""
 
-#: src/Core/Main.vala:1825
+#: src/Core/Main.vala:1779
 msgid "Calculating required disk space..."
 msgstr ""
 
@@ -371,7 +332,7 @@ msgstr ""
 msgid "Cancel restore?"
 msgstr ""
 
-#: src/AppConsole.vala:823 src/Core/Snapshot.vala:612
+#: src/Core/Snapshot.vala:612
 msgid "Cancelled"
 msgstr ""
 
@@ -387,10 +348,6 @@ msgstr ""
 msgid "Cannot Delete Live Snapshot"
 msgstr ""
 
-#: src/AppConsole.vala:783
-msgid "Cannot set up a key in scripted mode"
-msgstr ""
-
 #: src/Gtk/RestoreProgressBox.vala:99 src/Gtk/RsyncLogBox.vala:375
 #: src/Gtk/RsyncLogBox.vala:571 src/Gtk/RsyncLogBox.vala:592
 #: src/Utility/Gtk/TaskProgressBox.vala:112
@@ -401,11 +358,11 @@ msgstr ""
 msgid "Changed items:"
 msgstr ""
 
-#: src/AppConsole.vala:810 src/Gtk/BackupDeviceBox.vala:394
+#: src/Gtk/BackupDeviceBox.vala:394
 msgid "Check this fingerprint against the remote host before continuing."
 msgstr ""
 
-#: src/Core/Main.vala:4316
+#: src/Core/Main.vala:4270
 msgid "Checking file systems for errors..."
 msgstr ""
 
@@ -414,11 +371,11 @@ msgstr ""
 msgid "Checksum"
 msgstr ""
 
-#: src/Core/Main.vala:3789
+#: src/Core/Main.vala:3743
 msgid "Cleaning up"
 msgstr ""
 
-#: src/Core/Main.vala:3790
+#: src/Core/Main.vala:3744
 msgid "Cleaning up..."
 msgstr ""
 
@@ -458,7 +415,7 @@ msgstr ""
 msgid "Cloning Failed"
 msgstr ""
 
-#: src/Core/Main.vala:4431
+#: src/Core/Main.vala:4385
 msgid "Cloning system..."
 msgstr ""
 
@@ -481,7 +438,7 @@ msgid ""
 "follow the desktop theme."
 msgstr ""
 
-#: src/Core/Main.vala:482 src/Core/Main.vala:5025
+#: src/Core/Main.vala:482 src/Core/Main.vala:4979
 msgid "Commands listed below are not available on this system"
 msgstr ""
 
@@ -493,16 +450,16 @@ msgstr ""
 msgid "Comments (double-click to edit)"
 msgstr ""
 
-#: src/Core/Main.vala:4424 src/Gtk/RestoreBox.vala:61
+#: src/Core/Main.vala:4378 src/Gtk/RestoreBox.vala:61
 #: src/Gtk/RestoreBox.vala:80
 msgid "Comparing Files (Dry Run)..."
 msgstr ""
 
-#: src/Core/Main.vala:3498
+#: src/Core/Main.vala:3452
 msgid "Comparing files"
 msgstr ""
 
-#: src/Core/Main.vala:4047
+#: src/Core/Main.vala:4001
 msgid "Comparing files with rsync..."
 msgstr ""
 
@@ -515,7 +472,7 @@ msgstr ""
 msgid "Completed With Errors"
 msgstr ""
 
-#: src/Core/Main.vala:5971
+#: src/Core/Main.vala:5925
 msgid "Computing snapshot sizes..."
 msgstr ""
 
@@ -549,15 +506,6 @@ msgstr ""
 msgid "Contacting the snapshot location..."
 msgstr ""
 
-#: src/AppConsole.vala:814
-msgid "Continue"
-msgstr ""
-
-#: src/AppConsole.vala:1363
-#, c-format
-msgid "Continue with restore? (y/n): "
-msgstr ""
-
 #: src/Utility/Gtk/LogPane.vala:97
 msgid "Copy"
 msgstr ""
@@ -586,24 +534,16 @@ msgstr ""
 msgid "Could not fetch the log from the remote location."
 msgstr ""
 
-#: src/AppConsole.vala:1102 src/AppConsole.vala:1241
-msgid "Could not find device"
-msgstr ""
-
 #: src/Utility/Device.vala:1373
 #, c-format
 msgid "Could not find file"
 msgstr ""
 
-#: src/AppConsole.vala:992
-msgid "Could not find snapshot"
-msgstr ""
-
-#: src/Core/Main.vala:4639
+#: src/Core/Main.vala:4593
 msgid "Could not find system subvolume"
 msgstr ""
 
-#: src/Core/Main.vala:4667
+#: src/Core/Main.vala:4621
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr ""
 
@@ -641,24 +581,16 @@ msgstr ""
 msgid "Could not read the snapshot list from the remote location"
 msgstr ""
 
-#: src/AppConsole.vala:798
-msgid "Could not retrieve the host key"
-msgstr ""
-
 #: src/Gtk/BackupDeviceBox.vala:455
 msgid "Could not set up key-based login"
 msgstr ""
 
-#: src/Core/Main.vala:1373 src/Core/Main.vala:2269 src/Core/Main.vala:2732
+#: src/Core/Main.vala:1327 src/Core/Main.vala:2223 src/Core/Main.vala:2686
 msgid "Could not take the repository lock"
 msgstr ""
 
 #: src/Core/RepoBackend.vala:1117
 msgid "Could not test extended attribute support on the remote host"
-msgstr ""
-
-#: src/AppConsole.vala:874
-msgid "Could not tidy old keys on the remote"
 msgstr ""
 
 #: src/Core/RepoBackend.vala:1495
@@ -675,7 +607,7 @@ msgstr ""
 msgid "Create Snapshot"
 msgstr ""
 
-#: src/AppConsole.vala:753 src/Gtk/RestoreDeviceBox.vala:551
+#: src/Gtk/RestoreDeviceBox.vala:551
 msgid ""
 "Create a 1 GB partition of type 'EFI System' on the target disk, format it "
 "as FAT32, and run the restore again."
@@ -699,14 +631,6 @@ msgstr ""
 
 #: src/Gtk/ScheduleBox.vala:78
 msgid "Create one per week"
-msgstr ""
-
-#: src/AppConsole.vala:447
-msgid "Create snapshot (even if not scheduled)"
-msgstr ""
-
-#: src/AppConsole.vala:446
-msgid "Create snapshot if scheduled"
 msgstr ""
 
 #: src/Gtk/MainWindow.vala:339
@@ -742,11 +666,11 @@ msgstr ""
 msgid "Created directory"
 msgstr ""
 
-#: src/Core/Main.vala:4689
+#: src/Core/Main.vala:4643
 msgid "Created pre-restore snapshot"
 msgstr ""
 
-#: src/Core/Main.vala:2138
+#: src/Core/Main.vala:2092
 msgid "Created subvolume snapshot"
 msgstr ""
 
@@ -758,19 +682,19 @@ msgstr ""
 msgid "Creating Snapshot..."
 msgstr ""
 
-#: src/Core/Main.vala:2076
+#: src/Core/Main.vala:2030
 msgid "Creating new backup..."
 msgstr ""
 
-#: src/Core/Main.vala:1872
+#: src/Core/Main.vala:1826
 msgid "Creating new snapshot..."
 msgstr ""
 
-#: src/Core/Main.vala:4617
+#: src/Core/Main.vala:4571
 msgid "Creating pre-restore snapshot from system subvolumes..."
 msgstr ""
 
-#: src/Core/Main.vala:5707
+#: src/Core/Main.vala:5661
 msgid "Critical Error"
 msgstr ""
 
@@ -794,11 +718,11 @@ msgstr ""
 msgid "Daily"
 msgstr ""
 
-#: src/Core/Main.vala:1540
+#: src/Core/Main.vala:1494
 msgid "Daily snapshot failed!"
 msgstr ""
 
-#: src/Core/Main.vala:1521
+#: src/Core/Main.vala:1475
 msgid "Daily snapshots are enabled"
 msgstr ""
 
@@ -806,7 +730,7 @@ msgstr ""
 msgid "Dark"
 msgstr ""
 
-#: src/Core/Main.vala:2865
+#: src/Core/Main.vala:2819
 msgid "Data will be modified on following devices:"
 msgstr ""
 
@@ -814,9 +738,9 @@ msgstr ""
 msgid "Date Format"
 msgstr ""
 
-#: src/AppConsole.vala:459 src/Gtk/DeleteWindow.vala:64
-#: src/Gtk/DeleteWindow.vala:132 src/Gtk/RsyncLogBox.vala:372
-#: src/Gtk/RsyncLogBox.vala:579 src/Gtk/SnapshotListBox.vala:358
+#: src/Gtk/DeleteWindow.vala:64 src/Gtk/DeleteWindow.vala:132
+#: src/Gtk/RsyncLogBox.vala:372 src/Gtk/RsyncLogBox.vala:579
+#: src/Gtk/SnapshotListBox.vala:358
 #, c-format
 msgid "Delete"
 msgstr ""
@@ -825,16 +749,8 @@ msgstr ""
 msgid "Delete Snapshots"
 msgstr ""
 
-#: src/AppConsole.vala:461
-msgid "Delete all snapshots"
-msgstr ""
-
 #: src/Gtk/MainWindow.vala:353
 msgid "Delete selected snapshot"
-msgstr ""
-
-#: src/AppConsole.vala:460
-msgid "Delete snapshot"
 msgstr ""
 
 #: src/Gtk/RestoreProgressBox.vala:102 src/Gtk/RsyncLogBox.vala:372
@@ -848,7 +764,7 @@ msgstr ""
 msgid "Deleted directory"
 msgstr ""
 
-#: src/Core/Main.vala:4596 src/Core/Main.vala:4600 src/Core/Subvolume.vala:179
+#: src/Core/Main.vala:4550 src/Core/Main.vala:4554 src/Core/Subvolume.vala:179
 #, c-format
 msgid "Deleted subvolume"
 msgstr ""
@@ -865,7 +781,7 @@ msgstr ""
 msgid "Deleting snapshot"
 msgstr ""
 
-#: src/Core/Main.vala:2293
+#: src/Core/Main.vala:2247
 #, c-format
 msgid "Deleting snapshot %d of %d: %s"
 msgstr ""
@@ -873,10 +789,6 @@ msgstr ""
 #: src/Core/Subvolume.vala:141
 #, c-format
 msgid "Deleting subvolume"
-msgstr ""
-
-#: src/AppConsole.vala:528 src/AppConsole.vala:654
-msgid "Description"
 msgstr ""
 
 #: src/Core/Subvolume.vala:217
@@ -889,9 +801,8 @@ msgstr ""
 msgid "Destroying qgroup"
 msgstr ""
 
-#: src/AppConsole.vala:558 src/AppConsole.vala:605 src/AppConsole.vala:653
-#: src/Core/Main.vala:2868 src/Core/Main.vala:2900 src/Core/Main.vala:2952
-#: src/Core/Main.vala:2967 src/Core/SnapshotRepo.vala:83
+#: src/Core/Main.vala:2822 src/Core/Main.vala:2854 src/Core/Main.vala:2906
+#: src/Core/Main.vala:2921 src/Core/SnapshotRepo.vala:83
 #: src/Core/SnapshotRepo.vala:823 src/Core/SnapshotRepo.vala:826
 #: src/Gtk/RestoreDeviceBox.vala:148 src/Utility/Device.vala:1997
 #: src/Utility/Device.vala:2007
@@ -907,8 +818,7 @@ msgstr ""
 msgid "Device name is empty!"
 msgstr ""
 
-#: src/AppConsole.vala:924 src/Core/Main.vala:5064
-#: src/Core/SnapshotRepo.vala:683
+#: src/Core/Main.vala:5018 src/Core/SnapshotRepo.vala:683
 msgid "Device not found"
 msgstr ""
 
@@ -922,10 +832,6 @@ msgstr ""
 
 #: src/Gtk/RestoreDeviceBox.vala:88
 msgid "Devices from which snapshot was created are pre-selected."
-msgstr ""
-
-#: src/AppConsole.vala:371
-msgid "Devices with Linux file systems"
 msgstr ""
 
 #: src/Gtk/BackupDeviceBox.vala:542
@@ -944,7 +850,7 @@ msgstr ""
 msgid "Disabled"
 msgstr ""
 
-#: src/Core/Main.vala:3009 src/Gtk/RestoreSummaryBox.vala:66
+#: src/Core/Main.vala:2963 src/Gtk/RestoreSummaryBox.vala:66
 msgid "Disclaimer"
 msgstr ""
 
@@ -1004,24 +910,9 @@ msgstr ""
 msgid "Enter a remote location"
 msgstr ""
 
-#: src/AppConsole.vala:1160
-#, c-format
-msgid "Enter device name or number"
-msgstr ""
-
-#: src/AppConsole.vala:943 src/AppConsole.vala:1307
-#, c-format
-msgid "Enter device name or number (a=Abort)"
-msgstr ""
-
 #: src/Utility/Device.vala:1520
 #, c-format
 msgid "Enter passphrase to unlock '%s'"
-msgstr ""
-
-#: src/AppConsole.vala:1022
-#, c-format
-msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
 msgstr ""
 
 #: src/Gtk/BackupDeviceBox.vala:415
@@ -1052,17 +943,13 @@ msgstr ""
 msgid "Estimating System Size..."
 msgstr ""
 
-#: src/Core/DaemonBridge.vala:193 src/Core/Main.vala:1868
+#: src/Core/DaemonBridge.vala:193 src/Core/Main.vala:1822
 #: src/Gtk/JobMonitorWindow.vala:161
 msgid "Estimating system size..."
 msgstr ""
 
 #: src/Gtk/BackupDeviceBox.vala:224
 msgid "Example"
-msgstr ""
-
-#: src/AppConsole.vala:485
-msgid "Examples"
 msgstr ""
 
 #: src/Gtk/ExcludeBox.vala:118
@@ -1081,7 +968,7 @@ msgstr ""
 msgid "Exclude Pattern"
 msgstr ""
 
-#: src/Core/Main.vala:2229
+#: src/Core/Main.vala:2183
 msgid "Expected values: O, B, H, D, W, M"
 msgstr ""
 
@@ -1102,15 +989,15 @@ msgstr ""
 msgid "Failed to create directory"
 msgstr ""
 
-#: src/Core/Main.vala:2019
+#: src/Core/Main.vala:1973
 msgid "Failed to create new snapshot"
 msgstr ""
 
-#: src/Core/Main.vala:1749
+#: src/Core/Main.vala:1703
 msgid "Failed to create snapshot"
 msgstr ""
 
-#: src/Core/Main.vala:2134
+#: src/Core/Main.vala:2088
 msgid "Failed to create subvolume snapshot"
 msgstr ""
 
@@ -1146,16 +1033,11 @@ msgstr ""
 msgid "Failed to generate SSH key"
 msgstr ""
 
-#: src/AppConsole.vala:958 src/AppConsole.vala:1029 src/AppConsole.vala:1169
-#: src/AppConsole.vala:1272 src/AppConsole.vala:1323 src/AppConsole.vala:1369
-msgid "Failed to get input from user in 3 attempts"
-msgstr ""
-
 #: src/Utility/Device.vala:789
 msgid "Failed to get partition list"
 msgstr ""
 
-#: src/Core/Main.vala:5143
+#: src/Core/Main.vala:5097
 msgid "Failed to get partition list."
 msgstr ""
 
@@ -1175,7 +1057,7 @@ msgstr ""
 msgid "Failed to move file"
 msgstr ""
 
-#: src/Core/Main.vala:4654
+#: src/Core/Main.vala:4608
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr ""
 
@@ -1187,11 +1069,11 @@ msgstr ""
 msgid "Failed to query disk space on remote location"
 msgstr ""
 
-#: src/Core/Main.vala:6018
+#: src/Core/Main.vala:5972
 msgid "Failed to query subvolume list"
 msgstr ""
 
-#: src/Core/Main.vala:6103
+#: src/Core/Main.vala:6057
 msgid "Failed to query subvolume quota"
 msgstr ""
 
@@ -1205,7 +1087,7 @@ msgstr ""
 msgid "Failed to read file"
 msgstr ""
 
-#: src/AppConsole.vala:828 src/Gtk/BackupDeviceBox.vala:408
+#: src/Gtk/BackupDeviceBox.vala:408
 msgid "Failed to record the host key"
 msgstr ""
 
@@ -1226,7 +1108,7 @@ msgstr ""
 msgid "Failed to restore system subvolume"
 msgstr ""
 
-#: src/Core/Main.vala:1939
+#: src/Core/Main.vala:1893
 msgid "Failed to save exclude list"
 msgstr ""
 
@@ -1240,11 +1122,11 @@ msgstr ""
 msgid "Failed to unlock device"
 msgstr ""
 
-#: src/Core/Main.vala:6306 src/Utility/Device.vala:1798
+#: src/Core/Main.vala:6260 src/Utility/Device.vala:1798
 msgid "Failed to unmount"
 msgstr ""
 
-#: src/Core/Main.vala:5708
+#: src/Core/Main.vala:5662
 msgid "Failed to unmount device!"
 msgstr ""
 
@@ -1252,7 +1134,7 @@ msgstr ""
 msgid "Failed to write file"
 msgstr ""
 
-#: src/Core/Main.vala:4379
+#: src/Core/Main.vala:4333
 msgid "Failed to write the restore exclude list"
 msgstr ""
 
@@ -1304,11 +1186,6 @@ msgstr ""
 msgid "Filters"
 msgstr ""
 
-#: src/AppConsole.vala:808
-#, c-format
-msgid "Fingerprint"
-msgstr ""
-
 #: src/Utility/Gtk/WizardWindow.vala:107
 msgid "Finish"
 msgstr ""
@@ -1330,11 +1207,11 @@ msgstr ""
 msgid "First snapshot requires:"
 msgstr ""
 
-#: src/Core/Main.vala:3243
+#: src/Core/Main.vala:3197
 msgid "Fix on the restored system with: sudo apt install --reinstall snapd"
 msgstr ""
 
-#: src/Core/Main.vala:3592
+#: src/Core/Main.vala:3546
 msgid "Flushing writes to disk"
 msgstr ""
 
@@ -1343,7 +1220,7 @@ msgid ""
 "Follow the desktop's light or dark setting, or choose one for Timeshift."
 msgstr ""
 
-#: src/Core/Main.vala:4587
+#: src/Core/Main.vala:4541
 msgid "Found existing pre-restore snapshot"
 msgstr ""
 
@@ -1355,24 +1232,12 @@ msgstr ""
 msgid "Free space"
 msgstr ""
 
-#: src/AppConsole.vala:1337
-msgid "GRUB Device"
-msgstr ""
-
 #: src/Gtk/RestoreDeviceBox.vala:561
 msgid "GRUB device not selected"
 msgstr ""
 
-#: src/AppConsole.vala:1342
-msgid "GRUB will NOT be reinstalled"
-msgstr ""
-
-#: src/Core/Main.vala:3731
+#: src/Core/Main.vala:3685
 msgid "Generating initramfs..."
-msgstr ""
-
-#: src/AppConsole.vala:468
-msgid "Global"
 msgstr ""
 
 #: src/Utility/Gtk/ThemeStyle.vala:130
@@ -1388,28 +1253,19 @@ msgstr ""
 msgid "Hard-links are not supported on this location"
 msgstr ""
 
-#: src/AppConsole.vala:479
-msgid "Hide rsync output"
-msgstr ""
-
 #: src/Gtk/UsersBox.vala:118
 msgid "Home"
-msgstr ""
-
-#: src/AppConsole.vala:807
-#, c-format
-msgid "Host"
 msgstr ""
 
 #: src/Gtk/ScheduleBox.vala:108 src/Gtk/SnapshotListBox.vala:204
 msgid "Hourly"
 msgstr ""
 
-#: src/Core/Main.vala:1509
+#: src/Core/Main.vala:1463
 msgid "Hourly snapshot failed!"
 msgstr ""
 
-#: src/Core/Main.vala:1490
+#: src/Core/Main.vala:1444
 msgid "Hourly snapshots are enabled"
 msgstr ""
 
@@ -1427,7 +1283,7 @@ msgid ""
 "install Timeshift, and try restoring another snapshot."
 msgstr ""
 
-#: src/Core/Main.vala:3015
+#: src/Core/Main.vala:2969
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
@@ -1455,10 +1311,6 @@ msgstr ""
 
 #: src/Gtk/MainWindow.vala:964
 msgid "Install it now?"
-msgstr ""
-
-#: src/AppConsole.vala:412
-msgid "Install it to provision a bootable recovery environment"
 msgstr ""
 
 #: src/Gtk/MainWindow.vala:963
@@ -1491,17 +1343,8 @@ msgstr ""
 msgid "Installed, but the hotkey will not work"
 msgstr ""
 
-#: src/AppConsole.vala:850
-msgid "Installing the public key on the remote host..."
-msgstr ""
-
-#: src/Core/Main.vala:2780
+#: src/Core/Main.vala:2734
 msgid "Invalid Snapshot"
-msgstr ""
-
-#: src/AppConsole.vala:295
-#, c-format
-msgid "Invalid command line arguments"
 msgstr ""
 
 #: src/Core/SnapshotRepo.vala:150 src/Gtk/BackupDeviceBox.vala:371
@@ -1538,82 +1381,77 @@ msgstr ""
 msgid "Key-based login is not working."
 msgstr ""
 
-#: src/AppConsole.vala:880
-msgid "Key-based login is working."
-msgstr ""
-
 #: src/Gtk/SnapshotListBox.vala:278
 msgid "LIVE"
 msgstr ""
 
-#: src/AppConsole.vala:562 src/AppConsole.vala:609
 #: src/Gtk/BackupDeviceBox.vala:589 src/Utility/Device.vala:2016
 #, c-format
 msgid "Label"
 msgstr ""
 
-#: src/Core/Main.vala:1471
+#: src/Core/Main.vala:1425
 #, c-format
 msgid "Last boot snapshot is %d hours old"
 msgstr ""
 
-#: src/Core/Main.vala:1466
+#: src/Core/Main.vala:1420
 msgid "Last boot snapshot is older than system start time"
 msgstr ""
 
-#: src/Core/Main.vala:1462
+#: src/Core/Main.vala:1416
 msgid "Last boot snapshot not found"
 msgstr ""
 
-#: src/Core/Main.vala:1533
+#: src/Core/Main.vala:1487
 #, c-format
 msgid "Last daily snapshot is %d hours old"
 msgstr ""
 
-#: src/Core/Main.vala:1528
+#: src/Core/Main.vala:1482
 msgid "Last daily snapshot is more than 1 day old"
 msgstr ""
 
-#: src/Core/Main.vala:1524
+#: src/Core/Main.vala:1478
 msgid "Last daily snapshot not found"
 msgstr ""
 
-#: src/Core/Main.vala:1502
+#: src/Core/Main.vala:1456
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
 msgstr ""
 
-#: src/Core/Main.vala:1497
+#: src/Core/Main.vala:1451
 msgid "Last hourly snapshot is more than 1 hour old"
 msgstr ""
 
-#: src/Core/Main.vala:1493
+#: src/Core/Main.vala:1447
 msgid "Last hourly snapshot not found"
 msgstr ""
 
-#: src/Core/Main.vala:1595
+#: src/Core/Main.vala:1549
 #, c-format
 msgid "Last monthly snapshot is %d days old"
 msgstr ""
 
-#: src/Core/Main.vala:1590
+#: src/Core/Main.vala:1544
 msgid "Last monthly snapshot is more than 1 month old"
 msgstr ""
 
-#: src/Core/Main.vala:1586
+#: src/Core/Main.vala:1540
 msgid "Last monthly snapshot not found"
 msgstr ""
 
-#: src/Core/Main.vala:1564
+#: src/Core/Main.vala:1518
 #, c-format
 msgid "Last weekly snapshot is %d days old"
 msgstr ""
 
-#: src/Core/Main.vala:1559
+#: src/Core/Main.vala:1513
 msgid "Last weekly snapshot is more than 1 week old"
 msgstr ""
 
-#: src/Core/Main.vala:1555
+#: src/Core/Main.vala:1509
 msgid "Last weekly snapshot not found"
 msgstr ""
 
@@ -1630,21 +1468,9 @@ msgstr ""
 msgid "Light"
 msgstr ""
 
-#: src/Core/Main.vala:1930
+#: src/Core/Main.vala:1884
 #, c-format
 msgid "Linking from snapshot"
-msgstr ""
-
-#: src/AppConsole.vala:441
-msgid "List"
-msgstr ""
-
-#: src/AppConsole.vala:443
-msgid "List devices"
-msgstr ""
-
-#: src/AppConsole.vala:442
-msgid "List snapshots"
 msgstr ""
 
 #: src/Gtk/MainWindow.vala:1439
@@ -1674,7 +1500,7 @@ msgstr ""
 msgid "Log not available"
 msgstr ""
 
-#: src/Core/Main.vala:3262 src/Core/Main.vala:3276
+#: src/Core/Main.vala:3216 src/Core/Main.vala:3230
 #, c-format
 msgid "Log on the restored system: %s"
 msgstr ""
@@ -1688,7 +1514,7 @@ msgid ""
 "Lost contact with the Timeshift service. The operation may still be running."
 msgstr ""
 
-#: src/Core/Main.vala:5323
+#: src/Core/Main.vala:5277
 msgid "MISSING"
 msgstr ""
 
@@ -1734,16 +1560,16 @@ msgstr ""
 msgid "Monthly"
 msgstr ""
 
-#: src/Core/Main.vala:1583
+#: src/Core/Main.vala:1537
 msgid "Monthly snapshot are enabled"
 msgstr ""
 
-#: src/Core/Main.vala:1602
+#: src/Core/Main.vala:1556
 msgid "Monthly snapshot failed!"
 msgstr ""
 
-#: src/Core/Main.vala:2867 src/Core/Main.vala:2900 src/Core/Main.vala:2950
-#: src/Core/Main.vala:2967
+#: src/Core/Main.vala:2821 src/Core/Main.vala:2854 src/Core/Main.vala:2904
+#: src/Core/Main.vala:2921
 #, c-format
 msgid "Mount"
 msgstr ""
@@ -1756,7 +1582,7 @@ msgstr ""
 msgid "Move the selected pattern up"
 msgstr ""
 
-#: src/Core/Main.vala:4661
+#: src/Core/Main.vala:4615
 msgid "Moved system subvolume to snapshot directory"
 msgstr ""
 
@@ -1764,12 +1590,11 @@ msgstr ""
 msgid "Multiple snapshots selected"
 msgstr ""
 
-#: src/Core/Main.vala:5319
+#: src/Core/Main.vala:5273
 msgid "NOT SELECTED"
 msgstr ""
 
-#: src/AppConsole.vala:524 src/Gtk/BackupDeviceBox.vala:588
-#: src/Gtk/RsyncLogBox.vala:522
+#: src/Gtk/BackupDeviceBox.vala:588 src/Gtk/RsyncLogBox.vala:522
 msgid "Name"
 msgstr ""
 
@@ -1785,7 +1610,7 @@ msgstr ""
 msgid "No Change"
 msgstr ""
 
-#: src/Core/Main.vala:3703
+#: src/Core/Main.vala:3657
 msgid ""
 "No EFI System Partition is mounted at /boot/efi; the boot loader cannot be "
 "installed."
@@ -1796,11 +1621,11 @@ msgstr ""
 msgid "No EFI System Partition was found on %s."
 msgstr ""
 
-#: src/AppConsole.vala:752 src/Gtk/RestoreDeviceBox.vala:548
+#: src/Gtk/RestoreDeviceBox.vala:548
 msgid "No EFI System Partition was selected."
 msgstr ""
 
-#: src/Core/Main.vala:3774
+#: src/Core/Main.vala:3728
 msgid "No GRUB configuration tool was found in the restored system."
 msgstr ""
 
@@ -1816,16 +1641,12 @@ msgstr ""
 msgid "No file manager could be launched for"
 msgstr ""
 
-#: src/Core/Main.vala:3751
+#: src/Core/Main.vala:3705
 msgid "No initramfs tool was found in the restored system."
 msgstr ""
 
 #: src/Gtk/RecoveryBox.vala:180
 msgid "No recovery environment is provisioned on this machine"
-msgstr ""
-
-#: src/AppConsole.vala:776 src/AppConsole.vala:790
-msgid "No remote location is configured"
 msgstr ""
 
 #: src/Core/RepoBackend.vala:1272
@@ -1836,13 +1657,8 @@ msgstr ""
 msgid "No snapshots available"
 msgstr ""
 
-#: src/AppConsole.vala:365 src/Core/SnapshotRepo.vala:1062
-#: src/Gtk/MainWindow.vala:1456
+#: src/Core/SnapshotRepo.vala:1062 src/Gtk/MainWindow.vala:1456
 msgid "No snapshots found"
-msgstr ""
-
-#: src/AppConsole.vala:1001
-msgid "No snapshots found on device"
 msgstr ""
 
 #: src/Gtk/MainWindow.vala:716
@@ -1878,7 +1694,7 @@ msgstr ""
 msgid "Not available for remote locations"
 msgstr ""
 
-#: src/Core/Main.vala:4330
+#: src/Core/Main.vala:4284
 #, c-format
 msgid "Not checking %s: it is still mounted"
 msgstr ""
@@ -1895,21 +1711,12 @@ msgstr ""
 msgid "Not installed"
 msgstr ""
 
-#: src/AppConsole.vala:496
-msgid "Notes"
-msgstr ""
-
-#: src/Core/Main.vala:1613
+#: src/Core/Main.vala:1567
 msgid "Nothing to do!"
 msgstr ""
 
-#: src/Core/Main.vala:4378 src/Core/Main.vala:4390
+#: src/Core/Main.vala:4332 src/Core/Main.vala:4344
 msgid "Nothing was changed on the target."
-msgstr ""
-
-#: src/AppConsole.vala:522 src/AppConsole.vala:556 src/AppConsole.vala:603
-#: src/AppConsole.vala:651
-msgid "Num"
 msgstr ""
 
 #: src/Gtk/ScheduleBox.vala:184
@@ -1929,7 +1736,7 @@ msgid ""
 "(@ and @home subvolumes). Other layouts are not supported."
 msgstr ""
 
-#: src/Core/Main.vala:6277
+#: src/Core/Main.vala:6231
 msgid "Older log files removed"
 msgstr ""
 
@@ -1941,7 +1748,7 @@ msgstr ""
 msgid "On demand (manual)"
 msgstr ""
 
-#: src/Core/Main.vala:636 src/Core/Main.vala:5627
+#: src/Core/Main.vala:636 src/Core/Main.vala:5581
 #: src/Gtk/RestoreDeviceBox.vala:575
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
@@ -1955,13 +1762,13 @@ msgstr ""
 msgid "Operation In Progress"
 msgstr ""
 
-#: src/Core/Main.vala:5046
+#: src/Core/Main.vala:5000
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
 msgstr ""
 
-#: src/AppConsole.vala:439 src/AppGtk.vala:151
+#: src/AppGtk.vala:151
 msgid "Options"
 msgstr ""
 
@@ -1969,7 +1776,7 @@ msgstr ""
 msgid "Orange"
 msgstr ""
 
-#: src/Core/Main.vala:2963
+#: src/Core/Main.vala:2917
 msgid "Original layout of this snapshot"
 msgstr ""
 
@@ -1983,11 +1790,11 @@ msgstr ""
 msgid "Parent Device"
 msgstr ""
 
-#: src/Core/Main.vala:3605
+#: src/Core/Main.vala:3559
 msgid "Parsing log file"
 msgstr ""
 
-#: src/Core/Main.vala:3970 src/Core/Main.vala:4085 src/Gtk/RsyncLogBox.vala:265
+#: src/Core/Main.vala:3924 src/Core/Main.vala:4039 src/Gtk/RsyncLogBox.vala:265
 msgid "Parsing log file..."
 msgstr ""
 
@@ -2054,11 +1861,11 @@ msgstr ""
 msgid "Pink"
 msgstr ""
 
-#: src/Core/Main.vala:3488
+#: src/Core/Main.vala:3442
 msgid "Please do not interrupt the restore process!"
 msgstr ""
 
-#: src/Core/Main.vala:483 src/Core/Main.vala:5026
+#: src/Core/Main.vala:483 src/Core/Main.vala:4980
 msgid "Please install required packages and try running TimeShift again"
 msgstr ""
 
@@ -2066,11 +1873,7 @@ msgstr ""
 msgid "Please re-run the application as admin (using 'sudo' or 'su')"
 msgstr ""
 
-#: src/AppConsole.vala:114
-msgid "Please run the application as admin (using 'sudo' or 'su')"
-msgstr ""
-
-#: src/Core/Main.vala:2997
+#: src/Core/Main.vala:2951
 msgid "Please save your work and close all applications."
 msgstr ""
 
@@ -2098,16 +1901,16 @@ msgstr ""
 msgid "Port"
 msgstr ""
 
-#: src/Core/Main.vala:3492
+#: src/Core/Main.vala:3446
 msgid "Preparing"
 msgstr ""
 
-#: src/Core/Main.vala:3663
+#: src/Core/Main.vala:3617
 msgid "Preparing target system"
 msgstr ""
 
 #: src/Core/DaemonBridge.vala:137 src/Core/DaemonBridge.vala:166
-#: src/Core/Main.vala:2241 src/Gtk/JobMonitorWindow.vala:160
+#: src/Core/Main.vala:2195 src/Gtk/JobMonitorWindow.vala:160
 #: src/Utility/Gtk/TaskProgressBox.vala:70
 msgid "Preparing..."
 msgstr ""
@@ -2127,7 +1930,7 @@ msgstr ""
 msgid "Print debug information"
 msgstr ""
 
-#: src/AppConsole.vala:482 src/AppGtk.vala:155
+#: src/AppGtk.vala:155
 msgid "Print version number"
 msgstr ""
 
@@ -2145,11 +1948,11 @@ msgstr ""
 msgid "Purple"
 msgstr ""
 
-#: src/Core/Main.vala:5925 src/Core/Main.vala:5992
+#: src/Core/Main.vala:5879 src/Core/Main.vala:5946
 msgid "Query completed"
 msgstr ""
 
-#: src/Core/Main.vala:5908
+#: src/Core/Main.vala:5862
 msgid "Querying subvolume info..."
 msgstr ""
 
@@ -2167,16 +1970,11 @@ msgid ""
 "needed. Select this only if the restored system fails to boot."
 msgstr ""
 
-#: src/AppConsole.vala:1266
-#, c-format
-msgid "Re-install GRUB2 bootloader?"
-msgstr ""
-
-#: src/Core/Main.vala:3686
+#: src/Core/Main.vala:3640
 msgid "Re-installing GRUB2 bootloader"
 msgstr ""
 
-#: src/Core/Main.vala:3687
+#: src/Core/Main.vala:3641
 msgid "Re-installing GRUB2 bootloader..."
 msgstr ""
 
@@ -2189,11 +1987,11 @@ msgstr ""
 msgid "Read %'d of %'d lines..."
 msgstr ""
 
-#: src/Core/Main.vala:3814
+#: src/Core/Main.vala:3768
 msgid "Rebooting system..."
 msgstr ""
 
-#: src/Core/Main.vala:3730
+#: src/Core/Main.vala:3684
 msgid "Rebuilding initramfs"
 msgstr ""
 
@@ -2201,7 +1999,7 @@ msgstr ""
 msgid "Recovery"
 msgstr ""
 
-#: src/AppConsole.vala:463 src/Gtk/RecoveryBox.vala:63
+#: src/Gtk/RecoveryBox.vala:63
 msgid "Recovery Environment"
 msgstr ""
 
@@ -2250,7 +2048,7 @@ msgstr ""
 msgid "Remote location not available"
 msgstr ""
 
-#: src/Core/Main.vala:5019
+#: src/Core/Main.vala:4973
 msgid "Remote snapshot location is not configured"
 msgstr ""
 
@@ -2258,11 +2056,7 @@ msgstr ""
 msgid "Remove selected patterns"
 msgstr ""
 
-#: src/AppConsole.vala:466
-msgid "Remove the recovery boot entry, keep the payload"
-msgstr ""
-
-#: src/Core/Main.vala:2305 src/Core/Main.vala:2309 src/Core/Main.vala:6273
+#: src/Core/Main.vala:2259 src/Core/Main.vala:2263 src/Core/Main.vala:6227
 #: src/Core/Snapshot.vala:624 src/Core/SnapshotRepo.vala:1121
 #, c-format
 msgid "Removed"
@@ -2272,12 +2066,12 @@ msgstr ""
 msgid "Removed cron task"
 msgstr ""
 
-#: src/Core/Main.vala:5771
+#: src/Core/Main.vala:5725
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr ""
 
-#: src/AppConsole.vala:870 src/Gtk/BackupDeviceBox.vala:464
+#: src/Gtk/BackupDeviceBox.vala:464
 msgid "Removed old Timeshift keys from the remote"
 msgstr ""
 
@@ -2293,7 +2087,7 @@ msgstr ""
 msgid "Removing files..."
 msgstr ""
 
-#: src/Core/Main.vala:2025
+#: src/Core/Main.vala:1979
 msgid "Removing incomplete snapshot"
 msgstr ""
 
@@ -2307,14 +2101,13 @@ msgstr ""
 msgid "Removing snapshots"
 msgstr ""
 
-#: src/Core/Main.vala:3813
+#: src/Core/Main.vala:3767
 msgid "Restarting"
 msgstr ""
 
-#: src/AppConsole.vala:451 src/Gtk/RestoreProgressWindow.vala:68
-#: src/Gtk/RestoreWindow.vala:188 src/Gtk/RestoreWindow.vala:517
-#: src/Gtk/RsyncLogBox.vala:375 src/Gtk/RsyncLogBox.vala:571
-#: src/Utility/Gtk/TerminalWindow.vala:71
+#: src/Gtk/RestoreProgressWindow.vala:68 src/Gtk/RestoreWindow.vala:188
+#: src/Gtk/RestoreWindow.vala:517 src/Gtk/RsyncLogBox.vala:375
+#: src/Gtk/RsyncLogBox.vala:571 src/Utility/Gtk/TerminalWindow.vala:71
 msgid "Restore"
 msgstr ""
 
@@ -2338,33 +2131,25 @@ msgstr ""
 msgid "Restore Snapshot"
 msgstr ""
 
-#: src/Core/Main.vala:4472 src/Core/Main.vala:4535
+#: src/Core/Main.vala:4426 src/Core/Main.vala:4489
 msgid "Restore completed"
 msgstr ""
 
-#: src/Core/Main.vala:4469
+#: src/Core/Main.vala:4423
 msgid "Restore completed with warnings"
 msgstr ""
 
-#: src/Core/Main.vala:4466
+#: src/Core/Main.vala:4420
 msgid "Restore failed"
 msgstr ""
 
-#: src/Core/Main.vala:3275
+#: src/Core/Main.vala:3229
 #, c-format
 msgid "Restore log saved to %s"
 msgstr ""
 
 #: src/Gtk/MainWindow.vala:349
 msgid "Restore selected snapshot"
-msgstr ""
-
-#: src/AppConsole.vala:452
-msgid "Restore snapshot"
-msgstr ""
-
-#: src/AppConsole.vala:465
-msgid "Restore the recovery boot entry (after disable)"
 msgstr ""
 
 #: src/Gtk/RestoreWindow.vala:475 src/Gtk/RestoreWindow.vala:533
@@ -2390,11 +2175,11 @@ msgid ""
 "snapshot can be restored later to 'undo' the restore."
 msgstr ""
 
-#: src/Core/Main.vala:3498
+#: src/Core/Main.vala:3452
 msgid "Restoring files"
 msgstr ""
 
-#: src/Core/Main.vala:4427
+#: src/Core/Main.vala:4381
 msgid "Restoring snapshot..."
 msgstr ""
 
@@ -2407,7 +2192,7 @@ msgid ""
 "is restored."
 msgstr ""
 
-#: src/Core/Main.vala:5566
+#: src/Core/Main.vala:5520
 msgid ""
 "Restoring would delete the target's contents through it. Nothing was changed."
 msgstr ""
@@ -2441,7 +2226,7 @@ msgstr ""
 msgid "Rsync Log Viewer"
 msgstr ""
 
-#: src/Core/Main.vala:3210
+#: src/Core/Main.vala:3164
 msgid "Run 'sudo snap refresh' on the restored system to rebuild them."
 msgstr ""
 
@@ -2450,21 +2235,11 @@ msgstr ""
 msgid "Run 'timeshift' for the command-line version of this tool"
 msgstr ""
 
-#: src/AppConsole.vala:480
-msgid "Run in non-interactive mode"
-msgstr ""
-
-#: src/AppConsole.vala:784
-msgid ""
-"Run this once from a terminal, then scheduled snapshots will work without a "
-"password."
-msgstr ""
-
 #: src/Core/Main.vala:319
 msgid "Running"
 msgstr ""
 
-#: src/Core/Main.vala:3804
+#: src/Core/Main.vala:3758
 msgid "Running post-restore scripts"
 msgstr ""
 
@@ -2476,14 +2251,6 @@ msgstr ""
 
 #: src/Gtk/BackupDeviceBox.vala:236
 msgid "SSH key"
-msgstr ""
-
-#: src/AppConsole.vala:472
-msgid "SSH port for the remote location"
-msgstr ""
-
-#: src/AppConsole.vala:471
-msgid "SSH private key for the remote location"
 msgstr ""
 
 #: src/Gtk/BackupDeviceBox.vala:164
@@ -2508,11 +2275,11 @@ msgid ""
 "distribution by restoring a snapshot."
 msgstr ""
 
-#: src/Core/Main.vala:1878 src/Core/Main.vala:2078 src/Core/Main.vala:2080
+#: src/Core/Main.vala:1832 src/Core/Main.vala:2032 src/Core/Main.vala:2034
 msgid "Saving to device"
 msgstr ""
 
-#: src/Core/Main.vala:1875
+#: src/Core/Main.vala:1829
 msgid "Saving to remote location"
 msgstr ""
 
@@ -2520,7 +2287,7 @@ msgstr ""
 msgid "Schedule"
 msgstr ""
 
-#: src/Core/Main.vala:1613 src/Gtk/MainWindow.vala:1503
+#: src/Core/Main.vala:1567 src/Gtk/MainWindow.vala:1503
 #: src/Gtk/ScheduleBox.vala:208
 msgid "Scheduled snapshots are disabled"
 msgstr ""
@@ -2539,10 +2306,6 @@ msgid ""
 "selected levels."
 msgstr ""
 
-#: src/AppConsole.vala:881
-msgid "Scheduled snapshots to this location will now run without a password."
-msgstr ""
-
 #: src/Gtk/RecoveryBox.vala:341
 msgid "See the details below, or /var/log/timeshift-recovery.log"
 msgstr ""
@@ -2551,22 +2314,13 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
-#: src/AppConsole.vala:1146
-#, c-format
-msgid "Select '%s' device (default = %s)"
-msgstr ""
-
-#: src/Core/Main.vala:5567
+#: src/Core/Main.vala:5521
 #, c-format
 msgid "Select 'Keep on Root Device' for %s, or choose a different device."
 msgstr ""
 
-#: src/AppConsole.vala:950 src/Core/SnapshotRepo.vala:714
+#: src/Core/SnapshotRepo.vala:714
 msgid "Select BTRFS system disk with root subvolume (@)"
-msgstr ""
-
-#: src/AppConsole.vala:1283
-msgid "Select GRUB device"
 msgstr ""
 
 #: src/Gtk/BackupDeviceBox.vala:491
@@ -2629,20 +2383,12 @@ msgstr ""
 msgid "Select another location or make it writable"
 msgstr ""
 
-#: src/AppConsole.vala:933
-msgid "Select backup device"
-msgstr ""
-
 #: src/Gtk/ExcludeBox.vala:544
 msgid "Select directory"
 msgstr ""
 
 #: src/Gtk/ExcludeBox.vala:511
 msgid "Select file(s)"
-msgstr ""
-
-#: src/AppConsole.vala:1014
-msgid "Select snapshot"
 msgstr ""
 
 #: src/Gtk/DeleteWindow.vala:256
@@ -2685,11 +2431,11 @@ msgstr ""
 msgid "Select the target devices where system will be cloned."
 msgstr ""
 
-#: src/Core/Main.vala:5074
+#: src/Core/Main.vala:5028
 msgid "Selected default snapshot device"
 msgstr ""
 
-#: src/Core/Main.vala:4986 src/Core/Main.vala:4990
+#: src/Core/Main.vala:4940 src/Core/Main.vala:4944
 msgid "Selected default snapshot type"
 msgstr ""
 
@@ -2705,11 +2451,11 @@ msgstr ""
 msgid "Selected snapshot device"
 msgstr ""
 
-#: src/AppConsole.vala:949 src/Core/SnapshotRepo.vala:713
+#: src/Core/SnapshotRepo.vala:713
 msgid "Selected snapshot device is not a system disk"
 msgstr ""
 
-#: src/Core/Main.vala:2781
+#: src/Core/Main.vala:2735
 msgid "Selected snapshot is marked for deletion"
 msgstr ""
 
@@ -2732,14 +2478,6 @@ msgstr ""
 msgid "Session log file"
 msgstr ""
 
-#: src/AppConsole.vala:448
-msgid "Set snapshot description"
-msgstr ""
-
-#: src/AppConsole.vala:473
-msgid "Set up key-based login for the remote location"
-msgstr ""
-
 #: src/Gtk/BackupDeviceBox.vala:298
 msgid "Set up with password"
 msgstr ""
@@ -2760,21 +2498,13 @@ msgstr ""
 msgid "Show Progress"
 msgstr ""
 
-#: src/AppConsole.vala:477
-msgid "Show additional debug messages"
-msgstr ""
-
-#: src/AppConsole.vala:481 src/AppGtk.vala:154
+#: src/AppGtk.vala:154
 msgid "Show all options"
 msgstr ""
 
 #: src/Gtk/MainWindow.vala:313
 #, c-format
 msgid "Show its progress instead of starting %s?"
-msgstr ""
-
-#: src/AppConsole.vala:478
-msgid "Show rsync output (default)"
 msgstr ""
 
 #: src/Utility/Gtk/LogPane.vala:52
@@ -2785,11 +2515,6 @@ msgstr ""
 msgid "Show the effective exclude list"
 msgstr ""
 
-#: src/AppConsole.vala:464
-msgid "Show the press-R recovery environment status"
-msgstr ""
-
-#: src/AppConsole.vala:526 src/AppConsole.vala:560 src/AppConsole.vala:607
 #: src/Gtk/BackupDeviceBox.vala:586 src/Gtk/RsyncLogBox.vala:381
 #: src/Gtk/SnapshotListBox.vala:117 src/Utility/Device.vala:2003
 #: src/Utility/Device.vala:2018 src/Utility/Gtk/TaskProgressBox.vala:121
@@ -2805,19 +2530,15 @@ msgid ""
 "blocks."
 msgstr ""
 
-#: src/AppConsole.vala:457
-msgid "Skip GRUB2 reinstall"
-msgstr ""
-
-#: src/Core/Main.vala:4071
+#: src/Core/Main.vala:4025
 msgid "Skipping the bootloader steps: the files were not restored"
 msgstr ""
 
-#: src/Core/Main.vala:4500
+#: src/Core/Main.vala:4454
 msgid "Skipping the file system check: the restore did not complete"
 msgstr ""
 
-#: src/Core/Main.vala:4497
+#: src/Core/Main.vala:4451
 msgid "Skipping the file system check: the target is still mounted"
 msgstr ""
 
@@ -2825,19 +2546,19 @@ msgstr ""
 msgid "Slate"
 msgstr ""
 
-#: src/Core/Main.vala:3242
+#: src/Core/Main.vala:3196
 msgid ""
 "Snap applications will not start: this snapshot predates extended-attribute "
 "support, so snap-confine lost its file capabilities."
 msgstr ""
 
-#: src/Core/Main.vala:3209
+#: src/Core/Main.vala:3163
 msgid ""
 "Snap applications will not start: this snapshot was taken before /snap/bin "
 "was included in backups."
 msgstr ""
 
-#: src/Core/Main.vala:2786 src/Core/SnapshotRepo.vala:855
+#: src/Core/Main.vala:2740 src/Core/SnapshotRepo.vala:855
 #: src/Core/SnapshotRepo.vala:908 src/Gtk/SnapshotListBox.vala:99
 #, c-format
 msgid "Snapshot"
@@ -2872,11 +2593,11 @@ msgstr ""
 msgid "Snapshot device"
 msgstr ""
 
-#: src/AppConsole.vala:923 src/Core/SnapshotRepo.vala:682
+#: src/Core/SnapshotRepo.vala:682
 msgid "Snapshot device not available"
 msgstr ""
 
-#: src/AppConsole.vala:919 src/Core/SnapshotRepo.vala:675
+#: src/Core/SnapshotRepo.vala:675
 msgid "Snapshot device not selected"
 msgstr ""
 
@@ -2885,15 +2606,15 @@ msgstr ""
 msgid "Snapshot location"
 msgstr ""
 
-#: src/Core/Main.vala:1746
+#: src/Core/Main.vala:1700
 msgid "Snapshot saved successfully"
 msgstr ""
 
-#: src/Core/Main.vala:2776
+#: src/Core/Main.vala:2730
 msgid "Snapshot to restore not specified!"
 msgstr ""
 
-#: src/Core/Main.vala:4550
+#: src/Core/Main.vala:4504
 msgid "Snapshot will become active after system is rebooted."
 msgstr ""
 
@@ -2983,10 +2704,6 @@ msgid ""
 "restored even if system disk is damaged or re-formatted."
 msgstr ""
 
-#: src/AppConsole.vala:328
-msgid "Snapshots cannot be created in Live CD mode"
-msgstr ""
-
 #: src/Gtk/MainWindow.vala:1495
 msgid "Snapshots will be created at selected intervals"
 msgstr ""
@@ -3013,43 +2730,23 @@ msgstr ""
 msgid "Snapshots would each take a full copy of the system"
 msgstr ""
 
-#: src/Core/Main.vala:3150
+#: src/Core/Main.vala:3104
 msgid "Some files could not be copied. Everything else was restored."
 msgstr ""
 
-#: src/Core/Main.vala:3106
+#: src/Core/Main.vala:3060
 msgid "Some files could not be transferred."
 msgstr ""
 
-#: src/Core/Main.vala:3108
+#: src/Core/Main.vala:3062
 msgid "Some files vanished while they were being copied."
 msgstr ""
 
-#: src/Core/Main.vala:6317
+#: src/Core/Main.vala:6271
 msgid "Some snapshots are still mounted and were left in place"
 msgstr ""
 
-#: src/AppConsole.vala:469
-msgid "Specify backup device (default: config)"
-msgstr ""
-
-#: src/AppConsole.vala:456
-msgid "Specify device for installing GRUB2 bootloader"
-msgstr ""
-
-#: src/AppConsole.vala:777
-msgid "Specify one with"
-msgstr ""
-
-#: src/AppConsole.vala:454
-msgid "Specify snapshot to restore"
-msgstr ""
-
-#: src/AppConsole.vala:455
-msgid "Specify target device"
-msgstr ""
-
-#: src/Core/Main.vala:2967 src/Core/SnapshotRepo.vala:576
+#: src/Core/Main.vala:2921 src/Core/SnapshotRepo.vala:576
 #: src/Core/SnapshotRepo.vala:819 src/Core/SnapshotRepo.vala:830
 #: src/Gtk/RsyncLogBox.vala:515
 #, c-format
@@ -3099,14 +2796,6 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-#: src/AppConsole.vala:475
-msgid "Switch to BTRFS mode (default: config)"
-msgstr ""
-
-#: src/AppConsole.vala:476
-msgid "Switch to RSYNC mode (default: config)"
-msgstr ""
-
 #: src/Core/SnapshotRepo.vala:1150
 msgid "Symlinks updated"
 msgstr ""
@@ -3115,15 +2804,15 @@ msgstr ""
 msgid "Synching files..."
 msgstr ""
 
-#: src/Core/Main.vala:3782
+#: src/Core/Main.vala:3736
 msgid "Syncing file systems"
 msgstr ""
 
-#: src/Core/Main.vala:3783
+#: src/Core/Main.vala:3737
 msgid "Syncing file systems..."
 msgstr ""
 
-#: src/Core/Main.vala:1945 src/Core/Main.vala:4050 src/Core/Main.vala:4434
+#: src/Core/Main.vala:1899 src/Core/Main.vala:4004 src/Core/Main.vala:4388
 msgid "Syncing files with rsync..."
 msgstr ""
 
@@ -3145,19 +2834,19 @@ msgstr ""
 msgid "System can be rolled-back to a previous date by restoring a snapshot."
 msgstr ""
 
-#: src/Core/Main.vala:3489
+#: src/Core/Main.vala:3443
 msgid "System will reboot after files are restored"
 msgstr ""
 
-#: src/Core/Main.vala:2998
+#: src/Core/Main.vala:2952
 msgid "System will reboot after files are restored."
 msgstr ""
 
-#: src/Core/Main.vala:1682 src/Core/Main.vala:1756
+#: src/Core/Main.vala:1636 src/Core/Main.vala:1710
 msgid "Tagged snapshot"
 msgstr ""
 
-#: src/AppConsole.vala:525 src/Gtk/SnapshotListBox.vala:111
+#: src/Gtk/SnapshotListBox.vala:111
 msgid "Tags"
 msgstr ""
 
@@ -3169,7 +2858,7 @@ msgstr ""
 msgid "Target Device"
 msgstr ""
 
-#: src/Core/Main.vala:2811
+#: src/Core/Main.vala:2765
 msgid "Target device is not mounted"
 msgstr ""
 
@@ -3177,7 +2866,7 @@ msgstr ""
 msgid "Target device is same as system device"
 msgstr ""
 
-#: src/Core/Main.vala:2805
+#: src/Core/Main.vala:2759
 msgid "Target device not specified!"
 msgstr ""
 
@@ -3229,17 +2918,17 @@ msgstr ""
 msgid "The boot entry is removed; the payload is kept, so enabling is instant"
 msgstr ""
 
-#: src/Core/Main.vala:3178
+#: src/Core/Main.vala:3132
 msgid ""
 "The boot loader was not installed, so the restored system will not start on "
 "its own."
 msgstr ""
 
-#: src/Core/Main.vala:4072
+#: src/Core/Main.vala:4026
 msgid "The bootloader steps were skipped."
 msgstr ""
 
-#: src/Core/Main.vala:3114
+#: src/Core/Main.vala:3068
 msgid "The connection to the snapshot location was lost."
 msgstr ""
 
@@ -3254,11 +2943,11 @@ msgid ""
 "configuration file is overriding the timeout this feature needs."
 msgstr ""
 
-#: src/Core/Main.vala:3182
+#: src/Core/Main.vala:3136
 msgid "The initramfs was not rebuilt. The restored system may fail to boot."
 msgstr ""
 
-#: src/Core/Main.vala:4376
+#: src/Core/Main.vala:4330
 #, c-format
 msgid "The list of files to exclude could not be written to %s."
 msgstr ""
@@ -3283,29 +2972,29 @@ msgid ""
 "super option needs to record file ownership"
 msgstr ""
 
-#: src/Core/Main.vala:5549
+#: src/Core/Main.vala:5503
 #, c-format
 msgid "The restore target could not be read: %s"
 msgstr ""
 
-#: src/Core/Main.vala:3678
+#: src/Core/Main.vala:3632
 msgid "The restored system has no shell; the boot loader steps cannot run."
 msgstr ""
 
-#: src/Core/Main.vala:3363
+#: src/Core/Main.vala:3317
 msgid "The snapshot appears to be empty. Restoring it would erase the target."
 msgstr ""
 
-#: src/Core/Main.vala:3143
+#: src/Core/Main.vala:3097
 #, c-format
 msgid "The snapshot could not be copied to the target (rsync exit code %s)."
 msgstr ""
 
-#: src/Core/Main.vala:3849 src/Core/Main.vala:3998
+#: src/Core/Main.vala:3803 src/Core/Main.vala:3952
 msgid "The snapshot could not be copied to the target."
 msgstr ""
 
-#: src/Core/Main.vala:4388
+#: src/Core/Main.vala:4342
 #, c-format
 msgid "The snapshot could not be read from %s."
 msgstr ""
@@ -3314,7 +3003,7 @@ msgstr ""
 msgid "The snapshot is mounted at"
 msgstr ""
 
-#: src/Core/Main.vala:3343
+#: src/Core/Main.vala:3297
 msgid "The snapshot location could not be listed."
 msgstr ""
 
@@ -3322,16 +3011,12 @@ msgstr ""
 msgid "The system partition has an unsupported subvolume layout."
 msgstr ""
 
-#: src/Core/Main.vala:3145 src/Core/Main.vala:3850 src/Core/Main.vala:3999
+#: src/Core/Main.vala:3099 src/Core/Main.vala:3804 src/Core/Main.vala:3953
 msgid "The target is incomplete and must not be booted. Re-run the restore."
 msgstr ""
 
-#: src/Core/Main.vala:5626
+#: src/Core/Main.vala:5580
 msgid "The target partition has an unsupported subvolume layout."
-msgstr ""
-
-#: src/AppConsole.vala:411
-msgid "The timeshift-recovery package is not installed"
 msgstr ""
 
 #: src/Gtk/RestoreBox.vala:265
@@ -3373,13 +3058,13 @@ msgid ""
 "not stop it."
 msgstr ""
 
-#: src/AppConsole.vala:751 src/Gtk/RestoreDeviceBox.vala:542
+#: src/Gtk/RestoreDeviceBox.vala:542
 msgid ""
 "This snapshot is from a system that boots with UEFI, so it needs an EFI "
 "System Partition mounted at /boot/efi."
 msgstr ""
 
-#: src/Core/Main.vala:3014
+#: src/Core/Main.vala:2968
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
@@ -3404,12 +3089,6 @@ msgstr ""
 msgid "Timestamp"
 msgstr ""
 
-#: src/AppConsole.vala:724
-#, c-format
-msgid "To restore with default options, press the ENTER key for all prompts!"
-msgstr ""
-
-#: src/AppConsole.vala:561 src/AppConsole.vala:608
 #: src/Core/SnapshotRepo.vala:818 src/Gtk/BackupDeviceBox.vala:585
 #: src/Gtk/SettingsWindow.vala:82 src/Utility/Device.vala:2014
 #, c-format
@@ -3429,19 +3108,15 @@ msgstr ""
 msgid "Unexpected response from the remote host"
 msgstr ""
 
-#: src/AppConsole.vala:527
-msgid "Unique"
-msgstr ""
-
 #: src/AppGtk.vala:130
 msgid "Unknown option"
 msgstr ""
 
-#: src/Core/Main.vala:1664
+#: src/Core/Main.vala:1618
 msgid "Unknown snapshot type"
 msgstr ""
 
-#: src/Core/Main.vala:2228
+#: src/Core/Main.vala:2182
 msgid "Unknown value specified for option --tags"
 msgstr ""
 
@@ -3470,7 +3145,7 @@ msgstr ""
 msgid "Unshared"
 msgstr ""
 
-#: src/Core/Main.vala:5630 src/Gtk/RestoreDeviceBox.vala:572
+#: src/Core/Main.vala:5584 src/Gtk/RestoreDeviceBox.vala:572
 msgid "Unsupported Subvolume Layout"
 msgstr ""
 
@@ -3482,11 +3157,11 @@ msgstr ""
 msgid "Update initramfs"
 msgstr ""
 
-#: src/Core/Main.vala:4288
+#: src/Core/Main.vala:4242
 msgid "Updated /etc/crypttab on target device"
 msgstr ""
 
-#: src/Core/Main.vala:4200
+#: src/Core/Main.vala:4154
 msgid "Updated /etc/fstab on target device"
 msgstr ""
 
@@ -3496,24 +3171,20 @@ msgid ""
 "be left selected."
 msgstr ""
 
-#: src/Core/Main.vala:3760
+#: src/Core/Main.vala:3714
 msgid "Updating GRUB menu"
 msgstr ""
 
-#: src/Core/Main.vala:3761
+#: src/Core/Main.vala:3715
 msgid "Updating GRUB menu..."
 msgstr ""
 
-#: src/Core/Main.vala:4093
+#: src/Core/Main.vala:4047
 msgid "Updating bootloader configuration..."
 msgstr ""
 
-#: src/Core/Main.vala:3604
+#: src/Core/Main.vala:3558
 msgid "Updating fstab and crypttab"
-msgstr ""
-
-#: src/AppConsole.vala:470
-msgid "Use a remote snapshot location (user@host:/path)"
 msgstr ""
 
 #: src/Core/SnapshotRepo.vala:151 src/Gtk/BackupDeviceBox.vala:323
@@ -3554,14 +3225,9 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: src/Core/Main.vala:5439
+#: src/Core/Main.vala:5393
 #, c-format
 msgid "Using %s as the EFI System Partition for /boot/efi."
-msgstr ""
-
-#: src/AppConsole.vala:844
-#, c-format
-msgid "Using key"
 msgstr ""
 
 #: src/Utility/Device.vala:1998
@@ -3569,7 +3235,7 @@ msgstr ""
 msgid "Vendor"
 msgstr ""
 
-#: src/AppConsole.vala:805 src/Gtk/BackupDeviceBox.vala:398
+#: src/Gtk/BackupDeviceBox.vala:398
 msgid "Verify the remote host"
 msgstr ""
 
@@ -3589,20 +3255,20 @@ msgstr ""
 msgid "View TimeShift Logs"
 msgstr ""
 
-#: src/Core/Main.vala:1362
+#: src/Core/Main.vala:1316
 #, c-format
 msgid "Waiting for another Timeshift operation to finish"
 msgstr ""
 
-#: src/Core/Main.vala:1363
+#: src/Core/Main.vala:1317
 msgid "Waiting for another Timeshift operation to finish..."
 msgstr ""
 
-#: src/Core/Main.vala:2860 src/Gtk/RestoreSummaryBox.vala:58
+#: src/Core/Main.vala:2814 src/Gtk/RestoreSummaryBox.vala:58
 msgid "Warning"
 msgstr ""
 
-#: src/Core/Main.vala:2951 src/Core/Main.vala:2967
+#: src/Core/Main.vala:2905 src/Core/Main.vala:2921
 msgid "Was on"
 msgstr ""
 
@@ -3610,11 +3276,11 @@ msgstr ""
 msgid "Weekly"
 msgstr ""
 
-#: src/Core/Main.vala:1571
+#: src/Core/Main.vala:1525
 msgid "Weekly snapshot failed!"
 msgstr ""
 
-#: src/Core/Main.vala:1552
+#: src/Core/Main.vala:1506
 msgid "Weekly snapshots are enabled"
 msgstr ""
 
@@ -3655,23 +3321,13 @@ msgid ""
 "later if required, to 'undo' the restore."
 msgstr ""
 
-#: src/Core/Main.vala:3174
+#: src/Core/Main.vala:3128
 #, c-format
 msgid "Your files were restored, but the step \"%s\" failed (exit code %s)."
 msgstr ""
 
-#: src/AppConsole.vala:811 src/Gtk/BackupDeviceBox.vala:396
+#: src/Gtk/BackupDeviceBox.vala:396
 msgid "Your password will be sent to this host."
-msgstr ""
-
-#: src/AppConsole.vala:1304
-#, c-format
-msgid "[ENTER = Default (%s), a = Abort]"
-msgstr ""
-
-#: src/AppConsole.vala:1157
-#, c-format
-msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
 msgstr ""
 
 #: src/Gtk/BootOptionsBox.vala:61 src/Gtk/RestoreDeviceBox.vala:439
@@ -3700,12 +3356,12 @@ msgstr ""
 msgid "another Timeshift operation"
 msgstr ""
 
-#: src/Core/Main.vala:2133 src/Core/Main.vala:6017 src/Core/Main.vala:6102
+#: src/Core/Main.vala:2087 src/Core/Main.vala:5971 src/Core/Main.vala:6056
 #: src/Core/Subvolume.vala:266
 msgid "btrfs returned an error"
 msgstr ""
 
-#: src/Core/Main.vala:1991 src/Core/Snapshot.vala:598
+#: src/Core/Main.vala:1945 src/Core/Snapshot.vala:598
 msgid "complete"
 msgstr ""
 
@@ -3717,7 +3373,7 @@ msgstr ""
 msgid "crontab file installed"
 msgstr ""
 
-#: src/Core/Main.vala:3713
+#: src/Core/Main.vala:3667
 msgid "grub-install was not found in the restored system."
 msgstr ""
 
@@ -3729,49 +3385,49 @@ msgstr ""
 msgid "marked for deletion"
 msgstr ""
 
-#: src/Core/Main.vala:1878 src/Core/Main.vala:2078 src/Core/Main.vala:2080
+#: src/Core/Main.vala:1832 src/Core/Main.vala:2032 src/Core/Main.vala:2034
 msgid "mounted at path"
 msgstr ""
 
-#: src/Core/Main.vala:5316
+#: src/Core/Main.vala:5270
 msgid "ok"
 msgstr ""
 
-#: src/Core/Main.vala:5327
+#: src/Core/Main.vala:5281
 msgid "on root"
 msgstr ""
 
-#: src/Core/Main.vala:1991 src/Core/Snapshot.vala:599
+#: src/Core/Main.vala:1945 src/Core/Snapshot.vala:599
 #: src/Gtk/BackupBox.vala:173 src/Gtk/DeleteBox.vala:154
 #: src/Gtk/RestoreBox.vala:166
 msgid "remaining"
 msgstr ""
 
-#: src/Core/Main.vala:3102
+#: src/Core/Main.vala:3056
 msgid "rsync could not be started on the snapshot location."
 msgstr ""
 
-#: src/Core/Main.vala:3100
+#: src/Core/Main.vala:3054
 msgid "rsync could not read the files it was asked to copy."
 msgstr ""
 
-#: src/Core/Main.vala:2013
+#: src/Core/Main.vala:1967
 msgid "rsync could not transfer all files (partial transfer)"
 msgstr ""
 
-#: src/Core/Main.vala:3104
+#: src/Core/Main.vala:3058
 msgid "rsync could not write to the target. It may be full or read-only."
 msgstr ""
 
-#: src/Core/Main.vala:3098
+#: src/Core/Main.vala:3052
 msgid "rsync protocol mismatch with the snapshot location."
 msgstr ""
 
-#: src/Core/Main.vala:3096
+#: src/Core/Main.vala:3050
 msgid "rsync reported a syntax or usage error."
 msgstr ""
 
-#: src/Core/Main.vala:2016
+#: src/Core/Main.vala:1970
 msgid "rsync returned an error"
 msgstr ""
 

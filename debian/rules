@@ -15,12 +15,18 @@ override_dh_usrlocal:
 # It does not skip the file -- it fails, and takes the whole build down with it
 # (Debian #931891).
 #
-# Excluded by PATH, not by name: both Go binaries live under
-# /usr/libexec/timeshift and one of them is called "timeshift", so -Xtimeshift
-# would also exclude /usr/bin/timeshift, which is the Vala binary and compresses
-# fine. The three Vala binaries are still compressed.
+# Two exclusions, because the Go binaries now live in two places: timeshiftd in
+# /usr/libexec/timeshift, and the CLI as /usr/bin/timeshift.
+#
+# dh_dwz matches -X as a SUBSTRING of the path, with no way to anchor it. So
+# -Xusr/bin/timeshift also excludes usr/bin/timeshift-gtk and
+# usr/bin/timeshift-recovery-shell, which are Vala and compress fine. That is a
+# deliberate trade: the cost is uncompressed DWARF for two binaries, and the
+# alternative -- leaving the CLI in /usr/libexec and symlinking it into
+# /usr/bin -- would put a program users type at a path Policy reserves for ones
+# they do not.
 override_dh_dwz:
-	dh_dwz -Xusr/libexec/timeshift/
+	dh_dwz -Xusr/libexec/timeshift/ -Xusr/bin/timeshift
 
 %:
 	dh $@

@@ -157,9 +157,24 @@ func truncate(s string, n int) string {
 
 func group(n int64) string { return fsutil.GroupDigits(n) }
 
-// connect dials the daemon and reports the one failure worth acting on.
+/* connect dials the daemon, starting it if it is not there, and reports the one
+ * failure worth acting on.
+ *
+ * Every command that routes through here mutates something and has no
+ * in-process path, so an absent daemon is total failure -- and --create is run
+ * by a fail-closed apt hook that blocks dpkg. autostartDaemon is what keeps
+ * that hook's promise that it never depends on the daemon being up.
+ */
 func connect(socket string) (*ipc.Client, error) {
 	c, err := ipc.Dial(socket)
+	if errors.Is(err, ipc.ErrNoDaemon) {
+		/* Try to bring it up, then dial once more. A failure to start is not
+		 * reported on its own: the message that helps names the daemon, not
+		 * whichever of systemctl or exec was tried last. */
+		if autostartDaemon(socket) == nil {
+			c, err = ipc.Dial(socket)
+		}
+	}
 	if err != nil {
 		if errors.Is(err, ipc.ErrNotPermitted) {
 			return nil, fmt.Errorf(
@@ -169,7 +184,7 @@ func connect(socket string) (*ipc.Client, error) {
 		}
 		if errors.Is(err, ipc.ErrNoDaemon) {
 			return nil, fmt.Errorf(
-				"timeshiftd is not running (socket %s).\n"+
+				"timeshiftd is not running and could not be started (socket %s).\n"+
 					"Start it with: sudo systemctl start timeshiftd", socket)
 		}
 		return nil, err

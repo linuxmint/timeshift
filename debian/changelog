@@ -1,3 +1,9 @@
+timeshift-ssh (25.12.4+ssh41) resolute; urgency=medium
+
+  * Make /usr/bin/timeshift the Go CLI, and delete AppConsole.vala. The Go client reached full flag parity and passed a VM restore, so it takes the public path; the Vala console binary and its second argument parser are gone. Every mutating command now needs timeshiftd, so the client starts it when the socket is absent -- via systemd, or directly when the units are masked or systemd is not running.
+
+ -- makeafide <willsmit4433@gmail.com>  Tue, 01 Sep 2026 08:59:44 -0400
+
 timeshift-ssh (25.12.4+ssh40) resolute; urgency=medium
 
   * The Timeshift service now starts on demand, so a snapshot before an apt

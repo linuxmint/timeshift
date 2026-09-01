@@ -679,74 +679,28 @@ public class Main : GLib.Object{
 		return supported;
 	}
 
+	/* Flags that must take effect before initialize() runs.
+	 *
+	 * This used to parse a subset of the CLI a SECOND time -- AppConsole
+	 * parsed the same argv again afterwards -- so a new flag had to be added
+	 * in two places or it worked only by accident. There is no Vala CLI any
+	 * more (/usr/bin/timeshift is the Go binary), and AppGtk accepts exactly
+	 * one option, so all that is left is the one flag whose effect is needed
+	 * before the constructor finishes.
+	 *
+	 * The app_mode assignments that used to live here are gone with it. They
+	 * could only ever be set by the console binary: app_mode == "" means GUI
+	 * mode throughout the core, and the GUI is now the only caller.
+	 */
 	private void parse_some_arguments(string[] args){
-		
-		for (int k = 1; k < args.length; k++) // Oth arg is app path
+
+		for (int k = 1; k < args.length; k++) // 0th arg is app path
 		{
-			switch (args[k].down()){
-				case "--debug":
-					LOG_COMMANDS = true;
-					LOG_DEBUG = true;
-					break;
-
-				case "--btrfs":
-					btrfs_mode = true;
-					cmd_btrfs_mode = btrfs_mode;
-					break;
-
-				case "--rsync":
-					btrfs_mode = false;
-					cmd_btrfs_mode = btrfs_mode;
-					break;
-					
-				case "--check":
-					app_mode = "backup";
-					break;
-
-				case "--delete":
-					app_mode = "delete";
-					break;
-
-				case "--delete-all":
-					app_mode = "delete-all";
-					break;
-
-				case "--restore":
-					app_mode = "restore";
-					break;
-
-				case "--clone":
-					app_mode = "restore";
-					break;
-
-				case "--create":
-					app_mode = "ondemand";
-					break;
-
-				case "--list":
-				case "--list-snapshots":
-					app_mode = "list-snapshots";
-					break;
-
-				case "--list-devices":
-					app_mode = "list-devices";
-					break;
-
-				case "--setup-ssh-key":
-					app_mode = "setup-ssh-key";
-					break;
-
-				case "--recovery-status":
-					app_mode = "recovery-status";
-					break;
-
-				case "--recovery-enable":
-					app_mode = "recovery-enable";
-					break;
-
-				case "--recovery-disable":
-					app_mode = "recovery-disable";
-					break;
+			if (args[k].down() == "--debug"){
+				// AppGtk sets LOG_DEBUG again once it parses; LOG_COMMANDS is
+				// only ever set here, and commands run during initialize().
+				LOG_COMMANDS = true;
+				LOG_DEBUG = true;
 			}
 		}
 	}

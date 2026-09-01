@@ -131,6 +131,43 @@ env PATH="$SANDBOX_PATH" ASG_CONFIG="$WORK/config" ASG_LOG="$WORK/log" \
 [ $? -eq 0 ] && ok "a recent snapshot skips a second one inside WINDOW" \
              || bad "the dedupe window must skip, not re-snapshot"
 
+# --- a timeout must cancel the job, on the PATH branch too -------------------
+#
+# The job belongs to timeshiftd and outlives the client watching it, so killing
+# the client on a timeout stops nothing: apt gets refused while the snapshot
+# carries on writing and holding the repository write lock, and the next apt run
+# then waits out its own full budget behind it. That was observed for real --
+# apt refused, rsync still running twenty minutes later.
+#
+# It used to be cancelled only when the hook had chosen the explicit-socket
+# branch, because the PATH binary was the Vala one and did the work in its own
+# process. Since the cutover both branches are the same Go client, so both need
+# the cancel.
+#
+# The stub exits 124 itself rather than being timed out for real: 124 is exactly
+# what timeout(1) would report, and waiting for it would cost 30s (the floor in
+# remaining_budget) to exercise one branch.
+cat > "$WORK/bin/timeshift" <<EOF
+#!/bin/sh
+printf '%s\n' "\$*" >> "$WORK/calls"
+case "\$1" in
+--cancel) exit 0 ;;
+esac
+exit 124
+EOF
+chmod +x "$WORK/bin/timeshift"
+rm -f "$WORK/calls"
+
+base | run_hook
+rc=$?
+if [ $rc -ne 0 ] && grep -q -- '--cancel' "$WORK/calls" 2>/dev/null; then
+	ok "a timeout cancels the running job and still fails closed"
+else
+	bad "timeout: exit=$rc cancelled=$(grep -c -- '--cancel' "$WORK/calls" 2>/dev/null || echo 0)"
+fi
+
+make_stub   # restore the ordinary stub for anything after this
+
 # --- missing timeshift -------------------------------------------------------
 rm -f "$WORK/bin/timeshift"
 base | run_hook

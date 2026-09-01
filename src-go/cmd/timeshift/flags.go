@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -383,13 +384,37 @@ Examples:
 Notes:
 
   1. Snapshots are taken and restored by the timeshiftd service; this command
-     is a client. --list works without it.
+     is a client. It starts the service if it is not already running.
+     --list also works without it, by reading the repository directly.
   2. A job outlives the client that started it, so closing this program does
      not stop a snapshot. Use --cancel to stop one.
   3. --restore needs a target: --target DEVICE, or --current-system to
      overwrite the machine you are typing on.
 `)
 
+	/* The removed flags, listed from the refusal table so the two cannot
+	 * drift. Naming them here is the point: a script that still passes one
+	 * gets a message telling it what to use, and the page it would consult
+	 * first says the same thing rather than staying silent. */
+	fmt.Fprintf(&b, "  4. No longer accepted (running one prints what to use instead):\n"+
+		"     %s\n", listRefusals())
+
 	fmt.Fprintf(&b, "\nConfiguration: %s\nSocket:        %s\n", defaultConfigPath, defaultSocket)
 	return b.String()
+}
+
+/* listRefusals names the refused flags, comma-separated.
+ *
+ * Sorted, because a map's iteration order would make --help differ between
+ * runs -- and help2man builds the man page from --help, so an unstable page
+ * would show up as a spurious diff in every package build.
+ */
+func listRefusals() string {
+	names := make([]string, 0, len(refusals))
+	for n := range refusals {
+		names = append(names, n)
+	}
+	sort.Strings(names)
+
+	return strings.Join(names, ", ")
 }

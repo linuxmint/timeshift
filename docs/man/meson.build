@@ -1,7 +1,7 @@
 help2man = find_program('help2man')
 
 mans = [
-  ['timeshift', [help2man, '-N', '--output=@OUTPUT@', timeshift]],
+  ['timeshift', [help2man, '-N', '--output=@OUTPUT@', timeshift_go]],
   ['timeshift-gtk', [help2man, '-N', '--output=@OUTPUT@', timeshift_gtk]],
   ['timeshift-recovery-shell', [help2man, '-N', '--output=@OUTPUT@', timeshift_recovery_shell]],
 ]

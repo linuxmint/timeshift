@@ -22,16 +22,13 @@ CTRL=$(dpkg-deb --ctrl-tarfile "$DEB" | tar -tf - | sed 's|^\./||' | grep -v '^$
 n=$(printf '%s\n' "$LIST" | grep -c '^-' || true)
 [ "$n" -ge 100 ] && ok "file count: $n" || bad "only $n files shipped (looks empty/partial)"
 
-# /usr/libexec/timeshift/timeshift is the Go CLI, and it is asserted here for a
-# reason that produces no error if it goes missing: apt-snapshot-guard picks the
-# daemon path only when that exact file is executable, and otherwise falls back
-# to whatever `timeshift` is on PATH. A build that stopped shipping it would
-# keep working -- every apt snapshot would just quietly stop being a watchable
-# job, which is the thing this port exists to provide.
+# /usr/bin/timeshift is now the GO CLI; there is no Vala console binary. That
+# matters to more than this package: help2man builds timeshift.1 from whatever
+# answers `timeshift --help`, apt-snapshot-guard runs it from a fail-closed hook
+# that blocks dpkg, and timeshift-recovery's dpkg trigger watches the path.
 for f in ./usr/bin/timeshift ./usr/bin/timeshift-gtk ./usr/bin/timeshift-launcher \
 	./usr/bin/timeshift-recovery-shell \
 	./usr/libexec/timeshift/timeshiftd \
-	./usr/libexec/timeshift/timeshift \
 	./usr/share/applications/timeshift-gtk.desktop \
 	./usr/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy \
 	./etc/timeshift/default.json \
@@ -40,6 +37,26 @@ for f in ./usr/bin/timeshift ./usr/bin/timeshift-gtk ./usr/bin/timeshift-launche
 	./usr/share/metainfo/com.linuxmint.timeshift.metainfo.xml; do
 	printf '%s\n' "$LIST" | grep -q " $f\$" && ok "$f" || bad "MISSING $f"
 done
+
+# The CLI must be the Go binary, and must be shipped ONCE.
+#
+# Both halves have failed silently before. A build that kept installing to
+# /usr/libexec as well would ship two CLIs that drift apart, and the one
+# apt-snapshot-guard picked would depend on a path check rather than on which
+# is current. And a revert of the meson install_dir would put the Vala console
+# binary back at /usr/bin/timeshift with everything still "present" -- the file
+# list cannot tell them apart, but the size can: Go links its runtime in, so it
+# is megabytes where the Vala binary was ~500 KB.
+printf '%s\n' "$LIST" | grep -q ' ./usr/libexec/timeshift/timeshift$' \
+	&& bad "the CLI is shipped twice (also at /usr/libexec/timeshift/timeshift)" \
+	|| ok "the CLI is shipped once"
+
+cli_size=$(printf '%s\n' "$LIST" | awk '$NF == "./usr/bin/timeshift" {print $3}')
+if [ -n "${cli_size:-}" ] && [ "$cli_size" -gt 1000000 ]; then
+	ok "/usr/bin/timeshift is the Go CLI (${cli_size} bytes)"
+else
+	bad "/usr/bin/timeshift is ${cli_size:-absent} bytes; expected the Go CLI (>1 MB)"
+fi
 
 mo=$(printf '%s\n' "$LIST" | grep -c 'LC_MESSAGES/timeshift\.mo$' || true)
 po=$(ls "$(dirname "$0")"/po/*.po 2>/dev/null | wc -l)

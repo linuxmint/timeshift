@@ -60,7 +60,10 @@ cd src-go && sudo env "PATH=$PATH" "HOME=$HOME" go test ./... -count=1
 
 ## Architecture
 
-Two binaries share one core (`src/meson.build`): `AppConsole.vala` or `AppGtk.vala` + `sources_core` + `sources_utility` (+ `sources_gtk` for the GUI).
+One Vala binary is left: `timeshift-gtk` = `AppGtk.vala` + `sources_core` +
+`sources_utility` + `sources_gtk` (`src/meson.build`). `/usr/bin/timeshift` is the
+**Go** CLI; `AppConsole.vala` was deleted with the cutover. The GUI still links the
+Vala core and will until it finishes becoming a socket client.
 
 Each entry file declares the global `public Main App;`. Everything else reaches state through that global — there is no dependency injection and no core→UI signalling.
 
@@ -70,7 +73,14 @@ Each entry file declares the global `public Main App;`. Everything else reaches 
 - `src/Core/Subvolume.vala` — btrfs `@` / `@home` subvolume operations.
 - `src/Utility/Device.vala` (~2100 lines) — the block-device model, built by parsing `lsblk`/`blkid`/`df`/`mount`. All partition, LUKS and LVM handling funnels through it.
 
-Boot sequence in both `main()`s: `set_locale()` → `Main.setup_env()` → (GUI only: `Gtk.init()` → `AppTheme.apply()`) → `init_tmp()` → admin check → `new Main(args, gui_mode)` → `parse_arguments()` → (GUI only: `AppTheme.set_preferences()`) → `App.initialize()` → run → `App.exit_app()`. Note that `Main.parse_some_arguments()` (src/Core/Main.vala:549) parses a subset of the CLI flags a *second* time (it runs from the `Main` constructor, before `AppConsole.parse_arguments()`); a new CLI flag usually has to be added in both. `app_mode == ""` means GUI mode throughout the core.
+Boot sequence in `AppGtk.main()`: `set_locale()` → `Main.setup_env()` → `Gtk.init()` →
+`AppTheme.apply()` → `init_tmp()` → admin check → `new Main(args, true)` →
+`parse_arguments()` → `AppTheme.set_preferences()` → `App.initialize()` → run →
+`App.exit_app()`. `Main.parse_some_arguments()` runs from the constructor and now
+handles only `--debug`, which is the one flag whose effect is needed before
+`initialize()`; it used to re-parse the whole CLI a second time, which is gone with
+the console binary. `app_mode == ""` means GUI mode throughout the core, and the GUI
+is now the only caller, so it is always `""`.
 
 ### Repository backend (local vs remote)
 
@@ -146,7 +156,7 @@ All widgets are constructed in Vala — there are no `.ui`/glade files and no GR
 
 GTK4 notes: there is no `Gtk.Application` — `AppGtk.start_application()` runs a
 plain `GLib.MainLoop`, because the GUI runs as root under pkexec where a session
-bus may be absent and `AppLock` already handles single-instance. `gtk_do_events()`
+bus may be absent and single-instance is no longer enforced at all. `gtk_do_events()`
 drives `GLib.MainContext` directly (GTK4 removed `Gtk.main_iteration`), and the
 blocking `Gtk.Dialog.run()` idiom is reproduced by `CustomMessageDialog.run()`
 and by nested `GLib.MainLoop`s around the async `Gtk.FileDialog` calls, since the
@@ -470,31 +480,35 @@ already hit once:
   `cd`s into the source tree must resolve it first or the binary lands in
   `src-go/src-go/`.
 - `dh_dwz` cannot read Go's compressed DWARF and fails the whole build rather
-  than skipping the file — hence `override_dh_dwz: dh_dwz -Xusr/libexec/timeshift/`.
-The exclusion is by **path**, not by name: one of the Go binaries is called
-`timeshift`, so `-Xtimeshift` would also exclude the Vala `/usr/bin/timeshift`,
-which compresses fine.
+  than skipping the file — hence
+  `override_dh_dwz: dh_dwz -Xusr/libexec/timeshift/ -Xusr/bin/timeshift`.
+  `-X` matches a **substring** of the path with no way to anchor it, so the second
+  exclusion also catches `timeshift-gtk` and `timeshift-recovery-shell`, which are
+  Vala and compress fine. That is the accepted cost of putting the CLI where users
+  type it; the alternative was a `/usr/bin` symlink into `/usr/libexec`.
 - Go links statically whenever nothing in the import graph needs libc, which
   lintian raises as an **error**. `-buildmode=pie -ldflags -linkmode=external`
   keeps the result dynamic and position-independent.
 
-`timeshiftd` installs to `/usr/libexec/timeshift/timeshiftd` (started by systemd
-and by the client library, never typed). The Go `timeshift` CLI is built but
-**not installed** — the Vala binary still owns `/usr/bin/timeshift` until the
-consumer cutover.
+`timeshiftd` installs to `/usr/libexec/timeshift/timeshiftd` and is never typed: it
+is started by systemd, and by the CLI itself (`cmd/timeshift/autostart.go`) when the
+socket is absent. The Go `timeshift` CLI **is** `/usr/bin/timeshift`; there is no
+Vala console binary any more.
 
-Output compatibility is checked by running both binaries and diffing, not by
-reading the Vala source and hoping. Two details found that way and worth
-keeping: `print_grid()` pads every cell with two trailing spaces including the
+Output compatibility WAS checked by running both binaries and diffing, not by
+reading the Vala source and hoping. That is no longer possible -- `AppConsole.vala`
+is deleted -- so the behaviour it established now lives in `internal/textui`'s
+tests, and those are the reference. Two details found that way and deliberately
+reproduced: `print_grid()` pads every cell with two trailing spaces including the
 last on a line, so every row carries trailing whitespace; and the separator rule
-is a fixed 78 dashes that does not track the table width. `internal/textui`
-reproduces both deliberately.
+is a fixed 78 dashes that does not track the table width. Do not "tidy" either --
+they are what a diff against the old binary was pinned to.
 
-Two output differences from the Vala CLI are intentional and will not be
-"fixed": the Go CLI does not echo core log lines to stdout (Vala prints
-`Mounted '/dev/x' at '/run/timeshift/<pid>/backup'` from inside `Device.mount`),
-and it does not run `cron_job_update()` on exit, so listing snapshots no longer
-has the side effect of rewriting `/etc/cron.d`.
+Two differences from the old Vala output are intentional: the Go CLI does not echo
+core log lines to stdout (Vala printed `Mounted '/dev/x' at
+'/run/timeshift/<pid>/backup'` from inside `Device.mount`), and it does not run
+`cron_job_update()` on exit, so listing snapshots no longer has the side effect of
+rewriting `/etc/cron.d`.
 
 Console progress is also a client concern now. `Main.create_snapshot_with_rsync`
 wrote a `\r` progress line to stdout from inside the core *even under
@@ -974,26 +988,37 @@ appears, and the Vala core does all its own work exactly as before.
 
 ### apt-snapshot-guard and the daemon
 
-The guard prefers `/usr/libexec/timeshift/timeshift` when
-`/run/timeshift/daemon.sock` exists, and falls back to whatever `timeshift` is
-on `PATH` otherwise. `USE_DAEMON=0` in `/etc/apt-snapshot-guard/config` pins the
-old behaviour.
+Since the cutover both of the guard's branches run the **same** binary,
+`/usr/bin/timeshift`. The choice is only whether to name an explicit `--socket`:
+it does when `/run/timeshift/daemon.sock` already exists, and otherwise calls
+whatever `timeshift` is on `PATH`. `USE_DAEMON=0` pins the second form.
 
 The fallback is not optional politeness: this hook is **fail-closed and blocks
-dpkg**, so it must never depend on the daemon being up -- a recovery
-environment, a masked unit, or the moment during an upgrade before the daemon
-has started all have to keep working.
+dpkg**, so it must never depend on one particular path being right. What it can
+no longer depend on the daemon for is handled inside the binary — `connect()`
+starts `timeshiftd` when the socket is absent.
 
-The Go CLI is installed at that private path rather than as `/usr/bin/timeshift`
-because the Vala binary still implements flags it does not, because `help2man`
-builds the man page from whatever answers `/usr/bin/timeshift --help`, and --
-for now the strongest reason -- because the Go `--restore` has not been through
-a VM restore of a running system. The private path makes it reachable for that
-test without making it the path everything else takes.
+**A timeout leaves the job running on either branch, and that is new.** It used
+to be true only of the socket branch, because the PATH binary was the Vala one
+and did the work in its own process, so `timeout(1)` SIGTERMed it and the work
+stopped. The Go client only *watches* a job that belongs to the daemon, so
+killing it stops nothing — the cancel on exit 124 therefore runs on both
+branches. Get that wrong and apt is refused while rsync keeps writing and
+holding the repository write lock, which was observed for real before the
+cancel existed: apt refused, rsync still going twenty minutes later.
 
-`debian/rules` excludes both Go binaries from `dh_dwz` **by path**
-(`-Xusr/libexec/timeshift/`), not by name: one of them is called `timeshift`, so
-`-Xtimeshift` would also exclude the Vala binary, which compresses fine.
+The Go CLI took `/usr/bin/timeshift` once all three of the reasons against it had
+expired: it reached full flag parity with `AppConsole` (the only refusal left is
+`--clone`, and `--help` names the refusals so the man page does too), `help2man`
+produces a clean page from its `--help`, and `--restore` went through a VM restore
+of a running system in `+ssh39`.
+
+`debian/rules` excludes the Go binaries from `dh_dwz` by path:
+`-Xusr/libexec/timeshift/ -Xusr/bin/timeshift`. `-X` is a substring match with no
+anchor, so the second also excludes `timeshift-gtk` and
+`timeshift-recovery-shell` — Vala, and they compress fine. Losing dwz on those is
+the accepted price of not putting a user-facing CLI behind a `/usr/bin` symlink
+into `/usr/libexec`.
 
 ### The unit and the group
 
@@ -1047,16 +1072,16 @@ What that established, and what to re-check after touching the write path:
 
 ## Running as root
 
-Neither binary escalates itself; both hard-exit with a message if not root. Escalation is delegated to `src/timeshift-launcher` (pkexec, falling back to sudo/su in a terminal) with the polkit rules in `src/share/polkit-1/actions/`. Because the GUI then runs as root, `Main.setup_env()` scavenges `DISPLAY`, `XAUTHORITY`, dbus and Wayland vars from the invoking user's `/proc/<pid>/environ`, and anything spawned for the user (file manager, browser) must be de-escalated using `PKEXEC_UID`/`SUDO_UID` — see `TeeJee.System.get_user_id()` and `exec_user_async()`.
+`timeshift-gtk` does not escalate itself; it hard-exits with a message if not root. (That check is what Phase 5 of the client migration removes: a socket client does not need root, because the daemon holds the privilege.) Escalation is delegated to `src/timeshift-launcher` (pkexec, falling back to sudo/su in a terminal) with the polkit rules in `src/share/polkit-1/actions/`. Because the GUI then runs as root, `Main.setup_env()` scavenges `DISPLAY`, `XAUTHORITY`, dbus and Wayland vars from the invoking user's `/proc/<pid>/environ`, and anything spawned for the user (file manager, browser) must be de-escalated using `PKEXEC_UID`/`SUDO_UID` — see `TeeJee.System.get_user_id()` and `exec_user_async()`.
 
 ## Runtime files
 
 - Config: `/etc/timeshift/timeshift.json`, JSON via json-glib, **all values stored as strings** (`"true"`, `"5"`). Legacy `/etc/timeshift.json` is auto-migrated; a missing config is seeded from `$SYSCONFDIR/timeshift/default.json`, installed from `files/timeshift.json`.
 - **Local-run override**: if a `timeshift.json` (and/or a `share/` directory) sits next to the executable, it is used instead of the system one (src/Core/Main.vala:301). This is the way to test config changes without touching `/etc`.
 - Per-snapshot metadata: `info.json` inside each snapshot directory.
-- Log: `/var/log/timeshift/<timestamp>_{gui|<app_mode>}.log`. Lock: `/var/run/lock/timeshift/lock`, holding `<pid>;<app_mode>` so a second instance can report what the first is doing (`src/Utility/AppLock.vala`).
+- Log: `/var/log/timeshift/<timestamp>_{gui|<app_mode>}.log`. There is no process lock: `AppLock` is deleted, and what is serialised now is a repository **write**, through one `flock(2)` on `/run/timeshift/repo.lock` taken by both cores (`src/Utility/RepoLock.vala`, `src-go/internal/replock`).
 - Scheduling is **`timeshiftd`**, not cron and not a systemd timer. `Main.cron_job_update()` still exists and is still called, but it only ever *removes* now: it sweeps the `/etc/cron.d/timeshift-{hourly,boot}` drop-ins older versions wrote. `debian/postinst` and the daemon's own startup do the same sweep, so an entry that reappears -- a downgrade, or an older GUI -- is picked up whichever way round the machine ends up. `crontab` is no longer in the dependency check at `src/Core/Main.vala:466` and `cron` is no longer a `Depends`.
-- Restore is script-driven: `Main.create_restore_scripts()` emits shell scripts covering chroot, `update-grub`, `update-initramfs` and `run-parts /etc/timeshift/restore-hooks.d`. In GUI mode they run through `RestoreScriptTask` (an `RsyncTask` subclass that supplies the script instead of building one, so all the itemise parsing and every field the progress loops poll keep working); on the console they still go through `exec_script_sync`. Each step is announced with an untranslated `@@TS_PHASE:<key>` echo, emitted only when `app_mode == ""`, and recorded in `App.restore_phases` so the checklist lists exactly the steps that will run. `App.restore_phase` is the step running now — the script sets it through its markers, `restore_other_gui()` sets it directly for the two steps that happen in Vala (`fix_fstab`, `parse_log`). The script's rsync uses `-aiir`, matching `RsyncTask.build_script()`, so the line count tracks the file count; the denominator is the dry run's measured `status_line_count`, stashed in `App.restore_line_count_estimate`.
+- Restore is script-driven: `Main.create_restore_scripts()` emits shell scripts covering chroot, `update-grub`, `update-initramfs` and `run-parts /etc/timeshift/restore-hooks.d`. They run through `RestoreScriptTask` (an `RsyncTask` subclass that supplies the script instead of building one, so all the itemise parsing and every field the progress loops poll keep working). The `exec_script_sync` branch went with `AppConsole.vala`; the Go restore in `internal/restore` is what a console restore uses now. Each step is announced with an untranslated `@@TS_PHASE:<key>` echo, emitted only when `app_mode == ""`, and recorded in `App.restore_phases` so the checklist lists exactly the steps that will run. `App.restore_phase` is the step running now — the script sets it through its markers, `restore_other_gui()` sets it directly for the two steps that happen in Vala (`fix_fstab`, `parse_log`). The script's rsync uses `-aiir`, matching `RsyncTask.build_script()`, so the line count tracks the file count; the denominator is the dry run's measured `status_line_count`, stashed in `App.restore_line_count_estimate`.
 
 ## Recovery environment (`src-recovery/`)
 

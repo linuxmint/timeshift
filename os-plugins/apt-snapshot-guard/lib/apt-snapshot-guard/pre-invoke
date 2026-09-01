@@ -261,17 +261,20 @@ comment="Auto-snapshot before ${operation} via ${frontend} [${caller}]"
 
 # Which Timeshift to drive.
 #
-# Preferred: the daemon client at a private path, when timeshiftd is actually
-# listening. That makes this snapshot a daemon JOB rather than a private process
-# -- so it can be watched from the GUI while apt sits here waiting for it, which
-# is the whole reason the daemon exists. It also means two apt frontends racing
-# end up attached to one snapshot instead of taking two.
+# Since the cutover both branches are the SAME binary: /usr/bin/timeshift is the
+# Go client, and it always works through timeshiftd -- starting the service
+# itself if it is not running. So the choice here is no longer "daemon or not",
+# it is only whether to name an explicit socket.
 #
-# Fallback: whatever `timeshift` is on PATH, exactly as before. The daemon may
-# not be running (a recovery environment, a machine where the unit is masked,
-# the moment during an upgrade before it has started), and this hook is
-# fail-closed and blocks dpkg -- so it must never depend on the daemon being up.
-TS_CLIENT=${TS_CLIENT:-/usr/libexec/timeshift/timeshift}
+# Preferred: an explicit --socket when timeshiftd is already listening. Worth
+# distinguishing because it is the branch that can CANCEL, and because a run we
+# know is daemon-backed can be reported as such.
+#
+# Fallback: whatever `timeshift` is on PATH. Kept because TS_CLIENT can be
+# absent or unusable on a half-upgraded system, and because this hook is
+# fail-closed and blocks dpkg -- it must never depend on one particular path
+# being right.
+TS_CLIENT=${TS_CLIENT:-/usr/bin/timeshift}
 TS_SOCKET=${TS_SOCKET:-/run/timeshift/daemon.sock}
 
 use_daemon=0
@@ -328,6 +331,16 @@ run_snapshot() {
 	fi
 }
 
+# Cancelling mirrors run_snapshot, because the job outlives the client on both
+# branches now and so both have something to cancel.
+run_cancel() {
+	if [ "$use_daemon" = "1" ]; then
+		timeout 30 "$TS_CLIENT" --socket "$TS_SOCKET" --cancel >>"$LOG" 2>&1
+	else
+		timeout 30 timeshift --cancel >>"$LOG" 2>&1
+	fi
+}
+
 # timeout(1) is as load-bearing as flock(1) and was the only one not checked.
 # Without it every run exits 127 and NO apt operation can ever succeed, while
 # the log blames timeshift for a coreutils problem.
@@ -348,16 +361,18 @@ else
 	rc=$?
 fi
 
-# A timeout on the daemon path leaves the job RUNNING.
+# A timeout leaves the job RUNNING, on EITHER branch.
 #
-# The two branches mean different things by the same exit code. On the PATH
-# branch timeout(1) SIGTERMs timeshift and the work stops. On the daemon branch
-# it kills only this client -- the job belongs to timeshiftd and deliberately
-# outlives whoever was watching, which is the whole point of the daemon. So
-# giving up here used to abort apt while a snapshot carried on writing and
-# holding the repository write lock, and the next apt run would then wait on
-# that lock for its own full budget. Observed: apt refused, rsync still running
-# twenty minutes later.
+# This used to be true only of the daemon branch: the PATH binary was the Vala
+# one, which did the work in its own process, so timeout(1) SIGTERMed it and the
+# work stopped. Since the cutover the PATH binary is the same Go client, and it
+# too only watches a job that belongs to timeshiftd and deliberately outlives
+# whoever was watching. Killing the client stops nothing.
+#
+# So giving up here aborts apt while a snapshot carries on writing and holding
+# the repository write lock, and the next apt run then waits on that lock for
+# its own full budget. Observed before the cancel was added: apt refused, rsync
+# still running twenty minutes later.
 #
 # Cancelling is best effort. If it fails the snapshot is still running, which
 # is not a reason to do anything different -- the outcome for apt is the same
@@ -377,6 +392,14 @@ fi
 # unconditional on the daemon path and cheap: if the PATH binary fails too, the
 # original fail-closed policy applies exactly as before.
 #
+# What the retry can still fix has NARROWED since the cutover, and saying so is
+# the point of this paragraph. TS_CLIENT and the PATH binary are now the same
+# program, so retrying cannot help with a protocol mismatch -- the same client
+# gets the same refusal. It still covers a TS_CLIENT that is missing or not
+# executable (a half-unpacked upgrade, an override pointing somewhere stale),
+# and a socket that has gone away between the check and the call, because the
+# PATH invocation names no socket and will start a daemon of its own.
+#
 # Deliberately NOT retried on 124: a timeout means the snapshot was running and
 # taking too long, and starting a second one would double the wait that already
 # expired.
@@ -394,9 +417,9 @@ if [ "$rc" -ne 0 ] && [ "$rc" -ne 124 ] && [ "$use_daemon" = "1" ] \
 	[ "$rc" -eq 0 ] && log "the fallback snapshot succeeded."
 fi
 
-if [ "$rc" = "124" ] && [ "$use_daemon" = "1" ]; then
+if [ "$rc" = "124" ]; then
 	log "the snapshot exceeded ${TIMEOUT}s; asking the service to cancel it."
-	if timeout 30 "$TS_CLIENT" --socket "$TS_SOCKET" --cancel >>"$LOG" 2>&1; then
+	if run_cancel; then
 		log "cancelled the running snapshot."
 	else
 		log "WARNING: could not cancel it; a snapshot may still be running."

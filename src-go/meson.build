@@ -32,24 +32,26 @@ timeshiftd = custom_target('timeshiftd',
   install_dir: get_option('libexecdir') / 'timeshift',
 )
 
-# The CLI.
+# The CLI. This is /usr/bin/timeshift.
 #
-# Installed beside the daemon rather than as /usr/bin/timeshift: the Vala binary
-# still owns that name and still implements flags this one does not (--restore
-# above all), so claiming the public path would be a downgrade dressed as a
-# cutover. help2man also builds the man page from whatever answers
-# /usr/bin/timeshift --help, and that page has to keep describing the binary
-# people actually run.
+# It took the public path from the Vala AppConsole once it had full flag parity
+# (everything the Vala CLI accepted, plus --watch, --cancel and --restore's
+# target selection) and once help2man produced a clean page from its --help.
+# docs/man/meson.build runs help2man against THIS target, so --help must keep
+# its shape -- a version line, then Usage:, then Options: -- or the packaging
+# build fails.
 #
-# What the private path buys is real, though: apt-snapshot-guard can prefer it,
-# and an apt-driven snapshot then becomes a daemon job that the GUI can attach
-# to -- which is the entire point of this port.
+# The one behaviour the move changed is that every mutating command now needs
+# timeshiftd, where the Vala binary needed nothing. cmd/timeshift/autostart.go
+# is what keeps that from being a regression: apt-snapshot-guard is fail-closed
+# and blocks dpkg, so "the daemon is not running" must never be the end of the
+# story.
 timeshift_go = custom_target('timeshift-go',
   output: 'timeshift',
   command: [go_build, go_build_args, './cmd/timeshift', meson.project_version()],
   build_always_stale: true,
   install: true,
-  install_dir: get_option('libexecdir') / 'timeshift',
+  install_dir: get_option('bindir'),
 )
 
 # The unit. dh_installsystemd finds units the upstream build system installed

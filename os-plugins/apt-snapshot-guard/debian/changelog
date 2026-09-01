@@ -1,3 +1,9 @@
+apt-snapshot-guard (1.0.28) resolute; urgency=medium
+
+  * Cancel a timed-out snapshot on both paths, not just the socket one. Since the CLI cutover both branches run the same Go client, which only watches a job the daemon owns -- so killing it on a timeout stopped nothing, and apt was refused while rsync kept writing and holding the repository write lock. TS_CLIENT now defaults to /usr/bin/timeshift.
+
+ -- makeafide <willsmit4433@gmail.com>  Tue, 01 Sep 2026 09:01:11 -0400
+
 apt-snapshot-guard (1.0.27) resolute; urgency=medium
 
   * Removing this package no longer breaks apt. The apt hook file survived
