@@ -1,3 +1,12 @@
+timeshift-ssh (25.12.4+ssh42) resolute; urgency=medium
+
+  * Make the GUI read the system through the daemon: snapshot list, repository status, block devices and settings. The list and status replace four control-file reads per snapshot plus a du walk and four SSH probes, and listing a repository no longer writes to it while merely reading. Settings now save through config.set, which merges rather than truncating, so keys this build does not know are no longer deleted.
+  * Fix: opening the Settings window zeroed the system size estimate, and that estimate is the pre-backup free-space check -- so looking at the settings quietly switched the check off.
+  * Fix: devices.list filtered out every disk, leaving the device tree with no parents to hang partitions from.
+  * Fix: a config key that could be read could not be set, so snapshots could never be paused or unpaused through the daemon.
+
+ -- makeafide <willsmit4433@gmail.com>  Tue, 01 Sep 2026 14:52:32 -0400
+
 timeshift-ssh (25.12.4+ssh41) resolute; urgency=medium
 
   * Make /usr/bin/timeshift the Go CLI, and delete AppConsole.vala. The Go client reached full flag parity and passed a VM restore, so it takes the public path; the Vala console binary and its second argument parser are gone. Every mutating command now needs timeshiftd, so the client starts it when the socket is absent -- via systemd, or directly when the units are masked or systemd is not running.
