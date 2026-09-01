@@ -1,6 +1,11 @@
 timeshift-ssh (25.12.4+ssh39) resolute; urgency=medium
 
-  * Implement btrfs mode: create, restore and delete now use subvolumes instead of silently falling back to rsync
+  * BTRFS mode now actually uses BTRFS. Snapshots were being taken with rsync
+    even when the location reported "Mode : BTRFS", so they were slow and used
+    real disk space instead of being instant and free
+  * Restoring a BTRFS snapshot replaces the subvolumes, and keeps the previous
+    system as a snapshot so the restore itself can be undone
+  * Deleting a BTRFS snapshot removes its subvolumes properly
 
  -- makeafide <willsmit4433@gmail.com>  Tue, 01 Sep 2026 06:48:26 -0400
 
