@@ -153,11 +153,14 @@ func (d *daemon) methods() map[string]ipc.Method {
 		ipc.MethodJobsSubscribe:  {ReadOnly: true, Fn: d.jobsSubscribe},
 		ipc.MethodScheduleStatus: {ReadOnly: true, Fn: d.scheduleStatus},
 
-		ipc.MethodJobsCancel:     {Fn: d.jobsCancel},
-		ipc.MethodSnapshotCreate: {Fn: d.snapshotCreate},
-		ipc.MethodSnapshotDelete: {Fn: d.snapshotDelete},
-		ipc.MethodEstimateRun:    {Fn: d.estimateRun},
-		ipc.MethodScheduleCheck:  {Fn: d.scheduleCheck},
+		ipc.MethodJobsCancel:      {Fn: d.jobsCancel},
+		ipc.MethodSnapshotCreate:  {Fn: d.snapshotCreate},
+		ipc.MethodSnapshotDelete:  {Fn: d.snapshotDelete},
+		ipc.MethodEstimateRun:     {Fn: d.estimateRun},
+		ipc.MethodConfigSet:       {Fn: d.configSet},
+		ipc.MethodSnapshotsUpdate: {Fn: d.snapshotsUpdate},
+		ipc.MethodRepoReload:      {Fn: d.repoReload},
+		ipc.MethodScheduleCheck:   {Fn: d.scheduleCheck},
 	}
 }
 

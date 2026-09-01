@@ -101,6 +101,18 @@ func (h *Hub) Subscribers() int {
 	return len(h.subs)
 }
 
+/* Publish emits an event that belongs to no job.
+ *
+ * Job events are published by the job itself; this is for the daemon to
+ * announce that something else changed -- a setting, the snapshot list. It is
+ * deliberately narrow: an event with a Job set would be indistinguishable from
+ * one the job emitted, and a client cannot tell a real progress update from a
+ * forged one.
+ */
+func (h *Hub) Publish(eventType string) {
+	h.publish(Event{Type: eventType})
+}
+
 // publish sends an event to every interested subscriber.
 //
 // Never blocks: see the note at the top of this file.

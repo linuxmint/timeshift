@@ -588,6 +588,47 @@ healthy, and a dead `timeshiftd` now means no snapshots with nothing to notice.
 replacement: they report when the scheduler last ran, what it decided and
 whether the loop is alive at all.
 
+### Writing state over IPC
+
+`config.set`, `snapshots.update` and `repo.reload` are what let a client change
+things rather than only watch them, and they are the precondition for the GUI
+becoming a pure client.
+
+**`config.set` is a PARTIAL update**, and that is the whole design. Keys are the
+on-disk names and values carry the on-disk shapes -- every scalar a JSON
+*string*, the two exclude lists arrays. A whole-config write would mean a client
+one version behind silently reverting every key it did not know about, which is
+exactly the failure the Vala GUI already has against `timeshift.json`.
+
+Three refusals, each of which would otherwise be a silent loss:
+
+- An unknown key is **refused, not ignored**. A typo that is quietly accepted
+  looks identical to a setting that does not work.
+- A wrongly-typed value is refused with an error that names the format. Send a
+  real `true` instead of `"true"` and `Unmarshal` keeps the old value, so the
+  change is accepted and dropped.
+- The whole read-modify-write happens under one lock, because several clients at
+  once is the normal case here and two saving different settings would otherwise
+  each start from the config as they found it.
+
+The merge goes through `Marshal` and `Unmarshal` rather than a second key table.
+A separate table would be a second place to add a setting, and the one that got
+forgotten would fail silently.
+
+`startup_delay_interval_mins` is now written **only if the file already had
+it**, using the same `present` mechanism as `snapshot_size`. Never writing it
+was the earlier rule and it was wrong in one direction: a hand-set value was
+silently deleted the first time any setting changed. Writing it unconditionally
+is wrong in the other, because the Vala GUI drops keys it does not know and the
+key would churn. Preserve-what-was-there is correct for both, and
+`config.Apply` still lets a client introduce it deliberately.
+
+`config.changed` and `snapshots.changed` are events with **no job**, so the hub
+delivers them only to subscribers following everything -- a client attached to
+one job wants that job. They exist so a second window redraws instead of showing
+state that is no longer true, which is the obvious failure mode once several
+clients can attach at once.
+
 ### The GUI as a client (`src/Core/DaemonClient.vala`)
 
 The GTK app still runs its own Vala core. What it gained is the ability to see

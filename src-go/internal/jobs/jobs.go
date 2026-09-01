@@ -149,6 +149,19 @@ const (
 	EventProgress = "job.progress"
 	EventLog      = "job.log"
 	EventFinished = "job.finished"
+
+	/* Events that are not about a job.
+	 *
+	 * They carry no Job, so the hub delivers them only to subscribers
+	 * following everything -- a client attached to one job wants that job, not
+	 * a notification that somebody changed a setting.
+	 *
+	 * They exist so a second client redraws instead of showing stale state.
+	 * With several clients attached at once, which is the point of the daemon,
+	 * "I changed it here and the other window still says the old thing" is the
+	 * obvious failure and this is what prevents it. */
+	EventConfigChanged    = "config.changed"
+	EventSnapshotsChanged = "snapshots.changed"
 )
 
 // Reporter is how the work being run talks back. It is the ONLY channel: an

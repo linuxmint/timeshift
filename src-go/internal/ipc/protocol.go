@@ -76,21 +76,24 @@ func Errf(code, format string, args ...any) *Error {
 // Method names. Keeping them as constants means a typo is a compile error on
 // both sides rather than an unknown_method at runtime.
 const (
-	MethodSystemInfo     = "system.info"
-	MethodEnginesList    = "engines.list"
-	MethodConfigGet      = "config.get"
-	MethodDevicesList    = "devices.list"
-	MethodRepoStatus     = "repo.status"
-	MethodSnapshotsList  = "snapshots.list"
-	MethodSnapshotCreate = "snapshot.create"
-	MethodSnapshotDelete = "snapshot.delete"
-	MethodEstimateRun    = "estimate.run"
-	MethodScheduleCheck  = "schedule.check"
-	MethodScheduleStatus = "schedule.status"
-	MethodJobsList       = "jobs.list"
-	MethodJobsGet        = "jobs.get"
-	MethodJobsSubscribe  = "jobs.subscribe"
-	MethodJobsCancel     = "jobs.cancel"
+	MethodSystemInfo      = "system.info"
+	MethodEnginesList     = "engines.list"
+	MethodConfigGet       = "config.get"
+	MethodConfigSet       = "config.set"
+	MethodDevicesList     = "devices.list"
+	MethodRepoStatus      = "repo.status"
+	MethodRepoReload      = "repo.reload"
+	MethodSnapshotsList   = "snapshots.list"
+	MethodSnapshotsUpdate = "snapshots.update"
+	MethodSnapshotCreate  = "snapshot.create"
+	MethodSnapshotDelete  = "snapshot.delete"
+	MethodEstimateRun     = "estimate.run"
+	MethodScheduleCheck   = "schedule.check"
+	MethodScheduleStatus  = "schedule.status"
+	MethodJobsList        = "jobs.list"
+	MethodJobsGet         = "jobs.get"
+	MethodJobsSubscribe   = "jobs.subscribe"
+	MethodJobsCancel      = "jobs.cancel"
 )
 
 // SystemInfo answers system.info.
@@ -162,6 +165,39 @@ type SubscribeParams struct {
 
 	// WithLog includes job.log events, one per file on a restore. Opt-in.
 	WithLog bool `json:"with_log,omitempty"`
+}
+
+/* ConfigSetParams is a PARTIAL configuration update.
+ *
+ * Only the named keys change. A whole-config write would mean a client one
+ * version behind silently reverting every key it does not know about, which is
+ * precisely the failure the Vala GUI already has against timeshift.json.
+ *
+ * Keys are the on-disk names ("schedule_hourly", "count_daily"), and values
+ * carry the on-disk shapes: every scalar is a JSON *string* ("true", "5"), and
+ * the two exclude lists are arrays. A real boolean or number is refused rather
+ * than quietly dropped.
+ */
+type ConfigSetParams struct {
+	Values map[string]json.RawMessage `json:"values"`
+}
+
+/* SnapshotsUpdateParams edits a snapshot's metadata.
+ *
+ * Every field is a pointer so that "not mentioned" and "set to empty" are
+ * different requests. Clearing a comment has to be expressible, and it looks
+ * identical to omitting the field once the pointer is gone.
+ */
+type SnapshotsUpdateParams struct {
+	Name string `json:"name"`
+
+	Comments *string   `json:"comments,omitempty"`
+	Tags     *[]string `json:"tags,omitempty"`
+
+	// MarkedForDeletion writes or removes the sidecar marker the next prune
+	// acts on. It is a marker rather than an immediate delete so a client can
+	// queue several and change its mind.
+	MarkedForDeletion *bool `json:"marked_for_deletion,omitempty"`
 }
 
 // JobRefParams addresses one job.

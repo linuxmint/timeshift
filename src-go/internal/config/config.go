@@ -372,14 +372,22 @@ func Marshal(c Config) []byte {
 	kv("schedule_hourly", boolStr(c.ScheduleHourly))
 	kv("schedule_boot", boolStr(c.ScheduleBoot))
 
-	/* startup_delay_interval_mins is READ but never written.
+	/* startup_delay_interval_mins is written only if it was already there.
 	 *
-	 * While the Vala GUI is still installed there are two writers of this
-	 * file, and the Vala one drops every key it does not know. Writing a
-	 * Go-only key would make it appear and vanish depending on which program
-	 * last saved, churning a file people put in configuration management. It
-	 * is read here so it can be set by hand, and it will start being written
-	 * when the Vala core goes and there is one writer again. */
+	 * Emitting it unconditionally would make it appear and vanish depending on
+	 * which program last saved: while the Vala GUI is still installed there
+	 * are two writers of this file and the Vala one drops every key it does not
+	 * know, so the key would churn in a file people put in configuration
+	 * management.
+	 *
+	 * Never emitting it is worse in the other direction, and that was the bug
+	 * here: someone who sets it by hand would have it silently deleted the
+	 * first time any setting was changed. Preserving what the file had keeps a
+	 * Vala-written config byte-identical -- it never contains this key -- while
+	 * a hand-edited one keeps its value. */
+	if c.present["startup_delay_interval_mins"] {
+		kv("startup_delay_interval_mins", strconv.Itoa(c.StartupDelayIntervalMins))
+	}
 
 	kv("count_monthly", strconv.Itoa(c.CountMonthly))
 	kv("count_weekly", strconv.Itoa(c.CountWeekly))
@@ -476,4 +484,124 @@ func UnknownKeys(raw []byte) ([]string, error) {
 	}
 	sort.Strings(out)
 	return out, nil
+}
+
+/* Applying a partial update.
+ *
+ * The GUI changes one setting at a time, so an update names only the keys it
+ * touches. Sending a whole Config instead would mean a client that is a version
+ * behind silently reverting every key it does not know about -- which is the
+ * exact failure the Vala GUI already has against this file, and the reason
+ * startup_delay_interval_mins cannot be written while that GUI still ships.
+ *
+ * The merge goes through Marshal and Unmarshal rather than a second key table.
+ * That is not laziness: a separate table would be a second place to add a
+ * setting, and the one that got forgotten would fail silently -- the value
+ * would be accepted and dropped.
+ */
+func Apply(c Config, values map[string]json.RawMessage) (Config, error) {
+
+	/* The reference object lists every settable key, including the optional
+	 * ones this config does not currently carry. Validating against Marshal(c)
+	 * alone would report a real setting as unknown purely because the file
+	 * being edited had never mentioned it. */
+	reference := c
+	reference.present = allOptionalKeysPresent(c.present)
+
+	var obj map[string]json.RawMessage
+	if err := json.Unmarshal(Marshal(reference), &obj); err != nil {
+		return c, fmt.Errorf("config: re-read own output: %w", err)
+	}
+
+	// Keys the file did not have and the update does not set stay absent.
+	for key := range obj {
+		if optionalKeys[key] && !c.present[key] {
+			if _, setting := values[key]; !setting {
+				delete(obj, key)
+			}
+		}
+	}
+
+	for key, value := range values {
+		if _, known := obj[key]; !known {
+			/* Refused, not ignored. A typo that is quietly accepted looks
+			 * exactly like a setting that does not work, and the report comes
+			 * back as "Timeshift ignores my schedule". */
+			return c, fmt.Errorf("config: unknown setting %q", key)
+		}
+		if err := checkShape(key, obj[key], value); err != nil {
+			return c, err
+		}
+		obj[key] = value
+	}
+
+	merged, err := json.Marshal(obj)
+	if err != nil {
+		return c, fmt.Errorf("config: merge: %w", err)
+	}
+
+	updated, err := Unmarshal(merged)
+	if err != nil {
+		return c, fmt.Errorf("config: apply: %w", err)
+	}
+	return updated, nil
+}
+
+/* Keys Marshal emits only when the file already had them.
+ *
+ * They are omitted from a config that never carried them so that a file the
+ * Vala GUI also writes does not churn, and preserved once someone has set one
+ * by hand. See the note in Marshal.
+ */
+var optionalKeys = map[string]bool{
+	"startup_delay_interval_mins": true,
+}
+
+func allOptionalKeysPresent(current map[string]bool) map[string]bool {
+	out := make(map[string]bool, len(current)+len(optionalKeys))
+	for k, v := range current {
+		out[k] = v
+	}
+	for k := range optionalKeys {
+		out[k] = true
+	}
+	return out
+}
+
+/* checkShape rejects a value of the wrong JSON kind.
+ *
+ * Every scalar in this file is a STRING ("true", "5"), and the two exclude
+ * lists are arrays. Unmarshal would silently keep the old value for a mistyped
+ * one -- a client sending a real boolean true instead of "true" would see its
+ * change accepted and discarded.
+ */
+func checkShape(key string, current, incoming json.RawMessage) error {
+
+	kind := func(raw json.RawMessage) string {
+		for _, b := range raw {
+			switch b {
+			case ' ', '\t', '\n', '\r':
+				continue
+			case '[':
+				return "array"
+			case '"':
+				return "string"
+			default:
+				return "scalar"
+			}
+		}
+		return "empty"
+	}
+
+	want := kind(current)
+	got := kind(incoming)
+	if want == got {
+		return nil
+	}
+
+	if want == "string" {
+		return fmt.Errorf(
+			"config: %q must be a JSON string (every value in timeshift.json is a string, so send \"true\" and \"5\", not true and 5)", key)
+	}
+	return fmt.Errorf("config: %q must be a JSON %s, got %s", key, want, got)
 }
