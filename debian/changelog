@@ -1,3 +1,21 @@
+timeshift-ssh (25.12.4+ssh38) resolute; urgency=medium
+
+  * Refuse to take snapshots in a live session, so a rescue environment cannot
+    snapshot its own ramdisk into the repository you are restoring from
+  * Stopping the Timeshift service no longer deletes the lock that stops two
+    Timeshifts writing to one repository at the same time
+  * A restore that skipped the file system check now says so, instead of
+    reporting plain success
+  * Restoring no longer leaves a mount behind each time
+  * Two clients starting work at the same moment can no longer lose one
+    another's job from the job list
+  * Measuring the system size no longer overwrites a setting changed while it
+    was running
+  * timeshift --check reports a scheduler that is enabled but not running,
+    rather than treating it as nothing to do
+
+ -- makeafide <willsmit4433@gmail.com>  Tue, 01 Sep 2026 00:24:27 -0400
+
 timeshift-ssh (25.12.4+ssh37) resolute; urgency=medium
 
   * Deleting snapshots and estimating the system size now go through the

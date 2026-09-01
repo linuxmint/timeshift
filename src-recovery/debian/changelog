@@ -1,3 +1,12 @@
+timeshift-recovery (1.0.28) resolute; urgency=medium
+
+  * The recovery environment no longer takes scheduled snapshots of itself:
+    it boots as a live session, and Timeshift now declines to snapshot one
+  * Check that the Timeshift service's command-line client is present in the
+    built environment, so a missing one fails the build rather than the boot
+
+ -- makeafide <willsmit4433@gmail.com>  Tue, 01 Sep 2026 00:24:49 -0400
+
 timeshift-recovery (1.0.27) resolute; urgency=medium
 
   * Lintian: install the refresh unit under /usr/lib/systemd (usrmerge), drop Depends on essential coreutils and util-linux
