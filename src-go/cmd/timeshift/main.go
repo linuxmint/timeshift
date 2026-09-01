@@ -19,7 +19,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/makeafide/timeshift/src-go/internal/block"
@@ -66,267 +65,48 @@ func main() {
 }
 
 func run(args []string) int {
-	mode := ""
-	configPath := config.SystemPath
-	socket := ipc.SocketPath
-	scripted := false
-	comments := ""
-	jobID := ""
-	var tags []string
-	var names []string
-	var restoreOpts RestoreOptions
 
-	// Per-run location and mode overrides. See ipc.LocationOverride.
-	var override ipc.LocationOverride
-	verbosity := 0
-	sshPassword := ""
-	var recoveryTarget, recoverySize string
-
-	for i := 0; i < len(args); i++ {
-		switch args[i] {
+	/* --help and --version answer before anything else.
+	 *
+	 * They are the two things that must work when the rest of the command line
+	 * is wrong, and help2man depends on both. */
+	for _, a := range args {
+		switch a {
 		case "--help", "-h":
 			fmt.Print(help())
 			return 0
 		case "--version":
 			fmt.Printf("timeshift %s\n", version)
 			return 0
-		case "--list-devices":
-			mode = "list-devices"
-		case "--list", "--list-snapshots":
-			mode = "list-snapshots"
-		case "--create":
-			mode = "create"
-		case "--watch":
-			mode = "watch"
-		case "--cancel":
-			mode = "cancel"
-		case "--estimate":
-			mode = "estimate"
-		case "--delete":
-			mode = "delete"
-		case "--restore":
-			mode = "restore"
-		case "--current-system", "--restore-in-place":
-			restoreOpts.CurrentSystem = true
-		case "--dry-run":
-			restoreOpts.DryRun = true
-		case "--yes", "-y":
-			restoreOpts.Yes = true
-		case "--skip-grub":
-			restoreOpts.SkipGrub = true
-		case "--target":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --target needs a device")
-				return 1
-			}
-			i++
-			restoreOpts.Target = args[i]
-		case "--mount":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --mount needs MOUNTPOINT=DEVICE")
-				return 1
-			}
-			i++
-			mp, dev, err := parseMountArg(args[i])
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
-				return 1
-			}
-			if restoreOpts.Mounts == nil {
-				restoreOpts.Mounts = map[string]string{}
-			}
-			restoreOpts.Mounts[mp] = dev
-		case "--grub-device":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --grub-device needs a device")
-				return 1
-			}
-			i++
-			restoreOpts.GrubDevice = args[i]
-		case "--check":
-			mode = "check"
-		case "--schedule-status":
-			mode = "schedule-status"
-		case "--scripted":
-			scripted = true
-		case "--comments", "--comment":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --comments needs a value")
-				return 1
-			}
-			i++
-			comments = args[i]
-		case "--tags":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --tags needs a value")
-				return 1
-			}
-			i++
-			tags = expandTags(args[i])
-		case "--snapshot", "--snapshot-name":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --snapshot needs a name")
-				return 1
-			}
-			i++
-			names = append(names, args[i])
-		case "--job":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --job needs an id")
-				return 1
-			}
-			i++
-			jobID = args[i]
-		case "--socket":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --socket needs a path")
-				return 1
-			}
-			i++
-			socket = args[i]
-		case "--config":
-			/* Bounds-checked, unlike AppConsole.parse_arguments(), where every
-			 * value-taking flag does args[++k] with no check at all -- so a
-			 * trailing `--comments` reads past the end of the array. */
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --config needs a path")
-				return 1
-			}
-			i++
-			configPath = args[i]
-
-		// ---- modes the Vala CLI has and this one did not ----
-
-		case "--delete-all":
-			mode = "delete-all"
-		case "--setup-ssh-key":
-			mode = "setup-ssh-key"
-		case "--recovery-status":
-			mode = "recovery-status"
-		case "--recovery-enable":
-			mode = "recovery-enable"
-		case "--recovery-disable":
-			mode = "recovery-disable"
-		case "--recovery-install":
-			mode = "recovery-install"
-
-		// ---- per-run location and mode overrides ----
-
-		case "--snapshot-device", "--backup-device":
-			if i+1 >= len(args) {
-				fmt.Fprintf(os.Stderr, "timeshift: %s needs a device\n", args[i])
-				return 1
-			}
-			i++
-			override.Device = args[i]
-		case "--snapshot-url", "--remote":
-			if i+1 >= len(args) {
-				fmt.Fprintf(os.Stderr, "timeshift: %s needs a user@host:/path URL\n", args[i])
-				return 1
-			}
-			i++
-			override.URL = args[i]
-		case "--ssh-key":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --ssh-key needs a file")
-				return 1
-			}
-			i++
-			override.KeyFile = args[i]
-		case "--ssh-port":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --ssh-port needs a port")
-				return 1
-			}
-			i++
-			port, err := strconv.Atoi(args[i])
-			if err != nil || port < 1 || port > 65535 {
-				fmt.Fprintf(os.Stderr, "timeshift: %q is not a port\n", args[i])
-				return 1
-			}
-			override.Port = port
-		case "--ssh-password":
-			/* Only for --setup-ssh-key, and only for a caller with no
-			 * terminal. Interactive use should let the prompt happen: a
-			 * password in argv is in /proc/<pid>/cmdline for anything to read. */
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --ssh-password needs a value")
-				return 1
-			}
-			i++
-			sshPassword = args[i]
-		case "--btrfs":
-			yes := true
-			override.BtrfsMode = &yes
-		case "--rsync":
-			no := false
-			override.BtrfsMode = &no
-
-		// ---- recovery options ----
-
-		case "--recovery-target":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --recovery-target needs a target")
-				return 1
-			}
-			i++
-			recoveryTarget = args[i]
-		case "--recovery-size":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --recovery-size needs a size")
-				return 1
-			}
-			i++
-			recoverySize = args[i]
-
-		// ---- verbosity ----
-
-		case "--debug":
-			verbosity = 2
-		case "--verbose":
-			verbosity = 1
-		case "--quiet":
-			verbosity = -1
-
-		// ---- aliases the Vala CLI accepts ----
-
-		case "--grub":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --grub needs a device")
-				return 1
-			}
-			i++
-			restoreOpts.GrubDevice = args[i]
-		case "--target-device":
-			if i+1 >= len(args) {
-				fmt.Fprintln(os.Stderr, "timeshift: --target-device needs a device")
-				return 1
-			}
-			i++
-			restoreOpts.Target = args[i]
-
-		// ---- refused, with a reason ----
-
-		case "--clone":
-			/* --clone mirrors the RUNNING system onto another device with no
-			 * snapshot involved. The Go restore has no equivalent: every path
-			 * through it starts from a snapshot. Saying so beats accepting the
-			 * flag and doing something else. */
-			fmt.Fprintln(os.Stderr,
-				"timeshift: --clone is not implemented here; use the Vala binary at /usr/bin/timeshift")
-			return 1
-
-		case "--backup", "--backup-now":
-			// Deprecated in the Vala CLI too, and an error there as well.
-			fmt.Fprintf(os.Stderr,
-				"timeshift: %s was removed; use --check for a scheduled snapshot or --create for one now\n",
-				args[i])
-			return 1
-
-		default:
-			fmt.Fprintf(os.Stderr, "timeshift: unrecognised option %q\n", args[i])
-			return 1
 		}
+	}
+
+	o, err := parseArgs(args)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
+		return 1
+	}
+
+	mode := o.mode
+	configPath := o.configPath
+	socket := o.socket
+	scripted := o.scripted
+	comments := o.comments
+	jobID := o.jobID
+	verbosity := o.verbosity
+	tags := o.tags
+	names := o.names
+	restoreOpts := o.restore
+	sshPassword := o.sshPassword
+	recoveryTarget := o.recoveryTarget
+	recoverySize := o.recoverySize
+
+	override := ipc.LocationOverride{
+		Device:    o.override.Device,
+		URL:       o.override.URL,
+		KeyFile:   o.override.KeyFile,
+		Port:      o.override.Port,
+		BtrfsMode: o.override.BtrfsMode,
 	}
 
 	if mode == "" {
@@ -479,68 +259,8 @@ func run(args []string) int {
 	return 1
 }
 
-func help() string {
-	return fmt.Sprintf(`
-Timeshift %s
-
-Syntax: timeshift [options]
-
-Options:
-
-  --create          Take a snapshot now
-  --check           Take a scheduled snapshot if one is due
-  --watch           Watch the snapshot already running
-  --cancel          Stop the running job (or --job ID)
-  --estimate        Measure the system size
-  --delete          Delete a snapshot (with --snapshot NAME)
-  --restore         Restore a snapshot (with --snapshot NAME)
-  --target DEVICE   Device to restore the root filesystem to
-  --mount MP=DEV    Device for another mount point, e.g. /home=/dev/sda3
-  --current-system  Restore over the running system (destructive)
-  --dry-run         Compare only; change nothing
-  --skip-grub       Do not reinstall the bootloader
-  --grub-device DEV Install the bootloader here
-  --yes, -y         Do not ask for confirmation
-  --delete-all      Delete every snapshot
-  --list            List snapshots
-  --list-devices    List available devices
-  --schedule-status Report when the scheduler last ran
-  --tags LETTERS    Retention levels for --create: O B H D W M
-  --comments TEXT   Description for --create
-  --snapshot NAME   Snapshot to act on
-  --job ID          Job to watch
-  --scripted        No progress bar; for unattended use
-  --verbose         More detail
-  --quiet           No progress output
-  --debug           Print what this client is doing
-
-Location (for this run only; nothing is saved):
-  --snapshot-device DEVICE   Use this device instead of the configured one
-  --snapshot-url URL         Use a remote location (user@host:/path)
-  --ssh-key FILE             SSH private key for the remote location
-  --ssh-port PORT            SSH port for the remote location
-  --btrfs                    Read the repository in BTRFS mode
-  --rsync                    Read the repository in RSYNC mode
-
-Remote setup:
-  --setup-ssh-key   Set up key-based login for the remote location
-  --ssh-password P  Password for --setup-ssh-key, when there is no terminal
-
-Recovery environment:
-  --recovery-status   Show the press-R recovery environment status
-  --recovery-enable   Restore the recovery boot entry
-  --recovery-disable  Remove the boot entry, keep the payload
-  --recovery-install  Build and install the environment
-  --recovery-target T Target for --recovery-install
-  --recovery-size S   Partition size for --recovery-install
-
-Global:
-  --socket PATH     Daemon socket (default %s)
-  --config PATH     Path to timeshift.json (default %s)
-  --help, -h        Show all options
-  --version         Print version number
-`, version, ipc.SocketPath, config.SystemPath)
-}
+// help is --help, generated from the flag table so the two cannot disagree.
+func help() string { return helpText(version) }
 
 // listSnapshotsCmd wires the config to the engine and prints the listing.
 func listSnapshotsCmd(ctx context.Context, configPath string, runner sysexec.Simple, ov *ipc.LocationOverride) (bool, error) {

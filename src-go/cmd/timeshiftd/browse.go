@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/makeafide/timeshift/src-go/internal/engines"
+	tsengine "github.com/makeafide/timeshift/src-go/internal/engines/timeshift"
 	"github.com/makeafide/timeshift/src-go/internal/ipc"
 )
 
@@ -83,13 +84,16 @@ func (d *daemon) snapshotsBrowseRelease(ctx context.Context, _ *ipc.Conn, params
 			"%s is not a browse mount this daemon made", in.Path)
 	}
 
-	repo, _, _, err := d.openRepo(ctx)
-	if err != nil {
-		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
-	}
-	defer repo.Close()
-
-	if err := repo.ReleaseBrowse(ctx, clean); err != nil {
+	/* Released without opening the repository.
+	 *
+	 * Unmounting needs a runner and a path; it does not need a connection, a
+	 * backend, or the repository device mounted. Opening one here meant that
+	 * unplugging the disk a snapshot was being browsed from made the release
+	 * fail -- so the mount could never be cleaned up, in precisely the case
+	 * that produces it. The path is already confined to <run>/browse/ by
+	 * browseReleasePath above, which is what makes this safe to do directly.
+	 */
+	if err := tsengine.ReleaseBrowseMount(ctx, d.runner, clean); err != nil {
 		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
 	}
 	d.log.Info("browse mount released", "path", clean)

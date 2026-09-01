@@ -85,17 +85,37 @@ func (r *Repo) Browse(ctx context.Context, snapshotPath string, asUID, asGID int
 
 // ReleaseBrowse unmounts a browse mount this package made.
 func (r *Repo) ReleaseBrowse(ctx context.Context, mountPoint string) error {
+	return ReleaseBrowseMount(ctx, r.Deps.Runner, mountPoint)
+}
+
+/* ReleaseBrowseMount unmounts a browse mount without a repository.
+ *
+ * Releasing needs a runner and a path and nothing else -- no backend, no
+ * connection, no mounted repository. Requiring an open repository for it was a
+ * real trap: for a local location Open MOUNTS the repository device, so
+ * unplugging the disk a snapshot was being browsed from made Open fail, and
+ * the browse mount could then never be released at all. Which is exactly the
+ * situation browsing a removable disk creates.
+ */
+func ReleaseBrowseMount(ctx context.Context, runner engines.Runner, mountPoint string) error {
+	/* Nothing mounted, nothing to unmount -- and no runner needed to say so.
+	 * Checked before the runner, because a caller cleaning up a path that was
+	 * never mounted (a local repository never mounts one) is the common case
+	 * and must not require a command runner it has no use for. */
 	if !isMountPoint(mountPoint) {
 		os.Remove(mountPoint) // empty, harmless; a non-empty one is refused
 		return nil
 	}
+	if runner == nil {
+		return fmt.Errorf("timeshift: no command runner")
+	}
 	/* fusermount rather than umount: an sshfs mount made by root still belongs
 	 * to FUSE, and umount(8) on a fuse mount works only for root anyway. Using
 	 * the same tool that mounted it keeps the two symmetrical. */
-	if code, _, stderr, err := r.Deps.Runner.Run(ctx, []string{"fusermount", "-u", mountPoint}, ""); err != nil {
+	if code, _, stderr, err := runner.Run(ctx, []string{"fusermount", "-u", mountPoint}, ""); err != nil {
 		return err
 	} else if code != 0 {
-		if code2, _, _, _ := r.Deps.Runner.Run(ctx, []string{"umount", mountPoint}, ""); code2 != 0 {
+		if code2, _, _, _ := runner.Run(ctx, []string{"umount", mountPoint}, ""); code2 != 0 {
 			return fmt.Errorf("timeshift: could not release %s: %s", mountPoint, strings.TrimSpace(stderr))
 		}
 	}

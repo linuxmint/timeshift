@@ -86,7 +86,12 @@ func TestHelpAndVersionExitZero(t *testing.T) {
  * this breaks the package build, not just the man page. */
 func TestHelpStaysHelp2ManShaped(t *testing.T) {
 	stdout, _ := capture(t, func() { run([]string{"--help"}) })
-	for _, want := range []string{"Timeshift", "Syntax:", "Options:", "--restore", "--list"} {
+	/* "Usage:", not "Syntax:".
+	 *
+	 * help2man looks for a line beginning "Usage:" to build the SYNOPSIS
+	 * section; "Syntax:", which both this and the Vala CLI used to print,
+	 * means nothing to it and was rendered as an ordinary paragraph. */
+	for _, want := range []string{"Timeshift", "Usage:", "Options:", "--restore", "--list"} {
 		if !strings.Contains(stdout, want) {
 			t.Errorf("--help is missing %q", want)
 		}
@@ -226,8 +231,13 @@ func TestCloneIsRefusedRatherThanReinterpreted(t *testing.T) {
 	if !strings.Contains(stderr, "not implemented") {
 		t.Errorf("stderr = %q, want a clear refusal", stderr)
 	}
-	// And it must point somewhere useful rather than just saying no.
-	if !strings.Contains(stderr, "/usr/bin/timeshift") {
+	/* And it must point somewhere useful rather than just saying no.
+	 *
+	 * It used to name the Vala binary at /usr/bin/timeshift. That advice stops
+	 * being advice the moment this binary owns that path -- it would tell the
+	 * reader to run the program that just refused them -- so it names the
+	 * replacement flags instead. */
+	if !strings.Contains(stderr, "--restore") {
 		t.Errorf("the refusal did not say what to use instead: %q", stderr)
 	}
 }
