@@ -1,4 +1,11 @@
 # Shared helpers for timeshift-recovery. Sourced, never executed.
+#
+# shellcheck shell=sh
+# shellcheck disable=SC2034
+#
+# SC2034 ("appears unused") is disabled for the file, not sprinkled: defining
+# variables for the scripts that source this one is what it is FOR, so every
+# definition here looks unused when the file is linted on its own.
 # POSIX sh: this runs from a dpkg trigger and a systemd unit as well as a shell.
 
 CONFIG=${TSR_CONFIG:-/etc/timeshift-recovery/config}
@@ -375,6 +382,11 @@ render_splash() { # width height outfile
 	_logo="${TSR_LIBDIR:-$LIBDIR}/logo.png"
 	[ -r "$_logo" ] || return 1
 
+	# shellcheck disable=SC2046
+	#
+	# The word splitting is the point: awk prints six integers and they become
+	# $4..$9 below. Quoting would make them one argument and break every
+	# geometry that follows.
 	set -- "$1" "$2" "$3" $(awk -v h="$2" 'BEGIN {
 		s = h / 1080
 		printf "%d %d %d %d %d %d", int(128*s), int(110*s), int(42*s), int(40*s), int(24*s), int(100*s)

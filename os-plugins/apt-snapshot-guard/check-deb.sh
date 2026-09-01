@@ -59,6 +59,25 @@ if dpkg-deb -x "$DEB" "$TMPD" 2>/dev/null; then
 	sh -n "$TMPD/etc/apt-snapshot-guard/config" 2>/dev/null \
 		&& ok "sh -n: etc/apt-snapshot-guard/config" \
 		|| bad "SYNTAX ERROR: etc/apt-snapshot-guard/config"
+
+	# The apt snippet must name a hook this package actually ships, and must
+	# guard the call.
+	#
+	# The snippet is a conffile and the hook is not, so `apt remove` deletes the
+	# hook and leaves the snippet behind. Without the `test -x` guard every
+	# later apt run executes a missing command, gets 127 and aborts -- including
+	# the reinstall that would fix it. That is not recoverable with apt.
+	SNIP=$TMPD/etc/apt/apt.conf.d/05snapshot-guard
+	HOOK=$(sed -n 's/.*|| \(\/[^"]*\)".*/\1/p' "$SNIP" | head -n1)
+	if [ -n "$HOOK" ]; then
+		ok "apt snippet guards the call"
+		# Strip the leading / to compare against the extracted tree.
+		[ -e "$TMPD/${HOOK#/}" ] \
+			&& ok "apt snippet points at a shipped file: $HOOK" \
+			|| bad "apt snippet names $HOOK, which this package does not ship"
+	else
+		bad "apt snippet does not guard the hook -- 'apt remove' would break apt permanently"
+	fi
 fi
 
 # Control metadata.

@@ -412,6 +412,8 @@ cmd_status() {
 	# predictive config heuristics.
 	_e_ssh=""; _e_wifi=""; _e_ts=""
 	if [ -r "$CACHE/build-info" ]; then
+		# shellcheck disable=SC2046,SC1091
+		# Intended splitting: the subshell prints three fields for $1..$3.
 		set -- $( . "$CACHE/build-info" 2>/dev/null; \
 			printf '%s %s %s' "${EMBED_SSH_KEY:--}" "${EMBED_WIFI_CREDS:--}" "${EMBED_TAILSCALE_STATE:--}" )
 		_e_ssh=${1:--}; _e_wifi=${2:--}; _e_ts=${3:--}

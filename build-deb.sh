@@ -84,6 +84,17 @@ rollback() {
 	exit 1
 }
 
+# Everything that can be checked before spending a build on it.
+#
+# Before the package, so a failing tree costs seconds rather than minutes, and
+# so a release cannot be cut from one. NO_VERIFY=1 is the escape hatch for
+# working on the build itself.
+if [ "${NO_VERIFY:-0}" != "1" ]; then
+	echo "==> verifying the tree"
+	sh verify.sh || rollback
+	echo
+fi
+
 echo "==> building $package $version"
 dpkg-buildpackage -b -us -uc || rollback
 

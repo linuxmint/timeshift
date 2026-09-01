@@ -9,4 +9,21 @@
 // Pure metadata refreshes (`apt update`) use APT::Update::Pre-Invoke and are
 // deliberately NOT hooked here -- no packages change. Simulations (-s) and
 // --download-only never reach dpkg, so they never trigger a snapshot.
-DPkg::Pre-Invoke { "/usr/lib/apt-snapshot-guard/pre-invoke"; };
+
+// The `test -x || ...` is load-bearing, not defensive habit.
+//
+// This file is a CONFFILE and the hook it names is not. dpkg deletes conffiles
+// on purge, never on remove -- so `apt remove apt-snapshot-guard` deletes
+// /usr/lib/apt-snapshot-guard/pre-invoke and leaves this line pointing at it.
+// Every later apt run would then execute a missing command, get 127, and abort:
+//
+//   E: Problem executing scripts DPkg::Pre-Invoke
+//
+// including the reinstall that would have fixed it. The only ways out are
+// editing this file by hand or `dpkg -P`, which is a poor thing to discover
+// when your package manager has already stopped working.
+//
+// Guarding the call fixes it without a maintainer script -- and this package
+// deliberately has none, an invariant check-deb.sh enforces so that nothing
+// here can ever touch /etc/timeshift, where the SSH keys live.
+DPkg::Pre-Invoke { "test ! -x /usr/lib/apt-snapshot-guard/pre-invoke || /usr/lib/apt-snapshot-guard/pre-invoke"; };

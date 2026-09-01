@@ -54,3 +54,26 @@ TAGS=O
 # old behaviour, in which the snapshot runs as a private process that nothing
 # else can see into.
 #USE_DAEMON=1
+
+# --- environment-only overrides ---------------------------------------------
+#
+# Not settings so much as test hooks; both have sensible defaults and neither
+# normally needs changing.
+#
+#   TS_CLIENT   the daemon client to run    (default /usr/libexec/timeshift/timeshift)
+#   TS_SOCKET   the daemon socket to use    (default /run/timeshift/daemon.sock)
+#
+# Setting TS_CLIENT to a stub and USE_DAEMON=0 is how the fallback path can be
+# exercised without a daemon.
+
+# --- a note on 0 --------------------------------------------------------------
+#
+# 0 does NOT mean the same thing to every knob above, so it is spelled out:
+#
+#   TIMEOUT=0             no limit on the snapshot -- but flock also gets 0,
+#                         which means "fail immediately if another apt run holds
+#                         the lock". Not recommended; this hook blocks dpkg.
+#   PROMPT_TIMEOUT=0      the terminal prompt returns instantly with no input,
+#                         which counts as "no" -- so it ABORTS immediately.
+#   GUI_PROMPT_TIMEOUT=0  the dialog waits indefinitely, bounded only by the
+#                         hook's own outer cap of 300s.

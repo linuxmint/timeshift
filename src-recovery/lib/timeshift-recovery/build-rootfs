@@ -179,6 +179,10 @@ if [ -n "${TIMESHIFT_DEB:-}" ]; then
 else
 	# set always succeeds, so the emptiness check below is what actually
 	# catches "no timeshift installed".
+	#
+	# shellcheck disable=SC2046
+	# The word splitting is intended: host_timeshift_pkg prints "name version"
+	# and those become $1 and $2.
 	set -- $(host_timeshift_pkg)
 	TS_PACKAGE=${1:-}
 	TS_VERSION=${2:-}

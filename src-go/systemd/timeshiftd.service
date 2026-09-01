@@ -61,3 +61,8 @@ RuntimeDirectoryPreserve=yes
 
 [Install]
 WantedBy=multi-user.target
+# Enabling the service enables the socket with it, so a machine where the
+# daemon is stopped or has crashed can still be reached: connecting to the
+# socket starts it. apt-snapshot-guard depends on that -- it is fail-closed and
+# blocks dpkg, and it can only use the daemon when the socket is there.
+Also=timeshiftd.socket

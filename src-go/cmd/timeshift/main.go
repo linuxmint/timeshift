@@ -98,6 +98,8 @@ func run(args []string) int {
 			mode = "create"
 		case "--watch":
 			mode = "watch"
+		case "--cancel":
+			mode = "cancel"
 		case "--estimate":
 			mode = "estimate"
 		case "--delete":
@@ -376,6 +378,9 @@ func run(args []string) int {
 	case "watch":
 		return runWatch(socket, jobID, scripted)
 
+	case "cancel":
+		return runCancel(socket, jobID)
+
 	case "estimate":
 		return runEstimate(socket, scripted)
 
@@ -474,6 +479,7 @@ Options:
   --create          Take a snapshot now
   --check           Take a scheduled snapshot if one is due
   --watch           Watch the snapshot already running
+  --cancel          Stop the running job (or --job ID)
   --estimate        Measure the system size
   --delete          Delete a snapshot (with --snapshot NAME)
   --restore         Restore a snapshot (with --snapshot NAME)

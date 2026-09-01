@@ -312,3 +312,44 @@ func runEstimate(socket string, scripted bool) int {
 	}
 	return 0
 }
+
+/* runCancel stops a running job.
+ *
+ * It exists because killing this client does NOT stop the work: a job belongs
+ * to the daemon and deliberately outlives every client watching it, which is
+ * what lets apt-snapshot-guard hand a snapshot off and lets a GUI window close
+ * without abandoning it. The consequence is that a caller which gives up --
+ * apt-snapshot-guard hitting its timeout, say -- leaves a snapshot still
+ * running and still holding the repository write lock, with no way to say so.
+ * This is that way.
+ */
+func runCancel(socket, jobID string) int {
+	c, err := connect(socket)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
+		return 1
+	}
+	defer c.Close()
+
+	/* No --job means "whatever is running now", which is what a caller
+	 * cleaning up after itself almost always means. */
+	if jobID == "" {
+		var info ipc.SystemInfo
+		if err := c.Call(ipc.MethodSystemInfo, nil, &info); err != nil {
+			fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
+			return 1
+		}
+		if info.ActiveJob == "" {
+			fmt.Println("No job is running.")
+			return 0
+		}
+		jobID = info.ActiveJob
+	}
+
+	if err := c.Call(ipc.MethodJobsCancel, ipc.JobRefParams{Job: jobID}, nil); err != nil {
+		fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
+		return 1
+	}
+	fmt.Printf("Cancelled %s.\n", jobID)
+	return 0
+}

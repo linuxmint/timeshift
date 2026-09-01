@@ -13,12 +13,22 @@
 
 set -u
 
-CONFIG=/etc/apt-snapshot-guard/config
-LOG=/var/log/apt-snapshot-guard.log
-STAMP=/run/apt-snapshot-guard.last
-LOCK=/run/apt-snapshot-guard.lock
-BYPASS=/run/apt-snapshot-guard.bypass
-GUIHELPER=/usr/lib/apt-snapshot-guard/gui-prompt
+# Overridable so the hook can be tested at all.
+#
+# apt sets none of these, so in production every one is the default below. They
+# exist because the alternative is that the only way to exercise a fail-closed
+# hook that blocks dpkg is to run it as root against the real config, the real
+# log and the real snapshot repository -- which is how a test run of this file
+# put a stray snapshot in a live backup repository once.
+#
+# Root-only paths either way: apt runs this as root, and /run and
+# /var/log are not writable by anyone else.
+CONFIG=${ASG_CONFIG:-/etc/apt-snapshot-guard/config}
+LOG=${ASG_LOG:-/var/log/apt-snapshot-guard.log}
+STAMP=${ASG_STAMP:-/run/apt-snapshot-guard.last}
+LOCK=${ASG_LOCK:-/run/apt-snapshot-guard.lock}
+BYPASS=${ASG_BYPASS:-/run/apt-snapshot-guard.bypass}
+GUIHELPER=${ASG_GUIHELPER:-/usr/lib/apt-snapshot-guard/gui-prompt}
 
 # --- defaults (overridable via $CONFIG) --------------------------------------
 ENABLED=1              # 0 disables the guard entirely
@@ -29,6 +39,10 @@ GUI_PROMPT=1          # 1 = offer a graphical bypass for GUI updater / PackageKi
 GUI_PROMPT_TIMEOUT=120 # seconds; unanswered graphical dialog aborts (0 = wait)
 TAGS=O                # Timeshift tag for guard snapshots (O = on-demand)
 
+# shellcheck source=/dev/null
+# $CONFIG is a variable so tests can point it elsewhere, which means the linter
+# cannot follow it. There is nothing to follow anyway: the file is site
+# configuration and is not shipped with a known content.
 [ -r "$CONFIG" ] && . "$CONFIG"
 
 # Master off switch (config, or APT_SNAPSHOT_GUARD=off in a root environment).
@@ -44,17 +58,50 @@ TIMEOUT=$(num_or "$TIMEOUT" 900)
 PROMPT_TIMEOUT=$(num_or "$PROMPT_TIMEOUT" 60)
 GUI_PROMPT_TIMEOUT=$(num_or "$GUI_PROMPT_TIMEOUT" 120)
 
+# The switches get the same treatment, and they need it more.
+#
+# ENABLED is tested with [ "$ENABLED" = "1" ], so ENABLED=true, ENABLED=yes or
+# a stray trailing space used to disable the entire guard -- silently, with no
+# log line, and permanently. That is the one setting where a typo must not fail
+# open. Anything that is recognisably "on" is treated as on; anything
+# recognisably "off" as off; anything else keeps the default and says so.
+bool_or() {
+	case "${1:-}" in
+		1|true|TRUE|True|yes|YES|Yes|on|ON|On)    echo 1 ;;
+		0|false|FALSE|False|no|NO|No|off|OFF|Off) echo 0 ;;
+		*) echo "$2" ;;
+	esac
+}
+
 log() {
 	# to the logfile (best effort) and to apt's stderr
 	printf '%s apt-snapshot-guard: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >>"$LOG" 2>/dev/null
 	printf 'apt-snapshot-guard: %s\n' "$*" >&2
 }
 
+_enabled=$(bool_or "$ENABLED" invalid)
+if [ "$_enabled" = "invalid" ]; then
+	log "WARNING: ENABLED=\"$ENABLED\" in $CONFIG is not a yes/no value; keeping the guard ON."
+	ENABLED=1
+else
+	ENABLED=$_enabled
+fi
+_gui=$(bool_or "$GUI_PROMPT" invalid)
+if [ "$_gui" = "invalid" ]; then
+	log "WARNING: GUI_PROMPT=\"$GUI_PROMPT\" in $CONFIG is not a yes/no value; keeping it ON."
+	GUI_PROMPT=1
+else
+	GUI_PROMPT=$_gui
+fi
+
 # Fail-closed decision when the snapshot could not be created.
 # Prompts on a controlling terminal; otherwise aborts.
 snapshot_failed() {
 	log "$1"
-	if [ -e /dev/tty ] && { : >/dev/tty; } 2>/dev/null; then
+	# >> not >: on a real tty either is harmless, but where /dev/tty is a
+	# regular-file stub (chroots, containers, some build images) the O_TRUNC
+	# from > destroys it just to ask whether it is writable.
+	if [ -e /dev/tty ] && { : >>/dev/tty; } 2>/dev/null; then
 		{
 			printf '\n'
 			printf 'apt-snapshot-guard: the pre-change Timeshift snapshot FAILED.\n'
@@ -83,7 +130,20 @@ snapshot_failed() {
 			if [ "$GUI_PROMPT" = "1" ] && [ -x "$GUIHELPER" ]; then
 				log "no terminal; asking the desktop user graphically (${frontend})."
 				reason="A software update wants to ${operation:-change packages} via ${frontend}."
-				if "$GUIHELPER" "$reason" "$GUI_PROMPT_TIMEOUT" >>"$LOG" 2>&1; then
+				# Bounded from the outside as well as the inside.
+				#
+				# The helper passes GUI_PROMPT_TIMEOUT to zenity, but that only
+				# helps once zenity is up: a hung D-Bus, a dead compositor or a
+				# PAM stall in runuser leaves the dialog never drawn and the
+				# hook waiting forever -- with apt holding /var/lib/dpkg/lock
+				# the whole time. GUI_PROMPT_TIMEOUT=0 is documented as "wait
+				# indefinitely", which made that the default behaviour.
+				#
+				# The outer cap is deliberately looser than the inner one so a
+				# working dialog still expires on its own terms.
+				_gui_cap=$(( GUI_PROMPT_TIMEOUT + 30 ))
+				[ "$GUI_PROMPT_TIMEOUT" -eq 0 ] && _gui_cap=300
+				if timeout "$_gui_cap" "$GUIHELPER" "$reason" "$GUI_PROMPT_TIMEOUT" >>"$LOG" 2>&1; then
 					log "user chose to continue without a restore point (GUI)."
 					exit 0
 				fi
@@ -106,8 +166,31 @@ snapshot_failed() {
 # Lets the user deliberately proceed without a snapshot for a single run.
 if [ -e "$BYPASS" ]; then
 	rm -f "$BYPASS" 2>/dev/null
-	log "bypass flag present -- skipping snapshot for this run (flag consumed)."
-	exit 0
+
+	# A flag that survives the rm is NOT permission to skip.
+	#
+	# rm can fail -- a read-only or full /run, or the flag made immutable --
+	# and the discarded status used to mean the guard logged "flag consumed"
+	# and then skipped the snapshot on every apt run from then on, silently and
+	# permanently. One-shot has to mean one shot.
+	#
+	# Falling through to take the snapshot, rather than aborting: the bypass
+	# exists so a person can get past a FAILING snapshot, and refusing the apt
+	# run outright would be a harsher answer than the one they asked for. Try
+	# the snapshot instead. If it succeeds, apt proceeds and nothing was lost;
+	# if it fails, the normal fail-closed prompt is there, and the flag they
+	# already set is still on disk for the retry.
+	if [ -e "$BYPASS" ]; then
+		log "WARNING: could not consume ${BYPASS} -- taking the snapshot instead of skipping it."
+	else
+		# Stamped like a real snapshot: one apt transaction can invoke dpkg
+		# more than once, and without this the bypass covers only the FIRST
+		# invocation -- 2..N would try to snapshot a system that is already
+		# half-unpacked, and a failure there aborts apt mid-transaction.
+		date +%s > "$STAMP" 2>/dev/null
+		log "bypass flag present -- skipping snapshot for this run (flag consumed)."
+		exit 0
+	fi
 fi
 
 # --- dedupe: one guard snapshot per WINDOW seconds ---------------------------
@@ -215,17 +298,44 @@ fi
 # time, and a second --create attaches to the running one rather than queueing
 # a duplicate -- but it is kept for a release so the fallback path and the
 # daemon path serialise the same way.
+# TIMEOUT is the TOTAL budget, not a per-step one.
+#
+# Waiting for the lock and taking the snapshot each used to get the full
+# TIMEOUT, so the real worst case was double what the config said -- half an
+# hour of apt sitting on /var/lib/dpkg/lock at the default. What an
+# administrator sets here is how long a package operation may stall, so the
+# lock wait is deducted from the snapshot's share rather than added to it.
+#
+# A floor of 30s: arriving at the snapshot with one second left would turn a
+# lock wait into a guaranteed timeout, which reads as a snapshot failure and
+# blocks apt for a reason that has nothing to do with snapshots.
+remaining_budget() {
+	_elapsed=$(( $(date +%s) - started ))
+	_left=$(( TIMEOUT - _elapsed ))
+	[ "$_left" -lt 30 ] && _left=30
+	echo "$_left"
+}
+
 run_snapshot() {
+	_budget=$(remaining_budget)
 	if [ "$use_daemon" = "1" ]; then
-		timeout "$TIMEOUT" "$TS_CLIENT" --socket "$TS_SOCKET" \
+		timeout "$_budget" "$TS_CLIENT" --socket "$TS_SOCKET" \
 			--create --scripted \
 			--tags "$TAGS" --comments "$comment" >>"$LOG" 2>&1
 	else
-		timeout "$TIMEOUT" timeshift --create --scripted \
+		timeout "$_budget" timeshift --create --scripted \
 			--tags "$TAGS" --comments "$comment" >>"$LOG" 2>&1
 	fi
 }
 
+# timeout(1) is as load-bearing as flock(1) and was the only one not checked.
+# Without it every run exits 127 and NO apt operation can ever succeed, while
+# the log blames timeshift for a coreutils problem.
+if ! command -v timeout >/dev/null 2>&1; then
+	snapshot_failed "timeout(1) not found; cannot bound the snapshot (install coreutils)."
+fi
+
+started=$(date +%s)
 rc=0
 if command -v flock >/dev/null 2>&1; then
 	# subshell so the fd/flock scope is tidy
@@ -238,6 +348,61 @@ else
 	rc=$?
 fi
 
+# A timeout on the daemon path leaves the job RUNNING.
+#
+# The two branches mean different things by the same exit code. On the PATH
+# branch timeout(1) SIGTERMs timeshift and the work stops. On the daemon branch
+# it kills only this client -- the job belongs to timeshiftd and deliberately
+# outlives whoever was watching, which is the whole point of the daemon. So
+# giving up here used to abort apt while a snapshot carried on writing and
+# holding the repository write lock, and the next apt run would then wait on
+# that lock for its own full budget. Observed: apt refused, rsync still running
+# twenty minutes later.
+#
+# Cancelling is best effort. If it fails the snapshot is still running, which
+# is not a reason to do anything different -- the outcome for apt is the same
+# either way, and the log says which happened.
+# A daemon that answers UNUSABLY is not a snapshot failure.
+#
+# The comment on TS_CLIENT above says this hook "must never depend on the
+# daemon being up". It did: the socket file existing was the whole test, and
+# after that there was no way back to the PATH binary. So a daemon that was
+# merely busy (the queue is two deep), refusing a live session, or -- routinely
+# -- speaking a different protocol version because the package was upgraded and
+# the running service has not restarted yet, blocked EVERY apt operation on the
+# machine until someone noticed and restarted a service.
+#
+# None of those mean "the system could not be snapshotted". They mean "not by
+# that route". Exit 1 covers all of them plus genuine failures, so the retry is
+# unconditional on the daemon path and cheap: if the PATH binary fails too, the
+# original fail-closed policy applies exactly as before.
+#
+# Deliberately NOT retried on 124: a timeout means the snapshot was running and
+# taking too long, and starting a second one would double the wait that already
+# expired.
+if [ "$rc" -ne 0 ] && [ "$rc" -ne 124 ] && [ "$use_daemon" = "1" ] \
+	&& command -v timeshift >/dev/null 2>&1; then
+	log "the service could not take the snapshot (exit $rc); retrying with the timeshift on PATH."
+	use_daemon=0
+	if command -v flock >/dev/null 2>&1; then
+		( flock -w 30 9 || exit 75; run_snapshot ) 9>"$LOCK"
+		rc=$?
+	else
+		run_snapshot
+		rc=$?
+	fi
+	[ "$rc" -eq 0 ] && log "the fallback snapshot succeeded."
+fi
+
+if [ "$rc" = "124" ] && [ "$use_daemon" = "1" ]; then
+	log "the snapshot exceeded ${TIMEOUT}s; asking the service to cancel it."
+	if timeout 30 "$TS_CLIENT" --socket "$TS_SOCKET" --cancel >>"$LOG" 2>&1; then
+		log "cancelled the running snapshot."
+	else
+		log "WARNING: could not cancel it; a snapshot may still be running."
+	fi
+fi
+
 if [ "$rc" -ne 0 ]; then
 	snapshot_failed "timeshift --create exited $rc."
 fi
@@ -245,6 +410,11 @@ fi
 # Stamped NOW, not with the pre-snapshot time: a snapshot that takes longer
 # than WINDOW would otherwise re-open the window it just closed, and the next
 # dpkg invocation in the same transaction would snapshot again.
-date +%s > "$STAMP" 2>/dev/null
+if ! date +%s > "$STAMP" 2>/dev/null; then
+	# Not fatal -- the snapshot exists and apt should proceed. But without the
+	# stamp the dedupe never engages, so every dpkg invocation in a split
+	# transaction takes another full snapshot, and nothing would say why.
+	log "WARNING: could not write ${STAMP}; the per-transaction dedupe is off."
+fi
 log "snapshot complete; proceeding with apt."
 exit 0

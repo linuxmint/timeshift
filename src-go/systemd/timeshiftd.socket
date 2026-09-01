@@ -1,0 +1,31 @@
+[Unit]
+Description=Timeshift core daemon socket
+Documentation=man:timeshift(1)
+
+[Socket]
+# The same path the clients and both cores compile in
+# (internal/ipc/protocol.go, src/Core/DaemonClient.vala).
+ListenStream=/run/timeshift/daemon.sock
+
+# 0660 root:timeshift, matching what the daemon sets for itself.
+#
+# Access is decided by SO_PEERCRED once a call arrives, but the mode is what
+# refuses a non-member at connect(2) -- before any method runs.
+SocketMode=0660
+SocketUser=root
+SocketGroup=timeshift
+
+# systemd owns /run/timeshift while socket-activated, and must not remove it.
+#
+# That directory also holds repo.lock -- the flock(2) both cores take around a
+# repository write -- and /run/timeshift/<pid>/ mount points belonging to other
+# processes. Deleting the lock file releases nobody's flock: the holder keeps it
+# on an unnamed inode and the next acquirer locks a fresh one, so mutual
+# exclusion disappears with nothing to indicate it.
+RuntimeDirectory=timeshift
+RuntimeDirectoryMode=0755
+RuntimeDirectoryPreserve=yes
+RemoveOnStop=no
+
+[Install]
+WantedBy=sockets.target

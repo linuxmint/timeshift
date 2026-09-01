@@ -17,6 +17,12 @@
 #              loopback image it copies only the image.
 #
 # Invoked by timeshift-recovery; not intended to be run directly.
+# shellcheck disable=SC2034
+#
+# PAYLOAD_PATH is assigned in several branches here and consumed elsewhere:
+# common.sh writes it into the state file and sbin/timeshift-recovery reads it
+# back. It looks unused only because this file is linted on its own.
+
 set -eu
 
 . "${TSR_LIBDIR:-/usr/lib/timeshift-recovery}/common.sh"

@@ -57,5 +57,6 @@ timeshift_go = custom_target('timeshift-go',
 # is nothing to add in debian/ for this.
 install_data(
   'systemd/timeshiftd.service',
+  'systemd/timeshiftd.socket',
   install_dir : get_option('prefix') / 'lib/systemd/system',
 )

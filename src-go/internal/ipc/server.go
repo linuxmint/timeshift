@@ -49,7 +49,11 @@ type Server struct {
 	Log *slog.Logger
 
 	listener net.Listener
-	wg       sync.WaitGroup
+
+	// activated records that the listener came from systemd, which owns the
+	// socket file and must be the one to remove it.
+	activated bool
+	wg        sync.WaitGroup
 
 	mu     sync.Mutex
 	conns  map[*Conn]struct{}
@@ -82,6 +86,27 @@ func (s *Server) Listen() error {
 		s.Log = slog.New(slog.NewTextHandler(io.Discard, nil))
 	}
 	s.conns = map[*Conn]struct{}{}
+
+	/* Prefer a socket systemd already bound for us.
+	 *
+	 * Binding our own while systemd holds one at the same path would replace
+	 * the socket it is queueing connections on, and the connection that
+	 * triggered the activation would be dropped. systemd has also already
+	 * applied SocketMode/SocketUser/SocketGroup, so none of the mkdir, unlink,
+	 * umask, chown or chmod below applies -- doing any of it would be
+	 * second-guessing the unit file.
+	 */
+	if lns, err := ListenersFromSystemd(); err != nil {
+		return err
+	} else if len(lns) > 0 {
+		for _, extra := range lns[1:] {
+			extra.Close() // one socket unit, one listener
+		}
+		s.listener = lns[0]
+		s.activated = true
+		s.Log.Info("listening on a socket passed by systemd", "socket", s.Path)
+		return nil
+	}
 
 	if err := os.MkdirAll(filepath.Dir(s.Path), 0755); err != nil {
 		return fmt.Errorf("ipc: mkdir %s: %w", filepath.Dir(s.Path), err)
@@ -160,7 +185,17 @@ func (s *Server) Close() error {
 
 	// Safe now: `closed` is set, so Serve cannot start another handler.
 	s.wg.Wait()
-	os.Remove(s.Path)
+
+	/* The socket file is ours to remove only when we created it.
+	 *
+	 * Under socket activation systemd owns it and is still listening on its
+	 * own descriptor: unlinking it here would leave systemd holding a socket
+	 * with no name, so the next client would find nothing to connect to and
+	 * activation would never fire again -- until the socket unit was
+	 * restarted by hand. */
+	if !s.activated {
+		os.Remove(s.Path)
+	}
 	return nil
 }
 
