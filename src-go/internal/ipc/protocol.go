@@ -96,6 +96,8 @@ const (
 	MethodJobsGet         = "jobs.get"
 	MethodJobsSubscribe   = "jobs.subscribe"
 	MethodJobsCancel      = "jobs.cancel"
+	MethodJobsPause       = "jobs.pause"
+	MethodJobsResume      = "jobs.resume"
 )
 
 // SystemInfo answers system.info.

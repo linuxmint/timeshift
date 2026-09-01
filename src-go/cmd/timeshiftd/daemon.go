@@ -23,7 +23,7 @@ import (
 type daemon struct {
 	log        *slog.Logger
 	configPath string
-	runner     sysexec.Simple
+	runner     *pausableRunner
 	queue      *jobs.Queue
 	mountRoot  string
 	tempDir    string
@@ -41,7 +41,7 @@ func newDaemon(log *slog.Logger, configPath string, cfg config.Config) *daemon {
 		log:        log,
 		configPath: configPath,
 		cfg:        cfg,
-		runner:     sysexec.NewSimple(sysexec.New(log)),
+		runner:     newPausableRunner(sysexec.NewSimple(sysexec.New(log))),
 		// Depth 1 beyond the running job. apt-snapshot-guard blocks dpkg while
 		// it waits, so a queue that refuses is better than one that grows.
 		queue:     jobs.NewQueue(2),
@@ -149,6 +149,8 @@ func (d *daemon) methods() map[string]ipc.Method {
 		ipc.MethodScheduleStatus: {ReadOnly: true, Fn: d.scheduleStatus},
 
 		ipc.MethodJobsCancel:      {Fn: d.jobsCancel},
+		ipc.MethodJobsPause:       {Fn: d.jobsPause},
+		ipc.MethodJobsResume:      {Fn: d.jobsResume},
 		ipc.MethodSnapshotCreate:  {Fn: d.snapshotCreate},
 		ipc.MethodSnapshotDelete:  {Fn: d.snapshotDelete},
 		ipc.MethodEstimateRun:     {Fn: d.estimateRun},
@@ -332,6 +334,61 @@ func (d *daemon) jobsCancel(_ context.Context, _ *ipc.Conn, params json.RawMessa
 	}
 	job.Cancel()
 	return job.Snapshot(false), nil
+}
+
+/* jobs.pause and jobs.resume suspend the RUNNING job.
+ *
+ * Only the running one, and that is not a limitation to work around: the queue
+ * runs a single mutating job at a time, so a queued job has nothing to suspend,
+ * and pausing it would mean "do not start", which is a different thing that
+ * nobody has asked for. Refusing is clearer than inventing it.
+ *
+ * The job keeps the repository write lock while paused. It is mid-write, so
+ * that is the only correct answer -- but it does mean a job left paused blocks
+ * every other write, which is worth a client saying out loud.
+ */
+func (d *daemon) jobsPause(_ context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
+	job, err := d.runningJob(params)
+	if err != nil {
+		return nil, err
+	}
+	if err := d.runner.Pause(); err != nil {
+		return nil, ipc.Errf(ipc.CodeInternal, "could not suspend the job: %v", err)
+	}
+	job.Pause()
+	d.log.Info("job paused", "job", job.ID, "kind", job.Kind)
+	return job.Snapshot(false), nil
+}
+
+func (d *daemon) jobsResume(_ context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
+	job, err := d.runningJob(params)
+	if err != nil {
+		return nil, err
+	}
+	if err := d.runner.Resume(); err != nil {
+		return nil, ipc.Errf(ipc.CodeInternal, "could not resume the job: %v", err)
+	}
+	job.Resume()
+	d.log.Info("job resumed", "job", job.ID, "kind", job.Kind)
+	return job.Snapshot(false), nil
+}
+
+// runningJob resolves the job a pause or resume names, and insists it is the
+// one actually running.
+func (d *daemon) runningJob(params json.RawMessage) (*jobs.Job, error) {
+	var in ipc.JobRefParams
+	json.Unmarshal(params, &in)
+
+	job, err := d.queue.Get(in.Job)
+	if err != nil {
+		return nil, ipc.Errf(ipc.CodeNotFound, "%v", err)
+	}
+	active := d.queue.Active()
+	if active == nil || active.ID != job.ID {
+		return nil, ipc.Errf(ipc.CodeBadRequest,
+			"job %s is not the running job; only the running job can be paused", job.ID)
+	}
+	return job, nil
 }
 
 func (d *daemon) snapshotCreate(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
