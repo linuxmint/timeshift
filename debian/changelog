@@ -1,3 +1,17 @@
+timeshift-ssh (25.12.4+ssh34) resolute; urgency=medium
+
+  * Fix `timeshift --list` against an SSH repository: nothing created
+    /run/timeshift/<pid>, so ssh could not bind its control socket and the
+    listing reported the location as unavailable
+  * engines.Repository now carries the write path, so the daemon no longer
+    asserts its way back to the concrete engine type
+  * jobs.pause and jobs.resume actually suspend the work: SIGSTOP to the
+    whole process group, not just a flag
+  * snapshots.browse mounts a remote snapshot read-only with Timeshift's own
+    key and hands the path to the client, which opens it as the desktop user
+
+ -- makeafide <willsmit4433@gmail.com>  Mon, 31 Aug 2026 22:22:00 -0400
+
 timeshift-ssh (25.12.4+ssh33) resolute; urgency=medium
 
   * The Go core: timeshiftd owns the config, the job queue and the schedule,
