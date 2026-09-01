@@ -820,6 +820,72 @@ separate from the process so a job paused BETWEEN commands comes back
 suspended. Only the RUNNING job can be paused, and it keeps the write lock while
 paused — the only correct answer mid-write, and worth a client saying out loud.
 
+### The rsync transport must never carry `-n`
+
+`SSHBackend.SSHOptions(stdinUsed, noMux)` adds `-n` when nothing will write to
+ssh's stdin, which is right for `ssh host command` -- it stops ssh swallowing
+the caller's stdin. For **rsync's `-e` it is fatal**: stdin is the channel rsync
+talks to the remote over, so `-n` hands it `/dev/null`, the remote rsync gets
+nothing and exits, and both ends report
+
+```
+rsync: connection unexpectedly closed (0 bytes received so far)
+rsync error: error in rsync protocol data stream (code 12)
+```
+
+which reads like a network fault and is not one. Both RSH call sites pass
+`stdinUsed=true` and a test names the rule in each direction.
+
+This meant **the Go engine could list a remote repository but never write one**,
+and it went unnoticed because the write path was only ever verified against a
+local loopback, where there is no ssh. The snapshots on the development machine
+that looked like proof were taken by the Vala binary — their session logs are in
+Vala's format. When checking the write path, check it against a REMOTE.
+
+Related: `SSHBackend.Close()` must **not** run `ssh -O exit`. The ControlPath is
+derived from the run directory, so every repository handle in one daemon shares
+one master, and the daemon opens and closes a handle per request — a
+`repo.status` arriving during a backup would pull the connection out from under
+the rsync. `ControlPersist=60` bounds the master; `DropMaster` is the explicit
+lever for a wedged one.
+
+### The GUI shim (`src/Core/DaemonBridge.vala`)
+
+The GTK boxes do not observe anything, they **poll**: `BackupBox` reads
+`App.task.status_line`, `App.task.progress` and ten `App.task.count_*` fields
+from a loop on the main thread. So the fields stay and the *writer* changes.
+`DaemonBridge` subscribes to a job's event stream and fills an `RsyncTask` that
+is never executed — a bag of numbers — and every polling loop keeps working
+untouched, which is what lets the Vala core be removed method by method rather
+than in one step.
+
+Two things make it fit: events arrive on the **main loop** (`read_event_line` is
+async, and the polling loops already call `gtk_do_events()`), so there is no
+worker thread; and a job **outlives its watcher**, so the bridge detaches rather
+than cancelling — closing a window must not abandon a snapshot apt is waiting on.
+
+`MainWindow` mirrors any running daemon job with no interaction, but **only when
+nothing local is running**: a backup started in this process owns `App.task`, and
+replacing it underneath would blank the counters of the operation being watched.
+
+#### Testing the GUI
+
+`TIMESHIFT_KEEP_ENV=1` makes `setup_env()` leave the environment alone. It
+normally scavenges `DISPLAY`/`XAUTHORITY` from the invoking user's session,
+which is right under pkexec and makes the GUI untestable — a run under Xvfb has
+its `DISPLAY` replaced by the real one and **the window opens on the tester's
+screen**. With it:
+
+```sh
+Xvfb :99 -screen 0 1400x900x24 &
+sudo env TIMESHIFT_KEEP_ENV=1 DISPLAY=:99 GDK_BACKEND=x11 XAUTHORITY= \
+    ./build/src/timeshift-gtk --debug
+DISPLAY=:99 import -window root shot.png
+```
+
+There is no window manager on :99, so `xdotool` clicks are unreliable; drive the
+GUI by making the daemon do something and watching it react instead.
+
 ### The GUI as a client (`src/Core/DaemonClient.vala`)
 
 The GTK app still runs its own Vala core. What it gained is the ability to see
