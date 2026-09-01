@@ -422,54 +422,85 @@ wrote a `\r` progress line to stdout from inside the core *even under
 `--scripted`*, which is why `apt-snapshot-guard` redirects everything to its
 log. The core reports numbers; the client decides whether to draw them.
 
-### Restore (`internal/restore/`) -- NOT YET CLEARED FOR USE
+### Restore (`internal/restore/`)
 
-The restore path is implemented and unit-tested, but **no `--restore` command is
-wired up and none should be until it has been exercised in a VM**. It is the one
-path where a mistake destroys data rather than producing a wrong answer.
+`timeshift --restore` is wired up. It has been exercised end to end against a
+partitioned loopback target -- plan, dry run, full restore, fstab rewrite,
+chroot steps, unmount, fsck -- and the result was a clean filesystem whose fstab
+named the TARGET's uuids rather than the source machine's.
 
-What is there: the two script generators (`BuildSyncScript`,
-`BuildFinishScript`), the marker protocol and its `Tracker`, the layout-safety
-cluster, and fstab/crypttab rewriting.
+**Still not done in a VM, and that is the remaining gate**: a restore of the
+RUNNING system, and a btrfs restore. Both differ from what has been tested in
+ways that matter -- the first has no chroot and ends by rebooting, the second
+replaces subvolumes rather than copying files.
 
-The split follows the one the Vala code already has. `create_restore_scripts()`
-emits `sh_sync`, which transfers files, and `sh_finish`, which fixes the system.
-The first belongs to whichever engine stored the snapshot; the second does not
-care which engine produced the files and lives here. Both are generated shell
-rather than exec calls, deliberately: they run under chroot and must survive the
-reboot boundary.
+The split follows the one the Vala code has. `BuildSyncScript` transfers files
+and belongs to whichever engine stored the snapshot; `BuildFinishScript` fixes
+the system and does not care which engine produced the files. Both are generated
+shell rather than exec calls, deliberately: they run under chroot and must
+survive the reboot boundary.
 
-Three independent safety layers, and they must stay independent:
+`BuildPlan` decides everything and touches nothing, so `restore.plan` over IPC
+and `--restore` on the console can both show the device table before anything is
+written. That is not decoration: the failure that matters here is not a crash,
+it is a restore that works perfectly onto the wrong disk, and a person
+recognising the disk in a list is the only thing that catches it.
 
-1. `FoldAliasedMountEntries` collapses entries that would mount one device twice
-   at nested points. It uses `MountPointIsUnder`, not a prefix test -- a prefix
-   test makes `/boot-backup` a child of `/boot`.
-2. `Validate` reports the plan and blocks on exactly two things: no root device,
-   and a missing or unusable ESP when the snapshot needs one. A missing `/home`
-   device gives a bootable system with an empty home; a missing root gives a
-   system that does not boot.
-3. `VerifyNoAliasedMounts` stats the mounted result and refuses if any nested
-   mount point IS the target root. It compares `(st_dev, st_ino)` rather than
-   consulting the mount list, so it catches an alias arriving by ANY route.
+`Executor.Run` then carries the plan out, in this order:
 
-The first two reason about intent, the third about reality. Run the third after
-mounting and before anything is deleted.
+1. mount the target
+2. `VerifyNoAliasedMounts` -- against reality, after mounting
+3. probe the source is readable and has ≥2 entries
+4. write the exclude list, checked
+5. clear stale state, above all the failure sentinel
+6. transfer
+7. fstab and crypttab
+8. the finish script: chroot, bootloader, initramfs, hooks
+9. unmount, and only then fsck
 
-Exit-code policy in the retry block, which is not obvious and is tested:
-`0` and `24` succeed, `23` **warns and carries on to the finish steps**
-(retrying cannot fix a permission problem and would re-scan the whole tree),
-`10|12|30|35|255` retry after dropping the ssh master, anything else touches the
-`.timeshift-restore-failed` sentinel and aborts *before* the bootloader steps.
+Steps 2, 3 and 4 each guard a different way rsync answers 23 -- the
+warn-and-continue code -- after already deleting the target. Step 3 runs BEFORE
+step 4 because anything written inside the probed tree would count towards its
+two entries; the exclude list also lives in the snapshot DIRECTORY while the
+probe lists the payload beneath it, so two independent reasons keep them apart.
+
+Exit-code policy in the retry block: `0` and `24` succeed, `23` **warns and
+carries on to the finish steps** (retrying cannot fix a permission problem and
+would re-scan the whole tree), `10|12|30|35|255` retry after dropping the ssh
+master, anything else touches `.timeshift-restore-failed` and aborts *before*
+the bootloader steps.
+
+Three findings from the first real restores, none of which unit tests could
+have produced:
+
+- **The ESP check failed open.** It rejected an ESP only when the ESP's disk and
+  the root's disk were both known AND different, so an unknown root disk kept
+  whatever the snapshot's fstab named -- the ESP of the machine the snapshot came
+  from. Restoring to another disk would have installed the bootloader into the
+  RUNNING system's EFI partition. It now requires proof that they match.
+  `Device.DiskPath()` exists because `ToplevelParent()` returns nil for a device
+  with no parent, and every caller was treating that as "unknown" when a whole
+  disk, or a loop device, is its own disk.
+- **The target was mounted inside itself.** It lives at
+  `/run/timeshift/<pid>/restore` and the chroot rbinds `/run`, so the target
+  appeared under itself recursively, kept the filesystem busy, and the final
+  unmount failed -- which silently skipped the fsck that unmount gates. The
+  chroot step now detaches `<target>/run/timeshift`.
+- **Unmounts propagated out of the chroot.** systemd mounts `/` as *shared*, so
+  an rbind joins the original's peer group and unmounting inside the bind
+  propagates back. Cleaning up the bind unmounted the target's own `/boot/efi`.
+  Every bind is now `--make-rprivate` immediately after it is made.
+
+`fsck -y` runs only when the restore succeeded AND the target really unmounted
+AND the device is not mounted anywhere else, checked against `/proc/mounts` per
+device. The reason is blunt: `-y` answers yes to e2fsck's "The filesystem is
+mounted. If you continue you WILL cause SEVERE damage".
 
 `internal/restore` tests run the generated scripts with real rsync against real
 directories, which is the only way to catch a quoting mistake or a marker that
-never fires. They take ~25s, because the scripts contain real `sleep 3s` and
+never fires. Mount and umount are faked so they need no root; everything else is
+real. They take ~70s, because the scripts contain real `sleep 3s` and
 `sleep 10s`.
-
-Still outstanding before restore can be offered: the golden diff of the
-generated script against `Main.create_restore_scripts()` output for the same
-inputs, and a VM restore to the running system, to another device, and from
-btrfs.
 
 ### btrfs mode
 
@@ -678,9 +709,11 @@ environment, a masked unit, or the moment during an upgrade before the daemon
 has started all have to keep working.
 
 The Go CLI is installed at that private path rather than as `/usr/bin/timeshift`
-because the Vala binary still implements flags it does not (`--restore` above
-all), and because `help2man` builds the man page from whatever answers
-`/usr/bin/timeshift --help`.
+because the Vala binary still implements flags it does not, because `help2man`
+builds the man page from whatever answers `/usr/bin/timeshift --help`, and --
+for now the strongest reason -- because the Go `--restore` has not been through
+a VM restore of a running system. The private path makes it reachable for that
+test without making it the path everything else takes.
 
 `debian/rules` excludes both Go binaries from `dh_dwz` **by path**
 (`-Xusr/libexec/timeshift/`), not by name: one of them is called `timeshift`, so

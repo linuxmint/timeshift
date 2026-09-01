@@ -319,7 +319,21 @@ func NormalizeESPSelection(entries []MountEntry, candidates []MountEntry) ([]Mou
 		return out, ""
 	}
 
-	wrong := esp.Assigned() && (!esp.IsESP || (esp.DiskPath != "" && root.DiskPath != "" && esp.DiskPath != root.DiskPath))
+	/* An assigned ESP is kept only if it can be SHOWN to be on the root's disk.
+	 *
+	 * The test used to be the other way round -- reject only when the two disks
+	 * are known to differ -- which passes whenever either disk is unknown. That
+	 * fails open on the most consequential choice here: restoring to a disk
+	 * whose identity could not be resolved kept the ESP named in the snapshot's
+	 * fstab, which is the ESP of the machine the snapshot was taken on. The
+	 * bootloader step would then have installed into the running system's EFI
+	 * partition while restoring to somewhere else entirely.
+	 *
+	 * Requiring proof costs nothing when the disks are knowable, and when they
+	 * are not it clears the selection and lets Validate block with a message.
+	 */
+	sameDisk := esp.DiskPath != "" && root.DiskPath != "" && esp.DiskPath == root.DiskPath
+	wrong := esp.Assigned() && (!esp.IsESP || !sameDisk)
 	if esp.Assigned() && !wrong {
 		return out, ""
 	}

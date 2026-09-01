@@ -87,6 +87,8 @@ const (
 	MethodSnapshotsUpdate = "snapshots.update"
 	MethodSnapshotCreate  = "snapshot.create"
 	MethodSnapshotDelete  = "snapshot.delete"
+	MethodSnapshotRestore = "snapshot.restore"
+	MethodRestorePlan     = "restore.plan"
 	MethodEstimateRun     = "estimate.run"
 	MethodScheduleCheck   = "schedule.check"
 	MethodScheduleStatus  = "schedule.status"
@@ -198,6 +200,71 @@ type SnapshotsUpdateParams struct {
 	// acts on. It is a marker rather than an immediate delete so a client can
 	// queue several and change its mind.
 	MarkedForDeletion *bool `json:"marked_for_deletion,omitempty"`
+}
+
+/* RestoreParams describes a restore.
+ *
+ * Mounts is optional: when empty the daemon builds the default selection from
+ * the snapshot's own fstab, which is what the restored system expects. A client
+ * that wants something else sends the whole selection rather than a patch, so
+ * there is exactly one description of where every filesystem lands and no way
+ * to end up with half of two plans.
+ */
+type RestoreParams struct {
+	Snapshot string `json:"snapshot"`
+
+	// Mounts maps a mount point to a device path or "UUID=x". An entry mapped
+	// to the empty string is deliberately left on the root filesystem.
+	Mounts map[string]string `json:"mounts,omitempty"`
+
+	/* CurrentSystem restores over the running system.
+	 *
+	 * It must be asked for explicitly. Defaulting to it would mean a client
+	 * that forgot to name a target overwrites the machine it is running on,
+	 * and there is no undo for that. */
+	CurrentSystem bool `json:"current_system,omitempty"`
+
+	// DryRun compares without writing, and measures the progress denominator
+	// for a real run.
+	DryRun bool `json:"dry_run,omitempty"`
+
+	// SkipGrub leaves the bootloader alone, GrubDevice overrides where it goes.
+	SkipGrub   bool   `json:"skip_grub,omitempty"`
+	GrubDevice string `json:"grub_device,omitempty"`
+
+	// EstimatedLines is the denominator from a previous dry run.
+	EstimatedLines int64 `json:"estimated_lines,omitempty"`
+}
+
+// RestorePlanResult is the reviewable plan: what would happen, and whether it
+// may proceed.
+type RestorePlanResult struct {
+	Snapshot string `json:"snapshot"`
+	Target   string `json:"target"`
+
+	// Rows is the device table, one line per mount point.
+	Rows []RestorePlanRow `json:"rows"`
+
+	// Phases are the steps the restore will take, in order.
+	Phases []string `json:"phases"`
+
+	// Notes explain anything folded away or filled in.
+	Notes []string `json:"notes,omitempty"`
+
+	// Blocked means the restore must not start. Blockers says why.
+	Blocked  bool     `json:"blocked"`
+	Blockers []string `json:"blockers,omitempty"`
+
+	// Summary is the whole thing rendered for a person to read.
+	Summary string `json:"summary"`
+}
+
+// RestorePlanRow is one mount point in the plan.
+type RestorePlanRow struct {
+	MountPoint string `json:"mount_point"`
+	Device     string `json:"device"`
+	Status     string `json:"status"`
+	Blocking   bool   `json:"blocking"`
 }
 
 // JobRefParams addresses one job.

@@ -74,6 +74,7 @@ func run(args []string) int {
 	jobID := ""
 	var tags []string
 	var names []string
+	var restoreOpts RestoreOptions
 
 	for i := 0; i < len(args); i++ {
 		switch args[i] {
@@ -95,6 +96,45 @@ func run(args []string) int {
 			mode = "estimate"
 		case "--delete":
 			mode = "delete"
+		case "--restore":
+			mode = "restore"
+		case "--current-system", "--restore-in-place":
+			restoreOpts.CurrentSystem = true
+		case "--dry-run":
+			restoreOpts.DryRun = true
+		case "--yes", "-y":
+			restoreOpts.Yes = true
+		case "--skip-grub":
+			restoreOpts.SkipGrub = true
+		case "--target":
+			if i+1 >= len(args) {
+				fmt.Fprintln(os.Stderr, "timeshift: --target needs a device")
+				return 1
+			}
+			i++
+			restoreOpts.Target = args[i]
+		case "--mount":
+			if i+1 >= len(args) {
+				fmt.Fprintln(os.Stderr, "timeshift: --mount needs MOUNTPOINT=DEVICE")
+				return 1
+			}
+			i++
+			mp, dev, err := parseMountArg(args[i])
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
+				return 1
+			}
+			if restoreOpts.Mounts == nil {
+				restoreOpts.Mounts = map[string]string{}
+			}
+			restoreOpts.Mounts[mp] = dev
+		case "--grub-device":
+			if i+1 >= len(args) {
+				fmt.Fprintln(os.Stderr, "timeshift: --grub-device needs a device")
+				return 1
+			}
+			i++
+			restoreOpts.GrubDevice = args[i]
 		case "--check":
 			mode = "check"
 		case "--schedule-status":
@@ -191,6 +231,13 @@ func run(args []string) int {
 	case "estimate":
 		return runEstimate(socket, scripted)
 
+	case "restore":
+		restoreOpts.Scripted = scripted
+		if restoreOpts.Snapshot == "" && len(names) > 0 {
+			restoreOpts.Snapshot = names[0]
+		}
+		return runRestore(socket, restoreOpts)
+
 	case "check":
 		return runCheck(socket, scripted)
 
@@ -247,6 +294,14 @@ Options:
   --watch           Watch the snapshot already running
   --estimate        Measure the system size
   --delete          Delete a snapshot (with --snapshot NAME)
+  --restore         Restore a snapshot (with --snapshot NAME)
+  --target DEVICE   Device to restore the root filesystem to
+  --mount MP=DEV    Device for another mount point, e.g. /home=/dev/sda3
+  --current-system  Restore over the running system (destructive)
+  --dry-run         Compare only; change nothing
+  --skip-grub       Do not reinstall the bootloader
+  --grub-device DEV Install the bootloader here
+  --yes, -y         Do not ask for confirmation
   --list            List snapshots
   --list-devices    List available devices
   --schedule-status Report when the scheduler last ran

@@ -160,6 +160,13 @@ func (d *daemon) methods() map[string]ipc.Method {
 		ipc.MethodConfigSet:       {Fn: d.configSet},
 		ipc.MethodSnapshotsUpdate: {Fn: d.snapshotsUpdate},
 		ipc.MethodRepoReload:      {Fn: d.repoReload},
+
+		/* Planning a restore changes nothing, but it is not read-only in the
+		 * sense the group grant means: it enumerates every device on the
+		 * machine and would let a group member rehearse overwriting the disk.
+		 * Root, like the restore it describes. */
+		ipc.MethodRestorePlan:     {Fn: d.restorePlan},
+		ipc.MethodSnapshotRestore: {Fn: d.snapshotRestore},
 		ipc.MethodScheduleCheck:   {Fn: d.scheduleCheck},
 	}
 }

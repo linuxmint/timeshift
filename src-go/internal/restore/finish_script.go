@@ -139,9 +139,33 @@ func BuildFinishScript(o FinishScriptOptions) string {
 		 * beneath /sys, and without it grub-install inside the chroot reports
 		 * "EFI variables are not supported on this system" and quietly skips
 		 * the UEFI boot entry -- leaving a disk the firmware will not boot. */
+		/* --make-rprivate immediately after each bind, and this one is subtle.
+		 *
+		 * systemd mounts / as SHARED, so an rbind joins the same peer group as
+		 * the original. Unmounting anything inside the bind then PROPAGATES
+		 * back out: the cleanup below unmounted the target's own /boot/efi as a
+		 * side effect of tidying up the bind, so the final unmount reported the
+		 * ESP as "not mounted" and the fsck it gates was skipped. Worse in
+		 * principle -- a propagated unmount can reach the host's mounts.
+		 *
+		 * Making the subtree private confines every later unmount to the
+		 * chroot, which is what a chroot preparation should have done anyway. */
 		fmt.Fprintf(&b,
-			"for i in dev dev/pts proc run sys; do mount --rbind \"/$i\" \"%s$i\" 2>/dev/null || mount --bind \"/$i\" \"%s$i\"; done \n",
-			o.TargetPath, o.TargetPath)
+			"for i in dev dev/pts proc run sys; do mount --rbind \"/$i\" \"%s$i\" 2>/dev/null || mount --bind \"/$i\" \"%s$i\"; mount --make-rprivate \"%s$i\" 2>/dev/null || true; done \n",
+			o.TargetPath, o.TargetPath, o.TargetPath)
+
+		/* Detach our own run directory from inside the target.
+		 *
+		 * The target is mounted at /run/timeshift/<pid>/restore, and the line
+		 * above rbinds /run into it -- so the target ends up mounted INSIDE
+		 * itself, recursively. That is not merely untidy: the self-reference
+		 * keeps the filesystem busy, so the unmount at the end fails, and the
+		 * unmount is what gates the fsck. Observed on a real restore before
+		 * this line existed.
+		 *
+		 * The chroot has no business seeing Timeshift's own mounts anyway, and
+		 * everything else under /run stays available to it. */
+		fmt.Fprintf(&b, "umount -R \"%srun/timeshift\" 2>/dev/null || true \n", o.TargetPath)
 
 		// Without a shell in the target every chroot below fails one by one
 		// with a confusing error each. Say it once, plainly.

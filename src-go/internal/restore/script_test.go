@@ -376,3 +376,55 @@ func TestAwkwardPathsAreQuoted(t *testing.T) {
 		t.Errorf("awkward paths produced invalid shell: %v\n%s", err, out)
 	}
 }
+
+/* The target is mounted under /run and the chroot rbinds /run, so without this
+ * the target is mounted inside itself. The self-reference keeps it busy, the
+ * final unmount fails, and the fsck that unmount gates never runs.
+ */
+func TestChrootBindDetachesOurOwnRunDirectory(t *testing.T) {
+	script := BuildFinishScript(finishOpts())
+
+	bind := strings.Index(script, "mount --rbind")
+	detach := strings.Index(script, `umount -R "/run/timeshift/1/restore/run/timeshift"`)
+
+	if detach < 0 {
+		t.Fatalf("the chroot does not detach Timeshift's own run directory:\n%s", script)
+	}
+	if bind < 0 || detach < bind {
+		t.Fatal("the detach must come after the bind that creates the self-reference")
+	}
+
+	/* Both belong inside the chroot_bind phase: the self-reference must be gone
+	 * before any later step can hold it open. Phase boundaries are the honest
+	 * way to assert that -- scanning for the word "chroot" finds the phase key
+	 * and the ts_has() function body, neither of which runs anything. */
+	phaseStart := strings.Index(script, PhaseMarker+"chroot_bind")
+	if phaseStart < 0 || detach < phaseStart {
+		t.Fatal("the detach is not inside the chroot_bind phase")
+	}
+}
+
+/* systemd mounts / as shared, so an rbind joins the original's peer group and
+ * an unmount inside the bind propagates back out. Without --make-rprivate the
+ * cleanup unmounted the target's own /boot/efi as a side effect, which made the
+ * final unmount fail and skipped the fsck it gates.
+ */
+func TestChrootBindIsMadePrivate(t *testing.T) {
+	script := BuildFinishScript(finishOpts())
+
+	if !strings.Contains(script, "--make-rprivate") {
+		t.Fatalf("the chroot binds are not made private:\n%s", script)
+	}
+
+	bind := strings.Index(script, "mount --rbind")
+	private := strings.Index(script, "--make-rprivate")
+	if private < bind {
+		t.Error("the subtree is made private before it is bound")
+	}
+
+	// Every unmount in the script must come after it, or the propagation is
+	// still live when the first one runs.
+	if u := strings.Index(script, "umount"); u >= 0 && u < private {
+		t.Error("an unmount runs while the bind can still propagate")
+	}
+}

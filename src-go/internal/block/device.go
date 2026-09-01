@@ -330,6 +330,24 @@ func BuildTree(devices []*Device) {
 	}
 }
 
+/* DiskPath is the path of the disk this device lives on.
+ *
+ * ToplevelParent returns nil for a device with no parent, which is right for
+ * "what is my partition's disk" and wrong for every caller that then treats an
+ * empty answer as "unknown". A whole disk, and a bare loop device, ARE their
+ * own disk.
+ *
+ * The distinction is not academic: the ESP check compares the ESP's disk with
+ * the root's, and an empty root disk made that comparison pass for an ESP on a
+ * completely different physical drive.
+ */
+func (d *Device) DiskPath() string {
+	if top := d.ToplevelParent(); top != nil {
+		return top.Path
+	}
+	return d.Path
+}
+
 // ToplevelParent walks up to the disk holding this device. It is what a GRUB
 // install target is derived from.
 func (d *Device) ToplevelParent() *Device {

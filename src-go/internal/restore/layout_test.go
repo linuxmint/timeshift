@@ -292,3 +292,47 @@ func TestVerifyAbsentMountPoint(t *testing.T) {
 		t.Errorf("an absent mount point is not an alias: %v", err)
 	}
 }
+
+/* The ESP check must require proof, not merely the absence of contradiction.
+ *
+ * The earlier test rejected an ESP only when both disks were known AND
+ * different, so an unknown root disk kept whatever the snapshot's fstab named
+ * -- which is the ESP of the machine the snapshot came from. Restoring to a
+ * different disk would then have installed the bootloader into the running
+ * system's EFI partition.
+ */
+func TestESPIsClearedWhenTheRootDiskIsUnknown(t *testing.T) {
+	entries := []MountEntry{
+		{MountPoint: "/", DeviceUUID: "root-uuid", DevicePath: "/dev/loop9"}, // no DiskPath
+		{MountPoint: "/boot/efi", DeviceUUID: "esp-uuid", DevicePath: "/dev/nvme0n1p1",
+			IsESP: true, DiskPath: "/dev/nvme0n1"},
+	}
+
+	out, note := NormalizeESPSelection(entries, nil)
+
+	esp := findEntry(out, "/boot/efi")
+	if esp.Assigned() {
+		t.Fatalf("kept %s as the ESP for a root whose disk is unknown", esp.DevicePath)
+	}
+	if note == "" {
+		t.Error("the selection was changed without saying so")
+	}
+}
+
+func TestESPIsKeptWhenItIsProvablyOnTheRootDisk(t *testing.T) {
+	entries := []MountEntry{
+		{MountPoint: "/", DeviceUUID: "root-uuid", DevicePath: "/dev/sda2", DiskPath: "/dev/sda"},
+		{MountPoint: "/boot/efi", DeviceUUID: "esp-uuid", DevicePath: "/dev/sda1",
+			IsESP: true, DiskPath: "/dev/sda"},
+	}
+
+	out, note := NormalizeESPSelection(entries, nil)
+
+	esp := findEntry(out, "/boot/efi")
+	if esp.DeviceUUID != "esp-uuid" {
+		t.Fatalf("a correct ESP selection was discarded: %+v", esp)
+	}
+	if note != "" {
+		t.Errorf("unexpected note: %q", note)
+	}
+}

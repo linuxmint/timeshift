@@ -470,3 +470,40 @@ func max64(a, b int64) int64 {
 	}
 	return b
 }
+
+/* RsyncSource, RsyncRSH and RsyncPath expose what a caller outside this package
+ * needs to build its own rsync command against this repository.
+ *
+ * The restore path needs them: it copies FROM a snapshot rather than to one, so
+ * it builds its own transfer, but the host prefix and the ssh options have to
+ * be exactly the ones this repository uses. Reconstructing them from the config
+ * would be a second implementation of the connection, and the first bug would
+ * be a restore that silently used a different port or key from the backup.
+ */
+
+// RsyncSource prefixes a repository path with the host for a remote repository.
+//
+// Note that only a rsync SOURCE or DESTINATION takes the prefix. --link-dest is
+// resolved on the receiving side and must stay a bare path.
+func (r *Repo) RsyncSource(p string) string { return r.rsyncDest(p) }
+
+// RsyncRSH is the -e command for this repository, empty when it is local.
+func (r *Repo) RsyncRSH() string {
+	ssh, ok := r.Backend.(*SSHBackend)
+	if !ok {
+		return ""
+	}
+	return strings.Join(append([]string{"ssh"}, ssh.SSHOptions(false, false)...), " ")
+}
+
+// RsyncPath is the --rsync-path for this repository, empty when there is none.
+//
+// --fake-super has to be repeated on the source side of a restore so that
+// ownership stored in extended attributes is expanded again; without it every
+// restored file comes back owned by the account that made the backup.
+func (r *Repo) RsyncPath() string {
+	if ssh, ok := r.Backend.(*SSHBackend); ok && ssh.FakeSuper {
+		return "rsync --fake-super"
+	}
+	return ""
+}
