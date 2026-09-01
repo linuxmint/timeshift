@@ -581,7 +581,29 @@ never fires. Mount and umount are faked so they need no root; everything else is
 real. They take ~70s, because the scripts contain real `sleep 3s` and
 `sleep 10s`.
 
-### btrfs mode
+### btrfs mode -- PRIMITIVES ONLY, NOT WIRED UP
+
+**`Repo.Create` never consults `BtrfsMode`.** It runs the rsync path
+unconditionally and hard-codes `Type: "rsync"` (`create.go:162`), and nothing in
+`internal/restore` or the daemon calls `RestoreSubvolume`. So with
+`btrfs_mode: "true"` on a real `@`/`@home` system the CLI reports
+`Mode : BTRFS`, stores under `timeshift-btrfs/snapshots/`, and then takes an
+**rsync** snapshot -- `localhost/`, `exclude.list`, a 3.8 MB `rsync-log`, and
+zero subvolumes in the repository. Verified in a VM; the snapshot's own
+`info.json` says `"type" : "rsync"`.
+
+That is the same shape as the Vala defect this port set out to fix, where
+choosing btrfs plus a remote location silently gave rsync snapshots. Here the
+user is told BTRFS in the status header and gets rsync everywhere.
+
+`DeleteSubvolume`, `CleanupQGroup` and `BtrfsRestorePlan` have **zero**
+callers; `SnapshotSubvolume` has one, from `RestoreSubvolume`, which is itself
+called only by its own tests. The primitives below are real, tested against a
+loopback btrfs filesystem, and connected to nothing.
+
+Backups and restores still work in this state -- rsync does the job, and a VM
+restore of a btrfs guest passed every content check. What does not work is
+btrfs mode.
 
 `internal/engines/timeshift/btrfs.go`. A btrfs snapshot is not a copy:
 `btrfs subvolume snapshot` makes a subvolume sharing every extent with the
