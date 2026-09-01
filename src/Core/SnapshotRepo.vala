@@ -381,9 +381,7 @@ public class SnapshotRepo : GLib.Object{
 	 */
 	private bool load_snapshots_from_daemon(){
 
-		if (App == null){ return false; }
-
-		var api = App.daemon_api;
+		var api = DaemonApi.get_shared();
 		if (api == null){ return false; }
 
 		var info = api.system_info();
@@ -600,9 +598,7 @@ public class SnapshotRepo : GLib.Object{
 	 */
 	private bool check_status_from_daemon(){
 
-		if (App == null){ return false; }
-
-		var api = App.daemon_api;
+		var api = DaemonApi.get_shared();
 		if (api == null){ return false; }
 
 		var st = api.repo_status();

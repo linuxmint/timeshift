@@ -1261,17 +1261,15 @@ public class Main : GLib.Object{
 	 *
 	 * Retrying on every call would mean a stat and a connect attempt per GUI
 	 * refresh on a machine with no daemon, which is most of them today. */
-	public DaemonClient? daemon {
-		get {
-			if (!daemon_tried){
-				daemon_tried = true;
-				var client = new DaemonClient();
-				if (client.open()){
-					_daemon = client;
-				}
-			}
-			return _daemon;
-		}
+	/* The daemon connection, shared with everything else in the process.
+	 *
+	 * The lazy singleton lives in DaemonApi rather than here, because most of
+	 * this class's start-up runs from its own CONSTRUCTOR and the global `App`
+	 * is not assigned until that returns -- so a client reached through App is
+	 * unreachable from update_partitions(), detect_system_devices() and
+	 * load_app_config(), which are exactly the places that want it. */
+	public unowned DaemonClient? daemon {
+		get { return DaemonApi.get_shared_client(); }
 	}
 
 	/* The daemon's methods, typed. Null when there is no daemon.
@@ -1282,13 +1280,8 @@ public class Main : GLib.Object{
 	 * stream is separate already, inside DaemonClient, for the reason given
 	 * there -- a call must never come back with an event's answer.
 	 */
-	public DaemonApi? daemon_api {
-		get {
-			var client = daemon;
-			if (client == null){ return null; }
-			if (_daemon_api == null){ _daemon_api = new DaemonApi(client); }
-			return _daemon_api;
-		}
+	public unowned DaemonApi? daemon_api {
+		get { return DaemonApi.get_shared(); }
 	}
 
 	public bool scheduled{

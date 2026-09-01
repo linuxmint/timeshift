@@ -336,8 +336,12 @@ func deviceInfo(dev *block.Device) ipc.DeviceInfo {
 		Vendor: strings.TrimSpace(dev.Vendor),
 		Model:  strings.TrimSpace(dev.Model),
 
+		Serial:   dev.Serial,
+		Revision: dev.Revision,
+
 		SizeBytes: dev.SizeBytes,
 		FreeBytes: dev.FreeBytes(),
+		UsedBytes: dev.UsedBytes,
 		Mounted:   dev.IsMounted(),
 
 		MountPoints:        mounts,

@@ -573,9 +573,23 @@ type DeviceInfo struct {
 	FSType    string `json:"fstype"`
 	Vendor    string `json:"vendor"`
 	Model     string `json:"model"`
-	SizeBytes int64  `json:"size_bytes"`
-	FreeBytes int64  `json:"free_bytes"`
-	Mounted   bool   `json:"mounted"`
+	Serial    string `json:"serial"`
+	Revision  string `json:"revision"`
+
+	SizeBytes int64 `json:"size_bytes"`
+	FreeBytes int64 `json:"free_bytes"`
+
+	/* UsedBytes travels with FreeBytes because a client cannot derive it.
+	 *
+	 * Size is the partition; used and free come from statfs and do not add up
+	 * to it -- there are reserved blocks in between. A client needing "how full
+	 * is this" has to be told both. It is also how a caller tells an UNMOUNTED
+	 * device from a full one: neither has free space, but only a mounted one
+	 * has used space, and df cannot answer for something that is not mounted.
+	 */
+	UsedBytes int64 `json:"used_bytes"`
+
+	Mounted bool `json:"mounted"`
 
 	MountPoints        []string `json:"mount_points"`
 	HasLinuxFilesystem bool     `json:"has_linux_filesystem"`

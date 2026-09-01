@@ -60,6 +60,50 @@ public class DaemonApi : GLib.Object {
 	}
 
 	// -----------------------------------------------------------------------
+	// The process-wide client
+	//
+	// Deliberately NOT hung off Main. Most of the core's start-up runs from
+	// Main's own constructor -- update_partitions(), detect_system_devices(),
+	// load_app_config() -- and the global `App` is not assigned until that
+	// constructor RETURNS. So anything reaching the daemon through App.daemon
+	// is unreachable from exactly the code that sets the system up, and would
+	// silently fall back to shelling out. That is not a detail of this class,
+	// it is a property of the object being dismantled, so the connection is
+	// kept somewhere that does not depend on it.
+	//
+	// One connection for the whole process, opened once. A caller that wants
+	// its own -- DaemonBridge does, because it also runs an event stream and
+	// closes both together -- constructs a DaemonClient directly.
+
+	private static DaemonClient? shared_client;
+	private static DaemonApi? shared_api;
+	private static bool shared_tried;
+
+	/* The shared API, or null when there is no daemon.
+	 *
+	 * Tried once. A daemon that was not running when this process started is
+	 * not retried on every call: the fallbacks each cost a subprocess or an SSH
+	 * round trip, and retrying a connection that just failed in front of every
+	 * one of them would be slower than the fallback it is trying to avoid.
+	 */
+	public static unowned DaemonApi? get_shared(){
+		if (!shared_tried){
+			shared_tried = true;
+			var client = new DaemonClient();
+			if (client.open()){
+				shared_client = client;
+				shared_api = new DaemonApi(client);
+			}
+		}
+		return shared_api;
+	}
+
+	public static unowned DaemonClient? get_shared_client(){
+		get_shared();
+		return shared_client;
+	}
+
+	// -----------------------------------------------------------------------
 	// Plumbing
 
 	private Json.Object? ask(string method, Json.Object? params = null){
@@ -732,6 +776,40 @@ public class DaemonApi : GLib.Object {
 		if (devices.size > 0 && disks == 0){
 			// The defect this method was widened to fix.
 			stdout.printf("  FAIL  no disks: devices.list is still filtering them out\n");
+			bad++;
+		}
+
+		/* The device TREE, which is what the Location page draws.
+		 *
+		 * Checked here rather than in the GUI because reaching that page means
+		 * selecting a location, and the Settings window saves on close -- so
+		 * clicking through it to look at the tree can change where the next
+		 * backup goes. A diagnostic must not be able to do that.
+		 *
+		 * This exercises Device.get_filesystems(), which is the same call the
+		 * page makes, including the pkname linking that turns a flat wire list
+		 * back into disks with partitions under them. */
+		var tree = Device.get_filesystems();
+		int roots = 0, linked = 0, with_free = 0;
+		foreach (var d in tree){
+			if (d.parent == null){ roots++; }
+			if (d.children.size > 0){ linked++; }
+			if (d.free_bytes > 0){ with_free++; }
+		}
+		stdout.printf("  ok    device tree     %d devices, %d top-level, %d with children, %d with free space\n",
+			tree.size, roots, linked, with_free);
+
+		if (tree.size > 0 && linked == 0){
+			// pkname did not resolve: every partition is its own island, and
+			// the Location page would show partitions with no disk above them.
+			stdout.printf("  FAIL  nothing is linked to a parent; check pkname\n");
+			bad++;
+		}
+		if (tree.size > 0 && with_free == 0){
+			/* Device.free_bytes returns 0 unless used_bytes is set, so a daemon
+			 * that does not send it produces a tree where nothing has any free
+			 * space -- silently, which is why it is worth failing on. */
+			stdout.printf("  FAIL  no device reports free space; check used_bytes\n");
 			bad++;
 		}
 

@@ -138,9 +138,29 @@ public class DaemonDevice : GLib.Object {
 	public string vendor { get; set; default = ""; }
 	public string model { get; set; default = ""; }
 
+	public string serial { get; set; default = ""; }
+	public string revision { get; set; default = ""; }
+
 	public int64 size_bytes { get; set; default = 0; }
 	public int64 free_bytes { get; set; default = 0; }
+
+	/* used_bytes is sent because it cannot be derived.
+	 *
+	 * size is the partition; used and free come from statfs and do not add up
+	 * to it, because of the reserved blocks in between. It is also how an
+	 * UNMOUNTED device is told from a full one -- neither has free space, but
+	 * only a mounted one has used space. */
+	public int64 used_bytes { get; set; default = 0; }
+
 	public bool mounted { get; set; default = false; }
+
+	/* Whether the daemon sent used_bytes at all.
+	 *
+	 * Same rule as repo.status's free_bytes, and the same reason: the field was
+	 * added additively, JSON drops what it does not know, and Device.free_bytes
+	 * returns 0 whenever used_bytes is 0 -- so an older daemon would produce a
+	 * device list where nothing has any free space, with no error anywhere. */
+	public bool has_used_bytes { get; set; default = false; }
 
 	public bool read_only { get; set; default = false; }
 	public bool removable { get; set; default = false; }
@@ -169,8 +189,12 @@ public class DaemonDevice : GLib.Object {
 		d.fstype     = DaemonClient.wire_string(o, "fstype", "");
 		d.vendor     = DaemonClient.wire_string(o, "vendor", "");
 		d.model      = DaemonClient.wire_string(o, "model", "");
+		d.serial     = DaemonClient.wire_string(o, "serial", "");
+		d.revision   = DaemonClient.wire_string(o, "revision", "");
 		d.size_bytes = DaemonClient.wire_int(o, "size_bytes", 0);
 		d.free_bytes = DaemonClient.wire_int(o, "free_bytes", 0);
+		d.used_bytes = DaemonClient.wire_int(o, "used_bytes", 0);
+		d.has_used_bytes = o.has_member("used_bytes");
 		d.mounted    = DaemonClient.wire_bool(o, "mounted", false);
 		d.read_only  = DaemonClient.wire_bool(o, "read_only", false);
 		d.removable  = DaemonClient.wire_bool(o, "removable", false);

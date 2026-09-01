@@ -99,6 +99,47 @@ public class Device : GLib.Object{
 		test_lsblk_version();
 	}
 
+	/* A device as the daemon described it. Runs no subprocess.
+	 *
+	 * The ordinary path shells out three times -- lsblk for the devices, df for
+	 * the space, /proc/mounts for the mount points -- and parses each. The
+	 * daemon has done the same scan and can simply say what it found.
+	 *
+	 * parent/children are NOT set here: the wire is flat, with pkname naming
+	 * the parent, so the tree is linked once over the whole list by the caller.
+	 * A constructor cannot see the other rows.
+	 */
+	public Device.from_wire(DaemonDevice src){
+
+		mount_points = new Gee.ArrayList<MountEntry>();
+		symlinks = new Gee.ArrayList<string>();
+		children = new Gee.ArrayList<Device>();
+
+		device = src.path;
+		name = src.name;
+		kname = src.kname;
+		pkname = src.pkname;
+		uuid = src.uuid;
+		label = src.label;
+		partlabel = src.partlabel;
+		type = src.dev_type;
+		fstype = src.fstype;
+		vendor = src.vendor;
+		model = src.model;
+		serial = src.serial;
+		revision = src.revision;
+		removable = src.removable;
+		read_only = src.read_only;
+
+		size_bytes = (uint64) src.size_bytes;
+		used_bytes = (uint64) src.used_bytes;
+		available_bytes = (uint64) src.free_bytes;
+
+		foreach (var path in src.mount_points){
+			mount_points.add(new MountEntry(this, path, ""));
+		}
+	}
+
 	public static void test_lsblk_version(){
 
 		if ((lsblk_version != null) && (lsblk_version.length > 0)){
@@ -289,10 +330,82 @@ public class Device : GLib.Object{
 
 	// static --------------------------------
 	
+	/* The block layout, from the daemon.
+	 *
+	 * Replaces three subprocesses and their parsers: lsblk --pairs for the
+	 * devices, df for the space, and /proc/mounts for the mount points. The
+	 * daemon runs the same scan and has the answer already.
+	 *
+	 * Null means no daemon answered -- the caller shells out as before. Note
+	 * that an EMPTY list is not the same thing and cannot happen in practice:
+	 * a machine we are running on has block devices.
+	 */
+	private static Gee.ArrayList<Device>? get_filesystems_from_daemon(){
+
+		/* DaemonApi.get_shared() rather than App.daemon_api: this runs from
+		 * Main's CONSTRUCTOR, via update_partitions(), and the global App is
+		 * not assigned until that constructor returns. Reaching through App
+		 * here would always find null and always fall back to lsblk -- which
+		 * is what it did, silently, until the connection was moved off Main. */
+		var api = DaemonApi.get_shared();
+		if (api == null){ return null; }
+
+		var listed = api.devices_list();
+		if (listed.size == 0){ return null; }
+
+		/* A daemon too old to report used_bytes cannot serve this.
+		 *
+		 * free_bytes below returns 0 unless used_bytes is set -- the guard that
+		 * distinguishes an unmounted device from a full one -- so accepting the
+		 * list from such a daemon would produce a device tree in which nothing
+		 * anywhere has free space, silently. One row is enough to tell: the
+		 * field is present on all of them or none. */
+		if (!listed.get(0).has_used_bytes){
+			log_debug("Device: the daemon does not report used space; using lsblk");
+			return null;
+		}
+
+		var list = new Gee.ArrayList<Device>();
+		foreach (var src in listed){
+			list.add(new Device.from_wire(src));
+		}
+
+		/* Link parents and children by pkname.
+		 *
+		 * The wire is flat with a parent key rather than nested, so the tree is
+		 * rebuilt here -- which is also what lets a client filter rows without
+		 * the nesting fighting it. */
+		var by_kname = new Gee.HashMap<string,Device>();
+		foreach (var dev in list){
+			if (dev.kname.length > 0){ by_kname.set(dev.kname, dev); }
+		}
+		foreach (var dev in list){
+			if (dev.pkname.length == 0){ continue; }
+			if (!by_kname.has_key(dev.pkname)){ continue; }
+
+			var parent_dev = by_kname.get(dev.pkname);
+			dev.parent = parent_dev;
+			parent_dev.children.add(dev);
+		}
+
+		// The topmost ancestor, which the UI uses to group partitions by disk.
+		foreach (var dev in list){
+			var top = dev;
+			while (top.parent != null){ top = top.parent; }
+			dev.pkname_toplevel = (top == dev) ? "" : top.kname;
+		}
+
+		log_debug("Device: %d devices from the daemon".printf(list.size));
+		return list;
+	}
+
 	public static Gee.ArrayList<Device> get_filesystems(bool get_space = true, bool get_mounts = true){
 
 		/* Returns list of block devices
 		   Populates all fields in Device class */
+
+		var from_daemon = get_filesystems_from_daemon();
+		if (from_daemon != null){ return from_daemon; }
 
 		var list = get_block_devices_using_lsblk();
 
