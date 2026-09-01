@@ -88,6 +88,16 @@ public class DaemonClient : GLib.Object {
 	 * signal changed to deliver it. */
 	public signal void job_counters(string job_id, Json.Object counters);
 
+	/* The full phase list, sent with the first phase event of a job.
+	 *
+	 * Separate from job_phase because it arrives once and job_phase arrives
+	 * repeatedly: a checklist wants the list, a status line wants the current
+	 * step, and folding them together would make every step change rebuild
+	 * the list. RestoreBox in particular rebuilds its checklist on the LIST's
+	 * object identity, so handing it a fresh one per step would make it
+	 * rebuild continuously. */
+	public signal void job_phases(string job_id, Json.Array phases);
+
 	public signal void job_log(string job_id, string line);
 	public signal void job_finished(string job_id, string outcome, string error);
 
@@ -405,6 +415,7 @@ public class DaemonClient : GLib.Object {
 			break;
 
 		case "job.phase":
+			emit_phases(job_id, obj);
 			job_phase(job_id, wire_string(obj, "phase", ""));
 			break;
 
@@ -436,6 +447,10 @@ public class DaemonClient : GLib.Object {
 
 		job_started(job_id, wire_string(job, "kind", ""));
 
+		// The replay: a late subscriber gets the list before the current step,
+		// so its checklist is built before anything is ticked off.
+		emit_phases(job_id, job);
+
 		string phase = wire_string(job, "phase", "");
 		if (phase.length > 0){
 			job_phase(job_id, phase);
@@ -459,6 +474,17 @@ public class DaemonClient : GLib.Object {
 				wire_string(job, "outcome", ""),
 				wire_string(job, "error", ""));
 		}
+	}
+
+	private void emit_phases(string job_id, Json.Object obj){
+
+		if (!obj.has_member("phases")){ return; }
+		if (obj.get_member("phases").get_node_type() != Json.NodeType.ARRAY){ return; }
+
+		var arr = obj.get_array_member("phases");
+		if (arr.get_length() == 0){ return; }
+
+		job_phases(job_id, arr);
 	}
 
 	private void emit_progress(string job_id, Json.Object p){

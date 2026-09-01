@@ -65,7 +65,29 @@ class EstimateBox : TaskProgressBox {
 		LauncherEntry.set_progress_pulse(true);
 		progressbar.pulse();
 
-		App.estimate_system_size(progressbar.pulse);
+		/* Measure in the daemon when there is one.
+		 *
+		 * An estimate is a full filesystem walk, and doing it here means doing
+		 * it again in the daemon later for the same number. The daemon writes
+		 * the result to timeshift.json, which is where the first backup's
+		 * progress denominator comes from, so both ends end up agreeing.
+		 *
+		 * A daemon that is absent falls through to the local walk. */
+		var bridge = new DaemonBridge();
+
+		if (bridge.available() && bridge.begin_estimate()){
+
+			/* Nothing to count -- a dry run's whole output is one number at
+			 * the end -- so the bar pulses while the event loop is pumped. */
+			while (bridge.running){
+				progressbar.pulse();
+				gtk_do_events();
+				sleep(200);
+			}
+		}
+		else {
+			App.estimate_system_size(progressbar.pulse);
+		}
 
 		LauncherEntry.set_progress_pulse(false);
 	}

@@ -207,7 +207,7 @@ class MainWindow : AppWindow{
 		 * of the operation the person is actually watching. */
 		if ((daemon_bridge == null) && !local_work_running()){
 			daemon_bridge = new DaemonBridge();
-			if (!daemon_bridge.watch(job_id)){
+			if (!daemon_bridge.watch(job_id, kind)){
 				daemon_bridge = null;
 			}
 			else {

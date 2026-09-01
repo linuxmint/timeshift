@@ -50,12 +50,39 @@ class DeleteBox : TaskProgressBox {
 		log_debug("DeleteBox: DeleteBox(): exit");
     }
 
+	private DaemonBridge? bridge = null;
+
+	/* The snapshots App.delete_list holds, by name.
+	 *
+	 * The local path reads that list directly; the daemon needs the names,
+	 * because a job is addressed by name over the wire and not by an object in
+	 * this process. */
+	private string[] snapshot_names(){
+		string[] names = {};
+		foreach (var bak in App.delete_list){
+			names += bak.name;
+		}
+		return names;
+	}
+
 	public bool delete_snapshots(){
 
 		log_debug("DeleteBox: delete_snapshots()");
 
 		if (!App.thread_delete_running){
-			App.delete_begin();
+
+			/* Hand it to the daemon when there is one, so the deletion has a
+			 * job id and anything else can watch it. The bridge sets
+			 * thread_delete_running itself, so the loops below are unchanged.
+			 *
+			 * A daemon that is absent, stopped, or speaking another protocol
+			 * falls through to the local core. */
+			bridge = new DaemonBridge();
+
+			if (!bridge.available() || !bridge.begin_delete(snapshot_names())){
+				bridge = null;
+				App.delete_begin();
+			}
 		}
 
 		/* btrfs deletes a subvolume at a time with nothing to count, so the

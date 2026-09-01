@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-31 23:24-0400\n"
+"POT-Creation-Date: 2026-08-31 23:46-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgstr ""
 msgid "%lld hours"
 msgstr ""
 
-#: src/Gtk/DeleteBox.vala:142
+#: src/Gtk/DeleteBox.vala:169
 #, c-format
 msgid "%lld items removed"
 msgstr ""
@@ -248,7 +248,7 @@ msgstr ""
 msgid "Are you sure you want to delete this snapshot?"
 msgstr ""
 
-#: src/Core/DaemonBridge.vala:138
+#: src/Core/DaemonBridge.vala:208
 msgid "Attaching to the running operation..."
 msgstr ""
 
@@ -861,6 +861,10 @@ msgstr ""
 msgid "Deleting Snapshots..."
 msgstr ""
 
+#: src/Core/DaemonBridge.vala:355
+msgid "Deleting snapshot"
+msgstr ""
+
 #: src/Core/Main.vala:2293
 #, c-format
 msgid "Deleting snapshot %d of %d: %s"
@@ -1048,7 +1052,8 @@ msgstr ""
 msgid "Estimating System Size..."
 msgstr ""
 
-#: src/Core/Main.vala:1868 src/Gtk/JobMonitorWindow.vala:161
+#: src/Core/DaemonBridge.vala:193 src/Core/Main.vala:1868
+#: src/Gtk/JobMonitorWindow.vala:161
 msgid "Estimating system size..."
 msgstr ""
 
@@ -1674,7 +1679,7 @@ msgstr ""
 msgid "Log on the restored system: %s"
 msgstr ""
 
-#: src/Core/DaemonBridge.vala:250
+#: src/Core/DaemonBridge.vala:421
 msgid "Lost contact with the Timeshift service"
 msgstr ""
 
@@ -1878,7 +1883,7 @@ msgstr ""
 msgid "Not checking %s: it is still mounted"
 msgstr ""
 
-#: src/Core/DaemonClient.vala:172
+#: src/Core/DaemonClient.vala:182
 msgid "Not connected to the Timeshift daemon"
 msgstr ""
 
@@ -2101,8 +2106,9 @@ msgstr ""
 msgid "Preparing target system"
 msgstr ""
 
-#: src/Core/DaemonBridge.vala:128 src/Core/Main.vala:2241
-#: src/Gtk/JobMonitorWindow.vala:160 src/Utility/Gtk/TaskProgressBox.vala:70
+#: src/Core/DaemonBridge.vala:137 src/Core/DaemonBridge.vala:166
+#: src/Core/Main.vala:2241 src/Gtk/JobMonitorWindow.vala:160
+#: src/Utility/Gtk/TaskProgressBox.vala:70
 msgid "Preparing..."
 msgstr ""
 
@@ -3187,15 +3193,15 @@ msgstr ""
 msgid "The @home subvolume is excluded by default unless you enable it here"
 msgstr ""
 
-#: src/Core/DaemonClient.vala:204
+#: src/Core/DaemonClient.vala:214
 msgid "The Timeshift daemon closed the connection"
 msgstr ""
 
-#: src/Core/DaemonClient.vala:228
+#: src/Core/DaemonClient.vala:238
 msgid "The Timeshift daemon reported an error"
 msgstr ""
 
-#: src/Core/DaemonClient.vala:123
+#: src/Core/DaemonClient.vala:133
 msgid "The Timeshift daemon speaks a different protocol version"
 msgstr ""
 
@@ -3211,7 +3217,7 @@ msgstr ""
 msgid "The Timeshift service is running an operation."
 msgstr ""
 
-#: src/Core/DaemonBridge.vala:117
+#: src/Core/DaemonBridge.vala:126
 msgid "The Timeshift service refused the request"
 msgstr ""
 
@@ -3415,7 +3421,7 @@ msgstr ""
 msgid "UUID"
 msgstr ""
 
-#: src/Core/DaemonClient.vala:218
+#: src/Core/DaemonClient.vala:228
 msgid "Unexpected reply from the Timeshift daemon"
 msgstr ""
 
@@ -3736,7 +3742,7 @@ msgid "on root"
 msgstr ""
 
 #: src/Core/Main.vala:1991 src/Core/Snapshot.vala:599
-#: src/Gtk/BackupBox.vala:173 src/Gtk/DeleteBox.vala:127
+#: src/Gtk/BackupBox.vala:173 src/Gtk/DeleteBox.vala:154
 #: src/Gtk/RestoreBox.vala:166
 msgid "remaining"
 msgstr ""

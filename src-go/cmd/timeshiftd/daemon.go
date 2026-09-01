@@ -250,8 +250,21 @@ func (d *daemon) enginesList(ctx context.Context, c *ipc.Conn, _ json.RawMessage
 	return info.(ipc.SystemInfo).Engines, nil
 }
 
+/* config.get returns the config in the SAME shape config.set accepts.
+ *
+ * It used to return the Go struct, which marshals to Go field names
+ * ("BackupSSHPort") and native types (22, not "22"). config.set takes the
+ * on-disk names ("backup_ssh_port") and the on-disk shapes -- every scalar a
+ * JSON string -- so the two could not round-trip: a client could not read a
+ * value, change it and write it back, which is the only thing a settings page
+ * ever does.
+ *
+ * The on-disk form is the one every consumer already parses, and it is pinned
+ * byte-for-byte against a file the Vala build wrote, so there is exactly one
+ * definition of what a config looks like.
+ */
 func (d *daemon) configGet(context.Context, *ipc.Conn, json.RawMessage) (any, error) {
-	return d.config(), nil
+	return json.RawMessage(config.Marshal(d.config())), nil
 }
 
 func (d *daemon) devicesList(ctx context.Context, _ *ipc.Conn, _ json.RawMessage) (any, error) {

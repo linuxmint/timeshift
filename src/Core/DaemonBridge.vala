@@ -53,6 +53,15 @@ using TeeJee.Logging;
  */
 public class DaemonBridge : GLib.Object {
 
+	/* Which set of fields to fill.
+	 *
+	 * The boxes do not share a task object: BackupBox polls App.task,
+	 * DeleteBox polls App.delete_file_task and App.thread_delete_running, and
+	 * EstimateBox only wants a pulsing bar. One bridge serves all of them by
+	 * knowing which operation it is mirroring. */
+	public enum Mode { CREATE, DELETE, ESTIMATE, RESTORE }
+
+	private Mode mode = Mode.CREATE;
 	private DaemonClient client;
 
 	/* Its own connection pair, not App.daemon's.
@@ -128,28 +137,108 @@ public class DaemonBridge : GLib.Object {
 		return start_watching(_("Preparing..."));
 	}
 
-	/* Attaches to a job that is already running, without starting anything. */
-	public bool watch(string existing_job_id){
+	/* Submits a deletion and starts mirroring it. */
+	public bool begin_delete(string[] names){
+
+		if (running){ return false; }
+		if (names.length == 0){ return false; }
+		if (!client.open()){ return false; }
+
+		var arr = new Json.Array();
+		foreach (string n in names){ arr.add_string_element(n); }
+
+		var params = new Json.Object();
+		params.set_array_member("names", arr);
+
+		var result = client.call_object("snapshot.delete", params);
+		if (result == null){
+			client.close();
+			return false;
+		}
+
+		job_id = wire_job_id(result);
+		if (job_id.length == 0){
+			client.close();
+			return false;
+		}
+
+		mode = Mode.DELETE;
+		return start_watching(_("Preparing..."));
+	}
+
+	/* Submits a system-size estimate and starts mirroring it.
+	 *
+	 * The daemon persists the result to timeshift.json, because it is the
+	 * progress denominator for the first real backup and recomputing it costs
+	 * a full filesystem walk. So on completion this re-reads it rather than
+	 * carrying the number back over the wire. */
+	public bool begin_estimate(){
 
 		if (running){ return false; }
 		if (!client.open()){ return false; }
 
+		var result = client.call_object("estimate.run", new Json.Object());
+		if (result == null){
+			client.close();
+			return false;
+		}
+
+		job_id = wire_job_id(result);
+		if (job_id.length == 0){
+			client.close();
+			return false;
+		}
+
+		mode = Mode.ESTIMATE;
+		return start_watching(_("Estimating system size..."));
+	}
+
+	/* Attaches to a job that is already running, without starting anything.
+	 *
+	 * kind decides which set of fields gets filled -- a delete does not write
+	 * App.task and a create does not write App.delete_file_task -- and it is
+	 * the daemon's own word for what the job is, straight from jobs.list. */
+	public bool watch(string existing_job_id, string kind = "create"){
+
+		if (running){ return false; }
+		if (!client.open()){ return false; }
+
+		mode = mode_for(kind);
 		job_id = existing_job_id;
 		return start_watching(_("Attaching to the running operation..."));
 	}
 
+	private Mode mode_for(string kind){
+		switch (kind){
+		case "delete":   return Mode.DELETE;
+		case "estimate": return Mode.ESTIMATE;
+		case "restore":  return Mode.RESTORE;
+		default:         return Mode.CREATE;
+		}
+	}
+
 	private bool start_watching(string initial_text){
 
-		/* A fresh task object, so the counters start at zero and nothing is
-		 * inherited from whatever ran last. The boxes poll this; nobody
-		 * executes it. */
-		App.task = new RsyncTask();
-		App.task.status = AppStatus.RUNNING;
+		/* Fresh task objects, so the counters start at zero and nothing is
+		 * inherited from whatever ran last. The boxes poll these; nobody
+		 * executes them. */
+		if (mode == Mode.DELETE){
+			App.delete_file_task = new DeleteFileTask();
+			App.delete_file_task.status = AppStatus.RUNNING;
+			App.thread_delete_running = true;
+			App.thread_delete_success = false;
+		}
+		else {
+			App.task = new RsyncTask();
+			App.task.status = AppStatus.RUNNING;
+		}
+
 		App.progress_text = initial_text;
 
 		client.job_progress.connect(on_progress);
 		client.job_counters.connect(on_counters);
 		client.job_phase.connect(on_phase);
+		client.job_phases.connect(on_phases);
 		client.job_finished.connect(on_finished);
 		client.stream_closed.connect(on_stream_closed);
 
@@ -180,16 +269,26 @@ public class DaemonBridge : GLib.Object {
 		int64 total, int64 eta_seconds, string status_line){
 
 		if (id != job_id){ return; }
-		if (App.task == null){ return; }
 
-		App.task.progress = percent;
-		App.task.status_line = status_line;
+		/* An estimate has nothing to count -- it is a dry run whose whole
+		 * output is one number at the end -- so its page pulses and there is
+		 * no fraction worth writing. */
+		if (mode == Mode.ESTIMATE){ return; }
+
+		var task = (mode == Mode.DELETE)
+			? (AsyncTask?) App.delete_file_task
+			: (AsyncTask?) App.task;
+
+		if (task == null){ return; }
+
+		task.progress = percent;
+		task.status_line = status_line;
 
 		/* The daemon knows the remaining time; AsyncTask would otherwise
 		 * compute one from its own elapsed timer, which never started because
 		 * nothing here is executing. */
 		if (eta_seconds >= 0){
-			App.task.eta_override = TeeJee.Misc.format_duration((double) eta_seconds);
+			task.eta_override = TeeJee.Misc.format_duration((double) eta_seconds);
 		}
 	}
 
@@ -210,9 +309,51 @@ public class DaemonBridge : GLib.Object {
 		App.task.count_group       = wire_count(c, "group");
 	}
 
-	private void on_phase(string id, string phase){
+	/* Builds the checklist a restore page draws.
+	 *
+	 * Assigned as a FRESH list, never mutated in place: RestoreBox rebuilds
+	 * its checklist when App.restore_phases changes object identity, so
+	 * appending to the existing one would leave the page showing the old
+	 * steps forever. */
+	private void on_phases(string id, Json.Array phases){
+
 		if (id != job_id){ return; }
-		App.restore_phase = phase;
+
+		var list = new Gee.ArrayList<RestorePhase>();
+
+		foreach (var node in phases.get_elements()){
+			if (node.get_node_type() != Json.NodeType.OBJECT){ continue; }
+			var o = node.get_object();
+			list.add(new RestorePhase(
+				wire_member(o, "key"),
+				wire_member(o, "title")));
+		}
+
+		if (list.size == 0){ return; }
+
+		App.restore_phases = list;
+	}
+
+	private string wire_member(Json.Object o, string name){
+		if (!o.has_member(name)){ return ""; }
+		if (o.get_member(name).get_node_type() != Json.NodeType.VALUE){ return ""; }
+		return o.get_string_member(name);
+	}
+
+	private void on_phase(string id, string phase){
+
+		if (id != job_id){ return; }
+
+		if (mode == Mode.RESTORE){
+			App.restore_phase = phase;
+			return;
+		}
+
+		/* A delete job's phase key IS the snapshot being removed, which is
+		 * what DeleteBox's message line has always shown. */
+		if (mode == Mode.DELETE){
+			App.progress_text = _("Deleting snapshot") + ": %s".printf(phase);
+		}
 	}
 
 	private void on_finished(string id, string outcome, string error){
@@ -224,10 +365,40 @@ public class DaemonBridge : GLib.Object {
 		success = (outcome != "failed");
 		message = error;
 
-		if (App.task != null){
+		if (mode == Mode.DELETE){
+			if (App.delete_file_task != null){
+				App.delete_file_task.status = success ? AppStatus.FINISHED : AppStatus.CANCELLED;
+				App.delete_file_task.progress = 1.0;
+			}
+			App.thread_delete_success = success;
+			App.thread_delete_running = false;
+		}
+		else if (App.task != null){
 			App.task.status = success ? AppStatus.FINISHED : AppStatus.CANCELLED;
 			App.task.progress = 1.0;
 		}
+
+		/* The daemon wrote the estimate into timeshift.json, because it is the
+		 * denominator for the first real backup. Read it back rather than
+		 * carrying the number over the wire a second time. */
+		if (success && (mode == Mode.ESTIMATE)){
+			reload_estimate();
+		}
+
+		/* "warnings" is a real outcome and not a failure -- rsync's exit 23 on
+		 * a running system is sockets and files that vanished mid-copy -- and
+		 * the restore summary distinguishes the three. */
+		if (mode == Mode.RESTORE){
+			switch (outcome){
+			case "ok":       App.restore_outcome = Main.RestoreOutcome.OK;       break;
+			case "warnings": App.restore_outcome = Main.RestoreOutcome.WARNINGS; break;
+			default:         App.restore_outcome = Main.RestoreOutcome.FAILED;   break;
+			}
+			if (message.length > 0){
+				App.restore_outcome_messages.add(message);
+			}
+		}
+
 		App.progress_text = "";
 
 		running = false;
@@ -250,8 +421,34 @@ public class DaemonBridge : GLib.Object {
 		message = _("Lost contact with the Timeshift service");
 		running = false;
 
+		// A delete page waits on this flag; leaving it set would hang the page
+		// on a job it can no longer see.
+		if (mode == Mode.DELETE){
+			App.thread_delete_success = false;
+			App.thread_delete_running = false;
+		}
+
 		log_error(message);
 		finished(false, message);
+	}
+
+	/* Re-reads the estimate the daemon just saved. */
+	private void reload_estimate(){
+
+		var cfg = client.call_object("config.get", new Json.Object());
+		if (cfg == null){ return; }
+
+		if (cfg.has_member("snapshot_size")){
+			Main.first_snapshot_size = (uint64) int64.parse(
+				cfg.get_string_member("snapshot_size"));
+		}
+		if (cfg.has_member("snapshot_count")){
+			Main.first_snapshot_count = int64.parse(
+				cfg.get_string_member("snapshot_count"));
+		}
+
+		log_debug("DaemonBridge: estimate %lld bytes".printf(
+			(int64) Main.first_snapshot_size));
 	}
 
 	private string wire_job_id(Json.Object result){
