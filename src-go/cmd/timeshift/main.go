@@ -339,6 +339,17 @@ func run(args []string) int {
 	 * AppConsole set App.debug_mode and the core then printed from inside
 	 * itself -- which is why --scripted still had progress written over its
 	 * output. Here it only decides what THIS process prints. */
+	/* --verbose was a documented no-op.
+	 *
+	 * The flag set verbosity=1 and nothing ever read anything but >= 2
+	 * (--debug) and < 0 (--quiet), so the help promised something that did not
+	 * happen. It now reports what this process is about to do, which is the
+	 * level of detail the name suggests, without --debug's socket and override
+	 * dump.
+	 */
+	if verbosity == 1 {
+		fmt.Fprintf(os.Stderr, "timeshift: %s\n", modeDescription(mode))
+	}
 	if verbosity >= 2 {
 		fmt.Fprintf(os.Stderr, "timeshift: mode=%s socket=%s override=%s\n",
 			mode, socket, jsonOr(override))
@@ -580,4 +591,33 @@ func listSnapshotsCmd(ctx context.Context, configPath string, runner sysexec.Sim
 	repository.SetFirstSnapshotSize(cfg.SnapshotSize)
 
 	return listSnapshots(ctx, os.Stdout, repository, deviceName, deviceUUID)
+}
+
+// modeDescription is the one-line "what is about to happen" that --verbose
+// prints. Kept next to the dispatch so a new mode is obvious when it is missing.
+func modeDescription(mode string) string {
+	switch mode {
+	case "create":
+		return "taking a snapshot"
+	case "delete":
+		return "deleting a snapshot"
+	case "delete-all":
+		return "deleting every snapshot"
+	case "restore":
+		return "restoring a snapshot"
+	case "estimate":
+		return "measuring the system size"
+	case "check":
+		return "running a scheduled check"
+	case "cancel":
+		return "cancelling the running job"
+	case "watch":
+		return "watching the running job"
+	case "list-snapshots":
+		return "listing snapshots"
+	case "list-devices":
+		return "listing devices"
+	default:
+		return mode
+	}
 }

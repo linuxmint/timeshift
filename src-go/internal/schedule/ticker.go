@@ -186,10 +186,25 @@ func (t *Ticker) RequestCheck(trigger string) {
 }
 
 // Status reports what the scheduler has been doing.
+/* Status must not hold t.mu while calling out.
+ *
+ * Enabled is supplied by the daemon and reads its config, which takes the
+ * daemon's own lock -- so holding this one across the call establishes an
+ * ordering of ticker.mu -> daemon.mu. The opposite order already very nearly
+ * exists: config.set holds the daemon's lock and then asks the ticker to run a
+ * check, and the only thing keeping that from deadlocking is that the unlock
+ * happens a few lines before the call. Nothing said so, and moving that call
+ * up into the critical section -- where it looks like it belongs, since it is
+ * all part of applying the change -- would hang the scheduler and every
+ * subsequent config read, permanently.
+ *
+ * Snapshotting and then calling removes the edge rather than documenting it.
+ */
 func (t *Ticker) Status() Status {
 	t.mu.Lock()
-	defer t.mu.Unlock()
 	s := t.status
+	t.mu.Unlock()
+
 	if t.Enabled != nil {
 		s.Enabled = t.Enabled()
 	}

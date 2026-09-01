@@ -22,8 +22,10 @@ import (
  * "%v" on the params struct would print it.
  */
 func (d *daemon) devicesUnlock(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.DeviceUnlockParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.DeviceUnlockParams](params)
+	if err != nil {
+		return nil, err
+	}
 
 	if in.Device == "" {
 		return nil, ipc.Errf(ipc.CodeBadRequest, "devices.unlock needs a device")
@@ -81,8 +83,10 @@ func (d *daemon) devicesUnlock(ctx context.Context, _ *ipc.Conn, params json.Raw
 
 // devicesLock closes a container this daemon or anyone else opened.
 func (d *daemon) devicesLock(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.DeviceLockParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.DeviceLockParams](params)
+	if err != nil {
+		return nil, err
+	}
 
 	if in.Name == "" {
 		return nil, ipc.Errf(ipc.CodeBadRequest, "devices.lock needs a mapper name")

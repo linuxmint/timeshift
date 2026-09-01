@@ -101,8 +101,10 @@ func (d *daemon) recoveryInstall(ctx context.Context, _ *ipc.Conn, params json.R
 		return nil, ipc.Errf(ipc.CodeUnavailable, "the timeshift-recovery package is not installed")
 	}
 
-	var in ipc.RecoveryInstallParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.RecoveryInstallParams](params)
+	if err != nil {
+		return nil, err
+	}
 
 	argv := []string{RecoveryTool, "install"}
 	if in.Target != "" {

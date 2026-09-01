@@ -393,8 +393,10 @@ func (d *daemon) jobsList(context.Context, *ipc.Conn, json.RawMessage) (any, err
 }
 
 func (d *daemon) jobsGet(_ context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.JobRefParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.JobRefParams](params)
+	if err != nil {
+		return nil, err
+	}
 	job, err := d.queue.Get(in.Job)
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeNotFound, "%v", err)
@@ -410,8 +412,10 @@ func (d *daemon) jobsGet(_ context.Context, _ *ipc.Conn, params json.RawMessage)
 // two and a client joining halfway sees exactly what it would have seen from
 // the start.
 func (d *daemon) jobsSubscribe(_ context.Context, c *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.SubscribeParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.SubscribeParams](params)
+	if err != nil {
+		return nil, err
+	}
 
 	if in.Job == "" {
 		// Follow everything. Used by a status display that wants to notice work
@@ -430,8 +434,10 @@ func (d *daemon) jobsSubscribe(_ context.Context, c *ipc.Conn, params json.RawMe
 }
 
 func (d *daemon) jobsCancel(_ context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.JobRefParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.JobRefParams](params)
+	if err != nil {
+		return nil, err
+	}
 	job, err := d.queue.Get(in.Job)
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeNotFound, "%v", err)
@@ -480,8 +486,10 @@ func (d *daemon) jobsResume(_ context.Context, _ *ipc.Conn, params json.RawMessa
 // runningJob resolves the job a pause or resume names, and insists it is the
 // one actually running.
 func (d *daemon) runningJob(params json.RawMessage) (*jobs.Job, error) {
-	var in ipc.JobRefParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.JobRefParams](params)
+	if err != nil {
+		return nil, err
+	}
 
 	job, err := d.queue.Get(in.Job)
 	if err != nil {
@@ -496,8 +504,10 @@ func (d *daemon) runningJob(params json.RawMessage) (*jobs.Job, error) {
 }
 
 func (d *daemon) snapshotCreate(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.CreateParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.CreateParams](params)
+	if err != nil {
+		return nil, err
+	}
 
 	/* A live session has no installed system to snapshot.
 	 *

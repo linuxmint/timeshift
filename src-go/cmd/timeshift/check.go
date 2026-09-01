@@ -25,7 +25,16 @@ import (
 
 // runCheck asks the daemon to run a scheduled check and reports what happened.
 func runCheck(socket string, scripted bool) int {
-	client, err := ipc.Dial(socket)
+	/* connect(), not a bare Dial.
+	 *
+	 * These two were the only commands that skipped the handshake, so they
+	 * neither refused a daemon speaking a different protocol nor gave the
+	 * "not running" / "not permitted" guidance every other command gives. That
+	 * matters most here: --check is a MUTATING command -- it can create and
+	 * delete snapshots -- and a version mismatch is exactly the situation where
+	 * carrying on regardless is worst.
+	 */
+	client, err := connect(socket)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
 		return 1
@@ -108,7 +117,16 @@ func runCheck(socket string, scripted bool) int {
 // or not Timeshift was healthy, and with the daemon owning the timer the only
 // way to notice it has stopped is to ask.
 func runScheduleStatus(socket string) int {
-	client, err := ipc.Dial(socket)
+	/* connect(), not a bare Dial.
+	 *
+	 * These two were the only commands that skipped the handshake, so they
+	 * neither refused a daemon speaking a different protocol nor gave the
+	 * "not running" / "not permitted" guidance every other command gives. That
+	 * matters most here: --check is a MUTATING command -- it can create and
+	 * delete snapshots -- and a version mismatch is exactly the situation where
+	 * carrying on regardless is worst.
+	 */
+	client, err := connect(socket)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
 		return 1

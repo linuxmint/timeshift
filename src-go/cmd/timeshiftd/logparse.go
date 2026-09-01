@@ -90,8 +90,10 @@ func (c *logCache) get(path string) (*parsedLog, bool) {
 
 // logParse submits a parse job and returns its id, like any other job.
 func (d *daemon) logParse(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.LogParseParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.LogParseParams](params)
+	if err != nil {
+		return nil, err
+	}
 
 	target, err := d.resolveLogPath(ctx, in)
 	if err != nil {
@@ -156,8 +158,10 @@ func (d *daemon) runLogParse(ctx context.Context, r jobs.Reporter, target string
 
 // logEntries serves a page of a parsed log.
 func (d *daemon) logEntries(_ context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.LogEntriesParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.LogEntriesParams](params)
+	if err != nil {
+		return nil, err
+	}
 
 	p, ok := d.logCache.get(in.Path)
 	if !ok {

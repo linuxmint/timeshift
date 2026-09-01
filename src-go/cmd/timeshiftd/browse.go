@@ -26,8 +26,10 @@ import (
  */
 
 func (d *daemon) snapshotsBrowse(ctx context.Context, c *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.BrowseParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.BrowseParams](params)
+	if err != nil {
+		return nil, err
+	}
 	if in.Snapshot == "" {
 		return nil, ipc.Errf(ipc.CodeBadRequest, "browse needs a snapshot name")
 	}
@@ -70,8 +72,10 @@ func (d *daemon) snapshotsBrowse(ctx context.Context, c *ipc.Conn, params json.R
 }
 
 func (d *daemon) snapshotsBrowseRelease(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.BrowseReleaseParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.BrowseReleaseParams](params)
+	if err != nil {
+		return nil, err
+	}
 
 	clean, ok := browseReleasePath(d.mountRoot, in.Path)
 	if !ok {

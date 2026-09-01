@@ -76,20 +76,43 @@ func runSetupSSHKey(socket string, ov *ipc.LocationOverride, password string, sc
 	}
 	defer c.Close()
 
+	/* Without --snapshot-url, use the configured location.
+	 *
+	 * This used to call repo.status into a variable it then discarded, which
+	 * could never have worked: ipc.RepoStatus carries no URL. So `url` stayed
+	 * empty, hostOf("") returned "", and the whole fingerprint block below was
+	 * skipped -- defeating, for the ordinary no-arguments case, the exact
+	 * ordering this function's comment argues for. config.get returns the
+	 * on-disk shape, where the URL actually lives.
+	 */
 	url := ov.URL
 	if url == "" {
-		// Fall back to the configured location; the daemon resolves it.
-		var st ipc.RepoStatus
-		if err := c.Call(ipc.MethodRepoStatus, ipc.RepoStatusParams{}, &st); err != nil {
+		var cfg struct {
+			URL string `json:"backup_ssh_url"`
+		}
+		if err := c.Call(ipc.MethodConfigGet, nil, &cfg); err != nil {
 			fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
+			return 1
+		}
+		url = cfg.URL
+		if url == "" {
+			fmt.Fprintln(os.Stderr,
+				"timeshift: no remote location is configured; pass --snapshot-url user@host:/path")
 			return 1
 		}
 	}
 
 	setup := ipc.SSHSetupKeyParams{URL: url, KeyFile: ov.KeyFile, Port: ov.Port, Password: password}
 
-	/* Scan and confirm the host key first, unless it is already trusted -- in
-	 * which case setup_key will simply succeed and nothing needs approving. */
+	/* Scan and confirm the host key BEFORE anything is sent.
+	 *
+	 * Asked every time, including for a host already in known_hosts. The
+	 * comment here used to say it was skipped when the host was already
+	 * trusted, which the code never did -- the scan result carries no such
+	 * flag. Asking anyway is the better behaviour and worth keeping: this
+	 * command is rare and idempotent, one keystroke is cheap, and a host key
+	 * that has CHANGED since it was trusted is exactly the case worth
+	 * catching. */
 	if host := hostOf(url); host != "" {
 		var scan ipc.SSHScanHostResult
 		err := c.Call(ipc.MethodRepoSSHScanHost, ipc.SSHScanHostParams{Host: host, Port: ov.Port}, &scan)

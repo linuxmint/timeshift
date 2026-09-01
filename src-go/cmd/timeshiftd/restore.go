@@ -73,19 +73,25 @@ func (d *daemon) snapshotRestore(ctx context.Context, _ *ipc.Conn, params json.R
 
 	// Built here, before the job is queued, so an impossible restore is
 	// refused synchronously with a reason rather than becoming a failed job.
-	plan, deps, err := d.buildRestorePlan(ctx, in)
-	if err != nil {
-		return nil, err
-	}
-
 	/* Ownership passes to the job, and only once it has actually been queued.
-	 * Every path that returns before that has to close the handle itself. */
+	 * Every path that returns before that has to close the handle itself.
+	 *
+	 * Registered BEFORE the error check, not after: buildRestorePlan hands
+	 * back a usable deps on its error paths too, and deferring only after a
+	 * successful build leaks the repository -- and its mount -- on every
+	 * refused restore. Close is safe on a zero value, so covering the error
+	 * path costs nothing.
+	 */
+	plan, deps, err := d.buildRestorePlan(ctx, in)
 	queued := false
 	defer func() {
 		if !queued {
 			deps.Close()
 		}
 	}()
+	if err != nil {
+		return nil, err
+	}
 
 	if plan.Report.Blocked() {
 		return nil, ipc.Errf(ipc.CodeBadRequest,
@@ -144,9 +150,21 @@ func (d *daemon) buildRestorePlan(ctx context.Context, in ipc.RestoreParams) (*r
 	}
 	deps.repo = repo
 
+	/* Ownership passes to the CALLER, on every path including the error ones.
+	 *
+	 * This used to close the repository on each error return while still
+	 * handing back a non-nil deps, so restorePlan -- which defers deps.Close()
+	 * before checking the error -- closed it a second time. Harmless only
+	 * because both backends' Close is a no-op and Repo.Close clears ownedMount
+	 * after the first unmount; a backend that ever holds a real resource would
+	 * make it a double release.
+	 *
+	 * buildBtrfsRestorePlan, its twin, already behaved this way. Now they
+	 * agree.
+	 */
+
 	list, err := repo.List(ctx)
 	if err != nil {
-		repo.Close()
 		return nil, deps, ipc.Errf(ipc.CodeUnavailable, "%v", err)
 	}
 
@@ -158,16 +176,13 @@ func (d *daemon) buildRestorePlan(ctx context.Context, in ipc.RestoreParams) (*r
 		}
 	}
 	if snap == nil {
-		repo.Close()
 		return nil, deps, ipc.Errf(ipc.CodeNotFound, "no snapshot named %q", in.Snapshot)
 	}
 	if !snap.Valid {
-		repo.Close()
 		return nil, deps, ipc.Errf(ipc.CodeBadRequest,
 			"snapshot %q is incomplete and cannot be restored", in.Snapshot)
 	}
 	if snap.MarkedForDeletion {
-		repo.Close()
 		return nil, deps, ipc.Errf(ipc.CodeBadRequest,
 			"snapshot %q is marked for deletion", in.Snapshot)
 	}
@@ -182,7 +197,6 @@ func (d *daemon) buildRestorePlan(ctx context.Context, in ipc.RestoreParams) (*r
 
 	devices, err := (&block.Scanner{Runner: d.runner}).Scan(ctx)
 	if err != nil {
-		repo.Close()
 		return nil, deps, ipc.Errf(ipc.CodeInternal, "%v", err)
 	}
 
@@ -190,7 +204,6 @@ func (d *daemon) buildRestorePlan(ctx context.Context, in ipc.RestoreParams) (*r
 	if len(in.Mounts) > 0 {
 		mounts, err = applyMountOverrides(mounts, in.Mounts, devices)
 		if err != nil {
-			repo.Close()
 			return nil, deps, ipc.Errf(ipc.CodeBadRequest, "%v", err)
 		}
 	}
@@ -238,7 +251,6 @@ func (d *daemon) buildRestorePlan(ctx context.Context, in ipc.RestoreParams) (*r
 
 	plan, err := restore.BuildPlan(req)
 	if err != nil {
-		repo.Close()
 		return nil, deps, ipc.Errf(ipc.CodeBadRequest, "%v", err)
 	}
 	return plan, deps, nil

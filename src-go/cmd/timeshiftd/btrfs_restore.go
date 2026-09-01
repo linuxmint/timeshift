@@ -224,13 +224,20 @@ func (d *daemon) runRestoreHooks(ctx context.Context, r jobs.Reporter, snapshotP
 // queueBtrfsRestore is snapshot.restore for a btrfs repository.
 func (d *daemon) queueBtrfsRestore(ctx context.Context, in ipc.RestoreParams) (any, error) {
 
+	/* One guard for every path that does not queue, registered before the
+	 * error check -- the same shape as snapshotRestore, so the two cannot
+	 * drift. Close is safe on a zero value. */
 	plan, deps, err := d.buildBtrfsRestorePlan(ctx, in)
+	queued := false
+	defer func() {
+		if !queued {
+			deps.Close()
+		}
+	}()
 	if err != nil {
-		deps.Close()
 		return nil, err
 	}
 	if len(plan.Blockers) > 0 {
-		deps.Close()
 		return nil, ipc.Errf(ipc.CodeBadRequest,
 			"the restore cannot proceed:\n%s", strings.Join(plan.Blockers, "\n"))
 	}
@@ -239,17 +246,9 @@ func (d *daemon) queueBtrfsRestore(ctx context.Context, in ipc.RestoreParams) (a
 	 * rehearse -- no transfer to measure and no file list to compare. Saying so
 	 * is better than reporting success for work that did not happen. */
 	if in.DryRun {
-		deps.Close()
 		return nil, ipc.Errf(ipc.CodeBadRequest,
 			"btrfs mode has no dry run: a subvolume swap copies nothing, so there is nothing to compare")
 	}
-
-	queued := false
-	defer func() {
-		if !queued {
-			deps.Close()
-		}
-	}()
 
 	job, err := d.queue.Submit(jobs.KindRestore, func(ctx context.Context, r jobs.Reporter) (jobs.Outcome, error) {
 		return d.runBtrfsRestore(ctx, r, plan, deps)

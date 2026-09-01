@@ -28,8 +28,10 @@ import (
  * already in flight, which is the moment a man in the middle is worth the most.
  */
 func (d *daemon) repoSSHScanHost(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.SSHScanHostParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.SSHScanHostParams](params)
+	if err != nil {
+		return nil, err
+	}
 	if in.Host == "" {
 		return nil, ipc.Errf(ipc.CodeBadRequest, "repo.ssh.scan_host needs a host")
 	}
@@ -49,8 +51,10 @@ func (d *daemon) repoSSHScanHost(ctx context.Context, _ *ipc.Conn, params json.R
  * refusal rather than silently accepting whatever answered.
  */
 func (d *daemon) repoSSHSetupKey(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.SSHSetupKeyParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.SSHSetupKeyParams](params)
+	if err != nil {
+		return nil, err
+	}
 
 	cfg := d.config()
 	backend, err := d.sshBackendFor(in.URL, in.KeyFile, in.Port, cfg)
@@ -102,8 +106,10 @@ func (d *daemon) repoSSHSetupKey(ctx context.Context, _ *ipc.Conn, params json.R
 
 // repo.ssh.test reports whether the configured location is reachable.
 func (d *daemon) repoSSHTest(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.SSHTestParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.SSHTestParams](params)
+	if err != nil {
+		return nil, err
+	}
 
 	cfg := d.config()
 	backend, err := d.sshBackendFor(in.URL, in.KeyFile, in.Port, cfg)
@@ -196,8 +202,10 @@ func (d *daemon) sshBackendFor(url, keyFile string, port int, cfg config.Config)
  * Location page wants as the person clicks around a device list.
  */
 func (d *daemon) repoSelect(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
-	var in ipc.RepoSelectParams
-	json.Unmarshal(params, &in)
+	in, err := decode[ipc.RepoSelectParams](params)
+	if err != nil {
+		return nil, err
+	}
 
 	cfg := d.config()
 	res := ipc.RepoSelectResult{}
