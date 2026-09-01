@@ -81,6 +81,8 @@ const (
 	MethodConfigGet              = "config.get"
 	MethodConfigSet              = "config.set"
 	MethodDevicesList            = "devices.list"
+	MethodDevicesUnlock          = "devices.unlock"
+	MethodDevicesLock            = "devices.lock"
 	MethodRepoStatus             = "repo.status"
 	MethodRepoReload             = "repo.reload"
 	MethodSnapshotsList          = "snapshots.list"
@@ -186,6 +188,48 @@ type SubscribeParams struct {
  */
 type ConfigSetParams struct {
 	Values map[string]json.RawMessage `json:"values"`
+}
+
+/* DeviceUnlockParams opens a LUKS container.
+ *
+ * The passphrase is collected by the CLIENT, which is the only party that can
+ * reach a person. It travels on stdin from here to cryptsetup and is never put
+ * in argv, where /proc/<pid>/cmdline would expose it to anything on the
+ * machine, and never into a log line.
+ */
+type DeviceUnlockParams struct {
+	// Device is a path, kernel name or mapper name, as devices.list reports.
+	Device string `json:"device"`
+
+	// Name is the device-mapper name to create. Defaults to "<kname>_crypt",
+	// which is what Device.vala has always used, so a container unlocked by
+	// either build appears at the same /dev/mapper path.
+	Name string `json:"name,omitempty"`
+
+	Passphrase string `json:"passphrase,omitempty"`
+}
+
+// DeviceUnlockResult is the mapper device now standing on the container.
+type DeviceUnlockResult struct {
+	Device     string `json:"device"`
+	MappedName string `json:"mapped_name"`
+	Path       string `json:"path,omitempty"`
+	UUID       string `json:"uuid,omitempty"`
+	FSType     string `json:"fstype,omitempty"`
+
+	// AlreadyOpen means someone had unlocked it first. Success, not an error:
+	// the caller wanted a usable device and there is one.
+	AlreadyOpen bool `json:"already_open"`
+}
+
+// DeviceLockParams closes a container by its mapper name.
+type DeviceLockParams struct {
+	Name string `json:"name"`
+}
+
+// DeviceLockResult confirms which one was closed.
+type DeviceLockResult struct {
+	Name string `json:"name"`
 }
 
 // LogEntriesMaxLimit caps one page of a parsed log.

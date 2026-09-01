@@ -172,7 +172,13 @@ func (d *daemon) methods() map[string]ipc.Method {
 		 * system, which is more than the group's read-only grant covers. */
 		ipc.MethodLogParse:   {Fn: d.logParse},
 		ipc.MethodLogEntries: {Fn: d.logEntries},
-		ipc.MethodRepoReload: {Fn: d.repoReload},
+
+		/* Unlocking is root-only. It takes a passphrase and produces a device
+		 * holding somebody's whole filesystem; a read-only grant does not
+		 * stretch to that. */
+		ipc.MethodDevicesUnlock: {Fn: d.devicesUnlock},
+		ipc.MethodDevicesLock:   {Fn: d.devicesLock},
+		ipc.MethodRepoReload:    {Fn: d.repoReload},
 
 		/* Planning a restore changes nothing, but it is not read-only in the
 		 * sense the group grant means: it enumerates every device on the
