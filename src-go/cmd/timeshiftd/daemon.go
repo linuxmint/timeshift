@@ -26,7 +26,10 @@ type daemon struct {
 	runner     *pausableRunner
 	queue      *jobs.Queue
 	mountRoot  string
-	tempDir    string
+
+	// Parsed rsync logs, kept for paging. See logparse.go.
+	logCache *logCache
+	tempDir  string
 
 	// ticker owns the schedule. Nil when the daemon runs with scheduling
 	// switched off from the command line.
@@ -46,6 +49,7 @@ func newDaemon(log *slog.Logger, configPath string, cfg config.Config) *daemon {
 		// it waits, so a queue that refuses is better than one that grows.
 		queue:     jobs.NewQueue(2),
 		mountRoot: fmt.Sprintf("/run/timeshift/%d", os.Getpid()),
+		logCache:  newLogCache(),
 		tempDir:   os.TempDir(),
 	}
 }
@@ -162,7 +166,13 @@ func (d *daemon) methods() map[string]ipc.Method {
 		 * every file on the system as it was -- to a uid the caller names. */
 		ipc.MethodSnapshotsBrowse:        {Fn: d.snapshotsBrowse},
 		ipc.MethodSnapshotsBrowseRelease: {Fn: d.snapshotsBrowseRelease},
-		ipc.MethodRepoReload:             {Fn: d.repoReload},
+
+		/* Parsing a log reads a file as root. Root-only, even though the
+		 * result is only a list of paths: those paths are every file on the
+		 * system, which is more than the group's read-only grant covers. */
+		ipc.MethodLogParse:   {Fn: d.logParse},
+		ipc.MethodLogEntries: {Fn: d.logEntries},
+		ipc.MethodRepoReload: {Fn: d.repoReload},
 
 		/* Planning a restore changes nothing, but it is not read-only in the
 		 * sense the group grant means: it enumerates every device on the

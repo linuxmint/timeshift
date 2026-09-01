@@ -2,6 +2,7 @@ package rsyncx
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -271,5 +272,174 @@ func TestNoDoubleCounting(t *testing.T) {
 			t.Errorf("%s: classified %d lines out of %d seen -- something matched twice",
 				name, classified, p.LineCount)
 		}
+	}
+}
+
+/* Parsing a whole log file.
+ *
+ * The fixture is DERIVED from the real itemise capture rather than invented or
+ * copied from this machine's own /var/log/timeshift. rsync writes the same
+ * itemised text to stdout and to --log-file; the log form only adds a
+ * "2026/08/31 12:00:00 [1234] " prefix. So prefixing the real capture produces
+ * a faithful log AND lets the two parsers be checked against each other, which
+ * a separate hand-written fixture could not do.
+ *
+ * (A real log from this machine would also carry every path on the system into
+ * the repository, which is not something a test corpus should do.)
+ */
+func logFromItemise(t *testing.T, name string) (logText string, itemiseLines []string) {
+	t.Helper()
+	raw, err := os.ReadFile(filepath.Join("..", "..", "testdata", "rsync", name))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var b strings.Builder
+	for i, line := range strings.Split(string(raw), "\n") {
+		if line == "" {
+			continue
+		}
+		itemiseLines = append(itemiseLines, line)
+		fmt.Fprintf(&b, "2026/08/31 12:%02d:%02d [4242] %s\n", (i/60)%60, i%60, line)
+	}
+	return b.String(), itemiseLines
+}
+
+func TestParseLogAgreesWithTheConsoleParser(t *testing.T) {
+	for _, name := range []string{
+		"create-first-pass.itemise",
+		"create-mixed-pass.itemise",
+		"create-unchanged-pass.itemise",
+		"synthetic-all-flags.itemise",
+	} {
+		logText, itemise := logFromItemise(t, name)
+
+		var fromLog []Change
+		counts, lines, err := ParseLog(strings.NewReader(logText), func(c Change) {
+			fromLog = append(fromLog, c)
+		}, nil)
+		if err != nil {
+			t.Fatalf("%s: ParseLog: %v", name, err)
+		}
+		if lines != int64(len(itemise)) {
+			t.Errorf("%s: read %d lines, want %d", name, lines, len(itemise))
+		}
+
+		// The same lines through the console path must produce the same
+		// changes, in the same order.
+		var fromConsole []Change
+		for _, line := range itemise {
+			if c, ok := parseConsoleLine(line); ok {
+				fromConsole = append(fromConsole, c)
+			}
+		}
+
+		if len(fromLog) != len(fromConsole) {
+			t.Fatalf("%s: log parser found %d changes, console parser %d",
+				name, len(fromLog), len(fromConsole))
+		}
+		for i := range fromLog {
+			if fromLog[i] != fromConsole[i] {
+				t.Errorf("%s: change %d: log %+v, console %+v",
+					name, i, fromLog[i], fromConsole[i])
+			}
+		}
+
+		// The counts must add up to the changes found.
+		var total int
+		for _, n := range counts {
+			total += n
+		}
+		if total != len(fromLog) {
+			t.Errorf("%s: counts sum to %d, but %d changes were reported", name, total, len(fromLog))
+		}
+	}
+}
+
+// parseConsoleLine is ParseLogLine's console-format twin, expressed through the
+// same regexes so the parity test above compares parsers rather than copies.
+func parseConsoleLine(line string) (Change, bool) {
+	return ParseLogLine("2026/08/31 12:00:00 [1] " + line)
+}
+
+// A caller that only wants counts must not be made to hold every path: a real
+// log is 22 MB and a couple of hundred thousand entries.
+func TestParseLogWithNoCallbackStillCounts(t *testing.T) {
+	logText, _ := logFromItemise(t, "create-mixed-pass.itemise")
+
+	counts, lines, err := ParseLog(strings.NewReader(logText), nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if lines == 0 {
+		t.Fatal("no lines were read")
+	}
+	if counts[ChangeCreated] == 0 {
+		t.Error("the mixed pass reported no created files")
+	}
+	if counts[ChangeDeleted] == 0 {
+		t.Error("the mixed pass reported no deletions")
+	}
+}
+
+/* Progress is per LINE READ, not per change found. rsync's own chatter is not
+ * a change, and a bar that only moves on matches stalls visibly through the
+ * header and the summary. */
+func TestParseLogProgressCountsLinesNotChanges(t *testing.T) {
+	var b strings.Builder
+	for i := 0; i < 12000; i++ {
+		// Every other line is rsync chatter rather than an itemised change.
+		if i%2 == 0 {
+			fmt.Fprintf(&b, "2026/08/31 12:00:00 [1] >f+++++++++ file-%d\n", i)
+		} else {
+			fmt.Fprintf(&b, "2026/08/31 12:00:00 [1] some rsync chatter %d\n", i)
+		}
+	}
+
+	var last int64
+	var callbacks int
+	_, lines, err := ParseLog(strings.NewReader(b.String()), nil, func(n int64) {
+		callbacks++
+		last = n
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if lines != 12000 {
+		t.Fatalf("read %d lines, want 12000", lines)
+	}
+	if last != 12000 {
+		t.Errorf("final progress = %d, want the line total", last)
+	}
+	if callbacks == 0 {
+		t.Error("progress was never reported")
+	}
+	if callbacks > 20 {
+		t.Errorf("progress reported %d times for 12000 lines; too chatty", callbacks)
+	}
+}
+
+/* A path longer than bufio's default 64 KB token must not end the scan.
+ * Stopping there would look like a short log rather than a failure -- and a log
+ * that reads as short is a changes list that silently omits everything after
+ * the long name. */
+func TestParseLogHandlesAVeryLongPath(t *testing.T) {
+	long := strings.Repeat("a", 200*1024)
+	text := "2026/08/31 12:00:00 [1] >f+++++++++ short-one\n" +
+		"2026/08/31 12:00:00 [1] >f+++++++++ " + long + "\n" +
+		"2026/08/31 12:00:00 [1] >f+++++++++ after-the-long-one\n"
+
+	var got []Change
+	_, lines, err := ParseLog(strings.NewReader(text), func(c Change) { got = append(got, c) }, nil)
+	if err != nil {
+		t.Fatalf("ParseLog: %v", err)
+	}
+	if lines != 3 {
+		t.Fatalf("read %d lines, want 3", lines)
+	}
+	if len(got) != 3 {
+		t.Fatalf("found %d changes, want 3", len(got))
+	}
+	if got[2].Path != "after-the-long-one" {
+		t.Errorf("the entry after a long path was lost: %+v", got[2])
 	}
 }

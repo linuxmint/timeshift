@@ -87,6 +87,8 @@ const (
 	MethodSnapshotsUpdate        = "snapshots.update"
 	MethodSnapshotsBrowse        = "snapshots.browse"
 	MethodSnapshotsBrowseRelease = "snapshots.browse_release"
+	MethodLogParse               = "log.parse"
+	MethodLogEntries             = "log.entries"
 	MethodSnapshotCreate         = "snapshot.create"
 	MethodSnapshotDelete         = "snapshot.delete"
 	MethodSnapshotRestore        = "snapshot.restore"
@@ -184,6 +186,63 @@ type SubscribeParams struct {
  */
 type ConfigSetParams struct {
 	Values map[string]json.RawMessage `json:"values"`
+}
+
+// LogEntriesMaxLimit caps one page of a parsed log.
+//
+// A real snapshot log holds a couple of hundred thousand entries, so an
+// unbounded page is a download rather than a response.
+const LogEntriesMaxLimit = 5000
+
+/* LogParseParams names the log to read.
+ *
+ * Either Path -- which must be under /var/log/timeshift, because the daemon is
+ * root and this would otherwise be an arbitrary-file-read primitive -- or
+ * Snapshot, naming a snapshot whose own rsync log is wanted.
+ */
+type LogParseParams struct {
+	Path     string `json:"path,omitempty"`
+	Snapshot string `json:"snapshot,omitempty"`
+
+	// Name is the log inside the snapshot; "rsync-log" when empty.
+	Name string `json:"name,omitempty"`
+}
+
+// LogParseResult is the job doing the parsing, and the file it resolved to.
+//
+// The path is returned because log.entries is keyed by it, and for a snapshot
+// the client did not name it.
+type LogParseResult struct {
+	Job  string `json:"job"`
+	Path string `json:"path"`
+}
+
+// LogEntriesParams asks for one page of a parsed log.
+type LogEntriesParams struct {
+	Path   string `json:"path"`
+	Offset int    `json:"offset,omitempty"`
+	Limit  int    `json:"limit,omitempty"`
+
+	// Kinds filters by change kind. Empty means everything. Filtering happens
+	// on this side: the point of paging is not to send what is not wanted.
+	Kinds []string `json:"kinds,omitempty"`
+}
+
+// LogEntry is one changed path.
+type LogEntry struct {
+	Path string `json:"path"`
+	Kind string `json:"kind"`
+}
+
+// LogEntriesResult is a page, plus the totals a summary needs.
+type LogEntriesResult struct {
+	Path    string         `json:"path"`
+	Total   int            `json:"total"`
+	Lines   int64          `json:"lines"`
+	Counts  map[string]int `json:"counts"`
+	Offset  int            `json:"offset"`
+	Entries []LogEntry     `json:"entries"`
+	More    bool           `json:"more"`
 }
 
 /* BrowseParams asks for a snapshot's files to be made readable.

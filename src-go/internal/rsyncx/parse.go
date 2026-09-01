@@ -9,6 +9,8 @@
 package rsyncx
 
 import (
+	"bufio"
+	"io"
 	"regexp"
 	"strconv"
 	"strings"
@@ -254,4 +256,59 @@ func SpaceCheckSize(line string) int64 {
 		return -1
 	}
 	return n
+}
+
+/* Parsing a whole log file.
+ *
+ * A snapshot's rsync log is large -- 22 MB and a couple of hundred thousand
+ * lines for an ordinary desktop -- so this streams and hands each change to a
+ * callback rather than returning a slice. Whoever wants them all can accumulate
+ * them; whoever only wants the counts does not have to hold the paths.
+ *
+ * Progress is reported per LINE READ, not per change found. Most lines in a
+ * log are changes, but rsync's own chatter is not, and a progress bar that only
+ * moves on matches stalls visibly through the header and the summary.
+ */
+
+// LogCounts is how many of each kind a log contained.
+type LogCounts map[ChangeKind]int
+
+// ParseLog reads an rsync --log-file and reports every itemised change.
+//
+// onChange may be nil, which is how a caller asks for counts alone. onProgress,
+// when set, is called every few thousand lines with the number read so far --
+// often enough to move a bar, rarely enough not to dominate the parse.
+func ParseLog(r io.Reader, onChange func(Change), onProgress func(lines int64)) (LogCounts, int64, error) {
+	counts := LogCounts{}
+	var lines int64
+
+	sc := bufio.NewScanner(r)
+
+	/* A path may be long, and the default 64 KB token limit makes Scan stop
+	 * with an error partway through a perfectly good log -- which would look
+	 * like a short log rather than a failure. */
+	sc.Buffer(make([]byte, 0, 64*1024), 4*1024*1024)
+
+	for sc.Scan() {
+		lines++
+		if onProgress != nil && lines%5000 == 0 {
+			onProgress(lines)
+		}
+
+		c, ok := ParseLogLine(sc.Text())
+		if !ok {
+			continue
+		}
+		counts[c.Kind]++
+		if onChange != nil {
+			onChange(c)
+		}
+	}
+	if err := sc.Err(); err != nil {
+		return counts, lines, err
+	}
+	if onProgress != nil {
+		onProgress(lines)
+	}
+	return counts, lines, nil
 }
