@@ -530,6 +530,31 @@ func Apply(c Config, values map[string]json.RawMessage) (Config, error) {
 		return c, fmt.Errorf("config: re-read own output: %w", err)
 	}
 
+	/* Two keys Marshal emits CONDITIONALLY ON THEIR VALUE rather than on
+	 * `present`, which made them readable but not settable.
+	 *
+	 * pause_snapshots is omitted when empty and engine when it is the default,
+	 * so neither appears in the reference built above and both were refused as
+	 * unknown settings. The effect was worse than a missing feature: pausing
+	 * snapshots could never be turned ON through the daemon, because turning it
+	 * on is precisely the case where the current value is empty -- and it could
+	 * never be turned OFF either, since clearing means setting it to "" and a
+	 * merge cannot clear a key by leaving it out.
+	 *
+	 * Added with their real values, not a placeholder: a file that genuinely
+	 * carries `"pause_snapshots": ""` must not come back with something
+	 * invented in place of it. */
+	if _, ok := obj["pause_snapshots"]; !ok {
+		obj["pause_snapshots"] = json.RawMessage(`""`)
+	}
+	if _, ok := obj["engine"]; !ok {
+		engine, err := json.Marshal(c.Engine)
+		if err != nil {
+			return c, fmt.Errorf("config: engine: %w", err)
+		}
+		obj["engine"] = engine
+	}
+
 	// Keys the file did not have and the update does not set stay absent.
 	for key := range obj {
 		if optionalKeys[key] && !c.present[key] {
@@ -570,8 +595,14 @@ func Apply(c Config, values map[string]json.RawMessage) (Config, error) {
  * Vala GUI also writes does not churn, and preserved once someone has set one
  * by hand. See the note in Marshal.
  */
+/* Keys that stay ABSENT from the file unless they were already there or are
+ * being set. Writing one unconditionally would make it appear and disappear
+ * depending on which program last saved, because the Vala GUI drops every key
+ * it does not know. */
 var optionalKeys = map[string]bool{
 	"startup_delay_interval_mins": true,
+	"pause_snapshots":             true,
+	"engine":                      true,
 }
 
 func allOptionalKeysPresent(current map[string]bool) map[string]bool {

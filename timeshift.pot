@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-01 14:11-0400\n"
+"POT-Creation-Date: 2026-09-01 14:33-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,24 +42,24 @@ msgstr ""
 msgid "%lld seconds"
 msgstr ""
 
-#: src/Core/Main.vala:5463
+#: src/Core/Main.vala:5517
 #, c-format
 msgid "%s and %s were both set to %s. %s will stay on %s."
 msgstr ""
 
-#: src/Core/Main.vala:5362
+#: src/Core/Main.vala:5416
 #, c-format
 msgid "%s is not an EFI System Partition and cannot hold /boot/efi."
 msgstr ""
 
-#: src/Core/Main.vala:5376
+#: src/Core/Main.vala:5430
 #, c-format
 msgid ""
 "%s is on a different disk from the root device and will not be used for /"
 "boot/efi."
 msgstr ""
 
-#: src/Core/Main.vala:5529
+#: src/Core/Main.vala:5583
 #, c-format
 msgid "%s is the same directory as the root of the restore target."
 msgstr ""
@@ -82,19 +82,19 @@ msgstr ""
 msgid "... and %d more"
 msgstr ""
 
-#: src/Core/Main.vala:5135
+#: src/Core/Main.vala:5189
 msgid "/ is mapped to device"
 msgstr ""
 
-#: src/Core/Main.vala:5157
+#: src/Core/Main.vala:5211
 msgid "/boot is mapped to device"
 msgstr ""
 
-#: src/Core/Main.vala:5168
+#: src/Core/Main.vala:5222
 msgid "/boot/efi is mapped to device"
 msgstr ""
 
-#: src/Core/Main.vala:5146
+#: src/Core/Main.vala:5200
 msgid "/home is mapped to device"
 msgstr ""
 
@@ -158,7 +158,7 @@ msgstr ""
 msgid "Admin access is required to backup and restore system files."
 msgstr ""
 
-#: src/Core/Main.vala:5535
+#: src/Core/Main.vala:5589
 #, c-format
 msgid "Aliased mount detected: %s resolves to the restore target itself"
 msgstr ""
@@ -167,7 +167,7 @@ msgstr ""
 msgid "All Files"
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:186
+#: src/Gtk/SnapshotBackendBox.vala:188
 msgid ""
 "All files are copied when first snapshot is created. Subsequent snapshots "
 "are incremental. Unchanged files will be hard-linked from the previous "
@@ -189,11 +189,11 @@ msgid ""
 "An update is pending; it is applied automatically after package upgrades."
 msgstr ""
 
-#: src/Core/Main.vala:4901
+#: src/Core/Main.vala:4955
 msgid "App config loaded"
 msgstr ""
 
-#: src/Core/Main.vala:4756
+#: src/Core/Main.vala:4758 src/Core/Main.vala:4809
 msgid "App config saved"
 msgstr ""
 
@@ -201,7 +201,7 @@ msgstr ""
 msgid "Appearance"
 msgstr ""
 
-#: src/Core/Main.vala:5673
+#: src/Core/Main.vala:5727
 msgid "Application will exit"
 msgstr ""
 
@@ -221,11 +221,11 @@ msgstr ""
 msgid "Available"
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:97
+#: src/Gtk/SnapshotBackendBox.vala:98
 msgid "BTRFS"
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:169
+#: src/Gtk/SnapshotBackendBox.vala:171
 msgid "BTRFS Snapshots"
 msgstr ""
 
@@ -438,7 +438,7 @@ msgid ""
 "follow the desktop theme."
 msgstr ""
 
-#: src/Core/Main.vala:483 src/Core/Main.vala:4990
+#: src/Core/Main.vala:483 src/Core/Main.vala:5044
 msgid "Commands listed below are not available on this system"
 msgstr ""
 
@@ -472,7 +472,7 @@ msgstr ""
 msgid "Completed With Errors"
 msgstr ""
 
-#: src/Core/Main.vala:5936
+#: src/Core/Main.vala:5990
 msgid "Computing snapshot sizes..."
 msgstr ""
 
@@ -647,7 +647,7 @@ msgid ""
 "system"
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:98 src/Gtk/SnapshotBackendBox.vala:209
+#: src/Gtk/SnapshotBackendBox.vala:99 src/Gtk/SnapshotBackendBox.vala:239
 msgid "Create snapshots using BTRFS"
 msgstr ""
 
@@ -698,7 +698,7 @@ msgstr ""
 msgid "Creating pre-restore snapshot from system subvolumes..."
 msgstr ""
 
-#: src/Core/Main.vala:5672
+#: src/Core/Main.vala:5726
 msgid "Critical Error"
 msgstr ""
 
@@ -822,7 +822,7 @@ msgstr ""
 msgid "Device name is empty!"
 msgstr ""
 
-#: src/Core/Main.vala:5029 src/Core/SnapshotRepo.vala:803
+#: src/Core/Main.vala:5083 src/Core/SnapshotRepo.vala:803
 msgid "Device not found"
 msgstr ""
 
@@ -1041,7 +1041,7 @@ msgstr ""
 msgid "Failed to get partition list"
 msgstr ""
 
-#: src/Core/Main.vala:5108
+#: src/Core/Main.vala:5162
 msgid "Failed to get partition list."
 msgstr ""
 
@@ -1073,11 +1073,11 @@ msgstr ""
 msgid "Failed to query disk space on remote location"
 msgstr ""
 
-#: src/Core/Main.vala:5983
+#: src/Core/Main.vala:6037
 msgid "Failed to query subvolume list"
 msgstr ""
 
-#: src/Core/Main.vala:6068
+#: src/Core/Main.vala:6122
 msgid "Failed to query subvolume quota"
 msgstr ""
 
@@ -1126,11 +1126,11 @@ msgstr ""
 msgid "Failed to unlock device"
 msgstr ""
 
-#: src/Core/Main.vala:6271 src/Utility/Device.vala:1911
+#: src/Core/Main.vala:6325 src/Utility/Device.vala:1911
 msgid "Failed to unmount"
 msgstr ""
 
-#: src/Core/Main.vala:5673
+#: src/Core/Main.vala:5727
 msgid "Failed to unmount device!"
 msgstr ""
 
@@ -1173,7 +1173,7 @@ msgid ""
 "starting with a + will include the item instead of excluding."
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:188
+#: src/Gtk/SnapshotBackendBox.vala:190
 msgid "Files and directories can be excluded to save disk space."
 msgstr ""
 
@@ -1518,7 +1518,7 @@ msgid ""
 "Lost contact with the Timeshift service. The operation may still be running."
 msgstr ""
 
-#: src/Core/Main.vala:5288
+#: src/Core/Main.vala:5342
 msgid "MISSING"
 msgstr ""
 
@@ -1594,7 +1594,7 @@ msgstr ""
 msgid "Multiple snapshots selected"
 msgstr ""
 
-#: src/Core/Main.vala:5284
+#: src/Core/Main.vala:5338
 msgid "NOT SELECTED"
 msgstr ""
 
@@ -1694,7 +1694,7 @@ msgstr ""
 msgid "Not Supported"
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:204
+#: src/Gtk/SnapshotBackendBox.vala:234
 msgid "Not available for remote locations"
 msgstr ""
 
@@ -1734,13 +1734,13 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:178
+#: src/Gtk/SnapshotBackendBox.vala:180
 msgid ""
 "OS must be installed on a BTRFS partition with Ubuntu-type subvolume layout "
 "(@ and @home subvolumes). Other layouts are not supported."
 msgstr ""
 
-#: src/Core/Main.vala:6242
+#: src/Core/Main.vala:6296
 msgid "Older log files removed"
 msgstr ""
 
@@ -1752,7 +1752,7 @@ msgstr ""
 msgid "On demand (manual)"
 msgstr ""
 
-#: src/Core/Main.vala:637 src/Core/Main.vala:5592
+#: src/Core/Main.vala:637 src/Core/Main.vala:5646
 #: src/Gtk/RestoreDeviceBox.vala:575
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
@@ -1766,7 +1766,7 @@ msgstr ""
 msgid "Operation In Progress"
 msgstr ""
 
-#: src/Core/Main.vala:5011
+#: src/Core/Main.vala:5065
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
@@ -1869,7 +1869,7 @@ msgstr ""
 msgid "Please do not interrupt the restore process!"
 msgstr ""
 
-#: src/Core/Main.vala:484 src/Core/Main.vala:4991
+#: src/Core/Main.vala:484 src/Core/Main.vala:5045
 msgid "Please install required packages and try running TimeShift again"
 msgstr ""
 
@@ -1952,11 +1952,11 @@ msgstr ""
 msgid "Purple"
 msgstr ""
 
-#: src/Core/Main.vala:5890 src/Core/Main.vala:5957
+#: src/Core/Main.vala:5944 src/Core/Main.vala:6011
 msgid "Query completed"
 msgstr ""
 
-#: src/Core/Main.vala:5873
+#: src/Core/Main.vala:5927
 msgid "Querying subvolume info..."
 msgstr ""
 
@@ -1964,7 +1964,7 @@ msgstr ""
 msgid "RSYNC"
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:182
+#: src/Gtk/SnapshotBackendBox.vala:184
 msgid "RSYNC Snapshots"
 msgstr ""
 
@@ -2052,7 +2052,7 @@ msgstr ""
 msgid "Remote location not available"
 msgstr ""
 
-#: src/Core/Main.vala:4984
+#: src/Core/Main.vala:5038
 msgid "Remote snapshot location is not configured"
 msgstr ""
 
@@ -2060,7 +2060,7 @@ msgstr ""
 msgid "Remove selected patterns"
 msgstr ""
 
-#: src/Core/Main.vala:2270 src/Core/Main.vala:2274 src/Core/Main.vala:6238
+#: src/Core/Main.vala:2270 src/Core/Main.vala:2274 src/Core/Main.vala:6292
 #: src/Core/Snapshot.vala:728 src/Core/SnapshotRepo.vala:1241
 #, c-format
 msgid "Removed"
@@ -2070,7 +2070,7 @@ msgstr ""
 msgid "Removed cron task"
 msgstr ""
 
-#: src/Core/Main.vala:5736
+#: src/Core/Main.vala:5790
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr ""
@@ -2196,7 +2196,7 @@ msgid ""
 "is restored."
 msgstr ""
 
-#: src/Core/Main.vala:5531
+#: src/Core/Main.vala:5585
 msgid ""
 "Restoring would delete the target's contents through it. Nothing was changed."
 msgstr ""
@@ -2318,7 +2318,7 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
-#: src/Core/Main.vala:5532
+#: src/Core/Main.vala:5586
 #, c-format
 msgid "Select 'Keep on Root Device' for %s, or choose a different device."
 msgstr ""
@@ -2435,11 +2435,11 @@ msgstr ""
 msgid "Select the target devices where system will be cloned."
 msgstr ""
 
-#: src/Core/Main.vala:5039
+#: src/Core/Main.vala:5093
 msgid "Selected default snapshot device"
 msgstr ""
 
-#: src/Core/Main.vala:4951 src/Core/Main.vala:4955
+#: src/Core/Main.vala:5005 src/Core/Main.vala:5009
 msgid "Selected default snapshot type"
 msgstr ""
 
@@ -2526,7 +2526,7 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:177
+#: src/Gtk/SnapshotBackendBox.vala:179
 msgid ""
 "Size of BTRFS snapshots are initially zero. As system files gradually change "
 "with time, data gets written to new data blocks which take up disk space "
@@ -2634,7 +2634,7 @@ msgstr ""
 msgid "Snapshots are being deleted by the Timeshift service."
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:173
+#: src/Gtk/SnapshotBackendBox.vala:175
 msgid ""
 "Snapshots are created and restored instantly. Snapshot creation is an atomic "
 "transaction at the file system level."
@@ -2646,13 +2646,13 @@ msgid ""
 "ones removed once the limit is reached."
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:185
+#: src/Gtk/SnapshotBackendBox.vala:187
 msgid ""
 "Snapshots are created by creating copies of system files using rsync, and "
 "hard-linking unchanged files from previous snapshot."
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:172
+#: src/Gtk/SnapshotBackendBox.vala:174
 msgid ""
 "Snapshots are created using the built-in features of the BTRFS file system."
 msgstr ""
@@ -2661,20 +2661,20 @@ msgstr ""
 msgid "Snapshots are not scheduled at fixed times."
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:175
+#: src/Gtk/SnapshotBackendBox.vala:177
 msgid ""
 "Snapshots are perfect, byte-for-byte copies of the system. Nothing is "
 "excluded."
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:174
+#: src/Gtk/SnapshotBackendBox.vala:176
 msgid ""
 "Snapshots are restored by replacing system subvolumes. Since files are never "
 "copied, deleted or overwritten, there is no risk of data loss. The existing "
 "system is preserved as a new snapshot after restore."
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:176
+#: src/Gtk/SnapshotBackendBox.vala:178
 msgid ""
 "Snapshots are saved on the same disk from which they are created (system "
 "disk). Storage on other disks is not supported. If system disk fails then "
@@ -2701,7 +2701,7 @@ msgstr ""
 msgid "Snapshots available for restore"
 msgstr ""
 
-#: src/Gtk/SnapshotBackendBox.vala:187
+#: src/Gtk/SnapshotBackendBox.vala:189
 msgid ""
 "Snapshots can be saved to any disk formatted with a Linux file system. "
 "Saving snapshots to non-system or external disk allows the system to be "
@@ -2746,7 +2746,7 @@ msgstr ""
 msgid "Some files vanished while they were being copied."
 msgstr ""
 
-#: src/Core/Main.vala:6282
+#: src/Core/Main.vala:6336
 msgid "Some snapshots are still mounted and were left in place"
 msgstr ""
 
@@ -2918,6 +2918,11 @@ msgstr ""
 msgid "The Timeshift service refused the request"
 msgstr ""
 
+#: src/Core/Main.vala:4803
+#, c-format
+msgid "The Timeshift service would not save the settings"
+msgstr ""
+
 #: src/Gtk/RecoveryBox.vala:196
 msgid "The boot entry exists but cannot be reached at startup"
 msgstr ""
@@ -2992,7 +2997,7 @@ msgid ""
 "super option needs to record file ownership"
 msgstr ""
 
-#: src/Core/Main.vala:5514
+#: src/Core/Main.vala:5568
 #, c-format
 msgid "The restore target could not be read: %s"
 msgstr ""
@@ -3035,7 +3040,7 @@ msgstr ""
 msgid "The target is incomplete and must not be booted. Re-run the restore."
 msgstr ""
 
-#: src/Core/Main.vala:5591
+#: src/Core/Main.vala:5645
 msgid "The target partition has an unsupported subvolume layout."
 msgstr ""
 
@@ -3169,7 +3174,7 @@ msgstr ""
 msgid "Unshared"
 msgstr ""
 
-#: src/Core/Main.vala:5595 src/Gtk/RestoreDeviceBox.vala:572
+#: src/Core/Main.vala:5649 src/Gtk/RestoreDeviceBox.vala:572
 msgid "Unsupported Subvolume Layout"
 msgstr ""
 
@@ -3249,7 +3254,7 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: src/Core/Main.vala:5404
+#: src/Core/Main.vala:5458
 #, c-format
 msgid "Using %s as the EFI System Partition for /boot/efi."
 msgstr ""
@@ -3380,7 +3385,7 @@ msgstr ""
 msgid "another Timeshift operation"
 msgstr ""
 
-#: src/Core/Main.vala:2098 src/Core/Main.vala:5982 src/Core/Main.vala:6067
+#: src/Core/Main.vala:2098 src/Core/Main.vala:6036 src/Core/Main.vala:6121
 #: src/Core/Subvolume.vala:266
 msgid "btrfs returned an error"
 msgstr ""
@@ -3413,11 +3418,11 @@ msgstr ""
 msgid "mounted at path"
 msgstr ""
 
-#: src/Core/Main.vala:5281
+#: src/Core/Main.vala:5335
 msgid "ok"
 msgstr ""
 
-#: src/Core/Main.vala:5292
+#: src/Core/Main.vala:5346
 msgid "on root"
 msgstr ""
 
@@ -3461,6 +3466,11 @@ msgstr ""
 
 #: src/Gtk/RecoveryBox.vala:219
 msgid "system has"
+msgstr ""
+
+#: src/Core/Main.vala:4809
+#, c-format
+msgid "through the Timeshift service"
 msgstr ""
 
 #: src/Core/SnapshotRepo.vala:975 src/Core/SnapshotRepo.vala:1028

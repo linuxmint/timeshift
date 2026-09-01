@@ -82,6 +82,7 @@ class SnapshotBackendBox : Gtk.Box{
 		opt_rsync = opt;
 
 		opt_rsync.toggled.connect(()=>{
+			if (loading){ return; }
 			if (opt_rsync.active){
 				App.btrfs_mode = false;
 				Main.first_snapshot_size = 0;
@@ -104,6 +105,7 @@ class SnapshotBackendBox : Gtk.Box{
         }
 
 		opt_btrfs.toggled.connect(()=>{
+			if (loading){ return; }
 			if (opt_btrfs.active){
 				App.btrfs_mode = true;
 				init_backend();
@@ -195,7 +197,35 @@ class SnapshotBackendBox : Gtk.Box{
 		App.try_select_default_device_for_backup(parent_window);
 	}
 
+	/* True while refresh() is putting the widgets into the state the config
+	 * already describes, as opposed to a person choosing something.
+	 *
+	 * Setting a Gtk.CheckButton's `active` fires `toggled`, and the handlers
+	 * below treat that as a CHANGE: they zero Main.first_snapshot_size so the
+	 * system size gets measured again against the new mode. Which is right when
+	 * someone picks a different backend, and wrong when the page is merely
+	 * being drawn -- and the page is drawn every time the Settings window
+	 * opens.
+	 *
+	 * The consequence was not cosmetic. Opening Settings and closing it again
+	 * persisted a zero estimate, and that estimate is the space check: 
+	 * SnapshotRepo reads it as the room a first backup needs, and
+	 * Main.create_snapshot only compares free space `if (first_snapshot_size >
+	 * 0)`. So looking at the settings quietly switched the check off, and made
+	 * the next backup wizard re-measure the whole filesystem to get it back.
+	 *
+	 * It starts TRUE, not false. Building the page toggles the radios too --
+	 * add_opt_btrfs() sets opt_rsync.active when btrfs tools are missing, and
+	 * grouping two CheckButtons settles which of them is on -- and all of that
+	 * happens before refresh() is ever called. A flag that only covered
+	 * refresh() would still let construction zero the estimate, which is
+	 * exactly what it did.
+	 */
+	private bool loading = true;
+
 	public void refresh(){
+
+		loading = true;
 
 		// BTRFS snapshots need a local filesystem, so the option is not
 		// available while snapshots are sent to a remote host
@@ -210,6 +240,10 @@ class SnapshotBackendBox : Gtk.Box{
 		}
 		
 		opt_btrfs.active = App.btrfs_mode;
+
+		loading = false;
+
+		// Called explicitly, because the handlers deliberately did not.
 		type_changed();
 		update_description();
 	}

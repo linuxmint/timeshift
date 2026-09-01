@@ -185,3 +185,70 @@ func TestApplyCanIntroduceAnOptionalKeyWhenAsked(t *testing.T) {
 		t.Fatalf("the key was not written:\n%s", Marshal(got))
 	}
 }
+
+/* pause_snapshots and engine are emitted conditionally on their VALUE rather
+ * than on `present`, which made them readable but not settable.
+ *
+ * The effect was worse than a missing feature. Pausing could never be turned ON
+ * through the daemon, because turning it on is exactly the case where the
+ * current value is empty and the key is therefore absent from the reference
+ * Apply validates against -- so the request came back as "unknown setting". And
+ * it could never be turned OFF either: clearing means setting it to "", since a
+ * merge cannot clear a key by leaving it out.
+ */
+func TestApplyCanSetAPauseWhenNoneIsSet(t *testing.T) {
+	c := Defaults()
+	if c.PauseSnapshots != "" {
+		t.Fatalf("fixture already carries a pause: %q", c.PauseSnapshots)
+	}
+
+	got, err := Apply(c, map[string]json.RawMessage{
+		"pause_snapshots": json.RawMessage(`"1756400000"`),
+	})
+	if err != nil {
+		t.Fatalf("setting a pause on a config that has none: %v", err)
+	}
+	if got.PauseSnapshots != "1756400000" {
+		t.Errorf("PauseSnapshots = %q, want it set", got.PauseSnapshots)
+	}
+	if !strings.Contains(string(Marshal(got)), "pause_snapshots") {
+		t.Error("the key should be written once it has a value")
+	}
+}
+
+func TestApplyCanClearAPause(t *testing.T) {
+	c := Defaults()
+	c.PauseSnapshots = "1756400000"
+
+	got, err := Apply(c, map[string]json.RawMessage{
+		"pause_snapshots": json.RawMessage(`""`),
+	})
+	if err != nil {
+		t.Fatalf("clearing a pause: %v", err)
+	}
+	if got.PauseSnapshots != "" {
+		t.Errorf("PauseSnapshots = %q, want it cleared", got.PauseSnapshots)
+	}
+	// Cleared means gone from the file, which is how the Vala core reads
+	// "not paused" -- an empty key would be written back and read as a pause id.
+	if strings.Contains(string(Marshal(got)), "pause_snapshots") {
+		t.Error("an empty pause must not be written to the file")
+	}
+}
+
+// A key that was never in the file and is not being set stays out of it, so a
+// setting does not appear and vanish depending on which program last saved.
+func TestApplyLeavesAnUnsetOptionalKeyOut(t *testing.T) {
+	c := Defaults()
+	got, err := Apply(c, map[string]json.RawMessage{
+		"date_format": json.RawMessage(`"%Y-%m-%d"`),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, key := range []string{"pause_snapshots", "startup_delay_interval_mins"} {
+		if strings.Contains(string(Marshal(got)), key) {
+			t.Errorf("%s appeared without being set", key)
+		}
+	}
+}

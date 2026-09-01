@@ -4739,6 +4739,8 @@ public class Main : GLib.Object{
 			config.set_string_member("pause_snapshots", this.pause_snapshots_this_boot);
 		}
 
+		if (save_app_config_to_daemon(config)){ return; }
+
 		var json = new Json.Generator();
 		json.pretty = true;
 		json.indent = 2;
@@ -4755,6 +4757,58 @@ public class Main : GLib.Object{
 	    if ((app_mode == "")||(LOG_DEBUG)){
 			log_msg(_("App config saved") + ": %s".printf(this.app_conf_path));
 		}
+	}
+
+	/* Save through the daemon, which MERGES rather than truncating.
+	 *
+	 * Two things are wrong with writing the file directly, and both are
+	 * silent.
+	 *
+	 * The first is that this build writes twenty-nine keys and the config
+	 * format has more -- `engine` and `startup_delay_interval_mins` today, and
+	 * whatever a newer daemon adds tomorrow. Generating the whole file from
+	 * those twenty-nine DELETES the rest. Someone who sets
+	 * startup_delay_interval_mins by hand loses it the next time anybody opens
+	 * Settings and closes it. config.set is a partial update, so keys this
+	 * build has never heard of survive.
+	 *
+	 * The second is that the daemon holds the config in memory. A file written
+	 * behind its back leaves it working from a stale copy until something
+	 * happens to reload it -- so the schedule the daemon acts on and the
+	 * schedule the Settings window shows can disagree, with nothing anywhere
+	 * saying so.
+	 *
+	 * Falling back to the file write when the daemon refuses is deliberate: it
+	 * is exactly today's behaviour, so this is never worse than not trying,
+	 * and refusing to save at all would lose the change outright. The reason
+	 * is logged, because a refusal means the two key tables have diverged and
+	 * that is worth finding.
+	 */
+	private bool save_app_config_to_daemon(Json.Object config){
+
+		var api = DaemonApi.get_shared();
+		if (api == null){ return false; }
+
+		/* A merge cannot clear a key by leaving it out, and clearing by leaving
+		 * it out is exactly how pausing is switched off: unpause sets both
+		 * fields to nothing and relies on the whole-file write to drop the key.
+		 * Sent as an empty string instead -- the daemon's writer omits an empty
+		 * pause_snapshots from the file, so the result on disk is identical. */
+		if (!config.has_member("pause_snapshots")){
+			config.set_string_member("pause_snapshots", "");
+		}
+
+		if (!api.config_set(config)){
+			log_error("%s: %s".printf(
+				_("The Timeshift service would not save the settings"),
+				api.last_error));
+			return false;
+		}
+
+		if ((app_mode == "") || LOG_DEBUG){
+			log_msg(_("App config saved") + ": %s".printf(_("through the Timeshift service")));
+		}
+		return true;
 	}
 
 	public void load_app_config(){
