@@ -1,3 +1,18 @@
+timeshift-ssh (25.12.4+ssh36) resolute; urgency=medium
+
+  * Fix snapshots to a remote repository, which had never worked from the Go
+    core: the rsync transport carried ssh's -n, handing it /dev/null for the
+    stdin rsync uses to talk to the far side
+  * Do not tear down the shared ssh control master when a repository handle
+    is closed; a status query during a backup would drop the transfer
+  * The GUI shows work it is not doing: a snapshot started by anything else
+    now appears in the main window with live progress, and the list refreshes
+    itself when the job finishes
+  * Stop logging "Error opening directory" for the daemon socket and the
+    repository lock on every exit
+
+ -- makeafide <willsmit4433@gmail.com>  Mon, 31 Aug 2026 23:35:00 -0400
+
 timeshift-ssh (25.12.4+ssh35) resolute; urgency=medium
 
   * Complete the IPC surface: log.parse/log.entries, devices.unlock/lock,
