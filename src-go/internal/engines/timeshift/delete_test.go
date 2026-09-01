@@ -181,3 +181,61 @@ func (realRunner) Run(ctx context.Context, argv []string, stdin string) (int, st
 func (realRunner) Stream(ctx context.Context, argv []string, onLine func(stream, line string)) (int, error) {
 	return sysexec.NewSimple(sysexec.New(nil)).Stream(ctx, argv, onLine)
 }
+
+/* Open must create its run directory, for a REMOTE repository above all.
+ *
+ * A local repository gets one on the way to mounting its device, so this was
+ * missed: a remote one never touched it, and ssh's ControlPath lives there.
+ * The result was
+ *
+ *   unix_listener: cannot bind to path /run/timeshift/<pid>/ssh-...:
+ *   No such file or directory
+ *
+ * followed by "Remote location not available" and an empty listing -- which a
+ * script cannot tell apart from a repository with no snapshots. The daemon uses
+ * the same per-pid path, so it could not reach a remote repository either.
+ */
+func TestOpenCreatesItsRunDirectory(t *testing.T) {
+	mountRoot := filepath.Join(t.TempDir(), "run", "timeshift", "12345")
+
+	repo, err := Engine{}.Open(context.Background(), engines.Location{
+		Type: "ssh",
+		SSH:  engines.SSHLocation{User: "backup", Host: "example.invalid", Path: "/srv/snap"},
+	}, engines.Deps{Runner: realRunner{}, MountRoot: mountRoot})
+	if err != nil {
+		t.Fatalf("Open: %v", err)
+	}
+	defer repo.Close()
+
+	info, err := os.Stat(mountRoot)
+	if err != nil {
+		t.Fatalf("Open did not create its run directory: %v", err)
+	}
+	if !info.IsDir() {
+		t.Fatal("run directory is not a directory")
+	}
+
+	/* 0700: the ssh control socket lives in here, and anyone who can open it
+	 * can ride the authenticated connection. */
+	if perm := info.Mode().Perm(); perm != 0o700 {
+		t.Errorf("run directory mode = %o, want 700", perm)
+	}
+}
+
+// A local repository must get the same treatment, so the ordering of the two
+// branches in Open cannot quietly matter.
+func TestOpenCreatesItsRunDirectoryForALocalRepository(t *testing.T) {
+	mountRoot := filepath.Join(t.TempDir(), "run", "timeshift", "12345")
+
+	repo, err := Engine{}.Open(context.Background(),
+		engines.Location{Type: "local", MountPath: t.TempDir()},
+		engines.Deps{Runner: realRunner{}, MountRoot: mountRoot})
+	if err != nil {
+		t.Fatalf("Open: %v", err)
+	}
+	defer repo.Close()
+
+	if _, err := os.Stat(mountRoot); err != nil {
+		t.Fatalf("Open did not create its run directory: %v", err)
+	}
+}

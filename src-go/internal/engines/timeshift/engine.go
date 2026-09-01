@@ -11,6 +11,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"path"
 
 	"github.com/makeafide/timeshift/src-go/internal/engines"
@@ -79,6 +80,27 @@ func (Engine) Open(ctx context.Context, loc engines.Location, deps engines.Deps)
 	}
 
 	repo := &Repo{Deps: deps, BtrfsMode: loc.BtrfsMode}
+
+	/* The run directory has to exist before anything is put in it.
+	 *
+	 * A local repository gets one on the way to mounting its device. A REMOTE
+	 * one never touched it, and ssh's ControlPath lives there -- so
+	 * `timeshift --list` against an SSH repository failed with
+	 *
+	 *   unix_listener: cannot bind to path /run/timeshift/<pid>/ssh-...:
+	 *   No such file or directory
+	 *
+	 * and then reported "Remote location not available" with no snapshots,
+	 * which is indistinguishable from an empty repository. The daemon uses the
+	 * same per-pid path, so it could not reach a remote repository either.
+	 *
+	 * 0700 because the ssh control socket is in here: anyone who can open it
+	 * can ride the authenticated connection. */
+	if deps.MountRoot != "" {
+		if err := os.MkdirAll(deps.MountRoot, 0o700); err != nil {
+			return nil, fmt.Errorf("timeshift: could not create %s: %w", deps.MountRoot, err)
+		}
+	}
 
 	switch loc.Type {
 	case "ssh":
