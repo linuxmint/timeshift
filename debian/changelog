@@ -1,3 +1,13 @@
+timeshift-ssh (25.12.4+ssh37) resolute; urgency=medium
+
+  * Deleting snapshots and estimating the system size now go through the
+    Timeshift service, so either can be watched from anywhere
+  * config.get returns the same shape config.set accepts, so a client can
+    read a setting, change it and write it back
+  * The main window mirrors whichever kind of job the service is running
+
+ -- makeafide <willsmit4433@gmail.com>  Mon, 31 Aug 2026 23:52:00 -0400
+
 timeshift-ssh (25.12.4+ssh36) resolute; urgency=medium
 
   * Fix snapshots to a remote repository, which had never worked from the Go
