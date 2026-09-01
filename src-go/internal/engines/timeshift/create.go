@@ -112,7 +112,9 @@ func (r *Repo) Create(ctx context.Context, req engines.CreateRequest, rep engine
 		Remote:      r.Backend.IsRemote(),
 	}
 	if ssh, ok := r.Backend.(*SSHBackend); ok {
-		opts.RSH = strings.Join(append([]string{"ssh"}, ssh.SSHOptions(false, false)...), " ")
+		// stdinUsed=true: rsync talks to the remote over ssh's stdin, so -n
+		// would hand it /dev/null. See RsyncRSH.
+		opts.RSH = strings.Join(append([]string{"ssh"}, ssh.SSHOptions(true, false)...), " ")
 		if ssh.FakeSuper {
 			opts.RsyncPath = "rsync --fake-super"
 		}
@@ -501,7 +503,19 @@ func (r *Repo) RsyncRSH() string {
 	if !ok {
 		return ""
 	}
-	return strings.Join(append([]string{"ssh"}, ssh.SSHOptions(false, false)...), " ")
+	/* stdinUsed=true, and it is load-bearing.
+	 *
+	 * SSHOptions adds -n when nothing is going to write to ssh's stdin, which
+	 * stops ssh swallowing OUR stdin on an ordinary `ssh host command`. For
+	 * rsync's -e, stdin is not incidental -- it is the channel rsync talks to
+	 * the remote over. With -n, ssh reads /dev/null, the remote rsync gets
+	 * nothing and exits, and both ends report
+	 *
+	 *   rsync: connection unexpectedly closed (0 bytes received so far)
+	 *   rsync error: error in rsync protocol data stream (code 12)
+	 *
+	 * which reads like a network fault and is not one. */
+	return strings.Join(append([]string{"ssh"}, ssh.SSHOptions(true, false)...), " ")
 }
 
 // RsyncPath is the --rsync-path for this repository, empty when there is none.

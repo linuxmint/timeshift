@@ -462,16 +462,28 @@ func (b *SSHBackend) TestConnection(ctx context.Context) (string, error) {
 	return "", nil
 }
 
-// Close drops the multiplexed master connection.
-func (b *SSHBackend) Close() error {
-	if b.ControlPath == "" {
-		return nil
-	}
-	argv := append([]string{"ssh"}, b.SSHOptions(false, false)...)
-	argv = append(argv, "-O", "exit", b.HostSpec())
-	b.Runner.Run(context.Background(), argv, "")
-	return nil
-}
+/* Close releases this handle. It does NOT tear down the ControlMaster.
+ *
+ * It used to, and that was a real fault the moment masters started working.
+ * The ControlPath is derived from the run directory, so every repository
+ * handle in one daemon shares ONE master -- and the daemon opens and closes a
+ * handle per request. A `repo.status` or `snapshots.list` arriving while a
+ * backup was running would run `ssh -O exit` and pull the connection out from
+ * under the rsync, which then died with
+ *
+ *   rsync: connection unexpectedly closed (0 bytes received so far)
+ *   rsync error: error in rsync protocol data stream (code 12)
+ *
+ * The master is not this handle's to close. ControlPersist=60 already bounds
+ * its life, so an idle one goes on its own; DropMaster is the explicit lever
+ * for the case that actually needs it -- a WEDGED master, where a client
+ * attaching never calls connect(2) and so ConnectTimeout never applies.
+ *
+ * This was invisible until the run directory started existing: before that
+ * ssh could not bind the socket at all, every rsync made its own connection,
+ * and `ssh -O exit` failed harmlessly against a master that was never there.
+ */
+func (b *SSHBackend) Close() error { return nil }
 
 // --------------------------------------------------------------- shared ----
 

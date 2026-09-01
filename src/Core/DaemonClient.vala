@@ -78,6 +78,16 @@ public class DaemonClient : GLib.Object {
 	public signal void job_phase(string job_id, string phase);
 	public signal void job_progress(string job_id, double percent, int64 count,
 		int64 total, int64 eta_seconds, string status_line);
+	/* The rsync breakdown -- created, deleted, modified and so on -- as the
+	 * daemon sent it.
+	 *
+	 * A separate signal rather than more arguments on job_progress: the
+	 * counters are ten numbers that only a progress page wants, and widening
+	 * job_progress would make every other subscriber carry them. The object is
+	 * passed through raw so a daemon that grows a counter does not need this
+	 * signal changed to deliver it. */
+	public signal void job_counters(string job_id, Json.Object counters);
+
 	public signal void job_log(string job_id, string line);
 	public signal void job_finished(string job_id, string outcome, string error);
 
@@ -459,6 +469,13 @@ public class DaemonClient : GLib.Object {
 			wire_int(p, "total", 0),
 			wire_int(p, "eta_seconds", 0),
 			wire_string(p, "status_line", ""));
+
+		// Only when the daemon sent them: a phase with no per-file breakdown
+		// leaves the field out entirely rather than sending ten zeroes.
+		if (p.has_member("counters") &&
+			(p.get_member("counters").get_node_type() == Json.NodeType.OBJECT)){
+			job_counters(job_id, p.get_object_member("counters"));
+		}
 	}
 
 	/* Reading the wire, which is NOT the dialect the rest of this codebase

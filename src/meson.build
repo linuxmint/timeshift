@@ -18,6 +18,7 @@ config_header = configure_file(
 sources_core = files([
   'Core/AppExcludeEntry.vala',
   'Core/DaemonClient.vala',
+  'Core/DaemonBridge.vala',
   'Core/Main.vala',
   'Core/RepoBackend.vala',
   'Core/Snapshot.vala',

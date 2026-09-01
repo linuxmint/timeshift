@@ -287,3 +287,51 @@ func TestLocalBackend(t *testing.T) {
 		t.Error("a file that does not exist must not appear in the result")
 	}
 }
+
+/* An rsync transport must never carry -n.
+ *
+ * SSHOptions adds -n when nothing will write to ssh's stdin, which stops ssh
+ * swallowing the caller's stdin on an ordinary `ssh host command`. For rsync's
+ * -e, stdin IS the channel rsync uses to talk to the remote: with -n the remote
+ * rsync receives nothing and exits, and both ends report
+ *
+ *   rsync: connection unexpectedly closed (0 bytes received so far)
+ *   rsync error: error in rsync protocol data stream (code 12)
+ *
+ * which reads like a network fault and is not one. Nothing caught this because
+ * the write path had only ever been exercised against a LOCAL repository, where
+ * there is no ssh at all.
+ */
+func TestAnRsyncTransportNeverCarriesDashN(t *testing.T) {
+	repo := &Repo{Backend: &SSHBackend{
+		User: "backup", Host: "nas.example", Path: "/srv/snap",
+		KeyFile: "/etc/timeshift/ssh/id_ed25519",
+	}}
+
+	rsh := repo.RsyncRSH()
+	if rsh == "" {
+		t.Fatal("no RSH for a remote repository")
+	}
+	for _, f := range strings.Fields(rsh) {
+		if f == "-n" {
+			t.Fatalf("the rsync transport carries -n, which sends the remote nothing:\n  %s", rsh)
+		}
+	}
+
+	// And it must still carry the options that make it safe and non-interactive.
+	for _, want := range []string{"BatchMode=yes", "IdentitiesOnly=yes", "-F", "/dev/null"} {
+		if !strings.Contains(rsh, want) {
+			t.Errorf("the rsync transport is missing %q:\n  %s", want, rsh)
+		}
+	}
+}
+
+/* The reverse: a plain `ssh host command` SHOULD carry -n, so ssh does not
+ * consume the stdin of whatever invoked us. */
+func TestAPlainCommandTransportStillCarriesDashN(t *testing.T) {
+	b := &SSHBackend{User: "backup", Host: "nas.example", Path: "/srv/snap"}
+	opts := strings.Join(b.SSHOptions(false, false), " ")
+	if !strings.Contains(opts, " -n ") && !strings.HasSuffix(opts, " -n") {
+		t.Errorf("a command transport lost -n:\n  %s", opts)
+	}
+}

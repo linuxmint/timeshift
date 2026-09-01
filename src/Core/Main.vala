@@ -491,6 +491,24 @@ public class Main : GLib.Object{
 
 	// copy env from the spawning parent to this
 	public static void setup_env() {
+
+		/* TIMESHIFT_KEEP_ENV=1 leaves the environment exactly as it was found.
+		 *
+		 * Normally this method scavenges DISPLAY, XAUTHORITY and the Wayland
+		 * variables from the invoking user's session, because under pkexec the
+		 * GUI runs as root with none of them. That is right in production and
+		 * makes the GUI impossible to test: a run under Xvfb has its DISPLAY
+		 * replaced by the real one, and the window opens on the tester's actual
+		 * screen instead of the virtual display.
+		 *
+		 * It grants nothing. Anyone who can set an environment variable on a
+		 * root process already has root; all this does is decline to overwrite
+		 * what they set. Same family as TIMESHIFT_THEME_CSS and
+		 * TIMESHIFT_RESTORE_TERMINAL. */
+		if (GLib.Environment.get_variable("TIMESHIFT_KEEP_ENV") == "1"){
+			return;
+		}
+
 		Pid user_pid = TeeJee.ProcessHelper.get_user_process();
 		string[]? user_env = TeeJee.ProcessHelper.get_process_env(user_pid);
 		if(user_env == null) {
@@ -6464,7 +6482,18 @@ public class Main : GLib.Object{
 		
 		foreach(var dname in dirlist){
 			
-			int pid = int.parse(dname);
+			/* Only numeric-pid entries are run directories.
+			 *
+			 * /run/timeshift also holds daemon.sock and repo.lock, and
+			 * int.parse() returns 0 for both -- which sent this loop on to
+			 * treat a socket as a directory and log "Error opening directory"
+			 * on every exit. Same rule as reap_stale_run_dirs() and as the Go
+			 * reaper: a name that is not a pid is not ours to sweep. */
+			int64 parsed = 0;
+			if (!int64.try_parse(dname, out parsed)){ continue; }
+			if (parsed <= 0){ continue; }
+
+			int pid = (int) parsed;
 
 			if (pid != Posix.getpid()){ // if some other process
 				

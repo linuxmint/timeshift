@@ -403,8 +403,19 @@ public abstract class AsyncTask : GLib.Object{
 		}
 	}
 
+	/* Set when the number comes from somewhere better than our own clock.
+	 *
+	 * The estimate below divides elapsed time by progress, which needs a timer
+	 * that started when the work did. A task filled in from the daemon's event
+	 * stream never executed anything, so its timer never started and the
+	 * estimate would be nonsense; the daemon sends a real one instead. */
+	public string eta_override = "";
+
 	public string stat_time_remaining{
 		owned get{
+			if (eta_override.length > 0){
+				return eta_override;
+			}
 			if (this.progress > 0){
 				double remaining = ((this.elapsed / this.progress) * (1.0 - this.progress));
 				if (remaining < 0){

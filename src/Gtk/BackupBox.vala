@@ -60,15 +60,48 @@ class BackupBox : TaskProgressBox {
 		set_paused(false);
 	}
 
+	private DaemonBridge? bridge = null;
+
 	public bool take_snapshot(){
 
-		try {
+		/* Hand the work to the daemon when there is one.
+		 *
+		 * Not an optimisation: a snapshot taken by the daemon has an id, and
+		 * anyone else -- a second window, the CLI, apt-snapshot-guard -- can
+		 * attach to it and watch. One taken in this process is visible only to
+		 * this process, which is the defect the whole port exists to remove.
+		 *
+		 * attach_existing means clicking Create while apt is already
+		 * snapshotting watches that job rather than queueing a second copy of
+		 * the same moment.
+		 *
+		 * A daemon that is absent, stopped or speaking another protocol
+		 * version falls through to the local core below and everything works
+		 * exactly as it did. */
+		bridge = new DaemonBridge();
+
+		if (bridge.available() &&
+			bridge.begin_create(App.cmd_comments, {"O"}, true)){
+
 			thread_is_running = true;
-			new Thread<void>.try ("snapshot-taker", () => {take_snapshot_thread();});
+			bridge.finished.connect((ok, msg) => {
+				thread_status_success = ok;
+				thread_is_running = false;
+				if (!ok && (msg.length > 0)){
+					log_error(msg);
+				}
+			});
 		}
-		catch (Error e) {
-			log_error (e.message);
-			return false;
+		else {
+			bridge = null;
+			try {
+				thread_is_running = true;
+				new Thread<void>.try ("snapshot-taker", () => {take_snapshot_thread();});
+			}
+			catch (Error e) {
+				log_error (e.message);
+				return false;
+			}
 		}
 
 		if (App.btrfs_mode){

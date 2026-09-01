@@ -58,6 +58,7 @@ class MainWindow : AppWindow{
 
 	// status area
 	private Banner daemon_banner;
+	private DaemonBridge? daemon_bridge = null;
 	private JobMonitorWindow? monitor_window = null;
 	private uint tmr_daemon = 0;
 
@@ -193,22 +194,72 @@ class MainWindow : AppWindow{
 			return; // already being watched; the window has the detail
 		}
 
+		/* Mirror the job into the fields every page here polls.
+		 *
+		 * This is the shim that lets the GUI stop being a second
+		 * implementation. BackupBox, RestoreBox and DeleteBox do not observe
+		 * anything -- they read App.task and App.progress_text from a loop --
+		 * so filling those from the daemon's event stream makes them show work
+		 * this process is not doing, without touching a line of their code.
+		 *
+		 * Only when nothing local is running. A backup started in this process
+		 * owns App.task, and replacing it underneath would blank the counters
+		 * of the operation the person is actually watching. */
+		if ((daemon_bridge == null) && !local_work_running()){
+			daemon_bridge = new DaemonBridge();
+			if (!daemon_bridge.watch(job_id)){
+				daemon_bridge = null;
+			}
+			else {
+				daemon_bridge.finished.connect(() => {
+					daemon_bridge = null;
+					hide_daemon_banner();
+					refresh_all();
+				});
+			}
+		}
+
 		log_debug("MainWindow: the Timeshift service is running %s (%s)".printf(job_id, kind));
 
 		daemon_banner.set_message(daemon_banner_text(kind), Gtk.MessageType.INFO);
 	}
 
+	/* True when this process is running an operation of its own.
+	 *
+	 * The daemon bridge must not take App.task away from it. */
+	private bool local_work_running(){
+		if (App.thread_delete_running){ return true; }
+		if (App.task == null){ return false; }
+		return (App.task.status == AppStatus.RUNNING) && (daemon_bridge == null);
+	}
+
 	private string daemon_banner_text(string kind){
+
+		string what;
+
 		switch (kind){
 		case "create":
-			return _("A snapshot is being created by the Timeshift service.");
+			what = _("A snapshot is being created by the Timeshift service.");
+			break;
 		case "delete":
-			return _("Snapshots are being deleted by the Timeshift service.");
+			what = _("Snapshots are being deleted by the Timeshift service.");
+			break;
 		case "estimate":
-			return _("The Timeshift service is estimating the system size.");
+			what = _("The Timeshift service is estimating the system size.");
+			break;
 		default:
-			return _("The Timeshift service is busy.");
+			what = _("The Timeshift service is busy.");
+			break;
 		}
+
+		/* Whole sentences reach the catalogue; a percentage appended to one
+		 * does not need to be translated and must not be concatenated INTO
+		 * it. Kept as a separate trailing fragment for that reason. */
+		if ((daemon_bridge != null) && (App.task != null) && (App.task.progress > 0)){
+			what += "  %.0f%%".printf(App.task.progress * 100.0);
+		}
+
+		return what;
 	}
 
 	private void hide_daemon_banner(){
