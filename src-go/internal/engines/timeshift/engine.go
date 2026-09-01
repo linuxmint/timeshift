@@ -139,7 +139,15 @@ func (Engine) Open(ctx context.Context, loc engines.Location, deps engines.Deps)
 		 * repository that only works if somebody else happened to mount it
 		 * first is not a working repository. */
 		if loc.DeviceUUID != "" && deps.MountRoot != "" {
-			target, own, err := MountRepoDevice(ctx, runner, deps.MountRoot, loc.DeviceUUID)
+			/* btrfs mode mounts the filesystem's TOP LEVEL, so that "@" and
+			 * the snapshot directory are siblings on one filesystem -- which is
+			 * what `btrfs subvolume snapshot` requires. Mounting plainly gives
+			 * the default subvolume, which on Ubuntu is "@" itself. */
+			opts := ""
+			if repo.BtrfsMode {
+				opts = BtrfsTopLevelOpts
+			}
+			target, own, err := MountRepoDeviceOpts(ctx, runner, deps.MountRoot, loc.DeviceUUID, opts)
 			if err != nil {
 				return nil, fmt.Errorf("%w: %s", engines.ErrNotAvailable, err)
 			}

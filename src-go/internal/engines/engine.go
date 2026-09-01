@@ -337,6 +337,15 @@ type CreateRequest struct {
 	// EstimatedLines is the progress denominator, from a previous dry run.
 	// Zero means the client should show an indeterminate bar.
 	EstimatedLines int64
+
+	/* IncludeBtrfsHome asks a subvolume-based engine to take "@home" as well
+	 * as "@".
+	 *
+	 * It is a request rather than a capability because it is the user's
+	 * choice, not the storage's: home may be a separate filesystem the user
+	 * does not want copied, and an engine that cannot act on it ignores it.
+	 */
+	IncludeBtrfsHome bool
 }
 
 // EstimateRequest is what to measure.

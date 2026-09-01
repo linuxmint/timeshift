@@ -48,6 +48,21 @@ func CreatePhases() []engines.Phase {
 
 // Create takes a snapshot.
 func (r *Repo) Create(ctx context.Context, req engines.CreateRequest, rep engines.Reporter) (engines.Snapshot, error) {
+
+	/* btrfs mode is a different operation, not a variation on this one.
+	 *
+	 * It copies nothing: `btrfs subvolume snapshot` shares every extent with
+	 * the original, so there is no transfer, no progress, no exclude list and
+	 * no link-dest. Running the rsync path with btrfs_mode set is what this
+	 * engine used to do -- it reported "Mode : BTRFS", stored under
+	 * timeshift-btrfs/snapshots/, and wrote an rsync snapshot with
+	 * "type" : "rsync" in its own control file. The user was told btrfs and
+	 * given rsync, which is the defect this port exists to remove, not repeat.
+	 */
+	if r.BtrfsMode {
+		return r.createBtrfs(ctx, req, rep)
+	}
+
 	rep.SetPhases(CreatePhases())
 	rep.Phase("prepare")
 
@@ -313,6 +328,18 @@ func (r *Repo) Delete(ctx context.Context, names []string, opts engines.DeleteOp
 		dir := path.Join(r.SnapshotsPath(), name)
 		if !r.Backend.DirExists(ctx, dir) {
 			rep.Warn("No such snapshot: " + name)
+			continue
+		}
+
+		/* A btrfs snapshot is subvolumes, not files.
+		 *
+		 * `rm -rf` on a directory containing a subvolume fails -- the kernel
+		 * refuses to unlink it -- so the subvolumes have to come out first,
+		 * with btrfs, and only then the directory that held them. */
+		if r.BtrfsMode {
+			if err := r.deleteBtrfsSnapshot(ctx, name, dir, rep); err != nil {
+				return err
+			}
 			continue
 		}
 

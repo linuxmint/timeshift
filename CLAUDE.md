@@ -581,29 +581,41 @@ never fires. Mount and umount are faked so they need no root; everything else is
 real. They take ~70s, because the scripts contain real `sleep 3s` and
 `sleep 10s`.
 
-### btrfs mode -- PRIMITIVES ONLY, NOT WIRED UP
+### btrfs mode
 
-**`Repo.Create` never consults `BtrfsMode`.** It runs the rsync path
-unconditionally and hard-codes `Type: "rsync"` (`create.go:162`), and nothing in
-`internal/restore` or the daemon calls `RestoreSubvolume`. So with
-`btrfs_mode: "true"` on a real `@`/`@home` system the CLI reports
-`Mode : BTRFS`, stores under `timeshift-btrfs/snapshots/`, and then takes an
-**rsync** snapshot -- `localhost/`, `exclude.list`, a 3.8 MB `rsync-log`, and
-zero subvolumes in the repository. Verified in a VM; the snapshot's own
-`info.json` says `"type" : "rsync"`.
+Wired up and verified in a VM: create, restore and delete all operate on
+subvolumes. Until 25.12.4+ssh39 they did not -- `Repo.Create` ignored
+`BtrfsMode` entirely, so a repository reporting `Mode : BTRFS` was filled with
+rsync snapshots carrying `"type" : "rsync"`, and nothing called
+`RestoreSubvolume` at all. The user was told btrfs and given rsync, which is the
+same defect this port set out to remove.
 
-That is the same shape as the Vala defect this port set out to fix, where
-choosing btrfs plus a remote location silently gave rsync snapshots. Here the
-user is told BTRFS in the status header and gets rsync everywhere.
+Three things make it work, and each is load-bearing:
 
-`DeleteSubvolume`, `CleanupQGroup` and `BtrfsRestorePlan` have **zero**
-callers; `SnapshotSubvolume` has one, from `RestoreSubvolume`, which is itself
-called only by its own tests. The primitives below are real, tested against a
-loopback btrfs filesystem, and connected to nothing.
+- **The repository is the system's own filesystem, not another disk.**
+  `btrfs subvolume snapshot` cannot cross a filesystem, so `@` and
+  `timeshift-btrfs/snapshots/` have to be on one. The device is therefore
+  mounted at its TOP LEVEL (`subvolid=5`, `BtrfsTopLevelOpts`) rather than
+  plainly -- mounting plainly gives the default subvolume, which on Ubuntu is
+  `@` itself, so `@` would not be visible as a sibling and the snapshot
+  directory would live inside the very subvolume being snapshotted.
+- **A restore does NOT run grub or initramfs**, where the rsync path runs both.
+  Swapping `@` does not change the running system: the kernel still has the old
+  subvolume mounted at `/`, and the restored one becomes the system at the next
+  boot. `update-grub` now would describe the system being replaced. The Vala
+  core reaches the same conclusion (`restore_execute_btrfs`, Main.vala:4512).
+- **The live subvolumes are moved aside, not deleted** -- into a snapshot marked
+  `live: true`, so a restore that turns out to be the wrong choice can itself be
+  undone. The name gets a `_N` suffix when the timestamp is already taken, which
+  is not theoretical: a btrfs restore is fast enough to land in the same second
+  as the snapshot it is restoring, and it happened on the first real VM run.
 
-Backups and restores still work in this state -- rsync does the job, and a VM
-restore of a btrfs guest passed every content check. What does not work is
-btrfs mode.
+`btrfs_create.go`, `btrfs_restore.go` and `cmd/timeshiftd/btrfs_restore.go` hold
+the wiring; the primitives are below. The btrfs restore is a separate path in
+the daemon rather than a branch inside `restore.Executor`, because the two share
+almost nothing -- no transfer, no exclude list, no target to mount, no fstab to
+rewrite -- and threading a mode through every step of the executor is the shape
+the engine layer exists to avoid.
 
 `internal/engines/timeshift/btrfs.go`. A btrfs snapshot is not a copy:
 `btrfs subvolume snapshot` makes a subvolume sharing every extent with the
@@ -631,7 +643,20 @@ Two things worth knowing before debugging a "hang":
   between retries -- a clock check would never fire.
 
 The tests build a real btrfs filesystem on a loopback file and operate on it, so
-they need root and skip without it:
+they need root and skip without it -- and **skip cleanly, which means a plain
+`go test ./...` proves nothing about btrfs**. `btrfs_wired_test.go` covers the
+wiring specifically: that a create produces subvolumes and none of the rsync
+furniture, that a restore swaps them and keeps the previous system, and that a
+delete removes subvolumes rather than trying to unlink them as files.
+
+```sh
+sudo env "PATH=$PATH" "HOME=$HOME" go test ./internal/engines/timeshift/ -run Btrfs -count=1 -v
+```
+
+`-count=1` matters: without it a cached result from an earlier non-root run is
+reused and every btrfs test reports SKIP while appearing to have run.
+
+The older primitive tests:
 
 ```sh
 sudo env "PATH=$PATH" "HOME=$HOME" go test ./internal/engines/timeshift/ -run Btrfs -v

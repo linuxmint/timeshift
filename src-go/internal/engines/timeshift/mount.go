@@ -29,6 +29,26 @@ import (
 // process could ever exist, and not something to carry into a daemon that
 // expects several.
 func MountRepoDevice(ctx context.Context, runner Runner, root, uuid string) (string, bool, error) {
+	return MountRepoDeviceOpts(ctx, runner, root, uuid, "")
+}
+
+/* BtrfsTopLevelOpts mounts the whole btrfs filesystem rather than its default
+ * subvolume.
+ *
+ * btrfs mode needs this and cannot work without it. `btrfs subvolume snapshot`
+ * requires source and destination to be on the SAME filesystem, and the two
+ * here are the live "@" and a directory under "timeshift-btrfs/snapshots/".
+ * Mounting the device plainly gives whatever subvolume is set as default --
+ * on Ubuntu that IS "@" -- so "@" would not be visible as a sibling and the
+ * snapshot directory would live inside the very subvolume being snapshotted.
+ *
+ * subvolid=5 is the filesystem root, which always exists and is never renamed.
+ */
+const BtrfsTopLevelOpts = "subvolid=5"
+
+// MountRepoDeviceOpts is MountRepoDevice with explicit mount options. An empty
+// opts is the same as MountRepoDevice.
+func MountRepoDeviceOpts(ctx context.Context, runner Runner, root, uuid, opts string) (string, bool, error) {
 	if uuid == "" {
 		return "", false, fmt.Errorf("timeshift: no device uuid to mount")
 	}
@@ -42,7 +62,13 @@ func MountRepoDevice(ctx context.Context, runner Runner, root, uuid string) (str
 		return "", false, fmt.Errorf("timeshift: mkdir %s: %w", target, err)
 	}
 
-	code, _, stderr, err := runner.Run(ctx, []string{"mount", "UUID=" + uuid, target}, "")
+	argv := []string{"mount"}
+	if opts != "" {
+		argv = append(argv, "-o", opts)
+	}
+	argv = append(argv, "UUID="+uuid, target)
+
+	code, _, stderr, err := runner.Run(ctx, argv, "")
 	if err != nil {
 		return "", false, fmt.Errorf("timeshift: mount %s: %w", uuid, err)
 	}

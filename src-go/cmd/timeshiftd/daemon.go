@@ -621,6 +621,8 @@ func (d *daemon) runCreate(ctx context.Context, r jobs.Reporter, tags []string, 
 		AppVersion:     version,
 		DryRun:         dryRun,
 		EstimatedLines: cfg.SnapshotCount,
+		// Only a subvolume engine acts on this; the rsync path ignores it.
+		IncludeBtrfsHome: cfg.IncludeBtrfsHomeForBackup,
 	}, reporterAdapter{r})
 	if err != nil {
 		return jobs.OutcomeFailed, err

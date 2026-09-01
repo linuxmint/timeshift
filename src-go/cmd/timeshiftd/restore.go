@@ -35,6 +35,17 @@ func (d *daemon) restorePlan(ctx context.Context, _ *ipc.Conn, params json.RawMe
 		return nil, ipc.Errf(ipc.CodeBadRequest, "%v", err)
 	}
 
+	/* btrfs mode is a subvolume swap, not a file transfer, and its plan says
+	 * different things. See cmd/timeshiftd/btrfs_restore.go. */
+	if d.config().BtrfsMode {
+		plan, deps, err := d.buildBtrfsRestorePlan(ctx, in)
+		defer deps.Close()
+		if err != nil {
+			return nil, err
+		}
+		return plan.result(), nil
+	}
+
 	/* restore.plan queues nothing, so the handle it opens is ours to close.
 	 * The CLI calls plan then restore for every --restore, so leaking here
 	 * leaked one repository mount per restore. */
@@ -54,6 +65,10 @@ func (d *daemon) snapshotRestore(ctx context.Context, _ *ipc.Conn, params json.R
 	var in ipc.RestoreParams
 	if err := json.Unmarshal(params, &in); err != nil {
 		return nil, ipc.Errf(ipc.CodeBadRequest, "%v", err)
+	}
+
+	if d.config().BtrfsMode {
+		return d.queueBtrfsRestore(ctx, in)
 	}
 
 	// Built here, before the job is queued, so an impossible restore is

@@ -1,3 +1,9 @@
+timeshift-ssh (25.12.4+ssh39) resolute; urgency=medium
+
+  * Implement btrfs mode: create, restore and delete now use subvolumes instead of silently falling back to rsync
+
+ -- makeafide <willsmit4433@gmail.com>  Tue, 01 Sep 2026 06:48:26 -0400
+
 timeshift-ssh (25.12.4+ssh38) resolute; urgency=medium
 
   * Refuse to take snapshots in a live session, so a rescue environment cannot
