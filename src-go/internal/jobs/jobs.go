@@ -60,6 +60,7 @@ const (
 	KindEstimate Kind = "estimate"
 	KindRestore  Kind = "restore"
 	KindParseLog Kind = "parse-log"
+	KindRecovery Kind = "recovery"
 )
 
 // Mutates reports whether this kind of job writes the repository or the system,

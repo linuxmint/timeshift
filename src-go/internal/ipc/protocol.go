@@ -85,6 +85,7 @@ const (
 	MethodDevicesLock            = "devices.lock"
 	MethodRepoStatus             = "repo.status"
 	MethodRepoReload             = "repo.reload"
+	MethodRepoSelect             = "repo.select"
 	MethodRepoDropMaster         = "repo.drop_master"
 	MethodRepoSSHScanHost        = "repo.ssh.scan_host"
 	MethodRepoSSHSetupKey        = "repo.ssh.setup_key"
@@ -108,6 +109,10 @@ const (
 	MethodJobsCancel             = "jobs.cancel"
 	MethodJobsPause              = "jobs.pause"
 	MethodJobsResume             = "jobs.resume"
+	MethodRecoveryStatus         = "recovery.status"
+	MethodRecoveryEnable         = "recovery.enable"
+	MethodRecoveryDisable        = "recovery.disable"
+	MethodRecoveryInstall        = "recovery.install"
 )
 
 // SystemInfo answers system.info.
@@ -192,6 +197,68 @@ type SubscribeParams struct {
  */
 type ConfigSetParams struct {
 	Values map[string]json.RawMessage `json:"values"`
+}
+
+/* RecoveryStatus reports the press-R recovery environment.
+ *
+ * Fields carries the tool's own KEY=VALUE output verbatim, so a client can show
+ * something useful even for keys added by a newer timeshift-recovery than this
+ * daemon knows about. The named fields are the ones a UI branches on.
+ */
+type RecoveryStatus struct {
+	// Available is false when the timeshift-recovery package is not installed,
+	// which is an ordinary state rather than an error.
+	Available bool `json:"available"`
+
+	Installed   bool   `json:"installed"`
+	Disabled    bool   `json:"disabled"`
+	Stale       bool   `json:"stale"`
+	HostVersion string `json:"host_version,omitempty"`
+	EnvVersion  string `json:"env_version,omitempty"`
+	Target      string `json:"target,omitempty"`
+
+	Fields map[string]string `json:"fields,omitempty"`
+}
+
+// RecoveryVerbResult confirms an instant enable or disable.
+type RecoveryVerbResult struct {
+	Verb string `json:"verb"`
+	OK   bool   `json:"ok"`
+}
+
+// RecoveryInstallParams builds and installs the environment. Empty fields mean
+// the tool's own defaults.
+type RecoveryInstallParams struct {
+	Target string `json:"target,omitempty"`
+	Size   string `json:"size,omitempty"`
+}
+
+/* RepoSelectParams chooses where snapshots are stored.
+ *
+ * Exactly one of Device/DeviceUUID or URL. DryRun reports the verdict without
+ * writing anything, which is what a Location page wants while a person clicks
+ * around a device list.
+ */
+type RepoSelectParams struct {
+	Device     string `json:"device,omitempty"`
+	DeviceUUID string `json:"device_uuid,omitempty"`
+	URL        string `json:"url,omitempty"`
+	DryRun     bool   `json:"dry_run,omitempty"`
+}
+
+/* RepoSelectResult says whether the place can hold snapshots, and why not.
+ *
+ * Reason exists because Main.check_device_for_backup() answered with a boolean,
+ * which is why the GUI could only say no without saying why.
+ */
+type RepoSelectResult struct {
+	Type       string `json:"type"`
+	Device     string `json:"device,omitempty"`
+	DeviceUUID string `json:"device_uuid,omitempty"`
+	URL        string `json:"url,omitempty"`
+	Usable     bool   `json:"usable"`
+	Reason     string `json:"reason,omitempty"`
+	Saved      bool   `json:"saved"`
 }
 
 // SSHScanHostParams fetches a remote's host key.

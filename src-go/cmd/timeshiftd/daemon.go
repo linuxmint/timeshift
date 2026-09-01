@@ -181,10 +181,19 @@ func (d *daemon) methods() map[string]ipc.Method {
 
 		/* Provisioning access to a remote repository. Root-only: it writes
 		 * /etc/timeshift/ssh, and setup_key carries an account password. */
+		ipc.MethodRepoSelect:      {Fn: d.repoSelect},
 		ipc.MethodRepoDropMaster:  {Fn: d.repoDropMaster},
 		ipc.MethodRepoSSHScanHost: {Fn: d.repoSSHScanHost},
 		ipc.MethodRepoSSHSetupKey: {Fn: d.repoSSHSetupKey},
 		ipc.MethodRepoSSHTest:     {Fn: d.repoSSHTest},
+
+		/* The recovery environment. status is read-only in spirit but runs a
+		 * setuid-adjacent provisioner and reports disk layout, so it stays
+		 * root-only with the rest. */
+		ipc.MethodRecoveryStatus:  {Fn: d.recoveryStatus},
+		ipc.MethodRecoveryEnable:  {Fn: d.recoveryEnable},
+		ipc.MethodRecoveryDisable: {Fn: d.recoveryDisable},
+		ipc.MethodRecoveryInstall: {Fn: d.recoveryInstall},
 		ipc.MethodRepoReload:      {Fn: d.repoReload},
 
 		/* Planning a restore changes nothing, but it is not read-only in the

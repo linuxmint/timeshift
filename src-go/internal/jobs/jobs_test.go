@@ -613,7 +613,14 @@ func TestWriteLockIsTakenOnlyForMutatingJobs(t *testing.T) {
 	lock := &fakeWriteLock{}
 	q.SetWriteLock(lock)
 
-	for _, kind := range []Kind{KindCreate, KindDelete, KindRestore, KindEstimate, KindParseLog} {
+	/* Every kind, so a new one added later is a decision rather than an
+	 * accident. Recovery builds a root filesystem and writes GRUB; it touches
+	 * no snapshots, so blocking it behind a backup would be AppLock's mistake
+	 * again -- refusing work that does not conflict. */
+	for _, kind := range []Kind{
+		KindCreate, KindDelete, KindRestore,
+		KindEstimate, KindParseLog, KindRecovery,
+	} {
 		j, err := q.Submit(kind, func(ctx context.Context, r Reporter) (Outcome, error) {
 			return OutcomeOK, nil
 		})

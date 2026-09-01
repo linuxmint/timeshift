@@ -4,6 +4,9 @@ import (
 	"context"
 	"encoding/json"
 
+	"strings"
+
+	"github.com/makeafide/timeshift/src-go/internal/block"
 	"github.com/makeafide/timeshift/src-go/internal/config"
 	tsengine "github.com/makeafide/timeshift/src-go/internal/engines/timeshift"
 	"github.com/makeafide/timeshift/src-go/internal/ipc"
@@ -178,4 +181,122 @@ func (d *daemon) sshBackendFor(url, keyFile string, port int, cfg config.Config)
 		Path:    remotePath,
 		KeyFile: keyFile,
 	}, nil
+}
+
+/* repo.select chooses where snapshots are stored, and refuses a place that
+ * cannot hold them.
+ *
+ * Kept separate from config.set even though it writes the same keys, because
+ * the validation is the point. config.set will happily record a device that is
+ * a whole disk, or has partitions on it, or has no Linux filesystem -- and the
+ * first anyone hears of it is a backup that fails. Checking first turns that
+ * into an answer at the moment the choice is made.
+ *
+ * A dry run reports the verdict without writing anything, which is what a
+ * Location page wants as the person clicks around a device list.
+ */
+func (d *daemon) repoSelect(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
+	var in ipc.RepoSelectParams
+	json.Unmarshal(params, &in)
+
+	cfg := d.config()
+	res := ipc.RepoSelectResult{}
+
+	switch {
+	case in.URL != "":
+		if _, _, _, _, err := tsengine.ParseURL(in.URL); err != nil {
+			return nil, ipc.Errf(ipc.CodeBadRequest, "%v", err)
+		}
+		/* btrfs mode and a remote repository are mutually exclusive, and the
+		 * Vala config loader turned btrfs off SILENTLY on load -- so somebody
+		 * who chose both got rsync snapshots and was never told. Report it. */
+		if cfg.BtrfsMode {
+			return nil, ipc.Errf(ipc.CodeBadRequest, "%v", tsengine.ErrBtrfsRemote)
+		}
+		res.Type = "ssh"
+		res.URL = in.URL
+		res.Usable = true
+
+	case in.DeviceUUID != "" || in.Device != "":
+		scanner := &block.Scanner{Runner: d.runner}
+		devices, err := scanner.Scan(ctx)
+		if err != nil {
+			return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
+		}
+
+		var dev *block.Device
+		if in.DeviceUUID != "" {
+			dev = block.FindByUUID(devices, in.DeviceUUID)
+		} else {
+			dev = block.FindByPath(devices, in.Device)
+		}
+		if dev == nil {
+			return nil, ipc.Errf(ipc.CodeNotFound, "no such device")
+		}
+
+		res.Type = "local"
+		res.Device = dev.Path
+		res.DeviceUUID = dev.UUID
+
+		if why := unusableAsRepository(dev, cfg.BtrfsMode); why != "" {
+			res.Usable = false
+			res.Reason = why
+			return res, nil
+		}
+		res.Usable = true
+
+	default:
+		return nil, ipc.Errf(ipc.CodeBadRequest, "repo.select needs a device or a URL")
+	}
+
+	if in.DryRun {
+		return res, nil
+	}
+
+	values := map[string]json.RawMessage{}
+	set := func(k, v string) {
+		raw, _ := json.Marshal(v)
+		values[k] = raw
+	}
+
+	if res.Type == "ssh" {
+		set("backup_location_type", "ssh")
+		set("backup_ssh_url", res.URL)
+	} else {
+		set("backup_location_type", "local")
+		set("backup_device_uuid", res.DeviceUUID)
+	}
+
+	raw, _ := json.Marshal(ipc.ConfigSetParams{Values: values})
+	if _, err := d.configSet(ctx, nil, raw); err != nil {
+		return nil, err
+	}
+	res.Saved = true
+
+	d.log.Info("backup location selected",
+		"type", res.Type, "device", res.Device, "url", res.URL)
+	return res, nil
+}
+
+/* unusableAsRepository names why a device cannot hold snapshots, or "" if it
+ * can. Reproduces Main.check_device_for_backup(), whose answer was a boolean --
+ * which is why the GUI could only say "no" without saying why.
+ */
+func unusableAsRepository(d *block.Device, btrfsMode bool) string {
+	if d.Type == "disk" {
+		return "this is a whole disk; choose a partition on it"
+	}
+	if len(d.Children) > 0 {
+		return "this device holds partitions or volumes; choose one of them"
+	}
+	if btrfsMode {
+		if d.FSType != "btrfs" && !strings.Contains(d.FSType, "luks") {
+			return "btrfs mode needs a btrfs filesystem"
+		}
+		return ""
+	}
+	if !d.HasLinuxFilesystem() {
+		return "no Linux filesystem here; snapshots need one that can store ownership and permissions"
+	}
+	return ""
 }
