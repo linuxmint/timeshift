@@ -345,6 +345,59 @@ Access is decided by `SO_PEERCRED`: root gets everything, a member of the
 `timeshift` group gets the read-only subset, anyone else is refused. The policy
 is an injectable `Authorizer` rather than a hard-wired rule.
 
+The socket is `0660 root:timeshift`, so a non-member is refused by `connect(2)`
+before any method runs. `ipc.Dial` distinguishes that (`ErrNotPermitted`) from
+an absent daemon (`ErrNoDaemon`) — reporting EACCES as "not running" sends a
+person off to start a service that is already up, which is the one instruction
+guaranteed to stop them finding the real answer.
+
+#### The repository write lock
+
+The queue's single worker serialises the DAEMON's jobs. It knows nothing about
+the Vala core, which keeps its own create/delete/restore for as long as both are
+installed — so a scheduled backup and a GUI-driven one could run into the same
+repository at once, each with `--delete` and each running its own retention pass.
+`timeshiftd` never took `AppLock`, so nothing stopped it.
+
+`AppLock`'s granularity was the real problem in both directions: it refused a
+second *process*, for every invocation including `--list`, which is exactly why a
+snapshot started by `apt-snapshot-guard` could not be watched. It is **deleted**.
+
+What is serialised now is a repository WRITE: one `flock(2)` on
+`/run/timeshift/repo.lock`, taken around create, delete and restore and nothing
+else, by both cores — `src/Utility/RepoLock.vala` and `src-go/internal/replock`.
+Reads never take it, which is what lets a second window open during a backup.
+The Go side takes it in `jobs.Queue.run` for any `Kind.Mutates()` job, the one
+place every job passes through; the Vala side wraps the three operations.
+Three things matter:
+
+- **flock(2) and fcntl(2) record locks do not see each other.** Both cores must
+  stay on flock. The Vala side binds libc's `flock` through an extern, because
+  `gnu.vapi`'s `FlockOperation` has no `LOCK_NB`.
+- **The kernel releases it when the holder dies**, which is the point:
+  `AppLock`'s check-then-write could only clear a stale lock by guessing whether
+  a recorded pid was alive — on a pid the kernel may since have recycled.
+- **The file is truncated, never unlinked.** Unlinking would let a waiter lock a
+  fresh inode while the original holder still held the old one.
+
+`MainWindow` also asks the daemon before starting work and offers to watch the
+running job instead. That is advisory UX on top of the lock, not a substitute.
+
+#### Reaping (`internal/rundir`)
+
+Every run owns `/run/timeshift/<pid>` and mounts things under it. A run that is
+killed leaves them, and a long-lived daemon makes that worse: it dies
+mid-restore, systemd restarts it under a NEW pid, and the old target stays
+mounted with nobody who believes they own it. The Vala core has swept stale
+browse mounts on every start since forever; **nothing in `src-go` did**.
+
+`Reaper.Reap` runs at daemon startup before `Listen`, and slowly thereafter.
+**Only numeric-pid subdirectories, never our own** — `daemon.sock` and
+`repo.lock` live in the very directory being swept. Removal is `rmdir` only,
+never `rm -rf`: a directory that still holds something holds a mount that did
+not release, and deleting through it would delete into a real filesystem. A busy
+unmount is retried lazily, since the holder is a process that no longer exists.
+
 ### The engine layer
 
 There is no storage abstraction in the Vala core: the mode is the boolean
@@ -364,9 +417,32 @@ problem:
 - **The engine restores the payload; the host restores the system.** That line
   already exists as the `sh_sync` / `sh_finish` split; GRUB does not care which
   engine produced the files.
-- **`Caps` drives the UI**, never `if engine == "timeshift"`.
+- **`Caps` drives the UI**, never `if engine == "timeshift"`. A capability is a
+  promise that a method exists: `Browse` was declared true with nothing behind
+  it, which is worse than absent — an absent capability makes a client hide a
+  button, a lying one makes it show a button that returns `unknown_method`. Add
+  a capability back only in the same change that gives it both a setter and a
+  reader. `WholeVolumeRestore` and `Encryption` were dropped for this reason;
+  the first cannot be answered from `Caps` at all, since it depends on the
+  repository's mode, which is not known until `Open`.
 - **Engine-specific metadata rides in `Snapshot.EngineData`**, so the host never
   has to know what a subvolume is.
+
+**`engines.Repository` carries the write path.** It used to declare four read
+methods while `Create`, `Delete`, `Estimate` and the tag operations lived on the
+concrete type, reached by asserting past the interface with a hard-coded
+`"engine %q is not the timeshift engine"`. The abstraction existed and the code
+went round it. Three shapes keep the wider interface engine-neutral:
+`ConsoleStatus` returns the header presentation as raw JSON (a location's
+description is engine-shaped, and the CLI decodes it with the engine's own type
+so there is still one renderer); `TransferSource` returns source path, transport
+and `--rsync-path` **together**, because separately is how a caller ends up with
+a host-prefixed `--link-dest`; and `ReadSnapshotFile` replaces reaching through
+`repo.Backend`, so reading a snapshot's fstab works for a remote repository.
+`var _ engines.Repository = (*Repo)(nil)` makes adding a method break the build.
+`internal/engines`' tests drive a fake engine that is deliberately not the
+timeshift one — if the interface stops being sufficient, the package stops
+compiling.
 
 Tags and retention stay OUT of the engine: the O/B/H/D/W/M set and the `count_*`
 limits are Timeshift policy, not storage mechanics, so a new engine inherits the
@@ -659,6 +735,35 @@ delivers them only to subscribers following everything -- a client attached to
 one job wants that job. They exist so a second window redraws instead of showing
 state that is no longer true, which is the obvious failure mode once several
 clients can attach at once.
+
+### Browsing and pausing
+
+`snapshots.browse` mounts and the CLIENT opens. Opening a file manager needs the
+desktop user's session, which the daemon may not have, so browse returns a path
+and stops. A LOCAL repository is not mounted at all — the snapshot is already a
+directory on a mounted filesystem, and `Mounted` is false so a release cannot
+unmount the repository. Only a remote one is sshfs-mounted, and the reason the
+daemon must do it is credentials: the key is in `/etc/timeshift/ssh`, root-only,
+so the person at the keyboard usually cannot reach the host at all.
+
+- The sshfs command is **argv, never a shell string** — every value comes from a
+  config file, and the Vala version's `escape_single_quote()` concatenation is
+  one missed call away from arbitrary code as root.
+- `browse_release` refuses any path not under `<run>/browse/`, resolving
+  symlinks first. Without it, it is an unmount-anything method over the socket.
+- The run directory is **0755, deliberately**. It was 0700 for the ssh control
+  socket, and sshfs then mounted and remapped ownership correctly while the file
+  manager still got permission denied one directory higher up, because the user
+  could not traverse it. The socket is protected by its own 0600 mode.
+
+`jobs.pause` **suspends the process group** (SIGSTOP), not just a flag —
+`Job.Pause()` alone sets a flag nothing acts on, and rsync carries on. A
+transfer is rsync plus ssh plus a shell, which is why every child gets its own
+process group. `pausableRunner` holds the one running process; a single slot is
+correct because the queue runs one mutating job at a time. The paused flag is
+separate from the process so a job paused BETWEEN commands comes back
+suspended. Only the RUNNING job can be paused, and it keeps the write lock while
+paused — the only correct answer mid-write, and worth a client saying out loud.
 
 ### The GUI as a client (`src/Core/DaemonClient.vala`)
 
