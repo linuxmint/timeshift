@@ -35,7 +35,11 @@ func (d *daemon) restorePlan(ctx context.Context, _ *ipc.Conn, params json.RawMe
 		return nil, ipc.Errf(ipc.CodeBadRequest, "%v", err)
 	}
 
-	plan, _, err := d.buildRestorePlan(ctx, in)
+	/* restore.plan queues nothing, so the handle it opens is ours to close.
+	 * The CLI calls plan then restore for every --restore, so leaking here
+	 * leaked one repository mount per restore. */
+	plan, deps, err := d.buildRestorePlan(ctx, in)
+	defer deps.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -58,6 +62,16 @@ func (d *daemon) snapshotRestore(ctx context.Context, _ *ipc.Conn, params json.R
 	if err != nil {
 		return nil, err
 	}
+
+	/* Ownership passes to the job, and only once it has actually been queued.
+	 * Every path that returns before that has to close the handle itself. */
+	queued := false
+	defer func() {
+		if !queued {
+			deps.Close()
+		}
+	}()
+
 	if plan.Report.Blocked() {
 		return nil, ipc.Errf(ipc.CodeBadRequest,
 			"the restore cannot proceed:\n%s", strings.Join(blockers(plan), "\n"))
@@ -69,6 +83,7 @@ func (d *daemon) snapshotRestore(ctx context.Context, _ *ipc.Conn, params json.R
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeBusy, "%v", err)
 	}
+	queued = true
 
 	d.log.Info("restore queued",
 		"job", job.ID, "snapshot", in.Snapshot,
@@ -80,6 +95,23 @@ func (d *daemon) snapshotRestore(ctx context.Context, _ *ipc.Conn, params json.R
 // restoreDeps are the pieces the job needs that the plan does not carry.
 type restoreDeps struct {
 	repo engines.Repository
+}
+
+/* Close releases the repository handle.
+ *
+ * It matters because Repo.Close() UNMOUNTS: a local repository opened by uuid
+ * is mounted under /run/timeshift/<pid>/ on the way in, and dropping the
+ * handle without closing leaves that mount behind for the reaper to find after
+ * the process dies. A remote one leaves an sshfs mount and its ControlMaster.
+ *
+ * Only the job takes ownership of the handle -- everything that builds a plan
+ * and does not queue one has to close it here. Safe on a zero value, so a
+ * caller can defer it before the handle exists.
+ */
+func (d restoreDeps) Close() {
+	if d.repo != nil {
+		d.repo.Close()
+	}
 }
 
 // buildRestorePlan resolves the request against the repository and the system.
@@ -260,7 +292,20 @@ func (a restoreReporter) Progress(count, total int64, line string) {
 
 func (a restoreReporter) Log(line string) { a.r.Log(line) }
 func (a restoreReporter) Note(msg string) { a.r.Note(msg) }
-func (a restoreReporter) Warn(msg string) { a.r.Note(msg) }
+
+/* Warn must reach Warn, not Note.
+ *
+ * jobs.reporter.Warn is what moves a job to OutcomeWarnings; Note only appends
+ * a message. Routing Warn to Note here meant every warning the restore
+ * executor raises was invisible in the outcome -- including "Skipping the file
+ * system check: the target is still mounted", which is the one a person most
+ * needs to see, because the restore finished but the check that would have
+ * caught a damaged filesystem did not run. The CLI prints "completed with
+ * warnings" only on OutcomeWarnings, so those restores reported plain success.
+ *
+ * The sibling adapter for create and delete (reporterAdapter, daemon.go) had
+ * always done this correctly; only this one was wrong. */
+func (a restoreReporter) Warn(msg string) { a.r.Warn(msg) }
 
 // readSnapshotFile reads one file out of a snapshot, through the backend so it
 // works for a remote repository too.

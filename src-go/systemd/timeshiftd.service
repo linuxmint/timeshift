@@ -34,6 +34,22 @@ IOSchedulingClass=idle
 RuntimeDirectory=timeshift
 RuntimeDirectoryMode=0755
 
+# Keep /run/timeshift when this unit stops.
+#
+# Without this systemd removes the directory on every stop and restart -- and
+# the directory is not ours alone. /run/timeshift/repo.lock is the flock(2)
+# that serialises repository writes between THIS daemon and the Vala core
+# (internal/replock and src/Utility/RepoLock.vala name the same path), and
+# /run/timeshift/<pid>/ holds mount points belonging to whatever process owns
+# that pid.
+#
+# Deleting the lock file does not release anybody's flock: the holder keeps it
+# on an inode that now has no name, the next acquirer creates a fresh inode and
+# locks that, and the two never see each other. Mutual exclusion would be gone
+# with nothing to indicate it, which is exactly the failure the lock exists to
+# prevent -- two retention passes running into one repository.
+RuntimeDirectoryPreserve=yes
+
 # No sandboxing directives.
 #
 # This is deliberate and worth stating, because the list of things this service

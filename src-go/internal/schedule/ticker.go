@@ -43,6 +43,17 @@ type Status struct {
 	// Enabled true is the failure mode that losing cron introduced.
 	Running bool `json:"running"`
 
+	/* Live reports that the machine booted from removable media, which is why
+	 * the loop is not running.
+	 *
+	 * It distinguishes the two ways Running can be false. Without it a client
+	 * that sees Enabled true and Running false has to report the alarming
+	 * case -- the scheduler died and this machine is taking no snapshots --
+	 * when the truth may be the entirely correct one: this is a rescue
+	 * environment and there is nothing here worth snapshotting.
+	 */
+	Live bool `json:"live,omitempty"`
+
 	// LastRun is when a check last completed, zero if never.
 	LastRun time.Time `json:"last_run,omitempty"`
 

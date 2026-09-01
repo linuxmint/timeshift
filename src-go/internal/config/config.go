@@ -88,7 +88,24 @@ type Config struct {
 	ThemeMode   string // system | light | dark
 	ThemeAccent string // system | a preset key
 
-	Exclude     []string
+	Exclude []string
+
+	/* ExcludeApps is preserved but not acted on.
+	 *
+	 * It holds names from the Vala core's "exclude applications" feature,
+	 * where AppExcludeEntry scanned a snapshot's home directories, turned the
+	 * dotfiles it found into per-application entries, and spliced the selected
+	 * ones into the RESTORE exclude list. The pages that let anyone select an
+	 * application were removed years ago as unreachable, so nothing has
+	 * written this key since; what remains in a config today is whatever was
+	 * ticked before that.
+	 *
+	 * Not ported, deliberately -- 304 lines of directory scanning and filename
+	 * normalisation to serve a feature with no way to configure it. The key is
+	 * still parsed and written back verbatim so that an old config survives a
+	 * save unchanged, which is the same courtesy every other unknown-to-the-UI
+	 * value gets.
+	 */
 	ExcludeApps []string
 
 	// PauseSnapshots is either unix seconds ("1756400000") or a boot id, and is

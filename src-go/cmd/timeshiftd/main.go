@@ -21,10 +21,12 @@ import (
 
 	"github.com/makeafide/timeshift/src-go/internal/config"
 	"github.com/makeafide/timeshift/src-go/internal/ipc"
+	"github.com/makeafide/timeshift/src-go/internal/livesys"
 	"github.com/makeafide/timeshift/src-go/internal/logging"
 	"github.com/makeafide/timeshift/src-go/internal/replock"
 	"github.com/makeafide/timeshift/src-go/internal/rundir"
 	"github.com/makeafide/timeshift/src-go/internal/schedule"
+	"github.com/makeafide/timeshift/src-go/internal/sysexec"
 
 	// Registers the engine every existing installation is using. Which engines
 	// exist is decided by this import list and nothing else.
@@ -126,6 +128,19 @@ func main() {
 	 * A failure here is reported and not fatal: refusing to start the daemon
 	 * because of a stale cron file would leave the machine with no scheduler at
 	 * all, which is worse than having two. */
+	/* Say up front which required tools are missing.
+	 *
+	 * A WARNING rather than a refusal to start, which is where this differs
+	 * from the Vala core's check (Main.vala:463). A CLI that exits has nothing
+	 * to lose by refusing; a daemon that refuses to start takes the scheduler
+	 * with it, so a machine missing `fuser` would silently stop taking
+	 * snapshots altogether rather than losing the one operation that needs it.
+	 * The individual jobs still fail with their own errors -- this exists so
+	 * the reason is in the log before anything goes wrong, not to gate work. */
+	if err := sysexec.CheckDependencies(); err != nil {
+		log.Warn("some required commands are missing", "err", err)
+	}
+
 	if removed, err := schedule.RemoveLegacyCron("/"); err != nil {
 		log.Warn("could not remove the legacy cron entries", "err", err)
 	} else if len(removed) > 0 {
@@ -201,7 +216,24 @@ func main() {
 		}
 	}()
 
-	if !*noSchedule {
+	/* No scheduler on live media.
+	 *
+	 * This is the direct mirror of the Vala core's `scheduled` property
+	 * (Main.vala:1281), which reads `!live_system() && (...)` so the live check
+	 * gates the whole schedule ahead of any config. The recovery environment
+	 * boots boot=casper, enables this unit, and carries a copy of the user's
+	 * real timeshift.json -- repository location and schedule included -- so
+	 * without this the rescue environment would snapshot its own ramdisk into
+	 * the repository the user is trying to restore FROM, and the retention
+	 * pass that follows would count it towards a level's limit.
+	 *
+	 * schedule.status still reports Enabled from the config plus Live, so a
+	 * client can say why nothing is scheduled rather than showing the alarming
+	 * "enabled but not running" that a dead scheduler produces. */
+	switch {
+	case d.live:
+		log.Info("scheduler not started: this is a live session", "reason", livesys.Reason)
+	case !*noSchedule:
 		delay := *startupDelay
 		if delay < 0 {
 			delay = time.Duration(cfg.StartupDelayIntervalMins) * time.Minute
@@ -219,7 +251,7 @@ func main() {
 		}
 		go d.ticker.Run(ctx)
 		log.Info("scheduler started", "interval", *interval, "startup_delay", delay)
-	} else {
+	default:
 		log.Info("scheduler disabled by --no-schedule")
 	}
 

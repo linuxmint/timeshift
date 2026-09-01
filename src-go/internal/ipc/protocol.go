@@ -130,6 +130,15 @@ type SystemInfo struct {
 	Engines         []EngineInfo `json:"engines"`
 	ReadOnly        bool         `json:"read_only"`
 	ActiveJob       string       `json:"active_job,omitempty"`
+
+	/* Live reports that this machine booted from removable media.
+	 *
+	 * Distinct from ReadOnly, which is about the CALLER's permissions. This is
+	 * a property of the machine: there is no installed system here to
+	 * snapshot, so creating one is refused however privileged the caller is.
+	 * Restoring is still allowed -- that is what a rescue environment is for.
+	 */
+	Live bool `json:"live,omitempty"`
 }
 
 // EngineInfo describes one registered storage engine.

@@ -420,6 +420,9 @@ type Queue struct {
 	 * any context with no repository to protect, where the worker's own
 	 * serialisation is the whole requirement. */
 	writeLock WriteLock
+
+	// retain caps how many finished jobs are remembered. See evict.
+	retain int
 }
 
 type pendingJob struct {
@@ -441,6 +444,7 @@ func NewQueue(depth int) *Queue {
 		jobs:    map[string]*Job{},
 		pending: make(chan *pendingJob, depth),
 		done:    make(chan struct{}),
+		retain:  DefaultRetain,
 	}
 	go q.worker()
 	return q
@@ -470,18 +474,36 @@ func (q *Queue) Submit(kind Kind, run RunFunc) (*Job, error) {
 		done:    make(chan struct{}),
 	}
 
+	/* Registering and enqueueing are ONE critical section.
+	 *
+	 * Splitting them is what went wrong before: the job was appended to
+	 * q.order, the enqueue was attempted, and a full queue rolled back with
+	 *
+	 *     q.order = q.order[:len(q.order)-1]
+	 *
+	 * which assumes this job is still the last element. With two clients
+	 * submitting at once it is not -- A appends, B appends, A finds the queue
+	 * full and truncates, and it is B's id that disappears. B's job runs but
+	 * is missing from jobs.list, so a client cannot find or watch the work it
+	 * just started. Serving several clients at once is the whole point of this
+	 * daemon, and the queue is only two deep, so the case is reachable.
+	 *
+	 * Holding the lock across the send is safe: the send is non-blocking, and
+	 * the worker takes q.mu only AFTER it has received (see run), never while
+	 * waiting to receive.
+	 *
+	 * The order within the section is register-then-enqueue rather than the
+	 * reverse, so a job is always in the table before the worker can pick it
+	 * up. Enqueueing first would let a job be running, and q.current, while
+	 * still absent from jobs.list. */
 	q.mu.Lock()
-	q.jobs[j.ID] = j
-	q.order = append(q.order, j.ID)
-	q.mu.Unlock()
-
 	select {
 	case q.pending <- &pendingJob{job: j, run: run}:
+		q.jobs[j.ID] = j
+		q.order = append(q.order, j.ID)
+		q.mu.Unlock()
 		return j, nil
 	default:
-		q.mu.Lock()
-		delete(q.jobs, j.ID)
-		q.order = q.order[:len(q.order)-1]
 		q.mu.Unlock()
 		return nil, ErrQueueFull
 	}
@@ -617,6 +639,11 @@ func (q *Queue) run(p *pendingJob) {
 
 	q.mu.Lock()
 	q.current = nil
+	/* Trim the table now that this job is terminal. Done here rather than at
+	 * submission because only a finished job is a candidate, and a daemon that
+	 * runs for months would otherwise accumulate every job it ever ran, each
+	 * holding its own ring of log lines. */
+	q.evict()
 	q.mu.Unlock()
 
 	close(j.done)
@@ -629,4 +656,50 @@ func (q *Queue) Close() {
 		close(q.done)
 		q.hub.Close()
 	})
+}
+
+/* DefaultRetain is how many finished jobs a queue remembers.
+ *
+ * The table used to grow forever: nothing was ever removed, and every job held
+ * its own ring buffer of log lines. That is fine for a CLI that exits, and not
+ * fine for a daemon whose lifetime is measured in months and which runs a
+ * scheduled check every ten minutes, each of which may queue a create and a
+ * delete.
+ *
+ * The number is chosen for what a client actually asks for. jobs.list exists so
+ * a window opening now can find work already in progress and show what happened
+ * recently; nobody pages back through a month of hourly snapshots over this
+ * interface, and the session logs under /var/log/timeshift are where history
+ * lives. logCache in the daemon caps itself the same way, at four parsed logs.
+ */
+const DefaultRetain = 50
+
+/* evict trims finished jobs down to the retention cap, oldest first.
+ *
+ * A RUNNING job is never evicted, however old, and neither is one still
+ * queued: dropping a job that is still working would take away the very thing
+ * a client attaches to. Only terminal jobs are candidates, which is also why
+ * the cap cannot be enforced at submission time.
+ *
+ * Callers must hold q.mu.
+ */
+func (q *Queue) evict() {
+	if q.retain <= 0 || len(q.order) <= q.retain {
+		return
+	}
+
+	// How many terminal jobs may go, counting from the oldest.
+	excess := len(q.order) - q.retain
+
+	kept := make([]string, 0, len(q.order))
+	for _, id := range q.order {
+		j := q.jobs[id]
+		if excess > 0 && j != nil && j.State().Terminal() {
+			delete(q.jobs, id)
+			excess--
+			continue
+		}
+		kept = append(kept, id)
+	}
+	q.order = kept
 }

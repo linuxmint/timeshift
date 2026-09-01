@@ -719,3 +719,143 @@ type errWriteLock struct{}
 func (errWriteLock) Acquire(ctx context.Context, what string, waiting func(string)) (func(), error) {
 	return nil, errors.New("no lock for you")
 }
+
+/* A refused submission must not remove somebody else's job.
+ *
+ * The bug this pins: Submit registered the job, then tried to enqueue, then on
+ * a full queue rolled back with `q.order = q.order[:len(q.order)-1]` -- which
+ * assumes the caller is still the last element. Two concurrent submits break
+ * that assumption and the truncate deletes the OTHER job's id, so a job that
+ * runs is missing from jobs.list and cannot be found or watched.
+ *
+ * Every job that Submit reports as accepted must appear in List.
+ */
+func TestRefusedSubmitDoesNotDropAnotherJob(t *testing.T) {
+	/* Many rounds, deliberately.
+	 *
+	 * The defect is a race between two Submits, so a single round detects it
+	 * only occasionally -- measured at 2 failures in 40 runs against the buggy
+	 * version, which is the kind of flaky test that gets deleted rather than
+	 * believed. Repeating the contention inside the test makes it reliable:
+	 * the same measurement against 200 rounds fails every time.
+	 */
+	for round := 0; round < 200; round++ {
+		block := make(chan struct{})
+		q := NewQueue(2)
+
+		// Occupy the worker so the queue can actually fill up.
+		if _, err := q.Submit(KindCreate, func(ctx context.Context, r Reporter) (Outcome, error) {
+			<-block
+			return OutcomeOK, nil
+		}); err != nil {
+			t.Fatal(err)
+		}
+
+		var wg sync.WaitGroup
+		var mu sync.Mutex
+		var accepted []string
+
+		for i := 0; i < 8; i++ {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				j, err := q.Submit(KindCreate, func(ctx context.Context, r Reporter) (Outcome, error) {
+					return OutcomeOK, nil
+				})
+				if err != nil {
+					return // ErrQueueFull is a legitimate answer
+				}
+				mu.Lock()
+				accepted = append(accepted, j.ID)
+				mu.Unlock()
+			}()
+		}
+		wg.Wait()
+
+		listed := map[string]bool{}
+		for _, j := range q.List() {
+			listed[j.ID] = true
+		}
+		for _, id := range accepted {
+			if !listed[id] {
+				close(block)
+				q.Close()
+				t.Fatalf("round %d: job %s was accepted by Submit but is missing from List",
+					round, id)
+			}
+		}
+
+		close(block)
+		q.Close()
+	}
+}
+
+/* The job table must not grow forever.
+ *
+ * A daemon whose lifetime is measured in months runs a scheduled check every
+ * ten minutes, and every job it ever ran used to be retained along with its own
+ * ring buffer of log lines. Nothing removed anything.
+ */
+func TestFinishedJobsAreEvicted(t *testing.T) {
+	q := NewQueue(2)
+	defer q.Close()
+	q.retain = 5
+
+	for i := 0; i < 40; i++ {
+		j, err := q.Submit(KindCreate, func(ctx context.Context, r Reporter) (Outcome, error) {
+			return OutcomeOK, nil
+		})
+		if err != nil {
+			// A full queue is fine; wait for the worker and retry.
+			time.Sleep(time.Millisecond)
+			continue
+		}
+		<-j.Done()
+	}
+
+	if got := len(q.List()); got > q.retain {
+		t.Errorf("kept %d jobs, want at most %d", got, q.retain)
+	}
+	if len(q.List()) == 0 {
+		t.Error("eviction must keep the recent jobs, not drop everything")
+	}
+}
+
+/* A running job is never evicted, however far over the cap the table is.
+ *
+ * Dropping it would take away the thing a client attaches to -- and the job
+ * apt is blocking on is exactly the one most likely to still be running.
+ */
+func TestEvictionSparesTheRunningJob(t *testing.T) {
+	q := NewQueue(2)
+	defer q.Close()
+	q.retain = 2
+
+	block := make(chan struct{})
+	running, err := q.Submit(KindCreate, func(ctx context.Context, r Reporter) (Outcome, error) {
+		<-block
+		return OutcomeOK, nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Push well past the cap with jobs that finish immediately.
+	for i := 0; i < 20; i++ {
+		j, err := q.Submit(KindEstimate, func(ctx context.Context, r Reporter) (Outcome, error) {
+			return OutcomeOK, nil
+		})
+		if err != nil {
+			time.Sleep(time.Millisecond)
+			continue
+		}
+		_ = j
+	}
+
+	if _, err := q.Get(running.ID); err != nil {
+		t.Fatalf("the running job was evicted: %v", err)
+	}
+
+	close(block)
+	<-running.Done()
+}

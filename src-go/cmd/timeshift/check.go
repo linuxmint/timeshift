@@ -43,6 +43,29 @@ func runCheck(socket string, scripted bool) int {
 		return 0
 	}
 
+	/* Enabled without Running is the failure that losing cron introduced, and
+	 * it has to be said out loud.
+	 *
+	 * cron ran whether or not our own code was healthy. A timeshiftd whose
+	 * scheduler never started now means no snapshots at all, and the only
+	 * thing that makes it visible is a client saying so. Reporting it as
+	 * success -- which is what reading Enabled alone did -- is the one answer
+	 * that guarantees nobody investigates.
+	 *
+	 * A live session is the benign reason for the same two values, so it gets
+	 * its own message and exit 0: a rescue environment has nothing to
+	 * snapshot, and that is correct rather than broken. */
+	if !before.Running {
+		if before.Live {
+			fmt.Println("This is a live session - Nothing to do!")
+			return 0
+		}
+		fmt.Fprintln(os.Stderr,
+			"timeshift: scheduled snapshots are enabled, but no scheduler is running.\n"+
+				"           No snapshots are being taken. Check: systemctl status timeshiftd")
+		return 1
+	}
+
 	if err := client.Call(ipc.MethodScheduleCheck, nil, nil); err != nil {
 		fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
 		return 1
@@ -99,6 +122,11 @@ func runScheduleStatus(socket string) int {
 	}
 
 	switch {
+	/* Live comes first, because on a live session it is the explanation for
+	 * every other value below and the alarming "NOT running" line would be
+	 * both true and misleading. */
+	case st.Live:
+		fmt.Println("Scheduled snapshots: not scheduled here (live session)")
 	case !st.Enabled:
 		fmt.Println("Scheduled snapshots: disabled")
 	case !st.Running:

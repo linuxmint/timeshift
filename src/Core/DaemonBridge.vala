@@ -284,6 +284,18 @@ public class DaemonBridge : GLib.Object {
 		task.progress = percent;
 		task.status_line = status_line;
 
+		/* The counts, not just the fraction.
+		 *
+		 * DeleteBox picks its display from `prg_count_total > 0`: a fraction
+		 * bar when it knows the denominator, a pulse when it does not. Leaving
+		 * these at zero meant a daemon-driven delete always pulsed, even
+		 * though the daemon had sent both numbers -- so the local path showed
+		 * progress and the daemon path showed motion. */
+		if (total > 0){
+			task.prg_count_total = total;
+			task.prg_count = count;
+		}
+
 		/* The daemon knows the remaining time; AsyncTask would otherwise
 		 * compute one from its own elapsed timer, which never started because
 		 * nothing here is executing. */

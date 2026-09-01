@@ -15,6 +15,7 @@ import (
 	tsengine "github.com/makeafide/timeshift/src-go/internal/engines/timeshift"
 	"github.com/makeafide/timeshift/src-go/internal/ipc"
 	"github.com/makeafide/timeshift/src-go/internal/jobs"
+	"github.com/makeafide/timeshift/src-go/internal/livesys"
 	"github.com/makeafide/timeshift/src-go/internal/schedule"
 	"github.com/makeafide/timeshift/src-go/internal/sysexec"
 )
@@ -35,6 +36,14 @@ type daemon struct {
 	// switched off from the command line.
 	ticker *schedule.Ticker
 
+	/* live reports whether this machine booted from removable media.
+	 *
+	 * Read once at construction rather than per call: /proc/cmdline cannot
+	 * change without a reboot, and a field makes it injectable so the refusals
+	 * below are testable without a live machine.
+	 */
+	live bool
+
 	mu  sync.RWMutex
 	cfg config.Config
 }
@@ -51,6 +60,7 @@ func newDaemon(log *slog.Logger, configPath string, cfg config.Config) *daemon {
 		mountRoot: fmt.Sprintf("/run/timeshift/%d", os.Getpid()),
 		logCache:  newLogCache(),
 		tempDir:   os.TempDir(),
+		live:      livesys.Detector{}.Live(),
 	}
 }
 
@@ -222,6 +232,7 @@ func (d *daemon) systemInfo(ctx context.Context, c *ipc.Conn, _ json.RawMessage)
 		ProtocolVersion: ipc.ProtocolVersion,
 		Engine:          d.config().Engine,
 		ReadOnly:        c.Peer.ReadOnly,
+		Live:            d.live,
 	}
 	for _, e := range engines.List() {
 		caps := e.Caps()
@@ -307,7 +318,20 @@ func (d *daemon) devicesList(ctx context.Context, _ *ipc.Conn, _ json.RawMessage
  * repository states observed a moment apart. */
 func (d *daemon) repoStatus(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
 	var in ipc.RepoStatusParams
-	json.Unmarshal(params, &in)
+	/* Checked, unlike most params here, because this one carries a
+	 * LocationOverride.
+	 *
+	 * Discarding the error means a malformed override is silently dropped and
+	 * the request is answered about the CONFIGURED repository instead of the
+	 * requested one. That is the same class of failure ProtocolVersion 2 was
+	 * introduced to prevent -- there, an override sent to a daemon too old to
+	 * understand it; here, one this daemon failed to parse. Both end with a
+	 * confident answer about the wrong repository. */
+	if len(params) > 0 {
+		if err := json.Unmarshal(params, &in); err != nil {
+			return nil, ipc.Errf(ipc.CodeBadRequest, "%v", err)
+		}
+	}
 
 	repo, deviceName, deviceUUID, err := d.openRepoOverridden(ctx, in.Location)
 	if err != nil {
@@ -336,7 +360,20 @@ func (d *daemon) repoStatus(ctx context.Context, _ *ipc.Conn, params json.RawMes
 
 func (d *daemon) snapshotsList(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
 	var in ipc.SnapshotsListParams
-	json.Unmarshal(params, &in)
+	/* Checked, unlike most params here, because this one carries a
+	 * LocationOverride.
+	 *
+	 * Discarding the error means a malformed override is silently dropped and
+	 * the request is answered about the CONFIGURED repository instead of the
+	 * requested one. That is the same class of failure ProtocolVersion 2 was
+	 * introduced to prevent -- there, an override sent to a daemon too old to
+	 * understand it; here, one this daemon failed to parse. Both end with a
+	 * confident answer about the wrong repository. */
+	if len(params) > 0 {
+		if err := json.Unmarshal(params, &in); err != nil {
+			return nil, ipc.Errf(ipc.CodeBadRequest, "%v", err)
+		}
+	}
 
 	repo, _, _, err := d.openRepoOverridden(ctx, in.Location)
 	if err != nil {
@@ -462,6 +499,16 @@ func (d *daemon) snapshotCreate(ctx context.Context, _ *ipc.Conn, params json.Ra
 	var in ipc.CreateParams
 	json.Unmarshal(params, &in)
 
+	/* A live session has no installed system to snapshot.
+	 *
+	 * Refused here rather than left to fail somewhere inside rsync, because
+	 * the failure it prevents is not an error -- it is a snapshot of a ramdisk
+	 * arriving in the user's real repository and a retention pass then
+	 * counting it towards a level's limit. */
+	if d.live {
+		return nil, ipc.Errf(ipc.CodeUnavailable, "%s", livesys.Reason)
+	}
+
 	/* Two apt frontends racing to snapshot should end up watching one job, not
 	 * taking two snapshots of the same moment. AppLock could only refuse the
 	 * second outright. */
@@ -504,12 +551,20 @@ func (d *daemon) estimateRun(ctx context.Context, _ *ipc.Conn, _ json.RawMessage
 
 		/* Persist the estimate: it is the progress denominator for the first
 		 * real backup, and recomputing it costs a full filesystem walk. */
+		/* The lock is held ACROSS the save, the way config.set does it.
+		 *
+		 * Releasing first and saving after leaves a window in which another
+		 * client's config.set can apply and save the user's new settings, and
+		 * then this save writes back the copy it took before that happened --
+		 * silently reverting the change. An estimate runs on the queue worker
+		 * while config.set runs on a connection goroutine, so the two really
+		 * are concurrent. */
 		d.mu.Lock()
 		d.cfg.SnapshotSize = uint64(size)
 		d.cfg.SnapshotCount = lines
-		cfg := d.cfg
+		err = config.Save(d.configPath, d.cfg)
 		d.mu.Unlock()
-		if err := config.Save(d.configPath, cfg); err != nil {
+		if err != nil {
 			r.Warn("Could not save the estimate: " + err.Error())
 		}
 		return jobs.OutcomeOK, nil

@@ -22,9 +22,16 @@ CTRL=$(dpkg-deb --ctrl-tarfile "$DEB" | tar -tf - | sed 's|^\./||' | grep -v '^$
 n=$(printf '%s\n' "$LIST" | grep -c '^-' || true)
 [ "$n" -ge 100 ] && ok "file count: $n" || bad "only $n files shipped (looks empty/partial)"
 
+# /usr/libexec/timeshift/timeshift is the Go CLI, and it is asserted here for a
+# reason that produces no error if it goes missing: apt-snapshot-guard picks the
+# daemon path only when that exact file is executable, and otherwise falls back
+# to whatever `timeshift` is on PATH. A build that stopped shipping it would
+# keep working -- every apt snapshot would just quietly stop being a watchable
+# job, which is the thing this port exists to provide.
 for f in ./usr/bin/timeshift ./usr/bin/timeshift-gtk ./usr/bin/timeshift-launcher \
 	./usr/bin/timeshift-recovery-shell \
 	./usr/libexec/timeshift/timeshiftd \
+	./usr/libexec/timeshift/timeshift \
 	./usr/share/applications/timeshift-gtk.desktop \
 	./usr/share/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy \
 	./etc/timeshift/default.json \

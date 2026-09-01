@@ -12,6 +12,7 @@ import (
 	"github.com/makeafide/timeshift/src-go/internal/block"
 	"github.com/makeafide/timeshift/src-go/internal/ipc"
 	"github.com/makeafide/timeshift/src-go/internal/jobs"
+	"github.com/makeafide/timeshift/src-go/internal/livesys"
 	"github.com/makeafide/timeshift/src-go/internal/schedule"
 )
 
@@ -251,6 +252,9 @@ func plural(n int, unit string) string {
 
 // scheduleCheck is the IPC method that forces a check now.
 func (d *daemon) scheduleCheck(_ context.Context, _ *ipc.Conn, _ json.RawMessage) (any, error) {
+	if d.live {
+		return nil, ipc.Errf(ipc.CodeUnavailable, "%s", livesys.Reason)
+	}
 	if d.ticker == nil {
 		return nil, fmt.Errorf("the scheduler is not running")
 	}
@@ -265,8 +269,17 @@ func (d *daemon) scheduleCheck(_ context.Context, _ *ipc.Conn, _ json.RawMessage
 // the only thing that makes that visible is a client being able to say "the
 // last check was on Tuesday".
 func (d *daemon) scheduleStatus(_ context.Context, _ *ipc.Conn, _ json.RawMessage) (any, error) {
+	/* Enabled still reports the CONFIG even on live media, so a client shows
+	 * the user's real settings rather than pretending they turned scheduling
+	 * off. Live is what explains why nothing is running. */
 	if d.ticker == nil {
-		return schedule.Status{}, nil
+		cfg := d.config()
+		return schedule.Status{
+			Enabled: cfg.Scheduled(),
+			Live:    d.live,
+		}, nil
 	}
-	return d.ticker.Status(), nil
+	st := d.ticker.Status()
+	st.Live = d.live
+	return st, nil
 }

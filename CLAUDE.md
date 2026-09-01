@@ -470,7 +470,10 @@ already hit once:
   `cd`s into the source tree must resolve it first or the binary lands in
   `src-go/src-go/`.
 - `dh_dwz` cannot read Go's compressed DWARF and fails the whole build rather
-  than skipping the file — hence `override_dh_dwz: dh_dwz -Xtimeshiftd`.
+  than skipping the file — hence `override_dh_dwz: dh_dwz -Xusr/libexec/timeshift/`.
+The exclusion is by **path**, not by name: one of the Go binaries is called
+`timeshift`, so `-Xtimeshift` would also exclude the Vala `/usr/bin/timeshift`,
+which compresses fine.
 - Go links statically whenever nothing in the import graph needs libc, which
   lintian raises as an **error**. `-buildmode=pie -ldflags -linkmode=external`
   keeps the result dynamic and position-independent.
