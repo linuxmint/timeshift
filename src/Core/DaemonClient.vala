@@ -515,9 +515,17 @@ public class DaemonClient : GLib.Object {
 	 *
 	 * Hence these. They also tolerate either representation, because being
 	 * strict about it would buy nothing and a null member is an ordinary event
-	 * on a wire where empty fields are omitted. */
+	 * on a wire where empty fields are omitted.
+	 *
+	 * Tolerating both is not merely defensive: config.get returns the ON-DISK
+	 * dialect over this wire, so `"true"` and `5` arrive as strings from that
+	 * one method while system.info's booleans and numbers arrive as real JSON
+	 * types. One set of readers has to cope with both.
+	 *
+	 * Public and static so DaemonApi can decode with the same rules. They read
+	 * an object and hold no state, so there is nothing for an instance to add. */
 
-	private string wire_string(Json.Object obj, string member, string def_value){
+	public static string wire_string(Json.Object obj, string member, string def_value){
 		if (!obj.has_member(member)){ return def_value; }
 		var node = obj.get_member(member);
 		if (node.get_node_type() != Json.NodeType.VALUE){ return def_value; }
@@ -525,7 +533,7 @@ public class DaemonClient : GLib.Object {
 		return (val == null) ? def_value : val;
 	}
 
-	private int64 wire_int(Json.Object obj, string member, int64 def_value){
+	public static int64 wire_int(Json.Object obj, string member, int64 def_value){
 		if (!obj.has_member(member)){ return def_value; }
 		var node = obj.get_member(member);
 		if (node.get_node_type() != Json.NodeType.VALUE){ return def_value; }
@@ -535,7 +543,7 @@ public class DaemonClient : GLib.Object {
 		return node.get_int();
 	}
 
-	private double wire_double(Json.Object obj, string member, double def_value){
+	public static double wire_double(Json.Object obj, string member, double def_value){
 		if (!obj.has_member(member)){ return def_value; }
 		var node = obj.get_member(member);
 		if (node.get_node_type() != Json.NodeType.VALUE){ return def_value; }
@@ -546,6 +554,64 @@ public class DaemonClient : GLib.Object {
 			return (double) node.get_int();
 		}
 		return node.get_double();
+	}
+
+	/* wire_bool, which has to accept three spellings of the same thing.
+	 *
+	 * A real JSON `true` from system.info or devices.list, the string "true"
+	 * from config.get, and 1 -- because a value that round-trips through the
+	 * on-disk config as a number and back is not worth failing over. Anything
+	 * unrecognised is the default rather than false: a caller asking whether a
+	 * feature is on must not be told "no" because a field was spelled oddly. */
+	public static bool wire_bool(Json.Object obj, string member, bool def_value){
+		if (!obj.has_member(member)){ return def_value; }
+		var node = obj.get_member(member);
+		if (node.get_node_type() != Json.NodeType.VALUE){ return def_value; }
+
+		if (node.get_value_type() == typeof(bool)){
+			return node.get_boolean();
+		}
+		if (node.get_value_type() == typeof(int64)){
+			return node.get_int() != 0;
+		}
+		if (node.get_value_type() == typeof(string)){
+			switch (node.get_string().down()){
+				case "true": case "yes": case "1": return true;
+				case "false": case "no": case "0": return false;
+				default: return def_value;
+			}
+		}
+		return def_value;
+	}
+
+	/* The members of an array result, or an empty list.
+	 *
+	 * snapshots.list and devices.list answer with a JSON ARRAY at the top
+	 * level, not an object, so call_object() cannot reach them -- it is the
+	 * one shape the existing helper cannot return. */
+	public Gee.ArrayList<Json.Object> call_array(string method, Json.Object? params){
+
+		var list = new Gee.ArrayList<Json.Object>();
+
+		string error;
+		var node = call(method, params, out error);
+		if (node == null){
+			if (error.length > 0){
+				log_debug("DaemonClient: %s: %s".printf(method, error));
+			}
+			return list;
+		}
+		if (node.get_node_type() != Json.NodeType.ARRAY){
+			log_debug("DaemonClient: %s did not answer with an array".printf(method));
+			return list;
+		}
+
+		foreach (var element in node.get_array().get_elements()){
+			if (element.get_node_type() == Json.NodeType.OBJECT){
+				list.add(element.get_object());
+			}
+		}
+		return list;
 	}
 
 	private string object_to_line(Json.Object obj){

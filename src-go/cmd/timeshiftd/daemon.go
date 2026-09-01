@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/makeafide/timeshift/src-go/internal/block"
@@ -278,35 +279,72 @@ func (d *daemon) configGet(context.Context, *ipc.Conn, json.RawMessage) (any, er
 	return json.RawMessage(config.Marshal(d.config())), nil
 }
 
+/* devices.list is the whole block layout, not a filtered view of it.
+ *
+ * It used to drop everything HasLinuxFilesystem() rejected, which is the filter
+ * `--list-devices` applies -- but the CLI does not use this method at all, it
+ * scans in-process. So the filter was shaped for a caller that did not exist,
+ * and it made the method useless for the one that will: a disk carries no
+ * filesystem, so every DISK was dropped, and a device tree with no disks in it
+ * has no parents to hang partitions from. An unlocked LUKS container and an
+ * unformatted partition went the same way.
+ *
+ * Filtering is therefore the client's job, and has_linux_filesystem is reported
+ * so a client can apply exactly the rule the console listing uses. pkname gives
+ * the parent, which is what lets a client rebuild the tree without a second
+ * call -- flat plus a parent key, rather than nested, because Gtk.TreeListModel
+ * wants to ask for children lazily and JSON nesting would fix the shape here.
+ */
 func (d *daemon) devicesList(ctx context.Context, _ *ipc.Conn, _ json.RawMessage) (any, error) {
 	devices, err := (&block.Scanner{Runner: d.runner}).Scan(ctx)
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
 	}
-	type wire struct {
-		Path      string `json:"path"`
-		Name      string `json:"name"`
-		UUID      string `json:"uuid"`
-		Label     string `json:"label"`
-		Type      string `json:"type"`
-		FSType    string `json:"fstype"`
-		SizeBytes int64  `json:"size_bytes"`
-		FreeBytes int64  `json:"free_bytes"`
-		Mounted   bool   `json:"mounted"`
-	}
-	var out []wire
+	out := make([]ipc.DeviceInfo, 0, len(devices))
 	for _, dev := range devices {
-		if !dev.HasLinuxFilesystem() {
-			continue
-		}
-		out = append(out, wire{
-			Path: dev.NameWithParent(), Name: dev.Name, UUID: dev.UUID,
-			Label: dev.Label, Type: dev.Type, FSType: dev.FSType,
-			SizeBytes: dev.SizeBytes, FreeBytes: dev.FreeBytes(),
-			Mounted: dev.IsMounted(),
-		})
+		out = append(out, deviceInfo(dev))
 	}
 	return out, nil
+}
+
+// deviceInfo is the block model as the wire describes it. Separate from the
+// handler because the handler needs a command runner and this does not, so the
+// mapping -- the part with rules in it -- can be tested on its own.
+func deviceInfo(dev *block.Device) ipc.DeviceInfo {
+	mounts := make([]string, 0, len(dev.MountPoints))
+	for _, mp := range dev.MountPoints {
+		mounts = append(mounts, mp.Path)
+	}
+	return ipc.DeviceInfo{
+		Path:      dev.NameWithParent(),
+		Name:      dev.Name,
+		KName:     dev.KName,
+		PKName:    dev.PKName,
+		UUID:      dev.UUID,
+		Label:     dev.Label,
+		PartLabel: dev.PartLabel,
+		Type:      dev.Type,
+		FSType:    dev.FSType,
+
+		/* Vendor and Model are trimmed, everything else is not.
+		 *
+		 * lsblk pads these two out of the SCSI inquiry strings, so they arrive
+		 * as "ATA     " and land in a UI label. Label and PartLabel are left
+		 * alone deliberately: a filesystem label may legitimately carry
+		 * leading or trailing spaces, and trimming one would stop it matching
+		 * the device it names. */
+		Vendor: strings.TrimSpace(dev.Vendor),
+		Model:  strings.TrimSpace(dev.Model),
+
+		SizeBytes: dev.SizeBytes,
+		FreeBytes: dev.FreeBytes(),
+		Mounted:   dev.IsMounted(),
+
+		MountPoints:        mounts,
+		HasLinuxFilesystem: dev.HasLinuxFilesystem(),
+		ReadOnly:           dev.ReadOnly,
+		Removable:          dev.Removable,
+	}
 }
 
 /* repo.status carries the engine's health AND the fields a console header

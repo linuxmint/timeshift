@@ -137,6 +137,83 @@ public class DaemonBridge : GLib.Object {
 		return start_watching(_("Preparing..."));
 	}
 
+	/* Submits a RESTORE and starts mirroring it.
+	 *
+	 * Mode.RESTORE has existed here since the bridge was written -- on_finished
+	 * and on_phase both branch on it -- but nothing could ever set it except
+	 * watch(), which attaches to a restore SOMEBODY ELSE started. So the bridge
+	 * could show a restore and not run one, which is the shape of a capability
+	 * that is declared and not implemented: worse than absent, because the code
+	 * around it reads as though the path works.
+	 *
+	 * Three things the caller must have settled before calling:
+	 *
+	 * `mounts` maps a mount point to a device path or "UUID=x". An entry mapped
+	 * to the empty string is deliberately left on the root filesystem, which is
+	 * not the same as being absent -- absent means the plan decides.
+	 *
+	 * `current_system` must be asked for EXPLICITLY. Defaulting to it would
+	 * mean a caller that forgot to name a target overwrites the machine it is
+	 * running on, and there is no undo for that.
+	 *
+	 * `dry_run` compares without writing and measures the denominator a real
+	 * run's progress bar needs, so the wizard runs one before the real thing
+	 * and passes the count back as estimated_lines.
+	 *
+	 * Plan the restore first (DaemonApi.restore_plan) and show what comes back.
+	 * The failure that matters here is not a crash, it is a restore that works
+	 * perfectly onto the wrong disk.
+	 */
+	public bool begin_restore(string snapshot, Gee.Map<string,string> mounts,
+		bool current_system, bool dry_run, bool skip_grub, string grub_device,
+		int64 estimated_lines){
+
+		if (running){ return false; }
+		if (snapshot.length == 0){ return false; }
+
+		if (!client.open()){
+			log_debug("DaemonBridge: no daemon; the caller should use the local core");
+			return false;
+		}
+
+		var params = new Json.Object();
+		params.set_string_member("snapshot", snapshot);
+
+		if (mounts.size > 0){
+			var m = new Json.Object();
+			foreach (var key in mounts.keys){
+				m.set_string_member(key, mounts.get(key));
+			}
+			params.set_object_member("mounts", m);
+		}
+
+		if (current_system){ params.set_boolean_member("current_system", true); }
+		if (dry_run){ params.set_boolean_member("dry_run", true); }
+		if (skip_grub){ params.set_boolean_member("skip_grub", true); }
+		if (grub_device.length > 0){
+			params.set_string_member("grub_device", grub_device);
+		}
+		if (estimated_lines > 0){
+			params.set_int_member("estimated_lines", estimated_lines);
+		}
+
+		var result = client.call_object("snapshot.restore", params);
+		if (result == null){
+			log_error(_("The Timeshift service refused the request"));
+			client.close();
+			return false;
+		}
+
+		job_id = wire_job_id(result);
+		if (job_id.length == 0){
+			client.close();
+			return false;
+		}
+
+		mode = Mode.RESTORE;
+		return start_watching(_("Preparing..."));
+	}
+
 	/* Submits a deletion and starts mirroring it. */
 	public bool begin_delete(string[] names){
 

@@ -549,6 +549,40 @@ type RepoStatus struct {
  * different requests. Clearing a comment has to be expressible, and it looks
  * identical to omitting the field once the pointer is gone.
  */
+/* DeviceInfo is one block device as devices.list reports it.
+ *
+ * Flat, with PKName naming the parent, rather than nested children: a client
+ * building a Gtk.TreeListModel asks for children lazily and would have to take
+ * the nesting apart again, and a flat list survives a device whose parent was
+ * filtered out by whatever rule the client is applying.
+ *
+ * HasLinuxFilesystem is reported rather than applied. It is the rule the
+ * console listing filters on, and a client that wants that listing can apply
+ * it -- but a client drawing the disk tree needs the rows it rejects, because
+ * a disk has no filesystem and is exactly what the partitions hang from.
+ */
+type DeviceInfo struct {
+	Path      string `json:"path"`
+	Name      string `json:"name"`
+	KName     string `json:"kname"`
+	PKName    string `json:"pkname"`
+	UUID      string `json:"uuid"`
+	Label     string `json:"label"`
+	PartLabel string `json:"partlabel"`
+	Type      string `json:"type"`
+	FSType    string `json:"fstype"`
+	Vendor    string `json:"vendor"`
+	Model     string `json:"model"`
+	SizeBytes int64  `json:"size_bytes"`
+	FreeBytes int64  `json:"free_bytes"`
+	Mounted   bool   `json:"mounted"`
+
+	MountPoints        []string `json:"mount_points"`
+	HasLinuxFilesystem bool     `json:"has_linux_filesystem"`
+	ReadOnly           bool     `json:"read_only"`
+	Removable          bool     `json:"removable"`
+}
+
 type SnapshotsUpdateParams struct {
 	Name string `json:"name"`
 

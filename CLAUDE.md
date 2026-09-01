@@ -950,6 +950,55 @@ DISPLAY=:99 import -window root shot.png
 There is no window manager on :99, so `xdotool` clicks are unreliable; drive the
 GUI by making the daemon do something and watching it react instead.
 
+#### The typed client (`src/Core/DaemonApi.vala`, `DaemonTypes.vala`)
+
+`DaemonClient` is the transport: one JSON object per line, a generic `call()`,
+and the event stream. `DaemonApi` is every method the daemon can be asked, with
+the decoding done once instead of at each call site, and `DaemonTypes` holds the
+results as GObjects so they can go straight into the GTK4 list stores that
+`Snapshot` and `Device` sit in today. They are separate from `DaemonClient`
+because the transport has about five reasons to change and the method surface
+has thirty, and merging them is how this codebase got its first god object.
+
+**Nothing throws.** A reader returns null and a verb returns false, with
+`api.last_error` set to something fit to show a person. That is right -- an
+absent or version-skewed daemon is an ordinary state -- but it means a WRONG
+FIELD NAME IS SILENT: the reader defaults, and the first symptom is a GUI
+drawing "Not Selected" over a perfectly good repository.
+
+The same trap runs the other way, and it is worse. `json.Unmarshal` **ignores
+fields it does not know**, so a parameter this client spells wrongly is not
+rejected -- the request succeeds, about something else. Six of the parameter
+sets were wrong when this file was first written (`repo.select` had no
+`btrfs_mode`; `repo.ssh.setup_key` takes a url, not host/user; `log.parse` uses
+`name`; `log.entries` uses `kinds`; `snapshots.update` uses `comments`), and
+every one of them would have been accepted and dropped. **Check a new method's
+names against the Go struct tags in `internal/ipc/protocol.go`, not against
+memory or a similar-looking method.**
+
+Which is what the selftest is for:
+
+```sh
+sudo TIMESHIFT_IPC_SELFTEST=1 timeshift-gtk
+sudo TIMESHIFT_IPC_SELFTEST=1 TIMESHIFT_SOCKET=/tmp/dev.sock ./build/src/timeshift-gtk
+```
+
+It calls every READ method against a running daemon and prints what decoded,
+failing on the specific silent losses -- a snapshot with no name (the wire's
+members are Capitalised, because the Go type carries no JSON tags), a snapshot
+with no date, a protocol mismatch, a device list with no disks in it. It never
+mutates: a diagnostic that changed the machine would be a poor thing to reach
+for when the machine is already suspect. `TIMESHIFT_SOCKET` is honoured there
+and nowhere else, so a daemon built from the tree can be checked before it is
+installed.
+
+Two wire details that are easy to get wrong and cost nothing to remember:
+`config.get` answers in the **on-disk** dialect -- every scalar a JSON string --
+while every other method uses real JSON types, which is why the `wire_*` readers
+accept both; and Go's zero `time.Time` marshals as `0001-01-01T00:00:00Z`, not
+as an omitted field, so `schedule.status`'s "never ran" arrives as a real date
+in the year 1. `DaemonTime.parse()` returns null for it.
+
 ### The GUI as a client (`src/Core/DaemonClient.vala`)
 
 The GTK app still runs its own Vala core. What it gained is the ability to see

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-01 08:55-0400\n"
+"POT-Creation-Date: 2026-09-01 09:21-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -150,11 +150,11 @@ msgstr ""
 msgid "Added cron task"
 msgstr ""
 
-#: src/AppGtk.vala:170
+#: src/AppGtk.vala:184
 msgid "Admin Access Required"
 msgstr ""
 
-#: src/AppGtk.vala:165
+#: src/AppGtk.vala:179
 msgid "Admin access is required to backup and restore system files."
 msgstr ""
 
@@ -213,7 +213,7 @@ msgstr ""
 msgid "Are you sure you want to delete this snapshot?"
 msgstr ""
 
-#: src/Core/DaemonBridge.vala:208
+#: src/Core/DaemonBridge.vala:285
 msgid "Attaching to the running operation..."
 msgstr ""
 
@@ -777,7 +777,7 @@ msgstr ""
 msgid "Deleting Snapshots..."
 msgstr ""
 
-#: src/Core/DaemonBridge.vala:367
+#: src/Core/DaemonBridge.vala:444
 msgid "Deleting snapshot"
 msgstr ""
 
@@ -943,7 +943,7 @@ msgstr ""
 msgid "Estimating System Size..."
 msgstr ""
 
-#: src/Core/DaemonBridge.vala:193 src/Core/Main.vala:1822
+#: src/Core/DaemonBridge.vala:270 src/Core/Main.vala:1822
 #: src/Gtk/JobMonitorWindow.vala:161
 msgid "Estimating system size..."
 msgstr ""
@@ -1505,7 +1505,7 @@ msgstr ""
 msgid "Log on the restored system: %s"
 msgstr ""
 
-#: src/Core/DaemonBridge.vala:433
+#: src/Core/DaemonBridge.vala:510
 msgid "Lost contact with the Timeshift service"
 msgstr ""
 
@@ -1768,7 +1768,7 @@ msgid ""
 "BTRFS mode"
 msgstr ""
 
-#: src/AppGtk.vala:151
+#: src/AppGtk.vala:165
 msgid "Options"
 msgstr ""
 
@@ -1869,7 +1869,7 @@ msgstr ""
 msgid "Please install required packages and try running TimeShift again"
 msgstr ""
 
-#: src/AppGtk.vala:166
+#: src/AppGtk.vala:180
 msgid "Please re-run the application as admin (using 'sudo' or 'su')"
 msgstr ""
 
@@ -1909,9 +1909,9 @@ msgstr ""
 msgid "Preparing target system"
 msgstr ""
 
-#: src/Core/DaemonBridge.vala:137 src/Core/DaemonBridge.vala:166
-#: src/Core/Main.vala:2195 src/Gtk/JobMonitorWindow.vala:160
-#: src/Utility/Gtk/TaskProgressBox.vala:70
+#: src/Core/DaemonBridge.vala:137 src/Core/DaemonBridge.vala:214
+#: src/Core/DaemonBridge.vala:243 src/Core/Main.vala:2195
+#: src/Gtk/JobMonitorWindow.vala:160 src/Utility/Gtk/TaskProgressBox.vala:70
 msgid "Preparing..."
 msgstr ""
 
@@ -1926,11 +1926,11 @@ msgid ""
 "The payload stays on disk, so enabling it later is instant."
 msgstr ""
 
-#: src/AppGtk.vala:153
+#: src/AppGtk.vala:167
 msgid "Print debug information"
 msgstr ""
 
-#: src/AppGtk.vala:155
+#: src/AppGtk.vala:169
 msgid "Print version number"
 msgstr ""
 
@@ -2230,7 +2230,7 @@ msgstr ""
 msgid "Run 'sudo snap refresh' on the restored system to rebuild them."
 msgstr ""
 
-#: src/AppGtk.vala:157
+#: src/AppGtk.vala:171
 #, c-format
 msgid "Run 'timeshift' for the command-line version of this tool"
 msgstr ""
@@ -2498,7 +2498,7 @@ msgstr ""
 msgid "Show Progress"
 msgstr ""
 
-#: src/AppGtk.vala:154
+#: src/AppGtk.vala:168
 msgid "Show all options"
 msgstr ""
 
@@ -2816,7 +2816,7 @@ msgstr ""
 msgid "Syncing files with rsync..."
 msgstr ""
 
-#: src/AppGtk.vala:149
+#: src/AppGtk.vala:163
 msgid "Syntax"
 msgstr ""
 
@@ -2886,6 +2886,10 @@ msgstr ""
 msgid "The Timeshift daemon closed the connection"
 msgstr ""
 
+#: src/Core/DaemonApi.vala:71
+msgid "The Timeshift daemon did not answer"
+msgstr ""
+
 #: src/Core/DaemonClient.vala:238
 msgid "The Timeshift daemon reported an error"
 msgstr ""
@@ -2906,7 +2910,7 @@ msgstr ""
 msgid "The Timeshift service is running an operation."
 msgstr ""
 
-#: src/Core/DaemonBridge.vala:126
+#: src/Core/DaemonBridge.vala:126 src/Core/DaemonBridge.vala:202
 msgid "The Timeshift service refused the request"
 msgstr ""
 
@@ -2943,8 +2947,20 @@ msgid ""
 "configuration file is overriding the timeout this feature needs."
 msgstr ""
 
+#: src/Core/DaemonApi.vala:353
+msgid "The host did not answer"
+msgstr ""
+
 #: src/Core/Main.vala:3136
 msgid "The initramfs was not rebuilt. The restored system may fail to boot."
+msgstr ""
+
+#: src/Core/DaemonApi.vala:333
+msgid "The key could not be installed on the remote host"
+msgstr ""
+
+#: src/Core/DaemonApi.vala:332
+msgid "The key was installed but the host would not accept it"
 msgstr ""
 
 #: src/Core/Main.vala:4330
@@ -3045,6 +3061,10 @@ msgid ""
 "boot this machine; opt-outs are described in /etc/timeshift-recovery/config."
 msgstr ""
 
+#: src/Core/DaemonApi.vala:246
+msgid "This location cannot be used"
+msgstr ""
+
 #: src/Gtk/MainWindow.vala:1064
 msgid ""
 "This location stores ownership in extended attributes, so files here appear "
@@ -3100,7 +3120,7 @@ msgstr ""
 msgid "UUID"
 msgstr ""
 
-#: src/Core/DaemonClient.vala:228
+#: src/Core/DaemonApi.vala:76 src/Core/DaemonClient.vala:228
 msgid "Unexpected reply from the Timeshift daemon"
 msgstr ""
 
@@ -3108,7 +3128,7 @@ msgstr ""
 msgid "Unexpected response from the remote host"
 msgstr ""
 
-#: src/AppGtk.vala:130
+#: src/AppGtk.vala:144
 msgid "Unknown option"
 msgstr ""
 

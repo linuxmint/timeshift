@@ -70,6 +70,20 @@ public class AppGtk : GLib.Object {
 			}
 		}
 
+		/* A diagnostic, before anything else needs to work.
+		 *
+		 * It talks to the daemon and returns; it opens no window, constructs no
+		 * Main, and touches nothing. Placed here so it still answers on a
+		 * machine where the GUI itself will not start -- which is when someone
+		 * is most likely to want to know whether the socket is healthy.
+		 *
+		 * An environment variable rather than a flag: parse_arguments() rejects
+		 * anything it does not know, and adding a flag would put a developer
+		 * diagnostic in --help and so in the man page. */
+		if (GLib.Environment.get_variable("TIMESHIFT_IPC_SELFTEST") == "1"){
+			return DaemonApi.selftest();
+		}
+
 		Main.setup_env();
 
 		Gtk.init();
