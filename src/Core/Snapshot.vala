@@ -62,6 +62,24 @@ public class Snapshot : GLib.Object{
 	//subvolumes[].total_bytes/unshared_bytes instead - see size_bytes below.
 	public int64 rsync_size_bytes = -1;
 	public int64 rsync_size_unshared_bytes = -1;
+
+	/* Sizes as the daemon reported them; -1 when they did not come from there.
+	 *
+	 * A separate pair rather than reusing the rsync cache above, because those
+	 * two are a du(1) result THIS process computed and in btrfs mode are not
+	 * consulted at all -- the property sums the Subvolume objects instead. A
+	 * snapshot built from the wire has neither a du cache nor Subvolume
+	 * objects, so it needs a slot the size properties will actually read. */
+	public int64 daemon_size_bytes = -1;
+	public int64 daemon_size_unshared_bytes = -1;
+
+	/* Built from the daemon rather than from control files on disk.
+	 *
+	 * Worth knowing because such a snapshot has read no info.json, no
+	 * exclude.list and no fstab: the lists below are empty because nothing has
+	 * been read yet, NOT because the snapshot has none. Anything that needs
+	 * them -- a restore, mainly -- must read them first. */
+	public bool from_daemon = false;
 	
 	public DeleteFileTask delete_file_task;
 
@@ -95,6 +113,90 @@ public class Snapshot : GLib.Object{
 		}
 	}
 
+	/* A snapshot as the daemon described it. Reads NOTHING.
+	 *
+	 * The ordinary constructor above opens info.json, exclude.list, fstab and
+	 * crypttab -- four files per snapshot, and over SSH four round trips per
+	 * snapshot, which is what the repository's prefetch exists to avoid. The
+	 * daemon has already read all of that, and has already computed the sizes:
+	 * a du(1) walk of the whole repository for rsync mode, a qgroup query for
+	 * btrfs. Doing any of it again here would be asking a second time for an
+	 * answer we were just given.
+	 *
+	 * `live` is taken as sent and NOT re-derived. The old path recomputed it
+	 * against the system's boot time and WROTE BACK a corrected control file
+	 * while merely listing -- so listing a repository could modify it. The
+	 * daemon owns that decision now, and a list stays a read.
+	 */
+	public Snapshot.from_wire(DaemonSnapshot src, bool btrfs_snapshot,
+		SnapshotRepo _repo){
+
+		path = src.path;
+		name = src.name;
+		description = src.description;
+		btrfs_mode = btrfs_snapshot;
+		repo = _repo;
+		from_daemon = true;
+
+		sys_uuid = src.sys_uuid;
+		sys_distro = src.sys_distro;
+		app_version = src.app_version;
+		file_count = src.file_count;
+
+		valid = src.valid;
+		live = src.live;
+		marked_for_deletion = src.marked_for_deletion;
+
+		daemon_size_bytes = src.size_bytes;
+		daemon_size_unshared_bytes = src.unshared_bytes;
+
+		/* The directory name IS the timestamp, so a snapshot the daemon could
+		 * not date is still placed correctly rather than falling to the epoch --
+		 * which would sort it before everything and, in the old core, made
+		 * retention read it as older than every other snapshot. */
+		date = (src.created != null) ? src.created : date_from_name(name);
+
+		tags = new Gee.ArrayList<string>();
+		foreach (var tag in src.tags){ tags.add(tag); }
+
+		exclude_list = new Gee.ArrayList<string>();
+		fstab_list = new Gee.ArrayList<FsTabEntry>();
+		delete_file_task = new DeleteFileTask();
+		subvolumes = new Gee.HashMap<string,Subvolume>();
+		paths = new Gee.HashMap<string,string>();
+	}
+
+	/* The date encoded in a snapshot's directory name: YYYY-MM-DD_HH-MM-SS.
+	 *
+	 * The fallback when a control file cannot be dated, and it matters more
+	 * than it looks. read_control_file() below leaves `date` at the UNIX EPOCH
+	 * when `created` will not parse, while still marking the snapshot valid --
+	 * so retention reads it as older than everything else and deletes it. The
+	 * name is the timestamp, so there is almost always a real answer available.
+	 *
+	 * Null-safe by construction: an unparseable name gives the epoch, which is
+	 * what the caller would have had anyway.
+	 */
+	public static DateTime date_from_name(string dir_name){
+
+		int year = 0, month = 0, day = 0, hour = 0, minute = 0, second = 0;
+
+		if (dir_name.scanf("%4d-%2d-%2d_%2d-%2d-%2d",
+			out year, out month, out day, out hour, out minute, out second) == 6){
+
+			// Guard the ranges: scanf is happy with 2026-99-99, and DateTime
+			// would return null for it, which the callers do not expect.
+			if ((month >= 1) && (month <= 12) && (day >= 1) && (day <= 31)
+				&& (hour < 24) && (minute < 60) && (second < 60)){
+
+				var dt = new DateTime.local(year, month, day, hour, minute, second);
+				if (dt != null){ return dt; }
+			}
+		}
+
+		return new DateTime.from_unix_utc(0);
+	}
+
 	// properties
 	
 	public string date_formatted{
@@ -107,6 +209,7 @@ public class Snapshot : GLib.Object{
 	 * subvolumes; rsync uses the cached du result (-1 if not computed yet). */
 	public int64 size_bytes{
 		get{
+			if (daemon_size_bytes >= 0){ return daemon_size_bytes; }
 			if (btrfs_mode){
 				int64 total = 0;
 				foreach(var s in subvolumes.values){ total += s.total_bytes; }
@@ -120,6 +223,7 @@ public class Snapshot : GLib.Object{
 	 * subvolumes; rsync sums files with no other hardlink (-1 if not computed). */
 	public int64 size_unshared_bytes{
 		get{
+			if (daemon_size_unshared_bytes >= 0){ return daemon_size_unshared_bytes; }
 			if (btrfs_mode){
 				int64 total = 0;
 				foreach(var s in subvolumes.values){ total += s.unshared_bytes; }

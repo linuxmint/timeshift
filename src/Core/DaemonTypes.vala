@@ -227,6 +227,26 @@ public class DaemonRepoStatus : GLib.Object {
 	public string device_name { get; set; default = ""; }
 	public string device_uuid { get; set; default = ""; }
 
+	/* The numbers behind `details`, as numbers.
+	 *
+	 * `details` is "29 snapshots, 29.9 TB free" -- the whole answer for a
+	 * console header. A GUI has to compare free space against a snapshot's size
+	 * and render its own units, and parsing that string back into a number is
+	 * the sort of thing that works until a unit or a locale changes. */
+	public int64 free_bytes { get; set; default = 0; }
+	public int snapshot_count { get; set; default = 0; }
+
+	/* Whether the daemon SENT free_bytes, as opposed to sending zero.
+	 *
+	 * The two are not the same answer and the difference matters. A daemon
+	 * older than the field omits it, and a caller that read the default would
+	 * report a healthy 30 TB repository as having no space -- confidently,
+	 * because the status call itself succeeded. Protocol version cannot catch
+	 * this: the field was added additively, and JSON drops what it does not
+	 * know rather than complaining. So the client asks whether the answer was
+	 * given, and falls back to measuring locally when it was not. */
+	public bool has_free_bytes { get; set; default = false; }
+
 	public static DaemonRepoStatus from_wire(Json.Object o){
 		var st = new DaemonRepoStatus();
 		st.code          = (int) DaemonClient.wire_int(o, "code", 0);
@@ -245,6 +265,9 @@ public class DaemonRepoStatus : GLib.Object {
 			st.btrfs_mode  = DaemonClient.wire_bool(v, "btrfs_mode", false);
 			st.device_name = DaemonClient.wire_string(v, "device_name", "");
 			st.device_uuid = DaemonClient.wire_string(v, "device_uuid", "");
+			st.free_bytes  = DaemonClient.wire_int(v, "free_bytes", 0);
+			st.has_free_bytes = v.has_member("free_bytes");
+			st.snapshot_count = (int) DaemonClient.wire_int(v, "snapshot_count", 0);
 		}
 		return st;
 	}

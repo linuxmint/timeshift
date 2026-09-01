@@ -319,6 +319,16 @@ type StatusView struct {
 	DeviceUUID string `json:"device_uuid"`
 	Message    string `json:"message"`
 	Details    string `json:"details"`
+
+	/* The numbers behind Details, as numbers.
+	 *
+	 * Details is "29 snapshots, 29.9 TB free" -- built for the console header,
+	 * where it is the whole answer. A GUI needs to compare free space against a
+	 * snapshot's size and to render its own units, and parsing a formatted
+	 * string back into a number is the kind of thing that works until a locale
+	 * or a unit changes. */
+	FreeBytes     int64 `json:"free_bytes"`
+	SnapshotCount int   `json:"snapshot_count"`
 }
 
 // StatusView gathers the header fields for this repository.
@@ -327,16 +337,35 @@ func (r *Repo) StatusView(ctx context.Context, deviceName, deviceUUID string) (S
 	if err != nil {
 		return StatusView{}, err
 	}
+
+	/* Best effort, and deliberately not fatal.
+	 *
+	 * Status() has already reported whether the location is usable. A location
+	 * that answered that and then cannot be measured is still worth describing,
+	 * so a failure here leaves the count at zero rather than losing the whole
+	 * header. */
+	var free int64
+	if n, ferr := r.FreeBytes(ctx); ferr == nil {
+		free = int64(n)
+	}
+
+	var count int
+	if list, lerr := r.List(ctx); lerr == nil {
+		count = len(list)
+	}
+
 	return StatusView{
-		Remote:     r.Backend.IsRemote(),
-		Display:    r.Backend.DisplayName(),
-		Path:       r.MountPath,
-		TypeID:     r.Backend.TypeID(),
-		BtrfsMode:  r.BtrfsMode,
-		DeviceName: deviceName,
-		DeviceUUID: deviceUUID,
-		Message:    st.Message,
-		Details:    st.Details,
+		FreeBytes:     free,
+		SnapshotCount: count,
+		Remote:        r.Backend.IsRemote(),
+		Display:       r.Backend.DisplayName(),
+		Path:          r.MountPath,
+		TypeID:        r.Backend.TypeID(),
+		BtrfsMode:     r.BtrfsMode,
+		DeviceName:    deviceName,
+		DeviceUUID:    deviceUUID,
+		Message:       st.Message,
+		Details:       st.Details,
 	}, nil
 }
 

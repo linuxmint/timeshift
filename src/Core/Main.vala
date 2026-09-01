@@ -71,6 +71,7 @@ public class Main : GLib.Object{
 	 * work, and the daemon is consulted only to find out whether something
 	 * ELSE is already running. Nothing here depends on it being there. */
 	private DaemonClient? _daemon = null;
+	private DaemonApi? _daemon_api = null;
 	private bool daemon_tried = false;
 	
 	public Gee.ArrayList<Device> partitions;
@@ -1270,6 +1271,23 @@ public class Main : GLib.Object{
 				}
 			}
 			return _daemon;
+		}
+	}
+
+	/* The daemon's methods, typed. Null when there is no daemon.
+	 *
+	 * Shares the one connection `daemon` opened rather than making a second:
+	 * every synchronous call goes down that single request/response socket, and
+	 * a second one would only add a second thing to keep alive. The event
+	 * stream is separate already, inside DaemonClient, for the reason given
+	 * there -- a call must never come back with an event's answer.
+	 */
+	public DaemonApi? daemon_api {
+		get {
+			var client = daemon;
+			if (client == null){ return null; }
+			if (_daemon_api == null){ _daemon_api = new DaemonApi(client); }
+			return _daemon_api;
 		}
 	}
 

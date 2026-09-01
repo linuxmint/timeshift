@@ -361,9 +361,67 @@ public class SnapshotRepo : GLib.Object{
 		return luks_unlocked;
 	}
 	
+	/* The snapshot list, from the daemon.
+	 *
+	 * This replaces four things the local walk does, not one. The daemon has
+	 * already read every control file, already decided which snapshots are
+	 * valid, already computed the sizes -- a du(1) walk of the whole repository
+	 * in rsync mode, a qgroup query in btrfs mode -- and already settled the
+	 * `live` flag. Over SSH the local path costs four round trips per snapshot
+	 * plus a remote du; this costs one request.
+	 *
+	 * It also makes listing a READ. The local path re-derives `live` against
+	 * the system's boot time and calls update_control_file() when it disagrees,
+	 * so merely listing a repository could write to it -- on a remote one, over
+	 * the network, while something else might be mid-backup.
+	 *
+	 * False means "no daemon answered", not "no snapshots": the caller falls
+	 * through to the local walk. An EMPTY repository is a successful answer,
+	 * which is why the result is not inferred from the list being empty.
+	 */
+	private bool load_snapshots_from_daemon(){
+
+		if (App == null){ return false; }
+
+		var api = App.daemon_api;
+		if (api == null){ return false; }
+
+		var info = api.system_info();
+		if (info == null){ return false; }
+
+		var listed = api.snapshots_list();
+		if (api.last_error.length > 0){
+			/* A transport failure is NOT an empty repository. Replacing the
+			 * list here would present a full repository as empty, and
+			 * auto_remove() acting on that would be catastrophic -- the same
+			 * reason the remote prefetch below refuses to continue on a failed
+			 * read. */
+			log_error(_("Could not read the snapshot list from the Timeshift service"));
+			return false;
+		}
+
+		snapshots.clear();
+		invalid_snapshots.clear();
+
+		foreach (var src in listed){
+			var bak = new Snapshot.from_wire(src, btrfs_mode, this);
+			if (bak.valid){ snapshots.add(bak); }
+			else { invalid_snapshots.add(bak); }
+		}
+
+		snapshots.sort((a,b) => {
+			return ((Snapshot) a).date.compare(((Snapshot) b).date);
+		});
+
+		log_debug("SnapshotRepo: %d snapshots from the daemon".printf(snapshots.size));
+		return true;
+	}
+
 	public bool load_snapshots(){
 
 		log_debug("SnapshotRepo: load_snapshots()");
+
+		if (load_snapshots_from_daemon()){ return true; }
 
 		// A local repository still needs a device; a remote one has none.
 		if (!backend.is_remote && (device == null)){
@@ -523,9 +581,75 @@ public class SnapshotRepo : GLib.Object{
 
 	// status check ---------------------------
 
+	/* The repository's status, from the daemon.
+	 *
+	 * Worth routing for the same reason as the listing, only more so: for a
+	 * REMOTE location the local path is four SSH round trips -- does the
+	 * directory exist, is it writable, does it support hardlinks, can the
+	 * account preserve ownership -- plus a df and a directory walk. All of it
+	 * is cached behind caps_checked precisely because it is expensive, and the
+	 * cache is then something else to invalidate correctly.
+	 *
+	 * The status CODES are deliberately the same integers on both sides
+	 * (engines.StatusCode in engine.go and SnapshotLocationStatus below), so
+	 * the answer maps across directly. That shared numbering is a contract: it
+	 * is what lets either core describe a location the same way, and renumbering
+	 * one side would silently turn "read-only" into "no space".
+	 *
+	 * False means no daemon answered, and the caller probes locally.
+	 */
+	private bool check_status_from_daemon(){
+
+		if (App == null){ return false; }
+
+		var api = App.daemon_api;
+		if (api == null){ return false; }
+
+		var st = api.repo_status();
+		if (st == null){ return false; }
+
+		/* A daemon too old to report free space cannot serve this call.
+		 *
+		 * Only for a REMOTE location, where the daemon is the sole source of
+		 * the number -- a local one reads it from its Device, which the local
+		 * scan filled. Taking the status anyway would leave a healthy 30 TB
+		 * repository showing no space at all, and confidently, because the call
+		 * itself succeeded. Falling through to the local probe is slower and
+		 * right. */
+		if (backend.is_remote && !st.has_free_bytes){
+			log_debug("SnapshotRepo: the daemon does not report free space; probing locally");
+			return false;
+		}
+
+		status_code = (SnapshotLocationStatus) st.code;
+		status_message = st.message;
+		status_details = st.details;
+
+		/* free_bytes is computed: a local repository reads it from its Device,
+		 * which the local scan already filled, and only the REMOTE case has a
+		 * field to set. So this fills the half the daemon is the sole source
+		 * for, and leaves the local half alone rather than writing a second
+		 * answer over a good one. */
+		if (backend.is_remote && (st.free_bytes > 0)){
+			remote_free_bytes = (uint64) st.free_bytes;
+		}
+
+		/* last_snapshot_failed_space is this process's memory of a backup that
+		 * ran out of room, and the daemon knows nothing about it. Clearing it
+		 * here matches what the local path does on its way out, so the warning
+		 * survives exactly one status check either way. */
+		last_snapshot_failed_space = false;
+
+		log_debug("SnapshotRepo: status %d from the daemon: %s".printf(
+			st.code, st.message));
+		return true;
+	}
+
 	public void check_status(){
 
 		log_debug("SnapshotRepo: check_status()");
+
+		if (check_status_from_daemon()){ return; }
 		
         if (!last_snapshot_failed_space)
         {
