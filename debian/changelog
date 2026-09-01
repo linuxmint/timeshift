@@ -1,3 +1,22 @@
+timeshift-ssh (25.12.4+ssh40) resolute; urgency=medium
+
+  * The Timeshift service now starts on demand, so a snapshot before an apt
+    operation works even if the service was stopped
+  * timeshift --cancel stops a running snapshot or restore
+  * --setup-ssh-key shows the host's fingerprint before sending a password,
+    which it was skipping whenever the location came from the configuration
+  * Malformed requests to the service are refused rather than acted on with
+    missing values -- one case could write settings during a dry run
+  * timeshift --check reports a version-mismatched service instead of
+    proceeding
+  * --verbose says what is being done; it previously did nothing
+  * Giving two conflicting commands at once (for example --list --delete) is
+    refused instead of silently doing the last one
+  * --help is generated from the options themselves, so it can no longer drift,
+    and regains the examples and notes sections
+
+ -- makeafide <willsmit4433@gmail.com>  Tue, 01 Sep 2026 08:18:39 -0400
+
 timeshift-ssh (25.12.4+ssh39) resolute; urgency=medium
 
   * BTRFS mode now actually uses BTRFS. Snapshots were being taken with rsync

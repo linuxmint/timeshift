@@ -1,3 +1,19 @@
+apt-snapshot-guard (1.0.27) resolute; urgency=medium
+
+  * Removing this package no longer breaks apt. The apt hook file survived
+    removal while the script it called did not, so every later apt command
+    failed -- including the reinstall that would have fixed it
+  * A snapshot no longer fails just because the Timeshift service is busy or
+    was upgraded without being restarted; it falls back to the command line
+  * A snapshot that times out is cancelled rather than left running
+  * A bypass flag that cannot be removed no longer disables the guard silently
+    and permanently
+  * A misspelt ENABLED value keeps the guard on instead of switching it off
+  * The graphical prompt can no longer hold apt open indefinitely
+  * The timeout is now the total time apt can be delayed, not double it
+
+ -- makeafide <willsmit4433@gmail.com>  Tue, 01 Sep 2026 08:20:09 -0400
+
 apt-snapshot-guard (1.0.26) resolute; urgency=medium
 
   * Removing the package no longer breaks apt; the daemon is no longer a hard dependency
