@@ -156,7 +156,13 @@ func (d *daemon) methods() map[string]ipc.Method {
 		ipc.MethodEstimateRun:     {Fn: d.estimateRun},
 		ipc.MethodConfigSet:       {Fn: d.configSet},
 		ipc.MethodSnapshotsUpdate: {Fn: d.snapshotsUpdate},
-		ipc.MethodRepoReload:      {Fn: d.repoReload},
+
+		/* Browsing is root-only, not part of the group's read-only subset. It
+		 * mounts a filesystem and exposes a snapshot's entire contents --
+		 * every file on the system as it was -- to a uid the caller names. */
+		ipc.MethodSnapshotsBrowse:        {Fn: d.snapshotsBrowse},
+		ipc.MethodSnapshotsBrowseRelease: {Fn: d.snapshotsBrowseRelease},
+		ipc.MethodRepoReload:             {Fn: d.repoReload},
 
 		/* Planning a restore changes nothing, but it is not read-only in the
 		 * sense the group grant means: it enumerates every device on the

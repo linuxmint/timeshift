@@ -268,6 +268,21 @@ type Repository interface {
 	 * does not care which engine produced the files. */
 	TransferSource(payloadPath string) TransferSource
 
+	// ---- browsing ----
+
+	/* Browse makes a snapshot's files readable at a local path, mounting it
+	 * first if the repository is remote. asUID/asGID own that mount: the
+	 * daemon runs as root and the file manager does not, so a root-owned mount
+	 * is one the person cannot read.
+	 *
+	 * It does NOT open anything. That needs the desktop user's session, which
+	 * the daemon may not have, and belongs to the client. */
+	Browse(ctx context.Context, snapshotPath string, asUID, asGID int) (BrowseMount, error)
+
+	// ReleaseBrowse unmounts what Browse mounted. A no-op for a path that was
+	// never mounted, because releasing one would unmount the repository.
+	ReleaseBrowse(ctx context.Context, mountPoint string) error
+
 	// ---- lifecycle ----
 
 	/* SetFirstSnapshotSize supplies the estimated size of a first snapshot, so
@@ -332,6 +347,15 @@ type DeleteOptions struct {
 	 * evidence that a snapshot is incomplete is the ABSENCE of its control
 	 * file. */
 	Explicit bool
+}
+
+// BrowseMount is a snapshot made readable at a local path.
+type BrowseMount struct {
+	// Path is where to look.
+	Path string
+
+	// Mounted is true when something was mounted and must later be released.
+	Mounted bool
 }
 
 // TransferSource is how the host reads a snapshot's payload.

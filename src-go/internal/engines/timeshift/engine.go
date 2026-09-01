@@ -33,20 +33,15 @@ func (Engine) DisplayName() string { return "Timeshift (rsync / btrfs)" }
 // UnsharedSize is true because rsync's hardlinked layout lets a `find -links 1`
 // walk price each snapshot exclusively, which is the CLI's "Unique" column.
 //
-// Browse is FALSE, and that is not an oversight. A capability is a promise to
-// every client that a method exists, and there is no browse method: a GUI that
-// enabled its Browse button on this flag would get unknown_method back. It was
-// true here for a while with nothing behind it, which is worse than absent --
-// an absent capability makes a client hide a button, a lying one makes it show
-// a broken one. Set it back in the same commit that adds snapshots.browse.
-//
-// WholeVolumeRestore is false even though btrfs mode restores by swapping
-// subvolumes: it depends on the repository's mode, which is not known until
-// Open, and nothing reads it yet.
+// Browse is true again, restored in the same change that added
+// snapshots.browse. It was declared true for a while with no method behind it,
+// which is worse than absent: an absent capability makes a client hide a
+// button, a lying one makes it show a button that returns unknown_method.
 func (Engine) Caps() engines.Caps {
 	return engines.Caps{
 		Incremental:  true,
 		Remote:       true,
+		Browse:       true,
 		UnsharedSize: true,
 	}
 }
@@ -94,10 +89,14 @@ func (Engine) Open(ctx context.Context, loc engines.Location, deps engines.Deps)
 	 * which is indistinguishable from an empty repository. The daemon uses the
 	 * same per-pid path, so it could not reach a remote repository either.
 	 *
-	 * 0700 because the ssh control socket is in here: anyone who can open it
-	 * can ride the authenticated connection. */
+	 * 0755, not 0700. It is tempting to lock it down because the ssh control
+	 * socket lives in here, but a browse mount lives in here too and the
+	 * desktop user has to traverse the directory to reach it -- 0700 makes the
+	 * mount unreadable by the only person who wanted it. The socket is
+	 * protected by its own mode: ssh creates a ControlPath 0600, so only root
+	 * can connect to it whatever the directory says. */
 	if deps.MountRoot != "" {
-		if err := os.MkdirAll(deps.MountRoot, 0o700); err != nil {
+		if err := os.MkdirAll(deps.MountRoot, 0o755); err != nil {
 			return nil, fmt.Errorf("timeshift: could not create %s: %w", deps.MountRoot, err)
 		}
 	}

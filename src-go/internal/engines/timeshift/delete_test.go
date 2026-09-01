@@ -215,10 +215,19 @@ func TestOpenCreatesItsRunDirectory(t *testing.T) {
 		t.Fatal("run directory is not a directory")
 	}
 
-	/* 0700: the ssh control socket lives in here, and anyone who can open it
-	 * can ride the authenticated connection. */
-	if perm := info.Mode().Perm(); perm != 0o700 {
-		t.Errorf("run directory mode = %o, want 700", perm)
+	/* 0755, and that is deliberate rather than lax.
+	 *
+	 * A browse mount lives under this directory and the DESKTOP user has to
+	 * traverse it to reach one; 0700 makes the mount unreadable by the only
+	 * person who asked for it, which is how this was found -- sshfs mounted
+	 * correctly, remapped ownership correctly, and the file manager still got
+	 * permission denied one directory higher up.
+	 *
+	 * The ssh control socket in here is protected by its own mode: ssh creates
+	 * a ControlPath 0600, so only root can connect to it whatever the directory
+	 * permits. */
+	if perm := info.Mode().Perm(); perm != 0o755 {
+		t.Errorf("run directory mode = %o, want 755", perm)
 	}
 }
 

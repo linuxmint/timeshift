@@ -76,28 +76,30 @@ func Errf(code, format string, args ...any) *Error {
 // Method names. Keeping them as constants means a typo is a compile error on
 // both sides rather than an unknown_method at runtime.
 const (
-	MethodSystemInfo      = "system.info"
-	MethodEnginesList     = "engines.list"
-	MethodConfigGet       = "config.get"
-	MethodConfigSet       = "config.set"
-	MethodDevicesList     = "devices.list"
-	MethodRepoStatus      = "repo.status"
-	MethodRepoReload      = "repo.reload"
-	MethodSnapshotsList   = "snapshots.list"
-	MethodSnapshotsUpdate = "snapshots.update"
-	MethodSnapshotCreate  = "snapshot.create"
-	MethodSnapshotDelete  = "snapshot.delete"
-	MethodSnapshotRestore = "snapshot.restore"
-	MethodRestorePlan     = "restore.plan"
-	MethodEstimateRun     = "estimate.run"
-	MethodScheduleCheck   = "schedule.check"
-	MethodScheduleStatus  = "schedule.status"
-	MethodJobsList        = "jobs.list"
-	MethodJobsGet         = "jobs.get"
-	MethodJobsSubscribe   = "jobs.subscribe"
-	MethodJobsCancel      = "jobs.cancel"
-	MethodJobsPause       = "jobs.pause"
-	MethodJobsResume      = "jobs.resume"
+	MethodSystemInfo             = "system.info"
+	MethodEnginesList            = "engines.list"
+	MethodConfigGet              = "config.get"
+	MethodConfigSet              = "config.set"
+	MethodDevicesList            = "devices.list"
+	MethodRepoStatus             = "repo.status"
+	MethodRepoReload             = "repo.reload"
+	MethodSnapshotsList          = "snapshots.list"
+	MethodSnapshotsUpdate        = "snapshots.update"
+	MethodSnapshotsBrowse        = "snapshots.browse"
+	MethodSnapshotsBrowseRelease = "snapshots.browse_release"
+	MethodSnapshotCreate         = "snapshot.create"
+	MethodSnapshotDelete         = "snapshot.delete"
+	MethodSnapshotRestore        = "snapshot.restore"
+	MethodRestorePlan            = "restore.plan"
+	MethodEstimateRun            = "estimate.run"
+	MethodScheduleCheck          = "schedule.check"
+	MethodScheduleStatus         = "schedule.status"
+	MethodJobsList               = "jobs.list"
+	MethodJobsGet                = "jobs.get"
+	MethodJobsSubscribe          = "jobs.subscribe"
+	MethodJobsCancel             = "jobs.cancel"
+	MethodJobsPause              = "jobs.pause"
+	MethodJobsResume             = "jobs.resume"
 )
 
 // SystemInfo answers system.info.
@@ -182,6 +184,35 @@ type SubscribeParams struct {
  */
 type ConfigSetParams struct {
 	Values map[string]json.RawMessage `json:"values"`
+}
+
+/* BrowseParams asks for a snapshot's files to be made readable.
+ *
+ * UID/GID say who the mount is for. A client running as root under pkexec must
+ * pass the DESKTOP user's ids, because the file manager it goes on to spawn is
+ * not root and cannot read a root-owned mount. Left at zero, the daemon uses
+ * the calling peer's own ids, which is right for anyone talking to it directly.
+ */
+type BrowseParams struct {
+	Snapshot string `json:"snapshot"`
+	UID      int    `json:"uid,omitempty"`
+	GID      int    `json:"gid,omitempty"`
+}
+
+// BrowseResult is where to look.
+type BrowseResult struct {
+	Path     string `json:"path"`
+	Snapshot string `json:"snapshot,omitempty"`
+
+	/* Mounted says whether releasing is required. False for a local
+	 * repository, whose snapshot is already a path on a mounted filesystem --
+	 * releasing that would unmount the repository. */
+	Mounted bool `json:"mounted"`
+}
+
+// BrowseReleaseParams unmounts a browse mount.
+type BrowseReleaseParams struct {
+	Path string `json:"path"`
 }
 
 // RepoStatus is what repo.status returns: the repository's health, plus the

@@ -131,6 +131,13 @@ func TestARepositoryIsFullyDrivableThroughTheInterface(t *testing.T) {
 		t.Error("TransferSource returned no path")
 	}
 
+	if _, err := repo.Browse(ctx, "/snap", 1000, 1000); err != nil {
+		t.Errorf("Browse: %v", err)
+	}
+	if err := repo.ReleaseBrowse(ctx, "/snap"); err != nil {
+		t.Errorf("ReleaseBrowse: %v", err)
+	}
+
 	repo.SetFirstSnapshotSize(1 << 30)
 }
 
@@ -176,6 +183,11 @@ func (r *fakeRepo) SetMarkedForDeletion(context.Context, string, bool) error { r
 func (r *fakeRepo) TransferSource(p string) TransferSource {
 	return TransferSource{Path: p}
 }
+
+func (r *fakeRepo) Browse(_ context.Context, snapshotPath string, _, _ int) (BrowseMount, error) {
+	return BrowseMount{Path: snapshotPath}, nil
+}
+func (r *fakeRepo) ReleaseBrowse(context.Context, string) error { return nil }
 
 var _ Engine = fakeEngine{}
 var _ Repository = (*fakeRepo)(nil)
