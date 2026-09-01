@@ -252,7 +252,13 @@ func run(args []string) int {
 		return runDelete(socket, names, scripted)
 
 	case "list-snapshots":
-		found, err := listSnapshotsCmd(ctx, configPath, runner)
+		/* Ask the daemon first, and open the repository ourselves only when
+		 * there is no daemon to ask. Doing it in-process means mounting a
+		 * filesystem the daemon has probably already mounted. */
+		found, served, err := listSnapshotsViaDaemon(socket, os.Stdout)
+		if !served {
+			found, err = listSnapshotsCmd(ctx, configPath, runner)
+		}
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
 			return 1

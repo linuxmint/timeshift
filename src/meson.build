@@ -26,7 +26,7 @@ sources_core = files([
 ])
 
 sources_utility = files([
-  'Utility/AppLock.vala',
+  'Utility/RepoLock.vala',
   'Utility/AsyncTask.vala',
   'Utility/CronTab.vala',
   'Utility/CryptTabEntry.vala',

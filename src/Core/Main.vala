@@ -149,7 +149,10 @@ public class Main : GLib.Object{
 	
 	public string log_dir = "";
 	public string log_file = "";
-	public AppLock app_lock;
+	/* Serialises repository writes against the other Timeshift -- the Go
+	 * daemon, or a second GUI. Taken around create, delete and restore only;
+	 * see RepoLock. */
+	public RepoLock repo_lock;
 
 	public string date_format = "%Y-%m-%d %H:%M:%S";
 	public const string date_format_default = "%Y-%m-%d %H:%M:%S";
@@ -376,30 +379,18 @@ public class Main : GLib.Object{
 
         check_btrfs_version_capabilities();
 
-		// check and create lock ----------------------------
-
-		app_lock = new AppLock();
-		
-		if (!app_lock.create("timeshift", app_mode)){
-			if (gui_mode){
-				string msg = "";
-				if (app_lock.lock_message == "backup"){
-					msg = _("Another instance of Timeshift is creating a snapshot.") + "\n";
-					msg += _("Please wait a few minutes and try again.");
-				}
-				else{
-					msg = _("Another instance of timeshift is currently running!") + "\n";
-					msg += _("Please check if you have multiple windows open.") + "\n";
-				}
-
-				string title = _("Scheduled snapshot in progress...");
-				gtk_messagebox(title, msg, null, true);
-			}
-			else{
-				//already logged - do nothing
-			}
-			exit(1);
-		}
+		/* No single-instance lock here any more.
+		 *
+		 * AppLock refused a second PROCESS, for every invocation including
+		 * --list. That is why a snapshot started by apt-snapshot-guard could
+		 * not be watched at all: opening the GUI while it ran was refused
+		 * outright, which is the defect this whole port exists to remove.
+		 *
+		 * What actually needs serialising is a repository WRITE, and RepoLock
+		 * does that around create, delete and restore -- shared with
+		 * timeshiftd, which never took AppLock and so was never excluded by
+		 * it. Reads are now free to run beside anything. */
+		repo_lock = new RepoLock();
 
 		// initialize variables -------------------------------
 
@@ -1336,7 +1327,44 @@ public class Main : GLib.Object{
 
 	// backup
 
+	/* Take the repository write lock, or wait for whoever has it.
+	 *
+	 * Waits rather than refuses. A person who asked for a backup while a
+	 * restore is running wants it queued, not rejected -- and refusing is what
+	 * AppLock did. The GUI does an advisory check before it ever gets here
+	 * (MainWindow consults the daemon and offers to watch instead), so an
+	 * actual wait means two operations genuinely overlapped. */
+	private bool acquire_repo_lock(string what){
+
+		if (repo_lock == null){ repo_lock = new RepoLock(); }
+
+		if (repo_lock.try_acquire(what)){ return true; }
+
+		string who = repo_lock.describe_holder();
+		log_msg("%s: %s".printf(_("Waiting for another Timeshift operation to finish"), who));
+		progress_text = _("Waiting for another Timeshift operation to finish...");
+
+		return repo_lock.acquire(what);
+	}
+
+	/* Serialise against the Go daemon and any second GUI. The work itself is
+	 * unchanged; this only decides when it may start. */
 	public bool create_snapshot (bool is_ondemand, Gtk.Window? parent_win){
+
+		if (!acquire_repo_lock("backup")){
+			log_error(_("Could not take the repository lock"));
+			return false;
+		}
+
+		try {
+			return create_snapshot_locked(is_ondemand, parent_win);
+		}
+		finally {
+			repo_lock.release();
+		}
+	}
+
+	private bool create_snapshot_locked (bool is_ondemand, Gtk.Window? parent_win){
 
 		log_debug("Main: create_snapshot()");
 
@@ -2216,6 +2244,16 @@ public class Main : GLib.Object{
 
 		log_debug("delete_thread()");
 
+		/* The lock is taken here rather than in delete_begin(), which spawns
+		 * this thread and returns at once -- a lock taken there would be
+		 * released while the deletion was still running. */
+		if (!acquire_repo_lock("delete")){
+			log_error(_("Could not take the repository lock"));
+			thread_delete_running = false;
+			thread_delete_success = false;
+			return;
+		}
+
 		bool status = true;
 
 		int done = 0;
@@ -2259,6 +2297,8 @@ public class Main : GLib.Object{
 		}
 
 		progress_text = "";
+
+		repo_lock.release();
 
 		thread_delete_running = false;
 		thread_delete_success = status;
@@ -2669,6 +2709,21 @@ public class Main : GLib.Object{
 	}
 	
 	public bool restore_snapshot(Gtk.Window? parent_win){
+
+		if (!acquire_repo_lock("restore")){
+			log_error(_("Could not take the repository lock"));
+			return false;
+		}
+
+		try {
+			return restore_snapshot_locked(parent_win);
+		}
+		finally {
+			repo_lock.release();
+		}
+	}
+
+	private bool restore_snapshot_locked(Gtk.Window? parent_win){
 
 		log_debug("Main: restore_snapshot()");
 		
@@ -6385,7 +6440,10 @@ public class Main : GLib.Object{
 
 		clean_logs();
 
-		app_lock.remove();
+		/* Release the repository write lock if an operation was interrupted.
+		 * The kernel would drop it when we exit anyway; doing it here means a
+		 * waiter stops waiting a moment sooner. */
+		if (repo_lock != null){ repo_lock.release(); }
 		
 		dir_delete(TEMP_DIR);
 		

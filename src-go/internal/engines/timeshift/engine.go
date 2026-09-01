@@ -31,14 +31,21 @@ func (Engine) DisplayName() string { return "Timeshift (rsync / btrfs)" }
 //
 // UnsharedSize is true because rsync's hardlinked layout lets a `find -links 1`
 // walk price each snapshot exclusively, which is the CLI's "Unique" column.
-// WholeVolumeRestore is false here even though btrfs mode restores by swapping
-// subvolumes: it is reported per-repository once the mode is known, not for the
-// engine as a whole.
+//
+// Browse is FALSE, and that is not an oversight. A capability is a promise to
+// every client that a method exists, and there is no browse method: a GUI that
+// enabled its Browse button on this flag would get unknown_method back. It was
+// true here for a while with nothing behind it, which is worse than absent --
+// an absent capability makes a client hide a button, a lying one makes it show
+// a broken one. Set it back in the same commit that adds snapshots.browse.
+//
+// WholeVolumeRestore is false even though btrfs mode restores by swapping
+// subvolumes: it depends on the repository's mode, which is not known until
+// Open, and nothing reads it yet.
 func (Engine) Caps() engines.Caps {
 	return engines.Caps{
 		Incremental:  true,
 		Remote:       true,
-		Browse:       true,
 		UnsharedSize: true,
 	}
 }

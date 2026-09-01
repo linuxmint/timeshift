@@ -242,13 +242,41 @@ func (d *daemon) devicesList(ctx context.Context, _ *ipc.Conn, _ json.RawMessage
 	return out, nil
 }
 
+/* repo.status carries the engine's health AND the fields a console header
+ * needs to describe the location.
+ *
+ * Both travel together because `timeshift --list` renders them as one block,
+ * and its output is byte-for-byte identical to the Vala binary's. Splitting
+ * them across two calls would mean the header could be drawn from two
+ * repository states observed a moment apart. */
 func (d *daemon) repoStatus(ctx context.Context, _ *ipc.Conn, _ json.RawMessage) (any, error) {
-	repo, _, _, err := d.openRepo(ctx)
+	repo, deviceName, deviceUUID, err := d.openRepo(ctx)
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
 	}
 	defer repo.Close()
-	return repo.Status(ctx)
+
+	st, err := repo.Status(ctx)
+	if err != nil {
+		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
+	}
+	view, err := repo.StatusView(ctx, deviceName, deviceUUID)
+	if err != nil {
+		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
+	}
+	rawView, err := json.Marshal(view)
+	if err != nil {
+		return nil, ipc.Errf(ipc.CodeInternal, "%v", err)
+	}
+
+	return ipc.RepoStatus{
+		Code:         int(st.Code),
+		Message:      st.Message,
+		Details:      st.Details,
+		Available:    st.Available,
+		HasSnapshots: st.HasSnapshots,
+		View:         rawView,
+	}, nil
 }
 
 func (d *daemon) snapshotsList(ctx context.Context, _ *ipc.Conn, _ json.RawMessage) (any, error) {
@@ -386,7 +414,7 @@ func (d *daemon) snapshotDelete(ctx context.Context, _ *ipc.Conn, params json.Ra
 	}
 
 	job, err := d.queue.Submit(jobs.KindDelete, func(ctx context.Context, r jobs.Reporter) (jobs.Outcome, error) {
-		return d.runDelete(ctx, r, in.Names)
+		return d.runDelete(ctx, r, in.Names, true)
 	})
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeBusy, "%v", err)
@@ -441,16 +469,21 @@ func (d *daemon) buildExcludes() []string {
 	})
 }
 
-// runDelete is the body of a delete job, shared by the IPC method and by
-// retention.
-func (d *daemon) runDelete(ctx context.Context, r jobs.Reporter, names []string) (jobs.Outcome, error) {
+/* runDelete is the body of a delete job, shared by the IPC method and by
+ * retention -- which is why it has to be told which it is.
+ *
+ * explicit means a person named these snapshots. Retention did not, and an
+ * automatic deletion may not remove a snapshot that merely reads as invalid:
+ * a dropped link makes every remote snapshot read that way. */
+func (d *daemon) runDelete(ctx context.Context, r jobs.Reporter, names []string, explicit bool) (jobs.Outcome, error) {
 	repo, _, _, err := d.openRepo(ctx)
 	if err != nil {
 		return jobs.OutcomeFailed, err
 	}
 	defer repo.Close()
 
-	if err := repo.Delete(ctx, names, reporterAdapter{r}); err != nil {
+	opts := tsengine.DeleteOpts{Explicit: explicit}
+	if err := repo.Delete(ctx, names, opts, reporterAdapter{r}); err != nil {
 		return jobs.OutcomeFailed, err
 	}
 	return jobs.OutcomeOK, nil

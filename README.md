@@ -25,7 +25,7 @@ Timeshift originates in the Xapp project, a collection of cross-DE and cross-dis
 
 ### Minimal Setup
 
-*   Timeshift requires very little setup. Just install it, run it for the first time and take the first snapshot. Cron job can be enabled for taking automatic snapshots of the system at regular intervals. The backup levels can be selected from the _Settings_ window.
+*   Timeshift requires very little setup. Just install it, run it for the first time and take the first snapshot. Scheduled snapshots are taken by the `timeshiftd` service, which checks every few minutes whether one is due; there is no cron job to enable. The backup levels can be selected from the _Settings_ window.
 
 *   Snapshots are saved by default on the system (root) partition in path **/timeshift**. Other linux partitions can also be selected. For best results the snapshots should be saved to an external (non-system) partition.
 

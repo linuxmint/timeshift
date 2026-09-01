@@ -177,9 +177,14 @@ public class AppGtk : GLib.Object {
 	public static void start_application(){
 
 		/* GTK4 removes gtk_main()/gtk_main_quit(). This app runs as root under
-		 * pkexec where a session bus may be absent, and it already handles
-		 * single-instance itself via AppLock, so drive a plain GLib main loop
-		 * rather than introducing GtkApplication. */
+		 * pkexec where a session bus may be absent, so drive a plain GLib main
+		 * loop rather than introducing GtkApplication.
+		 *
+		 * Note that single-instance is deliberately NOT enforced any more.
+		 * AppLock used to refuse a second process, which is exactly why a
+		 * backup started by apt-snapshot-guard could not be watched. Two
+		 * windows are fine; RepoLock stops them writing the repository at the
+		 * same time. */
 
 		// window icons are looked up by name in GTK4
 		Gtk.Window.set_default_icon_name("timeshift");

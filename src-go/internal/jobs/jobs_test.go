@@ -571,3 +571,144 @@ func TestManySubscribers(t *testing.T) {
 		}
 	}
 }
+
+// fakeWriteLock records what the queue asked for and can be held open, so a
+// test can observe a job waiting rather than racing it.
+type fakeWriteLock struct {
+	mu       sync.Mutex
+	taken    []string
+	held     bool
+	release  chan struct{}
+	announce string
+}
+
+func (f *fakeWriteLock) Acquire(ctx context.Context, what string, waiting func(string)) (func(), error) {
+	f.mu.Lock()
+	f.taken = append(f.taken, what)
+	gate := f.release
+	held := f.held
+	msg := f.announce
+	f.mu.Unlock()
+
+	if held {
+		if waiting != nil {
+			waiting(msg)
+		}
+		select {
+		case <-gate:
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		}
+	}
+	return func() {}, nil
+}
+
+// The queue must take the write lock for work that writes the repository and
+// leave it alone for work that only reads. Blocking an estimate behind another
+// Timeshift would be AppLock's mistake again: refusing harmless work.
+func TestWriteLockIsTakenOnlyForMutatingJobs(t *testing.T) {
+	q := NewQueue(4)
+	defer q.Close()
+
+	lock := &fakeWriteLock{}
+	q.SetWriteLock(lock)
+
+	for _, kind := range []Kind{KindCreate, KindDelete, KindRestore, KindEstimate, KindParseLog} {
+		j, err := q.Submit(kind, func(ctx context.Context, r Reporter) (Outcome, error) {
+			return OutcomeOK, nil
+		})
+		if err != nil {
+			t.Fatalf("submit %s: %v", kind, err)
+		}
+		<-j.Done()
+	}
+
+	lock.mu.Lock()
+	got := append([]string(nil), lock.taken...)
+	lock.mu.Unlock()
+
+	want := []string{"create", "delete", "restore"}
+	if len(got) != len(want) {
+		t.Fatalf("lock taken for %v, want %v", got, want)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Fatalf("lock taken for %v, want %v", got, want)
+		}
+	}
+}
+
+// A job blocked on the lock is running and reporting, not silently hung: the
+// holder is named in the job's messages so a person can see what to wait for.
+func TestAJobWaitingOnTheLockSaysWhy(t *testing.T) {
+	q := NewQueue(4)
+	defer q.Close()
+
+	lock := &fakeWriteLock{
+		held:     true,
+		release:  make(chan struct{}),
+		announce: "restore (pid 4242)",
+	}
+	q.SetWriteLock(lock)
+
+	ran := make(chan struct{})
+	j, err := q.Submit(KindCreate, func(ctx context.Context, r Reporter) (Outcome, error) {
+		close(ran)
+		return OutcomeOK, nil
+	})
+	if err != nil {
+		t.Fatalf("submit: %v", err)
+	}
+
+	select {
+	case <-ran:
+		t.Fatal("the job ran while the repository lock was held by someone else")
+	case <-time.After(150 * time.Millisecond):
+	}
+
+	close(lock.release)
+	<-j.Done()
+
+	snap := j.Snapshot(false)
+	found := false
+	for _, m := range snap.Messages {
+		if strings.Contains(m, "restore (pid 4242)") {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatalf("job never said who it was waiting for; messages = %v", snap.Messages)
+	}
+}
+
+// Failing to take the lock fails the job. It must never fall through and write
+// the repository anyway.
+func TestAJobFailsWhenTheLockCannotBeTaken(t *testing.T) {
+	q := NewQueue(4)
+	defer q.Close()
+
+	q.SetWriteLock(errWriteLock{})
+
+	ran := false
+	j, err := q.Submit(KindCreate, func(ctx context.Context, r Reporter) (Outcome, error) {
+		ran = true
+		return OutcomeOK, nil
+	})
+	if err != nil {
+		t.Fatalf("submit: %v", err)
+	}
+	<-j.Done()
+
+	if ran {
+		t.Fatal("the job wrote the repository despite failing to take the lock")
+	}
+	if snap := j.Snapshot(false); snap.State != StateFailed {
+		t.Fatalf("state = %s, want %s", snap.State, StateFailed)
+	}
+}
+
+type errWriteLock struct{}
+
+func (errWriteLock) Acquire(ctx context.Context, what string, waiting func(string)) (func(), error) {
+	return nil, errors.New("no lock for you")
+}

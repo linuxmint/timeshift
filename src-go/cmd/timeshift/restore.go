@@ -3,8 +3,10 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/makeafide/timeshift/src-go/internal/ipc"
 	"github.com/makeafide/timeshift/src-go/internal/jobs"
@@ -138,12 +140,30 @@ func runRestore(socket string, o RestoreOptions) int {
 	return 0
 }
 
-/* confirmRestore asks, unless told not to.
+/* promptTimeout bounds an interactive question.
+ *
+ * AppConsole put a 60-second TimeoutCounter on every interactive read, and the
+ * reason is not politeness. Without it, stdin that is open but silent -- a
+ * pipe from a process that never writes, a detached session, a hung terminal --
+ * blocks forever, and a restore invoked from a script that forgot --yes hangs
+ * rather than failing. A refusal can be seen in a log; a hang cannot. */
+const promptTimeout = 60 * time.Second
+
+// confirmRestore asks, unless told not to.
+func confirmRestore(o RestoreOptions, plan ipc.RestorePlanResult) bool {
+	return confirmRestoreOn(os.Stdin, os.Stdout, os.Stderr, o, plan, promptTimeout)
+}
+
+/* confirmRestoreOn is confirmRestore with its streams and clock injected.
  *
  * The prompt requires the word "yes", not a bare Enter. A y/N prompt is
- * answered by accident; this one is not.
+ * answered by accident; this one is not. There is no second attempt on a wrong
+ * answer either -- AppConsole's three-attempt loops exist for prompts that
+ * SELECT something, where a typo is a slip. Here the only wrong answer means
+ * "no", and re-asking a person who just declined to erase a disk is how a "no"
+ * becomes a "yes".
  */
-func confirmRestore(o RestoreOptions, plan ipc.RestorePlanResult) bool {
+func confirmRestoreOn(in io.Reader, out, errOut io.Writer, o RestoreOptions, plan ipc.RestorePlanResult, timeout time.Duration) bool {
 
 	if o.DryRun {
 		return true // nothing is written, so there is nothing to agree to
@@ -152,24 +172,43 @@ func confirmRestore(o RestoreOptions, plan ipc.RestorePlanResult) bool {
 		return true
 	}
 
-	fmt.Println()
+	fmt.Fprintln(out)
 	if o.CurrentSystem {
-		fmt.Println("This will overwrite THE RUNNING SYSTEM and restart the machine.")
+		fmt.Fprintln(out, "This will overwrite THE RUNNING SYSTEM and restart the machine.")
 	} else {
-		fmt.Printf("This will ERASE and replace the contents of %s.\n", plan.Target)
+		fmt.Fprintf(out, "This will ERASE and replace the contents of %s.\n", plan.Target)
 	}
-	fmt.Println("Files on the target that are not in the snapshot will be deleted.")
-	fmt.Print("\nType 'yes' to continue: ")
+	fmt.Fprintln(out, "Files on the target that are not in the snapshot will be deleted.")
+	fmt.Fprint(out, "\nType 'yes' to continue: ")
 
-	reader := bufio.NewReader(os.Stdin)
-	answer, err := reader.ReadString('\n')
-	if err != nil {
-		/* No terminal and no --yes. Refuse rather than assume: an unattended
-		 * run that cannot be asked must not proceed by default. */
-		fmt.Fprintln(os.Stderr, "\ntimeshift: no answer, and --yes was not given")
+	type answer struct {
+		text string
+		err  error
+	}
+	/* Buffered, and deliberately never waited for. A read blocked on a silent
+	 * stdin cannot be interrupted, so on timeout this goroutine is left behind
+	 * and the process exits under it. Leaking one goroutine on the way to
+	 * refusing is the cheap half of this trade. */
+	ch := make(chan answer, 1)
+	go func() {
+		text, err := bufio.NewReader(in).ReadString('\n')
+		ch <- answer{text, err}
+	}()
+
+	select {
+	case a := <-ch:
+		if a.err != nil && strings.TrimSpace(a.text) == "" {
+			/* No terminal and no --yes. Refuse rather than assume: an
+			 * unattended run that cannot be asked must not proceed. */
+			fmt.Fprintln(errOut, "\ntimeshift: no answer, and --yes was not given")
+			return false
+		}
+		return strings.TrimSpace(a.text) == "yes"
+
+	case <-time.After(timeout):
+		fmt.Fprintf(errOut, "\ntimeshift: no answer after %s, and --yes was not given\n", timeout)
 		return false
 	}
-	return strings.TrimSpace(answer) == "yes"
 }
 
 // parseMountArg reads "--mount /home=/dev/sda3".

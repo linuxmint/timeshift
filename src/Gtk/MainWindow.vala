@@ -241,6 +241,38 @@ class MainWindow : AppWindow{
 		monitor_window.present();
 	}
 
+	/* Refuse to start work the daemon is already doing, and offer to watch it
+	 * instead.
+	 *
+	 * This is advisory. RepoLock is what actually prevents two Timeshifts
+	 * writing one repository, and it would make this operation wait rather
+	 * than corrupt anything. But waiting behind a job with no explanation
+	 * looks like a hang, and the person almost always wanted to see the
+	 * running snapshot rather than queue a second one. */
+	private bool daemon_is_busy(string action){
+
+		var client = App.daemon;
+		if (client == null){ return false; }
+
+		string job_id, kind;
+		if (!client.running_job(out job_id, out kind)){ return false; }
+
+		var title = _("Timeshift is already working");
+		var msg = _("The Timeshift service is running an operation.") + "\n\n";
+		msg += _("Show its progress instead of starting %s?").printf(action);
+
+		var dlg = new CustomMessageDialog(
+			title, msg, Gtk.MessageType.INFO, this, Gtk.ButtonsType.YES_NO);
+		var response = dlg.run();
+		dlg.destroy();
+
+		if (response == Gtk.ResponseType.YES){
+			show_daemon_job();
+		}
+
+		return true;
+	}
+
 	private void init_ui_header(){
 
 		/* Create is the primary verb and keeps its label; Restore, Delete and
@@ -580,6 +612,10 @@ class MainWindow : AppWindow{
 		if (check_if_deletion_running()){
 			return;
 		}
+
+		if (daemon_is_busy(_("a new snapshot"))){
+			return;
+		}
 		
 		ui_sensitive(false);
 		
@@ -610,6 +646,10 @@ class MainWindow : AppWindow{
 	public void delete_selected(){
 
 		log_debug("main window: delete_selected()");
+
+		if (daemon_is_busy(_("a deletion"))){
+			return;
+		}
 		
 		// check snapshot device -----------
 
@@ -1154,6 +1194,10 @@ class MainWindow : AppWindow{
 
 
 	private void restore(){
+
+		if (daemon_is_busy(_("a restore"))){
+			return;
+		}
 
 		if (!App.mirror_system){
 

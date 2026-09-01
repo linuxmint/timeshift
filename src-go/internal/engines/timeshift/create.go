@@ -283,11 +283,77 @@ func (r *Repo) Estimate(ctx context.Context, req EstimateRequest, rep engines.Re
 	return max64(parser.TotalSize, 0), parser.LineCount, nil
 }
 
+// refuseIncomplete drops names that an automatic caller must not remove.
+//
+// A snapshot the repository lists as invalid, but which still holds an
+// info.json, is kept and reported. See DeleteOpts.Explicit.
+func (r *Repo) refuseIncomplete(ctx context.Context, names []string, rep engines.Reporter) ([]string, error) {
+	list, err := r.List(ctx)
+	if err != nil {
+		/* Could not read the repository, so cannot tell a broken snapshot from
+		 * an unreachable one. Refuse the whole automatic deletion: this is the
+		 * exact failure mode the guard exists for. */
+		return nil, fmt.Errorf("timeshift: refusing to delete without a readable snapshot list: %w", err)
+	}
+
+	invalid := make(map[string]string, len(list))
+	for _, s := range list {
+		if !s.Valid {
+			invalid[s.Name] = s.Path
+		}
+	}
+
+	keep := make([]string, 0, len(names))
+	for _, n := range names {
+		dir, bad := invalid[n]
+		if bad && r.Backend.FileExists(ctx, path.Join(dir, "info.json")) {
+			rep.Warn("Refusing to remove a snapshot that still has a control file: " + n)
+			continue
+		}
+		keep = append(keep, n)
+	}
+	return keep, nil
+}
+
+// DeleteOpts says why a deletion is happening.
+//
+// The zero value is the guarded one, on purpose: a caller that has not thought
+// about it gets the safe behaviour.
+type DeleteOpts struct {
+	/* Explicit marks a deletion a PERSON asked for by name, which may remove
+	 * anything. An automatic deletion -- retention, prune -- may not remove a
+	 * snapshot the repository merely believes is invalid.
+	 *
+	 * The distinction is SnapshotRepo.remove_invalid()'s, and the reason is
+	 * that "invalid" is not evidence. A dropped SSH link makes every snapshot
+	 * in a remote repository read as invalid, and the Vala code learned this by
+	 * having auto_remove() delete an entire repository afterwards. Positive
+	 * evidence that a snapshot is incomplete is the ABSENCE of its control
+	 * file; a snapshot that still has one is being called invalid for some
+	 * other reason, and software must not act on that alone. */
+	Explicit bool
+}
+
 // Delete removes snapshots.
 //
 // Progress is per line of `rm -rfv` output, which is one line per removed path
 // -- the same line-counting contract as a transfer.
-func (r *Repo) Delete(ctx context.Context, names []string, rep engines.Reporter) error {
+func (r *Repo) Delete(ctx context.Context, names []string, opts DeleteOpts, rep engines.Reporter) error {
+
+	/* The backstop for an automatic caller. Nothing in the tree prunes invalid
+	 * snapshots today, so this refuses nothing yet -- which is exactly why it
+	 * is written now, while the reason is in view, rather than left to be
+	 * rediscovered by whoever adds the prune step. */
+	if !opts.Explicit {
+		var err error
+		if names, err = r.refuseIncomplete(ctx, names, rep); err != nil {
+			return err
+		}
+		if len(names) == 0 {
+			return nil
+		}
+	}
+
 	phases := make([]engines.Phase, 0, len(names))
 	for _, n := range names {
 		phases = append(phases, engines.Phase{Key: n, Title: "Deleting " + n})

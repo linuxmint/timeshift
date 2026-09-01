@@ -175,7 +175,7 @@ func (d *daemon) applyRetention(ctx context.Context) (int, error) {
 	}
 
 	job, err := d.queue.Submit(jobs.KindDelete, func(ctx context.Context, r jobs.Reporter) (jobs.Outcome, error) {
-		return d.runDelete(ctx, r, deletions)
+		return d.runDelete(ctx, r, deletions, false)
 	})
 	if err != nil {
 		return 0, err

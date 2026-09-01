@@ -38,7 +38,6 @@ class ScheduleBox : Gtk.Box{
 	private Gtk.Box levels_box;
 	private Gtk.SizeGroup sg_count;
 
-	private Gtk.CheckButton chk_cron;
 	
 	private weak Gtk.Window parent_window; // back-reference: the window owns this box
 	
@@ -66,7 +65,6 @@ class ScheduleBox : Gtk.Box{
 		chk_m.active = App.schedule_monthly;
 		chk_m.toggled.connect(()=>{
 			App.schedule_monthly = chk_m.active;
-			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
@@ -82,7 +80,6 @@ class ScheduleBox : Gtk.Box{
 		chk_w.active = App.schedule_weekly;
 		chk_w.toggled.connect(()=>{
 			App.schedule_weekly = chk_w.active;
-			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
@@ -98,7 +95,6 @@ class ScheduleBox : Gtk.Box{
 		chk_d.active = App.schedule_daily;
 		chk_d.toggled.connect(()=>{
 			App.schedule_daily = chk_d.active;
-			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
@@ -114,7 +110,6 @@ class ScheduleBox : Gtk.Box{
 		chk_h.active = App.schedule_hourly;
 		chk_h.toggled.connect(()=>{
 			App.schedule_hourly = chk_h.active;
-			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
@@ -130,7 +125,6 @@ class ScheduleBox : Gtk.Box{
 		chk_b.active = App.schedule_boot;
 		chk_b.toggled.connect(()=>{
 			App.schedule_boot = chk_b.active;
-			chk_cron.sensitive = App.scheduled;
 			update_statusbar();
 		});
 
@@ -139,17 +133,18 @@ class ScheduleBox : Gtk.Box{
 			App.count_boot = (int) spin_b.get_value();
 		});
 
-		// cron emails --------------------------------------------------------------------
-		
-		var cron_card = Ui.add_card(this, Gtk.Orientation.VERTICAL, Ui.Spacing.XS);
-
-		chk_cron = add_checkbox(cron_card, _("Stop cron emails for scheduled tasks"));
-		chk_cron.set_tooltip_text(_("The cron service sends the output of scheduled tasks as an email to the current user. Select this option to suppress the emails for cron tasks created by Timeshift."));
-		
-		chk_cron.active = App.stop_cron_emails;
-		chk_cron.toggled.connect(()=>{
-			App.stop_cron_emails = chk_cron.active;
-		});
+		/* The "stop cron emails" checkbox used to live here.
+		 *
+		 * It set MAILTO="" in the /etc/cron.d drop-in Timeshift wrote. The
+		 * schedule is the daemon's now and no drop-in is written, so the
+		 * setting controls nothing -- and a control that does nothing is worse
+		 * than a missing one, because it looks like the thing did not work.
+		 *
+		 * The stop_cron_emails config key is deliberately KEPT. timeshift.json
+		 * is written by two programs during the transition and each drops keys
+		 * it does not know, so removing it here would make it appear and vanish
+		 * depending on which one saved last. It costs one line in a file and it
+		 * preserves the byte-for-byte format contract. */
 
 		// notes ----------------------------------------------------------------------
 
@@ -214,6 +209,5 @@ class ScheduleBox : Gtk.Box{
 			status_card.set_subtitle(_("Select the intervals for creating snapshots"));
 		}
 
-		chk_cron.sensitive = App.scheduled;
 	}
 }

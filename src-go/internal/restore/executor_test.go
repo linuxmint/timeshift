@@ -407,3 +407,108 @@ func TestFsckRunsOnASuccessfulRestore(t *testing.T) {
 		t.Errorf("fsck was not run non-interactively: %q", checked[0])
 	}
 }
+
+/* failingSyncRunner runs everything for real except the sync script, which it
+ * makes fail the way the real one documents: touch the failure sentinel, exit
+ * non-zero.
+ *
+ * Faking the script is the point here rather than a shortcut. What is under
+ * test is the EXECUTOR's control flow -- that a failed transfer stops before
+ * the bootloader -- and the script's own behaviour on each rsync exit code is
+ * covered separately, against real rsync, in e2e_test.go. */
+type failingSyncRunner struct {
+	inner      bashRunner
+	failedFlag string
+	ran        []string
+}
+
+func (f *failingSyncRunner) RunScript(ctx context.Context, script string, onLine func(string)) (int, error) {
+	switch {
+	case strings.Contains(script, "@@TS_SOURCE_OK"):
+		f.ran = append(f.ran, "probe")
+		return f.inner.RunScript(ctx, script, onLine)
+
+	case strings.Contains(script, "@@TS_PHASE:sync_files"):
+		f.ran = append(f.ran, "sync")
+		if err := os.WriteFile(f.failedFlag, nil, 0644); err != nil {
+			return -1, err
+		}
+		onLine("@@TS_RESTORE_FAILED:11")
+		return 1, nil
+
+	default:
+		f.ran = append(f.ran, "finish")
+		return f.inner.RunScript(ctx, script, onLine)
+	}
+}
+
+/* A failed transfer must stop BEFORE the system-repair steps.
+ *
+ * Installing a bootloader and regenerating an initramfs over a half-copied root
+ * produces a target that boots far enough to look like it worked. The sentinel
+ * check sits above finishSystem for that reason, and nothing pinned the
+ * ordering: moving the check below the call would read as a tidy-up and pass
+ * every other test in this package.
+ */
+func TestAFailedTransferNeverReachesTheBootloaderSteps(t *testing.T) {
+	snapshot, target, work := stageRestore(t)
+	p := planFor(t, snapshot, target, work, nil)
+
+	rep := &recorder{}
+	fake := &fakeMountRunner{}
+	scripts := &failingSyncRunner{inner: bashRunner{dir: work}, failedFlag: p.FailedFlag}
+	ex := &Executor{Commands: fake, Scripts: scripts, Reporter: rep}
+
+	res, err := ex.Run(context.Background(), p)
+	if err == nil {
+		t.Fatal("a failed transfer was reported as success")
+	}
+	if res.Outcome != OutcomeFailed {
+		t.Errorf("Outcome = %q, want %q", res.Outcome, OutcomeFailed)
+	}
+
+	for _, r := range scripts.ran {
+		if r == "finish" {
+			t.Fatal("the finish script ran after the transfer failed")
+		}
+	}
+	for _, ph := range rep.phases {
+		if strings.Contains(ph, "grub") || strings.Contains(ph, "initramfs") || strings.Contains(ph, "chroot") {
+			t.Fatalf("reached %q after a failed transfer; phases were %v", ph, rep.phases)
+		}
+	}
+
+	// And the person is told the target must not be booted.
+	joined := strings.Join(res.Messages, " ")
+	if !strings.Contains(joined, "INCOMPLETE") {
+		t.Errorf("messages did not warn the target is unusable: %v", res.Messages)
+	}
+}
+
+/* fsck must not run after a failed restore, even though the target unmounted
+ * cleanly.
+ *
+ * The unmount gate is tested elsewhere; this is the other arm. e2fsck -y on a
+ * half-written filesystem will happily "repair" it into something further from
+ * what it should be, and the one thing worth preserving after a failed restore
+ * is the evidence.
+ */
+func TestFsckIsSkippedAfterAFailedRestore(t *testing.T) {
+	snapshot, target, work := stageRestore(t)
+	p := planFor(t, snapshot, target, work, nil)
+
+	rep := &recorder{}
+	fake := &fakeMountRunner{}
+	scripts := &failingSyncRunner{inner: bashRunner{dir: work}, failedFlag: p.FailedFlag}
+	ex := &Executor{Commands: fake, Scripts: scripts, Reporter: rep}
+
+	if _, err := ex.Run(context.Background(), p); err == nil {
+		t.Fatal("a failed transfer was reported as success")
+	}
+
+	for _, c := range fake.calls {
+		if strings.HasPrefix(c, "fsck") {
+			t.Fatalf("fsck ran after a failed restore: %q (calls %v)", c, fake.calls)
+		}
+	}
+}

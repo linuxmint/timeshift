@@ -302,38 +302,80 @@ func (r *Repo) Status(ctx context.Context) (engines.Status, error) {
 // PrintStatus renders the header block `timeshift --list` prints above the
 // table, reproducing SnapshotRepo.print_status() including its "%-6s : %s"
 // column and the blank line that follows.
-func (r *Repo) PrintStatus(ctx context.Context, w *strings.Builder, deviceName, deviceUUID string) error {
+// StatusView is everything the console header shows about a location.
+//
+// It exists so that the two ways of producing that header -- opening the
+// repository in-process, and asking the daemon over the socket -- cannot drift.
+// `timeshift --list` is byte-for-byte identical to the Vala binary's output and
+// is verified by diffing the two, so a second renderer would be a second thing
+// to keep identical, and the one that got missed would fail silently.
+type StatusView struct {
+	Remote     bool   `json:"remote"`
+	Display    string `json:"display"`
+	Path       string `json:"path"`
+	TypeID     string `json:"type_id"`
+	BtrfsMode  bool   `json:"btrfs_mode"`
+	DeviceName string `json:"device_name"`
+	DeviceUUID string `json:"device_uuid"`
+	Message    string `json:"message"`
+	Details    string `json:"details"`
+}
+
+// StatusView gathers the header fields for this repository.
+func (r *Repo) StatusView(ctx context.Context, deviceName, deviceUUID string) (StatusView, error) {
 	st, err := r.Status(ctx)
 	if err != nil {
-		return err
+		return StatusView{}, err
 	}
+	return StatusView{
+		Remote:     r.Backend.IsRemote(),
+		Display:    r.Backend.DisplayName(),
+		Path:       r.MountPath,
+		TypeID:     r.Backend.TypeID(),
+		BtrfsMode:  r.BtrfsMode,
+		DeviceName: deviceName,
+		DeviceUUID: deviceUUID,
+		Message:    st.Message,
+		Details:    st.Details,
+	}, nil
+}
 
+// RenderStatus writes the console header. The ONLY place that layout exists.
+func RenderStatus(w *strings.Builder, v StatusView) {
 	line := func(label, value string) {
 		fmt.Fprintf(w, "%-6s : %s\n", label, value)
 	}
 
-	if r.Backend.IsRemote() {
-		line("Remote", r.Backend.DisplayName())
-		line("Path", r.MountPath)
-		line("Type", r.Backend.TypeID())
-		line("Status", st.Message)
-	} else if deviceName == "" {
+	if v.Remote {
+		line("Remote", v.Display)
+		line("Path", v.Path)
+		line("Type", v.TypeID)
+		line("Status", v.Message)
+	} else if v.DeviceName == "" {
 		line("Device", "Not Selected")
 		w.WriteString("\n")
-		return nil
+		return
 	} else {
-		line("Device", deviceName)
-		line("UUID", deviceUUID)
-		line("Path", r.MountPath)
+		line("Device", v.DeviceName)
+		line("UUID", v.DeviceUUID)
+		line("Path", v.Path)
 		mode := "RSYNC"
-		if r.BtrfsMode {
+		if v.BtrfsMode {
 			mode = "BTRFS"
 		}
 		line("Mode", mode)
-		line("Status", st.Message)
+		line("Status", v.Message)
 	}
-	w.WriteString(st.Details + "\n")
+	w.WriteString(v.Details + "\n")
 	w.WriteString("\n")
+}
+
+func (r *Repo) PrintStatus(ctx context.Context, w *strings.Builder, deviceName, deviceUUID string) error {
+	v, err := r.StatusView(ctx, deviceName, deviceUUID)
+	if err != nil {
+		return err
+	}
+	RenderStatus(w, v)
 	return nil
 }
 

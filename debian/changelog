@@ -1,3 +1,22 @@
+timeshift-ssh (25.12.4+ssh33) resolute; urgency=medium
+
+  * The Go core: timeshiftd owns the config, the job queue and the schedule,
+    and serves them over /run/timeshift/daemon.sock, so a snapshot started by
+    apt-snapshot-guard can be watched from the GUI while it runs
+  * Repository writes are serialised by a flock both cores take (RepoLock /
+    internal/replock), replacing AppLock's refusal of a second process. Two
+    windows may now be open; two backups may not run at once
+  * timeshiftd clears up after runs that were killed: mounts left under
+    /run/timeshift/<pid>, orphaned ssh control sockets, empty run directories
+  * The scheduler is the daemon, not cron. The /etc/cron.d drop-ins are swept
+    on upgrade and at daemon startup
+  * timeshift --restore, --create, --delete, --estimate, --check and --watch
+    run through the daemon; --list prefers it and falls back when absent
+  * New timeshift system group: members get the read-only IPC subset, so
+    watching a running backup needs no pkexec
+
+ -- makeafide <willsmit4433@gmail.com>  Mon, 31 Aug 2026 21:45:00 -0400
+
 timeshift-ssh (25.12.4+ssh32) resolute; urgency=medium
 
   * Production audit: escape translated strings in restore scripts, fix the SSH mux socket cleanup glob, whole-sentence msgids, recovery-shell cleanups

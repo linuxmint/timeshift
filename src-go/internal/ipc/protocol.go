@@ -184,6 +184,31 @@ type ConfigSetParams struct {
 	Values map[string]json.RawMessage `json:"values"`
 }
 
+// RepoStatus is what repo.status returns: the repository's health, plus the
+// fields a console header needs to describe where it is.
+//
+// View is the engine's own presentation struct rather than a copy of it, so the
+// CLI can render a socket-sourced header through exactly the same function it
+// uses for an in-process one. `timeshift --list` is verified byte-for-byte
+// against the Vala binary, and a second renderer is a second thing to keep
+// identical.
+type RepoStatus struct {
+	Code         int    `json:"code"`
+	Message      string `json:"message"`
+	Details      string `json:"details"`
+	Available    bool   `json:"available"`
+	HasSnapshots bool   `json:"has_snapshots"`
+
+	/* View is the engine's own header presentation, opaque here.
+	 *
+	 * Deliberately raw: the wire layer must not import a specific engine, and
+	 * this follows the same rule as Snapshot.EngineData -- engine-shaped
+	 * detail travels through the protocol without the protocol understanding
+	 * it. The CLI decodes it with the engine's own type, so there is exactly
+	 * one definition of the shape and one renderer for it. */
+	View json.RawMessage `json:"view"`
+}
+
 /* SnapshotsUpdateParams edits a snapshot's metadata.
  *
  * Every field is a pointer so that "not mentioned" and "set to empty" are

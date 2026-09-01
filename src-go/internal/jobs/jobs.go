@@ -62,6 +62,35 @@ const (
 	KindParseLog Kind = "parse-log"
 )
 
+// Mutates reports whether this kind of job writes the repository or the system,
+// and so must not run beside another Timeshift doing the same.
+//
+// Estimate and parse-log are reads: an estimate is an rsync dry run that writes
+// nothing, and parsing a log only reads one. Making them take the write lock
+// would reintroduce AppLock's mistake of blocking harmless work.
+func (k Kind) Mutates() bool {
+	switch k {
+	case KindCreate, KindDelete, KindRestore:
+		return true
+	default:
+		return false
+	}
+}
+
+// WriteLock serialises repository-mutating jobs against OTHER Timeshift
+// processes.
+//
+// The queue's single worker already serialises this daemon's own jobs. What it
+// cannot see is the Vala core, which still performs its own creates, deletes and
+// restores for as long as both are installed. Without this, a scheduled backup
+// and a GUI-driven one run into the same repository at once.
+//
+// Acquire blocks until the lock is taken or ctx ends, calling waiting once per
+// distinct holder so a job can explain the delay rather than appearing hung.
+type WriteLock interface {
+	Acquire(ctx context.Context, what string, waiting func(holder string)) (release func(), err error)
+}
+
 // Outcome is how a finished job turned out.
 //
 // WARNINGS is a real outcome and not a failure: rsync exit 23 means some files
@@ -385,6 +414,11 @@ type Queue struct {
 
 	closeOnce sync.Once
 	done      chan struct{}
+
+	/* Taken around every mutating job. Set by the daemon; nil in tests and in
+	 * any context with no repository to protect, where the worker's own
+	 * serialisation is the whole requirement. */
+	writeLock WriteLock
 }
 
 type pendingJob struct {
@@ -413,6 +447,14 @@ func NewQueue(depth int) *Queue {
 
 // Hub is the event fan-out.
 func (q *Queue) Hub() *Hub { return q.hub }
+
+// SetWriteLock installs the cross-process lock taken around mutating jobs.
+//
+// It lives on the queue rather than on each caller deliberately: this is the
+// one place every job passes through, and a guarantee that depends on each
+// submitter remembering to take a lock is the guarantee AppLock already failed
+// to provide.
+func (q *Queue) SetWriteLock(l WriteLock) { q.writeLock = l }
 
 // Submit queues work and returns its job immediately. The caller streams
 // progress rather than blocking.
@@ -506,6 +548,8 @@ func (q *Queue) run(p *pendingJob) {
 
 	q.hub.publish(Event{Type: EventStarted, Job: j.ID, State: StateRunning})
 
+	rep := &reporter{job: j, ctx: ctx}
+
 	outcome, err := func() (o Outcome, err error) {
 		/* A panic in an engine must not take the daemon down with it. Every
 		 * other client's view of every other job depends on this process
@@ -515,7 +559,24 @@ func (q *Queue) run(p *pendingJob) {
 				o, err = OutcomeFailed, fmt.Errorf("jobs: panic in %s job: %v", j.Kind, r)
 			}
 		}()
-		return p.run(ctx, &reporter{job: j, ctx: ctx})
+
+		/* Serialise against any other Timeshift writing this repository.
+		 *
+		 * Held for the whole job and released by defer, so a panic above
+		 * cannot strand it. A job waiting here is genuinely running -- it has
+		 * been started and is reporting -- it simply cannot touch the
+		 * repository yet, and says so. */
+		if q.writeLock != nil && j.Kind.Mutates() {
+			release, lerr := q.writeLock.Acquire(ctx, string(j.Kind), func(holder string) {
+				rep.Note("Waiting for " + holder + " to finish")
+			})
+			if lerr != nil {
+				return OutcomeFailed, fmt.Errorf("jobs: could not take the repository write lock: %w", lerr)
+			}
+			defer release()
+		}
+
+		return p.run(ctx, rep)
 	}()
 
 	/* Read the context BEFORE cancelling it. Our own deferred cancel would

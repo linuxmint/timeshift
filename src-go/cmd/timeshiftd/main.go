@@ -22,6 +22,8 @@ import (
 	"github.com/makeafide/timeshift/src-go/internal/config"
 	"github.com/makeafide/timeshift/src-go/internal/ipc"
 	"github.com/makeafide/timeshift/src-go/internal/logging"
+	"github.com/makeafide/timeshift/src-go/internal/replock"
+	"github.com/makeafide/timeshift/src-go/internal/rundir"
 	"github.com/makeafide/timeshift/src-go/internal/schedule"
 
 	// Registers the engine every existing installation is using. Which engines
@@ -38,6 +40,8 @@ func main() {
 		debug       = flag.Bool("debug", false, "log at debug level")
 		configPath  = flag.String("config", config.SystemPath, "path to timeshift.json")
 		socketPath  = flag.String("socket", ipc.SocketPath, "unix socket to listen on")
+		lockPath    = flag.String("lock", replock.DefaultPath,
+			"repository write lock, shared with the Vala core")
 		checkConfig = flag.Bool("check-config", false,
 			"parse the configuration, report it, and exit without starting the daemon")
 		noSchedule = flag.Bool("no-schedule", false,
@@ -102,6 +106,15 @@ func main() {
 	d := newDaemon(log, *configPath, cfg)
 	defer d.queue.Close()
 
+	/* Serialise repository writes against the OTHER Timeshift.
+	 *
+	 * The queue's single worker already orders this daemon's own jobs. It
+	 * cannot see the Vala core, which still performs its own creates, deletes
+	 * and restores while both are installed -- so without this a scheduled
+	 * backup and a GUI-driven one run into the same repository at once. The
+	 * Vala side takes the same flock in src/Utility/RepoLock.vala. */
+	d.queue.SetWriteLock(writeLock{path: *lockPath, log: log})
+
 	/* Retire cron before doing anything else.
 	 *
 	 * Leaving the drop-ins in place means both schedulers fire, and the cron
@@ -118,6 +131,23 @@ func main() {
 	} else if len(removed) > 0 {
 		log.Info("removed the legacy cron entries; the daemon owns the schedule now",
 			"files", removed)
+	}
+
+	/* Clear up after runs that were killed, BEFORE listening.
+	 *
+	 * A daemon that died mid-restore left its target mounted under
+	 * /run/timeshift/<pid>/restore. systemd restarts us with a new pid, so
+	 * nobody believes they own the old mounts and they stay for the life of
+	 * the boot, keeping the filesystem busy. This is also where a killed ssh
+	 * ControlMaster's socket goes.
+	 *
+	 * Only numeric-pid subdirectories are touched. daemon.sock and repo.lock
+	 * live in the very directory being swept. */
+	reaper := &rundir.Reaper{Runner: d.runner}
+	if rep := reaper.Reap(context.Background()); !rep.Empty() {
+		log.Info("cleared up after runs that did not exit cleanly",
+			"unmounted", rep.Unmounted, "removed", rep.Removed,
+			"kept", rep.Kept, "problems", rep.Problems)
 	}
 
 	/* The group is created by debian/postinst. A missing one is not an error:
@@ -148,6 +178,28 @@ func main() {
 
 	ctx, stopScheduler := context.WithCancel(context.Background())
 	defer stopScheduler()
+
+	/* Keep sweeping. The startup pass covers our own crash; this one covers
+	 * every other Timeshift that gets killed while we stay up, which for a
+	 * daemon measured in months is the case that actually accumulates. Slow on
+	 * purpose -- there is nothing to race, since only directories whose
+	 * process is already gone are ever touched. */
+	go func() {
+		t := time.NewTicker(15 * time.Minute)
+		defer t.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-t.C:
+				if rep := reaper.Reap(ctx); !rep.Empty() {
+					log.Info("cleared up after runs that did not exit cleanly",
+						"unmounted", rep.Unmounted, "removed", rep.Removed,
+						"kept", rep.Kept, "problems", rep.Problems)
+				}
+			}
+		}
+	}()
 
 	if !*noSchedule {
 		delay := *startupDelay
