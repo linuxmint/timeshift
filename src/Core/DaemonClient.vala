@@ -52,7 +52,7 @@ public class DaemonClient : GLib.Object {
 
 	// The wire format this client understands. system.info reports the
 	// daemon's; a mismatch means refusing rather than misreading.
-	public const int PROTOCOL_VERSION = 1;
+	public const int PROTOCOL_VERSION = 2;
 
 	private string socket_path = "";
 

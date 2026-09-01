@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/makeafide/timeshift/src-go/internal/engines"
+	"github.com/makeafide/timeshift/src-go/internal/ipc"
 )
 
 // capture runs f with stdout and stderr redirected, and returns what they got.
@@ -175,5 +176,109 @@ func TestUnmeasuredSizesRenderEmpty(t *testing.T) {
 	}
 	if got := snapshotSize(0); got == "" {
 		t.Errorf("snapshotSize(0) = %q, want a real size", got)
+	}
+}
+
+/* Every flag the Vala CLI accepts must be accepted here too, or a script that
+ * works today breaks on the cutover.
+ *
+ * This checks the ARGUMENT LOOP, not the behaviour: each flag is passed with a
+ * value where it needs one, and the loop must not report it as unrecognised.
+ * A flag that is deliberately refused -- --clone, --backup -- is listed
+ * separately below with the refusal it must give.
+ */
+func TestEveryValaFlagIsRecognised(t *testing.T) {
+	cases := [][]string{
+		{"--list"}, {"--list-snapshots"}, {"--list-devices"},
+		{"--check"}, {"--create"}, {"--delete", "--snapshot", "x"}, {"--delete-all"},
+		{"--restore", "--snapshot", "x"},
+		{"--comment", "hi"}, {"--comments", "hi"},
+		{"--tags", "ODW"},
+		{"--skip-grub"}, {"--grub", "/dev/sda"}, {"--grub-device", "/dev/sda"},
+		{"--target", "/dev/sda1"}, {"--target-device", "/dev/sda1"},
+		{"--snapshot", "x"}, {"--snapshot-name", "x"},
+		{"--snapshot-device", "/dev/sdb1"}, {"--backup-device", "/dev/sdb1"},
+		{"--snapshot-url", "u@h:/p"}, {"--remote", "u@h:/p"},
+		{"--ssh-key", "/k"}, {"--ssh-port", "2222"},
+		{"--setup-ssh-key"},
+		{"--recovery-status"}, {"--recovery-enable"}, {"--recovery-disable"},
+		{"--btrfs"}, {"--rsync"},
+		{"--scripted"}, {"--yes"}, {"--verbose"}, {"--quiet"}, {"--debug"},
+	}
+	for _, args := range cases {
+		_, stderr := capture(t, func() { run(args) })
+		if strings.Contains(stderr, "unrecognised option") {
+			t.Errorf("run(%v) reported an unrecognised option: %s", args, strings.TrimSpace(stderr))
+		}
+	}
+}
+
+/* --clone mirrors the RUNNING system onto another device with no snapshot
+ * involved, and the Go restore has no equivalent -- every path through it
+ * starts from a snapshot. Accepting the flag and doing something else is the
+ * one outcome that must not happen. */
+func TestCloneIsRefusedRatherThanReinterpreted(t *testing.T) {
+	var code int
+	_, stderr := capture(t, func() { code = run([]string{"--clone", "--target", "/dev/sdb"}) })
+	if code == 0 {
+		t.Fatal("--clone was accepted")
+	}
+	if !strings.Contains(stderr, "not implemented") {
+		t.Errorf("stderr = %q, want a clear refusal", stderr)
+	}
+	// And it must point somewhere useful rather than just saying no.
+	if !strings.Contains(stderr, "/usr/bin/timeshift") {
+		t.Errorf("the refusal did not say what to use instead: %q", stderr)
+	}
+}
+
+// --backup and --backup-now are deprecated in the Vala CLI and an error there
+// too. The message has to name the replacement, or a script author is stuck.
+func TestDeprecatedBackupFlagsNameTheirReplacement(t *testing.T) {
+	for _, flag := range []string{"--backup", "--backup-now"} {
+		var code int
+		_, stderr := capture(t, func() { code = run([]string{flag}) })
+		if code == 0 {
+			t.Errorf("%s was accepted", flag)
+		}
+		if !strings.Contains(stderr, "--check") || !strings.Contains(stderr, "--create") {
+			t.Errorf("%s: stderr = %q, want both replacements named", flag, stderr)
+		}
+	}
+}
+
+// --ssh-port takes a port, and a value that is not one must be refused rather
+// than silently becoming zero.
+func TestSSHPortIsValidated(t *testing.T) {
+	for _, bad := range []string{"nope", "0", "-1", "70000", ""} {
+		var code int
+		_, stderr := capture(t, func() { code = run([]string{"--list", "--ssh-port", bad}) })
+		if code != 1 {
+			t.Errorf("--ssh-port %q = %d, want 1", bad, code)
+		}
+		if !strings.Contains(stderr, "timeshift:") {
+			t.Errorf("--ssh-port %q refused without saying why", bad)
+		}
+	}
+}
+
+/* --btrfs and --rsync must be distinguishable from "not mentioned". The
+ * override carries a *bool for exactly that: a plain bool cannot express
+ * --rsync, which is a request to force the mode OFF. */
+func TestBtrfsAndRsyncAreThreeStates(t *testing.T) {
+	var none, yes, no ipc.LocationOverride
+	if !none.Empty() {
+		t.Error("an override that asks for nothing is not Empty")
+	}
+	on, off := true, false
+	yes.BtrfsMode, no.BtrfsMode = &on, &off
+	if yes.Empty() || no.Empty() {
+		t.Error("--btrfs / --rsync produced an empty override")
+	}
+	if overridePtr(none) != nil {
+		t.Error("an empty override was sent over the wire")
+	}
+	if overridePtr(yes) == nil {
+		t.Error("--btrfs was dropped")
 	}
 }

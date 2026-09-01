@@ -67,8 +67,18 @@ func (d *daemon) config() config.Config {
 // at the end of an SSH link is not a resource worth keeping warm across hours
 // of idleness, and a stale handle is worse than a new one.
 func (d *daemon) openRepo(ctx context.Context) (engines.Repository, string, string, error) {
-	cfg := d.config()
+	return d.openRepoWith(ctx, d.config())
+}
 
+/* openRepoWith opens a repository described by an arbitrary config.
+ *
+ * The split exists for the CLI's per-run location flags -- --snapshot-device,
+ * --snapshot-url, --btrfs, --rsync -- which Vala applies to one invocation
+ * without persisting them. Expressing an override as a modified config rather
+ * than as a second code path means there is one definition of how a location is
+ * resolved, and the override cannot drift from the saved case.
+ */
+func (d *daemon) openRepoWith(ctx context.Context, cfg config.Config) (engines.Repository, string, string, error) {
 	var devices []*block.Device
 	if !cfg.Remote() {
 		var err error
@@ -282,10 +292,13 @@ func (d *daemon) devicesList(ctx context.Context, _ *ipc.Conn, _ json.RawMessage
  * and its output is byte-for-byte identical to the Vala binary's. Splitting
  * them across two calls would mean the header could be drawn from two
  * repository states observed a moment apart. */
-func (d *daemon) repoStatus(ctx context.Context, _ *ipc.Conn, _ json.RawMessage) (any, error) {
-	repo, deviceName, deviceUUID, err := d.openRepo(ctx)
+func (d *daemon) repoStatus(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
+	var in ipc.RepoStatusParams
+	json.Unmarshal(params, &in)
+
+	repo, deviceName, deviceUUID, err := d.openRepoOverridden(ctx, in.Location)
 	if err != nil {
-		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
+		return nil, err
 	}
 	defer repo.Close()
 
@@ -308,10 +321,13 @@ func (d *daemon) repoStatus(ctx context.Context, _ *ipc.Conn, _ json.RawMessage)
 	}, nil
 }
 
-func (d *daemon) snapshotsList(ctx context.Context, _ *ipc.Conn, _ json.RawMessage) (any, error) {
-	repo, _, _, err := d.openRepo(ctx)
+func (d *daemon) snapshotsList(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
+	var in ipc.SnapshotsListParams
+	json.Unmarshal(params, &in)
+
+	repo, _, _, err := d.openRepoOverridden(ctx, in.Location)
 	if err != nil {
-		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
+		return nil, err
 	}
 	defer repo.Close()
 

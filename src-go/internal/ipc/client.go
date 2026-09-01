@@ -47,6 +47,9 @@ type Client struct {
 
 	readErr error
 	done    chan struct{}
+
+	// protocol is the daemon's reported version, 0 until Handshake.
+	protocol int
 }
 
 // Dial connects to the daemon.
@@ -229,3 +232,29 @@ func (c *Client) Subscribe(p SubscribeParams) (jobs.Snapshot, error) {
 func dialRaw(path string) (net.Conn, error) {
 	return net.DialTimeout("unix", path, 5*time.Second)
 }
+
+/* Handshake asks the daemon what it is, and records its protocol version.
+ *
+ * Separate from Dial so that connecting and interrogating stay
+ * distinguishable -- a caller that only wants to know whether anything is
+ * listening should not have to make a call to find out.
+ */
+func (c *Client) Handshake() (SystemInfo, error) {
+	var info SystemInfo
+	if err := c.Call(MethodSystemInfo, nil, &info); err != nil {
+		return info, err
+	}
+	c.protocol = info.ProtocolVersion
+	return info, nil
+}
+
+// ProtocolVersion is what the daemon reported, or 0 before a handshake.
+func (c *Client) ProtocolVersion() int { return c.protocol }
+
+/* Supports reports whether the daemon speaks at least version v.
+ *
+ * Used before sending anything a client DEPENDS on being understood. JSON
+ * ignores unknown fields, so an older daemon does not refuse such a request --
+ * it carries it out against the wrong thing.
+ */
+func (c *Client) Supports(v int) bool { return c.protocol >= v }

@@ -30,9 +30,16 @@ const SocketPath = "/run/timeshift/daemon.sock"
 // running backup without pkexec; everything that changes state still needs root.
 const Group = "timeshift"
 
-// ProtocolVersion is bumped when the wire format changes incompatibly. A client
-// checks it in system.info and refuses rather than misinterpreting.
-const ProtocolVersion = 1
+/* ProtocolVersion is bumped when the wire format changes in a way a client can
+ * RELY on, and a client checks it rather than misinterpreting.
+ *
+ * 2 added LocationOverride. That is not a cosmetic addition: JSON ignores
+ * unknown fields, so a version-1 daemon handed an override silently used the
+ * CONFIGURED repository instead -- and for `--delete-all --snapshot-device X`
+ * that means listing and deleting from the wrong place with no error at all.
+ * A field a client depends on being understood needs a version behind it.
+ */
+const ProtocolVersion = 2
 
 // Request is a call from a client.
 type Request struct {
@@ -231,6 +238,47 @@ type RecoveryVerbResult struct {
 type RecoveryInstallParams struct {
 	Target string `json:"target,omitempty"`
 	Size   string `json:"size,omitempty"`
+}
+
+// RepoStatusParams may point at a repository other than the configured one.
+type RepoStatusParams struct {
+	Location *LocationOverride `json:"location,omitempty"`
+}
+
+// SnapshotsListParams may point at a repository other than the configured one.
+type SnapshotsListParams struct {
+	Location *LocationOverride `json:"location,omitempty"`
+}
+
+/* LocationOverride points one request at a repository other than the
+ * configured one, without changing what is configured.
+ *
+ * This is `timeshift --list --snapshot-device /dev/sdb1` and its relatives.
+ * Vala implements them by setting the same fields it would have loaded and not
+ * saving them, which is the right shape: an override is a config that was never
+ * written down.
+ *
+ * It travels over the wire rather than being applied client-side because
+ * `--list` prefers the daemon and falls back to opening the repository itself.
+ * An override that worked only on the fallback path would make one command mean
+ * two different things depending on whether the daemon happened to be running.
+ */
+type LocationOverride struct {
+	Device     string `json:"device,omitempty"`
+	DeviceUUID string `json:"device_uuid,omitempty"`
+	URL        string `json:"url,omitempty"`
+	KeyFile    string `json:"key_file,omitempty"`
+	Port       int    `json:"port,omitempty"`
+
+	/* BtrfsMode is a POINTER so that "leave it alone" and "force it off" are
+	 * different requests. A plain bool cannot express --rsync. */
+	BtrfsMode *bool `json:"btrfs_mode,omitempty"`
+}
+
+// Empty reports an override that asks for nothing.
+func (o *LocationOverride) Empty() bool {
+	return o == nil || (o.Device == "" && o.DeviceUUID == "" && o.URL == "" &&
+		o.KeyFile == "" && o.Port == 0 && o.BtrfsMode == nil)
 }
 
 /* RepoSelectParams chooses where snapshots are stored.

@@ -174,6 +174,24 @@ func connect(socket string) (*ipc.Client, error) {
 		}
 		return nil, err
 	}
+
+	/* Ask what it is before trusting it with anything.
+	 *
+	 * A mismatched daemon is refused rather than talked to: JSON ignores
+	 * fields it does not know, so an older one does not reject a request it
+	 * cannot honour -- it carries it out against the wrong thing. */
+	info, err := c.Handshake()
+	if err != nil {
+		c.Close()
+		return nil, err
+	}
+	if info.ProtocolVersion != ipc.ProtocolVersion {
+		c.Close()
+		return nil, fmt.Errorf(
+			"timeshiftd speaks protocol %d, this client speaks %d.\n"+
+				"Restart the service after upgrading: sudo systemctl restart timeshiftd",
+			info.ProtocolVersion, ipc.ProtocolVersion)
+	}
 	return c, nil
 }
 

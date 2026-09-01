@@ -83,7 +83,7 @@ func locationFromConfig(c config.Config, devices []*block.Device) (engines.Locat
  * output is byte-for-byte identical to the Vala binary's and is verified by
  * diffing the two.
  */
-func listSnapshotsViaDaemon(socket string, w io.Writer) (found, served bool, err error) {
+func listSnapshotsViaDaemon(socket string, w io.Writer, ov *ipc.LocationOverride) (found, served bool, err error) {
 	c, derr := ipc.Dial(socket)
 	if derr != nil {
 		// No daemon. Not an error; the caller opens the repository itself.
@@ -91,8 +91,16 @@ func listSnapshotsViaDaemon(socket string, w io.Writer) (found, served bool, err
 	}
 	defer c.Close()
 
+	/* A daemon speaking a different protocol is not used at all. Falling back
+	 * to opening the repository here is correct and safe; talking to it anyway
+	 * would mean an override it does not understand being silently ignored. */
+	info, herr := c.Handshake()
+	if herr != nil || info.ProtocolVersion != ipc.ProtocolVersion {
+		return false, false, nil
+	}
+
 	var st ipc.RepoStatus
-	if err := c.Call(ipc.MethodRepoStatus, nil, &st); err != nil {
+	if err := c.Call(ipc.MethodRepoStatus, ipc.RepoStatusParams{Location: ov}, &st); err != nil {
 		return false, true, err
 	}
 
@@ -118,7 +126,7 @@ func listSnapshotsViaDaemon(socket string, w io.Writer) (found, served bool, err
 	io.WriteString(w, header.String())
 
 	var snapshots []engines.Snapshot
-	if err := c.Call(ipc.MethodSnapshotsList, nil, &snapshots); err != nil {
+	if err := c.Call(ipc.MethodSnapshotsList, ipc.SnapshotsListParams{Location: ov}, &snapshots); err != nil {
 		return false, true, err
 	}
 
@@ -154,4 +162,38 @@ func renderSnapshotTable(w io.Writer, snapshots []engines.Snapshot) bool {
 
 	fmt.Fprintln(w)
 	return true
+}
+
+/* applyOverrideLocally mirrors the daemon's applyOverride for the fallback
+ * path.
+ *
+ * Deliberately narrower: it does not resolve a device PATH to a UUID, because
+ * doing that needs a scan and this path already has one available only later.
+ * A path override on the fallback path is reported rather than silently
+ * ignored -- see run() -- which is the difference between "not supported here"
+ * and "supported and quietly wrong".
+ */
+func applyOverrideLocally(cfg config.Config, ov *ipc.LocationOverride) config.Config {
+	if ov == nil {
+		return cfg
+	}
+	switch {
+	case ov.URL != "":
+		cfg.BackupLocationType = "ssh"
+		cfg.BackupSSHURL = ov.URL
+		cfg.BtrfsMode = false
+	case ov.DeviceUUID != "":
+		cfg.BackupLocationType = "local"
+		cfg.BackupDeviceUUID = ov.DeviceUUID
+	}
+	if ov.KeyFile != "" {
+		cfg.BackupSSHKey = ov.KeyFile
+	}
+	if ov.Port != 0 {
+		cfg.BackupSSHPort = ov.Port
+	}
+	if ov.BtrfsMode != nil {
+		cfg.BtrfsMode = *ov.BtrfsMode
+	}
+	return cfg
 }
