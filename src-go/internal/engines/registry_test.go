@@ -137,6 +137,9 @@ func TestARepositoryIsFullyDrivableThroughTheInterface(t *testing.T) {
 	if err := repo.ReleaseBrowse(ctx, "/snap"); err != nil {
 		t.Errorf("ReleaseBrowse: %v", err)
 	}
+	if _, err := repo.DropMaster(ctx); err != nil {
+		t.Errorf("DropMaster: %v", err)
+	}
 
 	repo.SetFirstSnapshotSize(1 << 30)
 }
@@ -188,6 +191,7 @@ func (r *fakeRepo) Browse(_ context.Context, snapshotPath string, _, _ int) (Bro
 	return BrowseMount{Path: snapshotPath}, nil
 }
 func (r *fakeRepo) ReleaseBrowse(context.Context, string) error { return nil }
+func (r *fakeRepo) DropMaster(context.Context) (bool, error)    { return false, nil }
 
 var _ Engine = fakeEngine{}
 var _ Repository = (*fakeRepo)(nil)

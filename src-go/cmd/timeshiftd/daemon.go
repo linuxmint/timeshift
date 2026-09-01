@@ -178,7 +178,14 @@ func (d *daemon) methods() map[string]ipc.Method {
 		 * stretch to that. */
 		ipc.MethodDevicesUnlock: {Fn: d.devicesUnlock},
 		ipc.MethodDevicesLock:   {Fn: d.devicesLock},
-		ipc.MethodRepoReload:    {Fn: d.repoReload},
+
+		/* Provisioning access to a remote repository. Root-only: it writes
+		 * /etc/timeshift/ssh, and setup_key carries an account password. */
+		ipc.MethodRepoDropMaster:  {Fn: d.repoDropMaster},
+		ipc.MethodRepoSSHScanHost: {Fn: d.repoSSHScanHost},
+		ipc.MethodRepoSSHSetupKey: {Fn: d.repoSSHSetupKey},
+		ipc.MethodRepoSSHTest:     {Fn: d.repoSSHTest},
+		ipc.MethodRepoReload:      {Fn: d.repoReload},
 
 		/* Planning a restore changes nothing, but it is not read-only in the
 		 * sense the group grant means: it enumerates every device on the

@@ -72,3 +72,24 @@ func (r *Repo) TransferSource(payloadPath string) engines.TransferSource {
 // SetFirstSnapshotSize supplies the estimate used to judge free space on a
 // repository that holds no snapshots yet.
 func (r *Repo) SetFirstSnapshotSize(n uint64) { r.FirstSnapshotSize = n }
+
+// DropMaster tears down the ssh ControlMaster, if there is one.
+//
+// A local repository has no transport to drop, and reports false rather than
+// pretending it did something.
+func (r *Repo) DropMaster(ctx context.Context) (bool, error) {
+	ssh, ok := r.Backend.(*SSHBackend)
+	if !ok || ssh.ControlPath == "" {
+		return false, nil
+	}
+	argv := append([]string{"ssh"}, ssh.SSHOptions(false, false)...)
+	argv = append(argv, "-O", "exit", ssh.HostSpec())
+
+	/* A master that is already gone makes ssh exit non-zero, and that is not a
+	 * failure: the caller wanted no master and there is none. Only an
+	 * inability to run ssh at all is worth reporting. */
+	if _, _, _, err := r.Deps.Runner.Run(ctx, argv, ""); err != nil {
+		return false, err
+	}
+	return true, nil
+}

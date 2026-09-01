@@ -46,6 +46,12 @@ func (r *pausableRunner) Run(ctx context.Context, argv []string, stdin string) (
 	return r.inner.Run(ctx, argv, stdin)
 }
 
+// RunEnv passes through. Not pausable, and does not need to be: its one caller
+// is ssh-copy-id, which is interactive and short.
+func (r *pausableRunner) RunEnv(ctx context.Context, argv []string, stdin string, env []string) (int, string, string, error) {
+	return r.inner.RunEnv(ctx, argv, stdin, env)
+}
+
 func (r *pausableRunner) Stream(ctx context.Context, argv []string, onLine func(stream, line string)) (int, error) {
 	p, err := r.inner.E.Start(ctx, sysexec.Cmd{Argv: argv}, sysexec.Handler{
 		Stdout: func(l string) { onLine("stdout", l) },

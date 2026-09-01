@@ -85,6 +85,10 @@ const (
 	MethodDevicesLock            = "devices.lock"
 	MethodRepoStatus             = "repo.status"
 	MethodRepoReload             = "repo.reload"
+	MethodRepoDropMaster         = "repo.drop_master"
+	MethodRepoSSHScanHost        = "repo.ssh.scan_host"
+	MethodRepoSSHSetupKey        = "repo.ssh.setup_key"
+	MethodRepoSSHTest            = "repo.ssh.test"
 	MethodSnapshotsList          = "snapshots.list"
 	MethodSnapshotsUpdate        = "snapshots.update"
 	MethodSnapshotsBrowse        = "snapshots.browse"
@@ -188,6 +192,78 @@ type SubscribeParams struct {
  */
 type ConfigSetParams struct {
 	Values map[string]json.RawMessage `json:"values"`
+}
+
+// SSHScanHostParams fetches a remote's host key.
+type SSHScanHostParams struct {
+	Host string `json:"host"`
+	Port int    `json:"port,omitempty"`
+}
+
+/* SSHScanHostResult is the host key and the fingerprint to show a person.
+ *
+ * Shown BEFORE any password is sent: otherwise the first connection is
+ * trust-on-first-use with a password already in flight.
+ */
+type SSHScanHostResult struct {
+	Host        string `json:"host"`
+	Line        string `json:"line"`
+	Fingerprint string `json:"fingerprint"`
+}
+
+/* SSHSetupKeyParams provisions key-based login to a remote repository.
+ *
+ * URL, KeyFile and Port are optional: empty means the configured location. An
+ * explicit URL is how a Location page tests credentials for a repository that
+ * has not been saved yet, rather than having to save a broken one to find out
+ * it is broken.
+ *
+ * HostKeyLine is the line from SSHScanHostResult, passed back to say "the
+ * person saw this fingerprint and accepted it". Empty means nothing is
+ * trusted, and a host that is not already in known_hosts will be refused.
+ *
+ * Password is used only if the key does not already authenticate. It goes to
+ * ssh through SSH_ASKPASS in the child's environment, never in argv.
+ */
+type SSHSetupKeyParams struct {
+	URL         string `json:"url,omitempty"`
+	KeyFile     string `json:"key_file,omitempty"`
+	Port        int    `json:"port,omitempty"`
+	HostKeyLine string `json:"host_key_line,omitempty"`
+	Password    string `json:"password,omitempty"`
+}
+
+// SSHSetupKeyResult says what actually happened, step by step, because each
+// step can fail in a way a person has to see.
+type SSHSetupKeyResult struct {
+	KeyFile        string `json:"key_file"`
+	KeyCreated     bool   `json:"key_created"`
+	HostKeyTrusted bool   `json:"host_key_trusted"`
+	Installed      bool   `json:"installed"`
+	Verified       bool   `json:"verified"`
+
+	// AlreadyWorking means the key authenticated before anything was done, so
+	// no password was needed and nothing was installed.
+	AlreadyWorking bool `json:"already_working"`
+}
+
+// SSHTestParams checks a location. Empty fields mean the configured one.
+type SSHTestParams struct {
+	URL     string `json:"url,omitempty"`
+	KeyFile string `json:"key_file,omitempty"`
+	Port    int    `json:"port,omitempty"`
+}
+
+// SSHTestResult reports reachability in terms a person can act on.
+type SSHTestResult struct {
+	Host    string `json:"host"`
+	OK      bool   `json:"ok"`
+	Message string `json:"message"`
+}
+
+// DropMasterResult reports whether there was a control master to tear down.
+type DropMasterResult struct {
+	Dropped bool `json:"dropped"`
 }
 
 /* DeviceUnlockParams opens a LUKS container.

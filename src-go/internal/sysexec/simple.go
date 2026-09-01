@@ -34,3 +34,19 @@ func (s Simple) Stream(ctx context.Context, argv []string, onLine func(stream, l
 	res, err := p.Wait()
 	return res.ExitCode, err
 }
+
+/* RunEnv is Run with the child's environment replaced.
+ *
+ * It exists for exactly one caller: handing ssh a password through SSH_ASKPASS.
+ * The password goes in the CHILD's environment and nowhere else -- not in argv,
+ * where /proc/<pid>/cmdline exposes it to anything on the machine, and not in a
+ * file. Putting it in the daemon's own environment instead, as the Vala build
+ * did, would leave it readable in /proc/self/environ for as long as the daemon
+ * runs rather than for the life of one ssh-copy-id.
+ *
+ * A nil env means DefaultEnv(), the same as Run.
+ */
+func (s Simple) RunEnv(ctx context.Context, argv []string, stdin string, env []string) (int, string, string, error) {
+	res, err := s.E.Run(ctx, Cmd{Argv: argv, Stdin: stdin, Env: env})
+	return res.ExitCode, res.Stdout, res.Stderr, err
+}

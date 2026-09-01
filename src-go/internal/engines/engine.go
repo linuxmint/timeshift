@@ -283,6 +283,19 @@ type Repository interface {
 	// never mounted, because releasing one would unmount the repository.
 	ReleaseBrowse(ctx context.Context, mountPoint string) error
 
+	// ---- transport ----
+
+	/* DropMaster tears down any multiplexed transport connection the engine is
+	 * holding, reporting whether there was one.
+	 *
+	 * This is an escape hatch, not housekeeping. A client attaching to a WEDGED
+	 * ssh ControlMaster never calls connect(2), so ConnectTimeout never
+	 * applies and it waits forever on a connection that is already dead. The
+	 * restore script does this itself on a transport failure; this exposes the
+	 * same lever to a person watching a stuck operation.
+	 */
+	DropMaster(ctx context.Context) (dropped bool, err error)
+
 	// ---- lifecycle ----
 
 	/* SetFirstSnapshotSize supplies the estimated size of a first snapshot, so
