@@ -17,6 +17,7 @@ config_header = configure_file(
 
 sources_core = files([
   'Core/AppExcludeEntry.vala',
+  'Core/DaemonClient.vala',
   'Core/Main.vala',
   'Core/RepoBackend.vala',
   'Core/Snapshot.vala',
@@ -83,6 +84,7 @@ sources_gtk = files([
   'Gtk/EstimateBox.vala',
   'Gtk/ExcludeBox.vala',
   'Gtk/ExcludeListSummaryWindow.vala',
+  'Gtk/JobMonitorWindow.vala',
   'Gtk/MainWindow.vala',
   'Gtk/MiscBox.vala',
   'Gtk/RecoveryBox.vala',

@@ -32,14 +32,24 @@ timeshiftd = custom_target('timeshiftd',
   install_dir: get_option('libexecdir') / 'timeshift',
 )
 
-# The CLI. Built so it keeps compiling and can be diffed against the Vala
-# `timeshift`, but NOT installed: the Vala binary still owns /usr/bin/timeshift
-# until the consumer cutover.
+# The CLI.
+#
+# Installed beside the daemon rather than as /usr/bin/timeshift: the Vala binary
+# still owns that name and still implements flags this one does not (--restore
+# above all), so claiming the public path would be a downgrade dressed as a
+# cutover. help2man also builds the man page from whatever answers
+# /usr/bin/timeshift --help, and that page has to keep describing the binary
+# people actually run.
+#
+# What the private path buys is real, though: apt-snapshot-guard can prefer it,
+# and an apt-driven snapshot then becomes a daemon job that the GUI can attach
+# to -- which is the entire point of this port.
 timeshift_go = custom_target('timeshift-go',
   output: 'timeshift',
   command: [go_build, go_build_args, './cmd/timeshift', meson.project_version()],
   build_always_stale: true,
-  install: false,
+  install: true,
+  install_dir: get_option('libexecdir') / 'timeshift',
 )
 
 # The unit. dh_installsystemd finds units the upstream build system installed

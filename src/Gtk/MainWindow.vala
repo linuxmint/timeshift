@@ -57,6 +57,10 @@ class MainWindow : AppWindow{
 	private bool status_action_opens_wizard = false;
 
 	// status area
+	private Banner daemon_banner;
+	private JobMonitorWindow? monitor_window = null;
+	private uint tmr_daemon = 0;
+
 	private Gtk.Box status_area;
 	private StatusCard status_card;
 	private StatTile tile_snapshots;
@@ -80,6 +84,8 @@ class MainWindow : AppWindow{
         set_child(vbox_main);
 
         init_ui_header();
+
+        init_ui_daemon_banner();
 
         init_ui_snapshot_list();
 
@@ -117,6 +123,18 @@ class MainWindow : AppWindow{
 
 		refresh_all();
 
+		/* Ask the service whether something is already under way.
+		 *
+		 * This is the case the whole daemon exists for: apt-snapshot-guard has
+		 * blocked dpkg while it takes a snapshot, and until now opening this
+		 * window during that was either refused outright or showed a stale
+		 * list with no hint that anything was happening. */
+		check_daemon_job();
+		tmr_daemon = Timeout.add_seconds(5, () => {
+			check_daemon_job();
+			return true;
+		});
+
 		if (App.first_run){
 			btn_wizard_clicked();
 		}
@@ -124,6 +142,103 @@ class MainWindow : AppWindow{
 		log_debug("MainWindow(): init_delayed(): exit");
 		
 		return false;
+	}
+
+	/* The banner that says something else is working.
+	 *
+	 * Hidden until there is a job. GTK4 widgets are visible by default, so it
+	 * has to be switched off explicitly rather than merely left alone. */
+	private void init_ui_daemon_banner(){
+
+		daemon_banner = new Banner();
+		daemon_banner.visible = false;
+		vbox_main.append(daemon_banner);
+
+		/* Banner is a Gtk.Box whose label hexpands, so an appended button
+		 * lands at the end of the strip. */
+		var btn = new Gtk.Button.with_label(_("Show Progress"));
+		btn.valign = Gtk.Align.CENTER;
+		btn.clicked.connect(show_daemon_job);
+		daemon_banner.append(btn);
+	}
+
+	/* Poll the daemon for a running job.
+	 *
+	 * Polling, not a subscription, and on purpose: this only needs to know
+	 * whether to show a one-line banner, and a five-second poll of a local
+	 * socket costs nothing. The live stream is opened by JobMonitorWindow,
+	 * which is the thing that actually needs every event.
+	 */
+	private void check_daemon_job(){
+
+		var client = App.daemon;
+		if (client == null){
+			hide_daemon_banner();
+			return;
+		}
+
+		string job_id, kind;
+		if (!client.running_job(out job_id, out kind)){
+			log_debug("MainWindow: the Timeshift service has no job running");
+
+			// A job that has just gone away means new snapshots to list.
+			if (daemon_banner.visible){
+				hide_daemon_banner();
+				refresh_all();
+			}
+			return;
+		}
+
+		if (monitor_window != null){
+			return; // already being watched; the window has the detail
+		}
+
+		log_debug("MainWindow: the Timeshift service is running %s (%s)".printf(job_id, kind));
+
+		daemon_banner.set_message(daemon_banner_text(kind), Gtk.MessageType.INFO);
+	}
+
+	private string daemon_banner_text(string kind){
+		switch (kind){
+		case "create":
+			return _("A snapshot is being created by the Timeshift service.");
+		case "delete":
+			return _("Snapshots are being deleted by the Timeshift service.");
+		case "estimate":
+			return _("The Timeshift service is estimating the system size.");
+		default:
+			return _("The Timeshift service is busy.");
+		}
+	}
+
+	private void hide_daemon_banner(){
+		daemon_banner.visible = false;
+		daemon_banner.clear();
+	}
+
+	private void show_daemon_job(){
+
+		var client = App.daemon;
+		if (client == null){ return; }
+
+		string job_id, kind;
+		if (!client.running_job(out job_id, out kind)){ return; }
+
+		if (monitor_window != null){
+			monitor_window.present();
+			return;
+		}
+
+		monitor_window = new JobMonitorWindow(client, job_id, kind);
+		monitor_window.closed.connect(() => {
+			monitor_window = null;
+		});
+		monitor_window.job_done.connect(() => {
+			// The snapshot list is stale the moment a job finishes.
+			hide_daemon_banner();
+			refresh_all();
+		});
+		monitor_window.present();
 	}
 
 	private void init_ui_header(){
@@ -391,6 +506,21 @@ class MainWindow : AppWindow{
 
 		// a browse mount should not outlive the window that opened it
 		browse_unmount_all();
+
+		/* Stop polling the daemon and drop the monitor.
+		 *
+		 * Note what is NOT done here: the daemon's job is left running. A job
+		 * belongs to the service, not to whoever happens to be looking at it,
+		 * and closing this window while apt waits on a snapshot must not
+		 * abandon the snapshot apt is waiting for. */
+		if (tmr_daemon > 0){
+			Source.remove(tmr_daemon);
+			tmr_daemon = 0;
+		}
+		if (monitor_window != null){
+			monitor_window.close_self();
+			monitor_window = null;
+		}
 
 		this.close_request.disconnect(on_delete_event); //disconnect this handler
 

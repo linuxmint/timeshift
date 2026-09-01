@@ -63,6 +63,15 @@ public class Main : GLib.Object{
     public static bool btrfs_version__can_recursive_delete = false;
 	
 	public bool stop_cron_emails = true;
+
+	/* The connection to timeshiftd, created on first use.
+	 *
+	 * Null when the daemon is not installed or not running, which is an
+	 * ordinary state during the transition: this core still does all its own
+	 * work, and the daemon is consulted only to find out whether something
+	 * ELSE is already running. Nothing here depends on it being there. */
+	private DaemonClient? _daemon = null;
+	private bool daemon_tried = false;
 	
 	public Gee.ArrayList<Device> partitions;
 
@@ -1284,6 +1293,23 @@ public class Main : GLib.Object{
 
 	// properties
 	
+	/* daemon returns the client, connecting once and remembering the answer.
+	 *
+	 * Retrying on every call would mean a stat and a connect attempt per GUI
+	 * refresh on a machine with no daemon, which is most of them today. */
+	public DaemonClient? daemon {
+		get {
+			if (!daemon_tried){
+				daemon_tried = true;
+				var client = new DaemonClient();
+				if (client.open()){
+					_daemon = client;
+				}
+			}
+			return _daemon;
+		}
+	}
+
 	public bool scheduled{
 		get{
 			return !live_system()

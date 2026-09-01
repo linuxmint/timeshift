@@ -176,19 +176,54 @@ esac
 # The snapshot's own description explains why it exists.
 comment="Auto-snapshot before ${operation} via ${frontend} [${caller}]"
 
+# Which Timeshift to drive.
+#
+# Preferred: the daemon client at a private path, when timeshiftd is actually
+# listening. That makes this snapshot a daemon JOB rather than a private process
+# -- so it can be watched from the GUI while apt sits here waiting for it, which
+# is the whole reason the daemon exists. It also means two apt frontends racing
+# end up attached to one snapshot instead of taking two.
+#
+# Fallback: whatever `timeshift` is on PATH, exactly as before. The daemon may
+# not be running (a recovery environment, a machine where the unit is masked,
+# the moment during an upgrade before it has started), and this hook is
+# fail-closed and blocks dpkg -- so it must never depend on the daemon being up.
+TS_CLIENT=${TS_CLIENT:-/usr/libexec/timeshift/timeshift}
+TS_SOCKET=${TS_SOCKET:-/run/timeshift/daemon.sock}
+
+use_daemon=0
+if [ "${USE_DAEMON:-1}" = "1" ] && [ -x "$TS_CLIENT" ] && [ -S "$TS_SOCKET" ]; then
+	use_daemon=1
+fi
+
 # Checked only now, AFTER frontend/operation are known: snapshot_failed uses
 # both to decide whether a graphical bypass is appropriate.
-if ! command -v timeshift >/dev/null 2>&1; then
+if [ "$use_daemon" = "0" ] && ! command -v timeshift >/dev/null 2>&1; then
 	snapshot_failed "timeshift not found on PATH."
 fi
 
 # --- take the snapshot (serialized; one at a time) ---------------------------
-log "creating snapshot before ${operation} via ${frontend}: ${caller}"
+if [ "$use_daemon" = "1" ]; then
+	log "creating snapshot before ${operation} via ${frontend}: ${caller} (via timeshiftd)"
+else
+	log "creating snapshot before ${operation} via ${frontend}: ${caller}"
+fi
 
 # flock avoids two overlapping apt runs racing on the snapshot.
+#
+# It is redundant on the daemon path -- one worker runs one mutating job at a
+# time, and a second --create attaches to the running one rather than queueing
+# a duplicate -- but it is kept for a release so the fallback path and the
+# daemon path serialise the same way.
 run_snapshot() {
-	timeout "$TIMEOUT" timeshift --create --scripted \
-		--tags "$TAGS" --comments "$comment" >>"$LOG" 2>&1
+	if [ "$use_daemon" = "1" ]; then
+		timeout "$TIMEOUT" "$TS_CLIENT" --socket "$TS_SOCKET" \
+			--create --scripted \
+			--tags "$TAGS" --comments "$comment" >>"$LOG" 2>&1
+	else
+		timeout "$TIMEOUT" timeshift --create --scripted \
+			--tags "$TAGS" --comments "$comment" >>"$LOG" 2>&1
+	fi
 }
 
 rc=0

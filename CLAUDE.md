@@ -588,6 +588,63 @@ healthy, and a dead `timeshiftd` now means no snapshots with nothing to notice.
 replacement: they report when the scheduler last ran, what it decided and
 whether the loop is alive at all.
 
+### The GUI as a client (`src/Core/DaemonClient.vala`)
+
+The GTK app still runs its own Vala core. What it gained is the ability to see
+work it is not doing: `MainWindow` asks the daemon every five seconds whether a
+job is running, shows a `Banner` when one is, and `JobMonitorWindow` attaches to
+it and draws the event stream.
+
+That is the scenario the port exists for. `apt-snapshot-guard` now drives the
+daemon (below), so an apt-driven snapshot is a job with an id -- and opening the
+GUI while apt waits for it shows live progress instead of a stale list.
+
+`DaemonClient` opens **two** connections, deliberately. A response carries the
+request's `id` and an event carries `event` and none, so one connection could
+carry both -- but then every synchronous call would have to read past events
+that arrived first and queue them, and a bug in that interleaving looks like one
+call returning another call's answer. Instead `conn` does request/response only
+and `event_conn` issues one `jobs.subscribe` and thereafter only reads.
+
+**Two JSON dialects live in this codebase and they are not interchangeable.**
+`timeshift.json` and `info.json` store every value as a JSON *string*, and
+`TeeJee.JsonHelper.json_get_*` exist for exactly that -- each calls
+`get_string_member` and parses. The socket protocol uses real JSON types, so
+those helpers read a number as a null string. `DaemonClient` has its own
+`wire_string`/`wire_int`/`wire_double` and must keep them.
+
+`JobMonitorWindow` has no Cancel, and that is the design: the job belongs to the
+daemon and outlives every client watching it, so closing the window while apt
+waits on a snapshot must not abandon the snapshot apt is waiting for. Opening it
+late is not degraded either -- `jobs.subscribe` replies with the job's current
+state before streaming, so a window opened eight minutes in draws what one
+opened at the start would be showing.
+
+Nothing here is required. A daemon that is absent or not running is an ordinary
+state during the transition: `App.daemon` returns null, the banner never
+appears, and the Vala core does all its own work exactly as before.
+
+### apt-snapshot-guard and the daemon
+
+The guard prefers `/usr/libexec/timeshift/timeshift` when
+`/run/timeshift/daemon.sock` exists, and falls back to whatever `timeshift` is
+on `PATH` otherwise. `USE_DAEMON=0` in `/etc/apt-snapshot-guard/config` pins the
+old behaviour.
+
+The fallback is not optional politeness: this hook is **fail-closed and blocks
+dpkg**, so it must never depend on the daemon being up -- a recovery
+environment, a masked unit, or the moment during an upgrade before the daemon
+has started all have to keep working.
+
+The Go CLI is installed at that private path rather than as `/usr/bin/timeshift`
+because the Vala binary still implements flags it does not (`--restore` above
+all), and because `help2man` builds the man page from whatever answers
+`/usr/bin/timeshift --help`.
+
+`debian/rules` excludes both Go binaries from `dh_dwz` **by path**
+(`-Xusr/libexec/timeshift/`), not by name: one of them is called `timeshift`, so
+`-Xtimeshift` would also exclude the Vala binary, which compresses fine.
+
 ### The unit and the group
 
 `timeshiftd.service` is `Type=notify` -- `sdNotify` in `cmd/timeshiftd/notify.go`

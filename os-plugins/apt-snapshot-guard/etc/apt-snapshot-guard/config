@@ -45,3 +45,12 @@ GUI_PROMPT_TIMEOUT=120
 
 # Timeshift tag applied to guard snapshots (O = on-demand).
 TAGS=O
+
+# Drive the snapshot through timeshiftd when it is listening (1) or always use
+# the `timeshift` on PATH (0).
+#
+# The daemon path makes an apt-driven snapshot watchable: `timeshift --watch`,
+# or the GUI, can attach to it while apt waits here. Set this to 0 to pin the
+# old behaviour, in which the snapshot runs as a private process that nothing
+# else can see into.
+#USE_DAEMON=1

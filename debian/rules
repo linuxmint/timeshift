@@ -13,10 +13,14 @@ override_dh_usrlocal:
 
 # The Go compiler emits DWARF in compressed sections, which dwz(1) cannot read.
 # It does not skip the file -- it fails, and takes the whole build down with it
-# (Debian #931891). Exclude the daemon by name so the three Vala binaries are
-# still compressed.
+# (Debian #931891).
+#
+# Excluded by PATH, not by name: both Go binaries live under
+# /usr/libexec/timeshift and one of them is called "timeshift", so -Xtimeshift
+# would also exclude /usr/bin/timeshift, which is the Vala binary and compresses
+# fine. The three Vala binaries are still compressed.
 override_dh_dwz:
-	dh_dwz -Xtimeshiftd
+	dh_dwz -Xusr/libexec/timeshift/
 
 %:
 	dh $@
