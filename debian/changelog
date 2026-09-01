@@ -1,3 +1,17 @@
+timeshift-ssh (25.12.4+ssh35) resolute; urgency=medium
+
+  * Complete the IPC surface: log.parse/log.entries, devices.unlock/lock,
+    repo.select, repo.ssh.{scan_host,setup_key,test}, repo.drop_master,
+    snapshots.browse/browse_release, jobs.pause/resume, recovery.*
+  * timeshift CLI reaches parity with the Vala one: --delete-all,
+    --setup-ssh-key, --recovery-*, per-run location and mode overrides,
+    --verbose/--quiet/--debug, and the aliases scripts already use
+  * Protocol version 2. A location override is a field a client depends on
+    being understood, and JSON ignores unknown fields, so a mismatched
+    daemon is now refused rather than silently using the configured location
+
+ -- makeafide <willsmit4433@gmail.com>  Mon, 31 Aug 2026 23:05:00 -0400
+
 timeshift-ssh (25.12.4+ssh34) resolute; urgency=medium
 
   * Fix `timeshift --list` against an SSH repository: nothing created

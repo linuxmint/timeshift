@@ -736,6 +736,61 @@ one job wants that job. They exist so a second window redraws instead of showing
 state that is no longer true, which is the obvious failure mode once several
 clients can attach at once.
 
+### The rest of the IPC surface
+
+`log.parse` is a **job**, not a method that returns the answer. A real snapshot
+log here is 22 MB and 222,521 changes -- a download, not a response -- so it
+parses once, keeps the result keyed by PATH (the job id is not available inside
+the job's own run function), and `log.entries` serves pages with kind-filtering
+done daemon-side. The cache holds four and evicts oldest-first. It is also a job
+because `RsyncLogBox` parses by *replacing* `App.task`, which is why the restore
+wizard disables Back and Next while a log is open.
+
+`log.parse` reads a file as root on request, so the guard matters more than the
+feature: only `/var/log/timeshift` may be named by path, symlinks resolved
+first, and a snapshot's log is addressed by snapshot name plus a bare filename
+that must equal its own basename.
+
+`devices.unlock` is what retires `Gtk.Window? parent_window`. The passphrase is
+collected by the CLIENT and reaches cryptsetup on **stdin** -- in argv it would
+sit in `/proc/<pid>/cmdline` for anything to read. An already-unlocked container
+is SUCCESS; the default mapper name stays `<kname>_crypt` so a container opened
+by either build appears at the same path; no passphrase is a refusal rather than
+a prompt, because a daemon has no terminal and cryptsetup would wait forever.
+
+`repo.ssh.*` is four steps and the order is the security argument: scan the host
+key so a fingerprint can be shown **before** any password is sent, generate,
+`ssh-copy-id`, then **verify** -- required, because ssh-copy-id exits 0 even when
+the password was wrong and nothing was installed. The password reaches ssh
+through `SSH_ASKPASS` in the **child's** environment, not the daemon's. Two ssh
+options must stay ABSENT from ssh-copy-id and have a test naming them:
+`BatchMode` disables the prompt the flow depends on, and
+`PubkeyAuthentication=no` stops it probing for keys already installed.
+
+`repo.select` validates before it saves, and says *why* not:
+`Main.check_device_for_backup()` answered with a boolean, which is why the GUI
+could only refuse without explaining. `recovery.*` is a thin wrapper over
+`/usr/sbin/timeshift-recovery` parsing its own `--machine` output; install is a
+job because it runs mmdebstrap for minutes, and it does **not** take the write
+lock -- it writes GRUB and `/var/lib`, not snapshots.
+
+#### Protocol version 2, and why it is not cosmetic
+
+`LocationOverride` carries the CLI's per-run `--snapshot-device` /
+`--snapshot-url` / `--btrfs` / `--rsync`. It travels over the wire rather than
+being applied client-side because `--list` prefers the daemon and falls back to
+opening the repository itself; an override honoured only on the fallback would
+make one command mean two things depending on whether the daemon was running.
+
+**JSON ignores unknown fields**, so a version-1 daemon handed an override did
+not reject it -- it used the CONFIGURED repository instead. For
+`--delete-all --snapshot-device X` that is deleting from the wrong place with no
+error. So a client that depends on a field being understood checks
+`ProtocolVersion` before sending: the CLI refuses a mismatched daemon by name,
+and `--list` treats it as no daemon and opens the repository itself.
+`DaemonClient.vala`'s constant must be bumped in step -- its check is strict
+equality, and both ship in the same package.
+
 ### Browsing and pausing
 
 `snapshots.browse` mounts and the CLIENT opens. Opening a file manager needs the
