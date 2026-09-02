@@ -46,7 +46,6 @@ sources_utility = files([
   'Utility/OSDNotify.vala',
   'Utility/RestoreScriptTask.vala',
   'Utility/RsyncSpaceCheckTask.vala',
-  'Utility/RecoveryToolTask.vala',
   'Utility/RsyncTask.vala',
   'Utility/SystemUser.vala',
   'Utility/TimeoutCounter.vala',

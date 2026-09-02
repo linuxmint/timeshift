@@ -105,55 +105,51 @@ class RecoveryBox : Gtk.Box {
 
 		if (op_running || refreshing){ return; }
 
-		if (!file_exists(RecoveryToolTask.TOOL)){
-			render_missing();
+		var api = DaemonApi.get_shared();
+		if (api == null){
+			/* Distinct from an absent tool. Saying "not installed" when the
+			 * package is installed and the service is merely down sends
+			 * somebody to install what they already have. */
+			render_missing(_("The Timeshift service is not available"),
+				_("Recovery status cannot be read while the service is not running"));
 			return;
 		}
 
 		refreshing = true;
 
-		string std_out = "";
-		bool thr_running = true;
-
-		try {
-			new Thread<bool>.try("recovery-status", () => {
-				string o, e;
-				exec_script_sync(RecoveryToolTask.TOOL + " status --machine\n",
-					out o, out e, true);
-				std_out = (o == null) ? "" : o;
-				thr_running = false;
-				return true;
-			});
-		}
-		catch (Error err){
-			log_error(err.message);
-			thr_running = false;
-		}
-
 		gtk_set_busy(true, parent_window);
-		while (thr_running){
-			gtk_do_events();
-			Thread.usleep((ulong) GLib.TimeSpan.MILLISECOND * 50);
-		}
+		var status = api.recovery_status();
 		gtk_set_busy(false, parent_window);
 
+		/* An absent tool is an ordinary state, not an error: the daemon says
+		 * so with available=false rather than failing, which is why this does
+		 * not probe for the binary itself any more. */
+		if ((status == null) || !status.available){
+			refreshing = false;
+			render_missing();
+			return;
+		}
+
+		/* The daemon passes the tool's own key=value output through verbatim,
+		 * so render() below reads exactly the keys it always read. The typed
+		 * booleans beside it are the same values parsed once; taking the map
+		 * keeps one parser rather than two that can disagree. */
 		stat.clear();
-		foreach (string line in std_out.split("\n")){
-			int eq = line.index_of("=");
-			if (eq > 0){
-				stat.set(line.substring(0, eq), line.substring(eq + 1).strip());
-			}
+		foreach (var key in status.fields.keys){
+			stat.set(key, status.fields.get(key));
 		}
 
 		refreshing = false;
 		render();
 	}
 
-	private void render_missing(){
+	private void render_missing(string title = "", string subtitle = ""){
 
 		card.set_shield(IconManager.SHIELD_LOW);
-		card.set_title(_("Recovery tool not installed"));
-		card.set_subtitle(_("Install the timeshift-recovery package to provision a bootable recovery environment"));
+		card.set_title((title.length > 0) ? title
+			: _("Recovery tool not installed"));
+		card.set_subtitle((subtitle.length > 0) ? subtitle
+			: _("Install the timeshift-recovery package to provision a bootable recovery environment"));
 
 		banner.clear();
 		Ui.clear_children(detail_box);
@@ -238,7 +234,7 @@ class RecoveryBox : Gtk.Box {
 
 	private void on_enable(){
 		// Non-destructive and instant; no confirmation needed.
-		run_short("enable --yes", _("Could not enable the recovery environment"));
+		run_short(true, _("Could not enable the recovery environment"));
 	}
 
 	private void on_disable(){
@@ -252,48 +248,40 @@ class RecoveryBox : Gtk.Box {
 
 		if (resp != Gtk.ResponseType.YES){ return; }
 
-		run_short("disable --yes", _("Could not disable the recovery environment"));
+		run_short(false, _("Could not disable the recovery environment"));
 	}
 
 	/* Enable/disable only toggle the GRUB entry: seconds, no progress worth
-	 * showing. A worker thread keeps the window alive through update-grub. */
-	private void run_short(string args_line, string fail_title){
+	 * showing, so these block rather than stream.
+	 *
+	 * `ok` is read rather than "the call returned". Enabling can fail for a
+	 * reason the method itself succeeds through -- most often GRUB_TIMEOUT
+	 * being 0, which means GRUB reads no keyboard at all and the hotkey that
+	 * reaches the environment can never be pressed. */
+	private void run_short(bool enable, string fail_title){
 
 		if (op_running){ return; }
+
+		var api = DaemonApi.get_shared();
+		if (api == null){
+			gtk_messagebox(fail_title,
+				_("The Timeshift service is not available."), parent_window, true);
+			return;
+		}
+
 		op_running = true;
 
-		string std_err = "";
-		int rc = -1;
-		bool thr_running = true;
-
-		try {
-			new Thread<bool>.try("recovery-op", () => {
-				string o, e;
-				rc = exec_script_sync(
-					"%s %s\nexit $?\n".printf(RecoveryToolTask.TOOL, args_line),
-					out o, out e, true);
-				std_err = (e == null) ? "" : e.strip();
-				thr_running = false;
-				return true;
-			});
-		}
-		catch (Error err){
-			log_error(err.message);
-			thr_running = false;
-		}
-
 		gtk_set_busy(true, parent_window);
-		while (thr_running){
-			gtk_do_events();
-			Thread.usleep((ulong) GLib.TimeSpan.MILLISECOND * 100);
-		}
+		bool ok = enable ? api.recovery_enable() : api.recovery_disable();
 		gtk_set_busy(false, parent_window);
 
 		op_running = false;
 
-		if (rc != 0){
+		if (!ok){
+			string detail = api.last_error;
 			gtk_messagebox(fail_title,
-				(std_err.length > 0) ? std_err : _("The operation failed. See /var/log/timeshift-recovery.log"),
+				(detail.length > 0) ? detail
+					: _("The operation failed. See /var/log/timeshift-recovery.log"),
 				parent_window, true);
 		}
 
@@ -316,27 +304,77 @@ class RecoveryBox : Gtk.Box {
 
 		if (resp != Gtk.ResponseType.YES){ return; }
 
+		var api = DaemonApi.get_shared();
+		if (api == null){
+			gtk_messagebox(_("Could not install the recovery environment"),
+				_("The Timeshift service is not available."), parent_window, true);
+			return;
+		}
+
+		string job_id;
+		if (!api.recovery_install("", "", out job_id) || (job_id.length == 0)){
+			gtk_messagebox(_("Could not install the recovery environment"),
+				api.last_error, parent_window, true);
+			return;
+		}
+
 		op_running = true;
 		set_buttons_sensitive(false);
 
 		log_pane.clear();
 		log_pane.expanded = true;
 
-		var task = new RecoveryToolTask("install --yes");
-		task.execute();
+		/* Its own connection pair, not the shared client's.
+		 *
+		 * A subscription is one per connection: MainWindow watches whatever
+		 * job the daemon is running, and this build runs for minutes, so
+		 * sharing would mean one of the two silently losing its stream. This
+		 * is the same reason DaemonBridge owns its own. */
+		var client = new DaemonClient();
+		bool finished = false;
+		bool failed = false;
 
-		while (task.status == AppStatus.RUNNING){
-			log_pane.append_lines(task.drain_output());
+		if (!client.open()){
+			set_buttons_sensitive(true);
+			op_running = false;
+			gtk_messagebox(_("Could not install the recovery environment"),
+				_("The build was started but its output cannot be shown."),
+				parent_window, true);
+			refresh();
+			return;
+		}
+
+		client.job_log.connect((id, line) => {
+			if (id != job_id){ return; }
+			string[] one = { line };
+			log_pane.append_lines(one);
+		});
+
+		client.job_finished.connect((id, outcome, error) => {
+			if (id != job_id){ return; }
+			failed = (outcome != "ok");
+			if (error.length > 0){
+				string[] one = { error };
+				log_pane.append_lines(one);
+			}
+			finished = true;
+		});
+
+		// with_log: the build's output is the whole point of watching it.
+		client.watch_job(job_id, true);
+
+		while (!finished){
 			gtk_do_events();
 			Thread.usleep((ulong) GLib.TimeSpan.MILLISECOND * 100);
 		}
 
-		log_pane.append_lines(task.drain_output());
+		client.stop_watching();
+		client.close();
 
 		set_buttons_sensitive(true);
 		op_running = false;
 
-		if (task.exit_code != 0){
+		if (failed){
 			gtk_messagebox(_("Could not install the recovery environment"),
 				_("See the details below, or /var/log/timeshift-recovery.log"),
 				parent_window, true);
