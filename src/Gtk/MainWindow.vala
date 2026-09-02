@@ -1159,53 +1159,27 @@ class MainWindow : AppWindow{
 			return;
 		}
 
-		{
-			{
-				var bak = selected[0];
+		var bak = selected[0];
 
-				string log_file_name = bak.rsync_log_file;
-				if (view_restore_log){
-					log_file_name = bak.rsync_restore_log_file;;
-				}
+		/* The daemon reads the log wherever it lives.
+		 *
+		 * This used to DOWNLOAD a remote log in full before parsing it locally
+		 * -- a 22 MB file pulled over ssh so that a parser on this side could
+		 * stat paths that do not exist on this side. log.parse takes the
+		 * snapshot's name and reads it in place, so there is nothing to fetch
+		 * and nothing to check for existence here: the daemon is the only
+		 * party that can answer whether the log is there. */
+		string log_name = view_restore_log ? "rsync-log-restore" : "rsync-log";
+		string nominal = view_restore_log
+			? bak.rsync_restore_log_file : bak.rsync_log_file;
 
-				// A remote log has to be fetched before it can be parsed:
-				// rsync's log parser reads it, and derives every item path
-				// from the log's own parent directory, so both sides must
-				// agree on the local copy.
-				if (App.repo.backend.is_remote){
+		this.visible = false;
 
-					string local_log = path_combine(TEMP_DIR,
-						"%s-%s".printf(bak.name, view_restore_log ? "rsync-log-restore" : "rsync-log"));
-
-					gtk_set_busy(true, this);
-					bool fetched = App.repo.backend.download_file(log_file_name, local_log);
-					gtk_set_busy(false, this);
-
-					if (!fetched || !file_exists(local_log)){
-						gtk_messagebox(
-							_("Log not available"),
-							_("Could not fetch the log from the remote location."),
-							this, false);
-						return;
-					}
-
-					log_file_name = local_log;
-				}
-
-				if (file_exists(log_file_name) || file_exists(log_file_name + "-changes")){
-
-					this.visible = false;
-					
-					var win = new RsyncLogWindow(log_file_name);
-					win.set_transient_for(this);
-					win.closed.connect(()=>{
-						this.visible = true;
-					});
-				}
-
-				return;
-			}
-		}
+		var win = new RsyncLogWindow.for_snapshot(bak.name, log_name, nominal);
+		win.set_transient_for(this);
+		win.closed.connect(()=>{
+			this.visible = true;
+		});
 	}
 
 	private void btn_restore_clicked(){

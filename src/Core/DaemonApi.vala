@@ -601,6 +601,13 @@ public class DaemonApi : GLib.Object {
 	 * moving all of it to show a few hundred rows. An empty list means every
 	 * kind.
 	 */
+	/* One page, typed. The raw form below is kept for a caller that wants the
+	 * counts map, which has no fixed shape. */
+	public DaemonLogPage? log_entries_page(string path, int64 offset, int64 limit){
+		var o = log_entries(path, offset, limit, {});
+		return (o == null) ? null : DaemonLogPage.from_wire(o);
+	}
+
 	public Json.Object? log_entries(string path, int64 offset, int64 limit,
 		string[] kinds){
 

@@ -42,7 +42,19 @@ public class RsyncLogWindow : AppWindow {
 	private RsyncLogBox logbox;
 	private string rsync_log_file;
 
-	public RsyncLogWindow(string _rsync_log_file) {
+	/* A snapshot's log, read by the daemon.
+	 *
+	 * snapshot may be empty, which is the restore wizard's case: the log is
+	 * then parsed locally from the path, because it is being written by the
+	 * restore running in this process. */
+	public RsyncLogWindow.for_snapshot(string snapshot, string log_name,
+		string nominal_path) {
+
+		this(nominal_path, snapshot, log_name);
+	}
+
+	public RsyncLogWindow(string _rsync_log_file, string snapshot = "",
+		string log_name = "") {
 
 		log_debug("RsyncLogWindow: RsyncLogWindow()");
 		
@@ -66,7 +78,12 @@ public class RsyncLogWindow : AppWindow {
 		
 		this.visible = true;
 
-		logbox.open_log(rsync_log_file);
+		if (snapshot.length > 0){
+			logbox.open_snapshot_log(snapshot, log_name, rsync_log_file);
+		}
+		else {
+			logbox.open_log(rsync_log_file);
+		}
 
 		log_debug("RsyncLogWindow: RsyncLogWindow(): exit");
 	}

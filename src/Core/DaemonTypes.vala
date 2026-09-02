@@ -548,3 +548,67 @@ public class DaemonRestorePlan : GLib.Object {
 		}
 	}
 }
+
+/* One change from a parsed rsync log.
+ *
+ * The daemon returns a FLAT list of {path, kind}, where the Vala parser built
+ * FileItem objects by stat'ing each path on disk. Flat is the right shape here:
+ * a restore log carries a couple of hundred thousand entries and the view is a
+ * ColumnView, not a tree -- and stat'ing is impossible for a remote repository
+ * anyway, which is why that parser silently called everything a regular file.
+ *
+ * `path` is relative to the transfer root, as rsync itemised it.
+ */
+public class DaemonLogEntry : GLib.Object {
+
+	public string path { get; set; default = ""; }
+
+	/* kind is the daemon's vocabulary, which is the same set of strings the
+	 * Vala parser put in FileItem.file_status: created, deleted, checksum,
+	 * size, timestamp, permissions, owner, group, unchanged. */
+	public string kind { get; set; default = ""; }
+
+	public bool is_dir { get; set; default = false; }
+
+	public static DaemonLogEntry from_wire(Json.Object o){
+		var e = new DaemonLogEntry();
+		e.path   = DaemonClient.wire_string(o, "path", "");
+		e.kind   = DaemonClient.wire_string(o, "kind", "");
+		e.is_dir = DaemonClient.wire_bool(o, "is_dir", false);
+		return e;
+	}
+}
+
+// One page of a parsed log, plus the totals a summary needs.
+public class DaemonLogPage : GLib.Object {
+
+	public string path { get; set; default = ""; }
+	public int total { get; set; default = 0; }
+	public int64 lines { get; set; default = 0; }
+	public int offset { get; set; default = 0; }
+	public bool more { get; set; default = false; }
+
+	public Gee.ArrayList<DaemonLogEntry> entries {
+		get; default = new Gee.ArrayList<DaemonLogEntry>();
+	}
+
+	public static DaemonLogPage from_wire(Json.Object o){
+
+		var p = new DaemonLogPage();
+		p.path   = DaemonClient.wire_string(o, "path", "");
+		p.total  = (int) DaemonClient.wire_int(o, "total", 0);
+		p.lines  = DaemonClient.wire_int(o, "lines", 0);
+		p.offset = (int) DaemonClient.wire_int(o, "offset", 0);
+		p.more   = DaemonClient.wire_bool(o, "more", false);
+
+		if (o.has_member("entries") &&
+			(o.get_member("entries").get_node_type() == Json.NodeType.ARRAY)){
+			foreach (var node in o.get_array_member("entries").get_elements()){
+				if (node.get_node_type() == Json.NodeType.OBJECT){
+					p.entries.add(DaemonLogEntry.from_wire(node.get_object()));
+				}
+			}
+		}
+		return p;
+	}
+}

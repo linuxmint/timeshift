@@ -31,7 +31,7 @@ func TestLogParseRefusesFilesOutsideTheLogDirectory(t *testing.T) {
 		"",
 	}
 	for _, p := range refused {
-		if got, err := d.resolveLogPath(context.Background(), ipc.LogParseParams{Path: p}); err == nil {
+		if got, _, err := d.resolveLogPath(context.Background(), ipc.LogParseParams{Path: p}); err == nil {
 			t.Errorf("resolveLogPath(%q) accepted, resolved to %q", p, got)
 		}
 	}
@@ -42,7 +42,7 @@ func TestLogParseRefusesFilesOutsideTheLogDirectory(t *testing.T) {
 		"/var/log/timeshift/2026-01-01_x.log":  "/var/log/timeshift/2026-01-01_x.log",
 	}
 	for in, want := range accepted {
-		got, err := d.resolveLogPath(context.Background(), ipc.LogParseParams{Path: in})
+		got, _, err := d.resolveLogPath(context.Background(), ipc.LogParseParams{Path: in})
 		if err != nil {
 			t.Errorf("resolveLogPath(%q) was refused: %v", in, err)
 			continue
@@ -57,7 +57,7 @@ func TestLogParseRefusesFilesOutsideTheLogDirectory(t *testing.T) {
 func TestSnapshotLogNameCannotEscape(t *testing.T) {
 	d := &daemon{}
 	for _, name := range []string{"../../../etc/shadow", "..", "a/b", "/etc/shadow"} {
-		_, err := d.resolveLogPath(context.Background(),
+		_, _, err := d.resolveLogPath(context.Background(),
 			ipc.LogParseParams{Snapshot: "2026-01-01_00-00-00", Name: name})
 		if err == nil {
 			t.Errorf("log name %q was accepted", name)

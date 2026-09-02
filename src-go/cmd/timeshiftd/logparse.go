@@ -95,14 +95,20 @@ func (d *daemon) logParse(ctx context.Context, _ *ipc.Conn, params json.RawMessa
 		return nil, err
 	}
 
-	target, err := d.resolveLogPath(ctx, in)
+	target, release, err := d.resolveLogPath(ctx, in)
 	if err != nil {
 		return nil, err
 	}
 
 	job, err := d.queue.Submit(jobs.KindParseLog, func(ctx context.Context, r jobs.Reporter) (jobs.Outcome, error) {
+		if release != nil {
+			defer release()
+		}
 		return d.runLogParse(ctx, r, target)
 	})
+	if err != nil && release != nil {
+		release()
+	}
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeBusy, "%v", err)
 	}
@@ -233,7 +239,7 @@ func (d *daemon) logEntries(_ context.Context, _ *ipc.Conn, params json.RawMessa
  * Symlinks are resolved before the prefix test, because the question is where
  * the target is rather than where the name is.
  */
-func (d *daemon) resolveLogPath(ctx context.Context, in ipc.LogParseParams) (string, error) {
+func (d *daemon) resolveLogPath(ctx context.Context, in ipc.LogParseParams) (string, func(), error) {
 	if in.Snapshot != "" {
 		/* Validate the name BEFORE opening anything. It needs no repository,
 		 * and refusing "../../../etc/shadow" should not depend on whether a
@@ -243,30 +249,67 @@ func (d *daemon) resolveLogPath(ctx context.Context, in ipc.LogParseParams) (str
 			name = "rsync-log"
 		}
 		if name != path.Base(name) || name == "." || name == ".." {
-			return "", ipc.Errf(ipc.CodeBadRequest, "%q is not a log name", name)
+			return "", nil, ipc.Errf(ipc.CodeBadRequest, "%q is not a log name", name)
 		}
 
 		repo, _, _, err := d.openRepoFor(ctx, nil)
 		if err != nil {
-			return "", ipc.Errf(ipc.CodeUnavailable, "%v", err)
+			return "", nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
 		}
 		defer repo.Close()
 
 		snap, err := findSnapshot(ctx, repo, in.Snapshot)
 		if err != nil {
-			return "", err
+			return "", nil, err
 		}
-		/* A remote snapshot's log is not a local file, so it cannot be opened
-		 * here. Saying so beats failing later with "no such file". */
-		if !isLocalPath(snap.Path) {
-			return "", ipc.Errf(ipc.CodeBadRequest,
-				"the log of a remote snapshot cannot be parsed directly; browse the snapshot first")
+		if isLocalPath(snap.Path) {
+			return path.Join(snap.Path, name), nil, nil
 		}
-		return path.Join(snap.Path, name), nil
+
+		/* A remote snapshot's log is not a local file, so mount the snapshot
+		 * and read it through that.
+		 *
+		 * This used to be a refusal telling the caller to "browse the snapshot
+		 * first", which no caller could act on: the only other way in is by
+		 * PATH, and that is confined to /var/log/timeshift, so a browsed
+		 * snapshot's log was still unreachable. The capability was declared
+		 * and had nothing behind it for every remote repository -- which is
+		 * the configuration this refusal was written for.
+		 *
+		 * Mounted as root, not as the caller: nobody browses this, it is read
+		 * by the parse job and released when the job ends. The GUI's old path
+		 * DOWNLOADED the whole log over ssh to parse it locally, so reading it
+		 * through a mount is no more traffic and no more privilege. */
+		mount, err := repo.Browse(ctx, snap.Path, 0, 0)
+		if err != nil {
+			return "", nil, ipc.Errf(ipc.CodeUnavailable,
+				"could not open the remote snapshot to read its log: %v", err)
+		}
+
+		release := func() {
+			if !mount.Mounted {
+				return
+			}
+			/* A fresh handle: the one above is closed by the defer before the
+			 * job runs. Closing an SSHBackend does not tear the multiplexed
+			 * master down, so the mount is unaffected either way. */
+			rp, _, _, err := d.openRepoFor(context.Background(), nil)
+			if err != nil {
+				d.log.Warn("could not reopen the repository to release a log mount",
+					"path", mount.Path, "error", err)
+				return
+			}
+			defer rp.Close()
+			if err := rp.ReleaseBrowse(context.Background(), mount.Path); err != nil {
+				d.log.Warn("could not release the log mount",
+					"path", mount.Path, "error", err)
+			}
+		}
+		return path.Join(mount.Path, name), release, nil
 	}
 
 	if in.Path == "" {
-		return "", ipc.Errf(ipc.CodeBadRequest, "log.parse needs a path or a snapshot")
+		return "", nil, ipc.Errf(ipc.CodeBadRequest, "log.parse needs a path or a snapshot")
 	}
 
 	clean := path.Clean(in.Path)
@@ -274,11 +317,11 @@ func (d *daemon) resolveLogPath(ctx context.Context, in ipc.LogParseParams) (str
 		clean = resolved
 	}
 	if !strings.HasPrefix(clean, logging.Dir+string(os.PathSeparator)) {
-		return "", ipc.Errf(ipc.CodeBadRequest,
+		return "", nil, ipc.Errf(ipc.CodeBadRequest,
 			"%s is not a Timeshift log; only files under %s can be parsed by path",
 			in.Path, logging.Dir)
 	}
-	return clean, nil
+	return clean, nil, nil
 }
 
 // isLocalPath reports whether a snapshot path names something on this machine.

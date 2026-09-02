@@ -97,6 +97,17 @@ public class RsyncLogBox : Gtk.Box {
 	private string rsync_log_file;
 	private Gee.ArrayList<FileItem> loglist;
 
+	/* Set when the log belongs to a SNAPSHOT, which the daemon can read
+	 * wherever it lives -- including a remote repository, where the old path
+	 * downloaded the whole file first just to parse it locally.
+	 *
+	 * Empty for the restore wizard, whose log is written by the restore
+	 * running in this process and does not live under /var/log/timeshift, so
+	 * log.parse would refuse it by path. That caller moves with the restore
+	 * itself. */
+	private string snapshot_name = "";
+	private string snapshot_log_name = "";
+
 	private Gtk.Window window;
 	private bool ui_built = false;
 
@@ -113,6 +124,20 @@ public class RsyncLogBox : Gtk.Box {
 		log_debug("RsyncLogBox: RsyncLogBox()");
 
 		window	= _window;
+	}
+
+	/* Open a SNAPSHOT's log through the daemon.
+	 *
+	 * nominal_path is never opened. It is the log's path in the repository,
+	 * used only to derive the column title and to rebuild each entry's display
+	 * path, so it is fine for it to name a file on the far side of an ssh
+	 * connection. */
+	public void open_snapshot_log(string snapshot, string log_name,
+		string nominal_path){
+
+		snapshot_name = snapshot;
+		snapshot_log_name = log_name;
+		open_log(nominal_path);
 	}
 
 	public void open_log(string _rsync_log_file){
@@ -212,6 +237,38 @@ public class RsyncLogBox : Gtk.Box {
 
 	private void parse_log_file(){
 
+		/* A snapshot's log goes through the daemon. The local parser below is
+		 * still reached by the restore wizard, whose log this process is
+		 * writing as it runs. */
+		if (snapshot_name.length > 0){
+
+			bool ok = parse_log_via_daemon();
+
+			/* No local fallback for a snapshot's log, deliberately.
+			 *
+			 * The path names a file in the REPOSITORY, which for a remote one
+			 * does not exist on this machine at all -- so falling through to
+			 * the local parser would replace a clear failure with an empty
+			 * list and no explanation. */
+			if (!ok){
+				loglist = new Gee.ArrayList<FileItem>();
+				lbl_msg.label = _("The log could not be read.");
+				progressbar.fraction = 0;
+			}
+
+			if (ok){
+				lbl_msg.label = _("Populating list...");
+				gtk_do_events();
+				treeview_refresh();
+			}
+
+			vbox_progress.visible = ok ? false : true;
+			gtk_do_events();
+			vbox_list.visible = ok;
+			hbox_filter.visible = ok;
+			return;
+		}
+
 		try {
 			thread_is_running = true;
 			new Thread<void>.try ("log-file-parser", () => {parse_log_file_thread();});
@@ -250,6 +307,126 @@ public class RsyncLogBox : Gtk.Box {
 		App.task = new RsyncTask();
 		loglist = App.task.parse_log(rsync_log_file);
 		thread_is_running = false;
+	}
+
+	/* Parse a snapshot's log in the daemon and page the result back.
+	 *
+	 * Returns false if the daemon cannot do it, so the caller falls back to
+	 * the local parser -- which is still the only way to read the restore
+	 * wizard's own log.
+	 *
+	 * The entries come back flat and relative. They are turned into FileItems
+	 * carrying the same absolute paths the local parser produced, so
+	 * treeview_refresh() -- which strips that prefix back off, and decides the
+	 * status text and icon -- needs no change at all.
+	 */
+	private bool parse_log_via_daemon(){
+
+		var api = DaemonApi.get_shared();
+		if ((api == null) || (snapshot_name.length == 0)){ return false; }
+
+		string job_id, resolved;
+		if (!api.log_parse(snapshot_name, snapshot_log_name, "",
+			out job_id, out resolved)){
+			log_debug("log.parse refused: %s".printf(api.last_error));
+			return false;
+		}
+
+		/* The parse is a JOB, and the daemon runs one job at a time -- so this
+		 * waits behind a backup if one is running. Say so rather than sitting
+		 * on a still progress bar, which reads as a hang. */
+		lbl_msg.label = _("Waiting for the Timeshift service...");
+		progressbar.pulse();
+		gtk_do_events();
+
+		while (true){
+
+			var job = api.jobs_get(job_id);
+			if (job == null){
+				log_debug("jobs.get failed: %s".printf(api.last_error));
+				return false;
+			}
+
+			string state = DaemonClient.wire_string(job, "state", "");
+			if ((state == "finished") || (state == "failed")
+				|| (state == "cancelled")){
+				if (state != "finished"){
+					log_debug("log.parse ended as %s".printf(state));
+					return false;
+				}
+				break;
+			}
+
+			if (state == "running"){
+				lbl_msg.label = _("Parsing log file...");
+				if (job.has_member("progress") &&
+					(job.get_member("progress").get_node_type() == Json.NodeType.OBJECT)){
+					var pr = job.get_object_member("progress");
+					int64 count = DaemonClient.wire_int(pr, "count", 0);
+					int64 total = DaemonClient.wire_int(pr, "total", 0);
+					if (total > 0){
+						progressbar.fraction = (double) count / (double) total;
+					}
+					else {
+						progressbar.pulse();
+					}
+					string line = DaemonClient.wire_string(pr, "status_line", "");
+					if (line.length > 0){ lbl_msg.label = _("Read") + " " + line; }
+				}
+			}
+
+			sleep(200);
+			gtk_do_events();
+		}
+
+		return load_entries(api, resolved);
+	}
+
+	/* Page the parsed entries back.
+	 *
+	 * Paged rather than fetched whole because a restore log here is 22 MB and
+	 * 222,521 changes: asking for it in one response is a download, not a
+	 * reply. The page size is a compromise between round trips and the size of
+	 * a single JSON object the client has to hold. */
+	private bool load_entries(DaemonApi api, string path){
+
+		const int PAGE = 20000;
+
+		loglist = new Gee.ArrayList<FileItem>();
+		string basepath = "%s/localhost".printf(file_parent(rsync_log_file));
+
+		int offset = 0;
+		while (true){
+
+			var page = api.log_entries_page(path, offset, PAGE);
+			if (page == null){
+				log_debug("log.entries failed: %s".printf(api.last_error));
+				return false;
+			}
+
+			foreach (var entry in page.entries){
+				var item = new FileItem.from_path_and_type(
+					path_combine(basepath, entry.path),
+					entry.is_dir ? FileType.DIRECTORY : FileType.REGULAR);
+				item.file_status = entry.kind;
+				loglist.add(item);
+			}
+
+			lbl_msg.label = _("Read %'d of %'d entries...").printf(
+				loglist.size, page.total);
+			if (page.total > 0){
+				progressbar.fraction = (double) loglist.size / (double) page.total;
+			}
+			gtk_do_events();
+
+			if (!page.more){ break; }
+			offset += page.entries.size;
+
+			// A page that advances nothing would loop forever.
+			if (page.entries.size == 0){ break; }
+		}
+
+		return true;
 	}
 
 	public bool is_running{
