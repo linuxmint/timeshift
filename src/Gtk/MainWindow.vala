@@ -607,18 +607,32 @@ class MainWindow : AppWindow{
 
 		this.close_request.disconnect(on_delete_event); //disconnect this handler
 
-		if (App.task.status == AppStatus.RUNNING){
-			log_error (_("Main window closed by user"));
-			App.task.stop();
+		/* A job belonging to the DAEMON is not stopped here.
+		 *
+		 * That is the whole point of the port: apt waits on a snapshot, and
+		 * closing the window that happens to be watching it must not abandon
+		 * it. Detach and leave it running -- the daemon outlives us. Only work
+		 * running in THIS process is cancelled. */
+		if (DaemonBridge.has_active_job()){
+			if (daemon_bridge != null){
+				daemon_bridge.detach();
+				daemon_bridge = null;
+			}
 		}
+		else {
+			if (App.task.status == AppStatus.RUNNING){
+				log_error (_("Main window closed by user"));
+				App.task.stop();
+			}
 
-		// stop deletion task if running
-		if (App.thread_delete_running){
-			// clear queue
-			App.delete_list.clear();
-			// kill current task
-			if (App.delete_file_task != null){
-				App.delete_file_task.stop(AppStatus.CANCELLED);
+			// stop deletion task if running
+			if (App.thread_delete_running){
+				// clear queue
+				App.delete_list.clear();
+				// kill current task
+				if (App.delete_file_task != null){
+					App.delete_file_task.stop(AppStatus.CANCELLED);
+				}
 			}
 		}
 

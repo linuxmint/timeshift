@@ -94,6 +94,10 @@ class BackupWindow : WizardWindow {
 		return false;
 	}
 
+	// Whether the user has asked for a pause, as opposed to what the mirrored
+	// job last reported. See the button handler below.
+	private bool paused = false;
+
 	private void create_pause_action(){
 
 		btn_pause = new Gtk.Button();
@@ -106,17 +110,32 @@ class BackupWindow : WizardWindow {
 		btn_pause.visible = false;
 		add_header_action(btn_pause, Gtk.PackType.END);
 
+		/* The daemon suspends the process group; App.task.pause() sets a flag
+		 * on an object nobody executes. On a daemon-run snapshot the second
+		 * would leave rsync copying while this button said "Resume".
+		 *
+		 * paused is tracked here rather than read back from App.task, because
+		 * for a daemon job that status is mirrored from the job and does not
+		 * change the instant the button is pressed. */
 		btn_pause.clicked.connect(() => {
-			if (App.task == null){ return; }
-			if (App.task.status == AppStatus.PAUSED){
-				App.task.resume();
+
+			if (paused){
+				if (!DaemonBridge.resume_active()){
+					if (App.task == null){ return; }
+					App.task.resume();
+				}
 				backup_box.resume();
+				paused = false;
 				img_pause.icon_name = "media-playback-pause-symbolic";
 				lbl_pause.label = _("Pause");
 			}
 			else {
-				App.task.pause();
+				if (!DaemonBridge.pause_active()){
+					if (App.task == null){ return; }
+					App.task.pause();
+				}
 				backup_box.pause();
+				paused = true;
 				img_pause.icon_name = "media-playback-start-symbolic";
 				lbl_pause.label = _("Resume");
 			}
@@ -133,7 +152,9 @@ class BackupWindow : WizardWindow {
 
 	protected override void on_cancel(){
 
-		if (App.task != null){
+		/* The daemon's job first: when the snapshot belongs to it, App.task
+		 * is a bag of numbers and stopping it cancels nothing. */
+		if (!DaemonBridge.cancel_active() && (App.task != null)){
 			App.task.stop(AppStatus.CANCELLED);
 		}
 

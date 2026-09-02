@@ -72,6 +72,19 @@ public class DaemonBridge : GLib.Object {
 	 * design is for. */
 	public string job_id { get; private set; default = ""; }
 	public bool running { get; private set; default = false; }
+
+	/* The bridge currently mirroring a job, if any.
+	 *
+	 * A single slot rather than a list, because the daemon runs one mutating
+	 * job at a time -- the same invariant that lets pausableRunner hold one
+	 * process. It exists so the six places that cancel work do not each have
+	 * to be handed a bridge: they ask here, and fall back to the local task
+	 * when nothing is being mirrored.
+	 *
+	 * Without it those places call App.task.stop(), which after the migration
+	 * stops a bag of numbers. The rsync it is meant to be cancelling belongs
+	 * to the daemon and carries on. */
+	private static unowned DaemonBridge? active_bridge = null;
 	public bool success { get; private set; default = false; }
 	public string message { get; private set; default = ""; }
 
@@ -322,9 +335,11 @@ public class DaemonBridge : GLib.Object {
 		running = true;
 		success = false;
 		message = "";
+		active_bridge = this;
 
 		if (!client.watch_job(job_id)){
 			running = false;
+			active_bridge = null;
 			client.close();
 			return false;
 		}
@@ -338,8 +353,61 @@ public class DaemonBridge : GLib.Object {
 	public void detach(){
 		if (!running){ return; }
 		running = false;
+		if (active_bridge == this){ active_bridge = null; }
 		client.stop_watching();
 		client.close();
+	}
+
+	// -----------------------------------------------------------------------
+	// Controlling the job, as opposed to watching it.
+	//
+	// Each returns false when there is nothing being mirrored, which is the
+	// caller's signal to act on the local task instead. During the migration
+	// both are real: a restore still runs in this process.
+
+	/* Pause SUSPENDS the work: the daemon sends SIGSTOP to the job's process
+	 * group. App.task.pause() sets a flag on an object nobody executes, so on
+	 * a daemon job it would leave rsync copying while the window said Paused.
+	 *
+	 * A paused job KEEPS the repository write lock -- the only correct answer
+	 * mid-write, and worth a client saying out loud. */
+	public static bool pause_active(){
+		return act((api, id) => api.jobs_pause(id));
+	}
+
+	public static bool resume_active(){
+		return act((api, id) => api.jobs_resume(id));
+	}
+
+	public static bool cancel_active(){
+		return act((api, id) => api.jobs_cancel(id));
+	}
+
+	// True when a daemon job is being mirrored, so a window can label its
+	// buttons for work it does not own.
+	public static bool has_active_job(){
+		return (active_bridge != null) && active_bridge.running
+			&& (active_bridge.job_id.length > 0);
+	}
+
+	private delegate bool JobAction(DaemonApi api, string job_id);
+
+	private static bool act(JobAction action){
+
+		if (!has_active_job()){ return false; }
+
+		var api = DaemonApi.get_shared();
+		if (api == null){ return false; }
+
+		string id = active_bridge.job_id;
+		if (!action(api, id)){
+			log_debug("DaemonBridge: job control failed for %s: %s".printf(
+				id, api.last_error));
+			/* Still true: the job IS the daemon's, so falling back to
+			 * stopping the local bag of numbers would be worse than
+			 * reporting nothing happened. */
+		}
+		return true;
 	}
 
 	private void on_progress(string id, double percent, int64 count,

@@ -121,7 +121,9 @@ class SetupWizardWindow : WizardWindow {
 	protected override void on_cancel(){
 
 		if (App.task != null){
-			App.task.stop(AppStatus.CANCELLED);
+			if (!DaemonBridge.cancel_active()){
+				App.task.stop(AppStatus.CANCELLED);
+			}
 		}
 
 		close_wizard();

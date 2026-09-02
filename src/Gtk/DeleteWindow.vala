@@ -112,7 +112,9 @@ class DeleteWindow : WizardWindow {
 
 		// kill current task
 		if (App.delete_file_task != null){
-			App.delete_file_task.stop(AppStatus.CANCELLED);
+			if (!DaemonBridge.cancel_active()){
+				App.delete_file_task.stop(AppStatus.CANCELLED);
+			}
 		}
 
 		close_wizard();
