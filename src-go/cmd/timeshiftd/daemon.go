@@ -45,6 +45,14 @@ type daemon struct {
 	 */
 	live bool
 
+	/* scan reads the system files the exclude list is derived from.
+	 *
+	 * A field for the same reason as live: the zero value reads the real
+	 * machine, and a test points it at a fake one. Without that seam the only
+	 * way to check the exclude list is to have an eCryptfs home and a foreign
+	 * mount on the machine running the tests. */
+	scan excludeScanner
+
 	mu  sync.RWMutex
 	cfg config.Config
 }
@@ -684,11 +692,12 @@ func (d *daemon) runCreate(ctx context.Context, r jobs.Reporter, tags []string, 
 
 // buildExcludes assembles the filter list from the configuration and the
 // system.
+//
+// The scan is what makes the second half of that sentence true: see
+// excludescan.go. It ran with an empty machine half until then.
 func (d *daemon) buildExcludes() []string {
 	cfg := d.config()
-	return tsengine.BuildBackupExcludes(tsengine.ExcludeInput{
-		UserPatterns: cfg.Exclude,
-	})
+	return tsengine.BuildBackupExcludes(d.scan.input(cfg.Exclude))
 }
 
 /* runDelete is the body of a delete job, shared by the IPC method and by
