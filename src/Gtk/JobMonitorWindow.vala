@@ -139,6 +139,18 @@ public class JobMonitorWindow : AppWindow {
 			}
 		});
 
+		/* The counters arrive on their own signal, not on job_progress.
+		 *
+		 * They are ten numbers only a progress page wants, so widening
+		 * job_progress would make every other subscriber carry them. Missing
+		 * this connection is why the whole "File and directory counts" panel
+		 * rendered as captions with nothing beside them: the daemon sent the
+		 * counters on every progress tick and this window threw them away. */
+		client.job_counters.connect((id, counters) => {
+			if (id != job_id){ return; }
+			show_counts(counters);
+		});
+
 		client.job_finished.connect((id, outcome, error) => {
 			if (id != job_id){ return; }
 			on_job_finished(outcome, error);
@@ -204,6 +216,31 @@ public class JobMonitorWindow : AppWindow {
 		client.stop_watching();
 		notify_closed();
 		return false;
+	}
+
+	/* Writes the ten count labels.
+	 *
+	 * The keys are the daemon's, and they are the same ten the rsync itemise
+	 * parser produces. A key that is absent reads as zero rather than blank:
+	 * "0" is a fact about the transfer, an empty label is a fact about this
+	 * window, and only the first is worth showing a person. */
+	private void show_counts(Json.Object c){
+
+		progress.lbl_unchanged.label   = count_text(c, "unchanged");
+		progress.lbl_created.label     = count_text(c, "created");
+		progress.lbl_deleted.label     = count_text(c, "deleted");
+		progress.lbl_modified.label    = count_text(c, "modified");
+
+		progress.lbl_checksum.label    = count_text(c, "checksum");
+		progress.lbl_size.label        = count_text(c, "size");
+		progress.lbl_timestamp.label   = count_text(c, "timestamp");
+		progress.lbl_permissions.label = count_text(c, "permissions");
+		progress.lbl_owner.label       = count_text(c, "owner");
+		progress.lbl_group.label       = count_text(c, "group");
+	}
+
+	private string count_text(Json.Object c, string key){
+		return "%'d".printf((int) DaemonClient.wire_int(c, key, 0));
 	}
 
 	// format_duration renders seconds the way the progress line reads best.
