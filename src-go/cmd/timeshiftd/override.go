@@ -83,9 +83,17 @@ func applyOverride(ctx context.Context, runner block.Runner, cfg config.Config, 
 	return cfg, changed, nil
 }
 
-// openRepoOverridden opens the repository a request asked for, or the
-// configured one when it asked for nothing.
-func (d *daemon) openRepoOverridden(ctx context.Context, ov *ipc.LocationOverride) (engines.Repository, string, string, error) {
+/* openRepoFor opens the repository a request asked for, or the configured one
+ * when it asked for nothing.
+ *
+ * There is deliberately no openRepo() beside it. There was, and it is how the
+ * override came to be honoured by two read methods and no writing ones: a
+ * handler that simply called openRepo(ctx) looked complete, read correctly, and
+ * silently ignored the location the caller had named. Every call site now has
+ * to say which it means, and the eight that mean "the configured one" say nil
+ * where a reviewer can see it.
+ */
+func (d *daemon) openRepoFor(ctx context.Context, ov *ipc.LocationOverride) (engines.Repository, string, string, error) {
 	cfg, changed, err := applyOverride(ctx, d.runner, d.config(), ov)
 	if err != nil {
 		return nil, "", "", err

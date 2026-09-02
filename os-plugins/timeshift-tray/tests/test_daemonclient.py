@@ -18,6 +18,7 @@ from gi.repository import Gio, GLib  # noqa: E402
 from fake_daemon import FakeDaemon  # noqa: E402
 from timeshift_tray import daemonclient  # noqa: E402
 from timeshift_tray.model import ConnState  # noqa: E402
+from timeshift_tray.constants import PROTOCOL_VERSION
 
 
 class LoopHarness(unittest.TestCase):
@@ -92,9 +93,9 @@ class HandshakeTest(LoopHarness):
         another protocol does not fail -- it answers confidently about
         something else.
         """
-        self.start(FakeDaemon(protocol_version=3))
+        self.start(FakeDaemon(protocol_version=PROTOCOL_VERSION + 1))
         self.run_until(lambda: ConnState.PROTOCOL_MISMATCH in self.states)
-        self.assertEqual(self.client.daemon_protocol, 3)
+        self.assertEqual(self.client.daemon_protocol, PROTOCOL_VERSION + 1)
         self.assertNotIn(ConnState.READY, self.states)
 
     def test_subscribing_to_everything_answers_with_nothing(self):

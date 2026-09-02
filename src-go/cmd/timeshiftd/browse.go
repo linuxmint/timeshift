@@ -35,7 +35,7 @@ func (d *daemon) snapshotsBrowse(ctx context.Context, c *ipc.Conn, params json.R
 		return nil, ipc.Errf(ipc.CodeBadRequest, "browse needs a snapshot name")
 	}
 
-	repo, _, _, err := d.openRepo(ctx)
+	repo, _, _, err := d.openRepoFor(ctx, nil)
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
 	}

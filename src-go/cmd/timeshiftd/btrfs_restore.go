@@ -89,7 +89,7 @@ func (d *daemon) buildBtrfsRestorePlan(ctx context.Context, in ipc.RestoreParams
 		return nil, deps, ipc.Errf(ipc.CodeBadRequest, "no snapshot named")
 	}
 
-	repo, _, _, err := d.openRepo(ctx)
+	repo, _, _, err := d.openRepoFor(ctx, nil)
 	if err != nil {
 		return nil, deps, ipc.Errf(ipc.CodeUnavailable, "%v", err)
 	}

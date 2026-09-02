@@ -204,7 +204,7 @@ func (d *daemon) logEntries(_ context.Context, _ *ipc.Conn, params json.RawMessa
 
 	page := make([]ipc.LogEntry, 0, end-start)
 	for _, c := range matched[start:end] {
-		page = append(page, ipc.LogEntry{Path: c.Path, Kind: string(c.Kind)})
+		page = append(page, ipc.LogEntry{Path: c.Path, Kind: string(c.Kind), IsDir: c.IsDir})
 	}
 
 	counts := map[string]int{}
@@ -246,7 +246,7 @@ func (d *daemon) resolveLogPath(ctx context.Context, in ipc.LogParseParams) (str
 			return "", ipc.Errf(ipc.CodeBadRequest, "%q is not a log name", name)
 		}
 
-		repo, _, _, err := d.openRepo(ctx)
+		repo, _, _, err := d.openRepoFor(ctx, nil)
 		if err != nil {
 			return "", ipc.Errf(ipc.CodeUnavailable, "%v", err)
 		}

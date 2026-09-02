@@ -158,12 +158,34 @@ func run(args []string) int {
 	ctx := context.Background()
 	runner := sysexec.NewSimple(sysexec.New(nil))
 
+	/* A location override applies to the verbs that open a repository, and to
+	 * no others. Refuse it anywhere else rather than accept and ignore it.
+	 *
+	 * Ignoring is what version 2 did, and it was not harmless: the flag is
+	 * documented as applying to the run, so somebody who passes it to
+	 * --restore is entitled to believe the restore came from the repository
+	 * they named. Saying no is the only answer that cannot be misread. */
+	if !override.Empty() && !overrideApplies(mode) {
+		fmt.Fprintf(os.Stderr,
+			"timeshift: the location options do not apply to --%s\n"+
+				"They are honoured by --list, --list-devices, --create, --estimate,\n"+
+				"--delete, --delete-all and --setup-ssh-key.\n", mode)
+		return 1
+	}
+
 	switch mode {
 	case "create":
 		/* AttachExisting: two apt frontends racing to snapshot should watch one
-		 * job rather than take two snapshots of the same moment. */
+		 * job rather than take two snapshots of the same moment.
+		 *
+		 * Not when an override was given: the running job it would attach to
+		 * may be writing somewhere else entirely, and reporting it as this
+		 * request's snapshot would be the same lie in a new place. */
+		ov := overridePtr(override)
 		return runCreate(socket, ipc.CreateParams{
-			Tags: tags, Comments: comments, AttachExisting: true,
+			Tags: tags, Comments: comments,
+			AttachExisting: ov == nil,
+			Location:       ov,
 		}, scripted)
 
 	case "watch":
@@ -173,7 +195,7 @@ func run(args []string) int {
 		return runCancel(socket, jobID)
 
 	case "estimate":
-		return runEstimate(socket, scripted)
+		return runEstimate(socket, overridePtr(override), scripted)
 
 	case "restore":
 		restoreOpts.Scripted = scripted
@@ -193,7 +215,7 @@ func run(args []string) int {
 			fmt.Fprintln(os.Stderr, "timeshift: --delete needs --snapshot NAME")
 			return 1
 		}
-		return runDelete(socket, names, scripted)
+		return runDelete(socket, names, overridePtr(override), scripted)
 
 	case "delete-all":
 		return runDeleteAll(socket, overridePtr(override), scripted, restoreOpts.Yes)

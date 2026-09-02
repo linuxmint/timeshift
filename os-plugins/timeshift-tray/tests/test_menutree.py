@@ -7,7 +7,7 @@ import json
 import os
 import unittest
 
-from timeshift_tray import menutree, model
+from timeshift_tray import constants, menutree, model
 
 DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 NOW = datetime.datetime(2026, 9, 1, 12, 0, tzinfo=datetime.timezone.utc)
@@ -88,13 +88,17 @@ class ShapeTest(unittest.TestCase):
         self.assertIsNone(find(root, "action.grant"))
 
     def test_protocol_mismatch_names_both_versions(self):
+        # Relative to the applet's own version, never a literal: hard-coding
+        # the current one makes this fail on the next protocol bump, which is
+        # exactly when the mismatch message matters most.
+        other = constants.PROTOCOL_VERSION + 1
         state = model.TrayState()
         state.conn = model.ConnState.PROTOCOL_MISMATCH
-        state.daemon_protocol = 3
+        state.daemon_protocol = other
         root = build(state)
         detail = find(root, "status.detail").label
-        self.assertIn("3", detail)
-        self.assertIn("2", detail)
+        self.assertIn(str(other), detail)
+        self.assertIn(str(constants.PROTOCOL_VERSION), detail)
 
     def test_a_live_session_disables_create_with_a_reason(self):
         state = ready_state()

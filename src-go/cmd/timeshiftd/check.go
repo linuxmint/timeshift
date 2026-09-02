@@ -42,7 +42,7 @@ import (
 
 // scheduledCheck runs one check and returns a one-line summary for the status.
 func (d *daemon) scheduledCheck(ctx context.Context, trigger string) (string, error) {
-	repo, _, _, err := d.openRepo(ctx)
+	repo, _, _, err := d.openRepoFor(ctx, nil)
 	if err != nil {
 		return "", fmt.Errorf("the snapshot location is not available: %w", err)
 	}
@@ -94,7 +94,10 @@ func (d *daemon) scheduledCheck(ctx context.Context, trigger string) (string, er
 
 	if len(newTags) > 0 {
 		job, err := d.queue.Submit(jobs.KindCreate, func(ctx context.Context, r jobs.Reporter) (jobs.Outcome, error) {
-			return d.runCreate(ctx, r, newTags, "", false)
+			/* nil: the scheduler always works on the CONFIGURED repository.
+			 * A per-request override belongs to the request that carried it,
+			 * and a scheduled snapshot has no requester. */
+			return d.runCreate(ctx, r, newTags, "", false, nil)
 		})
 		if err != nil {
 			return "", fmt.Errorf("could not queue the scheduled snapshot: %w", err)
@@ -139,7 +142,7 @@ func (d *daemon) scheduledCheck(ctx context.Context, trigger string) (string, er
  * only be regretted.
  */
 func (d *daemon) applyRetention(ctx context.Context) (int, error) {
-	repo, _, _, err := d.openRepo(ctx)
+	repo, _, _, err := d.openRepoFor(ctx, nil)
 	if err != nil {
 		return 0, err
 	}
@@ -176,7 +179,9 @@ func (d *daemon) applyRetention(ctx context.Context) (int, error) {
 	}
 
 	job, err := d.queue.Submit(jobs.KindDelete, func(ctx context.Context, r jobs.Reporter) (jobs.Outcome, error) {
-		return d.runDelete(ctx, r, deletions, false)
+		// nil for the same reason as the create above: retention is the
+		// configured repository's own housekeeping.
+		return d.runDelete(ctx, r, deletions, false, nil)
 	})
 	if err != nil {
 		return 0, err

@@ -85,10 +85,6 @@ func (d *daemon) config() config.Config {
 // rather than the daemon holding one open. A repository on a removable disk or
 // at the end of an SSH link is not a resource worth keeping warm across hours
 // of idleness, and a stale handle is worse than a new one.
-func (d *daemon) openRepo(ctx context.Context) (engines.Repository, string, string, error) {
-	return d.openRepoWith(ctx, d.config())
-}
-
 /* openRepoWith opens a repository described by an arbitrary config.
  *
  * The split exists for the CLI's per-run location flags -- --snapshot-device,
@@ -383,7 +379,7 @@ func (d *daemon) repoStatus(ctx context.Context, _ *ipc.Conn, params json.RawMes
 		}
 	}
 
-	repo, deviceName, deviceUUID, err := d.openRepoOverridden(ctx, in.Location)
+	repo, deviceName, deviceUUID, err := d.openRepoFor(ctx, in.Location)
 	if err != nil {
 		return nil, err
 	}
@@ -425,7 +421,7 @@ func (d *daemon) snapshotsList(ctx context.Context, _ *ipc.Conn, params json.Raw
 		}
 	}
 
-	repo, _, _, err := d.openRepoOverridden(ctx, in.Location)
+	repo, _, _, err := d.openRepoFor(ctx, in.Location)
 	if err != nil {
 		return nil, err
 	}
@@ -584,7 +580,7 @@ func (d *daemon) snapshotCreate(ctx context.Context, _ *ipc.Conn, params json.Ra
 	}
 
 	job, err := d.queue.Submit(jobs.KindCreate, func(ctx context.Context, r jobs.Reporter) (jobs.Outcome, error) {
-		return d.runCreate(ctx, r, tags, in.Comments, false)
+		return d.runCreate(ctx, r, tags, in.Comments, false, in.Location)
 	})
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeBusy, "%v", err)
@@ -592,9 +588,14 @@ func (d *daemon) snapshotCreate(ctx context.Context, _ *ipc.Conn, params json.Ra
 	return ipc.JobRef{Job: job.ID}, nil
 }
 
-func (d *daemon) estimateRun(ctx context.Context, _ *ipc.Conn, _ json.RawMessage) (any, error) {
+func (d *daemon) estimateRun(ctx context.Context, _ *ipc.Conn, params json.RawMessage) (any, error) {
+	in, err := decode[ipc.EstimateParams](params)
+	if err != nil {
+		return nil, err
+	}
+
 	job, err := d.queue.Submit(jobs.KindEstimate, func(ctx context.Context, r jobs.Reporter) (jobs.Outcome, error) {
-		repo, _, _, err := d.openRepo(ctx)
+		repo, _, _, err := d.openRepoFor(ctx, in.Location)
 		if err != nil {
 			return jobs.OutcomeFailed, err
 		}
@@ -642,7 +643,7 @@ func (d *daemon) snapshotDelete(ctx context.Context, _ *ipc.Conn, params json.Ra
 	}
 
 	job, err := d.queue.Submit(jobs.KindDelete, func(ctx context.Context, r jobs.Reporter) (jobs.Outcome, error) {
-		return d.runDelete(ctx, r, in.Names, true)
+		return d.runDelete(ctx, r, in.Names, true, in.Location)
 	})
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeBusy, "%v", err)
@@ -651,8 +652,8 @@ func (d *daemon) snapshotDelete(ctx context.Context, _ *ipc.Conn, params json.Ra
 }
 
 // runCreate is the body of a create job.
-func (d *daemon) runCreate(ctx context.Context, r jobs.Reporter, tags []string, comments string, dryRun bool) (jobs.Outcome, error) {
-	repo, _, _, err := d.openRepo(ctx)
+func (d *daemon) runCreate(ctx context.Context, r jobs.Reporter, tags []string, comments string, dryRun bool, ov *ipc.LocationOverride) (jobs.Outcome, error) {
+	repo, _, _, err := d.openRepoFor(ctx, ov)
 	if err != nil {
 		return jobs.OutcomeFailed, err
 	}
@@ -706,8 +707,8 @@ func (d *daemon) buildExcludes() []string {
  * explicit means a person named these snapshots. Retention did not, and an
  * automatic deletion may not remove a snapshot that merely reads as invalid:
  * a dropped link makes every remote snapshot read that way. */
-func (d *daemon) runDelete(ctx context.Context, r jobs.Reporter, names []string, explicit bool) (jobs.Outcome, error) {
-	repo, _, _, err := d.openRepo(ctx)
+func (d *daemon) runDelete(ctx context.Context, r jobs.Reporter, names []string, explicit bool, ov *ipc.LocationOverride) (jobs.Outcome, error) {
+	repo, _, _, err := d.openRepoFor(ctx, ov)
 	if err != nil {
 		return jobs.OutcomeFailed, err
 	}

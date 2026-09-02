@@ -19,6 +19,11 @@ def corpus(name):
 class SystemInfoTest(unittest.TestCase):
     def test_real_reply(self):
         info = model.SystemInfo.from_wire(corpus("system_info.json"))
+        # 2 is a LITERAL on purpose: this is a captured reply from a real
+        # daemon, and the test's job is to prove the parser reads what was
+        # actually sent. Asserting the applet's current version instead
+        # would make the corpus need editing on every protocol bump, which
+        # is the opposite of what a recorded corpus is for.
         self.assertEqual(info.protocol_version, 2)
         self.assertEqual(info.engine, "timeshift")
         self.assertFalse(info.live)

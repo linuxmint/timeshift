@@ -59,7 +59,14 @@ func runDeleteAll(socket string, ov *ipc.LocationOverride, scripted, yes bool) i
 		}
 	}
 
-	return runDelete(socket, names, scripted)
+	/* The SAME override the listing used.
+	 *
+	 * This is the line the whole location-override bug came down to: the list
+	 * above was read from the overridden repository and the confirmation named
+	 * ITS snapshots, while the delete went to the configured one. Snapshots are
+	 * named by timestamp, so those names commonly exist in both places -- the
+	 * delete did not fail, it removed different snapshots. */
+	return runDelete(socket, names, ov, scripted)
 }
 
 /* runSetupSSHKey provisions key-based login, showing the host fingerprint
@@ -277,4 +284,26 @@ func overridePtr(o ipc.LocationOverride) *ipc.LocationOverride {
 		return nil
 	}
 	return &o
+}
+
+/* overrideApplies reports whether a mode opens a repository the location flags
+ * can redirect.
+ *
+ * An allow-list, not a deny-list: a mode added later gets a refusal until
+ * somebody decides what an override should mean for it, which is the safe
+ * direction. The alternative failed silently for a whole protocol version.
+ *
+ * --restore is absent deliberately rather than accidentally. Restoring FROM a
+ * repository other than the configured one is a reasonable thing to want, and
+ * the plan and the executor could carry it, but nothing on that path reads an
+ * override today -- so it is refused until it is implemented, rather than
+ * accepted and quietly ignored.
+ */
+func overrideApplies(mode string) bool {
+	switch mode {
+	case "list-snapshots", "list-devices", "create", "estimate",
+		"delete", "delete-all", "setup-ssh-key":
+		return true
+	}
+	return false
 }

@@ -12,6 +12,7 @@ import datetime
 
 from timeshift_tray import ipc
 from timeshift_tray.model import ConnState
+from timeshift_tray.constants import PROTOCOL_VERSION
 
 
 class FakeClock:
@@ -93,7 +94,7 @@ class FakeClient:
         self.stopped = False
         self.retried = 0
         self.state = ConnState.STARTING
-        self.system = {"protocol_version": 2, "version": "test"}
+        self.system = {"protocol_version": PROTOCOL_VERSION, "version": "test"}
         self.daemon_protocol = 2
 
     def start(self):

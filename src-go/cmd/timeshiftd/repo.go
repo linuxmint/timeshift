@@ -161,7 +161,7 @@ func (d *daemon) repoSSHTest(ctx context.Context, _ *ipc.Conn, params json.RawMe
  * exposes the same escape hatch to a person watching the GUI.
  */
 func (d *daemon) repoDropMaster(ctx context.Context, _ *ipc.Conn, _ json.RawMessage) (any, error) {
-	repo, _, _, err := d.openRepo(ctx)
+	repo, _, _, err := d.openRepoFor(ctx, nil)
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
 	}

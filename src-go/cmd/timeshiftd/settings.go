@@ -92,7 +92,7 @@ func (d *daemon) snapshotsUpdate(ctx context.Context, _ *ipc.Conn, params json.R
 		return nil, ipc.Errf(ipc.CodeBadRequest, "no snapshot named")
 	}
 
-	repo, _, _, err := d.openRepo(ctx)
+	repo, _, _, err := d.openRepoFor(ctx, nil)
 	if err != nil {
 		return nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
 	}

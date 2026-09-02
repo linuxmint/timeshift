@@ -22,7 +22,7 @@ RUN_DIR = "/run/timeshift"
 # does (cmd/timeshift/jobs.go): a daemon speaking anything else is refused
 # rather than half-understood, because JSON ignores fields it does not know and
 # a partial understanding is indistinguishable from a working one.
-PROTOCOL_VERSION = 2
+PROTOCOL_VERSION = 3
 
 # The group whose members may call the read-only methods.
 GROUP = "timeshift"

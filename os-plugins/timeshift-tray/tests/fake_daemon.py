@@ -13,6 +13,8 @@ import socket
 import tempfile
 import threading
 
+from timeshift_tray.constants import PROTOCOL_VERSION
+
 
 class FakeDaemon:
     """Answers methods from a table and can be told to misbehave.
@@ -21,11 +23,15 @@ class FakeDaemon:
     Anything not in the table gets an unknown_method error.
     """
 
-    def __init__(self, responses=None, protocol_version=2, hang_methods=(),
+    def __init__(self, responses=None, protocol_version=None, hang_methods=(),
                  close_after=None, error_methods=()):
         self.responses = dict(responses or {})
         self.error_methods = set(error_methods)
-        self.protocol_version = protocol_version
+        # The applet's own version by default. A literal here means every
+        # test in the suite fails on the next protocol bump for a reason
+        # that has nothing to do with what it is testing.
+        self.protocol_version = (PROTOCOL_VERSION if protocol_version is None
+                                 else protocol_version)
         self.hang_methods = set(hang_methods)
         self.close_after = close_after      # close the connection after N lines
         self.requests = []                  # (method, params), in order

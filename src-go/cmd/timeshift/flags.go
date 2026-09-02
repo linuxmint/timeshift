@@ -89,7 +89,7 @@ type flagSpec struct {
 
 // sections, in the order --help prints them.
 const (
-	sectLocation = "Location (for this run only; nothing is saved):"
+	sectLocation = "Location, for --list, --create, --estimate, --delete and\n--delete-all only (this run only; nothing is saved):"
 	sectRemote   = "Remote setup:"
 	sectRecovery = "Recovery environment:"
 	sectGlobal   = "Global:"

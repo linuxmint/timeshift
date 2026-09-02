@@ -38,8 +38,23 @@ const Group = "timeshift"
  * CONFIGURED repository instead -- and for `--delete-all --snapshot-device X`
  * that means listing and deleting from the wrong place with no error at all.
  * A field a client depends on being understood needs a version behind it.
+ *
+ * 3 made that true. Version 2 declared the override and honoured it in exactly
+ * two READ methods, repo.status and snapshots.list. Every mutating verb --
+ * create, delete, estimate -- opened the CONFIGURED repository regardless,
+ * because the field was never added to their params at all. So the very
+ * scenario the paragraph above describes was live in version 2:
+ * `--delete-all --snapshot-device X` listed X, asked the operator to confirm
+ * X's snapshots by name, and then deleted those names from the configured
+ * repository. CreateParams.Location and DeleteParams.Location existed as
+ * strings the daemon never read, which is worse than absent -- a client could
+ * set one and be silently ignored.
+ *
+ * The bump is what turns the upgrade window from silent into loud: a new CLI
+ * that sends an override to an old daemon still labelled 2 would be ignored,
+ * and ignored here means writing to the wrong repository. Both refuse instead.
  */
-const ProtocolVersion = 2
+const ProtocolVersion = 3
 
 // Request is a call from a client.
 type Request struct {
@@ -167,8 +182,12 @@ type CreateParams struct {
 	// command line here.
 	Comments string `json:"comments,omitempty"`
 
-	// Location names which configured repository to use. Empty is "default".
-	Location string `json:"location,omitempty"`
+	/* Location points this snapshot at a repository other than the configured
+	 * one, for this request only.
+	 *
+	 * It was a string naming "which configured repository", and nothing ever
+	 * read it. */
+	Location *LocationOverride `json:"location,omitempty"`
 
 	// AttachExisting returns the running create's job id instead of queueing a
 	// second one. This is what lets two apt frontends racing to snapshot end
@@ -187,8 +206,22 @@ type JobRef struct {
 // DeleteParams is snapshot.delete's input.
 type DeleteParams struct {
 	// Names are snapshot directory names.
-	Names    []string `json:"names"`
-	Location string   `json:"location,omitempty"`
+	Names []string `json:"names"`
+
+	/* Location must name the SAME repository the names were listed from.
+	 *
+	 * Snapshots are named by timestamp, so the same name can exist in two
+	 * repositories. Deleting by name against the wrong one is not a no-op --
+	 * it deletes a different snapshot that happens to share a name. */
+	Location *LocationOverride `json:"location,omitempty"`
+}
+
+// EstimateParams may point at a repository other than the configured one.
+//
+// The measurement is of the system, not of the repository, but the engine that
+// performs it belongs to a repository -- so which one is opened still matters.
+type EstimateParams struct {
+	Location *LocationOverride `json:"location,omitempty"`
 }
 
 // SubscribeParams is jobs.subscribe's input.
@@ -485,6 +518,12 @@ type LogEntriesParams struct {
 type LogEntry struct {
 	Path string `json:"path"`
 	Kind string `json:"kind"`
+
+	/* IsDir is rsync's itemise type column. A client needs it to drop
+	 * directories from a dry run, where every parent of every changed file is
+	 * listed and they outnumber the changes. Additive: absent means false,
+	 * which is what a client saw before the field existed. */
+	IsDir bool `json:"is_dir,omitempty"`
 }
 
 // LogEntriesResult is a page, plus the totals a summary needs.

@@ -278,7 +278,7 @@ func runWatch(socket, jobID string, scripted bool) int {
 }
 
 // runDelete removes snapshots by name.
-func runDelete(socket string, names []string, scripted bool) int {
+func runDelete(socket string, names []string, ov *ipc.LocationOverride, scripted bool) int {
 	c, err := connect(socket)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
@@ -287,7 +287,7 @@ func runDelete(socket string, names []string, scripted bool) int {
 	defer c.Close()
 
 	var ref ipc.JobRef
-	if err := c.Call(ipc.MethodSnapshotDelete, ipc.DeleteParams{Names: names}, &ref); err != nil {
+	if err := c.Call(ipc.MethodSnapshotDelete, ipc.DeleteParams{Names: names, Location: ov}, &ref); err != nil {
 		fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
 		return 1
 	}
@@ -304,7 +304,7 @@ func runDelete(socket string, names []string, scripted bool) int {
 
 // runEstimate measures the system, which is also the progress denominator for
 // the first backup.
-func runEstimate(socket string, scripted bool) int {
+func runEstimate(socket string, ov *ipc.LocationOverride, scripted bool) int {
 	c, err := connect(socket)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
@@ -313,7 +313,7 @@ func runEstimate(socket string, scripted bool) int {
 	defer c.Close()
 
 	var ref ipc.JobRef
-	if err := c.Call(ipc.MethodEstimateRun, nil, &ref); err != nil {
+	if err := c.Call(ipc.MethodEstimateRun, ipc.EstimateParams{Location: ov}, &ref); err != nil {
 		fmt.Fprintf(os.Stderr, "timeshift: %v\n", err)
 		return 1
 	}
