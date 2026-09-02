@@ -138,15 +138,19 @@ class RestoreBox : RestoreProgressBox {
 			});
 		}
 		else {
+			/* No local restore behind this any more.
+			 *
+			 * The daemon path is the one that has been through a VM restore of
+			 * the running system; the core below it never was, in this shape.
+			 * Keeping an untested second implementation as the fallback for
+			 * the most destructive operation in the program is the wrong way
+			 * round -- a refusal is recoverable, a restore that goes wrong is
+			 * not. */
 			bridge = null;
-
-			try {
-				thread_is_running = true;
-				new Thread<void>.try ("restore", () => {restore_thread();});
-			}
-			catch (Error e) {
-				log_error (e.message);
-			}
+			thread_is_running = false;
+			App.restore_outcome = Main.RestoreOutcome.FAILED;
+			App.restore_fail(_("The Timeshift service is not available"));
+			return false;
 		}
 
 		//string last_message = "";
@@ -195,17 +199,13 @@ class RestoreBox : RestoreProgressBox {
 				LauncherEntry.set_progress((int)(fraction * 100.0));
 			}
 
-			/* A dropped link must not look like a hang. While the script is
-			 * waiting for the snapshot location to answer, say so instead of
-			 * leaving the last progress line frozen on screen -- that stale
-			 * frame is exactly what makes a working retry look like a crash. */
-			var rtask = App.restore_script_task;
-			if ((rtask != null) && (rtask.reconnect_status.length > 0)){
-				view.lbl_msg.label = reconnect_message(rtask);
-			}
-			else {
-				view.lbl_msg.label = App.progress_text;
-			}
+			/* The reconnect banner went with the local restore.
+			 *
+			 * It read RestoreScriptTask.reconnect_status, which only the
+			 * script this process used to run ever set. The daemon reports a
+			 * retry through the job's own status line, which is what
+			 * App.progress_text now carries. */
+			view.lbl_msg.label = App.progress_text;
 
 			view.update_counts(App.task);
 
@@ -254,52 +254,6 @@ class RestoreBox : RestoreProgressBox {
 		return (App.restore_outcome != Main.RestoreOutcome.FAILED);
 	}
 
-	/* What the restore is waiting for, and for how long.
-	 *
-	 * The old banner was a fixed "Connection lost - reconnecting (3)", which
-	 * looks exactly like a hang: no way to tell a working retry from a stuck
-	 * one, and nothing to say whether the work already done is safe. */
-	private string reconnect_message(RestoreScriptTask task){
-
-		/* One whole msgid; the parenthetical detail is data, assembled first. */
-		string detail = task.reconnect_status;
-
-		if (task.reconnect_since != null){
-
-			var elapsed = (int) (new DateTime.now_local().difference(task.reconnect_since)
-				/ GLib.TimeSpan.SECOND);
-
-			if (elapsed > 0){
-				detail += ", %s".printf(format_duration_short(elapsed));
-			}
-		}
-
-		string msg = _("Connection lost - reconnecting (attempt %s)").printf(detail);
-
-		string meaning = App.rsync_exit_meaning_public(task.reconnect_code);
-		if (meaning.length > 0){
-			msg += " - " + meaning;
-		}
-
-		// cancelling here is safe, and that is not otherwise obvious
-		msg += "\n" + _("The transfer resumes where it stopped; nothing already copied is lost.");
-
-		return msg;
-	}
-
-	/* Deliberately untranslated: "5m 12s" is technical notation, and a bare
-	 * format string makes a meaningless msgid. */
-	private string format_duration_short(int seconds){
-
-		if (seconds < 60){
-			return "%ds".printf(seconds);
-		}
-
-		return "%dm %ds".printf(seconds / 60, seconds % 60);
-	}
-
-	/* The steps are decided by create_restore_scripts(), which runs on the
-	 * worker thread, so the list appears a moment after the page does. */
 	private void refresh_phases(){
 
 		if (App.restore_phases == phases_shown){ return; }
@@ -319,11 +273,7 @@ class RestoreBox : RestoreProgressBox {
 			view.append_log(rsync_task.drain_output());
 		}
 
-		var script_task = App.restore_script_task;
 
-		if ((script_task != null) && (script_task != rsync_task)){
-			view.append_log(script_task.drain_output());
-		}
 	}
 
 	private DaemonBridge? bridge = null;
@@ -374,11 +324,4 @@ class RestoreBox : RestoreProgressBox {
 			App.update_grub);
 	}
 
-	private void restore_thread(){
-		
-		log_debug("RestoreBox: restore_thread()");
-		App.restore_snapshot(parent_window);
-		thread_is_running = false;
-		log_debug("RestoreBox: restore_thread(): exit");
-	}
 }

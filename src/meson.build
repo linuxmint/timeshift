@@ -42,8 +42,6 @@ sources_utility = files([
   'Utility/LicenseText.vala',
   'Utility/LinuxDistro.vala',
   'Utility/MountEntry.vala',
-  'Utility/OSDNotify.vala',
-  'Utility/RestoreScriptTask.vala',
   'Utility/RsyncTask.vala',
   'Utility/SystemUser.vala',
   'Utility/TimeoutCounter.vala',

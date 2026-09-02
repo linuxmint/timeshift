@@ -42,6 +42,27 @@ using TeeJee.Logging;
  * version mismatch it exists to detect.
  */
 
+/* One step of a restore, as it appears in the progress checklist.
+ *
+ * The key is ASCII and never translated, so matching stays locale-independent;
+ * the title is the translated string shown beside it.
+ *
+ * It lived beside the generated restore script, which echoed each key as
+ * "@@TS_PHASE:<key>" for the task parsing its output. That script is gone --
+ * the daemon runs the restore and reports its phases as events -- so the type
+ * moved here, next to the rest of what arrives over the socket.
+ */
+public class RestorePhase : GLib.Object {
+
+	public string key { get; set; }
+	public string title { get; set; }
+
+	public RestorePhase(string _key, string _title){
+		key = _key;
+		title = _title;
+	}
+}
+
 // ---------------------------------------------------------------------------
 
 /* Timestamps.
