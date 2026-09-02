@@ -203,6 +203,17 @@ const (
 type Change struct {
 	Path string
 	Kind ChangeKind
+
+	/* IsDir comes from rsync's itemise type column, the second character:
+	 * "d" is a directory. It was matched and thrown away, which left a client
+	 * unable to tell a directory from a file -- and the log view drops
+	 * directories on a dry run, because a restore lists every parent directory
+	 * of every changed file and they drown the changes.
+	 *
+	 * A deleted path has no type column: rsync's "*deleting" line carries only
+	 * the name. False there means the same as it has always meant locally,
+	 * where the file is already gone and cannot be stat'ed either. */
+	IsDir bool
 }
 
 // ParseLogLine reads one line of an rsync --log-file, which carries a
@@ -212,13 +223,13 @@ type Change struct {
 // holds rsync's own chatter, which is not a file.
 func ParseLogLine(line string) (Change, bool) {
 	if m := reLogCreated.FindStringSubmatch(line); m != nil {
-		return Change{Path: firstPath(m[3]), Kind: ChangeCreated}, true
+		return Change{Path: firstPath(m[3]), Kind: ChangeCreated, IsDir: m[2] == "d"}, true
 	}
 	if m := reLogDeleted.FindStringSubmatch(line); m != nil {
 		return Change{Path: firstPath(m[1]), Kind: ChangeDeleted}, true
 	}
 	if m := reLogUnchanged.FindStringSubmatch(line); m != nil {
-		return Change{Path: firstPath(m[3]), Kind: ChangeUnchanged}, true
+		return Change{Path: firstPath(m[3]), Kind: ChangeUnchanged, IsDir: m[2] == "d"}, true
 	}
 	if m := reLogModified.FindStringSubmatch(line); m != nil {
 		kind := ChangeUnchanged
@@ -236,7 +247,7 @@ func ParseLogLine(line string) (Change, bool) {
 		case m[8] == "g":
 			kind = ChangeGroup
 		}
-		return Change{Path: firstPath(m[12]), Kind: kind}, true
+		return Change{Path: firstPath(m[12]), Kind: kind, IsDir: m[2] == "d"}, true
 	}
 	return Change{}, false
 }
