@@ -80,8 +80,13 @@ class DeleteBox : TaskProgressBox {
 			bridge = new DaemonBridge();
 
 			if (!bridge.available() || !bridge.begin_delete(snapshot_names())){
+				/* No local delete behind this any more. Deleting a snapshot
+				 * is a repository WRITE, and the daemon is what holds the
+				 * flock that serialises those against a scheduled run. */
 				bridge = null;
-				App.delete_begin();
+				App.thread_delete_running = false;
+				App.thread_delete_success = false;
+				log_error(_("The Timeshift service is not available"));
 			}
 		}
 

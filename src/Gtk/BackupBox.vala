@@ -93,15 +93,17 @@ class BackupBox : TaskProgressBox {
 			});
 		}
 		else {
+			/* No local snapshot behind this any more.
+			 *
+			 * Taking one is a repository WRITE, and the daemon holds the
+			 * flock that serialises it against a scheduled run and against
+			 * apt's own guard. A second writer on this side could take a
+			 * snapshot into a repository the scheduler was pruning. */
 			bridge = null;
-			try {
-				thread_is_running = true;
-				new Thread<void>.try ("snapshot-taker", () => {take_snapshot_thread();});
-			}
-			catch (Error e) {
-				log_error (e.message);
-				return false;
-			}
+			thread_is_running = false;
+			thread_status_success = false;
+			log_error(_("The Timeshift service is not available"));
+			return false;
 		}
 
 		if (App.btrfs_mode){
@@ -131,26 +133,18 @@ class BackupBox : TaskProgressBox {
                 double fraction;
                 string task_stat_time_remaining;
 
-				/* Snapshot the reference: the worker thread clears
-				 * App.space_check_task the moment the space check ends, which
-				 * would otherwise null it between this test and the reads. */
-				var check_task = App.space_check_task;
-				bool checking = (check_task != null);
+				/* The separate space-check phase went with the local create.
+				 *
+				 * It was a link-dest-aware rsync dry run against the
+				 * destination, run before the transfer to size THIS snapshot.
+				 * The daemon has no equivalent -- its estimate measures the
+				 * whole system without --link-dest -- so the counts panel is
+				 * simply always the transfer's now. */
+				set_counts_visible(true);
 
-				set_counts_visible(!checking);
-
-                if (checking)
-                {
-                    task_status_line = check_task.status_line;
-                    fraction = check_task.progress;
-                    task_stat_time_remaining = check_task.stat_time_remaining;
-                }
-                else
-                {
-                    task_status_line = App.task.status_line;
-                    fraction = App.task.progress;
-                    task_stat_time_remaining = App.task.stat_time_remaining;
-                }
+				task_status_line = App.task.status_line;
+				fraction = App.task.progress;
+				task_stat_time_remaining = App.task.stat_time_remaining;
 
 				status_line = task_status_line;
 				if (status_line != last_status_line){
@@ -186,7 +180,6 @@ class BackupBox : TaskProgressBox {
 					lbl_msg.label = App.progress_text;
 				}
 
-				if (!checking)
 				{
 					lbl_unchanged.label = "%'d".printf(App.task.count_unchanged);
 					lbl_created.label = "%'d".printf(App.task.count_created);
@@ -214,9 +207,4 @@ class BackupBox : TaskProgressBox {
 		//TODO: low: check if snapshot was created successfully.
 	}
 	
-	private void take_snapshot_thread(){
-		
-		thread_status_success = App.create_snapshot(true,parent_window);
-		thread_is_running = false;
-	}
 }

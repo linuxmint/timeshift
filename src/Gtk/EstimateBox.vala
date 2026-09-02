@@ -86,7 +86,11 @@ class EstimateBox : TaskProgressBox {
 			}
 		}
 		else {
-			App.estimate_system_size(progressbar.pulse);
+			/* No local walk behind this any more. The daemon persists the
+			 * result to timeshift.json, and a second estimator writing the
+			 * same key from this side is how the two ends come to disagree
+			 * about the first backup's denominator. */
+			log_error(_("The Timeshift service is not available"));
 		}
 
 		LauncherEntry.set_progress_pulse(false);
