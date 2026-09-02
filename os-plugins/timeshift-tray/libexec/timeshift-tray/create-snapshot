@@ -1,0 +1,54 @@
+#!/bin/sh
+# Take one on-demand snapshot, for the tray's "Create snapshot now".
+#
+# Arguments are deliberately ignored, and that is the whole point of this file.
+# A polkit exec action authorises a PROGRAM, not an argv, so an auth_admin_keep
+# action pointed at /usr/bin/timeshift would grant five unauthenticated minutes
+# of a binary that also implements --delete, --delete-all and --restore. This
+# wrapper takes nothing from its caller, so the grant is exactly what the
+# authentication dialog says it is.
+#
+# --scripted because nobody is reading the output: the tray watches the job
+# over its own subscription to the daemon.
+set -eu
+
+# Not inherited. pkexec builds a clean environment today, so this costs
+# nothing; it is what keeps the file safe if it is ever run from anywhere else.
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+IFS='
+	'
+
+# The rate limit is a security control, not a convenience.
+#
+# auth_admin_keep means that for the length of polkit's cache window ANY
+# process running as that user can invoke this wrapper without a prompt. Taking
+# snapshots in a loop is not harmless: on-demand snapshots are pruned by
+# retention, so an unbounded loop pushes every older restore point out of the
+# window -- deleting backups without ever authenticating for a delete. One per
+# window makes that useless while leaving the button instant for a person.
+#
+# The same shape as apt-snapshot-guard's pre-invoke, for the same reason.
+STAMP=/run/timeshift-tray.snapshot
+WINDOW=90
+
+now=$(date +%s)
+last=0
+if [ -r "$STAMP" ]; then
+	last=$(cat "$STAMP" 2>/dev/null || echo 0)
+	case "$last" in
+		''|*[!0-9]*) last=0 ;;
+	esac
+fi
+
+if [ "$last" -gt 0 ] && [ $((now - last)) -lt "$WINDOW" ] && [ $((now - last)) -ge 0 ]; then
+	echo "a snapshot was taken $((now - last))s ago; not taking another yet" >&2
+	exit 0
+fi
+
+# Written before the work, not after: a snapshot that takes ten minutes must
+# still hold the window shut for the whole of it.
+echo "$now" > "$STAMP"
+
+exec /usr/bin/timeshift --create --scripted \
+	--tags O --comments "On-demand snapshot (tray)"

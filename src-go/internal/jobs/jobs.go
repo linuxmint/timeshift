@@ -162,6 +162,17 @@ type Event struct {
 	Type string `json:"event"`
 	Job  string `json:"job"`
 
+	/* Kind is what the job DOES, repeated on every one of its events.
+	 *
+	 * Without it a client that followed everything -- which is the whole point
+	 * of jobs.subscribe with an empty job -- learned that something started and
+	 * never what it was, because the kind lived only on jobs.Snapshot. Chasing
+	 * it with jobs.get is a race the client loses on a short job: a delete
+	 * finishes in milliseconds, and a client that has not learned the kind by
+	 * then cannot decide whether to announce it or to re-read the repository.
+	 * It is one word on the wire and it removes the round trip entirely. */
+	Kind Kind `json:"kind,omitempty"`
+
 	State    State     `json:"state,omitempty"`
 	Phase    string    `json:"phase,omitempty"`
 	Phases   []Phase   `json:"phases,omitempty"`
@@ -328,6 +339,16 @@ func (j *Job) Resume() {
 // Paused reports whether the job is suspended.
 func (j *Job) Paused() bool { return j.pausedFlag.Load() }
 
+/* event builds one of this job's events.
+ *
+ * A helper rather than a literal at each call site: every event has to carry
+ * the job's identity AND its kind, and the failure mode of forgetting one is
+ * silent -- the client simply never learns what it is watching.
+ */
+func (j *Job) event(t string) Event {
+	return Event{Type: t, Job: j.ID, Kind: j.Kind}
+}
+
 func (j *Job) setState(s State) {
 	j.mu.Lock()
 	if j.state.Terminal() {
@@ -336,7 +357,9 @@ func (j *Job) setState(s State) {
 	}
 	j.state = s
 	j.mu.Unlock()
-	j.hub.publish(Event{Type: EventStarted, Job: j.ID, State: s})
+	e := j.event(EventStarted)
+	e.State = s
+	j.hub.publish(e)
 }
 
 // reporter is the Reporter handed to the RunFunc.
@@ -349,7 +372,9 @@ func (r *reporter) SetPhases(phases []Phase) {
 	r.job.mu.Lock()
 	r.job.phases = append([]Phase(nil), phases...)
 	r.job.mu.Unlock()
-	r.job.hub.publish(Event{Type: EventPhase, Job: r.job.ID, Phases: phases})
+	e := r.job.event(EventPhase)
+	e.Phases = phases
+	r.job.hub.publish(e)
 }
 
 func (r *reporter) Phase(key string) {
@@ -361,7 +386,10 @@ func (r *reporter) Phase(key string) {
 	r.job.phase = key
 	phases := append([]Phase(nil), r.job.phases...)
 	r.job.mu.Unlock()
-	r.job.hub.publish(Event{Type: EventPhase, Job: r.job.ID, Phase: key, Phases: phases})
+	e := r.job.event(EventPhase)
+	e.Phase = key
+	e.Phases = phases
+	r.job.hub.publish(e)
 }
 
 func (r *reporter) Progress(p Progress) {
@@ -369,12 +397,16 @@ func (r *reporter) Progress(p Progress) {
 	r.job.progress = p
 	r.job.mu.Unlock()
 	cp := p
-	r.job.hub.publish(Event{Type: EventProgress, Job: r.job.ID, Progress: &cp})
+	e := r.job.event(EventProgress)
+	e.Progress = &cp
+	r.job.hub.publish(e)
 }
 
 func (r *reporter) Log(line string) {
 	r.job.log.Add(line)
-	r.job.hub.publish(Event{Type: EventLog, Job: r.job.ID, Line: line})
+	e := r.job.event(EventLog)
+	e.Line = line
+	r.job.hub.publish(e)
 }
 
 func (r *reporter) Note(msg string) {
@@ -569,7 +601,9 @@ func (q *Queue) run(p *pendingJob) {
 	q.current = j
 	q.mu.Unlock()
 
-	q.hub.publish(Event{Type: EventStarted, Job: j.ID, State: StateRunning})
+	started := j.event(EventStarted)
+	started.State = StateRunning
+	q.hub.publish(started)
 
 	rep := &reporter{job: j, ctx: ctx}
 
@@ -625,13 +659,10 @@ func (q *Queue) run(p *pendingJob) {
 			j.outcome = outcome
 		}
 	}
-	final := Event{
-		Type:     EventFinished,
-		Job:      j.ID,
-		State:    j.state,
-		Outcome:  j.outcome,
-		Messages: append([]string(nil), j.messages...),
-	}
+	final := j.event(EventFinished)
+	final.State = j.state
+	final.Outcome = j.outcome
+	final.Messages = append([]string(nil), j.messages...)
 	if err != nil {
 		final.Error = err.Error()
 	}

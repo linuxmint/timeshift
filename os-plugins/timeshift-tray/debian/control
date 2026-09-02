@@ -1,0 +1,50 @@
+Source: timeshift-tray
+Section: admin
+Priority: optional
+Maintainer: makeafide <willsmit4433@gmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+Homepage: https://github.com/makeafide/timeshift
+
+Package: timeshift-tray
+Architecture: all
+Depends: ${misc:Depends},
+         python3,
+         python3-gi,
+         gir1.2-glib-2.0,
+         pkexec | polkitd,
+         passwd,
+         timeshift | timeshift-ssh,
+         hicolor-icon-theme
+Recommends: gnome-shell-ubuntu-extensions | gnome-shell-extension-appindicator
+Description: Timeshift snapshot status in the system tray
+ timeshift-tray puts a status icon in the desktop's tray showing when the last
+ snapshot was taken, whether scheduled snapshots are actually running, and
+ whether the snapshot location is reachable - and lets you take a snapshot on
+ demand without opening the Timeshift window.
+ .
+ It shows live progress for any snapshot the machine is taking, not only ones
+ started from the tray: a snapshot taken automatically before an apt operation
+ appears with its phase and percentage while apt waits for it, which is
+ otherwise invisible.
+ .
+ The applet runs as your own desktop user and never as root. It reads the
+ read-only part of the Timeshift daemon's interface over
+ /run/timeshift/daemon.sock, which cannot create, delete or restore anything.
+ Taking a snapshot is a separate, authenticated action: it runs a wrapper with
+ fixed arguments through pkexec, under a policy that authorises exactly that
+ one command.
+ .
+ Reading the daemon's status requires membership of the "timeshift" system
+ group. This package does not add anyone to it, because that membership also
+ exposes the machine's disk layout and every snapshot path, and so is a
+ decision for an administrator rather than for a postinst script. Until it is
+ granted the applet says so plainly and offers to arrange it; the menu item
+ runs "gpasswd -a" through pkexec, and the change takes effect at the next
+ login. The menu also offers to take it away again, because a grant with no
+ reverse is not one anybody should be asked to make.
+ .
+ A tray icon needs a host that implements the StatusNotifierItem protocol. KDE
+ Plasma, Xfce, MATE and Cinnamon do so natively; GNOME Shell needs an
+ appindicator extension, which is what the recommended package provides.

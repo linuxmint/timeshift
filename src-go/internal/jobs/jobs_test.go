@@ -859,3 +859,48 @@ func TestEvictionSparesTheRunningJob(t *testing.T) {
 	close(block)
 	<-running.Done()
 }
+
+/* Every event a job publishes names its kind.
+ *
+ * A client following everything -- jobs.subscribe with an empty job, which is
+ * the case the daemon exists for -- otherwise learns that something started
+ * and never what it was, and cannot decide whether the repository it is
+ * showing has just changed. Chasing the kind with jobs.get is a race that a
+ * short job wins: a delete finishes in milliseconds.
+ */
+func TestEveryEventCarriesTheKind(t *testing.T) {
+	q := NewQueue(4)
+	defer q.Close()
+
+	sub := q.Hub().Subscribe(SubscribeOptions{WithLog: true})
+	defer sub.Close()
+
+	_, err := q.Submit(KindDelete, func(_ context.Context, r Reporter) (Outcome, error) {
+		r.SetPhases([]Phase{{Key: "remove", Title: "Removing"}})
+		r.Phase("remove")
+		r.Progress(Progress{Percent: 1, Count: 1, Total: 1})
+		r.Log("a line")
+		return OutcomeOK, nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	events := drain(sub, func(e Event) bool { return e.Type == EventFinished })
+
+	seen := map[string]bool{}
+	for _, e := range events {
+		if e.Job == "" {
+			continue // hub-wide events (config.changed) have no job and no kind
+		}
+		seen[e.Type] = true
+		if e.Kind != KindDelete {
+			t.Errorf("%s carries kind %q, want %q", e.Type, e.Kind, KindDelete)
+		}
+	}
+	for _, want := range []string{EventStarted, EventPhase, EventProgress, EventLog, EventFinished} {
+		if !seen[want] {
+			t.Errorf("never saw a %s event", want)
+		}
+	}
+}

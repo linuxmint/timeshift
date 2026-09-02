@@ -1119,6 +1119,174 @@ What that established, and what to re-check after touching the write path:
 - `file_count` in the control file should match what the Vala snapshots of the
   same machine carry, within the noise of files that came and went.
 
+## The status tray (`os-plugins/timeshift-tray/`)
+
+A desktop tray applet: last snapshot, scheduler state, location, live progress
+for whatever job the daemon is running, and one action -- take a snapshot now.
+Its own native deb, built by `build-all.sh` stage 4, and the first consumer of
+the daemon's read-only subset outside the CLI.
+
+Python 3 with `GLib`/`Gio` and **no GTK**: a tray icon is
+`org.kde.StatusNotifierItem` plus `com.canonical.dbusmenu`, and the shell draws
+the menu from that data, so there is nothing to render locally. It runs as the
+DESKTOP USER, which is what the read-only IPC subset exists for; nothing here
+is ever root.
+
+**`controller.py` owns every decision; `app.py` is only wiring.** That split is
+not tidiness: when the two were one 502-line module it had no seam and no
+tests, and an audit found a guaranteed crash, two ways to wedge the applet
+permanently, and an fd leak in it. The controller takes its collaborators
+(`client`, `menu`, `item`, `notifier`, `spawner`, `timers`, `clock`) as
+constructor arguments, so `tests/test_controller.py` drives any ordering it
+likes with recorders and a fake clock -- no bus, no display, no waiting.
+
+`ipc.py`, `model.py`, `fmt.py` and `menutree.py` must not import `gi` -- that
+is the rest of the testable core, and `tests/` drives it against real captured
+daemon replies in `tests/data/`.
+
+`gcompat.py` is the one place that cares which GLib this is:
+`register_object_with_closures2` is 2.84, so calling it directly made the
+applet install cleanly on Ubuntu 24.04 and Debian 12 and then die on its first
+export. `register_object` is the same call under the name GLib has had since
+2.46.
+
+### Things about the daemon's wire that a client gets wrong once
+
+- **`jobs.subscribe {"job": ""}` returns an EMPTY snapshot** (`daemon.go`'s
+  follow-everything branch), not the running job. Work already in flight is
+  found with `jobs.list` at connect time, or not at all -- and "not at all" is
+  precisely the apt-driven snapshot this whole port exists to make visible.
+- **`jobs.Event` now carries `kind`**, on every event, via `(*Job).event()`.
+  It did not, and a client following everything then learned that something
+  started and never what it was; chasing it with `jobs.get` is a race a short
+  job wins -- a delete finishes in milliseconds -- and losing it meant no
+  completion notification and no refresh of the very list the job had just
+  changed. The tray keeps a `jobs.get` fallback for older daemons.
+- **The event stream is not a guarantee.** A subscriber that falls behind is
+  dropped rather than waited for, so a missed `job.finished` would leave a
+  client showing a backup that ended hours ago. Reconcile against `jobs.list`
+  periodically; and when reconciling, do not sweep a job younger than a listing
+  round trip, or the sweep erases jobs the merge exists to protect.
+- **`snapshots.list` marshals Go FIELD NAMES** -- `Name`, `Created`,
+  `SizeBytes` -- because `engines.Snapshot` has no json tags, while `jobs.*`
+  and `schedule.status` on the same socket are snake_case. Reading one
+  convention for both leaves every field empty, and a full repository reports
+  itself as having no snapshots.
+- **A refusal at connect(2) is believed only the second time.** systemd
+  binds `timeshiftd.socket` and chowns it afterwards, so a group member who
+  connects in that gap is refused by a socket that is root:root for a few
+  milliseconds -- and at that instant `access(2)` agrees with the refusal.
+  NO_ACCESS is retried every five minutes on the reasoning that membership
+  cannot change without a login, which left the applet saying "not
+  permitted" for five minutes after one `systemctl start timeshiftd.socket`.
+  The first refusal is now a disconnect on the ladder; only one that survives
+  the retry is a verdict (`DaemonClient._classify`). Reproduced and verified
+  with a stop/start of the socket unit.
+- **Free space is not a number anywhere.** `repo.status` renders it into
+  `details` ("26 snapshots, 29.9 TB free"), and `view`/`StatusView` has no
+  space field either. The tray prints `message` and `details` verbatim, which
+  is also the only thing that works for a remote repository, where there is no
+  device to measure.
+
+Go's `omitempty` does nothing for a `time.Time`, so an unset `last_run` /
+`next_run` / `finished` arrives as `"0001-01-01T00:00:00Z"`; and Go writes up
+to nine fractional digits, which `datetime.fromisoformat` rejects. Both are
+handled in `fmt.parse_rfc3339`.
+
+### What the desktop host actually requires
+
+Checked against `ubuntu-appindicators@ubuntu.com`, not against the spec:
+
+- **Do not export `Activate`.** The host probes for it, and when it is present
+  every left-click waits out the double-click interval before the menu opens.
+- **`Status: "Passive"` hides the icon**, and the host's proxy pre-seeds that
+  value -- so the first `GetAll` must answer correctly. The tray never goes
+  Passive: an icon that disappears when something is wrong cannot be used to
+  find out what.
+- **`Id` and `Menu` are required**; without both the item never becomes ready
+  and nothing is drawn at all.
+- **A failed `GetAll` clears every cached property**, so every property in the
+  introspection XML must always answer with a valid variant.
+- **`ToolTip` is not implemented by the GNOME host** -- its own interface XML
+  says so. Live progress therefore lives in the icon and in a menu row, never
+  in a tooltip.
+- Changes are announced as BOTH the legacy `New*` signals and
+  `PropertiesChanged`, which GDBus does not emit for a hand-registered object.
+- **Every D-Bus handler needs an exception barrier**, and so does the socket
+  read loop: a raise inside an async callback is swallowed by PyGObject, and
+  the loop then stops with the socket still open -- no EOF, no reconnect, and
+  an applet frozen at whatever it last knew for the rest of the session.
+
+`menutree` allocates a stable id per string key and never reuses one, so a
+progress tick is `ItemsPropertiesUpdated` (applied in place) rather than
+`LayoutUpdated` (the host re-reads the whole menu, visibly rebuilding an open
+one). The running-job rows exist when idle and are merely `visible: false`, so
+a snapshot starting is a property change and not a new layout.
+
+### Icons and the menu's design
+
+All ten icons come out of `tools/make-icons.py` -- do not hand-edit the SVGs
+or PNGs. The geometry is the brand shield from `src/share/timeshift/images/
+timeshift-shield-*.svg` on a 16px grid, filled solid, with the state cut out
+by parity: one evenodd path per symbolic icon and nothing else. Three
+constraints shaped that, each learnt from a host:
+
+- **No strokes.** GTK recolours a symbolic icon by forcing `fill` on every
+  shape and leaves `stroke` alone, so an outlined shield comes back solid.
+  The inactive outline is a ring of two nested shield polygons.
+- **No masks or clipPaths.** Plasma renders through QtSvg, which implements
+  neither.
+- **A halo is a hole, and a hole made by parity is a hole only INSIDE the
+  shield** -- outside it, the same circle is a filled disc. The badge halos on
+  warning and error are therefore the intersection of the shield and the halo
+  shape, clipped in the script (Sutherland-Hodgman), which is why it is a
+  script.
+
+Two sets share the geometry: `timeshift-tray-<state>-symbolic` and
+`timeshift-tray-<state>` in the brand colours. `icons.icon_for(health, style)`
+picks between them; the default `auto` is symbolic until WARNING or ERROR, so
+colour on the panel means something. `ATTENTION_ICON` and every toast icon are
+always the colour set. `TIMESHIFT_TRAY_ICONS` overrides the style.
+
+The menu carries `icon-name` on every row that has a meaning (the GNOME host
+builds an `St.Icon` from it; KDE draws it natively), and the first row is a
+**verdict** -- "Protected", "Not protected", "Restored" -- rather than a fact
+with a qualifier appended, because a reassuring row over an incomplete or
+unreachable snapshot is wrong in exactly the state where it matters. The
+daemon's own `message`/`details` are still the location row, minus a bare
+"OK" when there are details (the row's icon says it). Progress is a text meter
+of U+25B0/U+25B1, which keep a uniform advance in proportional fonts where the
+block elements do not.
+
+### The two pkexec wrappers
+
+`libexec/timeshift-tray/{create-snapshot,grant-access}` take **no arguments**,
+and that is the point: a polkit exec action authorises a PROGRAM, so an
+`auth_admin_keep` action naming `/usr/bin/timeshift` would grant five
+unauthenticated minutes of a binary that also implements `--delete-all` and
+`--restore`. `grant-access` resolves the account from `$PKEXEC_UID` rather than
+taking a name, so an unprivileged caller cannot add somebody else to the group.
+`create-snapshot` is `auth_admin_keep`; `grant-access` and `revoke-access`
+deliberately are not. The cache window is bounded on the other side by a stamp
+file in the wrapper: "no password for five minutes" otherwise means any process
+running as that user can take snapshots in a loop and push every older
+on-demand restore point out of retention -- deleting backups without ever
+authenticating for a delete. `apt-snapshot-guard`'s `pre-invoke` solved the
+same problem the same way.
+
+`check-deb.sh` asserts the WHOLE polkit grant, not one nuance of it: the
+earlier version only counted `auth_admin_keep` on `allow_active`, which a
+policy saying `<allow_active>yes</allow_active>` passes. Its checks are
+mutation-tested -- weaken the policy, break a module, unset an executable bit,
+delete an icon -- because a check that cannot fail is not a check.
+
+Nothing adds anyone to the `timeshift` group: the daemon's design treats that
+as a deliberate grant, and it would not take effect until the next login
+anyway. The tray shows the "not permitted" state as its own thing, distinct
+from "no daemon" -- reporting EACCES as "not running" sends someone off to
+start a service that is already up.
+
+
 ## Running as root
 
 `timeshift-gtk` does not escalate itself; it hard-exits with a message if not root. (That check is what Phase 5 of the client migration removes: a socket client does not need root, because the daemon holds the privilege.) Escalation is delegated to `src/timeshift-launcher` (pkexec, falling back to sudo/su in a terminal) with the polkit rules in `src/share/polkit-1/actions/`. Because the GUI then runs as root, `Main.setup_env()` scavenges `DISPLAY`, `XAUTHORITY`, dbus and Wayland vars from the invoking user's `/proc/<pid>/environ`, and anything spawned for the user (file manager, browser) must be de-escalated using `PKEXEC_UID`/`SUDO_UID` — see `TeeJee.System.get_user_id()` and `exec_user_async()`.

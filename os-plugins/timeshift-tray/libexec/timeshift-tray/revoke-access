@@ -1,0 +1,46 @@
+#!/bin/sh
+# Remove the invoking desktop user from the "timeshift" group.
+#
+# The reverse of grant-access, and it exists because a grant with no reverse is
+# not a grant anyone should be asked to make: read-only access to the daemon
+# also exposes the machine's disk layout and every snapshot path, and it used
+# to survive even `apt purge`.
+#
+# Argument-free and PKEXEC_UID-resolved for the same reasons as its sibling --
+# which is also why this is a separate file rather than a --revoke flag.
+set -eu
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+IFS='
+	'
+
+[ -n "${PKEXEC_UID:-}" ] || {
+	echo "revoke-access: no PKEXEC_UID; run me through pkexec" >&2
+	exit 1
+}
+
+case "$PKEXEC_UID" in
+	''|*[!0-9]*) echo "revoke-access: PKEXEC_UID is not a number" >&2; exit 1 ;;
+esac
+
+user=$(getent passwd "$PKEXEC_UID" | head -n1 | cut -d: -f1)
+[ -n "$user" ] || {
+	echo "revoke-access: uid $PKEXEC_UID has no account" >&2
+	exit 1
+}
+
+getent group timeshift >/dev/null || {
+	echo "revoke-access: there is no timeshift group" >&2
+	exit 1
+}
+
+# Already out of the group is success: the caller asked for a state, not an
+# operation.
+if ! id -nG "$user" | tr ' ' '\n' | grep -qx timeshift; then
+	echo "$user is not in the timeshift group" >&2
+	exit 0
+fi
+
+echo "removing $user from the timeshift group" >&2
+exec gpasswd -d "$user" timeshift

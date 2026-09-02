@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# --buildsystem=none, deliberately.
+#
+# There is nothing to build: everything under lib/, libexec/, share/ and etc/
+# is installed verbatim. Nothing auto-selects today either -- debhelper's
+# python_distutils looks for a setup.py at the source root and pybuild for a
+# setup.py/pyproject.toml/setup.cfg, and this package has none. Saying "none"
+# out loud means a stray marker file added later cannot silently turn this into
+# a Python build, the same way an accidental meson.build would have turned
+# src-recovery into a meson one.
+%:
+	dh $@ --buildsystem=none
+
+# dh_fixperms normalises everything to 0644. All three of these are executed:
+# the applet by the autostart entry, and the two wrappers by pkexec, which
+# additionally requires them to be root-owned and not writable by anyone else.
+execute_after_dh_fixperms:
+	chmod 0755 debian/timeshift-tray/usr/lib/timeshift-tray/timeshift-tray
+	chmod 0755 debian/timeshift-tray/usr/libexec/timeshift-tray/create-snapshot
+	chmod 0755 debian/timeshift-tray/usr/libexec/timeshift-tray/grant-access
+	chmod 0755 debian/timeshift-tray/usr/libexec/timeshift-tray/revoke-access

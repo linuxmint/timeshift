@@ -1,0 +1,72 @@
+[
+  {
+    "finished": "2026-09-01T09:03:35.738289244-04:00",
+    "id": "j-1",
+    "kind": "create",
+    "messages": [
+      "Hard-linking unchanged files from 2026-09-01_09-01-26"
+    ],
+    "outcome": "ok",
+    "phase": "finalise",
+    "phases": [
+      {
+        "key": "prepare",
+        "title": "Preparing"
+      },
+      {
+        "key": "sync_files",
+        "title": "Copying files"
+      },
+      {
+        "key": "finalise",
+        "title": "Writing snapshot metadata"
+      }
+    ],
+    "progress": {
+      "count": 286907,
+      "counters": {
+        "checksum": 0,
+        "created": 18,
+        "deleted": 0,
+        "group": 0,
+        "modified": 292,
+        "owner": 0,
+        "permissions": 0,
+        "size": 25,
+        "timestamp": 267,
+        "unchanged": 258934
+      },
+      "eta_seconds": 0,
+      "percent": 1,
+      "status_line": "var/tmp/ts-vm/sources.list",
+      "total": 286021
+    },
+    "started": "2026-09-01T09:03:20.734015317-04:00",
+    "state": "finished"
+  },
+  {
+    "finished": "2026-09-01T09:03:35.746559823-04:00",
+    "id": "j-2",
+    "kind": "delete",
+    "messages": [
+      "No such snapshot: x"
+    ],
+    "outcome": "warnings",
+    "phase": "x",
+    "phases": [
+      {
+        "key": "x",
+        "title": "Deleting x"
+      }
+    ],
+    "progress": {
+      "count": 0,
+      "eta_seconds": 0,
+      "percent": 0,
+      "status_line": "",
+      "total": 0
+    },
+    "started": "2026-09-01T09:03:35.738695697-04:00",
+    "state": "finished"
+  }
+]

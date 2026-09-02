@@ -66,6 +66,12 @@ if [ "$what" = all ] || [ "$what" = shell ]; then
 		os-plugins/apt-snapshot-guard/tests/run-tests.sh
 		os-plugins/apt-snapshot-guard/lib/apt-snapshot-guard/pre-invoke
 		os-plugins/apt-snapshot-guard/lib/apt-snapshot-guard/gui-prompt
+		os-plugins/timeshift-tray/build-deb.sh
+		os-plugins/timeshift-tray/check-deb.sh
+		os-plugins/timeshift-tray/tests/run-tests.sh
+		os-plugins/timeshift-tray/libexec/timeshift-tray/create-snapshot
+		os-plugins/timeshift-tray/libexec/timeshift-tray/grant-access
+		os-plugins/timeshift-tray/libexec/timeshift-tray/revoke-access
 		src-recovery/build-deb.sh
 		src-recovery/check-deb.sh
 		src-recovery/sbin/timeshift-recovery
@@ -126,6 +132,23 @@ if [ "$what" = all ] || [ "$what" = shell ]; then
 		else
 			bad "hook behaviour"
 			os-plugins/apt-snapshot-guard/tests/run-tests.sh 2>&1 | tail -15
+		fi
+	fi
+fi
+
+# --- the tray applet ---------------------------------------------------------
+if [ "$what" = all ] || [ "$what" = shell ]; then
+	say "timeshift-tray"
+	# Python syntax, the two pkexec wrappers, and the applet's own unit tests.
+	# Needs no root and no desktop: the daemon is a stand-in on a real unix
+	# socket, and the D-Bus modules are checked for the shapes they put on the
+	# wire rather than by talking to a bus.
+	if [ -x os-plugins/timeshift-tray/tests/run-tests.sh ]; then
+		if os-plugins/timeshift-tray/tests/run-tests.sh >/dev/null 2>&1; then
+			ok "applet tests"
+		else
+			bad "applet tests"
+			os-plugins/timeshift-tray/tests/run-tests.sh 2>&1 | tail -20
 		fi
 	fi
 fi

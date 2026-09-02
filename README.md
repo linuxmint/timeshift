@@ -186,13 +186,56 @@ runs abort outright. For a deliberate exception, either
 with `APT_SNAPSHOT_GUARD=off`. Configuration lives in
 `/etc/apt-snapshot-guard/config`.
 
+### Status tray
+
+The `timeshift-tray` package (from `os-plugins/timeshift-tray/`) puts a status
+icon in the desktop's tray: when the last snapshot was taken, whether scheduled
+snapshots are actually running, whether the location is reachable, and live
+progress for whatever snapshot the machine is taking - including the one
+`apt-snapshot-guard` takes while apt waits for it, which is otherwise
+invisible. One action, "Create snapshot now", is offered.
+
+It runs as your own desktop user, never as root, and reads the daemon's
+**read-only** interface over `/run/timeshift/daemon.sock` - which cannot
+create, delete or restore anything. Taking a snapshot is a separate
+authenticated action: `pkexec` runs a wrapper that takes no arguments, under a
+policy that authorises exactly that one command rather than the Timeshift CLI.
+
+Reading that status needs membership of the `timeshift` group, which nothing
+grants automatically - it also exposes the disk layout and every snapshot path.
+Until it is granted the tray says so and offers to arrange it, and the menu
+offers to take it away again. By hand, either way, effective at the next login:
+
+```bash
+sudo gpasswd -a "$USER" timeshift     # grant
+sudo gpasswd -d "$USER" timeshift     # revoke
+```
+
+A tray icon needs a StatusNotifierItem host. KDE Plasma, Xfce, MATE and
+Cinnamon have one built in; GNOME Shell needs an appindicator extension, which
+is what the package recommends.
+
+The icon is Timeshift's own shield with the state cut out of it - a tick, a
+ring while a snapshot runs, a badge for warning or error, an outline when the
+status cannot be read. By default it is monochrome like the desktop's own
+indicators and turns amber or red only when something needs attention;
+`TIMESHIFT_TRAY_ICONS=colour` keeps the brand colours on all the time and
+`=symbolic` never shows them. The menu leads with a verdict ("Protected - last
+snapshot 12 minutes ago"), then the schedule and the location in the daemon's
+own words, and a progress meter while a snapshot runs.
+
+It autostarts at login. After using the menu's Quit, start it again from the
+app grid ("Timeshift Tray") or by running `timeshift-tray`; `man timeshift-tray`
+covers the rest, and `--debug` (or `TIMESHIFT_TRAY_DEBUG=1`) explains itself to
+the session journal when the icon does not appear.
+
 ### Building the packages
 
-`./build-all.sh "changelog line"` builds all three debs (`timeshift-ssh`,
-`apt-snapshot-guard`, `timeshift-recovery`), verifies each with its
-`check-deb.sh`, and collects them in `dist/`. `TS_MSG` / `GUARD_MSG` /
-`RECOVERY_MSG` override the shared changelog bullets per package, and
-`NO_BUMP=1` rebuilds the current versions without a new changelog entry.
+`./build-all.sh "changelog line"` builds all four debs (`timeshift-ssh`,
+`apt-snapshot-guard`, `timeshift-recovery`, `timeshift-tray`), verifies each
+with its `check-deb.sh`, and collects them in `dist/`. `TS_MSG` / `GUARD_MSG` /
+`RECOVERY_MSG` / `TRAY_MSG` override the shared changelog bullets per package,
+and `NO_BUMP=1` rebuilds the current versions without a new changelog entry.
 
 Note that installing a deb resets any apt hold, so after every install of the
 fork re-run: `sudo apt-mark hold timeshift-ssh`.

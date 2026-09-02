@@ -1,0 +1,32 @@
+#!/usr/bin/python3
+# Copyright 2026 makeafide <willsmit4433@gmail.com>
+# SPDX-License-Identifier: GPL-2.0-or-later
+"""Entry point for the Timeshift status-tray applet.
+
+The package directory beside this file is reached through sys.path[0], which
+Python sets to this script's own directory -- the modules are deliberately not
+installed onto the interpreter's search path, because nothing else should be
+importing them.
+"""
+
+import os
+import sys
+
+# Before the import, both of them.
+#
+# /usr/lib/timeshift-tray is root-writable, so one well-meant `sudo
+# timeshift-tray` would otherwise leave root-owned __pycache__ that dpkg never
+# shipped and `apt purge` cannot remove. Refusing early is also the honest
+# order: the applet has no business importing a D-Bus stack as root.
+sys.dont_write_bytecode = True
+
+if os.geteuid() == 0 and "--help" not in sys.argv and "--version" not in sys.argv:
+    sys.stderr.write(
+        "timeshift-tray: this is a desktop applet and must not run as root; "
+        "it talks to timeshiftd as an unprivileged client.\n")
+    raise SystemExit(0)
+
+from timeshift_tray.app import main  # noqa: E402
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

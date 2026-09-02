@@ -1,0 +1,50 @@
+#!/bin/sh
+# Add the invoking desktop user to the "timeshift" group, so the tray can read
+# the daemon's status.
+#
+# The user is resolved from PKEXEC_UID rather than taken as an argument: pkexec
+# sets it to the uid that asked, and an unprivileged caller therefore cannot
+# name somebody else's account. Read-only IPC still exposes the device layout
+# and every snapshot path, so who gets it is a decision, not a detail.
+#
+# Membership applies at login, so this does not help the session that ran it --
+# the caller is expected to say so.
+set -eu
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+IFS='
+	'
+
+[ -n "${PKEXEC_UID:-}" ] || {
+	echo "grant-access: no PKEXEC_UID; run me through pkexec" >&2
+	exit 1
+}
+
+case "$PKEXEC_UID" in
+	''|*[!0-9]*) echo "grant-access: PKEXEC_UID is not a number" >&2; exit 1 ;;
+esac
+
+# A system account has no desktop session and no business in this group; an
+# administrator authorising "let this user see Timeshift status" is not
+# agreeing to widen a service account.
+if [ "$PKEXEC_UID" -lt 1000 ]; then
+	echo "grant-access: refusing to modify system account uid $PKEXEC_UID" >&2
+	exit 1
+fi
+
+# head -n1: a uid with two passwd entries would otherwise yield two names and
+# an opaque failure from gpasswd.
+user=$(getent passwd "$PKEXEC_UID" | head -n1 | cut -d: -f1)
+[ -n "$user" ] || {
+	echo "grant-access: uid $PKEXEC_UID has no account" >&2
+	exit 1
+}
+
+getent group timeshift >/dev/null || {
+	echo "grant-access: there is no timeshift group; is timeshift installed?" >&2
+	exit 1
+}
+
+echo "adding $user to the timeshift group" >&2
+exec gpasswd -a "$user" timeshift

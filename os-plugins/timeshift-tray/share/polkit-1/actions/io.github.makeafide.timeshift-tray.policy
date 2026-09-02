@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<!--
+  Both actions authorise a fixed-argument wrapper rather than a Timeshift
+  binary. polkit matches on the program, not on its arguments, so an action
+  naming /usr/bin/timeshift would authorise deleting every snapshot just as
+  readily as creating one; the wrappers take no arguments at all.
+-->
+<policyconfig>
+  <vendor>makeafide</vendor>
+  <vendor_url>https://github.com/makeafide/timeshift</vendor_url>
+
+  <action id="io.github.makeafide.timeshift-tray.create-snapshot">
+    <description>Create a Timeshift snapshot</description>
+    <message>Authentication is required to create a system snapshot</message>
+    <icon_name>timeshift</icon_name>
+    <!--
+      auth_admin_keep for the active session: taking snapshots is the reason
+      this applet exists, and re-typing a password for each one is what makes
+      people stop taking them.
+
+      The cache window is bounded on the other side: the wrapper rate-limits
+      itself, because "no password for five minutes" would otherwise mean any
+      process running as this user could take snapshots in a loop and push
+      every older on-demand restore point out of retention.
+    -->
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/libexec/timeshift-tray/create-snapshot</annotate>
+  </action>
+
+  <action id="io.github.makeafide.timeshift-tray.grant-access">
+    <description>Allow a user to see Timeshift status</description>
+    <message>Authentication is required to let this user see Timeshift status</message>
+    <icon_name>timeshift</icon_name>
+    <!--
+      Deliberately NOT auth_admin_keep: this one changes who can read the
+      machine's device layout and snapshot paths, it is done once, and a
+      standing five-minute grant to repeat it buys nothing.
+    -->
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/libexec/timeshift-tray/grant-access</annotate>
+  </action>
+  <action id="io.github.makeafide.timeshift-tray.revoke-access">
+    <description>Stop a user seeing Timeshift status</description>
+    <message>Authentication is required to remove this user's access to Timeshift status</message>
+    <icon_name>timeshift</icon_name>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/libexec/timeshift-tray/revoke-access</annotate>
+  </action>
+</policyconfig>

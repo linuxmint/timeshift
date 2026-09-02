@@ -1,0 +1,108 @@
+.TH TIMESHIFT-TRAY 1 "2026-09-01" "timeshift-tray" "User Commands"
+.SH NAME
+timeshift\-tray \- Timeshift snapshot status in the system tray
+.SH SYNOPSIS
+.B timeshift\-tray
+.RI [ OPTION ...]
+.SH DESCRIPTION
+.B timeshift\-tray
+puts a status icon in the desktop's tray showing when the last snapshot was
+taken, whether scheduled snapshots are actually running, whether the snapshot
+location is reachable, and live progress for whatever snapshot the machine is
+taking \- including one started automatically before an apt operation, which is
+otherwise invisible.
+.PP
+It runs as your own desktop user and never as root. It reads the
+.B read\-only
+part of the Timeshift daemon's interface over
+.IR /run/timeshift/daemon.sock ,
+which cannot create, delete or restore anything. Taking a snapshot is a
+separate, authenticated action: a fixed\-argument wrapper is run through
+.BR pkexec (1)
+under a policy that authorises exactly that one command.
+.PP
+The applet is started automatically at login by
+.IR /etc/xdg/autostart/timeshift\-tray.desktop .
+After using the menu's Quit it can be started again from the desktop's
+application list, or by running this command.
+.SH OPTIONS
+.TP
+.B \-\-debug
+Log what the applet is doing to standard error. Under autostart that reaches
+the session journal
+.RB ( "journalctl \-\-user \-b" ).
+The environment variable
+.B TIMESHIFT_TRAY_DEBUG=1
+does the same without editing the autostart entry, which is a conffile.
+.TP
+.B \-\-version
+Print the version and exit.
+.SH ENVIRONMENT
+.TP
+.B TIMESHIFT_TRAY_DEBUG=1
+The same as
+.BR \-\-debug .
+.TP
+.B TIMESHIFT_TRAY_ICONS=auto|symbolic|colour
+How the panel icon is drawn. The icon is Timeshift's shield, with the state
+cut out of it: a tick, a ring while a snapshot runs, a triangle or round badge
+for warning and error, and an outline when the status cannot be read. With
+.B auto
+(the default) it is monochrome, recoloured by the panel like the desktop's own
+indicators, until something needs attention \- then the amber or red brand
+shield appears, so colour on the panel always means something.
+.B symbolic
+never colours it and
+.B colour
+always does.
+.TP
+.B \-\-help
+Print a usage summary and exit.
+.SH ACCESS
+Reading the daemon's status requires membership of the
+.B timeshift
+group. Nothing grants it automatically: it also exposes the machine's disk
+layout and every snapshot path, so it is an administrator's decision. The
+applet's menu offers to arrange it, or:
+.PP
+.RS
+.nf
+sudo gpasswd \-a "$USER" timeshift
+.fi
+.RE
+.PP
+The change takes effect at the next login. To take it away again use the
+applet's "Remove status access" item, or:
+.PP
+.RS
+.nf
+sudo gpasswd \-d "$USER" timeshift
+.fi
+.RE
+.SH REQUIREMENTS
+A tray icon needs a host implementing the StatusNotifierItem protocol. KDE
+Plasma, Xfce, MATE and Cinnamon provide one natively; GNOME Shell needs an
+appindicator extension:
+.PP
+.RS
+.nf
+gnome\-extensions enable ubuntu\-appindicators@ubuntu.com
+.fi
+.RE
+.PP
+With no such host the applet keeps running and says so once in the journal; the
+icon appears if a host arrives later.
+.SH FILES
+.TP
+.I /etc/xdg/autostart/timeshift\-tray.desktop
+Autostart entry. Disable it through the desktop's own startup\-applications
+settings rather than by editing this file.
+.TP
+.I /usr/libexec/timeshift\-tray/
+The three fixed\-argument wrappers run through
+.BR pkexec (1).
+.SH SEE ALSO
+.BR timeshift (1),
+.BR pkexec (1)
+.SH AUTHOR
+makeafide <willsmit4433@gmail.com>
