@@ -395,6 +395,20 @@ public class Device : GLib.Object{
 			dev.pkname_toplevel = (top == dev) ? "" : top.kname;
 		}
 
+		/* The static cache the by-uuid and by-name lookups read.
+		 *
+		 * It used to be filled inside get_block_devices_using_lsblk(), which
+		 * nothing calls now -- so get_device_by_uuid() searched a null list
+		 * and every caller got null. The visible effect was "Snapshot device
+		 * not available" on a machine whose repository is perfectly fine,
+		 * because the repository is resolved from the uuid in the config at
+		 * every start.
+		 *
+		 * It only shows on a LOCAL repository. A remote one is addressed by
+		 * url and never looks a device up, which is why a host configured
+		 * that way sees nothing wrong. */
+		device_list = list;
+
 		log_debug("Device: %d devices from the daemon".printf(list.size));
 		return list;
 	}

@@ -339,11 +339,24 @@ class RestoreBox : RestoreProgressBox {
 
 		var mounts = new Gee.HashMap<string,string>();
 		foreach (var entry in App.mount_list){
+
 			if (entry.mount_point.length == 0){ continue; }
-			// An entry with no device is deliberately left on the root
-			// filesystem, which the daemon spells as the empty string.
-			mounts.set(entry.mount_point,
-				(entry.device == null) ? "" : entry.device.device);
+
+			/* Only entries the person actually chose a device for.
+			 *
+			 * The page always shows /, /boot and /home, adding placeholders
+			 * for whichever the snapshot does not have -- so sending the list
+			 * whole offers the daemon mount points that do not exist in the
+			 * snapshot, and it refuses the request by name:
+			 *
+			 *   the snapshot has no mount point "/home"; it expects /, /boot/efi
+			 *
+			 * An omitted mount point is not a loss: the daemon builds the
+			 * default selection from the snapshot's own fstab when it is given
+			 * nothing, which is the same source this page started from. */
+			if (entry.device == null){ continue; }
+
+			mounts.set(entry.mount_point, entry.device.device);
 		}
 
 		/* skip_grub is the inverse of the checkbox, and the two other steps

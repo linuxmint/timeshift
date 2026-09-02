@@ -256,15 +256,28 @@ func (d *daemon) resolveLogPath(ctx context.Context, in ipc.LogParseParams) (str
 		if err != nil {
 			return "", nil, ipc.Errf(ipc.CodeUnavailable, "%v", err)
 		}
-		defer repo.Close()
 
 		snap, err := findSnapshot(ctx, repo, in.Snapshot)
 		if err != nil {
+			repo.Close()
 			return "", nil, err
 		}
+
 		if isLocalPath(snap.Path) {
-			return path.Join(snap.Path, name), nil, nil
+			/* The handle stays OPEN until the job ends.
+			 *
+			 * A local repository is mounted under the daemon's own run
+			 * directory, and closing the handle unmounts it -- so returning
+			 * the path and closing here handed the job a path that stopped
+			 * existing before it opened it. The parse then failed with "no
+			 * such file" against a snapshot that is plainly there.
+			 *
+			 * It only shows on a LOCAL repository. A remote one takes the
+			 * branch below, which mounts deliberately and releases the same
+			 * way. */
+			return path.Join(snap.Path, name), func() { repo.Close() }, nil
 		}
+		defer repo.Close()
 
 		/* A remote snapshot's log is not a local file, so mount the snapshot
 		 * and read it through that.

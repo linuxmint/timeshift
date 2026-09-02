@@ -228,6 +228,19 @@ class MainWindow : AppWindow{
 	 *
 	 * The daemon bridge must not take App.task away from it. */
 	private bool local_work_running(){
+
+		/* A wizard in THIS process already mirroring a daemon job counts as
+		 * work in progress.
+		 *
+		 * Without this the restore wizard and this window both adopt the same
+		 * job: each builds its own bridge, each replaces App.task with a fresh
+		 * one, and the wizard's page then sits on a dry run that has already
+		 * finished because the completion went to the other bridge. It only
+		 * appeared once the restore itself moved to the daemon -- before that,
+		 * a wizard-driven restore ran locally and App.task.status below was
+		 * enough to see it. */
+		if (DaemonBridge.has_active_job() && (daemon_bridge == null)){ return true; }
+
 		if (App.thread_delete_running){ return true; }
 		if (App.task == null){ return false; }
 		return (App.task.status == AppStatus.RUNNING) && (daemon_bridge == null);

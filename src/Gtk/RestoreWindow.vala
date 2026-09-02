@@ -404,6 +404,20 @@ class RestoreWindow : WizardWindow {
 				set_actions(false, false, false, true);
 				log_box.open_log(App.restore_log_file);
 			}
+			else if (App.snapshot_to_restore != null){
+				/* The DAEMON ran the restore, so the log is where it put it --
+				 * inside the snapshot for a current-system restore, which is
+				 * not a path this process can name.
+				 *
+				 * App.restore_log_file describes where the LOCAL core would
+				 * have written one. Judging the run by whether that exists
+				 * reported "Error running Rsync" over a restore the daemon had
+				 * just finished successfully. */
+				set_actions(false, false, false, true);
+				log_box.open_snapshot_log(
+					App.snapshot_to_restore.name, "rsync-log-restore",
+					App.snapshot_to_restore.rsync_restore_log_file);
+			}
 			else{
 				notebook.page = Tabs.FINISH;
 				initialize_tab();

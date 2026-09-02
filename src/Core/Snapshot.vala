@@ -38,6 +38,23 @@ public class Snapshot : GLib.Object{
 	public DateTime date;
 	public string sys_uuid = "";
 	public string sys_distro = "";
+
+	/* The distribution id, without needing the LinuxDistro object.
+	 *
+	 * `distro` is only built by the info.json path, which reads files inside
+	 * the snapshot -- impossible for a remote repository and skipped entirely
+	 * for a snapshot that came from the daemon. Anything that reached through
+	 * it therefore dereferenced null the moment the list stopped being read
+	 * locally, and the restore wizard did exactly that.
+	 *
+	 * sys_distro is the recorded full name and is always present, so the id is
+	 * derived from it when the object is absent. */
+	public string dist_id {
+		owned get {
+			if (distro != null){ return distro.dist_id; }
+			return sys_distro.down().contains("fedora") ? "fedora" : "";
+		}
+	}
 	public string app_version = "";
 	public string description = "";
 	public int64 file_count = 0;

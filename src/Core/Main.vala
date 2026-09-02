@@ -1693,7 +1693,7 @@ public class Main : GLib.Object{
 			update_grub = true;
 		}
 		else{
-			if (snapshot_to_restore.distro.dist_id == "fedora"){
+			if (snapshot_to_restore.dist_id == "fedora"){
 				// grub2-install should never be run on EFI fedora systems
 				reinstall_grub2 = false;
 				update_initramfs = false;
