@@ -216,13 +216,16 @@ Cinnamon have one built in; GNOME Shell needs an appindicator extension, which
 is what the package recommends.
 
 The icon is Timeshift's own shield with the state cut out of it - a tick, a
-ring while a snapshot runs, a badge for warning or error, an outline when the
-status cannot be read. By default it is monochrome like the desktop's own
-indicators and turns amber or red only when something needs attention;
-`TIMESHIFT_TRAY_ICONS=colour` keeps the brand colours on all the time and
-`=symbolic` never shows them. The menu leads with a verdict ("Protected - last
-snapshot 12 minutes ago"), then the schedule and the location in the daemon's
-own words, and a progress meter while a snapshot runs.
+ring that fills in eighths while a snapshot runs so progress shows without
+opening the menu, a badge for warning or error, an outline when the status
+cannot be read. By default it is monochrome like the desktop's own indicators
+and turns yellow or red only when something needs attention;
+`TIMESHIFT_TRAY_ICONS=colour` keeps the colours on all the time (the
+ShadowMorph palette, with the purple-to-blue gradient for work in progress)
+and `=symbolic` never shows them. The menu leads with a verdict ("Protected ·
+last snapshot 12 minutes ago · On demand") with a coloured dot per row, then
+the schedule and the location in the daemon's own words, and a progress meter
+while a snapshot runs.
 
 It autostarts at login. After using the menu's Quit, start it again from the
 app grid ("Timeshift Tray") or by running `timeshift-tray`; `man timeshift-tray`

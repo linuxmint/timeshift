@@ -186,6 +186,15 @@ for entry in "$AUTOSTART" "$LAUNCHER"; do
 	[ -n "$exec_path" ] && [ -e "$TMPD/${exec_path#/}" ] \
 		&& ok "Exec names a shipped file: $entry -> $exec_path" \
 		|| bad "$entry names $exec_path, which this package does not ship"
+	# The launcher icon is ours too; an Icon= that resolves to nothing shows a
+	# generic placeholder in the app grid with no error anywhere.
+	icon_name=$(sed -n 's/^Icon=//p' "$TMPD/$entry" | head -n1)
+	if [ -e "$TMPD/usr/share/icons/hicolor/scalable/apps/$icon_name.svg" ] \
+		&& [ -e "$TMPD/usr/share/icons/hicolor/48x48/apps/$icon_name.png" ]; then
+		ok "Icon names a shipped icon: $entry -> $icon_name"
+	else
+		bad "$entry names icon $icon_name, which this package does not ship at scalable and 48x48"
+	fi
 done
 
 # --- icons --------------------------------------------------------------------
@@ -207,9 +216,18 @@ if command -v python3 >/dev/null 2>&1 \
 			|| { bad "icons.ALL_ICONS names $name, with no 16x16 fallback"; missing=1; }
 	done
 	[ "$missing" -eq 0 ] && ok "every icon icons.ALL_ICONS names is installed"
+	# The menu's status discs: every key menutree can put on a row must have
+	# a file, or that row silently loses its dot.
+	missing=0
+	for key in $(cd "$TMPD/usr/lib/timeshift-tray" && python3 -c \
+		'from timeshift_tray import menutree; print("\n".join(menutree.ALL_DOTS))'); do
+		[ -s "$TMPD/usr/share/timeshift-tray/dots/$key.png" ] \
+			|| { bad "menutree.ALL_DOTS names $key, with no dot installed"; missing=1; }
+	done
+	[ "$missing" -eq 0 ] && ok "every dot menutree.ALL_DOTS names is installed"
 	if command -v xmllint >/dev/null 2>&1; then
 		svgfail=0
-		for f in "$TMPD"/usr/share/icons/hicolor/scalable/status/*.svg; do
+		for f in "$TMPD"/usr/share/icons/hicolor/scalable/*/*.svg; do
 			xmllint --noout "$f" 2>/dev/null \
 				|| { bad "malformed SVG: $(basename "$f")"; svgfail=1; }
 		done

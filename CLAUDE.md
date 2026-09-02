@@ -1243,20 +1243,39 @@ constraints shaped that, each learnt from a host:
   script.
 
 Two sets share the geometry: `timeshift-tray-<state>-symbolic` and
-`timeshift-tray-<state>` in the brand colours. `icons.icon_for(health, style)`
+`timeshift-tray-<state>` in colour. `icons.icon_for(health, style, progress)`
 picks between them; the default `auto` is symbolic until WARNING or ERROR, so
 colour on the panel means something. `ATTENTION_ICON` and every toast icon are
-always the colour set. `TIMESHIFT_TRAY_ICONS` overrides the style.
+always the colour set. `TIMESHIFT_TRAY_ICONS` overrides the style. BUSY with
+a fraction resolves to `busy-<0..7>`: the ring filled in eighths, so the
+panel shows progress on GNOME, which draws no tooltip. Eight steps is what
+16px can show and bounds `NewIcon` to eight signals per backup.
 
-The menu carries `icon-name` on every row that has a meaning (the GNOME host
-builds an `St.Icon` from it; KDE draws it natively), and the first row is a
-**verdict** -- "Protected", "Not protected", "Restored" -- rather than a fact
-with a qualifier appended, because a reassuring row over an incomplete or
-unreachable snapshot is wrong in exactly the state where it matters. The
-daemon's own `message`/`details` are still the location row, minus a bare
-"OK" when there are details (the row's icon says it). Progress is a text meter
-of U+25B0/U+25B1, which keep a uniform advance in proportional fonts where the
-block elements do not.
+**The palette is shadowmorph.com's**, read from its stylesheet rather than
+described: ink `#070e16`, green `#22c55e`, yellow `#eab308`, red `#ef4444`
+(badge `#b91c1c`), blue `#3b82f6`, muted `#888ea8`, and the six-stop
+purple-to-blue brand gradient (`#b100ff` .. `#0058ff`) for work in progress.
+The launcher icon `timeshift-tray` (scalable + 16..256 `apps/`) is the shield
+in ink on that gradient -- the composition of the site's own mark, gradient
+ground and dark shape -- and both `.desktop` entries name it. Gradients are
+plain `<linearGradient>`, which librsvg and QtSvg both implement.
+
+The menu's **status rows carry a coloured dot** as dbusmenu `icon-data`
+(16px PNGs in `share/timeshift-tray/dots`, loaded once by `app.py`, resolved
+from a key by `dbusmenu.prop_variant`), while action rows carry a themed
+`icon-name`. Never both on one row: the GNOME host draws `icon-data` only
+when `icon-name` is absent (`dbusMenu.js` `_updateImage`). `menutree` names a
+dot key and never touches bytes, so it stays free of files and of gi; a key
+with no bytes is dropped by the transport rather than raised.
+
+The first row is a **verdict** -- "Protected", "Not protected", "Restored" --
+rather than a fact with a qualifier appended, because a reassuring row over
+an incomplete or unreachable snapshot is wrong in exactly the state where it
+matters. The one separator is the middle dot, as in the site's "Shadow ·
+Morph · Focus". The daemon's own `message`/`details` are still the location
+row, minus a bare "OK" when there are details (the dot says it). Progress is
+a text meter of U+25B0/U+25B1, which keep a uniform advance in proportional
+fonts where the block elements do not.
 
 ### The two pkexec wrappers
 

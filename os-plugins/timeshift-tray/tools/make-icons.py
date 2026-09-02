@@ -1,23 +1,33 @@
 #!/usr/bin/env python3
 # Copyright 2026 makeafide <willsmit4433@gmail.com>
 # SPDX-License-Identifier: GPL-2.0-or-later
-"""Generate the tray's status icons.
+"""Generate every icon the tray ships.
 
-    tools/make-icons.py            # writes share/icons/hicolor/{scalable,16x16}/status
-    tools/make-icons.py --ascii    # also prints each icon at 16px, for the eye
+    tools/make-icons.py                 # writes share/icons/... and share/timeshift-tray/dots
+    tools/make-icons.py --ascii         # also prints each status icon at 16px, for the eye
+    tools/make-icons.py --preview P.png # also renders a contact sheet
 
-The shield is Timeshift's own: the path from src/share/timeshift/images/
-timeshift-shield-*.svg scaled onto a 16px grid, filled solid, with the state
-cut out of it as a white glyph -- the device the brand shields use. Two sets
-come out of the same geometry:
+Three families come out of one description of the geometry:
 
-  timeshift-tray-<state>-symbolic   one colour, recoloured by the panel
-  timeshift-tray-<state>            the brand colours, for when it must be seen
+  status icons   share/icons/hicolor/{scalable,16x16}/status/timeshift-tray-<state>[-symbolic]
+                 Timeshift's shield with the state cut out of it. The symbolic
+                 set is one colour and the panel recolours it; the colour set
+                 is the ShadowMorph palette, drawn as-is. `busy-0`..`busy-7`
+                 are the running state with the ring filled in eighths, so
+                 the panel shows progress without the menu being opened.
+  launcher icon  share/icons/hicolor/<size>/apps/timeshift-tray
+                 The shield in ink on the brand gradient, in the composition
+                 of shadowmorph.com's own mark: gradient ground, dark shape.
+  status dots    share/timeshift-tray/dots/<key>.png
+                 16px discs for the menu rows, sent as dbusmenu `icon-data`.
 
-Everything is a filled path with the evenodd rule and nothing else. No
-strokes: GTK recolours a symbolic icon by forcing `fill` on every shape and
-leaves `stroke` alone, so an outlined shield would come back solid. No masks
-or clipPaths: QtSvg, which Plasma renders through, does not implement them.
+Palette: shadowmorph.com's stylesheet (styles-*.css), read rather than guessed.
+
+Everything is a filled path with the evenodd rule; gradients are plain
+<linearGradient>, which librsvg and QtSvg both implement. No strokes: GTK
+recolours a symbolic icon by forcing `fill` on every shape and leaves
+`stroke` alone, so an outlined shield would come back solid. No masks or
+clipPaths: QtSvg, which Plasma renders through, has neither.
 
 The badges on warning and error overlap the shield with a one-pixel halo so
 they read as a separate shape when everything is one colour. A halo is a hole,
@@ -25,7 +35,7 @@ and a hole in a single-colour icon can only be made by parity -- but a circle
 cut out with evenodd is a hole only where it lies INSIDE the shield and a
 filled disc where it lies outside. So the halo is the intersection of the
 shield polygon and the halo shape, computed here by Sutherland-Hodgman, which
-is why this is a script and not five hand-written files.
+is why this is a script and not a folder of hand-written files.
 """
 
 import math
@@ -34,14 +44,40 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-SCALABLE = os.path.join(ROOT, "share/icons/hicolor/scalable/status")
-PNG16 = os.path.join(ROOT, "share/icons/hicolor/16x16/status")
+HICOLOR = os.path.join(ROOT, "share/icons/hicolor")
+SCALABLE = os.path.join(HICOLOR, "scalable/status")
+PNG16 = os.path.join(HICOLOR, "16x16/status")
+DOTS = os.path.join(ROOT, "share/timeshift-tray/dots")
+
+APP_ICON = "timeshift-tray"
+APP_SIZES = (16, 22, 24, 32, 48, 64, 128, 256)
+
+PROGRESS_STEPS = 8
+
+# --- the palette (shadowmorph.com) ------------------------------------------------
+
+INK = "#070e16"          # --c-ink: the dark ground
+GREEN = "#22c55e"        # --gc-hue-green
+YELLOW = "#eab308"       # --gc-hue-yellow
+RED = "#ef4444"          # --gc-hue-red
+RED_DEEP = "#b91c1c"     # --c-error (light scheme)
+BLUE = "#3b82f6"         # --gc-hue-blue
+MUTED = "#888ea8"        # --c-muted (dark scheme)
+WHITE = "#ffffff"
+
+# --gradient-brand, six stops, purple to blue.
+BRAND_STOPS = (("0", "#b100ff"), (".11", "#a704ff"), (".3", "#8e11ff"),
+               (".53", "#6425ff"), (".81", "#2b42ff"), ("1", "#0058ff"))
+BRAND = "url(#brand)"
+
+# The single colour the symbolic set is authored in. Every host replaces it.
+SYMBOLIC = INK
 
 # --- the brand shield ----------------------------------------------------------
 
-# Cubic segments of the 64px brand shield, top centre first, clockwise.
-# (from timeshift-shield-high.svg: m 32 8 c ... z)
-_BRAND = [
+# Cubic segments of the 64px Timeshift shield, top centre first, clockwise
+# (from src/share/timeshift/images/timeshift-shield-high.svg: m 32 8 c ... z).
+_BRAND_SHIELD = [
     ((32, 8), (45.846, 8.001), (52, 14.711), (52, 14.711)),
     ((52, 14.711), (52, 32.283), (52, 32.283), (52, 32.283)),
     ((52, 32.283), (52, 48.393), (32, 55.865), (32, 55.865)),
@@ -63,7 +99,7 @@ def _bez(p0, p1, p2, p3, t):
 def shield_polygon(inset=0.0, steps=12):
     """The shield as a closed polygon in 16px units, optionally inset."""
     pts = []
-    for p0, p1, p2, p3 in _BRAND:
+    for p0, p1, p2, p3 in _BRAND_SHIELD:
         for i in range(steps):
             x, y = _bez(p0, p1, p2, p3, i / steps)
             pts.append((x * SCALE + TX, y * SCALE + TY))
@@ -83,8 +119,32 @@ def circle(cx, cy, r, n=40):
              cy + r * math.sin(2 * math.pi * i / n)) for i in range(n)]
 
 
+def annular_sector(cx, cy, r_out, r_in, fraction, n=64):
+    """The ring between two radii, from 12 o'clock clockwise for `fraction`."""
+    if fraction <= 0:
+        return []
+    steps = max(2, int(round(n * fraction)))
+    start = -math.pi / 2
+    sweep = 2 * math.pi * min(1.0, fraction)
+    outer = [(cx + r_out * math.cos(start + sweep * i / steps),
+              cy + r_out * math.sin(start + sweep * i / steps)) for i in range(steps + 1)]
+    inner = [(cx + r_in * math.cos(start + sweep * i / steps),
+              cy + r_in * math.sin(start + sweep * i / steps)) for i in range(steps, -1, -1)]
+    return outer + inner
+
+
 def rect(x0, y0, x1, y1):
     return [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+
+
+def rounded_square(size, radius, n=12):
+    pts = []
+    for cx, cy, a0 in ((size - radius, radius, -90), (size - radius, size - radius, 0),
+                       (radius, size - radius, 90), (radius, radius, 180)):
+        for i in range(n + 1):
+            a = math.radians(a0 + 90 * i / n)
+            pts.append((cx + radius * math.cos(a), cy + radius * math.sin(a)))
+    return pts
 
 
 def rotated_rect(cx, cy, length, width, degrees):
@@ -99,12 +159,12 @@ def scaled_about(poly, cx, cy, factor):
     return [(cx + (x - cx) * factor, cy + (y - cy) * factor) for x, y in poly]
 
 
-def clip(subject, clipper):
-    """Sutherland-Hodgman: subject polygon clipped to a CONVEX clipper.
+def scaled(poly, factor, dx=0, dy=0):
+    return [(x * factor + dx, y * factor + dy) for x, y in poly]
 
-    Both wound consistently; the clipper's winding is detected so the caller
-    need not care.
-    """
+
+def clip(subject, clipper):
+    """Sutherland-Hodgman: subject polygon clipped to a CONVEX clipper."""
     def area(p):
         return sum(p[i][0] * p[(i + 1) % len(p)][1] - p[(i + 1) % len(p)][0] * p[i][1]
                    for i in range(len(p))) / 2
@@ -146,17 +206,19 @@ def d(poly):
 
 
 def path_d(*polys):
-    return "".join(d(p) for p in polys)
+    return "".join(d(p) for p in polys if p)
 
 
-# --- the glyphs ----------------------------------------------------------------
+# --- the glyphs (16px status icons) --------------------------------------------
 
 SHIELD = shield_polygon()
 
 TICK = [(4.6, 8.2), (6.0, 6.8), (7.4, 8.2), (10.6, 5.0), (12.0, 6.4), (7.4, 11.0)]
 
-RING_OUTER = circle(8, 8.2, 3.4)
-RING_INNER = circle(8, 8.2, 1.6)
+RING_C = (8, 8.2)
+RING_R_OUT, RING_R_IN = 3.4, 1.6
+RING_OUTER = circle(*RING_C, RING_R_OUT)
+RING_INNER = circle(*RING_C, RING_R_IN)
 
 # Apex up, base on the pixel row at y=15.2 so it does not antialias away.
 WARN_BADGE = [(11.5, 7.6), (15.7, 15.2), (7.3, 15.2)]
@@ -172,60 +234,60 @@ ERR_X2 = rotated_rect(11.6, 11.5, 4.2, 1.7, -45)
 
 INACTIVE_INNER = shield_polygon(inset=1.6)
 
-# Brand colours, from src/share/timeshift/images/timeshift-shield-*.svg.
-GREEN = "#79d073"
-AMBER = "#eec758"
-RED = "#ee545b"
-RED_DARK = "#c94b51"
-GREY = "#9a9996"
-WHITE = "#ffffff"
 
-# The single colour the symbolic set is authored in. Every host replaces it.
-SYMBOLIC = "#2e3436"
+def gradient_defs():
+    stops = "".join('<stop offset="%s" stop-color="%s"/>' % s for s in BRAND_STOPS)
+    # 225deg in CSS terms: purple at the top right, blue at the bottom left.
+    return ('<defs><linearGradient id="brand" x1="1" y1="0" x2="0" y2="1">'
+            '%s</linearGradient></defs>' % stops)
 
 
-def symbolic(shapes):
-    """One evenodd path: every polygon toggles parity."""
-    return ['<path fill-rule="evenodd" d="%s"/>' % path_d(*shapes)]
+def status_icons():
+    """name -> (title, symbolic polygons in parity order, colour layers).
+
+    A colour layer is (fill, polygons) or (fill, polygons, opacity).
+    """
+    out = {
+        "ok": ("Snapshots are up to date",
+               [SHIELD, TICK],
+               [(GREEN, [SHIELD]), (WHITE, [TICK])]),
+        "busy": ("A snapshot is running",
+                 [SHIELD, RING_OUTER, RING_INNER],
+                 [(BRAND, [SHIELD]), (WHITE, [RING_OUTER, RING_INNER])]),
+        "warning": ("Snapshots need attention",
+                    [SHIELD, clip(SHIELD, WARN_HALO), WARN_BADGE, WARN_BAR, WARN_DOT],
+                    [(YELLOW, [SHIELD, clip(SHIELD, WARN_HALO)]),
+                     (RED, [WARN_BADGE]), (WHITE, [WARN_BAR, WARN_DOT])]),
+        "error": ("Snapshots are failing",
+                  [SHIELD, clip(SHIELD, ERR_HALO), ERR_BADGE, ERR_X1, ERR_X2],
+                  [(RED, [SHIELD, clip(SHIELD, ERR_HALO)]),
+                   (RED_DEEP, [ERR_BADGE]), (WHITE, [ERR_X1, ERR_X2])]),
+        "inactive": ("Timeshift status is unavailable",
+                     [SHIELD, INACTIVE_INNER],
+                     [(MUTED, [SHIELD, INACTIVE_INNER])]),
+    }
+    for n in range(PROGRESS_STEPS):
+        sector = annular_sector(*RING_C, RING_R_OUT, RING_R_IN, n / PROGRESS_STEPS)
+        out["busy-%d" % n] = (
+            "A snapshot is running, %d%% done" % (100 * n // PROGRESS_STEPS),
+            # The ring is a hole (parity 2); the sector fills it back in (3).
+            [SHIELD, RING_OUTER, RING_INNER, sector],
+            [(BRAND, [SHIELD]),
+             (WHITE, [RING_OUTER, RING_INNER], 0.35),
+             (WHITE, [sector])])
+    return out
 
 
-STATES = {
-    # name: (title, symbolic polygons in parity order, colour layers)
-    "ok": (
-        "Snapshots are up to date",
-        [SHIELD, TICK],
-        [(GREEN, [SHIELD]), (WHITE, [TICK])],
-    ),
-    "busy": (
-        "A snapshot is running",
-        [SHIELD, RING_OUTER, RING_INNER],
-        [(GREEN, [SHIELD]), (WHITE, [RING_OUTER, RING_INNER])],
-    ),
-    "warning": (
-        "Snapshots need attention",
-        [SHIELD, clip(SHIELD, WARN_HALO), WARN_BADGE, WARN_BAR, WARN_DOT],
-        [(AMBER, [SHIELD, clip(SHIELD, WARN_HALO)]),
-         (RED, [WARN_BADGE]), (WHITE, [WARN_BAR, WARN_DOT])],
-    ),
-    "error": (
-        "Snapshots are failing",
-        [SHIELD, clip(SHIELD, ERR_HALO), ERR_BADGE, ERR_X1, ERR_X2],
-        [(RED, [SHIELD, clip(SHIELD, ERR_HALO)]),
-         (RED_DARK, [ERR_BADGE]), (WHITE, [ERR_X1, ERR_X2])],
-    ),
-    "inactive": (
-        "Timeshift status is unavailable",
-        [SHIELD, INACTIVE_INNER],
-        [(GREY, [SHIELD, INACTIVE_INNER])],
-    ),
-}
+# --- writing -------------------------------------------------------------------
 
-
-def svg(title, body, symbolic_set):
+def svg(title, body, size=16, symbolic_set=False, defs=""):
     head = ['<?xml version="1.0" encoding="UTF-8"?>',
-            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">',
+            '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">'
+            % (size, size, size, size),
             "  <title>%s</title>" % title,
             "  <!-- Generated by tools/make-icons.py; edit that, not this. -->"]
+    if defs:
+        head.append("  " + defs)
     if symbolic_set:
         head.append('  <style type="text/css" class="current-color-scheme">'
                     '.ColorScheme-Text{color:%s;}</style>' % SYMBOLIC)
@@ -235,21 +297,63 @@ def svg(title, body, symbolic_set):
     return "\n".join(head + ["    " + line for line in body] + ["  </g>", "</svg>", ""])
 
 
-def build_all():
+def colour_body(layers):
+    body = []
+    for layer in layers:
+        fill, polys = layer[0], layer[1]
+        opacity = ' fill-opacity="%s"' % layer[2] if len(layer) > 2 else ""
+        body.append('<path fill="%s"%s fill-rule="evenodd" d="%s"/>'
+                    % (fill, opacity, path_d(*polys)))
+    return body
+
+
+def status_svgs():
     out = {}
-    for state, (title, parity, layers) in STATES.items():
-        out["timeshift-tray-%s-symbolic" % state] = svg(title, symbolic(parity), True)
-        colour_body = ['<path fill="%s" fill-rule="evenodd" d="%s"/>' % (fill, path_d(*polys))
-                       for fill, polys in layers]
-        out["timeshift-tray-%s" % state] = svg(title, colour_body, False)
+    for state, (title, parity, layers) in status_icons().items():
+        out["timeshift-tray-%s-symbolic" % state] = svg(
+            title, ['<path fill-rule="evenodd" d="%s"/>' % path_d(*parity)],
+            symbolic_set=True)
+        uses_brand = any(layer[0] == BRAND for layer in layers)
+        out["timeshift-tray-%s" % state] = svg(
+            title, colour_body(layers), defs=gradient_defs() if uses_brand else "")
     return out
 
 
-def write_png(svg_path, png_path):
+def app_icon_svg(size=512):
+    """The launcher icon: ink shield with a white tick on the brand gradient."""
+    ground = rounded_square(size, size * 0.22)
+    # The 16px shield spans y 0.8..15.2; scale it to ~58% of the tile.
+    factor = size * 0.58 / 14.4
+    dx = size / 2 - 8 * factor
+    dy = size / 2 - 8 * factor
+    shield = scaled(SHIELD, factor, dx, dy)
+    tick = scaled(TICK, factor, dx, dy)
+    body = ['<path fill="%s" d="%s"/>' % (BRAND, d(ground)),
+            '<path fill="%s" fill-rule="evenodd" d="%s"/>' % (INK, path_d(shield, tick))]
+    return svg("Timeshift Tray", body, size=size, defs=gradient_defs())
+
+
+DOT_FILLS = {
+    "green": GREEN,
+    "yellow": YELLOW,
+    "red": RED,
+    "blue": BLUE,
+    "grey": MUTED,
+    "brand": BRAND,
+}
+
+
+def dot_svg(fill, size=16, r=5):
+    defs = gradient_defs() if fill == BRAND else ""
+    return svg("status", ['<path fill="%s" d="%s"/>' % (fill, d(circle(size / 2, size / 2, r)))],
+               size=size, defs=defs)
+
+
+def write_png(svg_path, png_path, size):
     import gi
     gi.require_version("GdkPixbuf", "2.0")
     from gi.repository import GdkPixbuf
-    pix = GdkPixbuf.Pixbuf.new_from_file_at_size(svg_path, 16, 16)
+    pix = GdkPixbuf.Pixbuf.new_from_file_at_size(svg_path, size, size)
     pix.savev(png_path, "png", [], [])
     return pix
 
@@ -269,14 +373,20 @@ def ascii_art(pix):
 
 
 def contact_sheet(names, path, size=48, pad=8):
-    """Every icon at `size`px on one PNG, colour row over symbolic row."""
+    """The named icons at `size`px, colour row over symbolic row, on ink."""
     import gi
     gi.require_version("GdkPixbuf", "2.0")
     from gi.repository import GdkPixbuf
-    cols = len(names) // 2
+    cols = (len(names) + 1) // 2
     sheet = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8,
                                  cols * (size + pad) + pad, 2 * (size + pad) + pad)
-    sheet.fill(0xf6f5f4ff)
+    sheet.fill(0x070e16ff)
+    # The symbolic row is authored in ink, so give it the site's light ground.
+    light = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8,
+                                 sheet.get_width(), size + pad)
+    light.fill(0xe0e6edff)
+    light.copy_area(0, 0, light.get_width(), light.get_height(), sheet,
+                    0, size + pad + pad // 2)
     for i, name in enumerate(names):
         pix = GdkPixbuf.Pixbuf.new_from_file_at_size(
             os.path.join(SCALABLE, name + ".svg"), size, size)
@@ -289,25 +399,48 @@ def contact_sheet(names, path, size=48, pad=8):
 
 def main(argv):
     show = "--ascii" in argv
-    preview = None
-    if "--preview" in argv:
-        preview = argv[argv.index("--preview") + 1]
+    preview = argv[argv.index("--preview") + 1] if "--preview" in argv else None
+
     os.makedirs(SCALABLE, exist_ok=True)
     os.makedirs(PNG16, exist_ok=True)
-    for name, text in sorted(build_all().items()):
+    svgs = status_svgs()
+    for name in sorted(svgs):
         svg_path = os.path.join(SCALABLE, name + ".svg")
         with open(svg_path, "w") as handle:
-            handle.write(text)
-        pix = write_png(svg_path, os.path.join(PNG16, name + ".png"))
-        size = os.path.getsize(svg_path)
-        print("%-32s %5d bytes" % (name, size))
+            handle.write(svgs[name])
+        pix = write_png(svg_path, os.path.join(PNG16, name + ".png"), 16)
+        print("%-34s %5d bytes" % (name, os.path.getsize(svg_path)))
         if show:
             print(ascii_art(pix))
             print()
+
+    apps_scalable = os.path.join(HICOLOR, "scalable/apps")
+    os.makedirs(apps_scalable, exist_ok=True)
+    app_svg = os.path.join(apps_scalable, APP_ICON + ".svg")
+    with open(app_svg, "w") as handle:
+        handle.write(app_icon_svg())
+    for size in APP_SIZES:
+        folder = os.path.join(HICOLOR, "%dx%d/apps" % (size, size))
+        os.makedirs(folder, exist_ok=True)
+        write_png(app_svg, os.path.join(folder, APP_ICON + ".png"), size)
+    print("%-34s %s" % (APP_ICON, ", ".join(str(s) for s in APP_SIZES)))
+
+    os.makedirs(DOTS, exist_ok=True)
+    for key, fill in DOT_FILLS.items():
+        svg_path = os.path.join(DOTS, key + ".svg")
+        with open(svg_path, "w") as handle:
+            handle.write(dot_svg(fill))
+        write_png(svg_path, os.path.join(DOTS, key + ".png"), 16)
+        os.remove(svg_path)
+    print("%-34s %s" % ("dots", ", ".join(DOT_FILLS)))
+
     if preview:
-        names = sorted(build_all())
-        contact_sheet([n for n in names if not n.endswith("-symbolic")]
-                      + [n for n in names if n.endswith("-symbolic")], preview)
+        base = sorted(n for n in svgs if not n.split("-symbolic")[0][-1].isdigit())
+        steps = ["timeshift-tray-busy-%d" % n for n in (2, 5)]
+        names = ([n for n in base if not n.endswith("-symbolic")] + steps
+                 + [n for n in base if n.endswith("-symbolic")]
+                 + [s + "-symbolic" for s in steps])
+        contact_sheet(names, preview)
         print("preview:", preview)
     return 0
 

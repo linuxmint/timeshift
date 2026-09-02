@@ -195,6 +195,21 @@ class AppearanceTest(ControllerTest):
         self.draw()
         self.assertEqual(self.item.icon, "timeshift-tray-ok")
 
+    def test_the_panel_icon_fills_its_ring_as_the_snapshot_progresses(self):
+        """Progress without opening the menu, which GNOME gives no tooltip for."""
+        self.connect()
+        self.ctl.on_event(fakes.event("job.started", "j-1", kind="create",
+                                      state="running"))
+        self.draw()
+        self.assertEqual(self.item.icon, "timeshift-tray-busy-symbolic")
+        self.ctl.on_event(fakes.event("job.progress", "j-1", kind="create",
+                                      progress={"percent": 0.55, "count": 5,
+                                                "total": 10}))
+        self.draw()
+        self.assertEqual(self.item.icon, "timeshift-tray-busy-4-symbolic")
+        self.assertIn("Creating snapshot", self.item.tooltip[1])
+        self.assertEqual(self.item.tooltip_icon, "timeshift-tray-busy-4")
+
     def test_the_tooltip_is_verdict_then_schedule_with_the_colour_shield(self):
         self.connect()
         self.draw()

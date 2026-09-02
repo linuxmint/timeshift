@@ -87,6 +87,11 @@ TIMESHIFT_CLI = "/usr/bin/timeshift"
 
 LAUNCHER = "timeshift-launcher"
 
+# The 16px discs the menu's status rows carry as dbusmenu icon-data. PNG bytes
+# rather than themed names because the host draws icon-data as it is, colour
+# and all, where a themed symbolic name is recoloured to the menu text.
+DOTS_DIR = "/usr/share/timeshift-tray/dots"
+
 # --- tuning -------------------------------------------------------------------
 
 SCHEDULE_POLL_SECONDS = 60

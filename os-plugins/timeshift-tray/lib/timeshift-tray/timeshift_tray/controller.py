@@ -576,17 +576,32 @@ class Controller:
         now = self.clock()
         self.menu.set_tree(menutree.build_menu(self.state, now, self._ids))
         health = self.state.health(now)
-        self.item.set_icon(icons.icon_for(health, self.icon_style),
+        progress = self._progress_fraction()
+        self.item.set_icon(icons.icon_for(health, self.icon_style, progress),
                            attention=icons.wants_attention(health))
         self.item.set_tooltip(ITEM_TITLE, self._tooltip_body(now),
-                              icons.icon_for(health, icons.STYLE_COLOUR))
+                              icons.icon_for(health, icons.STYLE_COLOUR,
+                                             progress))
+
+    def _progress_fraction(self):
+        """The running job's fraction, or None when it has none to show."""
+        job = self.state.job
+        if job is None or not job.active or job.progress.indeterminate:
+            return None
+        return job.progress.percent
 
     def _tooltip_body(self, now):
-        """The verdict and the schedule, for hosts that show a tooltip."""
+        """The verdict and the schedule -- and the job while one runs -- for
+        hosts that show a tooltip."""
         if not self._ready():
             return ""
         headline, schedule, _location = menutree.summary_lines(self.state, now)
-        return "%s\n%s" % (headline, schedule)
+        lines = [headline, schedule]
+        job = self.state.job
+        if job is not None and job.active:
+            head, detail = menutree.job_lines(job)
+            lines.append(head if not detail else "%s (%s)" % (head, detail))
+        return "\n".join(lines)
 
     def on_about_to_show(self, item_id):
         if item_id == 0:

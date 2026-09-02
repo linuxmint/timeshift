@@ -90,7 +90,37 @@ class LayoutTest(unittest.TestCase):
         node = next(n for n in root.walk() if n.key == "action.open")
         self.assertEqual(set(node.props()), {"label", "icon-name"})
         status = next(n for n in root.walk() if n.key == "status.snapshot")
-        self.assertEqual(set(status.props()), {"label", "enabled", "icon-name"})
+        self.assertEqual(set(status.props()), {"label", "enabled", "icon-data"})
+
+
+class IconDataTest(unittest.TestCase):
+    """A dot is a key in the tree and PNG bytes on the wire."""
+
+    def node(self):
+        root = ready_menu()
+        return next(n for n in root.walk() if n.key == "status.snapshot")
+
+    def test_bytes_pack_as_ay(self):
+        node = self.node()
+        props = dbusmenu.props_variant(node, None, {node.dot: b"\x89PNG.."})
+        self.assertEqual(props["icon-data"].get_type_string(), "ay")
+        self.assertEqual(bytes(props["icon-data"]), b"\x89PNG..")
+
+    def test_a_key_with_no_bytes_is_dropped_not_raised(self):
+        node = self.node()
+        props = dbusmenu.props_variant(node, None, {})
+        self.assertNotIn("icon-data", props)
+        self.assertIn("label", props)
+        props = dbusmenu.props_variant(node, None, None)
+        self.assertNotIn("icon-data", props)
+
+    def test_the_layout_carries_the_bytes(self):
+        root = ready_menu()
+        node = self.node()
+        _rev, layout = dbusmenu.layout_variant(
+            1, root, -1, None, {node.dot: b"png"}).unpack()
+        rows = {row[0]: row[1] for row in layout[2]}
+        self.assertEqual(bytes(rows[node.id]["icon-data"]), b"png")
 
 
 class DiffTest(unittest.TestCase):

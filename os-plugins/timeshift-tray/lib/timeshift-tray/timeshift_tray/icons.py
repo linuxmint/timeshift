@@ -42,6 +42,12 @@ _STATE = {
 
 _COLOUR_IN_AUTO = frozenset((Health.WARNING, Health.ERROR))
 
+# The running state is drawn with its ring filled in eighths, so the panel
+# shows how far a snapshot has got without the menu being opened. Eight is
+# what 16 pixels can show; more steps would be more NewIcon signals for no
+# visible difference.
+PROGRESS_STEPS = 8
+
 
 def symbolic_name(state):
     return "timeshift-tray-%s-symbolic" % state
@@ -57,9 +63,23 @@ ATTENTION_ICON = colour_name("error")
 
 # Every name this module can return, for check-deb.sh to verify against the
 # files the package actually installs.
+_ALL_STATES = tuple(_STATE.values()) + tuple(
+    "busy-%d" % n for n in range(PROGRESS_STEPS))
 ALL_ICONS = tuple(sorted(
-    {symbolic_name(s) for s in _STATE.values()}
-    | {colour_name(s) for s in _STATE.values()}))
+    {symbolic_name(s) for s in _ALL_STATES}
+    | {colour_name(s) for s in _ALL_STATES}))
+
+
+def progress_step(fraction):
+    """0..1 -> 0..PROGRESS_STEPS-1, or None when there is no fraction.
+
+    Never the full ring before the job has finished: the last step means "one
+    eighth to go", and a job at 100% is about to stop being busy at all.
+    """
+    if fraction is None:
+        return None
+    fraction = min(1.0, max(0.0, float(fraction)))
+    return min(PROGRESS_STEPS - 1, int(fraction * PROGRESS_STEPS))
 
 
 def parse_style(text, default=STYLE_AUTO):
@@ -70,8 +90,13 @@ def parse_style(text, default=STYLE_AUTO):
     return value if value in STYLES else default
 
 
-def icon_for(health, style=STYLE_AUTO):
+def icon_for(health, style=STYLE_AUTO, progress=None):
+    """The panel icon. `progress` is a 0..1 fraction, only read for BUSY."""
     state = _STATE.get(health, "ok")
+    if health is Health.BUSY:
+        step = progress_step(progress)
+        if step is not None:
+            state = "busy-%d" % step
     if style == STYLE_COLOUR:
         return colour_name(state)
     if style == STYLE_AUTO and health in _COLOUR_IN_AUTO:

@@ -85,7 +85,22 @@ DBUSMENU_XML = """
 """
 
 
-def props_variant(node, names=None):
+def prop_variant(key, value, icon_data=None):
+    """One property as a variant, or None for one that cannot be sent.
+
+    icon-data is the only indirection: the tree names a dot and the bytes
+    live here, so the tree stays free of files. A key with no bytes behind it
+    is dropped -- the row then has no icon, which beats a row that raises.
+    """
+    if key == "icon-data":
+        data = (icon_data or {}).get(value)
+        if not data:
+            return None
+        return GLib.Variant("ay", data)
+    return GLib.Variant(menutree.PROP_TYPES[key], value)
+
+
+def props_variant(node, names=None, icon_data=None):
     """One item's properties as a{sv}, honouring the requested subset.
 
     An empty `names` means "everything", which is what the GNOME host asks for.
@@ -95,38 +110,42 @@ def props_variant(node, names=None):
     for key, value in node.props().items():
         if wanted and key not in wanted:
             continue
-        out[key] = GLib.Variant(menutree.PROP_TYPES[key], value)
+        variant = prop_variant(key, value, icon_data)
+        if variant is not None:
+            out[key] = variant
     return out
 
 
-def layout_tuple(node, depth, names=None):
+def layout_tuple(node, depth, names=None, icon_data=None):
     """The (ia{sv}av) triple. depth < 0 means unlimited."""
     if depth == 0:
         children = []
     else:
         children = [
-            GLib.Variant("(ia{sv}av)", layout_tuple(child, depth - 1, names))
+            GLib.Variant("(ia{sv}av)",
+                         layout_tuple(child, depth - 1, names, icon_data))
             for child in node.children if child.visible
         ]
-    return (node.id, props_variant(node, names), children)
+    return (node.id, props_variant(node, names, icon_data), children)
 
 
-def layout_variant(revision, node, depth, names=None):
+def layout_variant(revision, node, depth, names=None, icon_data=None):
     return GLib.Variant("(u(ia{sv}av))",
-                        (revision, layout_tuple(node, depth, names)))
+                        (revision, layout_tuple(node, depth, names, icon_data)))
 
 
 class DBusMenu:
     """Exports one menu tree and keeps hosts told about changes."""
 
     def __init__(self, bus, path, on_action, on_about_to_show=None,
-                 on_visibility=None, log=None):
+                 on_visibility=None, log=None, icon_data=None):
         self._bus = bus
         self._path = path
         self._on_action = on_action
         self._on_about_to_show = on_about_to_show
         self._on_visibility = on_visibility
         self._log = log or (lambda *_a, **_k: None)
+        self._icon_data = dict(icon_data or {})   # dot key -> PNG bytes
 
         self._root = menutree.Node(0, "root")
         self._index = {0: self._root}
@@ -167,11 +186,15 @@ class DBusMenu:
             return
         updated, removed = menutree.diff_props(old, root)
         if updated or removed:
-            rows = [
-                (item_id, {key: GLib.Variant(menutree.PROP_TYPES[key], value)
-                           for key, value in changed.items()})
-                for item_id, changed in updated
-            ]
+            rows = []
+            for item_id, changed in updated:
+                variants = {}
+                for key, value in changed.items():
+                    variant = prop_variant(key, value, self._icon_data)
+                    if variant is not None:
+                        variants[key] = variant
+                if variants:
+                    rows.append((item_id, variants))
             self._emit("ItemsPropertiesUpdated",
                        GLib.Variant("(a(ia{sv})a(ias))", (rows, removed)))
 
@@ -212,18 +235,20 @@ class DBusMenu:
                     "no such menu item: %d" % parent_id)
                 return
             invocation.return_value(
-                layout_variant(self._revision, node, depth, names))
+                layout_variant(self._revision, node, depth, names,
+                               self._icon_data))
 
         elif method == "GetGroupProperties":
             ids, names = params.unpack()
-            rows = [(i, props_variant(self._index[i], names))
+            rows = [(i, props_variant(self._index[i], names, self._icon_data))
                     for i in ids if i in self._index]
             invocation.return_value(GLib.Variant("(a(ia{sv}))", (rows,)))
 
         elif method == "GetProperty":
             item_id, name = params.unpack()
             node = self._index.get(item_id)
-            value = props_variant(node, [name]).get(name) if node else None
+            value = (props_variant(node, [name], self._icon_data).get(name)
+                     if node else None)
             if value is None:
                 default = menutree.PROP_DEFAULTS.get(name)
                 value = (GLib.Variant(menutree.PROP_TYPES[name], default)

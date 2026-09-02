@@ -70,8 +70,7 @@ class ShapeTest(unittest.TestCase):
         # it, and the fact is the number.
         self.assertEqual(find(root, "status.location").label,
                          "26 snapshots, 29.9 TB free")
-        self.assertEqual(find(root, "status.location").icon_name,
-                         menutree.ICON_LOCATION)
+        self.assertEqual(find(root, "status.location").dot, menutree.DOT_OK)
 
     def test_no_access_offers_the_way_out(self):
         state = model.TrayState()
@@ -129,7 +128,8 @@ class RunningJobTest(unittest.TestCase):
         head = find(root, "job.head")
         self.assertTrue(head.visible)
         self.assertEqual(head.label, "Creating snapshot  ▰▰▰▰▱▱▱▱▱▱ 43%")
-        self.assertEqual(head.icon_name, menutree.ICON_BUSY)
+        self.assertEqual(head.dot, menutree.DOT_BUSY)
+        self.assertEqual(head.props()["icon-data"], menutree.DOT_BUSY)
         self.assertEqual(find(root, "job.detail").label,
                          "12,309 of 28,400 files · 1 minute left")
 
@@ -222,16 +222,16 @@ class HeadlineTest(unittest.TestCase):
 
     def test_protected_names_the_age_and_the_level(self):
         node = self.headline(ready_state())
-        self.assertTrue(node.label.startswith("Protected — last snapshot "))
-        self.assertIn("(", node.label)
-        self.assertEqual(node.icon_name, menutree.ICON_PROTECTED)
+        self.assertTrue(node.label.startswith("Protected · last snapshot "))
+        self.assertEqual(node.label.count(" · "), 2, node.label)
+        self.assertEqual(node.dot, menutree.DOT_OK)
 
     def test_no_snapshots_is_not_protected(self):
         state = ready_state()
         state.snapshots = []
         node = self.headline(state)
-        self.assertEqual(node.label, "Not protected — no snapshots yet")
-        self.assertEqual(node.icon_name, menutree.ICON_UNPROTECTED)
+        self.assertEqual(node.label, "Not protected · no snapshots yet")
+        self.assertEqual(node.dot, menutree.DOT_FAULT)
 
     def test_an_incomplete_latest_is_not_protected(self):
         state = ready_state()
@@ -239,16 +239,16 @@ class HeadlineTest(unittest.TestCase):
             snap.valid = False
         node = self.headline(state)
         self.assertEqual(node.label,
-                         "Not protected — last snapshot is incomplete")
-        self.assertEqual(node.icon_name, menutree.ICON_UNPROTECTED)
+                         "Not protected · last snapshot is incomplete")
+        self.assertEqual(node.dot, menutree.DOT_FAULT)
 
     def test_a_pre_restore_snapshot_says_restored(self):
         state = ready_state()
         for snap in state.snapshots:
             snap.live = True
         node = self.headline(state)
-        self.assertTrue(node.label.startswith("Restored — previous system kept "))
-        self.assertEqual(node.icon_name, menutree.ICON_RESTORED)
+        self.assertTrue(node.label.startswith("Restored · previous system kept "))
+        self.assertEqual(node.dot, menutree.DOT_INFO)
 
     def test_an_unreachable_location_is_not_protected(self):
         """A snapshot that cannot be reached protects nothing, however recent."""
@@ -257,18 +257,19 @@ class HeadlineTest(unittest.TestCase):
             {"available": False, "message": "Snapshot device not available"})
         node = self.headline(state)
         self.assertEqual(node.label,
-                         "Not protected — snapshot location unavailable")
+                         "Not protected · snapshot location unavailable")
         loc = find(build(state), "status.location")
         self.assertEqual(loc.label, "Snapshot device not available")
-        self.assertEqual(loc.icon_name, menutree.ICON_LOCATION_FAULT)
+        self.assertEqual(loc.dot, menutree.DOT_FAULT)
 
     def test_a_stale_location_keeps_the_last_verdict(self):
         """A transport failure is not a verdict about the repository."""
         state = ready_state()
         state.repo_stale = True
         self.assertTrue(self.headline(state).label.startswith("Protected"))
-        self.assertTrue(find(build(state), "status.location").label
-                        .endswith("(last known)"))
+        loc = find(build(state), "status.location")
+        self.assertTrue(loc.label.endswith("(last known)"))
+        self.assertEqual(loc.dot, menutree.DOT_WARN)
 
 
 class ScheduleRowTest(unittest.TestCase):
@@ -281,17 +282,16 @@ class ScheduleRowTest(unittest.TestCase):
     def test_next_check_is_a_clock_time(self):
         node = self.row(next_run=NOW + datetime.timedelta(minutes=7))
         self.assertTrue(node.label.startswith("Next check "))
-        self.assertEqual(node.icon_name, menutree.ICON_SCHEDULE)
+        self.assertEqual(node.dot, menutree.DOT_INFO)
 
     def test_faults_get_the_warning_icon(self):
         self.assertEqual(self.row(running=False).label, "Scheduler not running")
-        self.assertEqual(self.row(running=False).icon_name,
-                         menutree.ICON_SCHEDULE_FAULT)
+        self.assertEqual(self.row(running=False).dot, menutree.DOT_WARN)
         self.assertEqual(self.row(last_error="boom").label,
-                         "Last check failed — boom")
+                         "Last check failed · boom")
         late = self.row(next_run=NOW - datetime.timedelta(minutes=25))
         self.assertEqual(late.label, "Check overdue by 25 minutes")
-        self.assertEqual(late.icon_name, menutree.ICON_SCHEDULE_FAULT)
+        self.assertEqual(late.dot, menutree.DOT_WARN)
 
     def test_off_and_live_are_not_faults(self):
         self.assertEqual(self.row(enabled=False).label,
@@ -300,7 +300,7 @@ class ScheduleRowTest(unittest.TestCase):
         state.system.live = True
         node = find(build(state), "status.schedule")
         self.assertEqual(node.label, "Not scheduled in a live session")
-        self.assertEqual(node.icon_name, menutree.ICON_SCHEDULE)
+        self.assertEqual(node.dot, menutree.DOT_NEUTRAL)
 
 
 class RowIconTest(unittest.TestCase):
@@ -315,19 +315,33 @@ class RowIconTest(unittest.TestCase):
         node = find(build(ready_state()), "action.create")
         self.assertEqual(node.props()["icon-name"], menutree.ICON_CREATE)
 
-    def test_connection_headlines_have_icons(self):
-        for conn, icon in ((model.ConnState.NO_DAEMON, menutree.ICON_NO_DAEMON),
-                           (model.ConnState.NO_ACCESS, menutree.ICON_NO_ACCESS),
-                           (model.ConnState.STARTING, menutree.ICON_CONNECTING)):
+    def test_connection_headlines_have_dots(self):
+        for conn, dot in ((model.ConnState.NO_DAEMON, menutree.DOT_FAULT),
+                          (model.ConnState.NO_ACCESS, menutree.DOT_WARN),
+                          (model.ConnState.STARTING, menutree.DOT_NEUTRAL)):
             state = model.TrayState()
             state.conn = conn
-            self.assertEqual(find(build(state), "status.headline").icon_name,
-                             icon, conn)
+            self.assertEqual(find(build(state), "status.headline").dot, dot, conn)
 
-    def test_the_idle_job_row_carries_no_icon(self):
+    def test_the_idle_job_row_carries_no_dot(self):
         """Hidden rows must not accumulate properties the host would draw the
         instant they become visible with stale text."""
-        self.assertEqual(find(build(ready_state()), "job.head").icon_name, "")
+        node = find(build(ready_state()), "job.head")
+        self.assertEqual(node.dot, "")
+        self.assertNotIn("icon-data", node.props())
+
+    def test_a_row_has_a_name_or_a_dot_never_both(self):
+        """The host draws icon-data only when icon-name is absent."""
+        for node in build(ready_state()).walk():
+            self.assertFalse(node.icon_name and node.dot, node.key)
+
+    def test_every_dot_used_is_declared(self):
+        used = set()
+        for conn in model.ConnState:
+            state = ready_state()
+            state.conn = conn
+            used |= {n.dot for n in build(state).walk() if n.dot}
+        self.assertTrue(used <= set(menutree.ALL_DOTS), used)
 
 
 class RecentTest(unittest.TestCase):

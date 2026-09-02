@@ -37,6 +37,7 @@ PROP_TYPES = {
     "type": "s",
     "children-display": "s",
     "icon-name": "s",
+    "icon-data": "ay",
 }
 
 # What the spec says an absent property means. Sending these wastes bytes and,
@@ -67,10 +68,11 @@ class IdAllocator:
 
 class Node:
     __slots__ = ("id", "key", "label", "enabled", "visible", "kind",
-                 "icon_name", "action", "children")
+                 "icon_name", "dot", "action", "children")
 
     def __init__(self, id, key, label="", enabled=True, visible=True,
-                 kind=STANDARD, icon_name="", action=None, children=None):
+                 kind=STANDARD, icon_name="", dot="", action=None,
+                 children=None):
         self.id = id
         self.key = key
         self.label = label
@@ -78,6 +80,11 @@ class Node:
         self.visible = visible
         self.kind = kind
         self.icon_name = icon_name
+        # A DOTS key. Emitted as icon-data, which the transport layer turns
+        # into PNG bytes; this module stays free of files and of gi. The host
+        # draws icon-data only when icon-name is absent, so a row has one or
+        # the other.
+        self.dot = dot
         self.action = action
         self.children = children if children is not None else []
 
@@ -90,6 +97,8 @@ class Node:
             out["label"] = fmt.escape_label(self.label)
             if self.icon_name:
                 out["icon-name"] = self.icon_name
+            elif self.dot:
+                out["icon-data"] = self.dot
         if not self.enabled:
             out["enabled"] = False
         if not self.visible:
@@ -145,21 +154,22 @@ def diff_props(old, new):
 
 # --- building -----------------------------------------------------------------
 
-# Themed icons for the rows. All from the Adwaita/breeze common set except the
-# tray's own, so every host resolves them; a name the theme lacks simply draws
-# no icon, it does not break the row.
-ICON_PROTECTED = "emblem-ok-symbolic"
-ICON_UNPROTECTED = "dialog-warning-symbolic"
-ICON_RESTORED = "edit-undo-symbolic"
-ICON_SCHEDULE = "alarm-symbolic"
-ICON_SCHEDULE_FAULT = "dialog-warning-symbolic"
-ICON_LOCATION = "drive-harddisk-symbolic"
-ICON_LOCATION_FAULT = "dialog-error-symbolic"
-ICON_CONNECTING = "network-transmit-receive-symbolic"
-ICON_NO_DAEMON = "network-offline-symbolic"
-ICON_NO_ACCESS = "changes-prevent-symbolic"
-ICON_MISMATCH = "dialog-warning-symbolic"
-ICON_BUSY = "timeshift-tray-busy-symbolic"
+# Status rows carry a coloured disc (a DOTS key, shipped as PNG and sent as
+# icon-data) so the colour says what the row says: green is fine, yellow
+# wants a look, red is a fault, blue is information, grey is nothing to
+# report, brand is work in progress. The keys are the files in
+# share/timeshift-tray/dots; check-deb.sh verifies every one named here.
+DOT_OK = "green"
+DOT_WARN = "yellow"
+DOT_FAULT = "red"
+DOT_INFO = "blue"
+DOT_NEUTRAL = "grey"
+DOT_BUSY = "brand"
+ALL_DOTS = (DOT_OK, DOT_WARN, DOT_FAULT, DOT_INFO, DOT_NEUTRAL, DOT_BUSY)
+
+# Action rows carry themed symbolic icons, all from the common Adwaita/Breeze
+# set except the tray's own, so every host resolves them; a name the theme
+# lacks simply draws no icon, it does not break the row.
 ICON_CREATE = "document-save-symbolic"
 ICON_OPEN = "timeshift"
 ICON_RECENT = "document-open-recent-symbolic"
@@ -167,14 +177,13 @@ ICON_GRANT = "changes-allow-symbolic"
 ICON_REVOKE = "changes-prevent-symbolic"
 ICON_QUIT = "application-exit-symbolic"
 
-# The one separator the labels use. An em dash with spaces reads as a pause;
-# the middle dot joins facts of equal weight on one row.
-DASH = " — "
+# The one separator the labels use: the middle dot joins facts of equal weight
+# on one row, as in "Shadow · Morph · Focus".
 DOT = " · "
 
 
-def _status_row(ids, key, text, icon=""):
-    return Node(ids.id_for(key), key, label=text, enabled=False, icon_name=icon)
+def _status_row(ids, key, text, dot=""):
+    return Node(ids.id_for(key), key, label=text, enabled=False, dot=dot)
 
 
 def _separator(ids, key):
@@ -189,7 +198,7 @@ def _job_verb(kind):
     }.get(kind, "Working")
 
 
-def _job_lines(job):
+def job_lines(job):
     """Two rows: what is happening with a meter, and how far along it is."""
     head = _job_verb(job.kind)
     percent = fmt.format_percent(job.progress.percent)
@@ -251,42 +260,42 @@ def build_menu(state, now, ids):
     if state.conn is ConnState.NO_ACCESS:
         rows.append(_status_row(ids, "status.headline",
                                 "Timeshift status is not available to you",
-                                ICON_NO_ACCESS))
+                                DOT_WARN))
         rows.append(_status_row(ids, "status.detail",
                                 "This account is not in the \"%s\" group"
                                 % GROUP))
     elif state.conn is ConnState.NO_DAEMON:
         rows.append(_status_row(ids, "status.headline",
                                 "The Timeshift service is not running",
-                                ICON_NO_DAEMON))
+                                DOT_FAULT))
         rows.append(_status_row(ids, "status.detail",
                                 "Start it with: sudo systemctl start timeshiftd"))
     elif state.conn is ConnState.PROTOCOL_MISMATCH:
         rows.append(_status_row(ids, "status.headline",
                                 "The Timeshift service speaks a different protocol",
-                                ICON_MISMATCH))
+                                DOT_WARN))
         rows.append(_status_row(
             ids, "status.detail",
             "Service %d, applet %d%srestart it after upgrading"
-            % (state.daemon_protocol, PROTOCOL_VERSION, DASH)))
+            % (state.daemon_protocol, PROTOCOL_VERSION, DOT)))
     elif state.conn in (ConnState.STARTING, ConnState.DISCONNECTED):
         rows.append(_status_row(ids, "status.headline",
                                 "Connecting to the Timeshift service…",
-                                ICON_CONNECTING))
+                                DOT_NEUTRAL))
     else:
-        for key, (text, icon) in zip(
+        for key, (text, dot) in zip(
                 ("status.snapshot", "status.schedule", "status.location"),
                 status_rows(state, now)):
-            rows.append(_status_row(ids, key, text, icon))
+            rows.append(_status_row(ids, key, text, dot))
 
     # The job rows exist in every READY menu and are merely hidden when idle,
     # so a snapshot starting is a property change and not a new layout.
     if state.conn is ConnState.READY:
-        head, detail = _job_lines(state.job) if state.job is not None else ("", "")
+        head, detail = job_lines(state.job) if state.job is not None else ("", "")
         running = state.job is not None and state.job.active
         rows.append(Node(ids.id_for("job.head"), "job.head", label=head,
                          enabled=False, visible=running,
-                         icon_name=ICON_BUSY if running else ""))
+                         dot=DOT_BUSY if running else ""))
         rows.append(Node(ids.id_for("job.detail"), "job.detail", label=detail,
                          enabled=False, visible=running and bool(detail)))
 
@@ -321,7 +330,7 @@ def build_menu(state, now, ids):
 
 
 def status_rows(state, now):
-    """The three status rows as (text, icon): verdict, schedule, location."""
+    """The three status rows as (text, dot): verdict, schedule, location."""
     return (_snapshot_line(state, now),
             _schedule_line(state, now),
             _location_line(state))
@@ -329,7 +338,7 @@ def status_rows(state, now):
 
 def summary_lines(state, now):
     """The three status texts, also the tooltip on hosts that show one."""
-    return tuple(text for text, _icon in status_rows(state, now))
+    return tuple(text for text, _dot in status_rows(state, now))
 
 
 def _recent_submenu(state, ids, now):
@@ -362,44 +371,44 @@ def _snapshot_line(state, now):
     """
     repo = state.repo
     if repo is not None and not repo.available and not state.repo_stale:
-        return ("Not protected" + DASH + "snapshot location unavailable",
-                ICON_UNPROTECTED)
+        return ("Not protected" + DOT + "snapshot location unavailable",
+                DOT_FAULT)
     snap = state.latest
     if snap is None:
-        return "Not protected" + DASH + "no snapshots yet", ICON_UNPROTECTED
+        return "Not protected" + DOT + "no snapshots yet", DOT_FAULT
     age = fmt.format_age(snap.created, now)
     if not snap.valid:
-        return ("Not protected" + DASH + "last snapshot is incomplete",
-                ICON_UNPROTECTED)
+        return ("Not protected" + DOT + "last snapshot is incomplete",
+                DOT_FAULT)
     if snap.live:
-        return ("Restored" + DASH + "previous system kept %s" % age,
-                ICON_RESTORED)
-    text = "Protected" + DASH + "last snapshot %s" % age
+        return ("Restored" + DOT + "previous system kept %s" % age,
+                DOT_INFO)
+    text = "Protected" + DOT + "last snapshot %s" % age
     tags = fmt.format_tags(snap.tags)
     if tags:
-        text = "%s (%s)" % (text, tags)
-    return text, ICON_PROTECTED
+        text = text + DOT + tags
+    return text, DOT_OK
 
 
 def _schedule_line(state, now):
     sched = state.schedule
     if sched is None:
-        return "Schedule unknown", ICON_SCHEDULE
+        return "Schedule unknown", DOT_NEUTRAL
     if state.live:
-        return "Not scheduled in a live session", ICON_SCHEDULE
+        return "Not scheduled in a live session", DOT_NEUTRAL
     if not sched.enabled:
-        return "Scheduled snapshots off", ICON_SCHEDULE
+        return "Scheduled snapshots off", DOT_NEUTRAL
     if not sched.running:
-        return "Scheduler not running", ICON_SCHEDULE_FAULT
+        return "Scheduler not running", DOT_WARN
     if sched.last_error:
-        return "Last check failed" + DASH + sched.last_error, ICON_SCHEDULE_FAULT
+        return "Last check failed" + DOT + sched.last_error, DOT_WARN
     if sched.next_run is not None and sched.next_run < now:
         late = fmt.format_duration((now - sched.next_run).total_seconds())
-        return "Check overdue by %s" % late, ICON_SCHEDULE_FAULT
+        return "Check overdue by %s" % late, DOT_WARN
     when = fmt.format_clock(sched.next_run)
     if when:
-        return "Next check %s" % when, ICON_SCHEDULE
-    return "Scheduled snapshots on", ICON_SCHEDULE
+        return "Next check %s" % when, DOT_INFO
+    return "Scheduled snapshots on", DOT_INFO
 
 
 def _location_line(state):
@@ -415,15 +424,15 @@ def _location_line(state):
     repo = state.repo
     if repo is None:
         return (("Checking location…" if state.repo_checking
-                 else "Location unknown"), ICON_LOCATION)
+                 else "Location unknown"), DOT_NEUTRAL)
     if repo.available and repo.details and repo.message.strip().upper() == "OK":
         text = repo.details
     elif repo.details:
-        text = repo.message + DASH + repo.details
+        text = repo.message + DOT + repo.details
     else:
         text = repo.message
     if state.repo_stale:
         # The last check could not be completed. Showing the previous answer is
         # right; showing it as current is not.
-        text = "%s (last known)" % text
-    return text, ICON_LOCATION if repo.available else ICON_LOCATION_FAULT
+        return "%s (last known)" % text, DOT_WARN
+    return text, DOT_OK if repo.available else DOT_FAULT

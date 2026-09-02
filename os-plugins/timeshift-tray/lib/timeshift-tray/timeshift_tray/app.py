@@ -16,11 +16,12 @@ import gi
 gi.require_version("Gio", "2.0")
 from gi.repository import Gio, GLib  # noqa: E402
 
-from . import icons, notify  # noqa: E402
+from . import icons, menutree, notify  # noqa: E402
 from .actions import Spawner  # noqa: E402
 from .constants import (  # noqa: E402
     APP_BUS_NAME,
     DBUSMENU_OBJECT_PATH,
+    DOTS_DIR,
     NO_HOST_WARN_SECONDS,
     PROTOCOL_VERSION,
     SOCKET_PATH,
@@ -104,6 +105,21 @@ class GLibTimers:
             GLib.source_remove(handle)
 
 
+def load_dots(folder, log):
+    """The menu's status discs, read once. A missing file costs that row its
+    dot and nothing else; the transport drops an icon-data it has no bytes
+    for."""
+    out = {}
+    for key in menutree.ALL_DOTS:
+        path = os.path.join(folder, key + ".png")
+        try:
+            with open(path, "rb") as handle:
+                out[key] = handle.read()
+        except OSError as err:
+            log("dot %s: %s", key, err)
+    return out
+
+
 class TrayApp:
     def __init__(self, bus, socket_path=SOCKET_PATH, debug=False,
                  spawn_fn=None, icon_style=icons.STYLE_AUTO):
@@ -116,7 +132,8 @@ class TrayApp:
 
         timers = GLibTimers(log=self.log)
         menu = DBusMenu(bus, DBUSMENU_OBJECT_PATH, self._on_action,
-                        on_about_to_show=self._on_about_to_show, log=self.log)
+                        on_about_to_show=self._on_about_to_show, log=self.log,
+                        icon_data=load_dots(DOTS_DIR, self.log))
         item = StatusNotifierItem(
             bus, DBUSMENU_OBJECT_PATH, ITEM_ID, ITEM_TITLE,
             icons.icon_for(Health.OK), icons.ATTENTION_ICON,

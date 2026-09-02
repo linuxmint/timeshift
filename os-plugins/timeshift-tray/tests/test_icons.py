@@ -51,6 +51,29 @@ class PolicyTest(unittest.TestCase):
         self.assertEqual(icons.parse_style(None), icons.STYLE_AUTO)
         self.assertEqual(icons.parse_style("neon"), icons.STYLE_AUTO)
 
+    def test_busy_shows_progress_in_eighths(self):
+        busy = Health.BUSY
+        self.assertEqual(icons.icon_for(busy), "timeshift-tray-busy-symbolic")
+        self.assertEqual(icons.icon_for(busy, progress=0), "timeshift-tray-busy-0-symbolic")
+        self.assertEqual(icons.icon_for(busy, progress=0.43), "timeshift-tray-busy-3-symbolic")
+        self.assertEqual(icons.icon_for(busy, progress=0.99), "timeshift-tray-busy-7-symbolic")
+        self.assertEqual(icons.icon_for(busy, progress=1.0), "timeshift-tray-busy-7-symbolic")
+        self.assertEqual(icons.icon_for(busy, icons.STYLE_COLOUR, 0.5),
+                         "timeshift-tray-busy-4")
+
+    def test_progress_is_ignored_for_every_other_health(self):
+        for health in Health:
+            if health is Health.BUSY:
+                continue
+            self.assertEqual(icons.icon_for(health, progress=0.5),
+                             icons.icon_for(health), health)
+
+    def test_every_progress_step_is_installed_by_name(self):
+        for n in range(icons.PROGRESS_STEPS):
+            for name in ("timeshift-tray-busy-%d" % n,
+                         "timeshift-tray-busy-%d-symbolic" % n):
+                self.assertIn(name, icons.ALL_ICONS)
+
     def test_no_dots_in_any_name(self):
         """The GNOME host mangles a dotted name into nothing."""
         for name in icons.ALL_ICONS:
