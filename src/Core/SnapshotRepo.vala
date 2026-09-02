@@ -230,13 +230,27 @@ public class SnapshotRepo : GLib.Object{
 		}
 	}
 
-	/* Free space on the repository. A local repository reads it off the
-	 * Device; a remote one caches what the last df over SSH reported. */
-	private uint64 remote_free_bytes = 0;
+	/* Free space on the repository, as the daemon last reported it.
+	 *
+	 * Not remote-only any more, and that was the bug: a local repository used
+	 * to read this off its Device, which the local df filled. The device model
+	 * comes from the daemon now, and df only sees a filesystem that is
+	 * MOUNTED -- while the repository is mounted only for as long as the
+	 * daemon holds it open, which is not when devices.list happens to run. So
+	 * used_bytes came back zero, Device.free_bytes returns zero whenever
+	 * used_bytes is zero, and the main window reported "0 B Available" over a
+	 * repository with hundreds of gigabytes on it.
+	 *
+	 * repo.status measures the repository's own mount path with the
+	 * repository open, which is the only moment the answer is knowable. */
+	private uint64 daemon_free_bytes = 0;
 
 	public uint64 free_bytes {
 		get {
-			if (backend.is_remote){ return remote_free_bytes; }
+			if (daemon_free_bytes > 0){ return daemon_free_bytes; }
+
+			// Only as a fallback, and only meaningful when something else
+			// happens to have the filesystem mounted.
 			return (device == null) ? 0 : device.free_bytes;
 		}
 	}
@@ -516,22 +530,23 @@ public class SnapshotRepo : GLib.Object{
 		 * repository showing no space at all, and confidently, because the call
 		 * itself succeeded. Falling through to the local probe is slower and
 		 * right. */
-		if (backend.is_remote && !st.has_free_bytes){
-			log_debug("SnapshotRepo: the daemon does not report free space; probing locally");
-			return false;
+		if (!st.has_free_bytes){
+			/* An older daemon does not send it. Local or remote, there is no
+			 * second source worth trusting now -- the device scan's own answer
+			 * is zero whenever the repository is not mounted -- so take the
+			 * status and leave free_bytes to its fallback rather than refusing
+			 * a status that is otherwise correct. */
+			log_debug("SnapshotRepo: the daemon does not report free space");
 		}
 
 		status_code = (SnapshotLocationStatus) st.code;
 		status_message = st.message;
 		status_details = st.details;
 
-		/* free_bytes is computed: a local repository reads it from its Device,
-		 * which the local scan already filled, and only the REMOTE case has a
-		 * field to set. So this fills the half the daemon is the sole source
-		 * for, and leaves the local half alone rather than writing a second
-		 * answer over a good one. */
-		if (backend.is_remote && (st.free_bytes > 0)){
-			remote_free_bytes = (uint64) st.free_bytes;
+		/* Both kinds of repository, not just the remote one. The daemon is
+		 * the only party that measures this with the repository open. */
+		if (st.free_bytes > 0){
+			daemon_free_bytes = (uint64) st.free_bytes;
 		}
 
 		/* last_snapshot_failed_space is this process's memory of a backup that
@@ -652,24 +667,21 @@ public class SnapshotRepo : GLib.Object{
 	public bool has_space(uint64 needed = 0) {
 		log_debug("SnapshotRepo: has_space() - %llu required (%s)".printf(needed, format_file_size(needed)));
 		
-		if (backend.is_remote){
+		/* One source for the number, refreshed before it is judged.
+		 *
+		 * This used to probe twice over -- an ssh df for a remote repository
+		 * and a local df for a local one -- which is the same measurement
+		 * repo.status makes, on the only side that has the repository open.
+		 * Asking here matters because the answer decides whether a backup may
+		 * start, and a cached figure from window-open time can be minutes old.
+		 */
+		check_status();
 
-			uint64 size_bytes, used_bytes, avail_bytes;
-
-			if (!backend.query_space(mount_path, out size_bytes, out used_bytes, out avail_bytes)){
-				status_message = _("Failed to query disk space on remote location");
-				status_details = backend.last_error;
-				status_code = SnapshotLocationStatus.NOT_AVAILABLE;
-				return false;
-			}
-
-			remote_free_bytes = avail_bytes;
-		}
-		else if ((device != null) && (device.device.length > 0)){
-			device.query_disk_space();
-		}
-		else{
-			log_debug("device is NULL");
+		if (free_bytes == 0){
+			status_message = _("Failed to query disk space");
+			status_details = status_details.length > 0 ? status_details
+				: _("The Timeshift service did not report the free space");
+			status_code = SnapshotLocationStatus.NOT_AVAILABLE;
 			return false;
 		}
 		

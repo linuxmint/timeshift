@@ -1430,23 +1430,6 @@ public class Device : GLib.Object{
 		return dev_new;
 	}
 	
-	public void query_disk_space(){
-
-		/* Updates disk space info and returns the given Device object */
-
-		var list_df = get_disk_space_using_df(device);
-		
-		var dev_df = find_device_in_list(list_df, uuid);
-		
-		if (dev_df != null){
-			// update dev fields
-			size_bytes = dev_df.size_bytes;
-			used_bytes = dev_df.used_bytes;
-			available_bytes = dev_df.available_bytes;
-			used_percent = dev_df.used_percent;
-		}
-	}
-
 	// mounting ---------------------------------
 	
 	public static bool automount_udisks(string dev_name_or_uuid, Gtk.Window? parent_window){

@@ -82,10 +82,6 @@ public abstract class RepoBackend : GLib.Object {
 
 	public abstract bool rename(string src_path, string dst_path);
 
-	/* Returns false if the space could not be determined. */
-	public abstract bool query_space(string path,
-		out uint64 size_bytes, out uint64 used_bytes, out uint64 available_bytes);
-
 	/* Returns false if the size could not be determined. total_bytes is the
 	 * full logical content size of the directory (as 'du -sb' reports it);
 	 * unique_bytes is the subset of that which is not hardlinked anywhere
@@ -282,23 +278,6 @@ public class LocalRepoBackend : RepoBackend {
 	public override bool rename(string src_path, string dst_path){
 		TeeJee.FileSystem.file_move(src_path, dst_path);
 		return TeeJee.FileSystem.file_exists(dst_path) || TeeJee.FileSystem.dir_exists(dst_path);
-	}
-
-	public override bool query_space(string path,
-		out uint64 size_bytes, out uint64 used_bytes, out uint64 available_bytes){
-
-		size_bytes = 0;
-		used_bytes = 0;
-		available_bytes = 0;
-
-		string std_out, std_err;
-		int ret_val = run_script_checked("df -B1 '%s'".printf(escape_single_quote(path)),
-			out std_out, out std_err);
-
-		if (ret_val != 0){ return false; }
-
-		return RepoBackend.parse_df_output(std_out,
-			out size_bytes, out used_bytes, out available_bytes);
 	}
 
 	public override bool query_dir_size(string path,
@@ -722,22 +701,6 @@ public class SshRepoBackend : RepoBackend {
 		string std_out, std_err;
 		return (run_remote("mv -f %s %s".printf(q(src_path), q(dst_path)),
 			out std_out, out std_err) == 0);
-	}
-
-	public override bool query_space(string path,
-		out uint64 size_bytes, out uint64 used_bytes, out uint64 available_bytes){
-
-		size_bytes = 0;
-		used_bytes = 0;
-		available_bytes = 0;
-
-		string std_out, std_err;
-		if (run_remote("df -B1 %s".printf(q(path)), out std_out, out std_err) != 0){
-			return false;
-		}
-
-		return RepoBackend.parse_df_output(std_out,
-			out size_bytes, out used_bytes, out available_bytes);
 	}
 
 	public override bool query_dir_size(string path,
