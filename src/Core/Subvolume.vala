@@ -114,11 +114,6 @@ public class Subvolume : GLib.Object{
 		return map;
 	}
 
-	public void print_info(){
-		
-		log_debug("name=%s, uuid=%s, id=%ld, path=%s".printf(name, device_uuid, id, path));
-	}
-
 	// actions ----------------------------------
 	
 	public bool remove(){

@@ -148,6 +148,15 @@ func main() {
 			"files", removed)
 	}
 
+	/* And the entries older versions put in root's own crontab, which the
+	 * drop-in sweep above does not reach. cron_job_update() in the GUI swept
+	 * both; this is the half that had no Go equivalent. */
+	if n, err := schedule.RemoveLegacyCrontabEntries(d.runner); err != nil {
+		log.Warn("could not remove the legacy crontab entries", "err", err)
+	} else if n > 0 {
+		log.Info("removed legacy timeshift lines from root's crontab", "lines", n)
+	}
+
 	/* Clear up after runs that were killed, BEFORE listening.
 	 *
 	 * A daemon that died mid-restore left its target mounted under

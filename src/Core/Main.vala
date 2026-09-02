@@ -5172,59 +5172,6 @@ public class Main : GLib.Object{
 
 	// cron jobs
 
-	public void cron_job_update(){
-		
-		if (live_system()) { return; }
-
-		// remove entries created by previous versions -----------
-		
-		string entry = "timeshift --backup";
-
-		int count = 0;
-		while (CronTab.has_job(entry, true, false)){
-			
-			CronTab.remove_job(entry, true, true);
-			
-			if (++count == 100){
-				break;
-			}
-		}
-
-		entry = "timeshift-btrfs --backup";
-
-		count = 0;
-		while (CronTab.has_job(entry, true, false)){
-			
-			CronTab.remove_job(entry, true, true);
-			
-			if (++count == 100){
-				break;
-			}
-		}
-
-		CronTab.remove_script_file("timeshift-hourly", "hourly");
-
-		/* The schedule belongs to timeshiftd now.
-		 *
-		 * This method used to WRITE /etc/cron.d/timeshift-hourly and
-		 * timeshift-boot. It must not any more: cron would start a second
-		 * timeshift process alongside the daemon, and two processes taking
-		 * snapshots of the same machine is exactly the collision the daemon
-		 * exists to remove.
-		 *
-		 * It is kept, and still called from the same places, because it is the
-		 * only thing that removes what older versions wrote -- and this build
-		 * is upgraded onto machines that have those files. Every call is now a
-		 * sweep. The daemon does the same sweep at startup and postinst does it
-		 * at install time, so an entry recreated by a downgrade is picked up
-		 * whichever way round the machine ends up.
-		 *
-		 * The scheduling settings themselves are untouched: they are read from
-		 * timeshift.json by the daemon, which is where they always lived. */
-
-		CronTab.remove_script_file("timeshift-hourly", "d");
-		CronTab.remove_script_file("timeshift-boot", "d");
-	}
 	
 	// cleanup
 
@@ -5439,7 +5386,6 @@ public class Main : GLib.Object{
 			save_app_config();
 		}
 
-		cron_job_update();
 
 		unmount_target_device(false);
 

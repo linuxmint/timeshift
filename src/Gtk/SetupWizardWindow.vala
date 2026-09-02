@@ -180,7 +180,6 @@ class SetupWizardWindow : WizardWindow {
 
 	private void save_changes(){
 
-		App.cron_job_update();
 
 		App.first_run = false;
 	}

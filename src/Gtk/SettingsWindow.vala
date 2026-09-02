@@ -168,7 +168,6 @@ class SettingsWindow : AppWindow{
 		// the Appearance page previews live; make the choice stick
 		App.save_app_config();
 		
-		App.cron_job_update();
 
 		//App.check_encrypted_home(this);
 

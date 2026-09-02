@@ -210,7 +210,6 @@ class RestoreWindow : WizardWindow {
 
 	private void save_changes(){
 
-		App.cron_job_update();
 	}
 
 	// navigation ----------------------------------------------------
