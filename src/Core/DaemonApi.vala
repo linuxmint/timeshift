@@ -21,6 +21,10 @@
  */
 
 using TeeJee.Logging;
+using TeeJee.FileSystem;
+using TeeJee.ProcessHelper;
+using TeeJee.System;
+using TeeJee.Misc;
 
 /* The daemon's methods, typed.
  *
@@ -90,12 +94,100 @@ public class DaemonApi : GLib.Object {
 		if (!shared_tried){
 			shared_tried = true;
 			var client = new DaemonClient();
-			if (client.open()){
+
+			if (!client.open() && autostart_daemon()){
+				client = new DaemonClient();
+				client.open();
+			}
+
+			if (client.connected){
 				shared_client = client;
 				shared_api = new DaemonApi(client);
 			}
 		}
 		return shared_api;
+	}
+
+	/* Start timeshiftd when the socket is absent, the way the CLI does.
+	 *
+	 * Socket activation covers "not running". It does not cover a masked unit,
+	 * a container with no systemd, or a first run before the unit was ever
+	 * enabled -- and this GUI now needs the daemon for everything but a
+	 * restore, so "absent" has stopped being an ordinary state it can work
+	 * around.
+	 *
+	 * Only as root, and only for the default socket. A non-root GUI has no
+	 * business spawning a system service, and there is nothing sensible to
+	 * start for a socket somebody named explicitly.
+	 */
+	private static bool autostart_daemon(){
+
+		if (!user_is_admin()){ return false; }
+
+		log_debug("DaemonApi: no daemon at %s; trying to start it".printf(
+			DaemonClient.DEFAULT_SOCKET));
+
+		if (start_via_systemd() && wait_for_socket()){ return true; }
+
+		if (!file_exists(DAEMON_BINARY)){
+			log_debug("DaemonApi: %s is not installed".printf(DAEMON_BINARY));
+			return false;
+		}
+
+		/* setsid, so the daemon is not in this process's group: it must
+		 * outlive the window that happened to start it, which is the whole
+		 * reason a job can be watched from anywhere. */
+		string cmd = "setsid '%s' >/dev/null 2>&1 &".printf(
+			escape_single_quote(DAEMON_BINARY));
+
+		string std_out, std_err;
+		exec_script_sync(cmd, out std_out, out std_err, true);
+
+		return wait_for_socket();
+	}
+
+	private const string DAEMON_BINARY = "/usr/libexec/timeshift/timeshiftd";
+
+	// systemd is the running init exactly when this exists.
+	private const string SYSTEMD_MARKER = "/run/systemd/system";
+
+	private static bool start_via_systemd(){
+
+		if (!dir_exists(SYSTEMD_MARKER)){ return false; }
+
+		foreach (string unit in new string[]{ "timeshiftd.socket", "timeshiftd.service" }){
+			string o, e;
+			if (exec_script_sync("systemctl start %s\nexit $?\n".printf(unit),
+				out o, out e, true) == 0){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/* Waits by CONNECTING, not by stat'ing.
+	 *
+	 * A daemon that died leaves the socket file behind, so a path test would
+	 * report success against something nothing is listening on. */
+	private static bool wait_for_socket(){
+
+		for (int i = 0; i < 40; i++){  // 10s in 250ms steps
+
+			try {
+				var probe = new SocketClient();
+				var c = probe.connect(new UnixSocketAddress(DaemonClient.DEFAULT_SOCKET));
+				if (c != null){
+					c.close();
+					return true;
+				}
+			}
+			catch (Error e){
+				// not up yet
+			}
+
+			Thread.usleep((ulong) GLib.TimeSpan.MILLISECOND * 250);
+		}
+		return false;
 	}
 
 	public static unowned DaemonClient? get_shared_client(){

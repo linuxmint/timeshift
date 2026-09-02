@@ -419,114 +419,18 @@ public class SnapshotRepo : GLib.Object{
 
 		log_debug("SnapshotRepo: load_snapshots()");
 
-		if (load_snapshots_from_daemon()){ return true; }
+		/* The daemon is the only source now.
+		 *
+		 * The local walk that used to stand behind this read every snapshot's
+		 * info.json itself -- four ssh round trips each for a remote
+		 * repository, which is why it grew a prefetch -- and it was a second
+		 * implementation of a listing the daemon already serves. Two listers
+		 * that can disagree about what a repository contains is worse than
+		 * one that can be absent, especially since auto_remove() acts on the
+		 * answer.
+		 */
+		return load_snapshots_from_daemon();
 
-		// A local repository still needs a device; a remote one has none.
-		if (!backend.is_remote && (device == null)){
-			snapshots.clear();
-			invalid_snapshots.clear();
-			return false;
-		}
-
-		if (!backend.dir_exists(snapshots_path)){
-			snapshots.clear();
-			invalid_snapshots.clear();
-			return false;
-		}
-
-		// For a remote repository, fetch every snapshot's control files in one
-		// round trip. Reading them per-snapshot would cost four round trips
-		// each, which dominates the time to list a repository.
-		Gee.HashMap<string, Gee.HashMap<string,string>>? prefetched = null;
-
-		if (backend is SshRepoBackend){
-			prefetched = ((SshRepoBackend) backend).read_control_files(
-				snapshots_path,
-				{ "info.json", "exclude.list", "delete",
-				  "localhost/etc/fstab", "localhost/etc/crypttab" });
-
-			// A null result means the transport failed, not that the snapshots
-			// have no control files. Carrying on would mark every snapshot
-			// invalid, and auto_remove() would then delete the whole
-			// repository. Leave the previously loaded list untouched.
-			if (prefetched == null){
-				log_error(_("Could not read the snapshot list from the remote location"));
-				log_error(_("Leaving the existing list unchanged"));
-				return false;
-			}
-		}
-
-		var subdirs = backend.list_subdirs(snapshots_path);
-
-		if (!backend.last_listing_ok){
-			log_error(_("Could not list snapshots at the backup location"));
-			return false;
-		}
-
-		// Everything needed is in hand, so it is now safe to replace the list.
-		snapshots.clear();
-		invalid_snapshots.clear();
-
-		foreach(string name in subdirs){
-
-			if (name == ".sync"){ continue; }
-
-			Gee.HashMap<string,string>? snap_files = null;
-			if (prefetched != null){
-				snap_files = prefetched.has_key(name)
-					? prefetched[name]
-					: new Gee.HashMap<string,string>();
-			}
-
-			Snapshot bak = new Snapshot(snapshots_path + "/" + name, btrfs_mode, this, snap_files);
-			if (bak.valid){
-				snapshots.add(bak);
-			}
-			else{
-				invalid_snapshots.add(bak);
-			}
-		}
-
-		snapshots.sort((a,b) => {
-			Snapshot t1 = (Snapshot) a;
-			Snapshot t2 = (Snapshot) b;
-			return t1.date.compare(t2.date);
-		});
-
-		// reset the 'live' flag ------------
-		
-		DateTime dt_boot = new DateTime.now_local();
-		dt_boot = dt_boot.add_seconds(-1.0 * get_system_uptime_seconds());
-		foreach(var bak in snapshots){
-			if (bak.live){
-				if ((App.sys_root == null) || (App.sys_root.uuid != bak.sys_uuid)){
-					// we are accessing the snapshot from a live system or another system
-					bak.live = false;
-					bak.update_control_file();
-				}
-				else{
-					 if (bak.date.difference(dt_boot) < 0){
-						// snapshot was created before the last reboot
-						bak.live = false;
-						bak.update_control_file();
-					}
-					else{
-						// do nothing, snapshot is still in use by system
-					}
-				}
-			}
-		}
-
-		if (btrfs_mode){
-			App.query_subvolume_info(this);
-		}
-		else{
-			App.compute_rsync_snapshot_sizes(this);
-		}
-
-		log_debug("loading snapshots from '%s': %d found".printf(snapshots_path, snapshots.size));
-
-		return true;
 	}
 
 	// get tagged snapshots ----------------------------------
@@ -645,127 +549,23 @@ public class SnapshotRepo : GLib.Object{
 
 		log_debug("SnapshotRepo: check_status()");
 
-		if (check_status_from_daemon()){ return; }
-		
-        if (!last_snapshot_failed_space)
-        {
-            status_code = SnapshotLocationStatus.HAS_SNAPSHOTS_HAS_SPACE;
-            status_message = "";
-            status_details = "";
-        }
+		/* The daemon decides whether this location can hold snapshots.
+		 *
+		 * The probes that used to live here -- writability, hard-link support,
+		 * and whether the remote account can preserve ownership -- are the
+		 * same ones the daemon runs, and running them twice against a remote
+		 * repository doubled the round trips to reach the same verdict. */
+		check_status_from_daemon();
 
-		if (available()){
-
-			// A remote target has to be probed: the two failure modes that
-			// silently produce useless backups are a read-only export and a
-			// filesystem without hardlinks (every snapshot becomes a full
-			// copy). Both status codes are already rendered by the UI.
-			if (backend.is_remote && !check_remote_capabilities()){
-				log_debug("SnapshotRepo: check_status(): remote capability check failed");
-				return;
-			}
-
-			has_snapshots();
-            if (!last_snapshot_failed_space)
-            {
-                has_space();
-            }
-		}
-
-		if ((App != null) && (App.app_mode.length == 0)){
-			
-			// a remote repository has no Device at all, so fall back to the
-			// backend's type and host rather than reporting it as unknown
-			string device_desc;
-			if (backend.is_remote){
-				device_desc = "%s (%s)".printf(backend.type_id, backend.display_name);
-			}
-			else {
-				device_desc = (device == null) ? " UNKNOWN" : device.device;
-			}
-
-			log_debug("%s: '%s'".printf(_("Snapshot device"), device_desc));
-				
-			log_debug("%s: %s".printf(
-				_("Snapshot location"), mount_path));
-
-			log_debug(status_message);
-			log_debug(status_details);
-			
-			log_debug("%s: %s".printf(
-				_("Status"),
-				status_code.to_string().replace("SNAPSHOT_LOCATION_STATUS_","")));
-
-			log_debug("");
-		}
-
-        last_snapshot_failed_space = false;
-		log_debug("SnapshotRepo: check_status(): exit");
 	}
 
-	/* Probes a remote target for the things that would otherwise fail quietly.
-	 * Returns false and sets the status when the target is unusable. */
-	/* Capability probe results. These describe the remote filesystem, which
-	 * cannot change while the repository object lives, but each probe is an
-	 * SSH round trip - and check_status() is called many times per UI refresh.
-	 * Probe once; re-probe only when the user explicitly retests. */
-	private bool caps_checked = false;
-	private bool caps_ok = false;
-
+	/* The capability probes moved to the daemon with check_status().
+	 *
+	 * This survives as a no-op because two pages call it before re-testing a
+	 * location, and their reason still holds -- it just no longer has a cache
+	 * on this side to clear. The daemon re-probes on every repo.status, so
+	 * "test again" already means what those callers want it to mean. */
 	public void invalidate_capability_cache(){
-		caps_checked = false;
-	}
-
-	private bool check_remote_capabilities(){
-
-		if (caps_checked){ return caps_ok; }
-
-		caps_ok = check_remote_capabilities_uncached();
-		caps_checked = true;
-		return caps_ok;
-	}
-
-	private bool check_remote_capabilities_uncached(){
-
-		// the repository directory has to exist before anything can be probed
-		if (!backend.dir_exists(mount_path)){
-			if (!backend.dir_create(mount_path)){
-				status_message = _("Remote location is not accessible");
-				status_details = _("Path not found") + ": %s".printf(mount_path);
-				status_code = SnapshotLocationStatus.NOT_AVAILABLE;
-				return false;
-			}
-		}
-
-		if (!backend.probe_writable(mount_path)){
-			status_message = _("Remote location is read-only");
-			status_details = _("Select another location or make it writable");
-			status_code = SnapshotLocationStatus.READ_ONLY_FS;
-			return false;
-		}
-
-		if (!backend.probe_hardlinks(mount_path)){
-			status_message = _("Hard-links are not supported on this location");
-			status_details = _("Snapshots would each take a full copy of the system");
-			status_code = SnapshotLocationStatus.HARDLINKS_NOT_SUPPORTED;
-			return false;
-		}
-
-		// Without root on the far end (or --fake-super) rsync silently drops
-		// ownership, which makes the snapshots useless for a system restore.
-		// the xattr probe inside probe_preserves_ownership needs somewhere to write
-		if (backend is SshRepoBackend){
-			((SshRepoBackend) backend).base_path_for_probe = mount_path;
-		}
-
-		if (!backend.probe_preserves_ownership()){
-			status_message = _("Remote account cannot preserve file ownership");
-			status_details = _("Connect as root, or enable the fake-super option, otherwise restored files would lose their owner");
-			status_code = SnapshotLocationStatus.NOT_AVAILABLE;
-			return false;
-		}
-
-		return true;
 	}
 
 	public bool available(){

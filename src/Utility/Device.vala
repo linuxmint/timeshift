@@ -401,46 +401,24 @@ public class Device : GLib.Object{
 
 	public static Gee.ArrayList<Device> get_filesystems(bool get_space = true, bool get_mounts = true){
 
-		/* Returns list of block devices
-		   Populates all fields in Device class */
-
+		/* The daemon's device model, or nothing.
+		 *
+		 * What stood here parsed lsblk, then df, then /proc/mounts and stitched
+		 * the three together -- the same scan block.Scanner performs, and the
+		 * one it was ported from. Keeping both meant two device models that
+		 * could disagree about which partition holds the repository, and the
+		 * GUI decides where to write from that answer.
+		 *
+		 * An empty list on failure rather than a local rescan: a caller that
+		 * sees no devices shows "no location", which is recoverable. One that
+		 * sees a stale or differently-built list may act on it.
+		 */
 		var from_daemon = get_filesystems_from_daemon();
 		if (from_daemon != null){ return from_daemon; }
 
-		var list = get_block_devices_using_lsblk();
+		log_debug("Device: the daemon returned no device list");
+		return new Gee.ArrayList<Device>();
 
-		if (get_space){
-			//get used space for mounted filesystems
-			var list_df = get_disk_space_using_df();
-			foreach(var dev_df in list_df){
-				var dev = find_device_in_list(list, dev_df.uuid);
-				if (dev != null){
-					dev.size_bytes = dev_df.size_bytes;
-					dev.used_bytes = dev_df.used_bytes;
-					dev.available_bytes = dev_df.available_bytes;
-					dev.used_percent = dev_df.used_percent;
-				}
-			}
-		}
-
-		if (get_mounts){
-			//get mount points
-			var list_mtab = get_mounted_filesystems_using_mtab();
-			foreach(var dev_mtab in list_mtab){
-				var dev = find_device_in_list(list, dev_mtab.uuid);
-				if (dev != null){
-					dev.mount_points = dev_mtab.mount_points;
-				}
-			}
-		}
-
-		//print_device_list(list);
-
-		//print_device_mounts(list);
-
-		log_debug("Device: get_filesystems(): %d".printf(list.size));
-		
-		return list;
 	}
 
 	private static void find_child_devices(Gee.ArrayList<Device> list, Device parent){

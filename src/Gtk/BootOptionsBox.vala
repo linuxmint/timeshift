@@ -220,7 +220,12 @@ class BootOptionsBox : Gtk.Box{
 		none.device = "";
 		store.append(none);
 
-		foreach(Device dev in Device.get_block_devices_using_lsblk()) {
+		/* App.partitions, which the daemon fills, rather than a second lsblk
+		 * of this box's own. The bootloader target has to be a device from
+		 * the SAME model the restore plan reasons about; two scans that can
+		 * disagree is how GRUB ends up installed on a disk the plan was not
+		 * describing. */
+		foreach(Device dev in App.partitions) {
 			
 			// select disk and normal partitions, skip others (loop crypt rom lvm)
 			if ((dev.type != "disk") && (dev.type != "part")){
