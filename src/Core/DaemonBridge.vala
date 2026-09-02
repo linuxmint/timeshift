@@ -177,9 +177,15 @@ public class DaemonBridge : GLib.Object {
 	 * The failure that matters here is not a crash, it is a restore that works
 	 * perfectly onto the wrong disk.
 	 */
+	/* update_initramfs and update_grub_menu are sent ONLY when the caller
+	 * means them, because the daemon defaults an absent flag to true. Sending
+	 * false unconditionally would turn a page that never offered the choice
+	 * into one that silently declines both steps, and a restored system whose
+	 * initramfs still names the old machine's devices does not boot. */
 	public bool begin_restore(string snapshot, Gee.Map<string,string> mounts,
 		bool current_system, bool dry_run, bool skip_grub, string grub_device,
-		int64 estimated_lines){
+		int64 estimated_lines,
+		bool update_initramfs = true, bool update_grub_menu = true){
 
 		if (running){ return false; }
 		if (snapshot.length == 0){ return false; }
@@ -209,6 +215,9 @@ public class DaemonBridge : GLib.Object {
 		if (estimated_lines > 0){
 			params.set_int_member("estimated_lines", estimated_lines);
 		}
+
+		params.set_boolean_member("update_initramfs", update_initramfs);
+		params.set_boolean_member("update_grub_menu", update_grub_menu);
 
 		var result = client.call_object("snapshot.restore", params);
 		if (result == null){

@@ -225,8 +225,12 @@ func (d *daemon) buildRestorePlan(ctx context.Context, in ipc.RestoreParams) (*r
 		SnapshotNeedsESP: restore.SnapshotNeedsESP(fstabText),
 		ReinstallGrub:    !in.SkipGrub,
 		GrubDevice:       in.GrubDevice,
-		UpdateInitramfs:  true,
-		UpdateGrubMenu:   true,
+		/* Default true when the caller said nothing: both steps are needed
+		 * for a restored system to boot, and an older client that cannot
+		 * express them must not silently get a system with a stale initramfs
+		 * naming devices that no longer exist. */
+		UpdateInitramfs:  boolOr(in.UpdateInitramfs, true),
+		UpdateGrubMenu:   boolOr(in.UpdateGrubMenu, true),
 		DryRun:           in.DryRun,
 		Excludes:         tsengine.BuildRestoreExcludes(cfg.Exclude, snapshotExcludes(ctx, repo, snap)),
 		Remote:           cfg.Remote(),
@@ -254,6 +258,14 @@ func (d *daemon) buildRestorePlan(ctx context.Context, in ipc.RestoreParams) (*r
 		return nil, deps, ipc.Errf(ipc.CodeBadRequest, "%v", err)
 	}
 	return plan, deps, nil
+}
+
+// boolOr reads an optional wire flag: nil means the caller said nothing.
+func boolOr(v *bool, def bool) bool {
+	if v == nil {
+		return def
+	}
+	return *v
 }
 
 // runRestore is the body of a restore job.

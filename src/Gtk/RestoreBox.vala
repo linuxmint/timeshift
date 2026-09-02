@@ -121,12 +121,32 @@ class RestoreBox : RestoreProgressBox {
 
 		gtk_do_events();
 
-		try {
+		/* The daemon owns the restore when it can.
+		 *
+		 * The local core below is still reached when no daemon is running,
+		 * which during the migration is an ordinary state. Both paths write
+		 * the same fields, because every polling loop in this file reads
+		 * App.task and App.restore_* rather than observing anything. */
+		bridge = new DaemonBridge();
+
+		if (bridge.available() && begin_restore_via_daemon()){
+
 			thread_is_running = true;
-			new Thread<void>.try ("restore", () => {restore_thread();});
+
+			bridge.finished.connect((ok, msg) => {
+				thread_is_running = false;
+			});
 		}
-		catch (Error e) {
-			log_error (e.message);
+		else {
+			bridge = null;
+
+			try {
+				thread_is_running = true;
+				new Thread<void>.try ("restore", () => {restore_thread();});
+			}
+			catch (Error e) {
+				log_error (e.message);
+			}
 		}
 
 		//string last_message = "";
@@ -304,6 +324,41 @@ class RestoreBox : RestoreProgressBox {
 		if ((script_task != null) && (script_task != rsync_task)){
 			view.append_log(script_task.drain_output());
 		}
+	}
+
+	private DaemonBridge? bridge = null;
+
+	/* Hands the daemon everything the wizard collected.
+	 *
+	 * The mount selection travels WHOLE rather than as a patch: the daemon
+	 * builds the default from the snapshot's own fstab when it is given
+	 * nothing, so sending half a selection would silently mix two plans. */
+	private bool begin_restore_via_daemon(){
+
+		if (App.snapshot_to_restore == null){ return false; }
+
+		var mounts = new Gee.HashMap<string,string>();
+		foreach (var entry in App.mount_list){
+			if (entry.mount_point.length == 0){ continue; }
+			// An entry with no device is deliberately left on the root
+			// filesystem, which the daemon spells as the empty string.
+			mounts.set(entry.mount_point,
+				(entry.device == null) ? "" : entry.device.device);
+		}
+
+		/* skip_grub is the inverse of the checkbox, and the two other steps
+		 * are sent as themselves. They used to be hard-coded true in the
+		 * daemon, which made those checkboxes decorative. */
+		return bridge.begin_restore(
+			App.snapshot_to_restore.name,
+			mounts,
+			App.restore_current_system,
+			App.dry_run,
+			!App.reinstall_grub2,
+			(App.grub_device == null) ? "" : App.grub_device,
+			App.restore_line_count_estimate,
+			App.update_initramfs,
+			App.update_grub);
 	}
 
 	private void restore_thread(){

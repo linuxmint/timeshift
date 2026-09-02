@@ -687,6 +687,19 @@ type RestoreParams struct {
 	SkipGrub   bool   `json:"skip_grub,omitempty"`
 	GrubDevice string `json:"grub_device,omitempty"`
 
+	/* UpdateInitramfs and UpdateGrubMenu are the other two post-transfer
+	 * steps, and they are POINTERS so that "the caller said nothing" and "the
+	 * caller said no" are different requests.
+	 *
+	 * A plain bool cannot express the second: false is also what an older
+	 * client's omitted field looks like, and the safe default for both is
+	 * true. The daemon hard-coded them true for exactly that reason, which
+	 * made two of the restore wizard's three checkboxes decorative -- it
+	 * offered "Update initramfs" and "Update GRUB menu" and then did both
+	 * whatever the person chose. */
+	UpdateInitramfs *bool `json:"update_initramfs,omitempty"`
+	UpdateGrubMenu  *bool `json:"update_grub_menu,omitempty"`
+
 	// EstimatedLines is the denominator from a previous dry run.
 	EstimatedLines int64 `json:"estimated_lines,omitempty"`
 }
