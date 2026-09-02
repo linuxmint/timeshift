@@ -370,10 +370,8 @@ class RestoreDeviceBox : Gtk.Box{
 			if ((current_dev != null) && current_dev.is_encrypted_partition()){
 
 				log_debug("add_device_combo().changed: unlocking encrypted device..");
-				
-				string msg_out, msg_err;
-				var luks_unlocked = Device.luks_unlock(
-					current_dev, "", "", parent_window, out msg_out, out msg_err);
+
+				var luks_unlocked = unlock_encrypted(current_dev);
 
 				if (luks_unlocked == null){
 
@@ -429,6 +427,79 @@ class RestoreDeviceBox : Gtk.Box{
 		});
 
 		return combo;
+	}
+
+	/* Unlock a LUKS container through the daemon.
+	 *
+	 * The passphrase is collected HERE, by the only party that can reach a
+	 * person, and travels in the request body. It never reaches argv on either
+	 * side: in /proc/<pid>/cmdline it would be readable by anything on the
+	 * machine. That is also why this replaced Device.luks_unlock(), which put
+	 * up its own dialog from inside the core -- the reason every SnapshotRepo
+	 * constructor and restore_snapshot() had to be handed a Gtk.Window.
+	 */
+	private Device? unlock_encrypted(Device dev){
+
+		/* Already open is not a question worth asking a person. The daemon
+		 * treats it as success too, but only after a passphrase has been
+		 * typed, and typing one for a container that is already unlocked reads
+		 * as the unlock having failed. */
+		foreach(var part in App.partitions){
+			if (part.pkname == dev.kname){
+				log_debug("unlock_encrypted: already unlocked at %s".printf(part.device));
+				return part;
+			}
+		}
+
+		var api = DaemonApi.get_shared();
+		if (api == null){
+			gtk_messagebox(_("Encrypted Device"),
+				_("The Timeshift service is not available."), parent_window, true);
+			return null;
+		}
+
+		string? passphrase = gtk_inputbox(
+			_("Encrypted Device"),
+			_("Enter the passphrase to unlock '%s'").printf(dev.device),
+			parent_window, true);
+
+		// null is Cancel; the window-manager close returns ""
+		if ((passphrase == null) || (passphrase.length == 0)){ return null; }
+
+		gtk_set_busy(true, parent_window);
+
+		string mapped_name, mapped_path;
+		bool already_open;
+		bool ok = api.devices_unlock(dev.device, passphrase,
+			out mapped_name, out mapped_path, out already_open);
+
+		passphrase = null;
+
+		/* The device list is the daemon's answer, so re-read it rather than
+		 * patching a Device by hand: the mapper carries a uuid, a filesystem
+		 * type and a size that only a rescan knows. */
+		if (ok){ App.update_partitions(); }
+
+		gtk_set_busy(false, parent_window);
+
+		if (!ok){
+			gtk_messagebox(_("Failed to unlock device"), api.last_error,
+				parent_window, true);
+			return null;
+		}
+
+		var unlocked = Device.find_device_in_list(App.partitions, mapped_path);
+		if (unlocked == null){
+			unlocked = Device.find_device_in_list(App.partitions, mapped_name);
+		}
+
+		if (unlocked == null){
+			gtk_messagebox(_("Failed to unlock device"),
+				_("The device was unlocked but could not be found afterwards."),
+				parent_window, true);
+		}
+
+		return unlocked;
 	}
 
 	private void add_boot_options(){

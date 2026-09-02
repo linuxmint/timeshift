@@ -329,6 +329,20 @@ class BackupDeviceBox : Gtk.Box{
 		App.backup_location_type = "ssh";
 		App.btrfs_mode = false; // btrfs snapshots need a local filesystem
 
+		/* Ask the daemon first, and only for the reason.
+		 *
+		 * The repository status below already reports whether the location
+		 * works, but only as a status code -- so an unreachable host, a
+		 * refused key and a path that does not exist all arrived as the same
+		 * "not available". repo.ssh.test answers in a sentence, which is the
+		 * difference between a person fixing it and a person guessing. The
+		 * repository is still built either way: a failure here is diagnostic,
+		 * not a veto, and the status line remains the authority. */
+		var api = DaemonApi.get_shared();
+		string ssh_problem = "";
+		bool ssh_ok = (api == null) || api.repo_ssh_test(App.backup_ssh_url,
+			App.backup_ssh_key, App.backup_ssh_port, out ssh_problem);
+
 		App.repo = new SnapshotRepo.from_ssh(
 			App.backup_ssh_url, App.backup_ssh_key, App.backup_ssh_port,
 			App.backup_ssh_fake_super, parent_window);
@@ -341,6 +355,12 @@ class BackupDeviceBox : Gtk.Box{
 		 * connection would clear it. Re-probe here instead. */
 		App.repo.invalidate_capability_cache();
 		App.repo.check_status();
+
+		if (!ssh_ok){
+			gtk_set_busy(false, parent_window);
+			show_location_error(_("Could not reach the remote host"), ssh_problem);
+			return;
+		}
 
 		check_backup_location();
 
@@ -363,6 +383,13 @@ class BackupDeviceBox : Gtk.Box{
 			return;
 		}
 
+		var api = DaemonApi.get_shared();
+		if (api == null){
+			show_location_error(_("The Timeshift service is not available"),
+				_("Key-based login is set up by the service, which is not running."));
+			return;
+		}
+
 		string user, host, path;
 		int parsed_port;
 
@@ -375,22 +402,27 @@ class BackupDeviceBox : Gtk.Box{
 
 		if (App.backup_ssh_port > 0){ parsed_port = App.backup_ssh_port; }
 
-		var backend = new SshRepoBackend(user, host, parsed_port,
-			"", App.backup_ssh_fake_super, App.mount_point_app);
+		string display = "%s@%s".printf(user, host);
 
-		// 1. let the user confirm the host before the password goes anywhere
+		/* 1. let the person confirm the host before the password goes anywhere.
+		 *
+		 * scan_host is a separate call from setup_key precisely so this can
+		 * happen in between: accepting a fingerprint is a decision, and it has
+		 * to be made on the same key that then gets trusted -- which is why
+		 * the line comes back here and is handed straight back in step 3. */
 		gtk_set_busy(true, parent_window);
 		string key_line, fingerprint;
-		bool scanned = backend.scan_host_key(out key_line, out fingerprint);
+		bool scanned = api.repo_ssh_scan_host(host, parsed_port,
+			out fingerprint, out key_line);
 		gtk_set_busy(false, parent_window);
 
 		if (!scanned){
-			show_location_error(_("Could not reach the remote host"), backend.last_error);
+			show_location_error(_("Could not reach the remote host"), api.last_error);
 			return;
 		}
 
 		string msg = _("Timeshift will add its public key to the authorized_keys file of this account:");
-		msg += "\n\n    %s\n\n".printf(backend.display_name);
+		msg += "\n\n    %s\n\n".printf(display);
 		msg += _("Check this fingerprint against the remote host before continuing.");
 		msg += "\n\n    %s\n\n".printf(fingerprint);
 		msg += _("Your password will be sent to this host.");
@@ -404,20 +436,19 @@ class BackupDeviceBox : Gtk.Box{
 
 		if (resp != Gtk.ResponseType.YES){ return; }
 
-		if (!backend.trust_host_key(key_line)){
-			show_location_error(_("Failed to record the host key"), backend.last_error);
-			return;
-		}
-
 		// 2. password. null means Cancel; the window-manager close returns ""
 		string? password = gtk_inputbox(
 			_("Password"),
-			_("Enter the password for") + " %s".printf(backend.display_name),
+			_("Enter the password for") + " %s".printf(display),
 			parent_window, true);
 
 		if ((password == null) || (password.length == 0)){ return; }
 
-		// 3. key, install, verify
+		/* 3. trust the key, generate, install and VERIFY -- one call, because
+		 * the steps are only correct in that order and the daemon is what
+		 * holds /etc/timeshift/ssh. The password travels in the request body
+		 * and reaches ssh through SSH_ASKPASS in the child's environment; it
+		 * is never in argv on either side of the socket. */
 		string key_path = App.backup_ssh_key;
 		if (key_path.length == 0){
 			key_path = SshRepoBackend.default_key_file();
@@ -426,26 +457,9 @@ class BackupDeviceBox : Gtk.Box{
 		gtk_set_busy(true, parent_window);
 
 		string message = "";
-		bool ok = backend.ensure_keypair(key_path, out message);
-
-		if (ok){
-			backend.key_file = key_path;
-			ok = backend.install_public_key(password, out message);
-		}
-
-		// ssh-copy-id exits 0 even on a wrong password, so the verify below is
-		// what actually decides success
-		if (ok){
-			ok = backend.verify_key_auth(out message);
-		}
-
-		// only once the new key is proven to work: remove earlier keys this
-		// machine installed whose private half is gone
 		int removed = 0;
-		if (ok){
-			string clean_msg;
-			backend.remove_stale_keys(out removed, out clean_msg);
-		}
+		bool ok = api.repo_ssh_setup_key(App.backup_ssh_url, key_path,
+			parsed_port, key_line, password, out message, out removed);
 
 		password = null;
 

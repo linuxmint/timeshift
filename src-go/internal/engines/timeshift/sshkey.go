@@ -2,6 +2,7 @@ package timeshift
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path"
@@ -378,4 +379,97 @@ func firstLine(s string) string {
 		return s[:i]
 	}
 	return s
+}
+
+/* RemoveStaleKeys deletes this machine's OLD keys from the remote account.
+ *
+ * ssh-copy-id appends. Reinstall the machine, or regenerate the key, and the
+ * remote's authorized_keys keeps every key this host ever installed -- each one
+ * still granting access, and none of them holdable to account because the
+ * private half is gone. Only keys carrying THIS machine's marker are touched,
+ * and only when they are not the key we currently hold.
+ *
+ * Call it only after the new key is proven to authenticate. Removing the old
+ * ones first would lock the account out if the new one turned out not to work.
+ *
+ * The awk program locates the key type by PREFIX rather than by field position,
+ * so a line carrying options (command="...",no-pty ...) still parses; and it
+ * rebuilds the whole comment to compare, because matching only the last field
+ * would delete any key whose comment merely ends in our marker.
+ *
+ * The remote script's safety rules, in order of importance:
+ *
+ *   - never truncate the original: write a temp file and rename over it, so a
+ *     full disk or a dropped link cannot leave the account with an empty
+ *     authorized_keys and no way back in
+ *   - refuse to write an empty result when the input was not empty
+ *   - mktemp, not $$: a predictable name in a writable ~/.ssh is a symlink
+ *     target, and a leftover authorized_keys.* is itself live under
+ *     "AuthorizedKeysFile .ssh/authorized_keys*"
+ *   - clean the temp up on every exit path
+ */
+func RemoveStaleKeys(ctx context.Context, b *SSHBackend) (removed int, err error) {
+	if b == nil || b.KeyFile == "" {
+		return 0, errors.New("no key file")
+	}
+
+	pub, err := os.ReadFile(b.KeyFile + ".pub")
+	if err != nil {
+		return 0, fmt.Errorf("public key not found: %w", err)
+	}
+
+	// "<type> <blob> <comment>": the blob is the second field.
+	fields := strings.Fields(string(pub))
+	if len(fields) < 2 {
+		return 0, errors.New("could not read the public key")
+	}
+	keepBlob := fields[1]
+
+	const awkProg = `{ t=0; b=""; c="";` +
+		` for(i=1;i<=NF;i++){ if($i ~ /^(ssh-rsa|ssh-dss|ssh-ed25519|ecdsa-sha2-|sk-ssh-|sk-ecdsa-)/){ t=i; b=$(i+1); break } }` +
+		` if (t>0){ for(j=t+2;j<=NF;j++){ c = (c=="") ? $j : c " " $j } }` +
+		` if (t>0 && c==tag && b!=keep) next;` +
+		` print }`
+
+	script := `set -e;` +
+		` f="$HOME/.ssh/authorized_keys";` +
+		` [ -f "$f" ] || { printf 'TS_REMOVED=%s\n' 0; exit 0; };` +
+		` umask 077;` +
+		` tmp=$(mktemp "$f.tsXXXXXX") || exit 1;` +
+		` trap 'rm -f "$tmp"' EXIT;` +
+		` before=$(grep -c . "$f" || :);` +
+		` awk -v tag=` + shellQuote(KeyMarker()) +
+		` -v keep=` + shellQuote(keepBlob) +
+		` ` + shellQuote(awkProg) + ` "$f" > "$tmp";` +
+		` after=$(grep -c . "$tmp" || :);` +
+		` if [ "$before" -gt 0 ] && [ "$after" -eq 0 ]; then exit 3; fi;` +
+		` chmod 600 "$tmp"; mv "$tmp" "$f"; trap - EXIT;` +
+		` printf 'TS_REMOVED=%s\n' "$((before-after))"`
+
+	code, stdout, stderr, err := b.remote(ctx, script)
+	if err != nil {
+		return 0, err
+	}
+	if code != 0 {
+		if msg := firstLine(stderr); msg != "" {
+			return 0, errors.New(msg)
+		}
+		return 0, fmt.Errorf("failed to tidy the remote authorized_keys (exit %d)", code)
+	}
+
+	/* The sentinel proves the script ran to completion. Without it success
+	 * cannot be claimed: a login banner, a non-POSIX remote shell or a
+	 * mid-command failure would otherwise read as "removed 0". */
+	for _, line := range strings.Split(stdout, "\n") {
+		line = strings.TrimSpace(line)
+		if !strings.HasPrefix(line, "TS_REMOVED=") {
+			continue
+		}
+		n, convErr := strconv.Atoi(strings.TrimPrefix(line, "TS_REMOVED="))
+		if convErr != nil {
+			return 0, fmt.Errorf("unreadable count from the remote: %q", line)
+		}
+		return n, nil
+	}
+	return 0, errors.New("could not tidy old keys on the remote host")
 }

@@ -369,6 +369,15 @@ type SSHSetupKeyResult struct {
 	// AlreadyWorking means the key authenticated before anything was done, so
 	// no password was needed and nothing was installed.
 	AlreadyWorking bool `json:"already_working"`
+
+	/* StaleKeysRemoved counts this machine's OLD keys deleted from the remote
+	 * account once the new one was proven to work.
+	 *
+	 * ssh-copy-id appends, so without this a reinstalled machine leaves every
+	 * key it ever installed still granting access, with the private half gone.
+	 * Additive: a client talking to a daemon that predates it reads zero and
+	 * simply says nothing, which is the right degradation for a tidy-up. */
+	StaleKeysRemoved int `json:"stale_keys_removed,omitempty"`
 }
 
 // SSHTestParams checks a location. Empty fields mean the configured one.

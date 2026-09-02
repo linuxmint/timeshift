@@ -70,10 +70,6 @@ public class Main : GLib.Object{
 	 * ordinary state during the transition: this core still does all its own
 	 * work, and the daemon is consulted only to find out whether something
 	 * ELSE is already running. Nothing here depends on it being there. */
-	private DaemonClient? _daemon = null;
-	private DaemonApi? _daemon_api = null;
-	private bool daemon_tried = false;
-	
 	public Gee.ArrayList<Device> partitions;
 
 	public Gee.ArrayList<string> exclude_list_user;

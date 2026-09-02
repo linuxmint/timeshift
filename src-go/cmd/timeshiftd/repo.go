@@ -84,6 +84,11 @@ func (d *daemon) repoSSHSetupKey(ctx context.Context, _ *ipc.Conn, params json.R
 	if err := tsengine.VerifyKeyAuth(ctx, d.runner, backend); err == nil {
 		res.AlreadyWorking = true
 		res.Verified = true
+		/* Tidy here too. The Vala flow had no already-working shortcut, so it
+		 * reached the tidy on every press of the button; without this, a
+		 * machine whose key already works can never clear the keys it left
+		 * behind on an earlier install. */
+		res.StaleKeysRemoved = d.tidyStaleKeys(ctx, backend)
 		return res, nil
 	}
 
@@ -99,9 +104,34 @@ func (d *daemon) repoSSHSetupKey(ctx context.Context, _ *ipc.Conn, params json.R
 	}
 	res.Verified = true
 
+	res.StaleKeysRemoved = d.tidyStaleKeys(ctx, backend)
+
 	d.log.Info("ssh key set up for the remote repository",
-		"host", backend.Host, "key", backend.KeyFile, "created", created)
+		"host", backend.Host, "key", backend.KeyFile, "created", created,
+		"stale_keys_removed", res.StaleKeysRemoved)
 	return res, nil
+}
+
+/* tidyStaleKeys removes this machine's superseded keys from the remote.
+ *
+ * Called only once the key in hand is proven to authenticate: removing the old
+ * ones first would lock the account out if the new one turned out not to work.
+ *
+ * A failure is logged and swallowed. The setup itself succeeded, and reporting
+ * it as failed would send someone chasing a key that is already installed and
+ * working -- the tidy-up is hygiene, not part of the result. */
+func (d *daemon) tidyStaleKeys(ctx context.Context, backend *tsengine.SSHBackend) int {
+	removed, err := tsengine.RemoveStaleKeys(ctx, backend)
+	if err != nil {
+		d.log.Warn("could not tidy old keys on the remote host",
+			"host", backend.Host, "error", err)
+		return 0
+	}
+	if removed > 0 {
+		d.log.Info("removed superseded keys from the remote host",
+			"host", backend.Host, "count", removed)
+	}
+	return removed
 }
 
 // repo.ssh.test reports whether the configured location is reachable.

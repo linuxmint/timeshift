@@ -348,9 +348,11 @@ public class DaemonApi : GLib.Object {
 	 * exists to catch.
 	 */
 	public bool repo_ssh_setup_key(string url, string key_file, int port,
-		string host_key_line, string password, out string problem){
+		string host_key_line, string password, out string problem,
+		out int stale_keys_removed){
 
 		problem = "";
+		stale_keys_removed = 0;
 
 		var p = obj();
 		p.set_string_member("url", url);
@@ -366,6 +368,10 @@ public class DaemonApi : GLib.Object {
 			problem = last_error;
 			return false;
 		}
+
+		/* Additive field: a daemon that predates it sends nothing and this
+		 * reads zero, so the caller simply says nothing about old keys. */
+		stale_keys_removed = (int) DaemonClient.wire_int(o, "stale_keys_removed", 0);
 
 		if (DaemonClient.wire_bool(o, "verified", false) ||
 			DaemonClient.wire_bool(o, "already_working", false)){
