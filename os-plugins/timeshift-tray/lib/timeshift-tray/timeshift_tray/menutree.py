@@ -274,10 +274,16 @@ def build_menu(state, now, ids):
         rows.append(_status_row(ids, "status.headline",
                                 "The Timeshift service speaks a different protocol",
                                 DOT_WARN))
+        # "it" was ambiguous and the advice was fixed: say which side is
+        # behind. The applet is usually the older one, because the two ship in
+        # separate packages and this is the second to be upgraded.
         rows.append(_status_row(
             ids, "status.detail",
-            "Service %d, applet %d%srestart it after upgrading"
-            % (state.daemon_protocol, PROTOCOL_VERSION, DOT)))
+            "Service %d, applet %d%s%s"
+            % (state.daemon_protocol, PROTOCOL_VERSION, DOT,
+               "restart this applet after upgrading"
+               if state.daemon_protocol > PROTOCOL_VERSION
+               else "restart the service after upgrading")))
     elif state.conn in (ConnState.STARTING, ConnState.DISCONNECTED):
         rows.append(_status_row(ids, "status.headline",
                                 "Connecting to the Timeshift service…",

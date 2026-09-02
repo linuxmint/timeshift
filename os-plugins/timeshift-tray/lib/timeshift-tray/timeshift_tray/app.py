@@ -238,10 +238,16 @@ class TrayApp:
                      "access\", or: sudo gpasswd -a $USER timeshift"
                      % SOCKET_PATH)
         elif state is ConnState.PROTOCOL_MISMATCH:
+            # Name the side that is behind. The advice was always "restart the
+            # service", which is wrong exactly when the applet is the older
+            # one -- the common case, because the two ship in separate
+            # packages and this one is upgraded second.
+            daemon = self.controller.client.daemon_protocol
+            fix = ("restart this applet after upgrading"
+                   if daemon > PROTOCOL_VERSION
+                   else "restart the Timeshift service after upgrading")
             self.say("the Timeshift service speaks protocol %d and this applet "
-                     "speaks %d; restart the service after upgrading"
-                     % (self.controller.client.daemon_protocol,
-                        PROTOCOL_VERSION))
+                     "speaks %d; %s" % (daemon, PROTOCOL_VERSION, fix))
 
     def _on_event(self, event):
         self.controller.on_event(event)

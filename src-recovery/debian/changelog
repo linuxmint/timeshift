@@ -1,3 +1,9 @@
+timeshift-recovery (1.0.31) resolute; urgency=medium
+
+  * Rebuild from c75bad1
+
+ -- makeafide <willsmit4433@gmail.com>  Wed, 02 Sep 2026 14:58:37 -0400
+
 timeshift-recovery (1.0.30) resolute; urgency=medium
 
   * Verify the daemon's socket unit and the new CLI layout. The recovery image checks the binaries it repacks, and that list still required /usr/libexec/timeshift/timeshift, which the CLI cutover removed -- so building an image would have failed. It now also requires timeshiftd.socket, which the environment depends on to start the daemon.

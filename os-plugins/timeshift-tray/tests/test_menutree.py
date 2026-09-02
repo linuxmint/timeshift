@@ -100,6 +100,16 @@ class ShapeTest(unittest.TestCase):
         self.assertIn(str(other), detail)
         self.assertIn(str(constants.PROTOCOL_VERSION), detail)
 
+        # The advice must name the side that is BEHIND. Here the service is
+        # newer, so it is this applet that needs restarting -- and telling
+        # somebody to restart the service instead sends them to reset a
+        # daemon that is already correct.
+        self.assertIn("applet", detail)
+
+        state.daemon_protocol = constants.PROTOCOL_VERSION - 1
+        older = find(build(state), "status.detail").label
+        self.assertIn("service", older)
+
     def test_a_live_session_disables_create_with_a_reason(self):
         state = ready_state()
         state.system.live = True
