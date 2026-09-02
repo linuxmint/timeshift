@@ -65,6 +65,13 @@ namespace TeeJee.System{
 		return euid;
 	}
 	
+	/* The primary group of an account, for handing to the daemon alongside the
+	 * uid when it mounts something the desktop user has to be able to read. */
+	public int get_group_id_from_uid(int user_id){
+		unowned Posix.Passwd? pw = Posix.getpwuid(user_id);
+		return (pw == null) ? user_id : (int) pw.pw_gid;
+	}
+
 	public string? get_username_from_uid(int user_id){
 		unowned Posix.Passwd? pw = Posix.getpwuid(user_id);
 		string? outvalue = pw?.pw_name;
