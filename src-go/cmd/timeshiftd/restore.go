@@ -510,6 +510,22 @@ func renderPlan(plan *restore.Plan) ipc.RestorePlanResult {
 			out.Blockers = append(out.Blockers, row.MountPoint+": "+row.Status)
 		}
 	}
+	/* The whole default selection, not just the rows that can block.
+	 *
+	 * A device page has to draw every mount point the snapshot declares, with
+	 * whatever device was derived for it -- and the snapshot's fstab lives in
+	 * the repository, so a client with a remote one cannot build this itself.
+	 * The plan already holds it, folded and resolved. */
+	for _, m := range plan.Mounts {
+		out.Mounts = append(out.Mounts, ipc.RestorePlanMount{
+			MountPoint: m.MountPoint,
+			Device:     m.DevicePath,
+			UUID:       m.DeviceUUID,
+			Options:    m.Options,
+			IsESP:      m.IsESP,
+		})
+	}
+
 	for _, p := range plan.Phases {
 		out.Phases = append(out.Phases, p.Title)
 	}

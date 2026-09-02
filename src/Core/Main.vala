@@ -1484,11 +1484,87 @@ public class Main : GLib.Object{
 
 	// restore
 	 
+	/* Builds mount_list from restore.plan's default selection.
+	 *
+	 * False means the daemon could not answer, and the caller falls through to
+	 * reading the snapshot's fstab itself -- which still works for a local
+	 * repository this process happens to have mounted, and is what an older
+	 * daemon leaves us with.
+	 *
+	 * The plan is asked for the NON-current-system case deliberately, even
+	 * when the person is about to restore in place: current_system collapses
+	 * the answer to a single "/ -> the running system" row, which is the right
+	 * summary and the wrong thing to build a device page from.
+	 */
+	private bool init_mount_list_from_daemon(){
+
+		if (snapshot_to_restore == null){ return false; }
+
+		var api = DaemonApi.get_shared();
+		if (api == null){ return false; }
+
+		var plan = api.restore_plan(snapshot_to_restore.name,
+			new Gee.HashMap<string,string>(), false);
+
+		if (plan == null){
+			log_debug("restore.plan: %s".printf(api.last_error));
+			return false;
+		}
+		if (plan.mounts.size == 0){
+			// An older daemon does not send them; say so rather than
+			// presenting an empty page as the snapshot's layout.
+			log_debug("restore.plan returned no mount selection");
+			return false;
+		}
+
+		foreach (var m in plan.mounts){
+
+			if (m.mount_point.length == 0){ continue; }
+
+			/* Resolve to a Device so the page's drop-downs can preselect it.
+			 * By uuid first: a device path can move between boots, and the
+			 * uuid is what the snapshot actually recorded. */
+			Device? dev = null;
+			if (m.uuid.length > 0){ dev = Device.get_device_by_uuid(m.uuid); }
+			if ((dev == null) && (m.device.length > 0)){
+				dev = Device.get_device_by_name(m.device);
+			}
+
+			mount_list.add(new MountEntry(dev, m.mount_point, m.options));
+
+			if (m.mount_point == "/"){ dst_root = dev; }
+		}
+
+		mount_list.sort((a,b) => {
+			return strcmp(a.mount_point, b.mount_point);
+		});
+
+		return mount_list.size > 0;
+	}
+
 	public void init_mount_list(){
 
 		log_debug("Main: init_mount_list()");
 		
 		mount_list.clear();
+
+		/* The daemon's default selection first.
+		 *
+		 * The fstab this page is derived from lives inside the SNAPSHOT, and
+		 * this process no longer mounts the repository -- so for a remote one
+		 * it was never readable here, and for a local one it stopped being
+		 * readable when the mount moved to the daemon. The page then drew
+		 * three placeholder rows with no device chosen and told the person
+		 * "devices from which snapshot was created are pre-selected", which
+		 * was no longer true of anything.
+		 *
+		 * restore.plan builds that selection from the snapshot's own fstab, on
+		 * the side that can read it. */
+		if (init_mount_list_from_daemon()){
+			log_debug("Main: init_mount_list(): from the daemon");
+			init_boot_options();
+			return;
+		}
 
 		Gee.ArrayList<FsTabEntry> fstab_list = null;
 		Gee.ArrayList<CryptTabEntry> crypttab_list = null;

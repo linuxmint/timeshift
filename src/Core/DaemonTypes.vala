@@ -457,6 +457,33 @@ public class DaemonRecoveryStatus : GLib.Object {
 
 // ---------------------------------------------------------------------------
 
+/* One mount point of a restore plan's DEFAULT selection.
+ *
+ * Distinct from DaemonRestorePlanRow below, which is the validation report and
+ * carries only the root and the ESP -- the two that can block. This is every
+ * mount point the snapshot declares, which is what the device page draws.
+ */
+public class DaemonRestoreMount : GLib.Object {
+
+	public string mount_point { get; set; default = ""; }
+
+	// Empty means "keep it on the root device", not "unknown".
+	public string device { get; set; default = ""; }
+	public string uuid { get; set; default = ""; }
+	public string options { get; set; default = ""; }
+	public bool is_esp { get; set; default = false; }
+
+	public static DaemonRestoreMount from_wire(Json.Object o){
+		var m = new DaemonRestoreMount();
+		m.mount_point = DaemonClient.wire_string(o, "mount_point", "");
+		m.device      = DaemonClient.wire_string(o, "device", "");
+		m.uuid        = DaemonClient.wire_string(o, "uuid", "");
+		m.options     = DaemonClient.wire_string(o, "options", "");
+		m.is_esp      = DaemonClient.wire_bool(o, "is_esp", false);
+		return m;
+	}
+}
+
 /* DaemonRestorePlanRow is one mount point in a restore plan.
  *
  * `blocking` is separate from `status` because a row can be worth showing and
@@ -506,6 +533,10 @@ public class DaemonRestorePlan : GLib.Object {
 
 	public Gee.ArrayList<DaemonRestorePlanRow> rows { get; private set;
 		default = new Gee.ArrayList<DaemonRestorePlanRow>(); }
+
+	// The default selection: every mount point, not just the blocking ones.
+	public Gee.ArrayList<DaemonRestoreMount> mounts { get; private set;
+		default = new Gee.ArrayList<DaemonRestoreMount>(); }
 	public Gee.ArrayList<string> phases { get; private set;
 		default = new Gee.ArrayList<string>(); }
 	public Gee.ArrayList<string> notes { get; private set;
@@ -524,6 +555,15 @@ public class DaemonRestorePlan : GLib.Object {
 			foreach (var node in o.get_array_member("rows").get_elements()){
 				if (node.get_node_type() == Json.NodeType.OBJECT){
 					p.rows.add(DaemonRestorePlanRow.from_wire(node.get_object()));
+				}
+			}
+		}
+
+		if (o.has_member("mounts") &&
+			(o.get_member("mounts").get_node_type() == Json.NodeType.ARRAY)){
+			foreach (var node in o.get_array_member("mounts").get_elements()){
+				if (node.get_node_type() == Json.NodeType.OBJECT){
+					p.mounts.add(DaemonRestoreMount.from_wire(node.get_object()));
 				}
 			}
 		}

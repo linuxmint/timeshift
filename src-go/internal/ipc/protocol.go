@@ -723,8 +723,35 @@ type RestorePlanResult struct {
 	Blocked  bool     `json:"blocked"`
 	Blockers []string `json:"blockers,omitempty"`
 
+	/* Mounts is the DEFAULT selection, derived from the snapshot's own fstab.
+	 *
+	 * Rows above are a validation report: only the root and the ESP appear,
+	 * because only those two can block. This is the whole selection, which is
+	 * what a device page has to draw -- and the daemon is the only party that
+	 * can build it, because the snapshot's fstab lives in the repository and a
+	 * client with a remote one cannot read it at all.
+	 *
+	 * Additive: a client talking to a daemon that predates it gets nothing and
+	 * falls back to whatever it did before, which is a page with no
+	 * pre-selection rather than a wrong one.
+	 */
+	Mounts []RestorePlanMount `json:"mounts,omitempty"`
+
 	// Summary is the whole thing rendered for a person to read.
 	Summary string `json:"summary"`
+}
+
+// RestorePlanMount is one mount point of the default selection.
+type RestorePlanMount struct {
+	MountPoint string `json:"mount_point"`
+
+	// Device is the path, empty when nothing is chosen for this mount point --
+	// which means "keep it on the root device", not "unknown".
+	Device string `json:"device,omitempty"`
+	UUID   string `json:"uuid,omitempty"`
+
+	Options string `json:"options,omitempty"`
+	IsESP   bool   `json:"is_esp,omitempty"`
 }
 
 // RestorePlanRow is one mount point in the plan.
