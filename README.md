@@ -110,7 +110,9 @@ You can selectively include items for backup from the ***Settings*** window. Sel
   - **@** and **@home** subvolumes may be on same or different BTRFS volumes
   - **@** may be on BTRFS volume and **/home** may be mounted on non-BTRFS partition
   - If swap files are used they should not be located in **@** or **@home** and could instead be stored in their own subvolume, eg **@swap**
-  - Separate partitions (e.g. `/boot`) can be handled via custom created hooks (placed in `/etc/timeshift/backup-hooks.d/` and `/etc/timeshift/restore-hooks.d/`). Script naming must match `run-parts` [requirements](https://manpages.ubuntu.com/manpages/noble/man8/run-parts.8.html). Current snapshot path is exported as `TS_SNAPSHOT_PATH`.
+  - Separate partitions (e.g. `/boot`) can be handled via custom created hooks (placed in `/etc/timeshift/backup-hooks.d/` and `/etc/timeshift/restore-hooks.d/`). Script naming must match `run-parts` [requirements](https://manpages.ubuntu.com/manpages/noble/man8/run-parts.8.html). Available variables in hooks:
+     - `TS_SNAPSHOT_PATH` - Path of the current snapshot
+     - `TS_MODE` - "BTRFS" or "RSYNC"
   - Other layouts are not supported
   - Make sure, that you have selected subvolume *@* or */@* for root. You can check that executing script below, and if output is *OK*, then everything is alright.
 
