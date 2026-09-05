@@ -772,13 +772,12 @@ public class AppConsole : GLib.Object {
 			list_snapshots(true);
 			log_msg("");
 
-			int attempts = 0;
+			int attempts = 1;
 			while (selected_snapshot == null){
-				attempts++;
 				if (attempts > 3) { break; }
 				stdout.printf(_("Enter snapshot number (a=Abort, p=Previous, n=Next)") + ": ");
 				stdout.flush();
-				selected_snapshot = read_stdin_snapshot();
+				selected_snapshot = read_stdin_snapshot(&attempts);
 			}
 			log_msg("");
 			
@@ -1225,7 +1224,7 @@ public class AppConsole : GLib.Object {
 		return null;
 	}
 
-	private Snapshot read_stdin_snapshot(){
+	private Snapshot read_stdin_snapshot(int* attempts_ptr){
 		var counter = new TimeoutCounter();
 		counter.exit_on_timeout();
 		string? line = stdin.read_line();
@@ -1234,6 +1233,7 @@ public class AppConsole : GLib.Object {
 		line = (line != null) ? line.strip() : "";
 
 		Snapshot selected_snapshot = null;
+		bool is_attempt = true;
 
 		if (line.down() == "a"){
 			log_msg("Aborted.");
@@ -1244,6 +1244,7 @@ public class AppConsole : GLib.Object {
 			if (snapshot_list_start_index < 0){
 				snapshot_list_start_index = 0;
 			}
+			is_attempt = false;
 			log_msg("");
 			list_snapshots(true);
 			log_msg("");
@@ -1252,6 +1253,7 @@ public class AppConsole : GLib.Object {
 			if ((snapshot_list_start_index + 10) < App.repo.snapshots.size){
 				snapshot_list_start_index += 10;
 			}
+			is_attempt = false;
 			log_msg("");
 			list_snapshots(true);
 			log_msg("");
@@ -1278,6 +1280,9 @@ public class AppConsole : GLib.Object {
 			}
 		}
 
+		if (is_attempt){
+			*attempts_ptr += 1;
+		}
 		return selected_snapshot;
 	}
 
