@@ -120,7 +120,7 @@ namespace TeeJee.System{
 		}
 
 		foreach(string app_name in
-			new string[]{ "nemo", "nautilus", "thunar", "io.elementary.files", "pantheon-files", "marlin", "dolphin" }){
+			new string[]{ "nemo", "thunar", "io.elementary.files", "pantheon-files", "marlin", "dolphin", "nautilus" }){
 			if(!cmd_exists(app_name)) {
 				continue;
 			}
