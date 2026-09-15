@@ -688,7 +688,7 @@ class MainWindow : Gtk.Window{
 				store.get (iter, 0, out bak);
 
 				if (App.btrfs_mode){
-					exo_open_folder(bak.path, false);
+					exo_open_folder(bak.path, true);
 				}
 				else{
 					exo_open_folder(bak.path + "/localhost", false);
