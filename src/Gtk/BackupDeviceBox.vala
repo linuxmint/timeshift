@@ -66,6 +66,7 @@ class BackupDeviceBox : Gtk.Box{
         btn_refresh.clicked.connect(()=>{
 			App.update_partitions();
 			tv_devices_refresh();
+			infobar_location.hide();
 		});
 
 		// TODO: show this message somewhere
@@ -392,6 +393,9 @@ class BackupDeviceBox : Gtk.Box{
 				infobar_location.message_type = Gtk.MessageType.ERROR;
 				infobar_location.no_show_all = false;
 				infobar_location.show_all();
+			}
+			else {
+				infobar_location.hide();
 			}
 		}
 		else if (dev.has_children()){
