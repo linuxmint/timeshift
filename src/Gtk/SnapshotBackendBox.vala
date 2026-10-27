@@ -36,6 +36,7 @@ class SnapshotBackendBox : Gtk.Box{
 	
 	private Gtk.RadioButton opt_rsync;
 	private Gtk.RadioButton opt_btrfs;
+	private Gtk.CheckButton opt_btrfs_readonly;
 	private Gtk.Label lbl_description;
 	private Gtk.Window parent_window;
 	
@@ -103,13 +104,32 @@ class SnapshotBackendBox : Gtk.Box{
         }
 
 		opt_btrfs.toggled.connect(()=>{
+			add_opt_btrfs_ro(hbox);
 			if (opt_btrfs.active){
 				App.btrfs_mode = true;
 				init_backend();
 				type_changed();
 				update_description();
 			}
+			this.show_all();
 		});
+	}
+
+	private void add_opt_btrfs_ro(Gtk.Box hbox){
+		if (opt_btrfs.active){
+				var opt = new Gtk.CheckButton.with_label(_("Create Read-only snapshots by default"));
+				hbox.add(opt);
+				opt_btrfs_readonly = opt;
+
+				opt_btrfs_readonly.toggled.connect(()=>{
+					App.btrfs_readonly = opt_btrfs_readonly.active;
+				});
+		} else {
+			if (opt_btrfs_readonly != null){
+				hbox.remove(opt_btrfs_readonly);
+				opt_btrfs_readonly = null;
+			}
+		}
 	}
 
 	private bool check_for_btrfs_tools() {
@@ -212,6 +232,7 @@ class SnapshotBackendBox : Gtk.Box{
 	public void refresh(){
 		
 		opt_btrfs.active = App.btrfs_mode;
+		opt_btrfs_readonly.active = App.btrfs_readonly;
 		type_changed();
 		update_description();
 	}
