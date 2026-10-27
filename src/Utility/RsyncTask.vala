@@ -51,6 +51,9 @@ public class RsyncTask : AsyncTask{
 	public bool delete_excluded = false;
 	public bool relative = false;
 	
+	public bool no_inc = false;
+	public bool checksum = false;
+	
 	public string rsync_log_file = "";
 	public string exclude_from_file = "";
 	public string link_from_path = "";
@@ -215,6 +218,16 @@ public class RsyncTask : AsyncTask{
 		cmd += " --stats";
 
 		cmd += " --sparse";
+
+		cmd += " --hard-links";
+
+		if (no_inc) {
+			cmd += " --no-inc-recursive";
+		}
+
+		if (checksum) {
+			cmd += " --checksum";
+		}
 
 		//if (relative){
 		//	cmd += " --relative";

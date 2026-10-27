@@ -134,6 +134,8 @@ public class Main : GLib.Object{
 
 	public string date_format = "%Y-%m-%d %H:%M:%S";
 	public const string date_format_default = "%Y-%m-%d %H:%M:%S";
+	public bool rsync_no_inc = false;
+	public bool rsync_checksum = false;
 
 	public Gee.ArrayList<Snapshot> delete_list;
 	
@@ -1665,6 +1667,9 @@ public class Main : GLib.Object{
 		task.rsync_log_file = log_file;
 		task.prg_count_total = Main.first_snapshot_count;
 
+		task.no_inc = rsync_no_inc;
+		task.checksum = rsync_checksum;
+
 		task.relative = true;
 		task.verbose = true;
 		task.delete_extra = true;
@@ -2568,7 +2573,11 @@ public class Main : GLib.Object{
 		if (dry_run){
 			sh += " --dry-run";
 		}
-		
+
+		if (rsync_checksum) {
+			sh += " --checksum";
+		}
+
 		sh += " --log-file=\"%s\"".printf(restore_log_file);
 		sh += " --exclude-from=\"%s\"".printf(restore_exclude_file);
 
@@ -3394,6 +3403,8 @@ public class Main : GLib.Object{
 		}
 
 		config.set_string_member("date_format", date_format);
+		config.set_string_member("rsync_no_inc", rsync_no_inc.to_string());
+		config.set_string_member("rsync_checksum", rsync_checksum.to_string());
 		
 		Json.Array arr = new Json.Array();
 		foreach(string path in exclude_list_user){
@@ -3506,6 +3517,8 @@ public class Main : GLib.Object{
 		this.count_boot = json_get_int(config,"count_boot",count_boot);
 
 		this.date_format = json_get_string(config, "date_format", date_format_default);
+		rsync_no_inc = json_get_bool(config, "rsync_no_inc", rsync_no_inc);
+		rsync_checksum = json_get_bool(config, "rsync_checksum", rsync_checksum);
 
 		Main.first_snapshot_size = json_get_uint64(config,"snapshot_size", Main.first_snapshot_size);
 			
