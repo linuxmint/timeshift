@@ -151,6 +151,7 @@ public class Main : GLib.Object{
 	public string cmd_target_device = "";
 	public string cmd_backup_device = "";
 	public string cmd_snapshot = "";
+	public string cmd_config = "";
 	public bool cmd_confirm = false;
 	public bool cmd_verbose = true;
 	public bool cmd_scripted = false;
@@ -300,6 +301,7 @@ public class Main : GLib.Object{
 		string local_exec = args[0];
 		string local_conf = app_path + "/timeshift.json";
 		string local_share = app_path + "/share";
+		log_debug("cmd_config" + ": " + cmd_config);
 
 		var f_local_exec = File.new_for_path(local_exec);
 		if (f_local_exec.query_exists()){
@@ -317,6 +319,10 @@ public class Main : GLib.Object{
 		else{
 			//timeshift is running from system directory - update app_path
 			this.app_path = Environment.find_program_in_path("timeshift");
+		}
+		var f_config_path = File.new_for_path(cmd_config);
+		if (f_config_path.query_exists()){
+			this.app_conf_path = cmd_config;
 		}
 
 		// initialize lists -----------------
@@ -597,6 +603,9 @@ public class Main : GLib.Object{
 
 				case "--list-devices":
 					app_mode = "list-devices";
+					break;
+				case "--config":
+					cmd_config = args[++k];
 					break;
 			}
 		}
