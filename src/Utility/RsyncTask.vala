@@ -216,6 +216,8 @@ public class RsyncTask : AsyncTask{
 
 		cmd += " --sparse";
 
+		cmd += " --hard-links";
+
 		//if (relative){
 		//	cmd += " --relative";
 		//}
