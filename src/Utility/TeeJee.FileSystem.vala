@@ -93,12 +93,12 @@ namespace TeeJee.FileSystem{
 
 		try {
 			long line_nums = 0;
-			char symbol;
+			int symbol;
 
 			File file = File.new_for_path(file_path);
 			FileInputStream inStream = file.read();
 			BufferedInputStream bis = new BufferedInputStream.sized(inStream,  (size_t) (1 * MiB));
-			while((symbol = (char) bis.read_byte()) != -1) {
+			while((symbol = bis.read_byte()) != -1) {
 				if(symbol == '\n') {
 					line_nums ++;
 				}
