@@ -84,11 +84,10 @@ public class Main : GLib.Object{
 	public LinuxDistro current_distro;
 	public bool mirror_system = false;
 
-	public bool schedule_monthly = false;
-	public bool schedule_weekly = false;
-	public bool schedule_daily = false;
-	public bool schedule_hourly = false;
-	public bool schedule_boot = false;
+	// tags that are scheduled
+	public Tags schedule = 0;
+
+	// planned snapshots per tag
 	public int count_monthly = 2;
 	public int count_weekly = 3;
 	public int count_daily = 5;
@@ -155,7 +154,7 @@ public class Main : GLib.Object{
 	public bool cmd_verbose = true;
 	public bool cmd_scripted = false;
 	public string cmd_comments = "";
-	public string cmd_tags = "";
+	public Tags cmd_tags = 0;
 	public bool? cmd_btrfs_mode = null;
 	
 	public string progress_text = "";
@@ -189,7 +188,7 @@ public class Main : GLib.Object{
     }
 
 	public Main(string[] args, bool gui_mode){
-		
+
 		this.mount_point_app = "/run/timeshift/%d".printf(Posix.getpid());
 		dir_create(this.mount_point_app);
 		
@@ -1061,9 +1060,7 @@ public class Main : GLib.Object{
 	
 	public bool scheduled{
 		get{
-			return !live_system()
-			&& (schedule_boot || schedule_hourly || schedule_daily ||
-				schedule_weekly || schedule_monthly);
+			return !live_system() && (schedule > 0);
 		}
 	}
 
@@ -1138,7 +1135,7 @@ public class Main : GLib.Object{
 
 			// ondemand
 			if (is_ondemand){
-				bool ok = create_snapshot_for_tag ("ondemand",now); 
+				bool ok = create_snapshot_for_tags(App.cmd_tags, now); 
 				if(!ok){
 					return false;
 				}
@@ -1147,16 +1144,16 @@ public class Main : GLib.Object{
 				}
 			}
 			else if (scheduled){
-				Snapshot last_snapshot_boot = repo.get_latest_snapshot("boot", sys_uuid);
-				Snapshot last_snapshot_hourly = repo.get_latest_snapshot("hourly", sys_uuid);
-				Snapshot last_snapshot_daily = repo.get_latest_snapshot("daily", sys_uuid);
-				Snapshot last_snapshot_weekly = repo.get_latest_snapshot("weekly", sys_uuid);
-				Snapshot last_snapshot_monthly = repo.get_latest_snapshot("monthly", sys_uuid);
+				Snapshot last_snapshot_boot = repo.get_latest_snapshot(Tags.Boot, sys_uuid);
+				Snapshot last_snapshot_hourly = repo.get_latest_snapshot(Tags.Hourly, sys_uuid);
+				Snapshot last_snapshot_daily = repo.get_latest_snapshot(Tags.Daily, sys_uuid);
+				Snapshot last_snapshot_weekly = repo.get_latest_snapshot(Tags.Weekly, sys_uuid);
+				Snapshot last_snapshot_monthly = repo.get_latest_snapshot(Tags.Monthly, sys_uuid);
 
 				DateTime dt_sys_boot = now.add_seconds((-1) * get_system_uptime_seconds());
 				bool take_new = false;
 
-				if (schedule_boot){
+				if (Tags.Boot in App.schedule){
 
 					log_msg(_("Boot snapshots are enabled"));
 
@@ -1175,7 +1172,7 @@ public class Main : GLib.Object{
 					}
 
 					if (take_new){
-						status = create_snapshot_for_tag ("boot",now);
+						status = create_snapshot_for_tags(Tags.Boot, now);
 						if(!status){
 							log_error(_("Boot snapshot failed!"));
 							return false;
@@ -1187,7 +1184,7 @@ public class Main : GLib.Object{
 					}
 				}
 
-				if (schedule_hourly){
+				if (Tags.Hourly in App.schedule){
 
 					log_msg(_("Hourly snapshots are enabled"));
 
@@ -1206,7 +1203,7 @@ public class Main : GLib.Object{
 					}
 
 					if (take_new){
-						status = create_snapshot_for_tag ("hourly",now);
+						status = create_snapshot_for_tags(Tags.Hourly, now);
 						if(!status){
 							log_error(_("Hourly snapshot failed!"));
 							return false;
@@ -1218,7 +1215,7 @@ public class Main : GLib.Object{
 					}
 				}
 
-				if (schedule_daily){
+				if (Tags.Daily in App.schedule){
 
 					log_msg(_("Daily snapshots are enabled"));
 
@@ -1237,7 +1234,7 @@ public class Main : GLib.Object{
 					}
 
 					if (take_new){
-						status = create_snapshot_for_tag ("daily",now);
+						status = create_snapshot_for_tags(Tags.Daily, now);
 						if(!status){
 							log_error(_("Daily snapshot failed!"));
 							return false;
@@ -1249,7 +1246,7 @@ public class Main : GLib.Object{
 					}
 				}
 
-				if (schedule_weekly){
+				if (Tags.Weekly in App.schedule){
 
 					log_msg(_("Weekly snapshots are enabled"));
 
@@ -1268,7 +1265,7 @@ public class Main : GLib.Object{
 					}
 
 					if (take_new){
-						status = create_snapshot_for_tag ("weekly",now);
+						status = create_snapshot_for_tags(Tags.Weekly, now);
 						if(!status){
 							log_error(_("Weekly snapshot failed!"));
 							return false;
@@ -1280,7 +1277,7 @@ public class Main : GLib.Object{
 					}
 				}
 
-				if (schedule_monthly){
+				if (Tags.Monthly in App.schedule){
 
 					log_msg(_("Monthly snapshot are enabled"));
 
@@ -1299,7 +1296,7 @@ public class Main : GLib.Object{
 					}
 
 					if (take_new){
-						status = create_snapshot_for_tag ("monthly",now);
+						status = create_snapshot_for_tags(Tags.Monthly, now);
 						if(!status){
 							log_error(_("Monthly snapshot failed!"));
 							return false;
@@ -1339,9 +1336,14 @@ public class Main : GLib.Object{
 		return status;
 	}
 
-	private bool create_snapshot_for_tag(string tag, DateTime dt_created){
+	private bool create_snapshot_for_tags(Tags tags, DateTime dt_created){
 
 		log_debug("Main: backup_and_rotate()");
+
+		if (tags == 0) {
+			// at least on tag need to be set
+			tags |= Tags.OnDemand;
+		}
 		
 		// save start time
 		var dt_begin = new DateTime.now_local();
@@ -1355,20 +1357,14 @@ public class Main : GLib.Object{
 
 		DateTime dt_filter = null;
 
-		if (tag != "ondemand"){
-			switch(tag){
-				case "boot":
-					dt_filter = dt_sys_boot;
-					break;
-				case "hourly":
-				case "daily":
-				case "weekly":
-				case "monthly":
-					dt_filter = now.add_hours(-1).add_seconds(59);
-					break;
-				default:
-					log_error(_("Unknown snapshot type") + ": %s".printf(tag));
-					return false;
+		// if this is not a "ondemand" snapshot, we can check if there is another recent snapshot
+		// that we can repurpose/retag
+		if (!(Tags.OnDemand in tags) && App.app_mode != "ondemand"){
+			if(Tags.Boot in tags) {
+				dt_filter = dt_sys_boot;
+			}
+			else if(tags.contains_any(Tags.Timed)) {
+				dt_filter = now.add_hours(-1).add_seconds(59);
 			}
 
 			// find a recent backup that can be used
@@ -1383,9 +1379,9 @@ public class Main : GLib.Object{
 			if (backup_to_rotate != null){
 				
 				// tag the backup
-				backup_to_rotate.add_tag(tag);
+				backup_to_rotate.add_tag(tags);
 
-				var message = _("Tagged snapshot") + " '%s': %s".printf(backup_to_rotate.name, tag);
+				var message = _("Tagged snapshot") + " '%s': %s".printf(backup_to_rotate.name, tags.as_short_list());
 				log_msg(message);
 
 				return true;
@@ -1408,7 +1404,7 @@ public class Main : GLib.Object{
 		Snapshot new_snapshot = null;
 		if (btrfs_mode)
 		{
-			new_snapshot = create_snapshot_with_btrfs(tag, dt_created);
+			new_snapshot = create_snapshot_with_btrfs(tags, dt_created);
 		}
 		else
 		if (first_snapshot_size > 0 && repo.device.free_bytes < first_snapshot_size)
@@ -1428,7 +1424,7 @@ public class Main : GLib.Object{
 
 			if (enough)
 			{
-				new_snapshot = create_snapshot_with_rsync(tag, dt_created);
+				new_snapshot = create_snapshot_with_rsync(tags, dt_created);
 			}
 			else
 			{
@@ -1439,7 +1435,7 @@ public class Main : GLib.Object{
 		{
 			// this is the initial snapshot (which means a size check has already been made) or the target
 			// drive's available space is more than the the original (full) snapshot's size.
-			new_snapshot = create_snapshot_with_rsync(tag, dt_created);
+			new_snapshot = create_snapshot_with_rsync(tags, dt_created);
 		}
 		// finish ------------------------------
 
@@ -1459,7 +1455,7 @@ public class Main : GLib.Object{
 		OSDNotify.notify_send("TimeShift", message, 10000, "low");
 
 		if (new_snapshot != null){
-			message = _("Tagged snapshot") + " '%s': %s".printf(new_snapshot.name, tag);
+			message = _("Tagged snapshot") + " '%s': %s".printf(new_snapshot.name, tags.as_short_list());
 			log_msg(message);
 		}
 
@@ -1517,7 +1513,7 @@ public class Main : GLib.Object{
 		// get latest snapshot to link if not set -------
 
 		if (snapshot_to_link == null){
-			snapshot_to_link = repo.get_latest_snapshot("", sys_uuid);
+			snapshot_to_link = repo.get_latest_snapshot(0, sys_uuid);
 		}
 
 		string link_from_path = "";
@@ -1566,7 +1562,7 @@ public class Main : GLib.Object{
 		return total_size;
 	}
 
-	private Snapshot? create_snapshot_with_rsync(string tag, DateTime dt_created){
+	private Snapshot? create_snapshot_with_rsync(Tags tags, DateTime dt_created){
 		log_msg(string.nfill(78, '-'));
 
 		if (first_snapshot_size == 0){
@@ -1630,7 +1626,7 @@ public class Main : GLib.Object{
 		// get latest snapshot to link if not set -------
 
 		if (snapshot_to_link == null){
-			snapshot_to_link = repo.get_latest_snapshot("", sys_uuid);
+			snapshot_to_link = repo.get_latest_snapshot(0, sys_uuid);
 		}
 
 		string link_from_path = "";
@@ -1693,8 +1689,6 @@ public class Main : GLib.Object{
 			log_error(_("Failed to create new snapshot"));
 			return null;
 		}
-
-		string initial_tags = (tag == "ondemand") ? "" : tag;
 		
 		// write control file
 		// this step is redundant - just in case if app crashes while parsing log file in next step
@@ -1713,9 +1707,7 @@ public class Main : GLib.Object{
 		// write control file (final - with file count after parsing log)
 		var snapshot = Snapshot.write_control_file(
 			snapshot_path, dt_created, sys_uuid, current_distro.full_name(),
-			initial_tags, cmd_comments, fcount, false, false, repo);
-
-		set_tags(snapshot); // set_tags() will update the control file
+			tags, cmd_comments, fcount, false, false, repo);
 
 		// Perform any post-backup actions
 		this.run_post_backup_hooks(snapshot_path);
@@ -1723,7 +1715,7 @@ public class Main : GLib.Object{
 		return snapshot;
 	}
 
-	private Snapshot? create_snapshot_with_btrfs(string tag, DateTime dt_created){
+	private Snapshot? create_snapshot_with_btrfs(Tags tags, DateTime dt_created){
 
 		log_msg(_("Creating new backup...") + "(BTRFS)");
 
@@ -1794,21 +1786,17 @@ public class Main : GLib.Object{
 		//log_msg(_("Writing control file..."));
 
 		snapshot_path = path_combine(repo.mount_paths["@"], "timeshift-btrfs/snapshots/%s".printf(snapshot_name));
-
-		string initial_tags = (tag == "ondemand") ? "" : tag;
 		
 		// write control file
 		var snapshot = Snapshot.write_control_file(
 			snapshot_path, dt_created, sys_uuid, current_distro.full_name(),
-			initial_tags, cmd_comments, 0, true, false, repo);
+			tags, cmd_comments, 0, true, false, repo);
 
 		// write subvolume info
 		foreach(var subvol in sys_subvolumes.values){
 			snapshot.subvolumes.set(subvol.name, subvol);
 		}
 		snapshot.update_control_file(); // save subvolume info
-
-		set_tags(snapshot); // set_tags() will update the control file
 		
 		// Perform any post-backup actions
 		this.run_post_backup_hooks(snapshot_path);
@@ -1832,55 +1820,16 @@ public class Main : GLib.Object{
 		}
 	}
 
-	private void set_tags(Snapshot snapshot){
-
-		// add tags passed on commandline for both --check and --create
-		
-		foreach(string tag in cmd_tags.split(",")){
-			switch(tag.strip().up()){
-			case "O":
-				snapshot.add_tag("ondemand");
-				break;
-			case "B":
-				snapshot.add_tag("boot");
-				break;
-			case "H":
-				snapshot.add_tag("hourly");
-				break;
-			case "D":
-				snapshot.add_tag("daily");
-				break;
-			case "W":
-				snapshot.add_tag("weekly");
-				break;
-			case "M":
-				snapshot.add_tag("monthly");
-				break;
-			}
-		}
-
-		// add tag as ondemand if no other tag is specified
-		
-		if (snapshot.tags.size == 0){
-			snapshot.add_tag("ondemand");
-		}
-	}
-
-	public void validate_cmd_tags(){
-		foreach(string tag in cmd_tags.split(",")){
-			switch(tag.strip().up()){
-			case "O":
-			case "B":
-			case "H":
-			case "D":
-			case "W":
-			case "M":
-				break;
-			default:
+	public void parse_cmd_tags(string input_tags){
+		App.cmd_tags = 0;
+		foreach(string tag in input_tags.split(",")){
+			Tags? parsed_tag = Tags.parse(tag);
+			if(parsed_tag == null) {
 				log_error(_("Unknown value specified for option --tags") + " (%s).".printf(tag));
 				log_error(_("Expected values: O, B, H, D, W, M"));
 				exit_app(1);
-				break;
+			} else {
+				App.cmd_tags |= parsed_tag;
 			}
 		}
 	}
@@ -3320,7 +3269,7 @@ public class Main : GLib.Object{
 				var snap = Snapshot.write_control_file(
 					snapshot_path, dt_created, repo.device.uuid,
 					LinuxDistro.get_dist_info(path_combine(snapshot_path,"@")).full_name(),
-					"ondemand", "", 0, true, false, repo);
+					Tags.OnDemand, "", 0, true, false, repo);
 
 				snap.description = "Before restoring '%s'".printf(snapshot_to_restore.date_formatted);
 				snap.live = true;
@@ -3370,11 +3319,11 @@ public class Main : GLib.Object{
 		config.set_string_member("include_btrfs_home_for_restore", include_btrfs_home_for_restore.to_string());
 		config.set_string_member("stop_cron_emails", stop_cron_emails.to_string());
 
-		config.set_string_member("schedule_monthly", schedule_monthly.to_string());
-		config.set_string_member("schedule_weekly", schedule_weekly.to_string());
-		config.set_string_member("schedule_daily", schedule_daily.to_string());
-		config.set_string_member("schedule_hourly", schedule_hourly.to_string());
-		config.set_string_member("schedule_boot", schedule_boot.to_string());
+		config.set_string_member("schedule_monthly",  (Tags.Monthly in App.schedule).to_string());
+		config.set_string_member("schedule_weekly",  (Tags.Weekly in App.schedule).to_string());
+		config.set_string_member("schedule_daily",  (Tags.Daily in App.schedule).to_string());
+		config.set_string_member("schedule_hourly",  (Tags.Hourly in App.schedule).to_string());
+		config.set_string_member("schedule_boot",  (Tags.Boot in App.schedule).to_string());
 
 		config.set_string_member("count_monthly", count_monthly.to_string());
 		config.set_string_member("count_weekly", count_weekly.to_string());
@@ -3493,11 +3442,11 @@ public class Main : GLib.Object{
 		backup_uuid = json_get_string(config,"backup_device_uuid", backup_uuid);
 		backup_parent_uuid = json_get_string(config,"parent_device_uuid", backup_parent_uuid);
 
-        this.schedule_monthly = json_get_bool(config,"schedule_monthly",schedule_monthly);
-		this.schedule_weekly = json_get_bool(config,"schedule_weekly",schedule_weekly);
-		this.schedule_daily = json_get_bool(config,"schedule_daily",schedule_daily);
-		this.schedule_hourly = json_get_bool(config,"schedule_hourly",schedule_hourly);
-		this.schedule_boot = json_get_bool(config,"schedule_boot",schedule_boot);
+        Tags.set_value(ref this.schedule, Tags.Monthly, json_get_bool(config,"schedule_monthly", Tags.Monthly in schedule));
+		Tags.set_value(ref this.schedule, Tags.Weekly, json_get_bool(config,"schedule_weekly", Tags.Weekly in schedule));
+		Tags.set_value(ref this.schedule, Tags.Daily, json_get_bool(config,"schedule_daily", Tags.Daily in schedule));
+		Tags.set_value(ref this.schedule, Tags.Hourly, json_get_bool(config,"schedule_hourly", Tags.Hourly in schedule));
+		Tags.set_value(ref this.schedule, Tags.Boot, json_get_bool(config,"schedule_boot", Tags.Boot in schedule));
 
 		this.count_monthly = json_get_int(config,"count_monthly",count_monthly);
 		this.count_weekly = json_get_int(config,"count_weekly",count_weekly);
@@ -4393,7 +4342,7 @@ public class Main : GLib.Object{
 			CronTab.add_script_file("timeshift-hourly", "d", "0 * * * * root timeshift --check --scripted", stop_cron_emails);
 			
 			//boot
-			if (schedule_boot){
+			if (Tags.Boot in App.schedule){
 				CronTab.add_script_file("timeshift-boot", "d", "@reboot root sleep 10m && timeshift --create --scripted --tags B", stop_cron_emails);
 			}
 			else{
