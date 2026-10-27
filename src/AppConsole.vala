@@ -22,7 +22,6 @@
  */
 
 using GLib;
-using Gtk;
 using Gee;
 //using Soup;
 using Json;
@@ -31,7 +30,6 @@ using TeeJee.Logging;
 using TeeJee.FileSystem;
 using TeeJee.JsonHelper;
 using TeeJee.ProcessHelper;
-using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 
@@ -52,11 +50,11 @@ public class AppConsole : GLib.Object {
 	public int snapshot_list_start_index = 0;
 
 	public static int main (string[] args) {
-		
+
 		set_locale();
 
 		LOG_TIMESTAMP = false;
-		
+
 		if (args.length > 1) {
 			switch (args[1].down()) {
 				case "--help":
@@ -80,13 +78,13 @@ public class AppConsole : GLib.Object {
 		LOG_ENABLE = false;
 		init_tmp();
 		LOG_ENABLE = true;
-		
+
 		check_if_admin();
 
 		App = new Main(args, false);
 		parse_arguments(args);
 		App.initialize();
-		
+
 		var console =  new AppConsole();
 		bool ok = console.start_application();
 		App.exit_app((ok) ? 0 : 1);
@@ -95,7 +93,7 @@ public class AppConsole : GLib.Object {
 	}
 
 	private static void set_locale() {
-		
+
 		log_debug("setting locale...");
 		Intl.setlocale(GLib.LocaleCategory.MESSAGES, "timeshift");
 		Intl.textdomain(GETTEXT_PACKAGE);
@@ -104,7 +102,7 @@ public class AppConsole : GLib.Object {
 	}
 
 	public static void check_if_admin(){
-		
+
 		if (!user_is_admin()) {
 			log_msg(_("Application needs admin access."));
 			log_msg(_("Please run the application as admin (using 'sudo' or 'su')"));
@@ -118,7 +116,7 @@ public class AppConsole : GLib.Object {
 	private static void parse_arguments(string[] args){
 
 		log_debug("AppConsole: parse_arguments()");
-		
+
 		for (int k = 1; k < args.length; k++) // Oth arg is app path
 		{
 			switch (args[k].down()){
@@ -165,7 +163,7 @@ public class AppConsole : GLib.Object {
 				case "--comment":
 				case "--comments":
 					App.cmd_comments = args[++k];
-					break; 
+					break;
 
 				case "--skip-grub":
 					App.cmd_skip_grub = true;
@@ -253,7 +251,7 @@ public class AppConsole : GLib.Object {
 					log_error("Run 'timeshift --help' to list all available options");
 					App.exit_app(1);
 					break;
-					
+
 				default:
 					LOG_TIMESTAMP = false;
 					log_error("%s: %s".printf(
@@ -283,7 +281,7 @@ public class AppConsole : GLib.Object {
 	public bool start_application(){
 
 		log_debug("AppConsole: start_application()");
-		
+
 		bool is_success = true;
 
 		if (App.live_system()){
@@ -349,10 +347,10 @@ public class AppConsole : GLib.Object {
 	}
 
 	private static string help_message (){
-		
+
 		string msg = "\n%s v%s by Tony George (%s)\n".printf(
 			AppName, AppVersion, AppAuthorEmail);
-			
+
 		msg += "\n";
 		msg += "Syntax:\n";
 		msg += "\n";
@@ -460,7 +458,7 @@ public class AppConsole : GLib.Object {
 	}
 
 	private void list_devices(Gee.ArrayList<Device> device_list){
-		
+
 		string[,] grid = new string[device_list.size+1,6];
 		bool[] right_align = { false, false, false, true, true, false};
 
@@ -538,7 +536,7 @@ public class AppConsole : GLib.Object {
 			if (dev.type == "disk"){
 				grub_device_list.add(dev);
 			}
-			else if (dev.type == "part"){ 
+			else if (dev.type == "part"){
 				if (dev.has_linux_filesystem()){
 					grub_device_list.add(dev);
 				}
@@ -614,15 +612,15 @@ public class AppConsole : GLib.Object {
 		select_snapshot_device(false);
 		return App.create_snapshot(ondemand, null);
 	}
-	
+
 	// restore
-	
+
 	private bool restore_snapshot(){
 
 		select_snapshot_device(true);
 
 		select_snapshot_for_restore();
-		
+
 		if (!App.cmd_scripted) {
 			stdout.printf("\n\n");
 			log_msg(string.nfill(78, '*'));
@@ -634,7 +632,7 @@ public class AppConsole : GLib.Object {
 		}
 
 		init_mounts();
-		
+
 		if (!App.btrfs_mode){
 
 			map_devices();
@@ -664,13 +662,13 @@ public class AppConsole : GLib.Object {
 				list.add(pi);
 			}
 		}
-					
+
 		if ((App.repo.device == null) || (prompt_if_empty && (App.repo.snapshots.size == 0))){
 			//prompt user for backup device
 			log_msg("");
 
 			if (App.cmd_scripted){
-				
+
 				if (App.repo.device == null){
 					if (App.backup_uuid.length == 0){
 						log_debug("device is null");
@@ -711,7 +709,7 @@ public class AppConsole : GLib.Object {
 			}
 
 			log_msg("");
-			
+
 			if (dev == null){
 				log_error(_("Failed to get input from user in 3 attempts"));
 				log_msg(_("Aborted."));
@@ -728,13 +726,13 @@ public class AppConsole : GLib.Object {
 	private Snapshot? select_snapshot(){
 
 		Snapshot selected_snapshot = null;
-		
+
 		log_debug("AppConsole: select_snapshot()");
-		
+
 		if (App.mirror_system){
 			return null;
 		}
-		
+
 		if (App.cmd_snapshot.length > 0){
 
 			//check command line arguments
@@ -781,7 +779,7 @@ public class AppConsole : GLib.Object {
 				selected_snapshot = read_stdin_snapshot();
 			}
 			log_msg("");
-			
+
 			if (selected_snapshot == null){
 				log_error(_("Failed to get input from user in 3 attempts"));
 				log_msg(_("Aborted."));
@@ -807,18 +805,18 @@ public class AppConsole : GLib.Object {
 			App.exit_app(1);
 		}
 	}
-	
+
 	private void init_mounts(){
 
 		log_debug("AppConsole: init_mounts()");
-		
+
 		App.init_mount_list();
 
 		// remove mount points which will remain on root fs
 		for(int i = App.mount_list.size-1; i >= 0; i--){
-			
+
 			var entry = App.mount_list[i];
-			
+
 			if (entry.device == null){
 				App.mount_list.remove(entry);
 			}
@@ -828,15 +826,15 @@ public class AppConsole : GLib.Object {
 	private void map_devices(){
 
 		log_debug("AppConsole: map_devices()");
-		
+
 		if (App.cmd_target_device.length > 0){
 
 			//check command line arguments
 			bool found = false;
 			foreach(Device pi in App.partitions) {
-				
+
 				if (!pi.has_linux_filesystem()) { continue; }
-				
+
 				if ((pi.device == App.cmd_target_device)||((pi.uuid == App.cmd_target_device))){
 					App.dst_root = pi;
 					found = true;
@@ -863,7 +861,7 @@ public class AppConsole : GLib.Object {
 		}
 
 		for(int i = 0; i < App.mount_list.size; i++){
-			
+
 			MountEntry mnt = App.mount_list[i];
 			Device dev = null;
 			string default_device = "";
@@ -873,7 +871,7 @@ public class AppConsole : GLib.Object {
 			// no need to ask user to map remaining devices if restoring same system
 			if ((App.dst_root != null) && (App.sys_root != null)
 				&& (App.dst_root.uuid == App.sys_root.uuid)){
-					
+
 				break;
 			}
 
@@ -909,14 +907,14 @@ public class AppConsole : GLib.Object {
 				while (dev == null){
 					attempts++;
 					if (attempts > 3) { break; }
-					
+
 					stdout.printf("" +
 						_("[ENTER = Default (%s), r = Root device, a = Abort]").printf(default_device) + "\n\n");
-						
+
 					stdout.printf(
 						_("Enter device name or number")
 							+ ": ");
-							
+
 					stdout.flush();
 					dev = read_stdin_device_mounts(device_list, mnt);
 				}
@@ -932,26 +930,26 @@ public class AppConsole : GLib.Object {
 			if (dev != null){
 
 				log_debug("selected: %s".printf(dev.uuid));
-				
+
 				mnt.device = dev;
 
 				log_msg(string.nfill(78, '*'));
-				
+
 				if ((mnt.mount_point != "/")
 					&& (App.dst_root != null)
 					&& (dev.device == App.dst_root.device)){
-						
+
 					log_msg(_("'%s' will be on root device").printf(mnt.mount_point), true);
 				}
 				else{
 					log_msg(_("'%s' will be on '%s'").printf(
 						mnt.mount_point, mnt.device.short_name_with_alias), true);
-						
+
 					//log_debug("UUID=%s".printf(dst_root.uuid));
 				}
 				log_msg(string.nfill(78, '*'));
 			}
-		
+
 		}
 	}
 
@@ -961,17 +959,17 @@ public class AppConsole : GLib.Object {
 		bool grub_reinstall_default = App.reinstall_grub2;
 		App.reinstall_grub2 = false;
 		App.grub_device = "";
-		
+
 		if (App.cmd_grub_device.length > 0){
 
 			log_debug("Grub device is specified as command argument");
-			
+
 			//check command line arguments
 			bool found = false;
 			var device_list = list_grub_devices(false);
-			
+
 			foreach(Device dev in device_list) {
-				
+
 				if ((dev.device == App.cmd_grub_device)
 					||((dev.uuid.length > 0) && (dev.uuid == App.cmd_grub_device))){
 
@@ -1000,18 +998,18 @@ public class AppConsole : GLib.Object {
 				return;
 			}
 		}
-		
+
 		if (App.mirror_system){
 			App.reinstall_grub2 = true;
 		}
 		else {
 			if ((App.cmd_skip_grub == false) && (App.reinstall_grub2 == false)){
 				log_msg("");
-				
+
 				if (App.cmd_scripted) {
 					App.reinstall_grub2 = grub_reinstall_default;
 				}
-				else if (App.cmd_confirm){ 
+				else if (App.cmd_confirm){
 					// suppose that it would be as user would typed 'y' in read_stdin_grub_install
 					App.reinstall_grub2 = true;
 				}
@@ -1035,7 +1033,7 @@ public class AppConsole : GLib.Object {
 		}
 
 		if ((App.reinstall_grub2) && (App.grub_device.length == 0)){
-			
+
 			log_msg("");
 			log_msg(_("Select GRUB device") + ":\n");
 			var device_list = list_grub_devices();
@@ -1070,13 +1068,13 @@ public class AppConsole : GLib.Object {
 							list.add(pi);
 						}
 					}
-					
+
 					dev = read_stdin_device(device_list, grub_device_default);
 					if (dev != null) { break; }
 				}
 
 				if (dev == null){
-					
+
 					log_error(_("Failed to get input from user in 3 attempts"));
 					log_msg(_("Aborted."));
 					App.exit_app(0);
@@ -1089,7 +1087,7 @@ public class AppConsole : GLib.Object {
 		}
 
 		if ((App.reinstall_grub2) && (App.grub_device.length > 0)){
-			
+
 			log_msg(string.nfill(78, '*'));
 			log_msg(_("GRUB Device") + ": %s".printf(App.grub_device));
 			log_msg(string.nfill(78, '*'));
@@ -1102,7 +1100,7 @@ public class AppConsole : GLib.Object {
 	}
 
 	private void confirm_restore(){
-		
+
 		if (App.cmd_confirm == false){
 
 			string msg_devices = "";
@@ -1129,9 +1127,9 @@ public class AppConsole : GLib.Object {
 			}
 		}
 	}
-	
+
 	private Device? read_stdin_device(Gee.ArrayList<Device> device_list, string device_default){
-		
+
 		var counter = new TimeoutCounter();
 		counter.exit_on_timeout();
 		string? line = stdin.read_line();
@@ -1322,7 +1320,7 @@ public class AppConsole : GLib.Object {
 	private bool read_stdin_restore_confirm(){
 		var counter = new TimeoutCounter();
 		counter.exit_on_timeout();
-		
+
 		string? line = stdin.read_line();
 		counter.stop();
 
@@ -1367,11 +1365,11 @@ public class AppConsole : GLib.Object {
 	}
 
 	public bool delete_all_snapshots(){
-		
+
 		select_snapshot_device(true);
-		
+
 		//return App.repo.remove_all();
-		
+
 		foreach(var snap in App.repo.snapshots){
 			snap.remove(true);
 		}
@@ -1380,4 +1378,3 @@ public class AppConsole : GLib.Object {
 	}
 
 }
-

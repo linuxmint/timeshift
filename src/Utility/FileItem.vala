@@ -22,7 +22,9 @@
  */
 
 using GLib;
+#if !TS_NO_GTK
 using Gtk;
+#endif
 using Gee;
 using Json;
 
@@ -35,7 +37,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
-	
+
 	public string file_name = "";
 	public string file_location = "";
 	public string file_path = "";
@@ -46,7 +48,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 	public string owner_user = "";
 	public string owner_group = "";
 	public string content_type = "";
-	public string file_status = ""; 
+	public string file_status = "";
 
 	public bool is_selected = false;
 	public bool is_symlink = false;
@@ -59,7 +61,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 	public GLib.Icon icon;
 
 	// constructors -------------------------------
-	
+
 	public FileItem(string name) {
 		file_name = name;
 	}
@@ -79,7 +81,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 	}
 
 	// properties -------------------------------------------------
-	
+
 	public int64 size {
 		get{
 			return _size;
@@ -106,11 +108,11 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 			//}
 		}
 	}
-			
+
 	// instance methods -------------------------------------------
-	
+
 	public void query_file_info() {
-		
+
 		try {
 			FileInfo info;
 			File file = File.parse_name (file_path);
@@ -118,7 +120,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 			if (file.query_exists()) {
 
 				// get type without following symlinks
-				
+
 				info = file.query_info("%s,%s,%s".printf(
 				                           FileAttribute.STANDARD_TYPE,
 				                           FileAttribute.STANDARD_ICON,
@@ -128,14 +130,14 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 				var item_file_type = info.get_file_type();
 
 				this.icon = info.get_icon();
-				
+
 				if (item_file_type == FileType.SYMBOLIC_LINK) {
 					//this.icon = GLib.Icon.new_for_string("emblem-symbolic-link");
 					this.is_symlink = true;
 					this.symlink_target = info.get_symlink_target();
 				}
 				else {
-					
+
 					this.is_symlink = false;
 					this.symlink_target = "";
 
@@ -143,7 +145,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 						//log_msg(file_basename(file_path) + " (gicon): " + icon.to_string());
 
 						/*var themed_icon = (GLib.ThemedIcon) icon;
-						
+
 						string txt = "-> ";
 						foreach(var name in themed_icon.names){
 							txt += ", " + name;
@@ -153,7 +155,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 				}
 
 				// get file info - follow symlinks
-				
+
 				info = file.query_info("%s,%s,%s,%s,%s,%s,%s,%s".printf(
 				                           FileAttribute.STANDARD_TYPE,
 				                           FileAttribute.STANDARD_SIZE,
@@ -175,7 +177,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 
 				// content type
 				this.content_type = info.get_content_type();
-				
+
 				// size
 				if (!this.is_symlink && (this.file_type == FileType.REGULAR)) {
 					this._size = info.get_size();
@@ -189,7 +191,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 
 				// owner_group
 				this.owner_group = info.get_attribute_string(FileAttribute.OWNER_GROUP);
-	
+
 			}
 		}
 		catch (Error e) {
@@ -198,7 +200,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 	}
 
 	public void query_file_info_basic() {
-		
+
 		try {
 			FileInfo info;
 			File file = File.parse_name(file_path);
@@ -206,12 +208,12 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 			if (file.query_exists()) {
 
 				// get type and icon -- follow symlinks
-				
+
 				info = file.query_info("%s,%s".printf(
 				                           FileAttribute.STANDARD_TYPE,
 				                           FileAttribute.STANDARD_ICON
 				                           ), 0);
-				                           
+
 				this.icon = info.get_icon();
 
 				this.file_type = info.get_file_type();
@@ -224,6 +226,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 
 	// icons ------------------------------------------------------
 
+	#if !TS_NO_GTK
 	public Gdk.Pixbuf? get_icon(int icon_size, bool add_transparency, bool add_emblems){
 
 		Gdk.Pixbuf? pixbuf = null;
@@ -243,4 +246,5 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 
 		return pixbuf;
 	}
+	#endif
 }

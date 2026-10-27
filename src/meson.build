@@ -23,7 +23,7 @@ sources_core = files([
   'Core/Subvolume.vala',
 ])
 
-sources_utility = files([
+sources_utility_common = files([
   'Utility/AppLock.vala',
   'Utility/AsyncTask.vala',
   'Utility/CronTab.vala',
@@ -32,8 +32,6 @@ sources_utility = files([
   'Utility/Device.vala',
   'Utility/FileItem.vala',
   'Utility/FsTabEntry.vala',
-  'Utility/GtkHelper.vala',
-  'Utility/IconManager.vala',
   'Utility/LicenseText.vala',
   'Utility/LinuxDistro.vala',
   'Utility/MountEntry.vala',
@@ -48,9 +46,18 @@ sources_utility = files([
   'Utility/TeeJee.Misc.vala',
   'Utility/TeeJee.Process.vala',
   'Utility/TeeJee.System.vala',
+])
 
+sources_utility_gtk = files([
+  'Utility/GtkHelper.vala',
+  'Utility/IconManager.vala',
   'Utility/Gtk/CustomMessageDialog.vala',
   'Utility/Gtk/TerminalWindow.vala',
+])
+
+sources_utility_headless = files([
+  'Utility/GtkHelperHeadless.vala',
+  'Utility/GtkHeadlessTypes.vala',
 ])
 
 sources_gtk = files([
@@ -101,28 +108,32 @@ vala_opts = [
 ]
 
 timeshift = executable('timeshift',
-  sources_app_console + sources_core + sources_utility,
+  sources_app_console + sources_core + sources_utility_common + sources_utility_headless,
   config_header,
-  dependencies: dependencies,
+  dependencies: dependencies_common,
   install: true,
-  vala_args: vala_opts
+  vala_args: vala_opts + ['--define=TS_NO_GTK']
 )
 
-timeshift_gtk = executable('timeshift-gtk',
-  sources_app_gtk + sources_core + sources_utility + sources_gtk,
-  config_header,
-  dependencies: dependencies,
-  install: true,
-  vala_args: vala_opts
-)
+if enable_gtk
+  timeshift_gtk = executable('timeshift-gtk',
+    sources_app_gtk + sources_core + sources_utility_common + sources_utility_gtk + sources_gtk,
+    config_header,
+    dependencies: dependencies,
+    install: true,
+    vala_args: vala_opts
+  )
+endif
 
-install_data(
-  sources : 'timeshift-launcher',
-  install_dir : get_option('bindir')
-)
-install_data(
-  sources : 'timeshift-gtk.desktop',
-  install_dir : join_paths(get_option('datadir'), 'applications')
-)
+if enable_gtk
+  install_data(
+    sources : 'timeshift-launcher',
+    install_dir : get_option('bindir')
+  )
+  install_data(
+    sources : 'timeshift-gtk.desktop',
+    install_dir : join_paths(get_option('datadir'), 'applications')
+  )
+endif
 
 install_subdir('share', install_dir : '')
