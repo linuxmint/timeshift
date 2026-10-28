@@ -60,7 +60,6 @@ public class Main : GLib.Object{
 
 	public Gee.ArrayList<string> exclude_list_user;
 	public Gee.ArrayList<string> exclude_list_default;
-	public Gee.ArrayList<string> exclude_list_default_extra;
 	public Gee.ArrayList<string> exclude_list_home;
 	public Gee.ArrayList<string> exclude_list_restore;
 	public Gee.ArrayList<AppExcludeEntry> exclude_list_apps;
@@ -648,7 +647,6 @@ public class Main : GLib.Object{
 		
 		exclude_list_user = new Gee.ArrayList<string>();
 		exclude_list_default = new Gee.ArrayList<string>();
-		exclude_list_default_extra = new Gee.ArrayList<string>();
 		exclude_list_home = new Gee.ArrayList<string>();
 		exclude_list_restore = new Gee.ArrayList<string>();
 		exclude_list_apps = new Gee.ArrayList<AppExcludeEntry>();
@@ -715,7 +713,7 @@ public class Main : GLib.Object{
 
 			// add exclude entry for devices mounted to non-standard locations
 
-			exclude_list_default_extra.add(entry.mount_point + "/*");
+			exclude_list_default.add(entry.mount_point + "/*");
 		}
 
 		exclude_list_default.add("/root/.thumbnails");
@@ -732,26 +730,26 @@ public class Main : GLib.Object{
 
 		// default extra ------------------
 
-		exclude_list_default_extra.add("/root/.mozilla/firefox/*.default/Cache");
-		exclude_list_default_extra.add("/root/.mozilla/firefox/*.default/OfflineCache");
-		exclude_list_default_extra.add("/root/.opera/cache");
-		exclude_list_default_extra.add("/root/.kde/share/apps/kio_http/cache");
-		exclude_list_default_extra.add("/root/.kde/share/cache/http");
+		exclude_list_default.add("/root/.mozilla/firefox/*.default/Cache");
+		exclude_list_default.add("/root/.mozilla/firefox/*.default/OfflineCache");
+		exclude_list_default.add("/root/.opera/cache");
+		exclude_list_default.add("/root/.kde/share/apps/kio_http/cache");
+		exclude_list_default.add("/root/.kde/share/cache/http");
 
-		exclude_list_default_extra.add("/home/*/.mozilla/firefox/*.default/Cache");
-		exclude_list_default_extra.add("/home/*/.mozilla/firefox/*.default/OfflineCache");
-		exclude_list_default_extra.add("/home/*/.opera/cache");
-		exclude_list_default_extra.add("/home/*/.kde/share/apps/kio_http/cache");
-		exclude_list_default_extra.add("/home/*/.kde/share/cache/http");
+		exclude_list_default.add("/home/*/.mozilla/firefox/*.default/Cache");
+		exclude_list_default.add("/home/*/.mozilla/firefox/*.default/OfflineCache");
+		exclude_list_default.add("/home/*/.opera/cache");
+		exclude_list_default.add("/home/*/.kde/share/apps/kio_http/cache");
+		exclude_list_default.add("/home/*/.kde/share/cache/http");
 
-		exclude_list_default_extra.add("/var/cache/apt/archives/*");
-		exclude_list_default_extra.add("/var/cache/pacman/pkg/*");
-		exclude_list_default_extra.add("/var/cache/yum/*");
-		exclude_list_default_extra.add("/var/cache/dnf/*");
-		exclude_list_default_extra.add("/var/cache/eopkg/*");
-		exclude_list_default_extra.add("/var/cache/xbps/*");
-		exclude_list_default_extra.add("/var/cache/zypp/*");
-		exclude_list_default_extra.add("/var/cache/edb/*");
+		exclude_list_default.add("/var/cache/apt/archives/*");
+		exclude_list_default.add("/var/cache/pacman/pkg/*");
+		exclude_list_default.add("/var/cache/yum/*");
+		exclude_list_default.add("/var/cache/dnf/*");
+		exclude_list_default.add("/var/cache/eopkg/*");
+		exclude_list_default.add("/var/cache/xbps/*");
+		exclude_list_default.add("/var/cache/zypp/*");
+		exclude_list_default.add("/var/cache/edb/*");
 		
 		// default home ----------------
 
@@ -811,34 +809,58 @@ public class Main : GLib.Object{
 		log_debug("Main: create_exclude_list_for_backup()");
 		
 		var list = new Gee.ArrayList<string>();
-
+		var home_list = new Gee.ArrayList<string>();
+		
+		
+		// copy user filters from exclude_list_user to home_list
+		// if no filters are present we treat the user as if it's excluded and add them to exclude_list_user
+		// if we don't do this the default filters for anything within an account will be ignored while also being impossible to manually add to the user filter list
+		//  -------------------------------------------------------
+		foreach(var user in current_system_users.values){
+			
+			if (user.is_system){ continue; }
+			
+			string exc_pattern = "%s/**".printf(user.home_path);
+			string inc_pattern = "+ %s/**".printf(user.home_path);
+			string inc_hidden_pattern = "+ %s/.**".printf(user.home_path);
+			
+			if (user.has_encrypted_home){
+				inc_pattern = "+ /home/.ecryptfs/%s/***".printf(user.name);
+				exc_pattern = "/home/.ecryptfs/%s/***".printf(user.name);
+			}
+			
+			bool include_hidden = exclude_list_user.contains(inc_hidden_pattern);
+			bool include_all = exclude_list_user.contains(inc_pattern);
+			bool exclude_all = !include_hidden && !include_all;
+			
+			if (include_hidden){
+				home_list.add(inc_hidden_pattern);
+			}
+			if (include_all){
+				home_list.add(inc_pattern);
+			}
+			if (exclude_all){
+				home_list.add(exc_pattern);
+				if (!exclude_list_user.contains(exc_pattern)) {
+					exclude_list_user.add(exc_pattern);
+				}
+			}
+		}
+		
+		
 		// add user entries from current setting
 		// user entry is first since rsync prioritizes the first
 		// inclusion/exclusion patterns seen
+		// though we make sure to ignore entries copied to home_list,
+		// otherwise the defaults under user accounts will always be ignored
 		//  -------------------------------------------------------
 		
 		foreach(string path in exclude_list_user){
-			if (!list.contains(path)){
+			if (!list.contains(path) && !home_list.contains(path)){
 				list.add(path);
 			}
 		}
-
-		// add default entries ---------------------------
 		
-		foreach(string path in exclude_list_default){
-			if (!list.contains(path)){
-				list.add(path);
-			}
-		}
-
-		// add default extra entries ---------------------------
-		
-		foreach(string path in exclude_list_default_extra){
-			if (!list.contains(path)){
-				list.add(path);
-			}
-		}
-
 		// add entries to exclude **decrypted** contents in $HOME
 		// decrypted contents should never be backed-up or restored
 		// this overrides all other user entries in exclude_list_user
@@ -865,36 +887,21 @@ public class Main : GLib.Object{
 				}
 			}
 		}
-
-		// exclude each user individually if not included in exclude_list_user
-
-		foreach(var user in current_system_users.values){
-
-			if (user.is_system){ continue; }
-
-			string exc_pattern = "%s/**".printf(user.home_path);
-			string inc_pattern = "+ %s/**".printf(user.home_path);
-			string inc_hidden_pattern = "+ %s/.**".printf(user.home_path);
-
-			if (user.has_encrypted_home){
-				inc_pattern = "+ /home/.ecryptfs/%s/***".printf(user.name);
-				exc_pattern = "/home/.ecryptfs/%s/***".printf(user.name);
+		
+		
+		// add default entries ---------------------------
+		
+		foreach(string path in exclude_list_default){
+			if (!list.contains(path)){
+				list.add(path);
 			}
-			
-			bool include_hidden = exclude_list_user.contains(inc_hidden_pattern);
-			bool include_all = exclude_list_user.contains(inc_pattern);
-			bool exclude_all = !include_hidden && !include_all;
-
-			if (exclude_all){
-				if (!exclude_list_user.contains(exc_pattern)){
-					exclude_list_user.add(exc_pattern);
-				}
-				if (exclude_list_user.contains(inc_pattern)){
-					exclude_list_user.remove(inc_pattern);
-				}
-				if (exclude_list_user.contains(inc_hidden_pattern)){
-					exclude_list_user.remove(inc_hidden_pattern);
-				}
+		}
+		
+		// add entries for users --------
+		
+		foreach(string path in home_list){
+			if (!list.contains(path)){
+				list.add(path);
 			}
 		}
 
@@ -951,15 +958,6 @@ public class Main : GLib.Object{
 		foreach(string path in exclude_list_default){
 			if (!exclude_list_restore.contains(path)){
 				exclude_list_restore.add(path);
-			}
-		}
-
-		if (!mirror_system){
-			//add default_extra entries
-			foreach(string path in exclude_list_default_extra){
-				if (!exclude_list_restore.contains(path)){
-					exclude_list_restore.add(path);
-				}
 			}
 		}
 
