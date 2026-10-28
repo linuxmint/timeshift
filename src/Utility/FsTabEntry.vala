@@ -175,6 +175,13 @@ public class FsTabEntry : GLib.Object{
 
 	public bool is_for_system_directory(){
 
+		bool recognized_device_string =
+			device_string.has_prefix("/dev/")
+			|| device_string.down().has_prefix("uuid=")
+			|| device_string.down().has_prefix("label=")
+			|| device_string.down().has_prefix("partuuid=")
+			|| device_string.down().has_prefix("partlabel=");
+
 		if (mount_point.has_prefix("/mnt")
 			|| mount_point.has_prefix("/mount")
 			|| mount_point.has_prefix("/sdcard")
@@ -182,8 +189,8 @@ public class FsTabEntry : GLib.Object{
 			|| mount_point.has_prefix("/media")
 			|| (mount_point == "none")
 			|| !mount_point.has_prefix("/")
-			|| (!device_string.has_prefix("/dev/") && !device_string.down().has_prefix("uuid="))){
-			
+			|| !recognized_device_string){
+
 			return false;
 		}
 		else{

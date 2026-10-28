@@ -1177,10 +1177,13 @@ public class Device : GLib.Object{
 	public static Device? find_device_in_list(Gee.ArrayList<Device> list, string _dev_alias){
 
 		string dev_alias = _dev_alias;
-		
+
 		if (dev_alias.down().has_prefix("uuid=")){
-			
+
 			dev_alias = dev_alias.split("=",2)[1].strip().down();
+		}
+		else if (dev_alias.down().has_prefix("label=")){
+			dev_alias = dev_alias.split("=",2)[1].strip();
 		}
 		else if (file_exists(dev_alias) && file_is_symlink(dev_alias)){
 
@@ -1226,6 +1229,7 @@ public class Device : GLib.Object{
 			}
 		}
 
+		log_debug("find_device_in_list(): NO MATCH for dev_alias='%s' (checked %d devices)".printf(dev_alias, list.size));
 		return null;
 	}
 	
