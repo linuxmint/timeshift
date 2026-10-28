@@ -816,8 +816,24 @@ public class Main : GLib.Object{
 		// user entry is first since rsync prioritizes the first
 		// inclusion/exclusion patterns seen
 		//  -------------------------------------------------------
+		//
+		// Exclusion patterns are emitted before inclusion ("+") patterns.
+		// rsync applies the first matching pattern it sees, so an inclusion
+		// such as "+ /home/frank/**" placed ahead of an exclusion like
+		// "/home/frank/models/***" would make that exclusion unreachable.
+		// Emitting excludes first keeps user entries ahead of the defaults
+		// (so users still override them) while letting the user's own
+		// exclusions actually take effect.
 		
 		foreach(string path in exclude_list_user){
+			if (path.strip().has_prefix("+")){ continue; }
+			if (!list.contains(path)){
+				list.add(path);
+			}
+		}
+
+		foreach(string path in exclude_list_user){
+			if (!path.strip().has_prefix("+")){ continue; }
 			if (!list.contains(path)){
 				list.add(path);
 			}
