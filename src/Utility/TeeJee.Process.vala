@@ -240,7 +240,7 @@ namespace TeeJee.ProcessHelper{
 		script.append ("\n");
 		script.append ("%s\n".printf(commands));
 		script.append ("\n\nexitCode=$?\n");
-		script.append ("echo ${exitCode} > status\n");
+		script.append ("echo ${exitCode} 2>/dev/null > status\n");
 
 		if ((sh_path == null) || (sh_path.length == 0)){
 			sh_path = get_temp_file_path();
