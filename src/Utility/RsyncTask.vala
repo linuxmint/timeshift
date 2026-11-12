@@ -332,7 +332,7 @@ public class RsyncTask : AsyncTask{
 		
 					//log_debug("matched: created:%s".printf(line));
 					
-					item_path = match.fetch(3).split(" -> ")[0].strip();
+					item_path = Regex.split_simple("( -> | => )", match.fetch(3))[0].strip();
 					/*item_type = FileType.REGULAR;
 					if (match.fetch(2) == "d"){
 						item_type = FileType.DIRECTORY;
@@ -351,7 +351,7 @@ public class RsyncTask : AsyncTask{
 						dos_changes.put_string("%s\n".printf(line));
 					}
 					
-					item_path = match.fetch(1).split(" -> ")[0].strip();
+					item_path = Regex.split_simple("( -> | => )", match.fetch(1))[0].strip();
 					//item_type = item_path.has_suffix("/") ? FileType.DIRECTORY : FileType.REGULAR;
 					item_status = "deleted";
 				}
@@ -364,7 +364,7 @@ public class RsyncTask : AsyncTask{
 						dos_changes.put_string("%s\n".printf(line));
 					}
 					
-					item_path = match.fetch(12).split(" -> ")[0].strip();
+					item_path = Regex.split_simple("( -> | => )", match.fetch(12))[0].strip();
 					
 					/*if (match.fetch(2) == "d"){
 						item_type = FileType.DIRECTORY;
@@ -462,7 +462,7 @@ public class RsyncTask : AsyncTask{
 			//log_debug("matched: created:%s".printf(line));
 			
 			count_created++;
-			status_line = match.fetch(3).split(" -> ")[0].strip();
+			status_line = Regex.split_simple("( -> | => )", match.fetch(3))[0].strip();
 			log.append(line + "\n");
 		}
 		else if (regex_list[RegexType.Deleted].match(line, 0, out match)) {
@@ -470,7 +470,7 @@ public class RsyncTask : AsyncTask{
 			//log_debug("matched: deleted:%s".printf(line));
 
 			count_deleted++;
-			status_line = match.fetch(1).split(" -> ")[0].strip();
+			status_line = Regex.split_simple("( -> | => )", match.fetch(1))[0].strip();
 			log.append(line + "\n");
 		}
 		else if (regex_list[RegexType.Unchanged].match(line, 0, out match)) {
@@ -478,14 +478,14 @@ public class RsyncTask : AsyncTask{
 			//log_debug("matched: unchanged:%s".printf(line));
 
 			count_unchanged++;
-			status_line = match.fetch(3).split(" -> ")[0].strip();
+			status_line = Regex.split_simple("( -> | => )", match.fetch(3))[0].strip();
 		}
 		else if (regex_list[RegexType.Modified].match(line, 0, out match)) {
 
 			//log_debug("matched: modified:%s".printf(line));
 
 			count_modified++;
-			status_line = match.fetch(12).split(" -> ")[0].strip();
+			status_line = Regex.split_simple("( -> | => )", match.fetch(12))[0].strip();
 			log.append(line + "\n");
 			
 			if (match.fetch(3) == "c"){
