@@ -2512,7 +2512,7 @@ public class Main : GLib.Object{
 
 		// run rsync ---------------------------------------
 
-		sh += "rsync -avir --force --delete --delete-before";
+		sh += "rsync -avirH --force --delete --delete-before";
 
 		if (dry_run){
 			sh += " --dry-run";

@@ -101,6 +101,8 @@ public class RsyncSpaceCheckTask : AsyncTask{
 		cmd += " --stats";
 
 		cmd += " --sparse";
+		
+		cmd += " --hard-links";
 
 		if (delete_excluded){
 			cmd += " --delete-excluded";
