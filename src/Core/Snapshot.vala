@@ -143,7 +143,10 @@ public class Snapshot : GLib.Object{
 		set{
 			this.tags = 0;
 			foreach(string tag in value.split(" ")){
-				this.tags |= Tags.parse(tag);
+				Tags? parsed = Tags.parse(tag);
+				if (parsed != null){
+					this.tags |= parsed;
+				}
 			}
 		}
 	}
