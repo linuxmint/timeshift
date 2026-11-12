@@ -66,6 +66,7 @@ class BackupDeviceBox : Gtk.Box{
         btn_refresh.clicked.connect(()=>{
 			App.update_partitions();
 			tv_devices_refresh();
+			check_backup_location();
 		});
 
 		// TODO: show this message somewhere
@@ -301,7 +302,7 @@ class BackupDeviceBox : Gtk.Box{
 					try_change_device(dev);
 				}
 				else{
-					return;
+					check_backup_location();
 				}
 			});
 
@@ -417,7 +418,10 @@ class BackupDeviceBox : Gtk.Box{
 	private void change_backup_device(Device pi){
 		
 		// return if device has not changed
-		if ((App.repo.device != null) && (pi.uuid == App.repo.device.uuid)){ return; }
+		if ((App.repo.device != null) && (pi.uuid == App.repo.device.uuid)){
+			check_backup_location();
+			return;
+		}
 
 		gtk_set_busy(true, parent_window);
 
