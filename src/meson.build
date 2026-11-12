@@ -21,6 +21,7 @@ sources_core = files([
   'Core/Snapshot.vala',
   'Core/SnapshotRepo.vala',
   'Core/Subvolume.vala',
+  'Core/Tags.vala',
 ])
 
 sources_utility = files([

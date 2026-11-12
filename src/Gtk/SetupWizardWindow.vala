@@ -78,12 +78,8 @@ class SetupWizardWindow : Gtk.Window{
         this.resize(def_width, def_height);
 
         if (App.first_run && !schedule_accepted){
-			App.schedule_boot = false;
-			App.schedule_hourly = false;
-			App.schedule_daily = true; // set
-			log_debug("Setting schedule_daily for first run");
-			App.schedule_weekly = false;
-			App.schedule_monthly = false;
+			App.schedule = Tags.Daily;
+			log_debug("Setting schedule Daily for first run");
 		}
 
 		// add notebook
@@ -150,11 +146,7 @@ class SetupWizardWindow : Gtk.Window{
 	private bool on_delete_event(Gdk.EventAny event){
 
 		if (App.first_run && !schedule_accepted){
-			App.schedule_boot = false;
-			App.schedule_hourly = false;
-			App.schedule_daily = false; // unset
-			App.schedule_weekly = false;
-			App.schedule_monthly = false;
+			App.schedule = 0;
 		}
 
 		save_changes();

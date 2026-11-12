@@ -61,15 +61,7 @@ class ScheduleBox : Gtk.Box{
 
 		// monthly
 		
-		add_schedule_option(this, _("Monthly"), _("Create one per month"), out chk_m, out spin_m);
-
-		chk_m.active = App.schedule_monthly;
-		chk_m.toggled.connect(()=>{
-			App.schedule_monthly = chk_m.active;
-			//spin_m.sensitive = chk_m.active;
-			chk_cron.sensitive = App.scheduled;
-			update_statusbar();
-		});
+		add_schedule_option(this, Tags.Monthly, _("Create one per month"), out chk_m, out spin_m);
 
 		spin_m.set_value(App.count_monthly);
 		//spin_m.sensitive = chk_m.active;
@@ -79,15 +71,7 @@ class ScheduleBox : Gtk.Box{
 		
 		// weekly
 		
-		add_schedule_option(this, _("Weekly"), _("Create one per week"), out chk_w, out spin_w);
-
-		chk_w.active = App.schedule_weekly;
-		chk_w.toggled.connect(()=>{
-			App.schedule_weekly = chk_w.active;
-			//spin_w.sensitive = chk_w.active;
-			chk_cron.sensitive = App.scheduled;
-			update_statusbar();
-		});
+		add_schedule_option(this, Tags.Weekly, _("Create one per week"), out chk_w, out spin_w);
 
 		spin_w.set_value(App.count_weekly);
 		//spin_w.sensitive = chk_w.active;
@@ -97,15 +81,7 @@ class ScheduleBox : Gtk.Box{
 
 		// daily
 		
-		add_schedule_option(this, _("Daily"), _("Create one per day"), out chk_d, out spin_d);
-
-		chk_d.active = App.schedule_daily;
-		chk_d.toggled.connect(()=>{
-			App.schedule_daily = chk_d.active;
-			//spin_d.sensitive = chk_d.active;
-			chk_cron.sensitive = App.scheduled;
-			update_statusbar();
-		});
+		add_schedule_option(this, Tags.Daily, _("Create one per day"), out chk_d, out spin_d);
 
 		spin_d.set_value(App.count_daily);
 		//spin_d.sensitive = chk_d.active;
@@ -115,15 +91,7 @@ class ScheduleBox : Gtk.Box{
 
 		// hourly
 		
-		add_schedule_option(this, _("Hourly"), _("Create one per hour"), out chk_h, out spin_h);
-
-		chk_h.active = App.schedule_hourly;
-		chk_h.toggled.connect(()=>{
-			App.schedule_hourly = chk_h.active;
-			//spin_h.sensitive = chk_h.active;
-			chk_cron.sensitive = App.scheduled;
-			update_statusbar();
-		});
+		add_schedule_option(this, Tags.Hourly, _("Create one per hour"), out chk_h, out spin_h);
 
 		spin_h.set_value(App.count_hourly);
 		//spin_h.sensitive = chk_h.active;
@@ -133,15 +101,7 @@ class ScheduleBox : Gtk.Box{
 
 		// boot
 		
-		add_schedule_option(this, _("Boot"), _("Create one per boot"), out chk_b, out spin_b);
-
-		chk_b.active = App.schedule_boot;
-		chk_b.toggled.connect(()=>{
-			App.schedule_boot = chk_b.active;
-			//spin_b.sensitive = chk_b.active;
-			chk_cron.sensitive = App.scheduled;
-			update_statusbar();
-		});
+		add_schedule_option(this, Tags.Boot, _("Create one per boot"), out chk_b, out spin_b);
 
 		spin_b.set_value(App.count_boot);
 		//spin_b.sensitive = chk_b.active;
@@ -260,7 +220,7 @@ class ScheduleBox : Gtk.Box{
 	}
 
 	private void add_schedule_option(
-		Gtk.Box box, string period, string period_desc,
+		Gtk.Box box, Tags period, string period_desc,
 		out Gtk.CheckButton chk, out Gtk.SpinButton spin){
 
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
@@ -275,9 +235,21 @@ class ScheduleBox : Gtk.Box{
 			sg_count = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		}
 		
-        var txt = "<b>%s</b>".printf(period);
-		chk = add_checkbox(hbox, txt);
+        var txt = "<b>%s</b>".printf(period.localized_name());
+		Gtk.CheckButton check = add_checkbox(hbox, txt);
+		chk = check;
 		sg_title.add_widget(chk);
+
+		check.active = period in App.schedule;
+		check.toggled.connect(()=>{
+			if(check.active) {
+				App.schedule |= period; // add
+			} else {
+				App.schedule &= ~ period; // remove
+			}
+			chk_cron.sensitive = App.scheduled;
+			update_statusbar();
+		});
 		
 		var tt = _("Number of snapshots to keep.\nOlder snapshots will be removed once this limit is exceeded.");
 		var label = add_label(hbox, "     " + _("Keep"));
@@ -296,8 +268,7 @@ class ScheduleBox : Gtk.Box{
 
 	public void update_statusbar(){
 		
-		if (App.schedule_monthly || App.schedule_weekly || App.schedule_daily
-			|| App.schedule_hourly || App.schedule_boot){
+		if (App.scheduled){
 
 			img_shield.surface = IconManager.lookup_surface(IconManager.SHIELD_HIGH,
 				IconManager.SHIELD_ICON_SIZE, img_shield.scale_factor);
