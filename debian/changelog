@@ -1,3 +1,38 @@
+timeshift (26.11.0) adrien; urgency=medium
+
+  [ Riccardo Gagliarducci ]
+  * Update README.md (#526)
+
+  [ Michael Webster ]
+  * Silence the async script status write after TEMP_DIR is removed
+  * Exclude log files from rsync snapshots by default
+  * Device selection: Re-check the location status instead of leaving stale errors
+  * Restore: Resolve a LABEL= root fstab entry and stop failing silently
+
+  [ Luka ]
+  * dont abort on page change (#513)
+
+  [ Yannis Gerlach ]
+  * Tags as enum (#493)
+  * apply patch proposed in #570 by @michaelkory (#571)
+
+  [ FrostBird347 ]
+  * Ensure default filters take priority over user accounts (#547)
+  * [WIP] Keep local hardlinks (#546)
+
+  [ Pavel Řezníček ]
+  * AsyncTask: fix double-unref crash on teardown after completion (#552)
+
+  [ Clement Lefebvre ]
+  * l10n: Update POT
+  * Switch symbolic icons to XSI
+  * Switch fullcolor icons to XSI
+  * Remove unused class
+  * ui: Move settings/wizard into burger menu
+  * l10n: Update POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 13 Nov 2026 12:20:46 +0000
+
 timeshift (26.09.0) adrien; urgency=medium
 
   [ Michael Webster ]

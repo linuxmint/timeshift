@@ -2,7 +2,7 @@ project(
   'timeshift',
   'vala',
   'c',
-version : '26.09.0',
+version : '26.11.0',
   license : 'GPL-2.0-or-later',
   meson_version : '>= 0.54.0',
   default_options : ['c_std=c99', 'build.c_std=c99']
