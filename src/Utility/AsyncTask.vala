@@ -181,24 +181,20 @@ public abstract class AsyncTask : GLib.Object{
 			}
 
 			try {
-				// Wait for both reader threads to finish (streams fully closed),
-				// then signal completion exactly once. Previously each reader called
-				// finish() on its own as soon as both *_is_open flags were clear, but
-				// those flags were cleared *before* the stream was actually closed.
-				// That let one reader fire finish()/task_complete() while the other was
-				// still inside dis_*.close()/= null; the owner would then tear the task
-				// down mid-unref, double-unreffing the underlying stream (SIGSEGV).
+				// finish only after both readers have released their streams
 				new Thread<void>.try ("async-task-finish-waiter", wait_and_finish);
 			} catch (GLib.Error e) {
 				log_error ("AsyncTask.begin():create_thread:wait_and_finish()");
 				log_error (e.message);
+				wait_and_finish();
 			}
 		}
 		catch (Error e) {
 			log_error ("AsyncTask.begin()");
 			log_error(e.message);
 			has_started = false;
-			//status = AppStatus.FINISHED;
+			exit_code = -1;
+			status = AppStatus.FINISHED;
 		}
 
 		return has_started;
@@ -215,8 +211,12 @@ public abstract class AsyncTask : GLib.Object{
 				}
 				out_line = dis_out.read_line (null); //read next
 			}
-
-			// dispose stdout
+		}
+		catch (Error e) {
+			log_error ("AsyncTask.read_stdout()");
+			log_error (e.message);
+		}
+		finally {
 			try {
 				if (dis_out != null) {
 					dis_out.close();
@@ -224,10 +224,6 @@ public abstract class AsyncTask : GLib.Object{
 			}
 			catch (GLib.Error ignored) {}
 			dis_out = null;
-		}
-		catch (Error e) {
-			log_error ("AsyncTask.read_stdout()");
-			log_error (e.message);
 		}
 	}
 
@@ -241,8 +237,12 @@ public abstract class AsyncTask : GLib.Object{
 				}
 				err_line = dis_err.read_line (null); //read next
 			}
-
-			// dispose stderr
+		}
+		catch (Error e) {
+			log_error ("AsyncTask.read_stderr()");
+			log_error (e.message);
+		}
+		finally {
 			try {
 				if (dis_err != null) {
 					dis_err.close();
@@ -250,10 +250,6 @@ public abstract class AsyncTask : GLib.Object{
 			}
 			catch (GLib.Error ignored) {}
 			dis_err = null;
-		}
-		catch (Error e) {
-			log_error ("AsyncTask.read_stderr()");
-			log_error (e.message);
 		}
 	}
 
@@ -298,7 +294,6 @@ public abstract class AsyncTask : GLib.Object{
 	
 	private void finish(){
 		
-		// finish() gets called by 2 threads but should be executed only once
 		if (finish_called) { return; }
 		finish_called = true;
 		
