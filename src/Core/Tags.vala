@@ -40,7 +40,7 @@ public enum Tags {
             case Daily: return _("Daily");
             case Weekly: return _("Weekly");
             case Monthly: return _("Monthly");
-            case OnDemand: return _("Ondemand");
+            case OnDemand: return _("On demand (manual)");
         }
 
         assert_not_reached();

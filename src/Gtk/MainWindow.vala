@@ -363,16 +363,16 @@ class MainWindow : Gtk.Window{
 
 		if (!App.live_system()){
 			// app logs
-			menu_item = create_menu_item(_("View TimeShift Logs"));
+			menu_item = create_menu_item(_("View logs"));
 			menu_extra.append(menu_item);
 			menu_item.activate.connect(btn_view_app_logs_clicked);
 
 			// pause snapshots
-			menu_item = create_menu_item(_("Pause Snapshots"));
+			menu_item = create_menu_item(_("Pause snapshots"));
 			menu_extra.append(menu_item);
 
 			Gtk.Menu? menu_pause = new Gtk.Menu();
-			Gtk.MenuItem? menu_pause_item = create_menu_item(_("Unpause"));
+			Gtk.MenuItem? menu_pause_item = create_menu_item(_("Resume"));
 			menu_pause_item.activate.connect(() => App.unpause_snapshots());
 			menu_pause_item.sensitive = App.snapshots_paused;
 			menu_pause.append(menu_pause_item);
