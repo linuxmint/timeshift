@@ -814,10 +814,10 @@ public class AppConsole : GLib.Object {
 
 		// remove mount points which will remain on root fs
 		for(int i = App.mount_list.size-1; i >= 0; i--){
-			
+
 			var entry = App.mount_list[i];
-			
-			if (entry.device == null){
+
+			if (entry.device == null && entry.mount_point != "/"){
 				App.mount_list.remove(entry);
 			}
 		}
@@ -888,6 +888,10 @@ public class AppConsole : GLib.Object {
 			}
 
 			if (App.cmd_scripted){
+				if (default_device.length == 0){
+					log_error(_("Target device not specified!"));
+					App.exit_app(1);
+				}
 				dev = Device.get_device_by_name(default_device);
 				if (dev == null){
 					log_error("Failed to get device by name %s".printf(default_device));

@@ -2057,8 +2057,11 @@ public class Main : GLib.Object{
 		foreach(var fs_entry in fstab_list){
 
 			// skip mounting for non-system devices ----------
-			
-			if (!fs_entry.is_for_system_directory()){
+
+			bool is_root_label = (fs_entry.mount_point == "/")
+				&& fs_entry.device_string.down().has_prefix("label=");
+
+			if (!is_root_label && !fs_entry.is_for_system_directory()){
 				continue;
 			}
 
@@ -2081,7 +2084,10 @@ public class Main : GLib.Object{
 			// find device by name or uuid --------------------------
 			
 			Device dev_fstab = null;
-			if (fs_entry.device_uuid.length > 0){
+			if (is_root_label){
+				dev_fstab = Device.get_device_by_label(fs_entry.device_string.split("=", 2)[1]);
+			}
+			else if (fs_entry.device_uuid.length > 0){
 				dev_fstab = Device.get_device_by_uuid(fs_entry.device_uuid);
 			}
 			else{
@@ -3759,8 +3765,9 @@ public class Main : GLib.Object{
 		 * */
 
 		log_debug("mount_target_device()");
-		
+
 		if (dst_root == null){
+			log_error(_("Target device not specified!"));
 			return false;
 		}
 	

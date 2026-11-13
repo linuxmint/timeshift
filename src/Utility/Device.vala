@@ -1088,6 +1088,20 @@ public class Device : GLib.Object{
 		return find_device_in_list(device_list, file_name);
 	}
 
+	// returns null if the label is missing or ambiguous
+	public static Device? get_device_by_label(string label){
+
+		Device? match = null;
+
+		foreach(var dev in device_list){
+			if (dev.label != label){ continue; }
+			if (match != null){ return null; }
+			match = dev;
+		}
+
+		return match;
+	}
+
 	public static Device? get_device_by_path(string path_to_check){
 		
 		var list = Device.get_disk_space_using_df(path_to_check);
