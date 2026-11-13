@@ -133,7 +133,7 @@ class MainWindow : Gtk.Window{
 		toolbar.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
 		vbox_main.add(toolbar);
 
-        Gtk.Image img = new Gtk.Image.from_icon_name("document-save-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+        Gtk.Image img = new Gtk.Image.from_icon_name("xsi-document-save-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		btn_backup = new Gtk.ToolButton (img, null);
 		btn_backup.is_important = true;
 		btn_backup.label = _("Create");
@@ -143,7 +143,7 @@ class MainWindow : Gtk.Window{
         btn_backup.clicked.connect (create_snapshot);
 
 		//btn_restore
-        img = new Gtk.Image.from_icon_name("document-open-recent-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+        img = new Gtk.Image.from_icon_name("xsi-document-open-recent-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		btn_restore = new Gtk.ToolButton (img, null);
 		btn_restore.is_important = true;
 		btn_restore.label = _("Restore");
@@ -153,7 +153,7 @@ class MainWindow : Gtk.Window{
 		btn_restore.clicked.connect (btn_restore_clicked);
 
 		//btn_delete_snapshot
-		img = new Gtk.Image.from_icon_name("edit-delete-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		img = new Gtk.Image.from_icon_name("xsi-edit-delete-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		btn_delete_snapshot = new Gtk.ToolButton (img, null);
 		btn_delete_snapshot.is_important = true;
 		btn_delete_snapshot.label = _("Delete");
@@ -163,7 +163,7 @@ class MainWindow : Gtk.Window{
         btn_delete_snapshot.clicked.connect (delete_selected);
         
 	    //btn_browse_snapshot
-        img = new Gtk.Image.from_icon_name("folder-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+        img = new Gtk.Image.from_icon_name("xsi-folder-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		btn_browse_snapshot = new Gtk.ToolButton (img, null);
 		btn_browse_snapshot.is_important = true;
 		btn_browse_snapshot.label = _("Browse");
@@ -173,7 +173,7 @@ class MainWindow : Gtk.Window{
         btn_browse_snapshot.clicked.connect (browse_selected);
 
         //btn_settings
-        img = new Gtk.Image.from_icon_name("preferences-system-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+        img = new Gtk.Image.from_icon_name("xsi-preferences-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		btn_settings = new Gtk.ToolButton (img, null);
 		btn_settings.is_important = true;
 		btn_settings.label = _("Settings");
@@ -183,7 +183,7 @@ class MainWindow : Gtk.Window{
         btn_settings.clicked.connect (btn_settings_clicked);
 
         //btn_wizard
-        img = new Gtk.Image.from_icon_name("emblem-default-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+        img = new Gtk.Image.from_icon_name("xsi-emblem-default-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		btn_wizard = new Gtk.ToolButton (img, null);
 		btn_wizard.is_important = true;
 		btn_wizard.label = _("Wizard");
@@ -201,7 +201,7 @@ class MainWindow : Gtk.Window{
 		toolbar.add (separator);
 
 		//btn_hamburger
-        img = new Gtk.Image.from_icon_name("open-menu-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+        img = new Gtk.Image.from_icon_name("xsi-open-menu-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		var button = new Gtk.ToolButton (img, null);
 		button.label = _("Menu");
 		button.set_tooltip_text (_("Open Menu"));
