@@ -1476,6 +1476,7 @@ public class Device : GLib.Object{
 			}
 
 		}
+		#if !TS_NO_GTK
 		else{
 
 			// gui mode
@@ -1522,6 +1523,7 @@ public class Device : GLib.Object{
 			}
 			
 		}
+		#endif
 
 		// find unlocked device
 		list = get_block_devices_using_lsblk();

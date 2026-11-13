@@ -22,7 +22,6 @@
  */
 
 using GLib;
-using Gtk;
 using Gee;
 //using Soup;
 using Json;
@@ -31,7 +30,6 @@ using TeeJee.Logging;
 using TeeJee.FileSystem;
 using TeeJee.JsonHelper;
 using TeeJee.ProcessHelper;
-using TeeJee.GtkHelper;
 using TeeJee.System;
 using TeeJee.Misc;
 

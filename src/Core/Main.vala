@@ -22,7 +22,6 @@
  */
 
 using GLib;
-using Gtk;
 using Gee;
 using Json;
 
@@ -339,8 +338,12 @@ public class Main : GLib.Object{
 
 		load_app_config();
 
+		#if TS_NO_GTK
+		// No icon theme initialization is needed for command-line-only builds.
+		#else
 		IconManager.init(args, AppShortName);
-		
+		#endif
+
 		log_debug("Main(): ok");
 	}
 
@@ -2705,10 +2708,11 @@ public class Main : GLib.Object{
 		return (ret_val == 0);
 	}
 
+#if !TS_NO_GTK
 	private bool restore_current_gui(string sh_sync, string sh_finish){
 
 		log_debug("Main: restore_current_gui()");
-		
+
 		string script = sh_sync + sh_finish;
 		string temp_script = save_bash_script_temp(script);
 
@@ -2717,6 +2721,7 @@ public class Main : GLib.Object{
 
 		return true;
 	}
+#endif
 
 	private bool restore_other_console(string sh_sync, string sh_finish){
 
@@ -2769,6 +2774,7 @@ public class Main : GLib.Object{
 		return (ret_val == 0);
 	}
 
+#if !TS_NO_GTK
 	private bool restore_other_gui(string sh_sync, string sh_finish){
 
 		log_debug("Main: restore_other_gui()");
@@ -2854,6 +2860,7 @@ public class Main : GLib.Object{
 
 		return (ret_val == 0);
 	}
+#endif
 
 	private void fix_fstab_file(string target_path){
 
@@ -3071,7 +3078,8 @@ public class Main : GLib.Object{
 			log_msg(progress_text);
 
 			bool ok = true;
-			
+
+			#if !TS_NO_GTK
 			if (app_mode == ""){ // GUI
 				if (!restore_current_system || dry_run){
 					ok = restore_other_gui(sh_sync, sh_finish);
@@ -3080,7 +3088,9 @@ public class Main : GLib.Object{
 					ok = restore_current_gui(sh_sync, sh_finish);
 				}
 			}
-			else{
+			else
+			#endif
+			{
 				if (restore_current_system){
 					ok = restore_current_console(sh_sync, sh_finish);
 				}
