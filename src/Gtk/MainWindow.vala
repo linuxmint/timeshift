@@ -42,8 +42,6 @@ class MainWindow : Gtk.Window{
 	private Gtk.ToolButton btn_restore;
 	private Gtk.ToolButton btn_delete_snapshot;
 	private Gtk.ToolButton btn_browse_snapshot;
-	private Gtk.ToolButton btn_settings;
-	private Gtk.ToolButton btn_wizard;
 
 	private SnapshotListBox snapshot_list_box;
 	
@@ -90,7 +88,6 @@ class MainWindow : Gtk.Window{
 
         if (App.live_system()){
 			btn_backup.sensitive = false;
-			btn_settings.sensitive = false;
 		}
 
 		tmr_init = Timeout.add(100, init_delayed);
@@ -117,7 +114,7 @@ class MainWindow : Gtk.Window{
 		refresh_all();
 
 		if (App.first_run){
-			btn_wizard_clicked();
+			show_setup_wizard();
 		}
 
 		log_debug("MainWindow(): init_delayed(): exit");
@@ -171,26 +168,6 @@ class MainWindow : Gtk.Window{
         toolbar.add(btn_browse_snapshot);
 
         btn_browse_snapshot.clicked.connect (browse_selected);
-
-        //btn_settings
-        img = new Gtk.Image.from_icon_name("xsi-preferences-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		btn_settings = new Gtk.ToolButton (img, null);
-		btn_settings.is_important = true;
-		btn_settings.label = _("Settings");
-		btn_settings.set_tooltip_text (_("Settings"));
-        toolbar.add(btn_settings);
-
-        btn_settings.clicked.connect (btn_settings_clicked);
-
-        //btn_wizard
-        img = new Gtk.Image.from_icon_name("xsi-emblem-default-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		btn_wizard = new Gtk.ToolButton (img, null);
-		btn_wizard.is_important = true;
-		btn_wizard.label = _("Wizard");
-		btn_wizard.set_tooltip_text (_("Settings wizard"));
-        toolbar.add(btn_wizard);
-
-        btn_wizard.clicked.connect (btn_wizard_clicked);
 
 		// TODO: replace gtk icon names with desktop-neutral names
 		
@@ -361,14 +338,27 @@ class MainWindow : Gtk.Window{
 
 		Gtk.MenuItem menu_item = null;
 
+		// settings
+		menu_item = create_menu_item(_("Settings"));
+		menu_item.sensitive = !App.live_system();
+		menu_extra.append(menu_item);
+		menu_item.activate.connect(show_settings);
+
+		// setup wizard
+		menu_item = create_menu_item(_("Setup Wizard"));
+		menu_extra.append(menu_item);
+		menu_item.activate.connect(show_setup_wizard);
+
+		menu_extra.append(new Gtk.SeparatorMenuItem());
+
 		if (!App.live_system()){
 			// app logs
-			menu_item = create_menu_item(_("View logs"));
+			menu_item = create_menu_item(_("View TimeShift Logs"));
 			menu_extra.append(menu_item);
 			menu_item.activate.connect(btn_view_app_logs_clicked);
 
 			// pause snapshots
-			menu_item = create_menu_item(_("Pause snapshots"));
+			menu_item = create_menu_item(_("Pause Snapshots"));
 			menu_extra.append(menu_item);
 
 			Gtk.Menu? menu_pause = new Gtk.Menu();
@@ -377,7 +367,7 @@ class MainWindow : Gtk.Window{
 			menu_pause_item.sensitive = App.snapshots_paused;
 			menu_pause.append(menu_pause_item);
 
-			menu_pause_item = create_menu_item(_("Pause until shutdown"));
+			menu_pause_item = create_menu_item(_("Pause Until Shutdown"));
 			menu_pause_item.activate.connect(() => App.pause_snapshots_for_this_boot());
 			menu_pause.append(menu_pause_item);
 
@@ -478,7 +468,7 @@ class MainWindow : Gtk.Window{
 				
 				if (response == Gtk.ResponseType.YES){
 					this.delete_event.connect(on_delete_event); // reconnect this handler
-					btn_wizard_clicked(); // open wizard
+					show_setup_wizard(); // open wizard
 					return true; // keep window open
 				}
 				else{
@@ -852,12 +842,9 @@ class MainWindow : Gtk.Window{
 		});
 	}
 
-	private void btn_settings_clicked(){
+	private void show_settings(){
 
-		log_debug("MainWindow: btn_settings_clicked()");
-		
-		btn_settings.sensitive = false;
-		btn_wizard.sensitive = false;
+		log_debug("MainWindow: show_settings()");
 
 		this.hide();
 
@@ -866,18 +853,13 @@ class MainWindow : Gtk.Window{
 		var win = new SettingsWindow();
 		win.set_transient_for(this);
 		win.destroy.connect(()=>{
-			btn_settings.sensitive = true;
-			btn_wizard.sensitive = true;
 			settings_changed(btrfs_mode_prev);
 		});
 	}
 
-	private void btn_wizard_clicked(){
+	private void show_setup_wizard(){
 
-		log_debug("MainWindow: btn_wizard_clicked()");
-		
-		btn_settings.sensitive = false;
-		btn_wizard.sensitive = false;
+		log_debug("MainWindow: show_setup_wizard()");
 
 		this.hide();
 		
@@ -886,8 +868,6 @@ class MainWindow : Gtk.Window{
 		var win = new SetupWizardWindow();
 		win.set_transient_for(this);
 		win.destroy.connect(()=>{
-			btn_settings.sensitive = true;
-			btn_wizard.sensitive = true;
 			settings_changed(btrfs_mode_prev);
 		});
 	}
