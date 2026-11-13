@@ -635,11 +635,11 @@ class BackupDeviceBox : Gtk.Box{
 				model.append(out iter1, iter0);
 				model.set(iter1, 0, part, -1);
 				model.set(iter1, 1, part.tooltip_text(), -1);
-				model.set(iter1, 2, (part.fstype == "luks") ? "locked" : IconManager.ICON_HARDDRIVE, -1);
+				model.set(iter1, 2, (part.fstype == "luks") ? "xsi-changes-prevent-symbolic" : IconManager.ICON_HARDDRIVE, -1);
 				
 				if (parent.fstype == "luks"){
 					// change parent's icon to unlocked
-					model.set(iter0, 2, "unlocked", -1);
+					model.set(iter0, 2, "xsi-changes-allow-symbolic", -1);
 				}
 
 				if ((App.repo.device != null) && (part.uuid == App.repo.device.uuid)){
@@ -667,7 +667,7 @@ class BackupDeviceBox : Gtk.Box{
 				model.append(out iter1, iter0);
 				model.set(iter1, 0, part2, -1);
 				model.set(iter1, 1, part2.tooltip_text(), -1);
-				model.set(iter1, 2, (part2.fstype == "luks") ? "locked" : IconManager.ICON_HARDDRIVE, -1);
+				model.set(iter1, 2, (part2.fstype == "luks") ? "xsi-changes-prevent-symbolic" : IconManager.ICON_HARDDRIVE, -1);
 				
 				if ((App.repo.device != null) && (part2.uuid == App.repo.device.uuid)){
 					model.set(iter1, 3, true, -1);

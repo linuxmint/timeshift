@@ -93,23 +93,23 @@ public class CustomMessageDialog : Gtk.Dialog {
 		hbox_contents.margin = 6;
 		vbox_main.add (hbox_contents);
 
-		string icon_name = "dialog-info";
+		string icon_name = "xsi-dialog-information-symbolic";
 		
 		switch(msg_type){
 		case Gtk.MessageType.INFO:
-			icon_name = "dialog-info";
+			icon_name = "xsi-dialog-information-symbolic";
 			break;
 		case Gtk.MessageType.WARNING:
-			icon_name = "dialog-warning";
+			icon_name = "xsi-dialog-warning-symbolic";
 			break;
 		case Gtk.MessageType.QUESTION:
-			icon_name = "dialog-question";
+			icon_name = "xsi-dialog-question-symbolic";
 			break;
 		case Gtk.MessageType.ERROR:
-			icon_name = "dialog-error";
+			icon_name = "xsi-dialog-error-symbolic";
 			break;
 		case Gtk.MessageType.OTHER:
-			icon_name = "dialog-info";
+			icon_name = "xsi-dialog-information-symbolic";
 			break;
 		}
 

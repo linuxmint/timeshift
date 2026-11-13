@@ -447,7 +447,7 @@ class ExcludeBox : Gtk.Box{
 		bool include = pattern.has_prefix("+ ");
 
 		model.set (iter, 0, pattern);
-		model.set (iter, 1, include ? "list-add" : "list-remove");
+		model.set (iter, 1, include ? "xsi-list-add-symbolic" : "xsi-list-remove-symbolic");
 		model.set (iter, 2, include);
 		model.set (iter, 3, !include);
 
@@ -463,7 +463,7 @@ class ExcludeBox : Gtk.Box{
 
 		var model = (Gtk.ListStore) treeview.model;
 		model.set (iter, 0, pattern);
-		model.set (iter, 1, include ? "list-add" : "list-remove");
+		model.set (iter, 1, include ? "xsi-list-add-symbolic" : "xsi-list-remove-symbolic");
 		model.set (iter, 2, include);
 		model.set (iter, 3, !include);
 	}

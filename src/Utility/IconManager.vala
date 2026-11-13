@@ -51,7 +51,7 @@ public class IconManager : GLib.Object {
     public const string GENERIC_ICON_ISO = "media-cdrom";
     public const string GENERIC_ICON_PDF = "application-pdf";
 
-    public const string ICON_HARDDRIVE = "drive-harddisk";
+    public const string ICON_HARDDRIVE = "xsi-drive-harddisk-symbolic";
 
     public const string SHIELD_LIVE= "media-optical";
     public const string SHIELD_LOW = "timeshift-shield-low";

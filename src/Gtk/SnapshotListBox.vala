@@ -98,7 +98,7 @@ class SnapshotListBox : Gtk.Box{
 		col_date.min_width = 200;
 
 		var cell_backup_icon = new CellRendererPixbuf ();
-		cell_backup_icon.surface = IconManager.lookup_surface("clock", 16, treeview.scale_factor);
+		cell_backup_icon.icon_name = "xsi-time-symbolic";
 		//cell_backup_icon.xpad = 1;
 		cell_backup_icon.xpad = 4;
 		cell_backup_icon.ypad = 6;
@@ -321,35 +321,35 @@ class SnapshotListBox : Gtk.Box{
 		
 		// mi_browse
 		var item = new ImageMenuItem.with_label(_("Browse Files"));
-        item.image = IconManager.lookup_image(IconManager.GENERIC_ICON_DIRECTORY, 16);
+        item.image = new Image.from_icon_name("xsi-folder-symbolic", Gtk.IconSize.MENU);
 		item.activate.connect(()=> { browse_selected(); });
 		menu_snapshots.append(item);
 		mi_browse = item;
 		
 		// mi_view_log_create
 		item = new ImageMenuItem.with_label(_("View Rsync Log for Create"));
-        item.image = IconManager.lookup_image(IconManager.GENERIC_ICON_FILE, 16);
+        item.image = new Image.from_icon_name("xsi-text-x-generic-symbolic", Gtk.IconSize.MENU);
 		item.activate.connect(()=> { view_snapshot_log(false); });
 		menu_snapshots.append(item);
 		mi_view_log_create = item;
 		
 		// mi_view_log_restore
 		item = new ImageMenuItem.with_label(_("View Rsync Log for Restore"));
-        item.image = IconManager.lookup_image(IconManager.GENERIC_ICON_FILE, 16);
+        item.image = new Image.from_icon_name("xsi-text-x-generic-symbolic", Gtk.IconSize.MENU);
 		item.activate.connect(()=> { view_snapshot_log(true); });
 		menu_snapshots.append(item);
 		mi_view_log_restore = item;
 
 		// mi_remove
 		item = new ImageMenuItem.with_label(_("Delete"));
-		item.image = IconManager.lookup_image("edit-delete", 16);
+		item.image = new Image.from_icon_name("xsi-edit-delete-symbolic", Gtk.IconSize.MENU);
 		item.activate.connect(()=> { delete_selected(); });
 		menu_snapshots.append(item);
 		mi_remove = item;
 		
 		// mi_mark
 		item = new ImageMenuItem.with_label(_("Mark/Unmark for Deletion"));
-		item.image = IconManager.lookup_image("edit-delete", 16);
+		item.image = new Image.from_icon_name("xsi-edit-delete-symbolic", Gtk.IconSize.MENU);
 		item.activate.connect(()=> { mark_selected(); });
 		menu_snapshots.append(item);
 		mi_mark = item;
