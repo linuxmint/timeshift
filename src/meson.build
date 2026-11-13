@@ -68,7 +68,6 @@ sources_gtk = files([
   'Gtk/ExcludeAppsBox.vala',
   'Gtk/ExcludeBox.vala',
   'Gtk/ExcludeListSummaryWindow.vala',
-  'Gtk/ExcludeMessageWindow.vala',
   'Gtk/FinishBox.vala',
   'Gtk/MainWindow.vala',
   'Gtk/MiscBox.vala',
