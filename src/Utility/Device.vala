@@ -1757,8 +1757,8 @@ public class Device : GLib.Object{
 
 			log_debug(_("Unmounting from") + ": '%s'".printf(mount_point));
 
-			//sync before unmount
-			cmd = "sync";
+			//sync only this filesystem before unmount, a global sync waits for every disk
+			cmd = "sync -f '%s'".printf(escape_single_quote(mount_point));
 			Process.spawn_command_line_sync(cmd, out std_out, out std_err, out ret_val);
 			//ignore success/failure
 
