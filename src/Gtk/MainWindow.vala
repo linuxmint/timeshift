@@ -538,8 +538,9 @@ class MainWindow : Gtk.Window{
 		}
 
 		// check if selected snapshot is live ------------------
+		var selected_snapshots = snapshot_list_box.selected_snapshots();
 
-		foreach(var bak in snapshot_list_box.selected_snapshots()){
+		foreach(var bak in selected_snapshots){
 			if (bak.live){
 				string title = _("Cannot Delete Live Snapshot");
 				string msg = _("Snapshot '%s' is being used by the system and cannot be deleted. Restart the system to activate the restored snapshot.").printf(bak.date_formatted);
@@ -549,13 +550,18 @@ class MainWindow : Gtk.Window{
 		}
 
 		// confirm deletion ------------------
+		string deletion_msg = _("Are you sure you want to delete this snapshot?");
+
+		if (selected_snapshots.size > 1){
+			deletion_msg = _("Are you sure you want to delete these snapshots?");
+		}
 
         var confirm_dialog = new Gtk.MessageDialog(
             this,
             Gtk.DialogFlags.MODAL,
             Gtk.MessageType.QUESTION,
             Gtk.ButtonsType.YES_NO,
-            _("Are you sure you want to delete this snapshot?")
+            deletion_msg
             );
 
         var confirm_response = confirm_dialog.run();
@@ -569,7 +575,7 @@ class MainWindow : Gtk.Window{
 
 		if (!App.thread_delete_running){
 			// check and add by name since snapshot_list would have changed
-			foreach (var item in snapshot_list_box.selected_snapshots()){
+			foreach (var item in selected_snapshots){
 				bool already_in_list = false;
 				foreach(var bak in App.delete_list){
 					if (bak.name == item.name){
