@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2025-12-10 14:42+0000\n"
+"POT-Creation-Date: 2026-11-13 12:19+0000\n"
 "PO-Revision-Date: 2025-12-10 22:19+0000\n"
 "Last-Translator: Attila Gábor Ferencz <Unknown>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2026-01-08 15:43+0000\n"
-"X-Generator: Launchpad (build 99c00f518760bdd50fc6e353e7736d2fff8fba4a)\n"
+"X-Launchpad-Export-Date: 2026-11-16 11:59+0000\n"
+"X-Generator: Launchpad (build 72ba15af7e009b17d4aa1467977127ac8392a4de)\n"
 "Language: hu\n"
 
 #: src/AppConsole.vala:630
@@ -28,17 +28,17 @@ msgstr ""
 "\n"
 "A folytatáshoz nyomja meg az ENTER billentyűt…"
 
-#: src/Core/SnapshotRepo.vala:560
+#: src/Core/SnapshotRepo.vala:556
 #, c-format
 msgid "%d snapshots, %s free"
 msgstr "%d pillanatkép, %s szabad"
 
-#: src/AppConsole.vala:946
+#: src/AppConsole.vala:949
 #, c-format
 msgid "'%s' will be on '%s'"
 msgstr "„%s” lesz a következőn: „%s”"
 
-#: src/AppConsole.vala:943
+#: src/AppConsole.vala:946
 #, c-format
 msgid "'%s' will be on root device"
 msgstr "„%s” a gyökér meghajtón lesz"
@@ -47,23 +47,23 @@ msgstr "„%s” a gyökér meghajtón lesz"
 msgid "(Re)install GRUB2 on:"
 msgstr "GRUB2 (újra)telepítése ide:"
 
-#: src/Core/Main.vala:483
+#: src/Core/Main.vala:486
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr "** Timeshift BTRFS eltávolítva**"
 
-#: src/Core/Main.vala:3694
+#: src/Core/Main.vala:3714
 msgid "/ is mapped to device"
 msgstr "„/” az eszközhöz van rendelve"
 
-#: src/Core/Main.vala:3716
+#: src/Core/Main.vala:3736
 msgid "/boot is mapped to device"
 msgstr "A „/boot” az eszközhöz van rendelve"
 
-#: src/Core/Main.vala:3727
+#: src/Core/Main.vala:3747
 msgid "/boot/efi is mapped to device"
 msgstr "A „/boot/efi” az eszközhöz van rendelve"
 
-#: src/Core/Main.vala:3705
+#: src/Core/Main.vala:3725
 msgid "/home is mapped to device"
 msgstr "A „/home” az eszközhöz van rendelve"
 
@@ -71,20 +71,20 @@ msgstr "A „/home” az eszközhöz van rendelve"
 msgid "<b>Comments</b> (double-click to edit)"
 msgstr "<b>Megjegyzések</b> (dupla kattintással szerkeszthető)"
 
-#: src/Gtk/ScheduleBox.vala:168
+#: src/Gtk/ScheduleBox.vala:128
 msgid ""
 "A maintenance task runs once every hour and creates snapshots as needed."
 msgstr ""
 "A karbantartási feladat óránként egyszer fut le, és szükség szerint "
 "pillanatképket készít."
 
-#: src/AppConsole.vala:716 src/AppConsole.vala:786 src/AppConsole.vala:926
-#: src/AppConsole.vala:1029 src/AppConsole.vala:1080 src/AppConsole.vala:1126
-#: src/AppConsole.vala:1144
+#: src/AppConsole.vala:716 src/AppConsole.vala:785 src/AppConsole.vala:929
+#: src/AppConsole.vala:1032 src/AppConsole.vala:1083 src/AppConsole.vala:1129
+#: src/AppConsole.vala:1147
 msgid "Aborted."
 msgstr "Megszakítva."
 
-#: src/Gtk/MainWindow.vala:375
+#: src/Gtk/MainWindow.vala:394
 msgid "About"
 msgstr "Névjegy"
 
@@ -148,10 +148,6 @@ msgstr ""
 "pillanatképek növekményesen készülnek. A változatlan fájlok hivatkozva "
 "lesznek a korábbi pillanatképekből, ha rendelkezésre állnak."
 
-#: src/Gtk/ExcludeMessageWindow.vala:129
-msgid "All other files and folders are excluded."
-msgstr "Minden más fájl és mappa ki lesz hagyva."
-
 #: src/Gtk/RestoreDeviceBox.vala:486
 msgid ""
 "An encrypted device is selected for root file system (/). The boot directory "
@@ -168,7 +164,7 @@ msgstr ""
 "Válasszon egy titkosítatlan eszközt rendszerindító mappának, vagy válasszon "
 "titkosítatlan eszközt a gyökér fájlrendszernek."
 
-#: src/Core/Main.vala:267
+#: src/Core/Main.vala:270
 msgid "Another instance of Timeshift is creating a snapshot."
 msgstr ""
 "A Timeshift alkalmazásnak egy másik futó példánya éppen pillanatképet készít."
@@ -177,7 +173,7 @@ msgstr ""
 msgid "Another instance of this application is running"
 msgstr "Ennek az alkalmazásnak egy másik példánya fut"
 
-#: src/Core/Main.vala:271
+#: src/Core/Main.vala:274
 msgid "Another instance of timeshift is currently running!"
 msgstr "A Timeshift alkalmazásnak egy másik példánya fut."
 
@@ -185,11 +181,11 @@ msgstr "A Timeshift alkalmazásnak egy másik példánya fut."
 msgid "Answer YES to all confirmation prompts"
 msgstr "Válaszoljon „IGEN”-nel minden megerősítési kérdésnél"
 
-#: src/Core/Main.vala:3535
+#: src/Core/Main.vala:3519
 msgid "App config loaded"
 msgstr "Alkalmazás beállítások betöltve"
 
-#: src/Core/Main.vala:3417
+#: src/Core/Main.vala:3385
 msgid "App config saved"
 msgstr "Alkalmazás beállítások elmentve"
 
@@ -198,19 +194,19 @@ msgid "Application needs admin access."
 msgstr ""
 "Az alkalmazásnak rendszergazda jogosultságú hozzáférésre van szüksége."
 
-#: src/Core/Main.vala:3871
+#: src/Core/Main.vala:3892
 msgid "Application will exit"
 msgstr "Az alkalmazás ki fog lépni"
 
-#: src/Core/Main.vala:499
+#: src/Core/Main.vala:502
 msgid "Application will exit."
 msgstr "Az alkalmazás ki fog lépni."
 
-#: src/Gtk/MainWindow.vala:546
+#: src/Gtk/MainWindow.vala:558
 msgid "Are you sure you want to delete this snapshot?"
 msgstr "Biztosan törölni szeretné ezt a pillanatképet?"
 
-#: src/Gtk/MainWindow.vala:345
+#: src/Gtk/MainWindow.vala:319
 msgid "Available"
 msgstr "Elérhető"
 
@@ -222,11 +218,11 @@ msgstr "BTRFS"
 msgid "BTRFS Snapshots"
 msgstr "BTRFS pillanatképek"
 
-#: src/Core/Main.vala:2348 src/Core/Main.vala:2352
+#: src/Core/Main.vala:2310 src/Core/Main.vala:2314
 msgid "BTRFS device is not mounted"
 msgstr "A BTRFS eszköz nincs csatlakoztatva"
 
-#: src/Gtk/BackupDeviceBox.vala:98
+#: src/Gtk/BackupDeviceBox.vala:99
 msgid ""
 "BTRFS snapshots are saved on system partition. Other partitions are not "
 "supported."
@@ -246,7 +242,7 @@ msgstr ""
 "a rendszerrel együtt. A lemezhibák elleni védekezés érdekében mentse a "
 "pillanatképeket egy külső, nem rendszerlemezre, RSYNC módban."
 
-#: src/Gtk/SetupWizardWindow.vala:94
+#: src/Gtk/SetupWizardWindow.vala:90
 msgid "Backend"
 msgstr "Háttérprogram"
 
@@ -254,11 +250,11 @@ msgstr "Háttérprogram"
 msgid "Backup"
 msgstr "Biztonsági mentés"
 
-#: src/Core/Main.vala:2324
+#: src/Core/Main.vala:2286
 msgid "Backup Device"
 msgstr "Mentőeszköz"
 
-#: src/Core/Main.vala:2319
+#: src/Core/Main.vala:2281
 msgid "Backup device not specified!"
 msgstr "A biztonsági mentés célmeghajtója nincs megadva."
 
@@ -266,7 +262,7 @@ msgstr "A biztonsági mentés célmeghajtója nincs megadva."
 msgid "Bittorrent Clients"
 msgstr "Bittorrent kliensek"
 
-#: src/Gtk/SnapshotListBox.vala:299 src/Gtk/ScheduleBox.vala:136
+#: src/Gtk/SnapshotListBox.vala:299 src/Core/Tags.vala:38
 msgid "Boot"
 msgstr "Rendszerindítás"
 
@@ -274,18 +270,18 @@ msgstr "Rendszerindítás"
 msgid "Boot device not selected"
 msgstr "Nincs kiválasztva rendszerindító eszköz"
 
-#: src/Core/Main.vala:1169
+#: src/Core/Main.vala:1177
 msgid "Boot snapshot failed!"
 msgstr "A rendszerindító pillanatkép meghibásodott."
 
-#: src/Gtk/ScheduleBox.vala:169
+#: src/Gtk/ScheduleBox.vala:129
 msgid ""
 "Boot snapshots are created with a delay of 10 minutes after system startup."
 msgstr ""
 "Pillanatkép készítése a BTRFS fájlrendszer beépített képességeinek "
 "használatával."
 
-#: src/Core/Main.vala:1150
+#: src/Core/Main.vala:1158
 msgid "Boot snapshots are enabled"
 msgstr "A rendszerindító pillanatképek engedélyezve vannak"
 
@@ -297,7 +293,7 @@ msgstr "Rendszerbetöltő beállítások"
 msgid "Bootloader Options (Advanced)"
 msgstr "Rendszerbetöltő beállítások (Speciális)"
 
-#: src/Gtk/MainWindow.vala:170
+#: src/Gtk/MainWindow.vala:166
 msgid "Browse"
 msgstr "Tallózás"
 
@@ -305,23 +301,22 @@ msgstr "Tallózás"
 msgid "Browse Files"
 msgstr "Fájlok tallózása…"
 
-#: src/Gtk/MainWindow.vala:171
+#: src/Gtk/MainWindow.vala:167
 msgid "Browse selected snapshot"
 msgstr "Kiválasztott pillanatkép tallózása"
 
-#: src/Core/Main.vala:2814
+#: src/Core/Main.vala:2776
 msgid "Building file list..."
 msgstr "Fájllista készítése…"
 
-#: src/Core/Main.vala:1527
+#: src/Core/Main.vala:1534
 msgid "Calculating required disk space..."
 msgstr "A szükséges lemezterület megállapítása…"
 
-#: src/Utility/Gtk/CustomMessageDialog.vala:156
+#: src/Gtk/BackupWindow.vala:182 src/Gtk/RestoreWindow.vala:215
+#: src/Gtk/RestoreWindow.vala:224 src/Gtk/SetupWizardWindow.vala:212
+#: src/Gtk/DeleteWindow.vala:190 src/Utility/Gtk/CustomMessageDialog.vala:156
 #: src/Utility/Gtk/CustomMessageDialog.vala:161 src/Utility/GtkHelper.vala:93
-#: src/Gtk/RestoreWindow.vala:215 src/Gtk/RestoreWindow.vala:224
-#: src/Gtk/BackupWindow.vala:182 src/Gtk/SetupWizardWindow.vala:220
-#: src/Gtk/DeleteWindow.vala:190
 msgid "Cancel"
 msgstr "Mégse"
 
@@ -342,17 +337,17 @@ msgstr ""
 "másik pillanatképet, hogy a rendszer konzisztenciáját visszaállítsa. "
 "Kattintson az „Igen”-re a megerősítéshez."
 
-#: src/Gtk/MainWindow.vala:532
+#: src/Gtk/MainWindow.vala:544
 msgid "Cannot Delete Live Snapshot"
 msgstr "Nem törölhet aktív pillanatképet"
 
-#: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
+#: src/Gtk/RestoreBox.vala:125 src/Gtk/BackupBox.vala:90
 #: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
 #: src/Gtk/RsyncLogBox.vala:566 src/Gtk/RsyncLogBox.vala:587
 msgid "Changed"
 msgstr "Megváltozott"
 
-#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:127
+#: src/Gtk/RestoreBox.vala:127 src/Gtk/BackupBox.vala:92
 msgid "Changed items:"
 msgstr "Megváltozott elemek:"
 
@@ -360,21 +355,21 @@ msgstr "Megváltozott elemek:"
 msgid "Checking Restore Actions (Dry Run)"
 msgstr "Visszaállítási művelet ellenőrzése (módosítás nélkül)"
 
-#: src/Core/Main.vala:3055
+#: src/Core/Main.vala:3017
 msgid "Checking file systems for errors..."
 msgstr "Fájlrendszerhibák ellenőrzése…"
 
-#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:130
+#: src/Gtk/RestoreBox.vala:130 src/Gtk/BackupBox.vala:95
 #: src/Gtk/RsyncLogBox.vala:390
 #, c-format
 msgid "Checksum"
 msgstr "Ellenőrzőösszeg"
 
-#: src/Core/Main.vala:2695
+#: src/Core/Main.vala:2657
 msgid "Cleaning up..."
 msgstr "Takarítás..."
 
-#: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:88
+#: src/Gtk/UsersBox.vala:88 src/Gtk/ExcludeBox.vala:84
 msgid "Click to edit. Drag and drop to re-order."
 msgstr ""
 "Kattintson a szerkesztéshez. Az elemek sorrendjét húzással átrendezheti."
@@ -392,23 +387,22 @@ msgstr "A rendszer klónozása"
 msgid "Cloning"
 msgstr "Klónozás"
 
-#: src/Core/Main.vala:3105
+#: src/Core/Main.vala:3067
 msgid "Cloning system..."
 msgstr "A rendszer klónozása…"
 
-#: src/Utility/Gtk/CustomMessageDialog.vala:152
-#: src/Gtk/BootOptionsWindow.vala:103 src/Gtk/RestoreWindow.vala:498
-#: src/Gtk/BackupWindow.vala:173 src/Gtk/RsyncLogBox.vala:266
-#: src/Gtk/DeleteWindow.vala:173
+#: src/Gtk/BackupWindow.vala:173 src/Gtk/RestoreWindow.vala:498
+#: src/Gtk/BootOptionsWindow.vala:103 src/Gtk/DeleteWindow.vala:173
+#: src/Gtk/RsyncLogBox.vala:266 src/Utility/Gtk/CustomMessageDialog.vala:152
 msgid "Close"
 msgstr "Bezárás"
 
-#: src/Gtk/FinishBox.vala:101 src/Gtk/DeleteFinishBox.vala:71
-#: src/Gtk/RestoreFinishBox.vala:106 src/Gtk/BackupFinishBox.vala:70
+#: src/Gtk/RestoreFinishBox.vala:106 src/Gtk/FinishBox.vala:101
+#: src/Gtk/DeleteFinishBox.vala:71 src/Gtk/BackupFinishBox.vala:70
 msgid "Close window to exit"
 msgstr "Zárja be az ablakot a kilépéshez"
 
-#: src/Core/Main.vala:362
+#: src/Core/Main.vala:365
 msgid "Commands listed below are not available on this system"
 msgstr "Az alábbi parancsok nem elérhetőek ezen a rendszeren"
 
@@ -416,17 +410,17 @@ msgstr "Az alábbi parancsok nem elérhetőek ezen a rendszeren"
 msgid "Comments (click to edit)"
 msgstr "Megjegyzések (kattintással szerkeszthető)"
 
-#: src/Core/Main.vala:3098 src/Gtk/RestoreBox.vala:74
-#: src/Gtk/RestoreBox.vala:187
+#: src/Gtk/RestoreBox.vala:74 src/Gtk/RestoreBox.vala:187
+#: src/Core/Main.vala:3060
 msgid "Comparing Files (Dry Run)..."
 msgstr "Fájlok összehasonlítása (módosítás nélkül)…"
 
-#: src/Core/Main.vala:2856
+#: src/Core/Main.vala:2818
 msgid "Comparing files with rsync..."
 msgstr "Fájlok szinkronizálása rsync alkalmazással…"
 
-#: src/Gtk/DeleteFinishBox.vala:50 src/Gtk/RestoreFinishBox.vala:50
-#: src/Gtk/RestoreFinishBox.vala:75 src/Gtk/BackupFinishBox.vala:50
+#: src/Gtk/RestoreFinishBox.vala:50 src/Gtk/RestoreFinishBox.vala:75
+#: src/Gtk/DeleteFinishBox.vala:50 src/Gtk/BackupFinishBox.vala:50
 msgid "Completed"
 msgstr "Befejezve"
 
@@ -438,16 +432,16 @@ msgstr "Befejezve hibákkal"
 msgid "Confirm Actions"
 msgstr "Erősítse meg a következő műveleteket"
 
-#: src/AppConsole.vala:1119
+#: src/AppConsole.vala:1122
 #, c-format
 msgid "Continue with restore? (y/n): "
 msgstr "Folytatja visszaállítással? (y/n): "
 
-#: src/AppConsole.vala:858 src/AppConsole.vala:997
+#: src/AppConsole.vala:857 src/AppConsole.vala:1000
 msgid "Could not find device"
 msgstr "Az eszköz nem található"
 
-#: src/Utility/Device.vala:1330
+#: src/Utility/Device.vala:1344
 #, c-format
 msgid "Could not find file"
 msgstr "A fájl nem található"
@@ -456,17 +450,17 @@ msgstr "A fájl nem található"
 msgid "Could not find snapshot"
 msgstr "A pillanatkép nem található"
 
-#: src/Core/Main.vala:3278
+#: src/Core/Main.vala:3240
 msgid "Could not find system subvolume"
 msgstr "A rendszer alkötet nem található"
 
-#: src/Core/Main.vala:3306
+#: src/Core/Main.vala:3268
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr ""
 "A rendszer alkötetek nem találhatóak a visszaállítás előtti pillanatkép "
 "létrehozásához"
 
-#: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
+#: src/Gtk/MainWindow.vala:136 src/Gtk/RsyncLogBox.vala:366
 #: src/Gtk/RsyncLogBox.vala:570
 #, c-format
 msgid "Create"
@@ -476,15 +470,15 @@ msgstr "Létrehozás"
 msgid "Create Snapshot"
 msgstr "Pillanatkép létrehozása"
 
-#: src/Gtk/ScheduleBox.vala:136
+#: src/Gtk/ScheduleBox.vala:104
 msgid "Create one per boot"
 msgstr "Rendszerindításonként egy készítése"
 
-#: src/Gtk/ScheduleBox.vala:100
+#: src/Gtk/ScheduleBox.vala:84
 msgid "Create one per day"
 msgstr "Naponta egy készítése"
 
-#: src/Gtk/ScheduleBox.vala:118
+#: src/Gtk/ScheduleBox.vala:94
 msgid "Create one per hour"
 msgstr "Óránként egy készítése"
 
@@ -492,7 +486,7 @@ msgstr "Óránként egy készítése"
 msgid "Create one per month"
 msgstr "Havonta egy készítése"
 
-#: src/Gtk/ScheduleBox.vala:82
+#: src/Gtk/ScheduleBox.vala:74
 msgid "Create one per week"
 msgstr "Hetente egy készítése"
 
@@ -504,11 +498,11 @@ msgstr "Pillanatkép készítése (akkor is ha nincs ütemezve)"
 msgid "Create snapshot if scheduled"
 msgstr "Pillanatkép készítése ha ütemezve van"
 
-#: src/Gtk/MainWindow.vala:141
+#: src/Gtk/MainWindow.vala:137
 msgid "Create snapshot of current system"
 msgstr "Pillanatkép készítése a jelenlegi rendszerről"
 
-#: src/Gtk/MainWindow.vala:1022
+#: src/Gtk/MainWindow.vala:1024
 msgid ""
 "Create snapshots manually or enable scheduled snapshots to protect your "
 "system"
@@ -525,26 +519,26 @@ msgid "Create snapshots using RSYNC tool and hard-links"
 msgstr ""
 "Pillanatkép készítése az RSYNC program használatával és hivatkozásokkal"
 
-#: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
+#: src/Gtk/RestoreBox.vala:123 src/Gtk/BackupBox.vala:88
 #: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:570
 #: src/Gtk/RsyncLogBox.vala:591
 #, c-format
 msgid "Created"
 msgstr "Létrehozva"
 
-#: src/Core/Snapshot.vala:432
+#: src/Core/Snapshot.vala:416
 msgid "Created control file"
 msgstr "Létrehozott vezérlő fájl"
 
-#: src/Utility/TeeJee.FileSystem.vala:311
+#: src/Utility/TeeJee.FileSystem.vala:315
 msgid "Created directory"
 msgstr "Létrehozott mappa"
 
-#: src/Core/Main.vala:3328
+#: src/Core/Main.vala:3290
 msgid "Created pre-restore snapshot"
 msgstr "Létrehozott visszaállítás előtti pillanatkép"
 
-#: src/Core/Main.vala:1783
+#: src/Core/Main.vala:1782
 msgid "Created subvolume snapshot"
 msgstr "Létrehozott alkötet pillanatkép"
 
@@ -552,20 +546,20 @@ msgstr "Létrehozott alkötet pillanatkép"
 msgid "Creating Snapshot..."
 msgstr "Pillanatkép létrehozása…"
 
-#: src/Core/Main.vala:1721
+#: src/Core/Main.vala:1720
 msgid "Creating new backup..."
 msgstr "Új mentés létrehozása…"
 
-#: src/Core/Main.vala:1566
+#: src/Core/Main.vala:1573
 msgid "Creating new snapshot..."
 msgstr "Új pillanatkép létrehozása…"
 
-#: src/Core/Main.vala:3256
+#: src/Core/Main.vala:3218
 msgid "Creating pre-restore snapshot from system subvolumes..."
 msgstr ""
 "Visszaállítás előtti pillanatkép létrehozása a rendszer alkötetek alapján…"
 
-#: src/Core/Main.vala:3870
+#: src/Core/Main.vala:3891
 msgid "Critical Error"
 msgstr "Kritikus hiba"
 
@@ -585,19 +579,19 @@ msgstr "Ütemezett (cron) feladat már létezik"
 msgid "Custom"
 msgstr "Egyéni"
 
-#: src/Gtk/SnapshotListBox.vala:301 src/Gtk/ScheduleBox.vala:100
+#: src/Gtk/SnapshotListBox.vala:301 src/Core/Tags.vala:40
 msgid "Daily"
 msgstr "Naponta"
 
-#: src/Core/Main.vala:1231
+#: src/Core/Main.vala:1239
 msgid "Daily snapshot failed!"
 msgstr "A napi pillanatkép készítése meghiúsult."
 
-#: src/Core/Main.vala:1212
+#: src/Core/Main.vala:1220
 msgid "Daily snapshots are enabled"
 msgstr "Napi pillanatképek készítése bekapcsolva"
 
-#: src/Core/Main.vala:2418
+#: src/Core/Main.vala:2380
 msgid "Data will be modified on following devices:"
 msgstr "Adatok a következő eszközökön lesznek módosítva:"
 
@@ -605,9 +599,9 @@ msgstr "Adatok a következő eszközökön lesznek módosítva:"
 msgid "Date Format"
 msgstr "Dátumformátum"
 
-#: src/Gtk/SnapshotListBox.vala:344 src/Gtk/MainWindow.vala:160
-#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
-#: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:384
+#: src/Gtk/SnapshotListBox.vala:344 src/Gtk/DeleteWindow.vala:98
+#: src/Gtk/MainWindow.vala:156 src/Gtk/RsyncLogBox.vala:370
+#: src/Gtk/RsyncLogBox.vala:574 src/AppConsole.vala:384
 #, c-format
 msgid "Delete"
 msgstr "Törlés"
@@ -620,7 +614,7 @@ msgstr "Pillanatképek törlése"
 msgid "Delete all snapshots"
 msgstr "Összes pillanatkép törlése"
 
-#: src/Gtk/MainWindow.vala:161
+#: src/Gtk/MainWindow.vala:157
 msgid "Delete selected snapshot"
 msgstr "Kiválasztott pillanatkép törlése"
 
@@ -628,18 +622,18 @@ msgstr "Kiválasztott pillanatkép törlése"
 msgid "Delete snapshot"
 msgstr "Pillanatkép törlése"
 
-#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
+#: src/Gtk/RestoreBox.vala:124 src/Gtk/BackupBox.vala:89
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
 #: src/Gtk/RsyncLogBox.vala:595
 #, c-format
 msgid "Deleted"
 msgstr "Törölt"
 
-#: src/Utility/TeeJee.FileSystem.vala:384
+#: src/Utility/TeeJee.FileSystem.vala:388
 msgid "Deleted directory"
 msgstr "Mappa törlése"
 
-#: src/Core/Main.vala:3235 src/Core/Main.vala:3239 src/Core/Subvolume.vala:179
+#: src/Core/Subvolume.vala:179 src/Core/Main.vala:3197 src/Core/Main.vala:3201
 #, c-format
 msgid "Deleted subvolume"
 msgstr "Alkötet törlése"
@@ -671,34 +665,34 @@ msgstr "Megsemmisített qgroup"
 msgid "Destroying qgroup"
 msgstr "A qgroup megsemmisítése"
 
-#: src/Core/Main.vala:2421 src/Core/Main.vala:2453
-#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:603
-#: src/Core/SnapshotRepo.vala:606 src/Utility/Device.vala:1954
-#: src/Utility/Device.vala:1964 src/Gtk/RestoreDeviceBox.vala:97
-#: src/AppConsole.vala:470 src/AppConsole.vala:509 src/AppConsole.vala:557
+#: src/Gtk/RestoreDeviceBox.vala:97 src/AppConsole.vala:470
+#: src/AppConsole.vala:509 src/AppConsole.vala:557 src/Core/Main.vala:2383
+#: src/Core/Main.vala:2415 src/Core/SnapshotRepo.vala:74
+#: src/Core/SnapshotRepo.vala:599 src/Core/SnapshotRepo.vala:602
+#: src/Utility/Device.vala:1968 src/Utility/Device.vala:1978
 #, c-format
 msgid "Device"
 msgstr "Eszköz"
 
-#: src/Utility/Device.vala:1412
+#: src/Utility/Device.vala:1426
 msgid "Device is unlocked"
 msgstr "Az eszköz nincs zárolva"
 
-#: src/Utility/Device.vala:1307 src/Utility/Device.vala:1369
+#: src/Utility/Device.vala:1321 src/Utility/Device.vala:1383
 msgid "Device name is empty!"
 msgstr "Az eszköz neve nincs megadva."
 
-#: src/Core/Main.vala:3588 src/Core/SnapshotRepo.vala:483
-#: src/AppConsole.vala:681
+#: src/AppConsole.vala:681 src/Core/Main.vala:3608
+#: src/Core/SnapshotRepo.vala:479
 msgid "Device not found"
 msgstr "Az eszköz nem található"
 
-#: src/Gtk/BackupDeviceBox.vala:97
+#: src/Gtk/BackupDeviceBox.vala:98
 #, c-format
 msgid "Devices displayed above have BTRFS file systems."
 msgstr "Eszközök Linux fájlrendszerekkel"
 
-#: src/Gtk/BackupDeviceBox.vala:104
+#: src/Gtk/BackupDeviceBox.vala:105
 #, c-format
 msgid "Devices displayed above have Linux file systems."
 msgstr "Eszközök Linux fájlrendszerekkel"
@@ -712,29 +706,29 @@ msgstr ""
 msgid "Devices with Linux file systems"
 msgstr "Eszközök Linux fájlrendszerekkel"
 
-#: src/Gtk/BackupDeviceBox.vala:105
+#: src/Gtk/BackupDeviceBox.vala:106
 msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
 msgstr ""
 "Windows-os fájlrendszerrel rendelkező eszközök nem támogatottak (NTFS, FAT, "
 "stb.)."
 
-#: src/Core/Main.vala:2513 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Gtk/RestoreSummaryBox.vala:64 src/Core/Main.vala:2475
 msgid "Disclaimer"
 msgstr "Jogi nyilatkozat"
 
-#: src/Gtk/BackupDeviceBox.vala:127
+#: src/Gtk/BackupDeviceBox.vala:128
 msgid "Disk"
 msgstr "Lemez"
 
-#: src/Core/Main.vala:242
+#: src/Core/Main.vala:245
 msgid "Distribution"
 msgstr "Disztribúció"
 
-#: src/Gtk/MainWindow.vala:1016
+#: src/Gtk/MainWindow.vala:1018
 msgid "Enable scheduled snapshots to protect your system"
 msgstr "Ütemezett pillanatképek engedélyezése a rendszer védelme érdekében"
 
-#: src/Utility/Device.vala:1476
+#: src/Utility/Device.vala:1490
 msgid "Encrypted Device"
 msgstr "Titkosított eszköz"
 
@@ -742,22 +736,22 @@ msgstr "Titkosított eszköz"
 msgid "Encrypted Home Directory"
 msgstr "Titkosított Saját mappa"
 
-#: src/AppConsole.vala:916
+#: src/AppConsole.vala:919
 #, c-format
 msgid "Enter device name or number"
 msgstr "Adja meg az eszköz nevét vagy azonosítóját"
 
-#: src/AppConsole.vala:700 src/AppConsole.vala:1063
+#: src/AppConsole.vala:700 src/AppConsole.vala:1066
 #, c-format
 msgid "Enter device name or number (a=Abort)"
 msgstr "Adja meg az eszköz nevét vagy azonosítóját (a=Megszakítás)"
 
-#: src/Utility/Device.vala:1477
+#: src/Utility/Device.vala:1491
 #, c-format
 msgid "Enter passphrase to unlock '%s'"
 msgstr "Adja meg a jelmondatot a(z) „%s” feloldáshoz"
 
-#: src/AppConsole.vala:778
+#: src/AppConsole.vala:777
 #, c-format
 msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
 msgstr "Adja meg a pillanatkép számát (a=Megszakítás, p=Előző, n=Következő)"
@@ -774,7 +768,7 @@ msgstr "Hiba"
 msgid "Error running Rsync"
 msgstr "Hiba az Rsync futtatásakor"
 
-#: src/Gtk/BackupWindow.vala:83 src/Gtk/SetupWizardWindow.vala:99
+#: src/Gtk/BackupWindow.vala:83 src/Gtk/SetupWizardWindow.vala:95
 msgid "Estimate"
 msgstr "Becslés"
 
@@ -782,7 +776,7 @@ msgstr "Becslés"
 msgid "Estimating System Size..."
 msgstr "Rendszer méretének becslése…"
 
-#: src/Core/Main.vala:1562
+#: src/Core/Main.vala:1569
 msgid "Estimating system size..."
 msgstr "Rendszer méretének becslése…"
 
@@ -802,10 +796,6 @@ msgstr "Kihagyandó alkalmazások beállításai"
 msgid "Exclude Apps"
 msgstr "Alkalmazások kihagyása"
 
-#: src/Gtk/ExcludeMessageWindow.vala:70
-msgid "Exclude List"
-msgstr "Kihagyási lista"
-
 #: src/Gtk/ExcludeListSummaryWindow.vala:49
 msgid "Exclude List Summary"
 msgstr "Kihagyási lista összegzése"
@@ -814,11 +804,7 @@ msgstr "Kihagyási lista összegzése"
 msgid "Exclude Pattern"
 msgstr "Kihagyási minta"
 
-#: src/Gtk/ExcludeMessageWindow.vala:56
-msgid "Excluded Directories"
-msgstr "Kihagyott mappák"
-
-#: src/Core/Main.vala:1874
+#: src/Core/Main.vala:1829
 msgid "Expected values: O, B, H, D, W, M"
 msgstr "Várt értékek: O, B, H, D, W, M"
 
@@ -826,32 +812,32 @@ msgstr "Várt értékek: O, B, H, D, W, M"
 msgid "Failed to add cron job"
 msgstr "Az ütemezett (cron) feladat hozzáadása meghiúsult"
 
-#: src/Utility/TeeJee.FileSystem.vala:198
+#: src/Utility/TeeJee.FileSystem.vala:202
 msgid "Failed to copy file"
 msgstr "A fájl másolása meghiúsult"
 
-#: src/Utility/TeeJee.FileSystem.vala:314
-#: src/Utility/TeeJee.FileSystem.vala:323
+#: src/Utility/TeeJee.FileSystem.vala:318
+#: src/Utility/TeeJee.FileSystem.vala:327
 msgid "Failed to create directory"
 msgstr "A mappa létrehozása meghiúsult"
 
-#: src/Core/Main.vala:1686
+#: src/Core/Main.vala:1689
 msgid "Failed to create new snapshot"
 msgstr "Az új pillanatkép létrehozása meghiúsult"
 
-#: src/Core/Main.vala:1444
+#: src/Core/Main.vala:1451
 msgid "Failed to create snapshot"
 msgstr "A pillanatkép létrehozása meghiúsult"
 
-#: src/Core/Main.vala:1779
+#: src/Core/Main.vala:1778
 msgid "Failed to create subvolume snapshot"
 msgstr "Az alkötet pillanatkép létrehozása meghiúsult"
 
-#: src/Core/SnapshotRepo.vala:919 src/Core/SnapshotRepo.vala:923
+#: src/Core/SnapshotRepo.vala:912 src/Core/SnapshotRepo.vala:916
 msgid "Failed to create symlinks"
 msgstr "A szimbolikus link létrehozása meghiúsult"
 
-#: src/Utility/TeeJee.FileSystem.vala:387
+#: src/Utility/TeeJee.FileSystem.vala:391
 msgid "Failed to delete directory"
 msgstr "A mappa törlése meghiúsult"
 
@@ -867,7 +853,7 @@ msgstr "A pillanatkép vonatkozó alkötetének törlése meghiúsult"
 msgid "Failed to delete snapshot subvolume"
 msgstr "A pillanatkép törlése meghiúsult"
 
-#: src/Core/SnapshotRepo.vala:935
+#: src/Core/SnapshotRepo.vala:928
 msgid "Failed to delete symlinks"
 msgstr "A szimbolikus link törlése meghiúsult"
 
@@ -875,8 +861,8 @@ msgstr "A szimbolikus link törlése meghiúsult"
 msgid "Failed to export crontab file"
 msgstr "A crontab fájl exportálása meghiúsult"
 
-#: src/AppConsole.vala:715 src/AppConsole.vala:785 src/AppConsole.vala:925
-#: src/AppConsole.vala:1028 src/AppConsole.vala:1079 src/AppConsole.vala:1125
+#: src/AppConsole.vala:715 src/AppConsole.vala:784 src/AppConsole.vala:928
+#: src/AppConsole.vala:1031 src/AppConsole.vala:1082 src/AppConsole.vala:1128
 msgid "Failed to get input from user in 3 attempts"
 msgstr "A felhasználói válasz bekérése 3 alkalommal is meghiúsult"
 
@@ -884,7 +870,7 @@ msgstr "A felhasználói válasz bekérése 3 alkalommal is meghiúsult"
 msgid "Failed to get partition list"
 msgstr "A partíciólista lekérése meghiúsult"
 
-#: src/Core/Main.vala:3667
+#: src/Core/Main.vala:3687
 msgid "Failed to get partition list."
 msgstr "A partíciólista lekérése meghiúsult."
 
@@ -896,19 +882,19 @@ msgstr "A crontab fájl telepítése meghiúsult"
 msgid "Failed to mount devices"
 msgstr "Az eszközök csatolása meghiúsult"
 
-#: src/Utility/TeeJee.FileSystem.vala:217
+#: src/Utility/TeeJee.FileSystem.vala:221
 msgid "Failed to move file"
 msgstr "A fájl áthelyezése meghiúsult"
 
-#: src/Core/Main.vala:3293
+#: src/Core/Main.vala:3255
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr "Az rendszer alkötet áthelyezése a pillanatkép mappába meghiúsult"
 
-#: src/Core/Main.vala:4134
+#: src/Core/Main.vala:4152
 msgid "Failed to query subvolume list"
 msgstr "Az alkötet lista lekérése meghiúsult"
 
-#: src/Core/Main.vala:4219
+#: src/Core/Main.vala:4237
 msgid "Failed to query subvolume quota"
 msgstr "Az alkötet kvóta lekérése meghiúsult"
 
@@ -922,7 +908,7 @@ msgstr "A crontab fájl olvasása meghiúsult"
 msgid "Failed to read file"
 msgstr "A fájl olvasása meghiúsult"
 
-#: src/Core/SnapshotRepo.vala:895
+#: src/Core/SnapshotRepo.vala:892
 msgid "Failed to remove"
 msgstr "Az eltávolítás meghiúsult"
 
@@ -930,8 +916,8 @@ msgstr "Az eltávolítás meghiúsult"
 msgid "Failed to remove cron job"
 msgstr "Az ütemezett (cron) feladat eltávolítása meghiúsult"
 
-#: src/Core/Snapshot.vala:532 src/Core/Snapshot.vala:544
-#: src/Core/Snapshot.vala:552
+#: src/Core/Snapshot.vala:516 src/Core/Snapshot.vala:528
+#: src/Core/Snapshot.vala:536
 msgid "Failed to remove snapshot"
 msgstr "A pillanatkép eltávolítása meghiúsult"
 
@@ -939,25 +925,25 @@ msgstr "A pillanatkép eltávolítása meghiúsult"
 msgid "Failed to restore system subvolume"
 msgstr "A rendszer alkötet visszaállítása meghiúsult"
 
-#: src/Core/Main.vala:1636
+#: src/Core/Main.vala:1643
 msgid "Failed to save exclude list"
 msgstr "A kihagyási lista mentése meghiúsult"
 
-#: src/Utility/Device.vala:1403 src/Utility/Device.vala:1457
-#: src/Utility/Device.vala:1482 src/Utility/Device.vala:1503
-#: src/Utility/Device.vala:1523
+#: src/Utility/Device.vala:1417 src/Utility/Device.vala:1471
+#: src/Utility/Device.vala:1496 src/Utility/Device.vala:1517
+#: src/Utility/Device.vala:1537
 msgid "Failed to unlock device"
 msgstr "Az eszköz feloldása meghiúsult"
 
-#: src/Utility/Device.vala:1755
+#: src/Utility/Device.vala:1769
 msgid "Failed to unmount"
 msgstr "Az eszköz leválasztása meghiúsult"
 
-#: src/Core/Main.vala:3871
+#: src/Core/Main.vala:3892
 msgid "Failed to unmount device!"
 msgstr "Az eszköz leválasztása meghiúsult."
 
-#: src/Utility/TeeJee.FileSystem.vala:182
+#: src/Utility/TeeJee.FileSystem.vala:186
 msgid "Failed to write file"
 msgstr "A fájl írása meghiúsult"
 
@@ -969,16 +955,12 @@ msgstr "Pillanatkép törlése"
 msgid "File (system)"
 msgstr "Fájlrendszer"
 
-#: src/Gtk/ExcludeMessageWindow.vala:97
-msgid "File Pattern"
-msgstr "Fájlminta"
-
 #: src/Gtk/BackupBox.vala:83
 msgid "File and directory counts:"
 msgstr "Fájlok és mappák száma:"
 
-#: src/Utility/CronTab.vala:225 src/Utility/RsyncTask.vala:308
-#: src/Utility/TeeJee.FileSystem.vala:212
+#: src/Utility/TeeJee.FileSystem.vala:216 src/Utility/RsyncTask.vala:305
+#: src/Utility/CronTab.vala:225
 msgid "File not found"
 msgstr "A fájl nem található"
 
@@ -998,11 +980,7 @@ msgstr "Fájlok és mappák kihagyhatóak lemezterület megtakarítás érdekéb
 msgid "Files and directory counts:"
 msgstr "Fájlok és mappák száma:"
 
-#: src/Gtk/ExcludeMessageWindow.vala:76
-msgid "Files matching the following patterns will be excluded"
-msgstr "A következő mintákkal egyező fájlok ki lesznek hagyva"
-
-#: src/Utility/Device.vala:1972
+#: src/Utility/Device.vala:1986
 #, c-format
 msgid "Filesystem"
 msgstr "Fájlrendszer"
@@ -1015,12 +993,12 @@ msgstr "Adja meg az eszköz nevét vagy azonosítóját"
 msgid "Filters"
 msgstr "Szűrők"
 
-#: src/Gtk/BackupWindow.vala:98 src/Gtk/SetupWizardWindow.vala:211
+#: src/Gtk/BackupWindow.vala:98 src/Gtk/SetupWizardWindow.vala:203
 #: src/Gtk/DeleteWindow.vala:103
 msgid "Finish"
 msgstr "Befejezés"
 
-#: src/Gtk/RestoreWindow.vala:130 src/Gtk/SetupWizardWindow.vala:120
+#: src/Gtk/RestoreWindow.vala:130 src/Gtk/SetupWizardWindow.vala:116
 msgid "Finished"
 msgstr "Befejeződött"
 
@@ -1028,15 +1006,15 @@ msgstr "Befejeződött"
 msgid "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 msgstr "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 
-#: src/Core/SnapshotRepo.vala:587
+#: src/Core/SnapshotRepo.vala:583
 msgid "First snapshot requires:"
 msgstr "Első pillanatkép szükséges:"
 
-#: src/Core/Main.vala:3226
+#: src/Core/Main.vala:3188
 msgid "Found existing pre-restore snapshot"
 msgstr "Létező visszaállítás előtti pillanatkép található"
 
-#: src/Gtk/BackupDeviceBox.vala:215
+#: src/Gtk/BackupDeviceBox.vala:216
 msgid "Free"
 msgstr "Szabad"
 
@@ -1044,7 +1022,7 @@ msgstr "Szabad"
 msgid "Free space"
 msgstr "Szabad hely"
 
-#: src/AppConsole.vala:1093
+#: src/AppConsole.vala:1096
 msgid "GRUB Device"
 msgstr "GRUB eszköz"
 
@@ -1052,11 +1030,11 @@ msgstr "GRUB eszköz"
 msgid "GRUB device not selected"
 msgstr "Nincs kiválasztva GRUB eszköz"
 
-#: src/AppConsole.vala:1098
+#: src/AppConsole.vala:1101
 msgid "GRUB will NOT be reinstalled"
 msgstr "A GRUB nem lesz újratelepítve"
 
-#: src/Core/Main.vala:2655
+#: src/Core/Main.vala:2617
 msgid "Generating initramfs..."
 msgstr "Az initramfs előállítása…"
 
@@ -1064,7 +1042,7 @@ msgstr "Az initramfs előállítása…"
 msgid "Global"
 msgstr "Általános"
 
-#: src/Gtk/BackupBox.vala:100 src/Gtk/RestoreBox.vala:135
+#: src/Gtk/RestoreBox.vala:135 src/Gtk/BackupBox.vala:100
 #: src/Gtk/RsyncLogBox.vala:400
 #, c-format
 msgid "Group"
@@ -1073,14 +1051,6 @@ msgstr "Csoport"
 #: src/Gtk/SnapshotBackendBox.vala:141
 msgid "Help"
 msgstr "Súgó"
-
-#: src/Gtk/ExcludeMessageWindow.vala:128
-msgid ""
-"Hidden files and folders are included by default since they contain user-"
-"specific configuration files."
-msgstr ""
-"Rejtett fájlok és mappák alapértelmezés szerint fel lesznek véve, mivel a "
-"felhasználók számára fontos beállítási fájlokat tartalmaznak."
 
 #: src/Gtk/DeleteWindow.vala:181
 msgid "Hide"
@@ -1098,19 +1068,15 @@ msgstr "Az ablak elrejtése (a fájlok törlése a háttérben történik majd m
 msgid "Home"
 msgstr "Saját mappa"
 
-#: src/Gtk/ExcludeMessageWindow.vala:115
-msgid "Home Directory"
-msgstr "Saját mappa"
-
-#: src/Gtk/SnapshotListBox.vala:300 src/Gtk/ScheduleBox.vala:118
+#: src/Gtk/SnapshotListBox.vala:300 src/Core/Tags.vala:39
 msgid "Hourly"
 msgstr "Óránként"
 
-#: src/Core/Main.vala:1200
+#: src/Core/Main.vala:1208
 msgid "Hourly snapshot failed!"
 msgstr "A óránkénti pillanatkép készítése meghiúsult."
 
-#: src/Core/Main.vala:1181
+#: src/Core/Main.vala:1189
 msgid "Hourly snapshots are enabled"
 msgstr "Óránkénti pillanatképek készítése bekapcsolva"
 
@@ -1123,7 +1089,7 @@ msgstr ""
 "elindított rendszerre telepítse a Timeshift alkalmazást, majd próbáljon meg "
 "visszaállítani egy másik pillanatképet."
 
-#: src/Core/Main.vala:2519
+#: src/Core/Main.vala:2481
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
@@ -1147,16 +1113,16 @@ msgstr "Minden fájl felvétele"
 msgid "Include Only Hidden Files"
 msgstr "Csak rejtett fájlok felvétele"
 
-#: src/Core/Main.vala:2333
+#: src/Core/Main.vala:2295
 msgid "Invalid Snapshot"
 msgstr "Érvénytelen pillanatkép"
 
-#: src/AppConsole.vala:260
+#: src/AppConsole.vala:259
 #, c-format
 msgid "Invalid command line arguments"
 msgstr "Érvénytelen parancssori argumentumok"
 
-#: src/Gtk/MainWindow.vala:806
+#: src/Gtk/MainWindow.vala:818
 msgid "Invalid snapshot"
 msgstr "Érvénytelen pillanatkép"
 
@@ -1164,7 +1130,7 @@ msgstr "Érvénytelen pillanatkép"
 msgid "Items Not Selected"
 msgstr "Nincs kiválasztott elem"
 
-#: src/Gtk/ScheduleBox.vala:283
+#: src/Gtk/ScheduleBox.vala:255
 msgid "Keep"
 msgstr "Megtartás"
 
@@ -1199,85 +1165,85 @@ msgstr "Ez a csatolási mappa a gyökér fájlrendszeren legyen"
 msgid "LIVE"
 msgstr "ÉLŐ"
 
-#: src/Utility/Device.vala:1973 src/Gtk/BackupDeviceBox.vala:254
-#: src/AppConsole.vala:474 src/AppConsole.vala:513
+#: src/Gtk/BackupDeviceBox.vala:255 src/AppConsole.vala:474
+#: src/AppConsole.vala:513 src/Utility/Device.vala:1987
 #, c-format
 msgid "Label"
 msgstr "Címke"
 
-#: src/Core/Main.vala:1162
+#: src/Core/Main.vala:1170
 #, c-format
 msgid "Last boot snapshot is %d hours old"
 msgstr "Előző rendszerindító pillanatkép %d órával ezelőtti"
 
-#: src/Core/Main.vala:1157
+#: src/Core/Main.vala:1165
 msgid "Last boot snapshot is older than system start time"
 msgstr ""
 "Előző rendszerindító pillanatkép régebbi, mint a legutolsó rendszerindítás "
 "időpontja"
 
-#: src/Core/Main.vala:1153
+#: src/Core/Main.vala:1161
 msgid "Last boot snapshot not found"
 msgstr "Előző rendszerindító pillanatkép nem található"
 
-#: src/Core/Main.vala:1224
+#: src/Core/Main.vala:1232
 #, c-format
 msgid "Last daily snapshot is %d hours old"
 msgstr "Az előző napi pillanatkép %d órával ezelőtti"
 
-#: src/Core/Main.vala:1219
+#: src/Core/Main.vala:1227
 msgid "Last daily snapshot is more than 1 day old"
 msgstr "Az előző napi pillanatkép 1 napnál régebbi"
 
-#: src/Core/Main.vala:1215
+#: src/Core/Main.vala:1223
 msgid "Last daily snapshot not found"
 msgstr "Előző napi pillanatkép nem található"
 
-#: src/Core/Main.vala:1193
+#: src/Core/Main.vala:1201
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
 msgstr "Az előző órai pillanatkép %d perccel ezelőtti"
 
-#: src/Core/Main.vala:1188
+#: src/Core/Main.vala:1196
 msgid "Last hourly snapshot is more than 1 hour old"
 msgstr "Az előző órai pillanatkép 1 óránál régebbi"
 
-#: src/Core/Main.vala:1184
+#: src/Core/Main.vala:1192
 msgid "Last hourly snapshot not found"
 msgstr "Az előző órai pillanatkép nem található"
 
-#: src/Core/Main.vala:1286
+#: src/Core/Main.vala:1294
 #, c-format
 msgid "Last monthly snapshot is %d days old"
 msgstr "Az előző havi pillanatkép %d nappal ezelőtti"
 
-#: src/Core/Main.vala:1281
+#: src/Core/Main.vala:1289
 msgid "Last monthly snapshot is more than 1 month old"
 msgstr "Az előző havi pillanatkép 1 hónapnál régebbi"
 
-#: src/Core/Main.vala:1277
+#: src/Core/Main.vala:1285
 msgid "Last monthly snapshot not found"
 msgstr "Az előző havi pillanatkép nem található"
 
-#: src/Core/Main.vala:1255
+#: src/Core/Main.vala:1263
 #, c-format
 msgid "Last weekly snapshot is %d days old"
 msgstr "Az előző heti pillanatkép %d nappal ezelőtti"
 
-#: src/Core/Main.vala:1250
+#: src/Core/Main.vala:1258
 msgid "Last weekly snapshot is more than 1 week old"
 msgstr "Az előző heti pillanatkép 1 hétnél régebbi"
 
-#: src/Core/Main.vala:1246
+#: src/Core/Main.vala:1254
 msgid "Last weekly snapshot not found"
 msgstr "Az előző heti pillanatkép nem található"
 
-#: src/Gtk/MainWindow.vala:997
+#: src/Gtk/MainWindow.vala:999
 #, c-format
 msgid "Latest snapshot"
 msgstr "Legújabb pillanatkép"
 
-#: src/Core/Main.vala:1627
+#: src/Core/Main.vala:1634
 #, c-format
 msgid "Linking from snapshot"
 msgstr "Hivatkozás a pillanatképből"
@@ -1294,16 +1260,16 @@ msgstr "Eszközök listája"
 msgid "List snapshots"
 msgstr "Pillanatképek listája"
 
-#: src/Gtk/MainWindow.vala:948
+#: src/Gtk/MainWindow.vala:950
 msgid "Live USB Mode (Restore Only)"
 msgstr "Live USB üzemmód (csak visszaállítás)"
 
-#: src/Gtk/SettingsWindow.vala:90 src/Gtk/BackupWindow.vala:88
-#: src/Gtk/SetupWizardWindow.vala:104
+#: src/Gtk/BackupWindow.vala:88 src/Gtk/SettingsWindow.vala:90
+#: src/Gtk/SetupWizardWindow.vala:100
 msgid "Location"
 msgstr "Hely"
 
-#: src/Gtk/MainWindow.vala:428
+#: src/Gtk/MainWindow.vala:440
 msgid "Main window closed by user"
 msgstr "A felhasználó bezárta a főablakot"
 
@@ -1311,12 +1277,12 @@ msgstr "A felhasználó bezárta a főablakot"
 msgid "Mark/Unmark for Deletion"
 msgstr "Törlésre jelölés"
 
-#: src/Core/SnapshotRepo.vala:632 src/Core/SnapshotRepo.vala:675
+#: src/Core/SnapshotRepo.vala:627 src/Core/SnapshotRepo.vala:673
 msgid "Maximum backups exceeded for backup level"
 msgstr ""
 "A mentési szinthez tartozó megtartandó mentések száma elérte a maximumot."
 
-#: src/Gtk/MainWindow.vala:207
+#: src/Gtk/MainWindow.vala:183
 msgid "Menu"
 msgstr "Menü"
 
@@ -1324,51 +1290,51 @@ msgstr "Menü"
 msgid "Misc"
 msgstr "Egyéb"
 
-#: src/Core/Main.vala:251
+#: src/Core/Main.vala:254
 msgid "Missing Dependencies"
 msgstr "Hiányzó függőségek"
 
-#: src/Core/SnapshotRepo.vala:609
+#: src/Core/SnapshotRepo.vala:605
 #, c-format
 msgid "Mode"
 msgstr "Üzemmód"
 
-#: src/Utility/Device.vala:1956
+#: src/Utility/Device.vala:1970
 #, c-format
 msgid "Model"
 msgstr "Modell"
 
-#: src/Gtk/SnapshotListBox.vala:303 src/Gtk/ScheduleBox.vala:64
+#: src/Gtk/SnapshotListBox.vala:303 src/Core/Tags.vala:42
 msgid "Monthly"
 msgstr "Havonta"
 
-#: src/Core/Main.vala:1274
+#: src/Core/Main.vala:1282
 msgid "Monthly snapshot are enabled"
 msgstr "Havi pillanatképek készítése bekapcsolva"
 
-#: src/Core/Main.vala:1293
+#: src/Core/Main.vala:1301
 msgid "Monthly snapshot failed!"
 msgstr "A havi pillanatkép készítése meghiúsult."
 
-#: src/Core/Main.vala:2420 src/Core/Main.vala:2453
+#: src/Core/Main.vala:2382 src/Core/Main.vala:2415
 msgid "Mount"
 msgstr "Csatolás"
 
-#: src/Core/Main.vala:3300
+#: src/Core/Main.vala:3262
 msgid "Moved system subvolume to snapshot directory"
 msgstr "A pillanatkép mappába áthelyezett rendszer alkötet"
 
-#: src/Gtk/MainWindow.vala:782
+#: src/Gtk/MainWindow.vala:794
 msgid "Multiple snapshots selected"
 msgstr "Több pillanatkép van kiválasztva"
 
-#: src/Gtk/BackupDeviceBox.vala:235 src/Gtk/RsyncLogBox.vala:491
+#: src/Gtk/BackupDeviceBox.vala:236 src/Gtk/RsyncLogBox.vala:491
 #: src/AppConsole.vala:440
 msgid "Name"
 msgstr "Név"
 
-#: src/Gtk/RestoreWindow.vala:201 src/Gtk/BackupWindow.vala:165
-#: src/Gtk/SetupWizardWindow.vala:203 src/Gtk/DeleteWindow.vala:165
+#: src/Gtk/BackupWindow.vala:165 src/Gtk/RestoreWindow.vala:201
+#: src/Gtk/SetupWizardWindow.vala:195 src/Gtk/DeleteWindow.vala:165
 msgid "Next"
 msgstr "Következő"
 
@@ -1376,20 +1342,20 @@ msgstr "Következő"
 msgid "No"
 msgstr "Nem"
 
-#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:122
+#: src/Gtk/RestoreBox.vala:122 src/Gtk/BackupBox.vala:87
 msgid "No Change"
 msgstr "Nincs változtatás"
 
-#: src/Gtk/MainWindow.vala:601 src/Gtk/DeleteWindow.vala:335
+#: src/Gtk/DeleteWindow.vala:335 src/Gtk/MainWindow.vala:613
 msgid "No Snapshots Selected"
 msgstr "Nincs pillanatkép kiválasztva"
 
-#: src/Gtk/MainWindow.vala:1021
+#: src/Gtk/MainWindow.vala:1023
 msgid "No snapshots available"
 msgstr "Nincs elérhető pillanatkép"
 
-#: src/Core/SnapshotRepo.vala:834 src/Gtk/MainWindow.vala:965
-#: src/AppConsole.vala:329
+#: src/Gtk/MainWindow.vala:967 src/AppConsole.vala:329
+#: src/Core/SnapshotRepo.vala:831
 msgid "No snapshots found"
 msgstr "Nem található pillanatkép"
 
@@ -1397,19 +1363,19 @@ msgstr "Nem található pillanatkép"
 msgid "No snapshots found on device"
 msgstr "Nem található pillanatkép az eszközön"
 
-#: src/Gtk/MainWindow.vala:522
+#: src/Gtk/MainWindow.vala:534
 msgid "No snapshots on device"
 msgstr "Nincs pillanatkép az eszközön"
 
-#: src/Core/SnapshotRepo.vala:585
+#: src/Core/SnapshotRepo.vala:581
 msgid "No snapshots on this device"
 msgstr "Nincs pillanatkép ezen az eszközön"
 
-#: src/Gtk/MainWindow.vala:775
+#: src/Gtk/MainWindow.vala:787
 msgid "No snapshots selected"
 msgstr "Nincs kiválasztott pillanatkép"
 
-#: src/Gtk/MainWindow.vala:998 src/Gtk/MainWindow.vala:1000
+#: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1002
 msgid "None"
 msgstr "Nincs"
 
@@ -1418,15 +1384,15 @@ msgstr "Nincs"
 msgid "Not Found"
 msgstr "Nem található"
 
-#: src/Core/SnapshotRepo.vala:603
+#: src/Core/SnapshotRepo.vala:599
 msgid "Not Selected"
 msgstr "Nincs kiválasztva"
 
-#: src/Core/Main.vala:500
+#: src/Core/Main.vala:503
 msgid "Not Supported"
 msgstr "Nem támogatott"
 
-#: src/Core/SnapshotRepo.vala:547 src/Core/SnapshotRepo.vala:576
+#: src/Core/SnapshotRepo.vala:543 src/Core/SnapshotRepo.vala:572
 msgid "Not enough disk space"
 msgstr "Nincs elegendő lemezterület"
 
@@ -1434,7 +1400,7 @@ msgstr "Nincs elegendő lemezterület"
 msgid "Notes"
 msgstr "Megjegyzések"
 
-#: src/Core/Main.vala:1304
+#: src/Core/Main.vala:1312
 msgid "Nothing to do!"
 msgstr "Nincs teendő."
 
@@ -1443,7 +1409,7 @@ msgstr "Nincs teendő."
 msgid "Num"
 msgstr "Sorszám"
 
-#: src/Gtk/ScheduleBox.vala:282
+#: src/Gtk/ScheduleBox.vala:254
 msgid ""
 "Number of snapshots to keep.\n"
 "Older snapshots will be removed once this limit is exceeded."
@@ -1451,9 +1417,9 @@ msgstr ""
 "Megtartandó pillanatképek száma.\n"
 "A régebbi pillanatképek eltávolításra kerülnek a határérték elérésekor."
 
-#: src/Core/SnapshotRepo.vala:558 src/Utility/Gtk/CustomMessageDialog.vala:148
+#: src/Gtk/ExcludeListSummaryWindow.vala:84 src/Gtk/SettingsWindow.vala:123
+#: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:148
 #: src/Utility/Gtk/CustomMessageDialog.vala:160 src/Utility/GtkHelper.vala:92
-#: src/Gtk/SettingsWindow.vala:123 src/Gtk/ExcludeListSummaryWindow.vala:84
 msgid "OK"
 msgstr "OK"
 
@@ -1466,31 +1432,31 @@ msgstr ""
 "@home alkötetekkel rendelkező elrendezésben. Minden más elrendezés nem "
 "támogatott."
 
-#: src/Core/Main.vala:4392
+#: src/Core/Main.vala:4410
 msgid "Older log files removed"
 msgstr "Régebbi naplófájlok eltávolítva"
 
-#: src/Gtk/MainWindow.vala:999
+#: src/Gtk/MainWindow.vala:1001
 msgid "Oldest snapshot"
 msgstr "Legrégebbi pillanatkép"
 
-#: src/Gtk/SnapshotListBox.vala:298
+#: src/Gtk/SnapshotListBox.vala:298 src/Core/Tags.vala:43
 msgid "On demand (manual)"
 msgstr "Igény esetén (kézzel)"
 
-#: src/Core/Main.vala:498 src/Core/Main.vala:3784
-#: src/Gtk/RestoreDeviceBox.vala:511
+#: src/Gtk/RestoreDeviceBox.vala:511 src/Core/Main.vala:501
+#: src/Core/Main.vala:3805
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
 msgstr ""
 "Kizárólag az Ubuntu-féle @ és @home alkötetekkel rendelkező elrendezés "
 "támogatott."
 
-#: src/Gtk/MainWindow.vala:208
+#: src/Gtk/MainWindow.vala:184
 msgid "Open Menu"
 msgstr "Menü megnyitása"
 
-#: src/Core/Main.vala:3570
+#: src/Core/Main.vala:3590
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
@@ -1498,7 +1464,7 @@ msgstr ""
 "A „--snapshot-device” kapcsolót nem szabad megadni a BTRFS üzemmódban "
 "készítendő pillanatképekhez"
 
-#: src/AppConsole.vala:364 src/AppGtk.vala:130
+#: src/AppGtk.vala:130 src/AppConsole.vala:364
 msgid "Options"
 msgstr "Beállítások"
 
@@ -1506,18 +1472,18 @@ msgstr "Beállítások"
 msgid "Other applications (next page)"
 msgstr "Más alkalmazások (következő oldal)"
 
-#: src/Gtk/BackupBox.vala:99 src/Gtk/RestoreBox.vala:134
+#: src/Gtk/RestoreBox.vala:134 src/Gtk/BackupBox.vala:99
 #: src/Gtk/RsyncLogBox.vala:398
 #, c-format
 msgid "Owner"
 msgstr "Tulajdonos"
 
-#: src/Utility/Device.vala:1968
+#: src/Utility/Device.vala:1982
 #, c-format
 msgid "Parent Device"
 msgstr "Szülőeszköz"
 
-#: src/Core/Main.vala:2784 src/Core/Main.vala:2875 src/Gtk/RsyncLogBox.vala:222
+#: src/Gtk/RsyncLogBox.vala:222 src/Core/Main.vala:2746 src/Core/Main.vala:2837
 msgid "Parsing log file..."
 msgstr "Naplófájl feldolgozása…"
 
@@ -1525,7 +1491,7 @@ msgstr "Naplófájl feldolgozása…"
 msgid "Partition has an unsupported subvolume layout."
 msgstr "A partíciónak nem támogatott alkötet elrendezése van."
 
-#: src/Core/SnapshotRepo.vala:608 src/Gtk/RestoreDeviceBox.vala:93
+#: src/Gtk/RestoreDeviceBox.vala:93 src/Core/SnapshotRepo.vala:604
 #, c-format
 msgid "Path"
 msgstr "Útvonal"
@@ -1538,25 +1504,49 @@ msgstr "Minta"
 msgid "Pause"
 msgstr "Szünet"
 
+#: src/Gtk/MainWindow.vala:361
+msgid "Pause Snapshots"
+msgstr ""
+
+#: src/Gtk/MainWindow.vala:370
+msgid "Pause Until Shutdown"
+msgstr ""
+
+#: src/Gtk/MainWindow.vala:386
+msgid "Pause for 12h"
+msgstr ""
+
+#: src/Gtk/MainWindow.vala:374
+msgid "Pause for 30min"
+msgstr ""
+
+#: src/Gtk/MainWindow.vala:378
+msgid "Pause for 4h"
+msgstr ""
+
+#: src/Gtk/MainWindow.vala:382
+msgid "Pause for 8h"
+msgstr ""
+
 #: src/Gtk/BackupBox.vala:137 src/Gtk/BackupBox.vala:278
 msgid "Paused"
 msgstr "Szüneteltetve"
 
-#: src/Gtk/BackupBox.vala:98 src/Gtk/RestoreBox.vala:133
+#: src/Gtk/RestoreBox.vala:133 src/Gtk/BackupBox.vala:98
 #: src/Gtk/RsyncLogBox.vala:396
 #, c-format
 msgid "Permissions"
 msgstr "Jogosultságok"
 
-#: src/Core/Main.vala:272
+#: src/Core/Main.vala:275
 msgid "Please check if you have multiple windows open."
 msgstr "Ellenőrizze, hogy több ablak van-e nyitva."
 
-#: src/Core/Main.vala:2551
+#: src/Core/Main.vala:2513
 msgid "Please do not interrupt the restore process!"
 msgstr "Ne szakítsa meg a visszaállítási folyamatot."
 
-#: src/Core/Main.vala:363
+#: src/Core/Main.vala:366
 msgid "Please install required packages and try running TimeShift again"
 msgstr ""
 "Telepítse a szükséges csomagokat, majd próbálja meg ismét elindítani a "
@@ -1574,11 +1564,11 @@ msgstr ""
 "Futtassa az alkalmazást rendszergazdai jogosultsággal (a „sudo” vagy „su” "
 "használatával)"
 
-#: src/Core/Main.vala:2501
+#: src/Core/Main.vala:2463
 msgid "Please save your work and close all applications."
 msgstr "Mentse el a fájljait és zárjon be minden alkalmazást."
 
-#: src/Gtk/MainWindow.vala:687
+#: src/Gtk/MainWindow.vala:699
 msgid "Please select a snapshot to view the log!"
 msgstr "Válasszon ki egy pillanatképet a napló megtekintéséhez."
 
@@ -1586,11 +1576,11 @@ msgstr "Válasszon ki egy pillanatképet a napló megtekintéséhez."
 msgid "Please select the GRUB device"
 msgstr "Válasszon GRUB eszközt"
 
-#: src/Core/Main.vala:268
+#: src/Core/Main.vala:271
 msgid "Please wait a few minutes and try again."
 msgstr "Kérem várjon pár percet és próbálja újra."
 
-#: src/Gtk/MainWindow.vala:744
+#: src/Gtk/MainWindow.vala:756
 msgid "Please wait for snapshots to be deleted."
 msgstr "Kérem várjon a pillanatkép törléséig."
 
@@ -1602,14 +1592,14 @@ msgstr "Kis türelmet…"
 msgid "Populating list..."
 msgstr "Lista készítése…"
 
-#: src/Core/Main.vala:1886 src/Gtk/BackupBox.vala:117
-#: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
-#: src/Gtk/RsyncLogBox.vala:232
+#: src/Gtk/RestoreBox.vala:88 src/Gtk/BackupBox.vala:117
+#: src/Gtk/DeleteBox.vala:68 src/Gtk/RsyncLogBox.vala:232
+#: src/Core/Main.vala:1842
 msgid "Preparing..."
 msgstr "Előkészítés…"
 
-#: src/Gtk/RestoreWindow.vala:193 src/Gtk/BackupWindow.vala:157
-#: src/Gtk/SetupWizardWindow.vala:195 src/Gtk/DeleteWindow.vala:157
+#: src/Gtk/BackupWindow.vala:157 src/Gtk/RestoreWindow.vala:193
+#: src/Gtk/SetupWizardWindow.vala:187 src/Gtk/DeleteWindow.vala:157
 msgid "Previous"
 msgstr "Előző"
 
@@ -1617,15 +1607,15 @@ msgstr "Előző"
 msgid "Print debug information"
 msgstr "Hibakeresési információk kiírása"
 
-#: src/AppConsole.vala:398 src/AppGtk.vala:134
+#: src/AppGtk.vala:134 src/AppConsole.vala:398
 msgid "Print version number"
 msgstr "Verziószám kiírása"
 
-#: src/Core/Main.vala:4082
+#: src/Core/Main.vala:4100
 msgid "Query completed"
 msgstr "A lekérdezés kész"
 
-#: src/Core/Main.vala:4065
+#: src/Core/Main.vala:4083
 msgid "Querying subvolume info..."
 msgstr "Az alkötet információk lekérdezése…"
 
@@ -1646,12 +1636,12 @@ msgstr ""
 "általában nincs szükség. Csak akkor válassza ki ezt a lehetőséget, ha a "
 "visszaállított rendszer nem tud elindulni."
 
-#: src/AppConsole.vala:1022
+#: src/AppConsole.vala:1025
 #, c-format
 msgid "Re-install GRUB2 bootloader?"
 msgstr "Kívánja újratelepíteni a GRUB2 rendszerbetöltőt?"
 
-#: src/Core/Main.vala:2614
+#: src/Core/Main.vala:2576
 msgid "Re-installing GRUB2 bootloader..."
 msgstr "A GRUB2 rendszerbetöltőt újratelepítése…"
 
@@ -1664,7 +1654,7 @@ msgstr "A GRUB2 rendszerbetöltőt újratelepítése a kiválasztott eszközön.
 msgid "Read %'d of %'d lines..."
 msgstr "Beolvasva %d sor, összesen: %d sor…"
 
-#: src/Core/Main.vala:2714
+#: src/Core/Main.vala:2676
 msgid "Rebooting system..."
 msgstr "Rendszer újraindítás…"
 
@@ -1673,11 +1663,11 @@ msgstr "Rendszer újraindítás…"
 msgid "Recommended"
 msgstr "Ajánlott"
 
-#: src/Gtk/BackupDeviceBox.vala:65 src/Gtk/RestoreDeviceBox.vala:70
+#: src/Gtk/RestoreDeviceBox.vala:70 src/Gtk/BackupDeviceBox.vala:65
 msgid "Refresh"
 msgstr "Frissítés"
 
-#: src/Gtk/BackupDeviceBox.vala:106
+#: src/Gtk/BackupDeviceBox.vala:107
 msgid "Remote and network locations are not supported."
 msgstr "Más alkalmazások (következő oldal)"
 
@@ -1685,8 +1675,8 @@ msgstr "Más alkalmazások (következő oldal)"
 msgid "Remove"
 msgstr "Eltávolítás"
 
-#: src/Core/Snapshot.vala:511 src/Core/Main.vala:1924 src/Core/Main.vala:1935
-#: src/Core/Main.vala:4388 src/Core/SnapshotRepo.vala:893
+#: src/Core/Snapshot.vala:495 src/Core/Main.vala:1880 src/Core/Main.vala:1891
+#: src/Core/Main.vala:4406 src/Core/SnapshotRepo.vala:890
 #, c-format
 msgid "Removed"
 msgstr "Eltávolítva"
@@ -1695,32 +1685,32 @@ msgstr "Eltávolítva"
 msgid "Removed cron task"
 msgstr "Eltávolított cron feladatok"
 
-#: src/Core/Main.vala:3934
+#: src/Core/Main.vala:3955
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr "Eltávolított csatolási mappa: „%s”"
 
-#: src/Core/Snapshot.vala:557
+#: src/Core/Snapshot.vala:541
 msgid "Removed snapshot"
 msgstr "Eltávolított pillanatkép"
 
-#: src/Core/Snapshot.vala:486
+#: src/Core/Snapshot.vala:470
 msgid "Removing"
 msgstr "Eltávolítás"
 
-#: src/Core/Snapshot.vala:523
+#: src/Core/Snapshot.vala:507
 msgid "Removing snapshot"
 msgstr "Pillanatkép eltávolítása"
 
-#: src/Core/SnapshotRepo.vala:767 src/Core/SnapshotRepo.vala:786
-#: src/Core/SnapshotRepo.vala:804 src/Core/SnapshotRepo.vala:818
+#: src/Core/SnapshotRepo.vala:764 src/Core/SnapshotRepo.vala:783
+#: src/Core/SnapshotRepo.vala:801 src/Core/SnapshotRepo.vala:815
 #, c-format
 msgid "Removing snapshots"
 msgstr "Pillanatképek eltávolítása"
 
-#: src/Gtk/MainWindow.vala:150 src/Gtk/RestoreWindow.vala:125
-#: src/Gtk/RsyncLogBox.vala:377 src/Gtk/RsyncLogBox.vala:566
-#: src/Gtk/RestoreFinishBox.vala:71 src/AppConsole.vala:376
+#: src/Gtk/RestoreFinishBox.vala:71 src/Gtk/RestoreWindow.vala:125
+#: src/Gtk/MainWindow.vala:146 src/Gtk/RsyncLogBox.vala:377
+#: src/Gtk/RsyncLogBox.vala:566 src/AppConsole.vala:376
 msgid "Restore"
 msgstr "Visszaállítás"
 
@@ -1740,11 +1730,11 @@ msgstr "Kihagyás visszaállítása"
 msgid "Restore Snapshot"
 msgstr "Pillanatkép visszaállítása"
 
-#: src/Core/Main.vala:3132 src/Core/Main.vala:3174
+#: src/Core/Main.vala:3094 src/Core/Main.vala:3136
 msgid "Restore completed"
 msgstr "Visszaállítás befejezve"
 
-#: src/Gtk/MainWindow.vala:151
+#: src/Gtk/MainWindow.vala:147
 msgid "Restore selected snapshot"
 msgstr "Kiválasztott pillanatkép visszaállítása"
 
@@ -1776,7 +1766,7 @@ msgstr ""
 "Amennyiben szükséges, ez a pillanatkép visszaállítható a visszaállítás "
 "„Visszavonás” segítségével."
 
-#: src/Core/Main.vala:3101
+#: src/Core/Main.vala:3063
 msgid "Restoring snapshot..."
 msgstr "Pillanatkép visszaállítása…"
 
@@ -1795,11 +1785,11 @@ msgstr ""
 "pillanatkép készítésekor, és vissza lesznek állítva a pillanatkép "
 "visszaállításakor."
 
-#: src/Gtk/BackupWindow.vala:204
+#: src/Gtk/BackupWindow.vala:204 src/Gtk/MainWindow.vala:365
 msgid "Resume"
 msgstr "Folytatás"
 
-#: src/Utility/Device.vala:1958
+#: src/Utility/Device.vala:1972
 #, c-format
 msgid "Revision"
 msgstr "Revízió"
@@ -1823,7 +1813,7 @@ msgstr ""
 msgid "Run in non-interactive mode"
 msgstr "Futtatás nem interaktív üzemmódban"
 
-#: src/Core/Main.vala:202
+#: src/Core/Main.vala:205
 msgid "Running"
 msgstr "Folyamatban"
 
@@ -1848,20 +1838,20 @@ msgstr ""
 "telepíthet, majd a későbbiekben visszaállhat az eredeti operációs "
 "rendszerére a pillanatkép visszaállításával."
 
-#: src/Core/Main.vala:1568 src/Core/Main.vala:1723 src/Core/Main.vala:1725
+#: src/Core/Main.vala:1575 src/Core/Main.vala:1722 src/Core/Main.vala:1724
 msgid "Saving to device"
 msgstr "Mentés az eszközre"
 
-#: src/Gtk/SettingsWindow.vala:93 src/Gtk/SetupWizardWindow.vala:109
+#: src/Gtk/SettingsWindow.vala:93 src/Gtk/SetupWizardWindow.vala:105
 msgid "Schedule"
 msgstr "Ütemezés"
 
-#: src/Core/Main.vala:275
+#: src/Core/Main.vala:278
 msgid "Scheduled snapshot in progress..."
 msgstr "Éppen készül egy ütemezett pillanatkép…"
 
-#: src/Core/Main.vala:1304 src/Gtk/MainWindow.vala:1015
-#: src/Gtk/ScheduleBox.vala:312
+#: src/Gtk/ScheduleBox.vala:283 src/Gtk/MainWindow.vala:1017
+#: src/Core/Main.vala:1312
 msgid "Scheduled snapshots are disabled"
 msgstr "Az ütemezett pillanatképek le vannak tiltva."
 
@@ -1871,7 +1861,7 @@ msgstr ""
 "Az ütemezett pillanatképek le vannak tiltva. Ajánlatos engedélyezni ezt a "
 "szolgáltatást."
 
-#: src/Gtk/ScheduleBox.vala:305
+#: src/Gtk/ScheduleBox.vala:276
 msgid "Scheduled snapshots are enabled"
 msgstr "Az ütemezett pillanatképek engedélyezve vannak"
 
@@ -1883,20 +1873,20 @@ msgstr ""
 "Az ütemezett pillanatképek engedélyezve vannak. A kiválasztott szintű "
 "pillanatkép automatikusan készül el."
 
-#: src/AppConsole.vala:902
+#: src/AppConsole.vala:905
 #, c-format
 msgid "Select '%s' device (default = %s)"
 msgstr "Válasszon „%s” eszközt (Alapértelmezés = „%s”)"
 
-#: src/Core/SnapshotRepo.vala:514 src/AppConsole.vala:707
+#: src/AppConsole.vala:707 src/Core/SnapshotRepo.vala:510
 msgid "Select BTRFS system disk with root subvolume (@)"
 msgstr "Válasszon BTRFS gyökér alkötettel („@”) rendelkező rendszermeghajtót"
 
-#: src/AppConsole.vala:1039
+#: src/AppConsole.vala:1042
 msgid "Select GRUB device"
 msgstr "Válasszon GRUB eszközt"
 
-#: src/Gtk/MainWindow.vala:686
+#: src/Gtk/MainWindow.vala:698
 msgid "Select Snapshot"
 msgstr "Pillanatkép kiválasztása"
 
@@ -1920,12 +1910,12 @@ msgstr "Pillanatképek kiválasztása"
 msgid "Select Target Device"
 msgstr "Cél eszköz kiválasztása"
 
-#: src/Gtk/BackupDeviceBox.vala:410
+#: src/Gtk/BackupDeviceBox.vala:411
 #, c-format
 msgid "Select a partition on this disk"
 msgstr "Válasszon ki egy partíciót ezen a lemezen"
 
-#: src/Gtk/MainWindow.vala:783
+#: src/Gtk/MainWindow.vala:795
 msgid "Select a single snapshot to restore"
 msgstr "Válasszon ki egy pillanatképet a visszaállításhoz"
 
@@ -1933,15 +1923,15 @@ msgstr "Válasszon ki egy pillanatképet a visszaállításhoz"
 msgid "Select another device for root file system (/)"
 msgstr "Válasszon másik eszközt a gyökér fájlrendszer („/”) számára"
 
-#: src/Core/SnapshotRepo.vala:550 src/Core/SnapshotRepo.vala:579
+#: src/Core/SnapshotRepo.vala:546 src/Core/SnapshotRepo.vala:575
 msgid "Select another device or free up some space"
 msgstr "Válasszon másik eszközt vagy szabadítson fel helyet"
 
-#: src/Gtk/MainWindow.vala:516 src/Gtk/MainWindow.vala:523
-msgid "Select another device to delete snasphots"
-msgstr "Válasszon másik eszközt a pillanatképek törléséhez"
+#: src/Gtk/MainWindow.vala:528 src/Gtk/MainWindow.vala:535
+msgid "Select another device to delete snapshots"
+msgstr ""
 
-#: src/Gtk/MainWindow.vala:450
+#: src/Gtk/MainWindow.vala:462
 msgid "Select another device?"
 msgstr "Egy másik eszközt kíván választani?"
 
@@ -1977,7 +1967,7 @@ msgstr "Válasszon ki az eszközt a gyökér fájlrendszer („/”) számára"
 msgid "Select the devices where files will be restored."
 msgstr "Válassza ki az eszközt, ahova a fájlok vissza lesznek állítva."
 
-#: src/Gtk/ScheduleBox.vala:313
+#: src/Gtk/ScheduleBox.vala:284
 msgid "Select the intervals for creating snapshots"
 msgstr "Válassza ki a pillanatkép készítésének ütemezését"
 
@@ -1985,11 +1975,11 @@ msgstr "Válassza ki a pillanatkép készítésének ütemezését"
 msgid "Select the items to be removed from the list"
 msgstr "Válassza ki a listából a eltávolítandó elemeket"
 
-#: src/Core/SnapshotRepo.vala:476
+#: src/Core/SnapshotRepo.vala:472
 msgid "Select the snapshot device"
 msgstr "Válassza ki a pillanatkép eszközt"
 
-#: src/Gtk/MainWindow.vala:776
+#: src/Gtk/MainWindow.vala:788
 msgid "Select the snapshot to restore"
 msgstr "Válassza ki a visszaállítani kívánt pillanatképet"
 
@@ -1997,7 +1987,7 @@ msgstr "Válassza ki a visszaállítani kívánt pillanatképet"
 msgid "Select the snapshots to be deleted"
 msgstr "Válassza ki a törölni kívánt pillanatképeket"
 
-#: src/Gtk/MainWindow.vala:602
+#: src/Gtk/MainWindow.vala:614
 msgid "Select the snapshots to mark for deletion"
 msgstr "Válassza ki a törlésre jelölendő pillanatképeket"
 
@@ -2005,19 +1995,19 @@ msgstr "Válassza ki a törlésre jelölendő pillanatképeket"
 msgid "Select the target devices where system will be cloned."
 msgstr "Válassza ki a cél eszközt, ahova a rendszer le lesz klónozva."
 
-#: src/Core/Main.vala:3598
+#: src/Core/Main.vala:3618
 msgid "Selected default snapshot device"
 msgstr "Alapértelmezett pillanatkép eszköz"
 
-#: src/Core/Main.vala:3549 src/Core/Main.vala:3553
+#: src/Core/Main.vala:3569 src/Core/Main.vala:3573
 msgid "Selected default snapshot type"
 msgstr "Alapértelmezett pillanatkép típus"
 
-#: src/Gtk/BackupDeviceBox.vala:388
+#: src/Gtk/BackupDeviceBox.vala:389
 msgid "Selected device does not have BTRFS partition"
 msgstr "A kiválasztott eszközön nincs BTRFS partíció"
 
-#: src/Gtk/BackupDeviceBox.vala:385
+#: src/Gtk/BackupDeviceBox.vala:386
 msgid "Selected device does not have Linux partition"
 msgstr "A kiválasztott eszközön nincs Linux partíció"
 
@@ -2025,15 +2015,15 @@ msgstr "A kiválasztott eszközön nincs Linux partíció"
 msgid "Selected snapshot device"
 msgstr "Kiválasztott pillanatkép eszköz"
 
-#: src/Core/SnapshotRepo.vala:513 src/AppConsole.vala:706
+#: src/AppConsole.vala:706 src/Core/SnapshotRepo.vala:509
 msgid "Selected snapshot device is not a system disk"
 msgstr "A kiválasztott pillanatkép eszköz nem rendszerlemez"
 
-#: src/Core/Main.vala:2334
+#: src/Core/Main.vala:2296
 msgid "Selected snapshot is marked for deletion"
 msgstr "A kiválasztott pillanatkép törlésre van jelölve"
 
-#: src/Gtk/MainWindow.vala:807
+#: src/Gtk/MainWindow.vala:819
 msgid "Selected snapshot is marked for deletion and cannot be restored"
 msgstr ""
 "A kiválasztott pillanatkép törlésre van jelölve és nem állítható vissza"
@@ -2046,12 +2036,12 @@ msgstr ""
 "A kiválasztott felhasználó titkosított Saját mappát használ. Ezt a Saját "
 "mappát nem lehet felvenni, csak a rejtett fájlokat."
 
-#: src/Utility/Device.vala:1957
+#: src/Utility/Device.vala:1971
 #, c-format
 msgid "Serial"
 msgstr "Sorozatszám"
 
-#: src/Core/Main.vala:230
+#: src/Core/Main.vala:233
 msgid "Session log file"
 msgstr "Munkamenet naplófájl"
 
@@ -2059,20 +2049,15 @@ msgstr "Munkamenet naplófájl"
 msgid "Set snapshot description"
 msgstr "Pillanatkép leírásának szerkesztése"
 
-#: src/Gtk/MainWindow.vala:180 src/Gtk/MainWindow.vala:181
-#: src/Gtk/SettingsWindow.vala:56
+#: src/Gtk/SettingsWindow.vala:56 src/Gtk/MainWindow.vala:342
 msgid "Settings"
 msgstr "Beállítások"
-
-#: src/Gtk/MainWindow.vala:191
-msgid "Settings wizard"
-msgstr "Beállító Tündér"
 
 #: src/Gtk/FinishBox.vala:58
 msgid "Setup Complete"
 msgstr "A beállítás befejeződött"
 
-#: src/Gtk/SetupWizardWindow.vala:64
+#: src/Gtk/SetupWizardWindow.vala:64 src/Gtk/MainWindow.vala:348
 msgid "Setup Wizard"
 msgstr "Telepítő Tündér"
 
@@ -2080,7 +2065,7 @@ msgstr "Telepítő Tündér"
 msgid "Show additional debug messages"
 msgstr "Hibakeresési üzenetek megjelenítése"
 
-#: src/AppConsole.vala:397 src/AppGtk.vala:133
+#: src/AppGtk.vala:133 src/AppConsole.vala:397
 msgid "Show all options"
 msgstr "Minden lehetőség megjelenítése"
 
@@ -2092,10 +2077,10 @@ msgstr "További kihagyandó alkalmazások megjelenítés a következő oldalon"
 msgid "Show rsync output (default)"
 msgstr "Az rsync kimenet megjelenítése (alapértelmezett)"
 
-#: src/Utility/Device.vala:1960 src/Utility/Device.vala:1975
+#: src/Gtk/BackupDeviceBox.vala:203 src/Gtk/RestoreBox.vala:131
 #: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
-#: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
 #: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:472 src/AppConsole.vala:511
+#: src/Utility/Device.vala:1974 src/Utility/Device.vala:1989
 #, c-format
 msgid "Size"
 msgstr "Méret"
@@ -2116,13 +2101,13 @@ msgstr ""
 msgid "Skip GRUB2 reinstall"
 msgstr "A GRUB újratelepítés kihagyása"
 
-#: src/Core/Main.vala:2339 src/Core/SnapshotRepo.vala:635
-#: src/Core/SnapshotRepo.vala:688 src/Gtk/SnapshotListBox.vala:94
+#: src/Gtk/SnapshotListBox.vala:94 src/Core/Main.vala:2301
+#: src/Core/SnapshotRepo.vala:630 src/Core/SnapshotRepo.vala:684
 #, c-format
 msgid "Snapshot"
 msgstr "Pillanatkép"
 
-#: src/Gtk/MainWindow.vala:533
+#: src/Gtk/MainWindow.vala:545
 #, c-format
 msgid ""
 "Snapshot '%s' is being used by the system and cannot be deleted. Restart the "
@@ -2141,37 +2126,37 @@ msgstr "Pillanatkép létrehozva"
 msgid "Snapshot Levels"
 msgstr "Pillanatkép szintjének kiválasztása"
 
-#: src/Gtk/MainWindow.vala:743
+#: src/Gtk/MainWindow.vala:755
 msgid "Snapshot deletion in progress..."
 msgstr "Pillanatkép törlése folyamatban…"
 
-#: src/Core/SnapshotRepo.vala:446
+#: src/Core/SnapshotRepo.vala:442
 #, c-format
 msgid "Snapshot device"
 msgstr "Pillanatkép eszköz"
 
-#: src/Core/SnapshotRepo.vala:482 src/AppConsole.vala:680
+#: src/AppConsole.vala:680 src/Core/SnapshotRepo.vala:478
 msgid "Snapshot device not available"
 msgstr "Nem érhető el pillanatkép eszköz"
 
-#: src/Core/SnapshotRepo.vala:475 src/AppConsole.vala:676
+#: src/AppConsole.vala:676 src/Core/SnapshotRepo.vala:471
 msgid "Snapshot device not selected"
 msgstr "Nincs kiválasztva pillanatkép eszköz"
 
-#: src/Core/SnapshotRepo.vala:450
+#: src/Core/SnapshotRepo.vala:446
 #, c-format
 msgid "Snapshot location"
 msgstr "Pillanatkép helye"
 
-#: src/Core/Main.vala:1441
+#: src/Core/Main.vala:1448
 msgid "Snapshot saved successfully"
 msgstr "Pillanatkép sikeresen mentve"
 
-#: src/Core/Main.vala:2329
+#: src/Core/Main.vala:2291
 msgid "Snapshot to restore not specified!"
 msgstr "A visszaállítandó pillanatkép nincs megadva."
 
-#: src/Core/Main.vala:3189
+#: src/Core/Main.vala:3151
 msgid "Snapshot will become active after system is rebooted."
 msgstr "A pillanatkép a rendszer újraindítása után lesz aktiválva."
 
@@ -2179,7 +2164,7 @@ msgstr "A pillanatkép a rendszer újraindítása után lesz aktiválva."
 msgid "Snapshot(s) Deleted"
 msgstr "Pillanatkép törölve"
 
-#: src/Gtk/MainWindow.vala:309 src/Gtk/DeleteWindow.vala:89
+#: src/Gtk/DeleteWindow.vala:89 src/Gtk/MainWindow.vala:283
 msgid "Snapshots"
 msgstr "Pillanatképek"
 
@@ -2207,7 +2192,7 @@ msgstr ""
 "Pillanatkép készítése a BTRFS fájlrendszer beépített képességeinek "
 "használatával."
 
-#: src/Gtk/ScheduleBox.vala:167
+#: src/Gtk/ScheduleBox.vala:127
 #, c-format
 msgid "Snapshots are not scheduled at fixed times."
 msgstr "Nincs kiválasztva pillanatkép eszköz"
@@ -2241,7 +2226,7 @@ msgstr ""
 "támogatott. Amennyiben a rendszerlemez meghibásodik, a rajta tárolt "
 "pillanatképek – a rendszerrel együtt – elvesznek."
 
-#: src/Gtk/BackupDeviceBox.vala:107
+#: src/Gtk/BackupDeviceBox.vala:108
 msgid ""
 "Snapshots are saved to /timeshift on selected partition. Other locations are "
 "not supported."
@@ -2249,7 +2234,7 @@ msgstr ""
 "A pillanatképek a kiválasztott partíció „/timeshift” mappájába kerülnek. Nem "
 "lehet megadni más elérési utat."
 
-#: src/Gtk/BackupDeviceBox.vala:99
+#: src/Gtk/BackupDeviceBox.vala:100
 msgid ""
 "Snapshots are saved to /timeshift-btrfs on selected partition. Other "
 "locations are not supported."
@@ -2257,7 +2242,7 @@ msgstr ""
 "A pillanatképek a kiválasztott partíció „/timeshift-btrfs” mappájába "
 "kerülnek. Nem lehet megadni más elérési utat."
 
-#: src/Gtk/MainWindow.vala:960
+#: src/Gtk/MainWindow.vala:962
 msgid "Snapshots available for restore"
 msgstr "Visszaállításhoz elérhető pillanatképek"
 
@@ -2276,17 +2261,21 @@ msgstr ""
 msgid "Snapshots cannot be created in Live CD mode"
 msgstr "Pillanatképek nem hozhatók létre Live CD üzemmódban"
 
-#: src/Gtk/MainWindow.vala:1007
+#: src/Gtk/MainWindow.vala:1009
 msgid "Snapshots will be created at selected intervals"
 msgstr "A pillanatképek a kiválasztott ütemezéssel készülnek el"
 
-#: src/Gtk/ScheduleBox.vala:306
+#: src/Gtk/ScheduleBox.vala:277
 msgid ""
 "Snapshots will be created at selected intervals if snapshot disk has enough "
 "space (> 1 GB)"
 msgstr ""
 "A pillanatképek a kiválasztott ütemezéssel készülnek el, ha a pillanatkép "
 "lemezen van elegendő szabad hely (>1 GB)"
+
+#: src/Gtk/SnapshotListBox.vala:291
+msgid "Snapshots with comments are not auto-deleted"
+msgstr ""
 
 #: src/AppConsole.vala:389
 msgid "Specify backup device (default: config)"
@@ -2304,13 +2293,13 @@ msgstr "Válasszon ki egy pillanatképet a visszaállításhoz"
 msgid "Specify target device"
 msgstr "Cél eszköz megadása"
 
-#: src/Core/SnapshotRepo.vala:456 src/Core/SnapshotRepo.vala:610
-#: src/Gtk/RsyncLogBox.vala:471
+#: src/Gtk/RsyncLogBox.vala:471 src/Core/SnapshotRepo.vala:452
+#: src/Core/SnapshotRepo.vala:606
 #, c-format
 msgid "Status"
 msgstr "Állapot"
 
-#: src/Gtk/ScheduleBox.vala:154
+#: src/Gtk/ScheduleBox.vala:114
 msgid "Stop cron emails for scheduled tasks"
 msgstr "Nem küld cron levelet az ütemezett feladatokról"
 
@@ -2328,7 +2317,7 @@ msgstr "Az alkötet már létezik a cél helyen"
 msgid "Subvolumes"
 msgstr "Alkötetek"
 
-#: src/Gtk/ExcludeBox.vala:267 src/Gtk/RestoreWindow.vala:120
+#: src/Gtk/RestoreWindow.vala:120 src/Gtk/ExcludeBox.vala:267
 #: src/Gtk/ExcludeAppsBox.vala:134
 msgid "Summary"
 msgstr "Összegzés"
@@ -2341,15 +2330,15 @@ msgstr "Váltás a BTRFS módra (alapértelmezett: config)"
 msgid "Switch to RSYNC mode (default: config)"
 msgstr "Váltás az RSYNC módra (alapértelmezett: config)"
 
-#: src/Core/SnapshotRepo.vala:928
+#: src/Core/SnapshotRepo.vala:921
 msgid "Symlinks updated"
 msgstr "Szimbolikus linkek frissítve"
 
-#: src/Core/Main.vala:2689
+#: src/Core/Main.vala:2651
 msgid "Syncing file systems..."
 msgstr "Fájlrendszerek szinkronizálása…"
 
-#: src/Core/Main.vala:1642 src/Core/Main.vala:2859 src/Core/Main.vala:3108
+#: src/Core/Main.vala:1649 src/Core/Main.vala:2821 src/Core/Main.vala:3070
 msgid "Syncing files with rsync..."
 msgstr "Fájlok szinkronizálása rsync alkalmazással…"
 
@@ -2357,12 +2346,12 @@ msgstr "Fájlok szinkronizálása rsync alkalmazással…"
 msgid "Syntax"
 msgstr "Szintaxis"
 
-#: src/Utility/Device.vala:1981 src/Gtk/SnapshotListBox.vala:126
+#: src/Gtk/SnapshotListBox.vala:126 src/Utility/Device.vala:1995
 #, c-format
 msgid "System"
 msgstr "Rendszer"
 
-#: src/Gtk/MainWindow.vala:904
+#: src/Gtk/MainWindow.vala:906
 msgid "System Restore Utility"
 msgstr "Rendszer-helyreállító"
 
@@ -2372,15 +2361,15 @@ msgstr ""
 "A rendszer visszaállítható egy előző állapotra a pillanatkép "
 "visszaállításával."
 
-#: src/Core/Main.vala:2552
+#: src/Core/Main.vala:2514
 msgid "System will reboot after files are restored"
 msgstr "A fájlok visszaállítása után a rendszer újraindul"
 
-#: src/Core/Main.vala:2502
+#: src/Core/Main.vala:2464
 msgid "System will reboot after files are restored."
 msgstr "A rendszer újra fog indulni a fájlok visszaállítása után."
 
-#: src/Core/Main.vala:1377 src/Core/Main.vala:1451
+#: src/Core/Main.vala:1384 src/Core/Main.vala:1458
 msgid "Tagged snapshot"
 msgstr "Címkézett pillanatkép"
 
@@ -2388,7 +2377,7 @@ msgstr "Címkézett pillanatkép"
 msgid "Tags"
 msgstr "Címkék"
 
-#: src/Core/Main.vala:2364
+#: src/Core/Main.vala:2326
 msgid "Target device is not mounted"
 msgstr "A cél eszköz nincs csatolva"
 
@@ -2396,11 +2385,11 @@ msgstr "A cél eszköz nincs csatolva"
 msgid "Target device is same as system device"
 msgstr "A cél eszköz azonos a rendszer eszközzel."
 
-#: src/Core/Main.vala:2358
+#: src/AppConsole.vala:892 src/Core/Main.vala:2320 src/Core/Main.vala:3770
 msgid "Target device not specified!"
 msgstr "A cél eszköz nincs megadva."
 
-#: src/Gtk/ScheduleBox.vala:156
+#: src/Gtk/ScheduleBox.vala:116
 msgid ""
 "The cron service sends the output of scheduled tasks as an email to the "
 "current user. Select this option to suppress the emails for cron tasks "
@@ -2410,24 +2399,24 @@ msgstr ""
 "felhasználónak emailben. Ezt a beállítást kiválasztva, a Timeshift által "
 "létrehozott feladatok nem fognak levelet küldeni."
 
-#: src/Core/Main.vala:497
+#: src/Core/Main.vala:500
 msgid "The system partition has an unsupported subvolume layout."
 msgstr "A rendszer partíciónak nem támogatott alkötet elrendezése van."
 
-#: src/Core/Main.vala:3783
+#: src/Core/Main.vala:3804
 msgid "The target partition has an unsupported subvolume layout."
 msgstr "A cél partíciónak nem támogatott alkötet elrendezése van."
 
-#: src/Gtk/BackupDeviceBox.vala:512
+#: src/Gtk/BackupDeviceBox.vala:516
 #, c-format
 msgid "There are no snapshots on this device"
 msgstr "Nincsenek pillanatképek ezen az eszközön"
 
-#: src/Utility/Device.vala:1402
+#: src/Utility/Device.vala:1416
 msgid "This device is not encrypted"
 msgstr "Ez az eszköz nem titkosított"
 
-#: src/Core/Main.vala:2518
+#: src/Core/Main.vala:2480
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
@@ -2435,11 +2424,11 @@ msgstr ""
 "Ehhez a szoftverhez nem jár semmiféle garancia, és a szerző sem vállal "
 "felelősséget a program használata során keletkezett károkért."
 
-#: src/Gtk/MainWindow.vala:995 src/Gtk/MainWindow.vala:1006
+#: src/Gtk/MainWindow.vala:997 src/Gtk/MainWindow.vala:1008
 msgid "Timeshift is active"
 msgstr "A Timeshift be van kapcsolva"
 
-#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:132
+#: src/Gtk/RestoreBox.vala:132 src/Gtk/BackupBox.vala:97
 #: src/Gtk/RsyncLogBox.vala:394
 #, c-format
 msgid "Timestamp"
@@ -2452,14 +2441,13 @@ msgstr ""
 "Az alapértelmezett beállításokkal történő visszaállításhoz minden kérdésnél "
 "csak egy Enter-t nyomjon meg."
 
-#: src/Utility/Device.vala:1971 src/Gtk/BackupDeviceBox.vala:190
-#: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:473
-#: src/AppConsole.vala:512
+#: src/Gtk/BackupDeviceBox.vala:191 src/Gtk/SettingsWindow.vala:87
+#: src/AppConsole.vala:473 src/AppConsole.vala:512 src/Utility/Device.vala:1985
 #, c-format
 msgid "Type"
 msgstr "Típus"
 
-#: src/Utility/Device.vala:1970
+#: src/Utility/Device.vala:1984
 #, c-format
 msgid "UUID"
 msgstr "UUID"
@@ -2468,24 +2456,20 @@ msgstr "UUID"
 msgid "Unknown option"
 msgstr "Ismeretlen kapcsoló"
 
-#: src/Core/Main.vala:1359
-msgid "Unknown snapshot type"
-msgstr "ismeretlen pillanatkép típus"
-
-#: src/Core/Main.vala:1873
+#: src/Core/Main.vala:1828
 msgid "Unknown value specified for option --tags"
 msgstr "Ismeretlen érték lett megadva a „--tags” kapcsolónál"
 
-#: src/Utility/Device.vala:1413 src/Utility/Device.vala:1529
+#: src/Utility/Device.vala:1427 src/Utility/Device.vala:1543
 #, c-format
 msgid "Unlocked device is mapped to '%s'"
 msgstr "A feloldott eszköz ehhez van rendelve: „%s”"
 
-#: src/Utility/Device.vala:1528
+#: src/Utility/Device.vala:1542
 msgid "Unlocked successfully"
 msgstr "Sikeresen feloldva"
 
-#: src/Utility/Device.vala:1744
+#: src/Utility/Device.vala:1758
 msgid "Unmounting from"
 msgstr "Leválasztás innen"
 
@@ -2493,7 +2477,7 @@ msgstr "Leválasztás innen"
 msgid "Unshared"
 msgstr "Nem megosztott"
 
-#: src/Core/Main.vala:3787 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Gtk/RestoreDeviceBox.vala:508 src/Core/Main.vala:3808
 msgid "Unsupported Subvolume Layout"
 msgstr "Nem támogatott alkötet elrendezés"
 
@@ -2505,11 +2489,11 @@ msgstr "GRUB menü frissítése"
 msgid "Update initramfs"
 msgstr "Az initramfs frissítése"
 
-#: src/Core/Main.vala:3047
+#: src/Core/Main.vala:3009
 msgid "Updated /etc/crypttab on target device"
 msgstr "A „/etc/crypttab” frissítve a cél eszközön"
 
-#: src/Core/Main.vala:2959
+#: src/Core/Main.vala:2921
 msgid "Updated /etc/fstab on target device"
 msgstr "A „/etc/fstab” frissítve a cél eszközön"
 
@@ -2521,20 +2505,20 @@ msgstr ""
 "Frissíti a GRUB menü bejegyzéseit (ajánlott). Futtatása biztonságos és "
 "ajánlott megjelölve hagyni."
 
-#: src/Core/Main.vala:2672
+#: src/Core/Main.vala:2634
 msgid "Updating GRUB menu..."
 msgstr "GRUB menü frissítése…"
 
-#: src/Core/Main.vala:2883
+#: src/Core/Main.vala:2845
 msgid "Updating bootloader configuration..."
 msgstr "Rendszerbetöltő beállításainak frissítése…"
 
-#: src/Utility/Device.vala:1978
+#: src/Utility/Device.vala:1992
 #, c-format
 msgid "Used"
 msgstr "Használt"
 
-#: src/Gtk/SetupWizardWindow.vala:114 src/Gtk/UsersBox.vala:101
+#: src/Gtk/UsersBox.vala:101 src/Gtk/SetupWizardWindow.vala:110
 msgid "User"
 msgstr "Felhasználó"
 
@@ -2542,7 +2526,7 @@ msgstr "Felhasználó"
 msgid "User Home Directories"
 msgstr "Saját mappák használata"
 
-#: src/Utility/Device.vala:1483
+#: src/Utility/Device.vala:1497
 msgid "User cancelled the password prompt"
 msgstr "A felhasználó nem adta meg a jelszavát"
 
@@ -2561,7 +2545,7 @@ msgstr "Felhasználók"
 msgid "Users Home"
 msgstr "Felhasználók saját mappái"
 
-#: src/Utility/Device.vala:1955
+#: src/Utility/Device.vala:1969
 #, c-format
 msgid "Vendor"
 msgstr "Gyártó"
@@ -2574,11 +2558,11 @@ msgstr "Mentési napló megjelenítése"
 msgid "View Rsync Log for Restore"
 msgstr "Visszaállítási napló megjelenítése"
 
-#: src/Gtk/MainWindow.vala:369
+#: src/Gtk/MainWindow.vala:356
 msgid "View TimeShift Logs"
 msgstr "Timeshift naplók megjelenítése"
 
-#: src/Core/Main.vala:2413 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Gtk/RestoreSummaryBox.vala:53 src/Core/Main.vala:2375
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
@@ -2586,15 +2570,15 @@ msgstr "Figyelmeztetés"
 msgid "Web Browsers"
 msgstr "Webböngészők"
 
-#: src/Gtk/SnapshotListBox.vala:302 src/Gtk/ScheduleBox.vala:82
+#: src/Gtk/SnapshotListBox.vala:302 src/Core/Tags.vala:41
 msgid "Weekly"
 msgstr "Hetente"
 
-#: src/Core/Main.vala:1262
+#: src/Core/Main.vala:1270
 msgid "Weekly snapshot failed!"
 msgstr "A heti pillanatkép készítése meghiúsult."
 
-#: src/Core/Main.vala:1243
+#: src/Core/Main.vala:1251
 msgid "Weekly snapshots are enabled"
 msgstr "Heti pillanatképek készítése bekapcsolva"
 
@@ -2602,11 +2586,7 @@ msgstr "Heti pillanatképek készítése bekapcsolva"
 msgid "With Errors"
 msgstr "hibákkal"
 
-#: src/Gtk/MainWindow.vala:190
-msgid "Wizard"
-msgstr "Tündér"
-
-#: src/Utility/Device.vala:1456 src/Utility/Device.vala:1502
+#: src/Utility/Device.vala:1470 src/Utility/Device.vala:1516
 msgid "Wrong password"
 msgstr "Hibás jelszó"
 
@@ -2624,12 +2604,12 @@ msgstr ""
 "rendszer új pillanatképként lesz elérhető. Ez a pillanatkép – igény esetén – "
 "később visszaállítható lesz a rendszer-visszaállítás „Visszavonás”-ával."
 
-#: src/AppConsole.vala:1060
+#: src/AppConsole.vala:1063
 #, c-format
 msgid "[ENTER = Default (%s), a = Abort]"
 msgstr "[ENTER = alapértelmezett (%s), a = megszakítás]"
 
-#: src/AppConsole.vala:913
+#: src/AppConsole.vala:916
 #, c-format
 msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
 msgstr "[ENTER = alapértelmezett (%s), r = root eszköz, a = megszakítás]"
@@ -2646,16 +2626,16 @@ msgstr ""
 msgid "[Warning] Deleted invalid lock"
 msgstr "[Figyelmeztetés] A hibás zárolás törölve lett"
 
-#: src/Core/SnapshotRepo.vala:818
+#: src/Core/SnapshotRepo.vala:815
 msgid "all"
 msgstr "összes"
 
-#: src/Core/Main.vala:1778 src/Core/Main.vala:4133 src/Core/Main.vala:4218
-#: src/Core/Subvolume.vala:266
+#: src/Core/Subvolume.vala:266 src/Core/Main.vala:1777 src/Core/Main.vala:4151
+#: src/Core/Main.vala:4236
 msgid "btrfs returned an error"
 msgstr "btrfs hibát jelzett"
 
-#: src/Core/Snapshot.vala:502 src/Core/Main.vala:1674
+#: src/Core/Snapshot.vala:486 src/Core/Main.vala:1677
 msgid "complete"
 msgstr "kész"
 
@@ -2667,30 +2647,30 @@ msgstr "crontab fájl exportálva"
 msgid "crontab file installed"
 msgstr "crontab fájl telepítve"
 
-#: src/Core/SnapshotRepo.vala:804
+#: src/Core/SnapshotRepo.vala:801
 msgid "incomplete"
 msgstr "sikertelen"
 
-#: src/Core/SnapshotRepo.vala:786
+#: src/Core/SnapshotRepo.vala:783
 msgid "marked for deletion"
 msgstr "törlésre jelölve"
 
-#: src/Core/Main.vala:1568 src/Core/Main.vala:1723 src/Core/Main.vala:1725
+#: src/Core/Main.vala:1575 src/Core/Main.vala:1722 src/Core/Main.vala:1724
 msgid "mounted at path"
 msgstr "felcsatolva az elérési útra"
 
-#: src/Core/Snapshot.vala:503 src/Core/Main.vala:1674
-#: src/Gtk/BackupBox.vala:265 src/Gtk/RestoreBox.vala:237
-#: src/Gtk/DeleteBox.vala:149
+#: src/Gtk/RestoreBox.vala:237 src/Gtk/BackupBox.vala:265
+#: src/Gtk/DeleteBox.vala:149 src/Core/Snapshot.vala:487
+#: src/Core/Main.vala:1677
 msgid "remaining"
 msgstr "hátralévő"
 
-#: src/Core/Main.vala:1685
+#: src/Core/Main.vala:1688
 msgid "rsync returned an error"
 msgstr "rsync program hibát jelzett"
 
-#: src/Core/SnapshotRepo.vala:635 src/Core/SnapshotRepo.vala:688
-#: src/Core/SnapshotRepo.vala:767
+#: src/Core/SnapshotRepo.vala:630 src/Core/SnapshotRepo.vala:684
+#: src/Core/SnapshotRepo.vala:764
 msgid "un-tagged"
 msgstr "nem kijelölt"
 

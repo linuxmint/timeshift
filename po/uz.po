@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2025-12-10 14:42+0000\n"
-"PO-Revision-Date: 2024-07-25 11:26+0000\n"
+"POT-Creation-Date: 2026-11-13 12:19+0000\n"
+"PO-Revision-Date: 2026-03-19 05:21+0000\n"
 "Last-Translator: Umidjon Almasov <umutelmas.uz@gmail.com>\n"
 "Language-Team: Uzbek <uz@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2026-01-08 15:43+0000\n"
-"X-Generator: Launchpad (build 99c00f518760bdd50fc6e353e7736d2fff8fba4a)\n"
+"X-Launchpad-Export-Date: 2026-11-16 11:59+0000\n"
+"X-Generator: Launchpad (build 72ba15af7e009b17d4aa1467977127ac8392a4de)\n"
 "Language: uz\n"
 
 #: src/AppConsole.vala:630
@@ -27,17 +27,17 @@ msgstr ""
 "\n"
 "Davom etish uchun ENTER bosing..."
 
-#: src/Core/SnapshotRepo.vala:560
+#: src/Core/SnapshotRepo.vala:556
 #, c-format
 msgid "%d snapshots, %s free"
 msgstr "%d ta snapshot, %s bo‘sh"
 
-#: src/AppConsole.vala:946
+#: src/AppConsole.vala:949
 #, c-format
 msgid "'%s' will be on '%s'"
 msgstr "'%s' '%s' da bo‘ladi"
 
-#: src/AppConsole.vala:943
+#: src/AppConsole.vala:946
 #, c-format
 msgid "'%s' will be on root device"
 msgstr "'%s' ildiz qurilmada bo‘ladi"
@@ -46,23 +46,23 @@ msgstr "'%s' ildiz qurilmada bo‘ladi"
 msgid "(Re)install GRUB2 on:"
 msgstr "GRUB2 ni (qayta) o‘rnatish:"
 
-#: src/Core/Main.vala:483
+#: src/Core/Main.vala:486
 msgid "** Uninstalled Timeshift BTRFS **"
 msgstr "** Timeshift BTRFS o‘chirildi **"
 
-#: src/Core/Main.vala:3694
+#: src/Core/Main.vala:3714
 msgid "/ is mapped to device"
 msgstr "/ qurilmaga moslashtirilgan"
 
-#: src/Core/Main.vala:3716
+#: src/Core/Main.vala:3736
 msgid "/boot is mapped to device"
 msgstr "/boot qurilmaga moslashtirilgan"
 
-#: src/Core/Main.vala:3727
+#: src/Core/Main.vala:3747
 msgid "/boot/efi is mapped to device"
 msgstr "/boot/efi  qurilmaga moslashtirilgan"
 
-#: src/Core/Main.vala:3705
+#: src/Core/Main.vala:3725
 msgid "/home is mapped to device"
 msgstr "/home qurilmaga moslashtirilgan"
 
@@ -70,20 +70,20 @@ msgstr "/home qurilmaga moslashtirilgan"
 msgid "<b>Comments</b> (double-click to edit)"
 msgstr "<b>Izohlar</b> (tahrirlash uchun ikki marta bosing)"
 
-#: src/Gtk/ScheduleBox.vala:168
+#: src/Gtk/ScheduleBox.vala:128
 msgid ""
 "A maintenance task runs once every hour and creates snapshots as needed."
 msgstr ""
 "Ta'mirlash vazifasi har soatda bir marta ishlaydi va kerak bo‘lganda "
 "snapshotlarni yaratadi."
 
-#: src/AppConsole.vala:716 src/AppConsole.vala:786 src/AppConsole.vala:926
-#: src/AppConsole.vala:1029 src/AppConsole.vala:1080 src/AppConsole.vala:1126
-#: src/AppConsole.vala:1144
+#: src/AppConsole.vala:716 src/AppConsole.vala:785 src/AppConsole.vala:929
+#: src/AppConsole.vala:1032 src/AppConsole.vala:1083 src/AppConsole.vala:1129
+#: src/AppConsole.vala:1147
 msgid "Aborted."
 msgstr "To‘xtatilgan."
 
-#: src/Gtk/MainWindow.vala:375
+#: src/Gtk/MainWindow.vala:394
 msgid "About"
 msgstr "Haqida"
 
@@ -147,10 +147,6 @@ msgstr ""
 "bosqichma-bosqich. O'zgartirilmagan fayllar, agar mavjud bo'lsa, avvalgi "
 "snapshot bilan qattiq bog'langan bo'ladi."
 
-#: src/Gtk/ExcludeMessageWindow.vala:129
-msgid "All other files and folders are excluded."
-msgstr "Boshqa barcha fayl va jildlar bundan mustasno."
-
 #: src/Gtk/RestoreDeviceBox.vala:486
 msgid ""
 "An encrypted device is selected for root file system (/). The boot directory "
@@ -167,7 +163,7 @@ msgstr ""
 "Yoki yuklash katalogi uchun shifrlanmagan qurilmani tanlang yoki ildiz fayl "
 "tizimi uchun shifrlanmagan qurilmani tanlang."
 
-#: src/Core/Main.vala:267
+#: src/Core/Main.vala:270
 msgid "Another instance of Timeshift is creating a snapshot."
 msgstr "Timeshift boshqa nusxasi snapshot yaratmoqda."
 
@@ -175,7 +171,7 @@ msgstr "Timeshift boshqa nusxasi snapshot yaratmoqda."
 msgid "Another instance of this application is running"
 msgstr "Ushbu ilovaning boshqa nusxasi ishlamoqda"
 
-#: src/Core/Main.vala:271
+#: src/Core/Main.vala:274
 msgid "Another instance of timeshift is currently running!"
 msgstr "Hozirda timeshiftning boshqa nusxasi ishlamoqda!"
 
@@ -183,11 +179,11 @@ msgstr "Hozirda timeshiftning boshqa nusxasi ishlamoqda!"
 msgid "Answer YES to all confirmation prompts"
 msgstr "Barcha tasdiqlash so‘rovlariga \"HA\" deb javob berish"
 
-#: src/Core/Main.vala:3535
+#: src/Core/Main.vala:3519
 msgid "App config loaded"
 msgstr "Ilova konfiguratsiyasi yuklandi"
 
-#: src/Core/Main.vala:3417
+#: src/Core/Main.vala:3385
 msgid "App config saved"
 msgstr "Ilova konfiguratsiyasi saqlandi"
 
@@ -195,19 +191,19 @@ msgstr "Ilova konfiguratsiyasi saqlandi"
 msgid "Application needs admin access."
 msgstr "Ilovaga administrator ruxsati kerak."
 
-#: src/Core/Main.vala:3871
+#: src/Core/Main.vala:3892
 msgid "Application will exit"
 msgstr "Ilova chiqadi"
 
-#: src/Core/Main.vala:499
+#: src/Core/Main.vala:502
 msgid "Application will exit."
 msgstr "Ilova chiqadi."
 
-#: src/Gtk/MainWindow.vala:546
+#: src/Gtk/MainWindow.vala:558
 msgid "Are you sure you want to delete this snapshot?"
 msgstr "Haqiqatan ham bu snapshotni o‘chirib tashlamoqchimisiz?"
 
-#: src/Gtk/MainWindow.vala:345
+#: src/Gtk/MainWindow.vala:319
 msgid "Available"
 msgstr "Mavjud"
 
@@ -219,11 +215,11 @@ msgstr "BTRFS"
 msgid "BTRFS Snapshots"
 msgstr "BTRFS snapshotlari"
 
-#: src/Core/Main.vala:2348 src/Core/Main.vala:2352
+#: src/Core/Main.vala:2310 src/Core/Main.vala:2314
 msgid "BTRFS device is not mounted"
 msgstr "BTRFS qurilmasi ulanmagan"
 
-#: src/Gtk/BackupDeviceBox.vala:98
+#: src/Gtk/BackupDeviceBox.vala:99
 msgid ""
 "BTRFS snapshots are saved on system partition. Other partitions are not "
 "supported."
@@ -243,7 +239,7 @@ msgstr ""
 "himoyalanish uchun snapshotlarni RSYNC rejimida tashqi tizim bo‘lmagan "
 "diskka saqlang."
 
-#: src/Gtk/SetupWizardWindow.vala:94
+#: src/Gtk/SetupWizardWindow.vala:90
 msgid "Backend"
 msgstr "Bekend"
 
@@ -251,11 +247,11 @@ msgstr "Bekend"
 msgid "Backup"
 msgstr "Zaxira"
 
-#: src/Core/Main.vala:2324
+#: src/Core/Main.vala:2286
 msgid "Backup Device"
 msgstr "Zaxira qurilmasi"
 
-#: src/Core/Main.vala:2319
+#: src/Core/Main.vala:2281
 msgid "Backup device not specified!"
 msgstr "Zaxira qurilmasi belgilanmagan!"
 
@@ -263,7 +259,7 @@ msgstr "Zaxira qurilmasi belgilanmagan!"
 msgid "Bittorrent Clients"
 msgstr "Bittorrent mijozlari"
 
-#: src/Gtk/SnapshotListBox.vala:299 src/Gtk/ScheduleBox.vala:136
+#: src/Gtk/SnapshotListBox.vala:299 src/Core/Tags.vala:38
 msgid "Boot"
 msgstr "Yuklash"
 
@@ -271,18 +267,18 @@ msgstr "Yuklash"
 msgid "Boot device not selected"
 msgstr "Yuklash qurilmasi tanlanmagan"
 
-#: src/Core/Main.vala:1169
+#: src/Core/Main.vala:1177
 msgid "Boot snapshot failed!"
 msgstr "Yuklash snapshoti amalga oshmadi!"
 
-#: src/Gtk/ScheduleBox.vala:169
+#: src/Gtk/ScheduleBox.vala:129
 msgid ""
 "Boot snapshots are created with a delay of 10 minutes after system startup."
 msgstr ""
 "Yuklash snapshotlari tizim ishga tushirilgandan keyin 10 daqiqalik kechikish "
 "bilan yaratiladi."
 
-#: src/Core/Main.vala:1150
+#: src/Core/Main.vala:1158
 msgid "Boot snapshots are enabled"
 msgstr "Yuklash snapshotlari yoqilgan"
 
@@ -294,7 +290,7 @@ msgstr "Yuklovchi parametrlari"
 msgid "Bootloader Options (Advanced)"
 msgstr "Yuklovchi parametrlari (kengaytirilgan)"
 
-#: src/Gtk/MainWindow.vala:170
+#: src/Gtk/MainWindow.vala:166
 msgid "Browse"
 msgstr "Ko‘rib chiqish"
 
@@ -302,23 +298,22 @@ msgstr "Ko‘rib chiqish"
 msgid "Browse Files"
 msgstr "Fayllarni ko‘rib chiqish"
 
-#: src/Gtk/MainWindow.vala:171
+#: src/Gtk/MainWindow.vala:167
 msgid "Browse selected snapshot"
 msgstr "Tanlangan snapshotni koʻrib chiqish"
 
-#: src/Core/Main.vala:2814
+#: src/Core/Main.vala:2776
 msgid "Building file list..."
 msgstr "Fayllar roʻyxati tuzilmoqda..."
 
-#: src/Core/Main.vala:1527
+#: src/Core/Main.vala:1534
 msgid "Calculating required disk space..."
 msgstr "Zarur disk maydoni hisoblanmoqda..."
 
-#: src/Utility/Gtk/CustomMessageDialog.vala:156
+#: src/Gtk/BackupWindow.vala:182 src/Gtk/RestoreWindow.vala:215
+#: src/Gtk/RestoreWindow.vala:224 src/Gtk/SetupWizardWindow.vala:212
+#: src/Gtk/DeleteWindow.vala:190 src/Utility/Gtk/CustomMessageDialog.vala:156
 #: src/Utility/Gtk/CustomMessageDialog.vala:161 src/Utility/GtkHelper.vala:93
-#: src/Gtk/RestoreWindow.vala:215 src/Gtk/RestoreWindow.vala:224
-#: src/Gtk/BackupWindow.vala:182 src/Gtk/SetupWizardWindow.vala:220
-#: src/Gtk/DeleteWindow.vala:190
 msgid "Cancel"
 msgstr "Bekor qilish"
 
@@ -339,17 +334,17 @@ msgstr ""
 "keltirish uchun boshqa snapsotni tiklashingiz kerak. Tasdiqlash uchun Ha "
 "bosing."
 
-#: src/Gtk/MainWindow.vala:532
+#: src/Gtk/MainWindow.vala:544
 msgid "Cannot Delete Live Snapshot"
 msgstr "Jonli snapshotni oʻchirib boʻlmadi"
 
-#: src/Gtk/BackupBox.vala:90 src/Gtk/RestoreBox.vala:125
+#: src/Gtk/RestoreBox.vala:125 src/Gtk/BackupBox.vala:90
 #: src/Gtk/RsyncLogBox.vala:380 src/Gtk/RsyncLogBox.vala:383
 #: src/Gtk/RsyncLogBox.vala:566 src/Gtk/RsyncLogBox.vala:587
 msgid "Changed"
 msgstr "O‘zgartirilgan"
 
-#: src/Gtk/BackupBox.vala:92 src/Gtk/RestoreBox.vala:127
+#: src/Gtk/RestoreBox.vala:127 src/Gtk/BackupBox.vala:92
 msgid "Changed items:"
 msgstr "O‘zgartirilgan elementlar:"
 
@@ -357,21 +352,21 @@ msgstr "O‘zgartirilgan elementlar:"
 msgid "Checking Restore Actions (Dry Run)"
 msgstr "Tiklash amallari tekshirilmoqda (quruq ishga tushirish)"
 
-#: src/Core/Main.vala:3055
+#: src/Core/Main.vala:3017
 msgid "Checking file systems for errors..."
 msgstr "Fayl tizimlarida xatolar tekshirilmoqda..."
 
-#: src/Gtk/BackupBox.vala:95 src/Gtk/RestoreBox.vala:130
+#: src/Gtk/RestoreBox.vala:130 src/Gtk/BackupBox.vala:95
 #: src/Gtk/RsyncLogBox.vala:390
 #, c-format
 msgid "Checksum"
 msgstr "Nazorat summasi"
 
-#: src/Core/Main.vala:2695
+#: src/Core/Main.vala:2657
 msgid "Cleaning up..."
 msgstr "Tozalanmoqda..."
 
-#: src/Gtk/ExcludeBox.vala:84 src/Gtk/UsersBox.vala:88
+#: src/Gtk/UsersBox.vala:88 src/Gtk/ExcludeBox.vala:84
 msgid "Click to edit. Drag and drop to re-order."
 msgstr "Tahrirlash uchun bosing. Qayta tartiblash uchun torting."
 
@@ -387,23 +382,22 @@ msgstr "Tizimni klonlash"
 msgid "Cloning"
 msgstr "Klonlanmoqda"
 
-#: src/Core/Main.vala:3105
+#: src/Core/Main.vala:3067
 msgid "Cloning system..."
 msgstr "Tizim klonlanmoqda..."
 
-#: src/Utility/Gtk/CustomMessageDialog.vala:152
-#: src/Gtk/BootOptionsWindow.vala:103 src/Gtk/RestoreWindow.vala:498
-#: src/Gtk/BackupWindow.vala:173 src/Gtk/RsyncLogBox.vala:266
-#: src/Gtk/DeleteWindow.vala:173
+#: src/Gtk/BackupWindow.vala:173 src/Gtk/RestoreWindow.vala:498
+#: src/Gtk/BootOptionsWindow.vala:103 src/Gtk/DeleteWindow.vala:173
+#: src/Gtk/RsyncLogBox.vala:266 src/Utility/Gtk/CustomMessageDialog.vala:152
 msgid "Close"
 msgstr "Yopish"
 
-#: src/Gtk/FinishBox.vala:101 src/Gtk/DeleteFinishBox.vala:71
-#: src/Gtk/RestoreFinishBox.vala:106 src/Gtk/BackupFinishBox.vala:70
+#: src/Gtk/RestoreFinishBox.vala:106 src/Gtk/FinishBox.vala:101
+#: src/Gtk/DeleteFinishBox.vala:71 src/Gtk/BackupFinishBox.vala:70
 msgid "Close window to exit"
 msgstr "Chiqish uchun oynani yoping"
 
-#: src/Core/Main.vala:362
+#: src/Core/Main.vala:365
 msgid "Commands listed below are not available on this system"
 msgstr "Quyida keltirilgan buyruqlar ushbu tizimda mavjud emas"
 
@@ -411,17 +405,17 @@ msgstr "Quyida keltirilgan buyruqlar ushbu tizimda mavjud emas"
 msgid "Comments (click to edit)"
 msgstr "Sharhlar (tahrirlash uchun bosing)"
 
-#: src/Core/Main.vala:3098 src/Gtk/RestoreBox.vala:74
-#: src/Gtk/RestoreBox.vala:187
+#: src/Gtk/RestoreBox.vala:74 src/Gtk/RestoreBox.vala:187
+#: src/Core/Main.vala:3060
 msgid "Comparing Files (Dry Run)..."
 msgstr "Fayllar solishtirilmoqda (quruq ishga tushirish)..."
 
-#: src/Core/Main.vala:2856
+#: src/Core/Main.vala:2818
 msgid "Comparing files with rsync..."
 msgstr "Fayllar rsync bilan solishtirilmoqda..."
 
-#: src/Gtk/DeleteFinishBox.vala:50 src/Gtk/RestoreFinishBox.vala:50
-#: src/Gtk/RestoreFinishBox.vala:75 src/Gtk/BackupFinishBox.vala:50
+#: src/Gtk/RestoreFinishBox.vala:50 src/Gtk/RestoreFinishBox.vala:75
+#: src/Gtk/DeleteFinishBox.vala:50 src/Gtk/BackupFinishBox.vala:50
 msgid "Completed"
 msgstr "Bajarildi"
 
@@ -433,16 +427,16 @@ msgstr "Xatolar bilan tugallangan"
 msgid "Confirm Actions"
 msgstr "Amallarni tasdiqlang"
 
-#: src/AppConsole.vala:1119
+#: src/AppConsole.vala:1122
 #, c-format
 msgid "Continue with restore? (y/n): "
 msgstr "Tiklash davom ettirilsinmi? (y/n): "
 
-#: src/AppConsole.vala:858 src/AppConsole.vala:997
+#: src/AppConsole.vala:857 src/AppConsole.vala:1000
 msgid "Could not find device"
 msgstr "Qurilmani topib boʻlmadi"
 
-#: src/Utility/Device.vala:1330
+#: src/Utility/Device.vala:1344
 #, c-format
 msgid "Could not find file"
 msgstr "Faylni topib boʻlmadi"
@@ -451,17 +445,17 @@ msgstr "Faylni topib boʻlmadi"
 msgid "Could not find snapshot"
 msgstr "Snapshotni topib bo‘lmadi"
 
-#: src/Core/Main.vala:3278
+#: src/Core/Main.vala:3240
 msgid "Could not find system subvolume"
 msgstr "Tizim kichik boʻlimni topib boʻlmadi"
 
-#: src/Core/Main.vala:3306
+#: src/Core/Main.vala:3268
 msgid "Could not find system subvolumes for creating pre-restore snapshot"
 msgstr ""
 "Tiklashdan oldingi snapshotni yaratish uchun tizimning kichik boʻlimlarini "
 "topib boʻlmadi"
 
-#: src/Gtk/MainWindow.vala:140 src/Gtk/RsyncLogBox.vala:366
+#: src/Gtk/MainWindow.vala:136 src/Gtk/RsyncLogBox.vala:366
 #: src/Gtk/RsyncLogBox.vala:570
 #, c-format
 msgid "Create"
@@ -471,15 +465,15 @@ msgstr "Yaratish"
 msgid "Create Snapshot"
 msgstr "Snapshot yaratish"
 
-#: src/Gtk/ScheduleBox.vala:136
+#: src/Gtk/ScheduleBox.vala:104
 msgid "Create one per boot"
 msgstr "Har yuklashda bitta yaratish"
 
-#: src/Gtk/ScheduleBox.vala:100
+#: src/Gtk/ScheduleBox.vala:84
 msgid "Create one per day"
 msgstr "Kuniga bitta yaratish"
 
-#: src/Gtk/ScheduleBox.vala:118
+#: src/Gtk/ScheduleBox.vala:94
 msgid "Create one per hour"
 msgstr "Soatiga bitta yaratish"
 
@@ -487,7 +481,7 @@ msgstr "Soatiga bitta yaratish"
 msgid "Create one per month"
 msgstr "Oyiga bitta yaratish"
 
-#: src/Gtk/ScheduleBox.vala:82
+#: src/Gtk/ScheduleBox.vala:74
 msgid "Create one per week"
 msgstr "Haftasiga bitta yaratish"
 
@@ -499,11 +493,11 @@ msgstr "Snapshot yaratish (hatto rejalashtirilmagan bo‘lsa ham)"
 msgid "Create snapshot if scheduled"
 msgstr "Agar rejalashtirilgan bo‘lsa, snapshot yaratish"
 
-#: src/Gtk/MainWindow.vala:141
+#: src/Gtk/MainWindow.vala:137
 msgid "Create snapshot of current system"
 msgstr "Joriy tizimning snapshotini yaratish"
 
-#: src/Gtk/MainWindow.vala:1022
+#: src/Gtk/MainWindow.vala:1024
 msgid ""
 "Create snapshots manually or enable scheduled snapshots to protect your "
 "system"
@@ -519,26 +513,26 @@ msgstr "BTRFS yordamida snapshotlar yaratish"
 msgid "Create snapshots using RSYNC tool and hard-links"
 msgstr "RSYNC vositasi va qattiq havolalar yordamida snapshotlar yaratish"
 
-#: src/Gtk/BackupBox.vala:88 src/Gtk/RestoreBox.vala:123
+#: src/Gtk/RestoreBox.vala:123 src/Gtk/BackupBox.vala:88
 #: src/Gtk/RsyncLogBox.vala:366 src/Gtk/RsyncLogBox.vala:570
 #: src/Gtk/RsyncLogBox.vala:591
 #, c-format
 msgid "Created"
 msgstr "Yaratilgan"
 
-#: src/Core/Snapshot.vala:432
+#: src/Core/Snapshot.vala:416
 msgid "Created control file"
 msgstr "Yaratilgan nazorat fayli"
 
-#: src/Utility/TeeJee.FileSystem.vala:311
+#: src/Utility/TeeJee.FileSystem.vala:315
 msgid "Created directory"
 msgstr "Yaratilgan katalog"
 
-#: src/Core/Main.vala:3328
+#: src/Core/Main.vala:3290
 msgid "Created pre-restore snapshot"
 msgstr "Yaratilgan tiklashdan oldingi snapshot"
 
-#: src/Core/Main.vala:1783
+#: src/Core/Main.vala:1782
 msgid "Created subvolume snapshot"
 msgstr "Yaratilgan kichik boʻlim snapshoti"
 
@@ -546,20 +540,20 @@ msgstr "Yaratilgan kichik boʻlim snapshoti"
 msgid "Creating Snapshot..."
 msgstr "Snapshot yaratilmoqda..."
 
-#: src/Core/Main.vala:1721
+#: src/Core/Main.vala:1720
 msgid "Creating new backup..."
 msgstr "Yangi zaxira yaratilmoqda..."
 
-#: src/Core/Main.vala:1566
+#: src/Core/Main.vala:1573
 msgid "Creating new snapshot..."
 msgstr "Yangi snapshot yaratilmoqda..."
 
-#: src/Core/Main.vala:3256
+#: src/Core/Main.vala:3218
 msgid "Creating pre-restore snapshot from system subvolumes..."
 msgstr ""
 "Tizim kichik boʻlimlardan tiklashdan oldingi snapshot yaratilmoqda..."
 
-#: src/Core/Main.vala:3870
+#: src/Core/Main.vala:3891
 msgid "Critical Error"
 msgstr "Kritik xato"
 
@@ -579,19 +573,19 @@ msgstr "Cron vazifasi mavjud"
 msgid "Custom"
 msgstr "Maxsus"
 
-#: src/Gtk/SnapshotListBox.vala:301 src/Gtk/ScheduleBox.vala:100
+#: src/Gtk/SnapshotListBox.vala:301 src/Core/Tags.vala:40
 msgid "Daily"
 msgstr "Har kuni"
 
-#: src/Core/Main.vala:1231
+#: src/Core/Main.vala:1239
 msgid "Daily snapshot failed!"
 msgstr "Kundalik snapshot bajarilmadi!"
 
-#: src/Core/Main.vala:1212
+#: src/Core/Main.vala:1220
 msgid "Daily snapshots are enabled"
 msgstr "Kundalik snapshotlar yoqilgan"
 
-#: src/Core/Main.vala:2418
+#: src/Core/Main.vala:2380
 msgid "Data will be modified on following devices:"
 msgstr "Ma'lumotlar quyidagi qurilmalarda o‘zgartiriladi:"
 
@@ -599,9 +593,9 @@ msgstr "Ma'lumotlar quyidagi qurilmalarda o‘zgartiriladi:"
 msgid "Date Format"
 msgstr "Sana formati"
 
-#: src/Gtk/SnapshotListBox.vala:344 src/Gtk/MainWindow.vala:160
-#: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
-#: src/Gtk/DeleteWindow.vala:98 src/AppConsole.vala:384
+#: src/Gtk/SnapshotListBox.vala:344 src/Gtk/DeleteWindow.vala:98
+#: src/Gtk/MainWindow.vala:156 src/Gtk/RsyncLogBox.vala:370
+#: src/Gtk/RsyncLogBox.vala:574 src/AppConsole.vala:384
 #, c-format
 msgid "Delete"
 msgstr "O‘chirish"
@@ -614,7 +608,7 @@ msgstr "Snapshotlarni oʻchirish"
 msgid "Delete all snapshots"
 msgstr "Barcha snapshotlarni oʻchirish"
 
-#: src/Gtk/MainWindow.vala:161
+#: src/Gtk/MainWindow.vala:157
 msgid "Delete selected snapshot"
 msgstr "Tanlangan shapshotni oʻchirish"
 
@@ -622,18 +616,18 @@ msgstr "Tanlangan shapshotni oʻchirish"
 msgid "Delete snapshot"
 msgstr "Snapshotni oʻchirish"
 
-#: src/Gtk/BackupBox.vala:89 src/Gtk/RestoreBox.vala:124
+#: src/Gtk/RestoreBox.vala:124 src/Gtk/BackupBox.vala:89
 #: src/Gtk/RsyncLogBox.vala:370 src/Gtk/RsyncLogBox.vala:574
 #: src/Gtk/RsyncLogBox.vala:595
 #, c-format
 msgid "Deleted"
 msgstr "Oʻchirilgan"
 
-#: src/Utility/TeeJee.FileSystem.vala:384
+#: src/Utility/TeeJee.FileSystem.vala:388
 msgid "Deleted directory"
 msgstr "O‘chirilgan katalog"
 
-#: src/Core/Main.vala:3235 src/Core/Main.vala:3239 src/Core/Subvolume.vala:179
+#: src/Core/Subvolume.vala:179 src/Core/Main.vala:3197 src/Core/Main.vala:3201
 #, c-format
 msgid "Deleted subvolume"
 msgstr "Oʻchirilgan kichik boʻlim"
@@ -665,34 +659,34 @@ msgstr "Yo‘q qilingan qgroup"
 msgid "Destroying qgroup"
 msgstr "qgroupni yo‘q qilinmoqda"
 
-#: src/Core/Main.vala:2421 src/Core/Main.vala:2453
-#: src/Core/SnapshotRepo.vala:74 src/Core/SnapshotRepo.vala:603
-#: src/Core/SnapshotRepo.vala:606 src/Utility/Device.vala:1954
-#: src/Utility/Device.vala:1964 src/Gtk/RestoreDeviceBox.vala:97
-#: src/AppConsole.vala:470 src/AppConsole.vala:509 src/AppConsole.vala:557
+#: src/Gtk/RestoreDeviceBox.vala:97 src/AppConsole.vala:470
+#: src/AppConsole.vala:509 src/AppConsole.vala:557 src/Core/Main.vala:2383
+#: src/Core/Main.vala:2415 src/Core/SnapshotRepo.vala:74
+#: src/Core/SnapshotRepo.vala:599 src/Core/SnapshotRepo.vala:602
+#: src/Utility/Device.vala:1968 src/Utility/Device.vala:1978
 #, c-format
 msgid "Device"
 msgstr "Qurilma"
 
-#: src/Utility/Device.vala:1412
+#: src/Utility/Device.vala:1426
 msgid "Device is unlocked"
 msgstr "Qurilma qulfdan chiqarilgan"
 
-#: src/Utility/Device.vala:1307 src/Utility/Device.vala:1369
+#: src/Utility/Device.vala:1321 src/Utility/Device.vala:1383
 msgid "Device name is empty!"
 msgstr "Qurilma nomi boʻsh!"
 
-#: src/Core/Main.vala:3588 src/Core/SnapshotRepo.vala:483
-#: src/AppConsole.vala:681
+#: src/AppConsole.vala:681 src/Core/Main.vala:3608
+#: src/Core/SnapshotRepo.vala:479
 msgid "Device not found"
 msgstr "Qurilma topilmadi"
 
-#: src/Gtk/BackupDeviceBox.vala:97
+#: src/Gtk/BackupDeviceBox.vala:98
 #, c-format
 msgid "Devices displayed above have BTRFS file systems."
 msgstr "Yuqorida ko‘rsatilgan qurilmalarda BTRFS fayl tizimlari mavjud."
 
-#: src/Gtk/BackupDeviceBox.vala:104
+#: src/Gtk/BackupDeviceBox.vala:105
 #, c-format
 msgid "Devices displayed above have Linux file systems."
 msgstr "Yuqorida ko‘rsatilgan qurilmalarda Linux fayl tizimlari mavjud."
@@ -705,30 +699,30 @@ msgstr "Snapshot yaratilgan qurilmalar oldindan tanlangan."
 msgid "Devices with Linux file systems"
 msgstr "Linux fayl tizimlariga ega qurilmalar"
 
-#: src/Gtk/BackupDeviceBox.vala:105
+#: src/Gtk/BackupDeviceBox.vala:106
 msgid "Devices with Windows file systems are not supported (NTFS, FAT, etc)."
 msgstr ""
 "Windows fayl tizimlariga ega qurilmalar qo‘llab-quvvatlanmaydi (NTFS, FAT va "
 "boshqalar)."
 
-#: src/Core/Main.vala:2513 src/Gtk/RestoreSummaryBox.vala:64
+#: src/Gtk/RestoreSummaryBox.vala:64 src/Core/Main.vala:2475
 msgid "Disclaimer"
 msgstr "Masʼuliyatdan voz kechish"
 
-#: src/Gtk/BackupDeviceBox.vala:127
+#: src/Gtk/BackupDeviceBox.vala:128
 msgid "Disk"
 msgstr "Disk"
 
-#: src/Core/Main.vala:242
+#: src/Core/Main.vala:245
 msgid "Distribution"
 msgstr "Distributiv"
 
-#: src/Gtk/MainWindow.vala:1016
+#: src/Gtk/MainWindow.vala:1018
 msgid "Enable scheduled snapshots to protect your system"
 msgstr ""
 "Tizimingizni himoya qilish uchun rejalashtirilgan snapshotlarni yoqish"
 
-#: src/Utility/Device.vala:1476
+#: src/Utility/Device.vala:1490
 msgid "Encrypted Device"
 msgstr "Shifrlangan qurilma"
 
@@ -736,22 +730,22 @@ msgstr "Shifrlangan qurilma"
 msgid "Encrypted Home Directory"
 msgstr "Shifrlangan uy katalogi"
 
-#: src/AppConsole.vala:916
+#: src/AppConsole.vala:919
 #, c-format
 msgid "Enter device name or number"
 msgstr "Qurilma nomi yoki raqamini kiriting"
 
-#: src/AppConsole.vala:700 src/AppConsole.vala:1063
+#: src/AppConsole.vala:700 src/AppConsole.vala:1066
 #, c-format
 msgid "Enter device name or number (a=Abort)"
 msgstr "Qurilma nomini yoki raqamini kiriting (a=To‘xtatish)"
 
-#: src/Utility/Device.vala:1477
+#: src/Utility/Device.vala:1491
 #, c-format
 msgid "Enter passphrase to unlock '%s'"
 msgstr "'%s' qulfini ochish uchun parol iborasini kiriting"
 
-#: src/AppConsole.vala:778
+#: src/AppConsole.vala:777
 #, c-format
 msgid "Enter snapshot number (a=Abort, p=Previous, n=Next)"
 msgstr "Snapshot raqamini kiriting (a=To‘xtatish, p=Oldingi, n=Keyingi)"
@@ -768,7 +762,7 @@ msgstr "Xato"
 msgid "Error running Rsync"
 msgstr "Rsync ishga tushirishda xatolik yuz berdi"
 
-#: src/Gtk/BackupWindow.vala:83 src/Gtk/SetupWizardWindow.vala:99
+#: src/Gtk/BackupWindow.vala:83 src/Gtk/SetupWizardWindow.vala:95
 msgid "Estimate"
 msgstr "Taxmin qilish"
 
@@ -776,7 +770,7 @@ msgstr "Taxmin qilish"
 msgid "Estimating System Size..."
 msgstr "Tizim hajmi taxmin qilinmoqda..."
 
-#: src/Core/Main.vala:1562
+#: src/Core/Main.vala:1569
 msgid "Estimating system size..."
 msgstr "Tizim hajmi taxmin qilinmoqda..."
 
@@ -796,10 +790,6 @@ msgstr "Ilova sozlamalarini istisno qilish"
 msgid "Exclude Apps"
 msgstr "Ilovalarni istisno qilish"
 
-#: src/Gtk/ExcludeMessageWindow.vala:70
-msgid "Exclude List"
-msgstr "Istisno qilish ro‘yxati"
-
 #: src/Gtk/ExcludeListSummaryWindow.vala:49
 msgid "Exclude List Summary"
 msgstr "Istisno qilish ro‘yxati xulosasi"
@@ -808,11 +798,7 @@ msgstr "Istisno qilish ro‘yxati xulosasi"
 msgid "Exclude Pattern"
 msgstr "Istisno qilish namunasi"
 
-#: src/Gtk/ExcludeMessageWindow.vala:56
-msgid "Excluded Directories"
-msgstr "Istisno qilingan kataloglar"
-
-#: src/Core/Main.vala:1874
+#: src/Core/Main.vala:1829
 msgid "Expected values: O, B, H, D, W, M"
 msgstr "Kutilgan qiymatlar: O, B, H, D, V, M"
 
@@ -820,32 +806,32 @@ msgstr "Kutilgan qiymatlar: O, B, H, D, V, M"
 msgid "Failed to add cron job"
 msgstr "Cron vazifasini qo‘shib bo‘lmadi"
 
-#: src/Utility/TeeJee.FileSystem.vala:198
+#: src/Utility/TeeJee.FileSystem.vala:202
 msgid "Failed to copy file"
 msgstr "Faylni nusxalab bo‘lmadi"
 
-#: src/Utility/TeeJee.FileSystem.vala:314
-#: src/Utility/TeeJee.FileSystem.vala:323
+#: src/Utility/TeeJee.FileSystem.vala:318
+#: src/Utility/TeeJee.FileSystem.vala:327
 msgid "Failed to create directory"
 msgstr "Katalog yaratib bo‘lmadi"
 
-#: src/Core/Main.vala:1686
+#: src/Core/Main.vala:1689
 msgid "Failed to create new snapshot"
 msgstr "Yangi snapshot yaratib bo‘lmadi"
 
-#: src/Core/Main.vala:1444
+#: src/Core/Main.vala:1451
 msgid "Failed to create snapshot"
 msgstr "Snapshot yaratib bo‘lmadi"
 
-#: src/Core/Main.vala:1779
+#: src/Core/Main.vala:1778
 msgid "Failed to create subvolume snapshot"
 msgstr "Kichik bo‘lim snapshotini yaratib bo‘lmadi"
 
-#: src/Core/SnapshotRepo.vala:919 src/Core/SnapshotRepo.vala:923
+#: src/Core/SnapshotRepo.vala:912 src/Core/SnapshotRepo.vala:916
 msgid "Failed to create symlinks"
 msgstr "Ramziy havolalar yaratib bo‘lmadi"
 
-#: src/Utility/TeeJee.FileSystem.vala:387
+#: src/Utility/TeeJee.FileSystem.vala:391
 msgid "Failed to delete directory"
 msgstr "Katalogni oʻchirib boʻlmadi"
 
@@ -861,7 +847,7 @@ msgstr "Snapshot ichiga oʻrnatilgan kichik boʻlimni oʻchirib boʻlmadi"
 msgid "Failed to delete snapshot subvolume"
 msgstr "Snapshot kichik bo‘limni o‘chirib bo‘lmadi"
 
-#: src/Core/SnapshotRepo.vala:935
+#: src/Core/SnapshotRepo.vala:928
 msgid "Failed to delete symlinks"
 msgstr "Ramziy havolalarni oʻchirib boʻlmadi"
 
@@ -869,8 +855,8 @@ msgstr "Ramziy havolalarni oʻchirib boʻlmadi"
 msgid "Failed to export crontab file"
 msgstr "Crontab faylini eksport qilib bo‘lmadi"
 
-#: src/AppConsole.vala:715 src/AppConsole.vala:785 src/AppConsole.vala:925
-#: src/AppConsole.vala:1028 src/AppConsole.vala:1079 src/AppConsole.vala:1125
+#: src/AppConsole.vala:715 src/AppConsole.vala:784 src/AppConsole.vala:928
+#: src/AppConsole.vala:1031 src/AppConsole.vala:1082 src/AppConsole.vala:1128
 msgid "Failed to get input from user in 3 attempts"
 msgstr "3 marta urinishda foydalanuvchidan maʼlumot olinmadi"
 
@@ -878,7 +864,7 @@ msgstr "3 marta urinishda foydalanuvchidan maʼlumot olinmadi"
 msgid "Failed to get partition list"
 msgstr "Boʻlimlar roʻyxatini olib boʻlmadi"
 
-#: src/Core/Main.vala:3667
+#: src/Core/Main.vala:3687
 msgid "Failed to get partition list."
 msgstr "Boʻlimlar roʻyxatini olib boʻlmadi."
 
@@ -890,19 +876,19 @@ msgstr "Crontab faylini oʻrnatib boʻlmadi"
 msgid "Failed to mount devices"
 msgstr "Qurilmalarni ulab bo‘lmadi"
 
-#: src/Utility/TeeJee.FileSystem.vala:217
+#: src/Utility/TeeJee.FileSystem.vala:221
 msgid "Failed to move file"
 msgstr "Faylni ko‘chirib bo‘lmadi"
 
-#: src/Core/Main.vala:3293
+#: src/Core/Main.vala:3255
 msgid "Failed to move system subvolume to snapshot directory"
 msgstr "Tizimning kichik bo‘limni snapshotlar katalogiga ko‘chirib bo‘lmadi"
 
-#: src/Core/Main.vala:4134
+#: src/Core/Main.vala:4152
 msgid "Failed to query subvolume list"
 msgstr "Kichik boʻlimlar roʻyxatini soʻrab boʻlmadi"
 
-#: src/Core/Main.vala:4219
+#: src/Core/Main.vala:4237
 msgid "Failed to query subvolume quota"
 msgstr "Kichik disk kvotasi so‘rovi amalga oshmadi"
 
@@ -916,7 +902,7 @@ msgstr "Crontab o‘qib bo‘lmadi"
 msgid "Failed to read file"
 msgstr "Faylni o‘qib bo‘lmadi"
 
-#: src/Core/SnapshotRepo.vala:895
+#: src/Core/SnapshotRepo.vala:892
 msgid "Failed to remove"
 msgstr "Olib tashlab bo‘lmadi"
 
@@ -924,8 +910,8 @@ msgstr "Olib tashlab bo‘lmadi"
 msgid "Failed to remove cron job"
 msgstr "Cron vazifasini olib tashlab bo‘lmadi"
 
-#: src/Core/Snapshot.vala:532 src/Core/Snapshot.vala:544
-#: src/Core/Snapshot.vala:552
+#: src/Core/Snapshot.vala:516 src/Core/Snapshot.vala:528
+#: src/Core/Snapshot.vala:536
 msgid "Failed to remove snapshot"
 msgstr "Snapshotni olib tashlab bo‘lmadi"
 
@@ -933,25 +919,25 @@ msgstr "Snapshotni olib tashlab bo‘lmadi"
 msgid "Failed to restore system subvolume"
 msgstr "Tizimning kichik boʻlimini tiklab boʻlmadi"
 
-#: src/Core/Main.vala:1636
+#: src/Core/Main.vala:1643
 msgid "Failed to save exclude list"
 msgstr "Istisno qilinganlar roʻyxatini saqlab boʻlmadi"
 
-#: src/Utility/Device.vala:1403 src/Utility/Device.vala:1457
-#: src/Utility/Device.vala:1482 src/Utility/Device.vala:1503
-#: src/Utility/Device.vala:1523
+#: src/Utility/Device.vala:1417 src/Utility/Device.vala:1471
+#: src/Utility/Device.vala:1496 src/Utility/Device.vala:1517
+#: src/Utility/Device.vala:1537
 msgid "Failed to unlock device"
 msgstr "Qurilma qulfini ochib bo‘lmadi"
 
-#: src/Utility/Device.vala:1755
+#: src/Utility/Device.vala:1769
 msgid "Failed to unmount"
 msgstr "Uzib boʻlmadi"
 
-#: src/Core/Main.vala:3871
+#: src/Core/Main.vala:3892
 msgid "Failed to unmount device!"
 msgstr "Qurilmani uzib bo‘lmadi!"
 
-#: src/Utility/TeeJee.FileSystem.vala:182
+#: src/Utility/TeeJee.FileSystem.vala:186
 msgid "Failed to write file"
 msgstr "Faylni yozib bo‘lmadi"
 
@@ -963,16 +949,12 @@ msgstr "Fayl (snapshot)"
 msgid "File (system)"
 msgstr "Fayl (tizim)"
 
-#: src/Gtk/ExcludeMessageWindow.vala:97
-msgid "File Pattern"
-msgstr "Fayl namunasi"
-
 #: src/Gtk/BackupBox.vala:83
 msgid "File and directory counts:"
 msgstr "Fayl va kataloglar soni:"
 
-#: src/Utility/CronTab.vala:225 src/Utility/RsyncTask.vala:308
-#: src/Utility/TeeJee.FileSystem.vala:212
+#: src/Utility/TeeJee.FileSystem.vala:216 src/Utility/RsyncTask.vala:305
+#: src/Utility/CronTab.vala:225
 msgid "File not found"
 msgstr "Fayl topilmadi"
 
@@ -994,11 +976,7 @@ msgstr ""
 msgid "Files and directory counts:"
 msgstr "Fayllar va kataloglar soni:"
 
-#: src/Gtk/ExcludeMessageWindow.vala:76
-msgid "Files matching the following patterns will be excluded"
-msgstr "Quyidagi namunalarga mos keladigan fayllar bundan mustasno"
-
-#: src/Utility/Device.vala:1972
+#: src/Utility/Device.vala:1986
 #, c-format
 msgid "Filesystem"
 msgstr "Fayl tizimi"
@@ -1011,12 +989,12 @@ msgstr "Nomi yoki yo‘li bo‘yicha filtrlash"
 msgid "Filters"
 msgstr "Filtrlar"
 
-#: src/Gtk/BackupWindow.vala:98 src/Gtk/SetupWizardWindow.vala:211
+#: src/Gtk/BackupWindow.vala:98 src/Gtk/SetupWizardWindow.vala:203
 #: src/Gtk/DeleteWindow.vala:103
 msgid "Finish"
 msgstr "Tugatish"
 
-#: src/Gtk/RestoreWindow.vala:130 src/Gtk/SetupWizardWindow.vala:120
+#: src/Gtk/RestoreWindow.vala:130 src/Gtk/SetupWizardWindow.vala:116
 msgid "Finished"
 msgstr "Tugadi"
 
@@ -1024,15 +1002,15 @@ msgstr "Tugadi"
 msgid "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 msgstr "Firefox, Chromium, Chrome, Opera, Epiphany, Midori"
 
-#: src/Core/SnapshotRepo.vala:587
+#: src/Core/SnapshotRepo.vala:583
 msgid "First snapshot requires:"
 msgstr "Birinchi snapshot talab qiladi:"
 
-#: src/Core/Main.vala:3226
+#: src/Core/Main.vala:3188
 msgid "Found existing pre-restore snapshot"
 msgstr "Tiklashdan oldingi mavjud snapshot topildi"
 
-#: src/Gtk/BackupDeviceBox.vala:215
+#: src/Gtk/BackupDeviceBox.vala:216
 msgid "Free"
 msgstr "Boʼsh"
 
@@ -1040,7 +1018,7 @@ msgstr "Boʼsh"
 msgid "Free space"
 msgstr "Boʻsh joy"
 
-#: src/AppConsole.vala:1093
+#: src/AppConsole.vala:1096
 msgid "GRUB Device"
 msgstr "GRUB qurilmasi"
 
@@ -1048,11 +1026,11 @@ msgstr "GRUB qurilmasi"
 msgid "GRUB device not selected"
 msgstr "GRUB qurilmasi tanlanmagan"
 
-#: src/AppConsole.vala:1098
+#: src/AppConsole.vala:1101
 msgid "GRUB will NOT be reinstalled"
 msgstr "GRUB qayta oʻrnatilmaydi"
 
-#: src/Core/Main.vala:2655
+#: src/Core/Main.vala:2617
 msgid "Generating initramfs..."
 msgstr "Initramfs yaratilmoqda..."
 
@@ -1060,7 +1038,7 @@ msgstr "Initramfs yaratilmoqda..."
 msgid "Global"
 msgstr "Global"
 
-#: src/Gtk/BackupBox.vala:100 src/Gtk/RestoreBox.vala:135
+#: src/Gtk/RestoreBox.vala:135 src/Gtk/BackupBox.vala:100
 #: src/Gtk/RsyncLogBox.vala:400
 #, c-format
 msgid "Group"
@@ -1069,14 +1047,6 @@ msgstr "Guruh"
 #: src/Gtk/SnapshotBackendBox.vala:141
 msgid "Help"
 msgstr "Yordam"
-
-#: src/Gtk/ExcludeMessageWindow.vala:128
-msgid ""
-"Hidden files and folders are included by default since they contain user-"
-"specific configuration files."
-msgstr ""
-"Yashirin fayllar va jildlar standart bo‘yicha kiritilgan, chunki ular "
-"foydalanuvchi uchun maxsus konfiguratsiya fayllarini o‘z ichiga oladi."
 
 #: src/Gtk/DeleteWindow.vala:181
 msgid "Hide"
@@ -1094,19 +1064,15 @@ msgstr "Ushbu oynani yashirish (fayllar fonda o‘chiriladi)"
 msgid "Home"
 msgstr "Uy"
 
-#: src/Gtk/ExcludeMessageWindow.vala:115
-msgid "Home Directory"
-msgstr "Uy katalogi"
-
-#: src/Gtk/SnapshotListBox.vala:300 src/Gtk/ScheduleBox.vala:118
+#: src/Gtk/SnapshotListBox.vala:300 src/Core/Tags.vala:39
 msgid "Hourly"
 msgstr "Soatlik"
 
-#: src/Core/Main.vala:1200
+#: src/Core/Main.vala:1208
 msgid "Hourly snapshot failed!"
 msgstr "Soatlik snapshotni olib bo‘lmadi!"
 
-#: src/Core/Main.vala:1181
+#: src/Core/Main.vala:1189
 msgid "Hourly snapshots are enabled"
 msgstr "Soatlik snapshotlar yoqilgan"
 
@@ -1118,7 +1084,7 @@ msgstr ""
 "Tiklangan tizim yuklanmasa, Live CD/USB dan yuklang, Timeshiftni o‘rnating "
 "va boshqa snapshotni tiklashga harakat qiling."
 
-#: src/Core/Main.vala:2519
+#: src/Core/Main.vala:2481
 msgid ""
 "If these terms are not acceptable to you, please do not proceed beyond this "
 "point!"
@@ -1142,16 +1108,16 @@ msgstr "Barcha fayllarni kiritish"
 msgid "Include Only Hidden Files"
 msgstr "Faqat yashirin fayllarni kiritish"
 
-#: src/Core/Main.vala:2333
+#: src/Core/Main.vala:2295
 msgid "Invalid Snapshot"
 msgstr "Yaroqsiz snapshot"
 
-#: src/AppConsole.vala:260
+#: src/AppConsole.vala:259
 #, c-format
 msgid "Invalid command line arguments"
 msgstr "Yaroqsiz buyruq qatori argumentlari"
 
-#: src/Gtk/MainWindow.vala:806
+#: src/Gtk/MainWindow.vala:818
 msgid "Invalid snapshot"
 msgstr "Yaroqsiz snapshot"
 
@@ -1159,7 +1125,7 @@ msgstr "Yaroqsiz snapshot"
 msgid "Items Not Selected"
 msgstr "Elementlar tanlanmagan"
 
-#: src/Gtk/ScheduleBox.vala:283
+#: src/Gtk/ScheduleBox.vala:255
 msgid "Keep"
 msgstr "Saqlash"
 
@@ -1194,83 +1160,83 @@ msgstr "Ushbu ulash yo‘lini ildiz fayl tizimida saqlash"
 msgid "LIVE"
 msgstr "JONLI"
 
-#: src/Utility/Device.vala:1973 src/Gtk/BackupDeviceBox.vala:254
-#: src/AppConsole.vala:474 src/AppConsole.vala:513
+#: src/Gtk/BackupDeviceBox.vala:255 src/AppConsole.vala:474
+#: src/AppConsole.vala:513 src/Utility/Device.vala:1987
 #, c-format
 msgid "Label"
 msgstr "Yorliq"
 
-#: src/Core/Main.vala:1162
+#: src/Core/Main.vala:1170
 #, c-format
 msgid "Last boot snapshot is %d hours old"
 msgstr "Oxirgi yuklash snapshoti %d soat oldin"
 
-#: src/Core/Main.vala:1157
+#: src/Core/Main.vala:1165
 msgid "Last boot snapshot is older than system start time"
 msgstr "Oxirgi yuklash snapshoti tizimni ishga tushirish vaqtidan oldinroq"
 
-#: src/Core/Main.vala:1153
+#: src/Core/Main.vala:1161
 msgid "Last boot snapshot not found"
 msgstr "Oxirgi yuklash snapshoti topilmadi"
 
-#: src/Core/Main.vala:1224
+#: src/Core/Main.vala:1232
 #, c-format
 msgid "Last daily snapshot is %d hours old"
 msgstr "Oxirgi kunlik snapshot %d soat oldin"
 
-#: src/Core/Main.vala:1219
+#: src/Core/Main.vala:1227
 msgid "Last daily snapshot is more than 1 day old"
 msgstr "Oxirgi kunlik snapshot 1 kundan oldinroq"
 
-#: src/Core/Main.vala:1215
+#: src/Core/Main.vala:1223
 msgid "Last daily snapshot not found"
 msgstr "Oxirgi kunlik snapshot topilmadi"
 
-#: src/Core/Main.vala:1193
+#: src/Core/Main.vala:1201
 #, c-format
 msgid "Last hourly snapshot is %d minutes old"
 msgstr "Oxirgi soatlik snapshot %d daqiqa oldin"
 
-#: src/Core/Main.vala:1188
+#: src/Core/Main.vala:1196
 msgid "Last hourly snapshot is more than 1 hour old"
 msgstr "Oxirgi soatlik snapshot 1 soatdan oldinroq"
 
-#: src/Core/Main.vala:1184
+#: src/Core/Main.vala:1192
 msgid "Last hourly snapshot not found"
 msgstr "Oxirgi soatlik snapshot topilmadi"
 
-#: src/Core/Main.vala:1286
+#: src/Core/Main.vala:1294
 #, c-format
 msgid "Last monthly snapshot is %d days old"
 msgstr "Oxirgi oylik snapshot %d kun oldin"
 
-#: src/Core/Main.vala:1281
+#: src/Core/Main.vala:1289
 msgid "Last monthly snapshot is more than 1 month old"
 msgstr "Oxirgi oylik snapshot 1 oydan oldinroq"
 
-#: src/Core/Main.vala:1277
+#: src/Core/Main.vala:1285
 msgid "Last monthly snapshot not found"
 msgstr "Oxirgi oylik snapshot topilmadi"
 
-#: src/Core/Main.vala:1255
+#: src/Core/Main.vala:1263
 #, c-format
 msgid "Last weekly snapshot is %d days old"
 msgstr "Oxirgi haftalik snapshot %d kun oldin"
 
-#: src/Core/Main.vala:1250
+#: src/Core/Main.vala:1258
 msgid "Last weekly snapshot is more than 1 week old"
 msgstr "Oxirgi haftalik snapshot 1 haftadan oldinroq"
 
-#: src/Core/Main.vala:1246
+#: src/Core/Main.vala:1254
 msgid "Last weekly snapshot not found"
 msgstr "Oxirgi haftalik snapshot topilmadi"
 
-#: src/Gtk/MainWindow.vala:997
+#: src/Gtk/MainWindow.vala:999
 #, c-format
 msgid "Latest snapshot"
 msgstr "Eng soʻnggi snapshot"
 
-#: src/Core/Main.vala:1627
+#: src/Core/Main.vala:1634
 #, c-format
 msgid "Linking from snapshot"
 msgstr "Snapshotdan ulanish"
@@ -1287,16 +1253,16 @@ msgstr "Qurilmalarni ro‘yxatlash"
 msgid "List snapshots"
 msgstr "Snapshotlarni roʻyxatlash"
 
-#: src/Gtk/MainWindow.vala:948
+#: src/Gtk/MainWindow.vala:950
 msgid "Live USB Mode (Restore Only)"
 msgstr "Jonli USB rejimi (faqat tiklash)"
 
-#: src/Gtk/SettingsWindow.vala:90 src/Gtk/BackupWindow.vala:88
-#: src/Gtk/SetupWizardWindow.vala:104
+#: src/Gtk/BackupWindow.vala:88 src/Gtk/SettingsWindow.vala:90
+#: src/Gtk/SetupWizardWindow.vala:100
 msgid "Location"
 msgstr "Joylashuv"
 
-#: src/Gtk/MainWindow.vala:428
+#: src/Gtk/MainWindow.vala:440
 msgid "Main window closed by user"
 msgstr "Asosiy oyna foydalanuvchi tomonidan yopildi"
 
@@ -1304,11 +1270,11 @@ msgstr "Asosiy oyna foydalanuvchi tomonidan yopildi"
 msgid "Mark/Unmark for Deletion"
 msgstr "O‘chirish uchun belgilash/belgini olib tashlash"
 
-#: src/Core/SnapshotRepo.vala:632 src/Core/SnapshotRepo.vala:675
+#: src/Core/SnapshotRepo.vala:627 src/Core/SnapshotRepo.vala:673
 msgid "Maximum backups exceeded for backup level"
 msgstr "Zaxiralash darajasi uchun maksimal zahiradan oshib ketdi"
 
-#: src/Gtk/MainWindow.vala:207
+#: src/Gtk/MainWindow.vala:183
 msgid "Menu"
 msgstr "Menyu"
 
@@ -1316,51 +1282,51 @@ msgstr "Menyu"
 msgid "Misc"
 msgstr "Boshqa"
 
-#: src/Core/Main.vala:251
+#: src/Core/Main.vala:254
 msgid "Missing Dependencies"
 msgstr "Yo‘qolgan bog‘liqliklar"
 
-#: src/Core/SnapshotRepo.vala:609
+#: src/Core/SnapshotRepo.vala:605
 #, c-format
 msgid "Mode"
 msgstr "Rejim"
 
-#: src/Utility/Device.vala:1956
+#: src/Utility/Device.vala:1970
 #, c-format
 msgid "Model"
 msgstr "Model"
 
-#: src/Gtk/SnapshotListBox.vala:303 src/Gtk/ScheduleBox.vala:64
+#: src/Gtk/SnapshotListBox.vala:303 src/Core/Tags.vala:42
 msgid "Monthly"
 msgstr "Oylik"
 
-#: src/Core/Main.vala:1274
+#: src/Core/Main.vala:1282
 msgid "Monthly snapshot are enabled"
 msgstr "Oylik snapshot yoqilgan"
 
-#: src/Core/Main.vala:1293
+#: src/Core/Main.vala:1301
 msgid "Monthly snapshot failed!"
 msgstr "Oylik snapshot bajarilmadi!"
 
-#: src/Core/Main.vala:2420 src/Core/Main.vala:2453
+#: src/Core/Main.vala:2382 src/Core/Main.vala:2415
 msgid "Mount"
 msgstr "Ulash"
 
-#: src/Core/Main.vala:3300
+#: src/Core/Main.vala:3262
 msgid "Moved system subvolume to snapshot directory"
 msgstr "Tizim kichik boʻlimi snapshotlar katalogiga koʻchirildi"
 
-#: src/Gtk/MainWindow.vala:782
+#: src/Gtk/MainWindow.vala:794
 msgid "Multiple snapshots selected"
 msgstr "Bir nechta snapshot tanlandi"
 
-#: src/Gtk/BackupDeviceBox.vala:235 src/Gtk/RsyncLogBox.vala:491
+#: src/Gtk/BackupDeviceBox.vala:236 src/Gtk/RsyncLogBox.vala:491
 #: src/AppConsole.vala:440
 msgid "Name"
 msgstr "Nomi"
 
-#: src/Gtk/RestoreWindow.vala:201 src/Gtk/BackupWindow.vala:165
-#: src/Gtk/SetupWizardWindow.vala:203 src/Gtk/DeleteWindow.vala:165
+#: src/Gtk/BackupWindow.vala:165 src/Gtk/RestoreWindow.vala:201
+#: src/Gtk/SetupWizardWindow.vala:195 src/Gtk/DeleteWindow.vala:165
 msgid "Next"
 msgstr "Keyingi"
 
@@ -1368,20 +1334,20 @@ msgstr "Keyingi"
 msgid "No"
 msgstr "Yo‘q"
 
-#: src/Gtk/BackupBox.vala:87 src/Gtk/RestoreBox.vala:122
+#: src/Gtk/RestoreBox.vala:122 src/Gtk/BackupBox.vala:87
 msgid "No Change"
 msgstr "O‘zgarish yo‘q"
 
-#: src/Gtk/MainWindow.vala:601 src/Gtk/DeleteWindow.vala:335
+#: src/Gtk/DeleteWindow.vala:335 src/Gtk/MainWindow.vala:613
 msgid "No Snapshots Selected"
 msgstr "Hech qanday snapshot tanlanmagan"
 
-#: src/Gtk/MainWindow.vala:1021
+#: src/Gtk/MainWindow.vala:1023
 msgid "No snapshots available"
 msgstr "Snapshotlar mavjud emas"
 
-#: src/Core/SnapshotRepo.vala:834 src/Gtk/MainWindow.vala:965
-#: src/AppConsole.vala:329
+#: src/Gtk/MainWindow.vala:967 src/AppConsole.vala:329
+#: src/Core/SnapshotRepo.vala:831
 msgid "No snapshots found"
 msgstr "Hech qanday snapshot topilmadi"
 
@@ -1389,19 +1355,19 @@ msgstr "Hech qanday snapshot topilmadi"
 msgid "No snapshots found on device"
 msgstr "Qurilmada hech qanday snapshot topilmadi"
 
-#: src/Gtk/MainWindow.vala:522
+#: src/Gtk/MainWindow.vala:534
 msgid "No snapshots on device"
 msgstr "Qurilmada snapshotlat yo‘q"
 
-#: src/Core/SnapshotRepo.vala:585
+#: src/Core/SnapshotRepo.vala:581
 msgid "No snapshots on this device"
 msgstr "Ushbu qurilmada snapshotlar yo‘q"
 
-#: src/Gtk/MainWindow.vala:775
+#: src/Gtk/MainWindow.vala:787
 msgid "No snapshots selected"
 msgstr "Hech qanday snapshot tanlanmagan"
 
-#: src/Gtk/MainWindow.vala:998 src/Gtk/MainWindow.vala:1000
+#: src/Gtk/MainWindow.vala:1000 src/Gtk/MainWindow.vala:1002
 msgid "None"
 msgstr "Yo‘q"
 
@@ -1410,15 +1376,15 @@ msgstr "Yo‘q"
 msgid "Not Found"
 msgstr "Topilmadi"
 
-#: src/Core/SnapshotRepo.vala:603
+#: src/Core/SnapshotRepo.vala:599
 msgid "Not Selected"
 msgstr "Tanlanmagan"
 
-#: src/Core/Main.vala:500
+#: src/Core/Main.vala:503
 msgid "Not Supported"
 msgstr "Qo‘llab-quvvatlanmaydi"
 
-#: src/Core/SnapshotRepo.vala:547 src/Core/SnapshotRepo.vala:576
+#: src/Core/SnapshotRepo.vala:543 src/Core/SnapshotRepo.vala:572
 msgid "Not enough disk space"
 msgstr "Diskda joy yetarli emas"
 
@@ -1426,7 +1392,7 @@ msgstr "Diskda joy yetarli emas"
 msgid "Notes"
 msgstr "Eslatmalar"
 
-#: src/Core/Main.vala:1304
+#: src/Core/Main.vala:1312
 msgid "Nothing to do!"
 msgstr "Qiladigan ish yo‘q!"
 
@@ -1435,7 +1401,7 @@ msgstr "Qiladigan ish yo‘q!"
 msgid "Num"
 msgstr "Num"
 
-#: src/Gtk/ScheduleBox.vala:282
+#: src/Gtk/ScheduleBox.vala:254
 msgid ""
 "Number of snapshots to keep.\n"
 "Older snapshots will be removed once this limit is exceeded."
@@ -1443,9 +1409,9 @@ msgstr ""
 "Saqlash uchun snapshotlar soni.\n"
 "Bu chegaradan oshib ketganda eski snapshotlar oʻchirib tashlanadi."
 
-#: src/Core/SnapshotRepo.vala:558 src/Utility/Gtk/CustomMessageDialog.vala:148
+#: src/Gtk/ExcludeListSummaryWindow.vala:84 src/Gtk/SettingsWindow.vala:123
+#: src/Core/SnapshotRepo.vala:554 src/Utility/Gtk/CustomMessageDialog.vala:148
 #: src/Utility/Gtk/CustomMessageDialog.vala:160 src/Utility/GtkHelper.vala:92
-#: src/Gtk/SettingsWindow.vala:123 src/Gtk/ExcludeListSummaryWindow.vala:84
 msgid "OK"
 msgstr "OK"
 
@@ -1457,31 +1423,31 @@ msgstr ""
 "OT Ubuntu tipidagi kichik boʻlim tartibiga ega (@ va @home kichik boʻlimlar) "
 "BTRFS boʻlimiga oʻrnatilishi kerak. Boshqa tartiblar qoʻllab-quvvatlanmaydi."
 
-#: src/Core/Main.vala:4392
+#: src/Core/Main.vala:4410
 msgid "Older log files removed"
 msgstr "Eski jurnal fayllari olib tashlandi"
 
-#: src/Gtk/MainWindow.vala:999
+#: src/Gtk/MainWindow.vala:1001
 msgid "Oldest snapshot"
 msgstr "Eng eski snapshot"
 
-#: src/Gtk/SnapshotListBox.vala:298
+#: src/Gtk/SnapshotListBox.vala:298 src/Core/Tags.vala:43
 msgid "On demand (manual)"
 msgstr "Talab boʻyicha (qoʻlda)"
 
-#: src/Core/Main.vala:498 src/Core/Main.vala:3784
-#: src/Gtk/RestoreDeviceBox.vala:511
+#: src/Gtk/RestoreDeviceBox.vala:511 src/Core/Main.vala:501
+#: src/Core/Main.vala:3805
 msgid ""
 "Only ubuntu-type layouts with @ and @home subvolumes are currently supported."
 msgstr ""
 "Hozirda faqat @ va @home kichik boʻlimlari boʻlgan ubuntu tipidagi tartiblar "
 "qoʻllab-quvvatlanadi."
 
-#: src/Gtk/MainWindow.vala:208
+#: src/Gtk/MainWindow.vala:184
 msgid "Open Menu"
 msgstr "Menyuni ochish"
 
-#: src/Core/Main.vala:3570
+#: src/Core/Main.vala:3590
 msgid ""
 "Option --snapshot-device should not be specified for creating snapshots in "
 "BTRFS mode"
@@ -1489,7 +1455,7 @@ msgstr ""
 "BTRFS rejimida snapshotlarni yaratish uchun --snapshot-device varianti "
 "belgilanmasligi kerak"
 
-#: src/AppConsole.vala:364 src/AppGtk.vala:130
+#: src/AppGtk.vala:130 src/AppConsole.vala:364
 msgid "Options"
 msgstr "Parametrlar"
 
@@ -1497,18 +1463,18 @@ msgstr "Parametrlar"
 msgid "Other applications (next page)"
 msgstr "Boshqa ilovalar (keyingi sahifa)"
 
-#: src/Gtk/BackupBox.vala:99 src/Gtk/RestoreBox.vala:134
+#: src/Gtk/RestoreBox.vala:134 src/Gtk/BackupBox.vala:99
 #: src/Gtk/RsyncLogBox.vala:398
 #, c-format
 msgid "Owner"
 msgstr "Egasi"
 
-#: src/Utility/Device.vala:1968
+#: src/Utility/Device.vala:1982
 #, c-format
 msgid "Parent Device"
 msgstr "Yuqori qurilma"
 
-#: src/Core/Main.vala:2784 src/Core/Main.vala:2875 src/Gtk/RsyncLogBox.vala:222
+#: src/Gtk/RsyncLogBox.vala:222 src/Core/Main.vala:2746 src/Core/Main.vala:2837
 msgid "Parsing log file..."
 msgstr "Jurnal fayli tahlil qilinmoqda..."
 
@@ -1516,7 +1482,7 @@ msgstr "Jurnal fayli tahlil qilinmoqda..."
 msgid "Partition has an unsupported subvolume layout."
 msgstr "Boʻlim qoʻllab-quvvatlanmaydigan kichik boʻlim tartibiga ega."
 
-#: src/Core/SnapshotRepo.vala:608 src/Gtk/RestoreDeviceBox.vala:93
+#: src/Gtk/RestoreDeviceBox.vala:93 src/Core/SnapshotRepo.vala:604
 #, c-format
 msgid "Path"
 msgstr "Yoʼl"
@@ -1527,27 +1493,51 @@ msgstr "Namuna"
 
 #: src/Gtk/BackupWindow.vala:194 src/Gtk/BackupWindow.vala:200
 msgid "Pause"
+msgstr "To‘xtatish"
+
+#: src/Gtk/MainWindow.vala:361
+msgid "Pause Snapshots"
+msgstr ""
+
+#: src/Gtk/MainWindow.vala:370
+msgid "Pause Until Shutdown"
+msgstr ""
+
+#: src/Gtk/MainWindow.vala:386
+msgid "Pause for 12h"
+msgstr ""
+
+#: src/Gtk/MainWindow.vala:374
+msgid "Pause for 30min"
+msgstr ""
+
+#: src/Gtk/MainWindow.vala:378
+msgid "Pause for 4h"
+msgstr ""
+
+#: src/Gtk/MainWindow.vala:382
+msgid "Pause for 8h"
 msgstr ""
 
 #: src/Gtk/BackupBox.vala:137 src/Gtk/BackupBox.vala:278
 msgid "Paused"
-msgstr ""
+msgstr "To‘xtatildi"
 
-#: src/Gtk/BackupBox.vala:98 src/Gtk/RestoreBox.vala:133
+#: src/Gtk/RestoreBox.vala:133 src/Gtk/BackupBox.vala:98
 #: src/Gtk/RsyncLogBox.vala:396
 #, c-format
 msgid "Permissions"
 msgstr "Ruxsatlar"
 
-#: src/Core/Main.vala:272
+#: src/Core/Main.vala:275
 msgid "Please check if you have multiple windows open."
 msgstr "Bir nechta oyna ochiqligini tekshiring."
 
-#: src/Core/Main.vala:2551
+#: src/Core/Main.vala:2513
 msgid "Please do not interrupt the restore process!"
 msgstr "Tiklash jarayonini toʻxtatmang!"
 
-#: src/Core/Main.vala:363
+#: src/Core/Main.vala:366
 msgid "Please install required packages and try running TimeShift again"
 msgstr ""
 "Kerakli paketlarni oʻrnating va Timeshift-ni qaytadan ishga tushirib koʻring"
@@ -1563,11 +1553,11 @@ msgid "Please run the application as admin (using 'sudo' or 'su')"
 msgstr ""
 "Ilovani administrator sifatida ishga tushiring ('sudo' yoki 'su' yordamida)"
 
-#: src/Core/Main.vala:2501
+#: src/Core/Main.vala:2463
 msgid "Please save your work and close all applications."
 msgstr "Ishingizni saqlang va barcha ilovalarni yoping."
 
-#: src/Gtk/MainWindow.vala:687
+#: src/Gtk/MainWindow.vala:699
 msgid "Please select a snapshot to view the log!"
 msgstr "Jurnalni koʻrish uchun snapshotni tanlang!"
 
@@ -1575,11 +1565,11 @@ msgstr "Jurnalni koʻrish uchun snapshotni tanlang!"
 msgid "Please select the GRUB device"
 msgstr "GRUB qurilmasini tanlang"
 
-#: src/Core/Main.vala:268
+#: src/Core/Main.vala:271
 msgid "Please wait a few minutes and try again."
 msgstr "Bir necha daqiqa kutib turing va qayta urinib koʻring."
 
-#: src/Gtk/MainWindow.vala:744
+#: src/Gtk/MainWindow.vala:756
 msgid "Please wait for snapshots to be deleted."
 msgstr "Snapshotlar oʻchirilishini kuting."
 
@@ -1591,14 +1581,14 @@ msgstr "Kuting..."
 msgid "Populating list..."
 msgstr "Roʻyxat toʻldirilmoqda..."
 
-#: src/Core/Main.vala:1886 src/Gtk/BackupBox.vala:117
-#: src/Gtk/RestoreBox.vala:88 src/Gtk/DeleteBox.vala:68
-#: src/Gtk/RsyncLogBox.vala:232
+#: src/Gtk/RestoreBox.vala:88 src/Gtk/BackupBox.vala:117
+#: src/Gtk/DeleteBox.vala:68 src/Gtk/RsyncLogBox.vala:232
+#: src/Core/Main.vala:1842
 msgid "Preparing..."
 msgstr "Tayyorlanmoqda..."
 
-#: src/Gtk/RestoreWindow.vala:193 src/Gtk/BackupWindow.vala:157
-#: src/Gtk/SetupWizardWindow.vala:195 src/Gtk/DeleteWindow.vala:157
+#: src/Gtk/BackupWindow.vala:157 src/Gtk/RestoreWindow.vala:193
+#: src/Gtk/SetupWizardWindow.vala:187 src/Gtk/DeleteWindow.vala:157
 msgid "Previous"
 msgstr "Oldingi"
 
@@ -1606,15 +1596,15 @@ msgstr "Oldingi"
 msgid "Print debug information"
 msgstr "Nosozliklarni tuzatish ma'lumotlarini chop etish"
 
-#: src/AppConsole.vala:398 src/AppGtk.vala:134
+#: src/AppGtk.vala:134 src/AppConsole.vala:398
 msgid "Print version number"
 msgstr "Versiya raqamini chop etish"
 
-#: src/Core/Main.vala:4082
+#: src/Core/Main.vala:4100
 msgid "Query completed"
 msgstr "Soʻrov tugallandi"
 
-#: src/Core/Main.vala:4065
+#: src/Core/Main.vala:4083
 msgid "Querying subvolume info..."
 msgstr "Kichik boʻlim maʼlumotlari soʻralmoqda..."
 
@@ -1634,12 +1624,12 @@ msgstr ""
 "Barcha oʻrnatilgan yadrolar uchun initramflarni qayta yaratadi. Bu odatda "
 "kerak emas. Buni faqat tiklangan tizim yuklanmasagina tanlang."
 
-#: src/AppConsole.vala:1022
+#: src/AppConsole.vala:1025
 #, c-format
 msgid "Re-install GRUB2 bootloader?"
 msgstr "GRUB2 yuklovchisi qayta oʻrnatilsinmi?"
 
-#: src/Core/Main.vala:2614
+#: src/Core/Main.vala:2576
 msgid "Re-installing GRUB2 bootloader..."
 msgstr "GRUB2 yuklovchisi qayta oʻrnatilmoqda..."
 
@@ -1652,7 +1642,7 @@ msgstr "GRUB2 yuklovchisini tanlangan qurilmaga qayta oʻrnatadi."
 msgid "Read %'d of %'d lines..."
 msgstr "%'d satr %'d dan oʻqish..."
 
-#: src/Core/Main.vala:2714
+#: src/Core/Main.vala:2676
 msgid "Rebooting system..."
 msgstr "Tizim qayta yuklanmoqda..."
 
@@ -1661,11 +1651,11 @@ msgstr "Tizim qayta yuklanmoqda..."
 msgid "Recommended"
 msgstr "Tavsiya etilgan"
 
-#: src/Gtk/BackupDeviceBox.vala:65 src/Gtk/RestoreDeviceBox.vala:70
+#: src/Gtk/RestoreDeviceBox.vala:70 src/Gtk/BackupDeviceBox.vala:65
 msgid "Refresh"
 msgstr "Yangilash"
 
-#: src/Gtk/BackupDeviceBox.vala:106
+#: src/Gtk/BackupDeviceBox.vala:107
 msgid "Remote and network locations are not supported."
 msgstr "Masofaviy va tarmoq manzillari qoʻllab-quvvatlanmaydi."
 
@@ -1673,8 +1663,8 @@ msgstr "Masofaviy va tarmoq manzillari qoʻllab-quvvatlanmaydi."
 msgid "Remove"
 msgstr "Olib tashlash"
 
-#: src/Core/Snapshot.vala:511 src/Core/Main.vala:1924 src/Core/Main.vala:1935
-#: src/Core/Main.vala:4388 src/Core/SnapshotRepo.vala:893
+#: src/Core/Snapshot.vala:495 src/Core/Main.vala:1880 src/Core/Main.vala:1891
+#: src/Core/Main.vala:4406 src/Core/SnapshotRepo.vala:890
 #, c-format
 msgid "Removed"
 msgstr "Olib tashlangan"
@@ -1683,32 +1673,32 @@ msgstr "Olib tashlangan"
 msgid "Removed cron task"
 msgstr "Olib tashlangan cron vazifasi"
 
-#: src/Core/Main.vala:3934
+#: src/Core/Main.vala:3955
 #, c-format
 msgid "Removed mount directory: '%s'"
 msgstr "Olib tashlangan ulash katalogi: '%s'"
 
-#: src/Core/Snapshot.vala:557
+#: src/Core/Snapshot.vala:541
 msgid "Removed snapshot"
 msgstr "Olib tashlangan snapshot"
 
-#: src/Core/Snapshot.vala:486
+#: src/Core/Snapshot.vala:470
 msgid "Removing"
 msgstr "Olib tashlanmoqda"
 
-#: src/Core/Snapshot.vala:523
+#: src/Core/Snapshot.vala:507
 msgid "Removing snapshot"
 msgstr "Snapshot olib tashlanmoqda"
 
-#: src/Core/SnapshotRepo.vala:767 src/Core/SnapshotRepo.vala:786
-#: src/Core/SnapshotRepo.vala:804 src/Core/SnapshotRepo.vala:818
+#: src/Core/SnapshotRepo.vala:764 src/Core/SnapshotRepo.vala:783
+#: src/Core/SnapshotRepo.vala:801 src/Core/SnapshotRepo.vala:815
 #, c-format
 msgid "Removing snapshots"
 msgstr "Snapshotlar olib tashlanmoqda"
 
-#: src/Gtk/MainWindow.vala:150 src/Gtk/RestoreWindow.vala:125
-#: src/Gtk/RsyncLogBox.vala:377 src/Gtk/RsyncLogBox.vala:566
-#: src/Gtk/RestoreFinishBox.vala:71 src/AppConsole.vala:376
+#: src/Gtk/RestoreFinishBox.vala:71 src/Gtk/RestoreWindow.vala:125
+#: src/Gtk/MainWindow.vala:146 src/Gtk/RsyncLogBox.vala:377
+#: src/Gtk/RsyncLogBox.vala:566 src/AppConsole.vala:376
 msgid "Restore"
 msgstr "Tiklash"
 
@@ -1728,11 +1718,11 @@ msgstr "Tiklashni cheklash"
 msgid "Restore Snapshot"
 msgstr "Snapshotni tiklash"
 
-#: src/Core/Main.vala:3132 src/Core/Main.vala:3174
+#: src/Core/Main.vala:3094 src/Core/Main.vala:3136
 msgid "Restore completed"
 msgstr "Tiklash tugallandi"
 
-#: src/Gtk/MainWindow.vala:151
+#: src/Gtk/MainWindow.vala:147
 msgid "Restore selected snapshot"
 msgstr "Tanlangan snapshotni tiklash"
 
@@ -1765,7 +1755,7 @@ msgstr ""
 "qoladi. Agar kerak bo‘lsa, qayta tiklashni \"ortga qaytarish\" uchun ushbu "
 "snapshotni keyinroq tiklash mumkin."
 
-#: src/Core/Main.vala:3101
+#: src/Core/Main.vala:3063
 msgid "Restoring snapshot..."
 msgstr "Snapshot tiklanmoqda..."
 
@@ -1783,11 +1773,11 @@ msgstr ""
 "uchun filtr qo‘shish orqali o‘zgartirish mumkin. Snapshot yaratilganda "
 "kiritilgan fayllar zaxiralanadi va snapshot tiklanganda almashtiriladi."
 
-#: src/Gtk/BackupWindow.vala:204
+#: src/Gtk/BackupWindow.vala:204 src/Gtk/MainWindow.vala:365
 msgid "Resume"
-msgstr ""
+msgstr "Davom etish"
 
-#: src/Utility/Device.vala:1958
+#: src/Utility/Device.vala:1972
 #, c-format
 msgid "Revision"
 msgstr "Qayta ko‘rib chiqish"
@@ -1810,7 +1800,7 @@ msgstr ""
 msgid "Run in non-interactive mode"
 msgstr "Interaktiv bo‘lmagan rejimda ishga tushirish"
 
-#: src/Core/Main.vala:202
+#: src/Core/Main.vala:205
 msgid "Running"
 msgstr "Ishlamoqda"
 
@@ -1834,20 +1824,20 @@ msgstr ""
 "Siz hatto boshqa Linux distributivini o‘rnatishingiz va keyinroq snapshotni "
 "tiklash orqali oldingi tarqatishni orqaga qaytarishingiz mumkin."
 
-#: src/Core/Main.vala:1568 src/Core/Main.vala:1723 src/Core/Main.vala:1725
+#: src/Core/Main.vala:1575 src/Core/Main.vala:1722 src/Core/Main.vala:1724
 msgid "Saving to device"
 msgstr "Qurilmaga saqlanmoqda"
 
-#: src/Gtk/SettingsWindow.vala:93 src/Gtk/SetupWizardWindow.vala:109
+#: src/Gtk/SettingsWindow.vala:93 src/Gtk/SetupWizardWindow.vala:105
 msgid "Schedule"
 msgstr "Jadval"
 
-#: src/Core/Main.vala:275
+#: src/Core/Main.vala:278
 msgid "Scheduled snapshot in progress..."
 msgstr "Rejalashtirilgan snapshot ishlanmoqda..."
 
-#: src/Core/Main.vala:1304 src/Gtk/MainWindow.vala:1015
-#: src/Gtk/ScheduleBox.vala:312
+#: src/Gtk/ScheduleBox.vala:283 src/Gtk/MainWindow.vala:1017
+#: src/Core/Main.vala:1312
 msgid "Scheduled snapshots are disabled"
 msgstr "Rejalashtirilgan snapshotlar o‘chirilgan"
 
@@ -1856,7 +1846,7 @@ msgid "Scheduled snapshots are disabled. It's recommended to enable it."
 msgstr ""
 "Rejalashtirilgan snapshotlar o‘chirilgan. Uni yoqish tavsiya etiladi."
 
-#: src/Gtk/ScheduleBox.vala:305
+#: src/Gtk/ScheduleBox.vala:276
 msgid "Scheduled snapshots are enabled"
 msgstr "Rejalashtirilgan snapshotlar yoqilgan"
 
@@ -1868,20 +1858,20 @@ msgstr ""
 "Rejalashtirilgan snapshotlar yoqilgan. Tanlangan darajalar uchun snapshotlar "
 "avtomatik ravishda yaratiladi."
 
-#: src/AppConsole.vala:902
+#: src/AppConsole.vala:905
 #, c-format
 msgid "Select '%s' device (default = %s)"
 msgstr "'%s' qurilmani tanlang (birlamchi = %s)"
 
-#: src/Core/SnapshotRepo.vala:514 src/AppConsole.vala:707
+#: src/AppConsole.vala:707 src/Core/SnapshotRepo.vala:510
 msgid "Select BTRFS system disk with root subvolume (@)"
 msgstr "Ildiz kichik bo‘limli BTRFS tizim diskini tanlang (@)"
 
-#: src/AppConsole.vala:1039
+#: src/AppConsole.vala:1042
 msgid "Select GRUB device"
 msgstr "GRUB qurilmani tanlang"
 
-#: src/Gtk/MainWindow.vala:686
+#: src/Gtk/MainWindow.vala:698
 msgid "Select Snapshot"
 msgstr "Snapshot tanlang"
 
@@ -1905,12 +1895,12 @@ msgstr "Snapshot tanlang"
 msgid "Select Target Device"
 msgstr "Maqsadli qurilmani tanlang"
 
-#: src/Gtk/BackupDeviceBox.vala:410
+#: src/Gtk/BackupDeviceBox.vala:411
 #, c-format
 msgid "Select a partition on this disk"
 msgstr "Ushbu diskdagi bo‘limni tanlang"
 
-#: src/Gtk/MainWindow.vala:783
+#: src/Gtk/MainWindow.vala:795
 msgid "Select a single snapshot to restore"
 msgstr "Tiklash uchun snapshotni tanlang"
 
@@ -1918,15 +1908,15 @@ msgstr "Tiklash uchun snapshotni tanlang"
 msgid "Select another device for root file system (/)"
 msgstr "Ildiz fayl tizimi uchun xotira qurilmasini tanlang"
 
-#: src/Core/SnapshotRepo.vala:550 src/Core/SnapshotRepo.vala:579
+#: src/Core/SnapshotRepo.vala:546 src/Core/SnapshotRepo.vala:575
 msgid "Select another device or free up some space"
 msgstr "Boshqa qurilmani tanlang yoki xotiradan biroz joy bo‘shating"
 
-#: src/Gtk/MainWindow.vala:516 src/Gtk/MainWindow.vala:523
-msgid "Select another device to delete snasphots"
-msgstr "Snapshotlarni o‘chirish uchun boshqa qurilmani tanlang"
+#: src/Gtk/MainWindow.vala:528 src/Gtk/MainWindow.vala:535
+msgid "Select another device to delete snapshots"
+msgstr ""
 
-#: src/Gtk/MainWindow.vala:450
+#: src/Gtk/MainWindow.vala:462
 msgid "Select another device?"
 msgstr "Boshqa qurilma tanlaysizmi?"
 
@@ -1962,7 +1952,7 @@ msgstr "Ildiz fayl tizimi (/) uchun qurilmani tanlash"
 msgid "Select the devices where files will be restored."
 msgstr "Fayllar tiklanadigan qurilmalarni tanlash."
 
-#: src/Gtk/ScheduleBox.vala:313
+#: src/Gtk/ScheduleBox.vala:284
 msgid "Select the intervals for creating snapshots"
 msgstr "Snapshotlar yaratish uchun vaqt oralig‘ini tanlash"
 
@@ -1970,11 +1960,11 @@ msgstr "Snapshotlar yaratish uchun vaqt oralig‘ini tanlash"
 msgid "Select the items to be removed from the list"
 msgstr "Ro‘yxatdan olib tashlash kerak bo‘lgan elementlarni tanlash"
 
-#: src/Core/SnapshotRepo.vala:476
+#: src/Core/SnapshotRepo.vala:472
 msgid "Select the snapshot device"
 msgstr "Snapshot qurilmasini tanlash"
 
-#: src/Gtk/MainWindow.vala:776
+#: src/Gtk/MainWindow.vala:788
 msgid "Select the snapshot to restore"
 msgstr "Tiklash uchun snapshot tanlang"
 
@@ -1982,7 +1972,7 @@ msgstr "Tiklash uchun snapshot tanlang"
 msgid "Select the snapshots to be deleted"
 msgstr "O‘chirish uchun snapshot tanlash"
 
-#: src/Gtk/MainWindow.vala:602
+#: src/Gtk/MainWindow.vala:614
 msgid "Select the snapshots to mark for deletion"
 msgstr "O‘chirilishi kerak bo‘lgan snapshotlarni tanlash"
 
@@ -1990,19 +1980,19 @@ msgstr "O‘chirilishi kerak bo‘lgan snapshotlarni tanlash"
 msgid "Select the target devices where system will be cloned."
 msgstr "Tizim klonlanadigan maqsadli qurilmalarni tanlash."
 
-#: src/Core/Main.vala:3598
+#: src/Core/Main.vala:3618
 msgid "Selected default snapshot device"
 msgstr "Tanlangan standart snapshot qurilmasi"
 
-#: src/Core/Main.vala:3549 src/Core/Main.vala:3553
+#: src/Core/Main.vala:3569 src/Core/Main.vala:3573
 msgid "Selected default snapshot type"
 msgstr "Tanlangan standart snapshot turi"
 
-#: src/Gtk/BackupDeviceBox.vala:388
+#: src/Gtk/BackupDeviceBox.vala:389
 msgid "Selected device does not have BTRFS partition"
 msgstr "Tanlangan qurilmada BTRFS bo‘limi mavjud emas"
 
-#: src/Gtk/BackupDeviceBox.vala:385
+#: src/Gtk/BackupDeviceBox.vala:386
 msgid "Selected device does not have Linux partition"
 msgstr "Tanlangan qurilmada Linux bo‘limi mavjud emas"
 
@@ -2010,15 +2000,15 @@ msgstr "Tanlangan qurilmada Linux bo‘limi mavjud emas"
 msgid "Selected snapshot device"
 msgstr "Tanlangan snapshot qurilmasi"
 
-#: src/Core/SnapshotRepo.vala:513 src/AppConsole.vala:706
+#: src/AppConsole.vala:706 src/Core/SnapshotRepo.vala:509
 msgid "Selected snapshot device is not a system disk"
 msgstr "Tanlangan snapshot qurilmasi tizim diski emas"
 
-#: src/Core/Main.vala:2334
+#: src/Core/Main.vala:2296
 msgid "Selected snapshot is marked for deletion"
 msgstr "Tanlangan snapshot oʻchirish uchun belgilangan"
 
-#: src/Gtk/MainWindow.vala:807
+#: src/Gtk/MainWindow.vala:819
 msgid "Selected snapshot is marked for deletion and cannot be restored"
 msgstr ""
 "Tanlangan snapshot oʻchirish uchun belgilangan va uni qayta tiklab boʻlmaydi"
@@ -2031,12 +2021,12 @@ msgstr ""
 "Tanlangan foydalanuvchi shifrlangan uy katalogiga ega. Faqat yashirin "
 "fayllarni kiritish mumkin emas."
 
-#: src/Utility/Device.vala:1957
+#: src/Utility/Device.vala:1971
 #, c-format
 msgid "Serial"
 msgstr "Serial"
 
-#: src/Core/Main.vala:230
+#: src/Core/Main.vala:233
 msgid "Session log file"
 msgstr "Sessiya jurnali fayli"
 
@@ -2044,20 +2034,15 @@ msgstr "Sessiya jurnali fayli"
 msgid "Set snapshot description"
 msgstr "Snapshot tavsifini sozlash"
 
-#: src/Gtk/MainWindow.vala:180 src/Gtk/MainWindow.vala:181
-#: src/Gtk/SettingsWindow.vala:56
+#: src/Gtk/SettingsWindow.vala:56 src/Gtk/MainWindow.vala:342
 msgid "Settings"
 msgstr "Sozlamalar"
-
-#: src/Gtk/MainWindow.vala:191
-msgid "Settings wizard"
-msgstr "Sozlamalar ustasi"
 
 #: src/Gtk/FinishBox.vala:58
 msgid "Setup Complete"
 msgstr "Sozlash tugallandi"
 
-#: src/Gtk/SetupWizardWindow.vala:64
+#: src/Gtk/SetupWizardWindow.vala:64 src/Gtk/MainWindow.vala:348
 msgid "Setup Wizard"
 msgstr "Sozlash ustasi"
 
@@ -2065,7 +2050,7 @@ msgstr "Sozlash ustasi"
 msgid "Show additional debug messages"
 msgstr "Qo‘shimcha nosozliklarni tuzatish xabarlarini ko‘rsatish"
 
-#: src/AppConsole.vala:397 src/AppGtk.vala:133
+#: src/AppGtk.vala:133 src/AppConsole.vala:397
 msgid "Show all options"
 msgstr "Hamma parametrlarni koʻrsatish"
 
@@ -2077,10 +2062,10 @@ msgstr "Keyingi sahifada istisno qilinadigan koʻproq ilovalarni koʻrsatish"
 msgid "Show rsync output (default)"
 msgstr "Rsync chiqishini ko‘rsatish (standart)"
 
-#: src/Utility/Device.vala:1960 src/Utility/Device.vala:1975
+#: src/Gtk/BackupDeviceBox.vala:203 src/Gtk/RestoreBox.vala:131
 #: src/Gtk/SnapshotListBox.vala:173 src/Gtk/BackupBox.vala:96
-#: src/Gtk/BackupDeviceBox.vala:202 src/Gtk/RestoreBox.vala:131
 #: src/Gtk/RsyncLogBox.vala:392 src/AppConsole.vala:472 src/AppConsole.vala:511
+#: src/Utility/Device.vala:1974 src/Utility/Device.vala:1989
 #, c-format
 msgid "Size"
 msgstr "Hajmi"
@@ -2101,13 +2086,13 @@ msgstr ""
 msgid "Skip GRUB2 reinstall"
 msgstr "GRUB2-ni qayta o‘rnatishni o‘tkazib yuborish"
 
-#: src/Core/Main.vala:2339 src/Core/SnapshotRepo.vala:635
-#: src/Core/SnapshotRepo.vala:688 src/Gtk/SnapshotListBox.vala:94
+#: src/Gtk/SnapshotListBox.vala:94 src/Core/Main.vala:2301
+#: src/Core/SnapshotRepo.vala:630 src/Core/SnapshotRepo.vala:684
 #, c-format
 msgid "Snapshot"
 msgstr "Snapshot"
 
-#: src/Gtk/MainWindow.vala:533
+#: src/Gtk/MainWindow.vala:545
 #, c-format
 msgid ""
 "Snapshot '%s' is being used by the system and cannot be deleted. Restart the "
@@ -2125,37 +2110,37 @@ msgstr "Snapshot yaratildi"
 msgid "Snapshot Levels"
 msgstr "Snapshot darajalari"
 
-#: src/Gtk/MainWindow.vala:743
+#: src/Gtk/MainWindow.vala:755
 msgid "Snapshot deletion in progress..."
 msgstr "Snapshotni oʻchirish davom etmoqda..."
 
-#: src/Core/SnapshotRepo.vala:446
+#: src/Core/SnapshotRepo.vala:442
 #, c-format
 msgid "Snapshot device"
 msgstr "Snapshot qurilmasi"
 
-#: src/Core/SnapshotRepo.vala:482 src/AppConsole.vala:680
+#: src/AppConsole.vala:680 src/Core/SnapshotRepo.vala:478
 msgid "Snapshot device not available"
 msgstr "Snapshot qurilmasi mavjud emas"
 
-#: src/Core/SnapshotRepo.vala:475 src/AppConsole.vala:676
+#: src/AppConsole.vala:676 src/Core/SnapshotRepo.vala:471
 msgid "Snapshot device not selected"
 msgstr "Snapshot qurilmasi tanlanmagan"
 
-#: src/Core/SnapshotRepo.vala:450
+#: src/Core/SnapshotRepo.vala:446
 #, c-format
 msgid "Snapshot location"
 msgstr "Snapshot joylashuvi"
 
-#: src/Core/Main.vala:1441
+#: src/Core/Main.vala:1448
 msgid "Snapshot saved successfully"
 msgstr "Snapshot muvaffaqiyatli saqlandi"
 
-#: src/Core/Main.vala:2329
+#: src/Core/Main.vala:2291
 msgid "Snapshot to restore not specified!"
 msgstr "Tiklash uchun snapshot belgilanmagan!"
 
-#: src/Core/Main.vala:3189
+#: src/Core/Main.vala:3151
 msgid "Snapshot will become active after system is rebooted."
 msgstr "Tizim qayta ishga tushirilgandan so‘ng snapshot faol bo‘ladi."
 
@@ -2163,7 +2148,7 @@ msgstr "Tizim qayta ishga tushirilgandan so‘ng snapshot faol bo‘ladi."
 msgid "Snapshot(s) Deleted"
 msgstr "Snapshot(lar) oʻchirildi"
 
-#: src/Gtk/MainWindow.vala:309 src/Gtk/DeleteWindow.vala:89
+#: src/Gtk/DeleteWindow.vala:89 src/Gtk/MainWindow.vala:283
 msgid "Snapshots"
 msgstr "Snapshotlar"
 
@@ -2190,7 +2175,7 @@ msgstr ""
 "Snapshotlar BTRFS fayl tizimining o‘rnatilgan xususiyatlaridan foydalangan "
 "holda yaratiladi."
 
-#: src/Gtk/ScheduleBox.vala:167
+#: src/Gtk/ScheduleBox.vala:127
 #, c-format
 msgid "Snapshots are not scheduled at fixed times."
 msgstr "Snapshotlar belgilangan vaqtda rejalashtirilmagan."
@@ -2224,7 +2209,7 @@ msgstr ""
 "disklarda saqlash qo‘llab-quvvatlanmaydi. Agar tizim diskida ishlamay qolsa, "
 "unda saqlangan snapshotlar tizim bilan birga yo‘qoladi."
 
-#: src/Gtk/BackupDeviceBox.vala:107
+#: src/Gtk/BackupDeviceBox.vala:108
 msgid ""
 "Snapshots are saved to /timeshift on selected partition. Other locations are "
 "not supported."
@@ -2232,7 +2217,7 @@ msgstr ""
 "Snapshotlar tanlangan bo‘limda /timeshift katalogiga saqlanadi. Boshqa "
 "joylar qo‘llab-quvvatlanmaydi."
 
-#: src/Gtk/BackupDeviceBox.vala:99
+#: src/Gtk/BackupDeviceBox.vala:100
 msgid ""
 "Snapshots are saved to /timeshift-btrfs on selected partition. Other "
 "locations are not supported."
@@ -2240,7 +2225,7 @@ msgstr ""
 "Snapshotlar tanlangan bo‘limda /timeshift-btrfs katalogiga saqlanadi. Boshqa "
 "joylar qo‘llab-quvvatlanmaydi."
 
-#: src/Gtk/MainWindow.vala:960
+#: src/Gtk/MainWindow.vala:962
 msgid "Snapshots available for restore"
 msgstr "Tiklash uchun snapshotlar mavjud"
 
@@ -2259,17 +2244,21 @@ msgstr ""
 msgid "Snapshots cannot be created in Live CD mode"
 msgstr "Snapshotlarni Live CD rejimida yaratish mumkin emas"
 
-#: src/Gtk/MainWindow.vala:1007
+#: src/Gtk/MainWindow.vala:1009
 msgid "Snapshots will be created at selected intervals"
 msgstr "Snapshotlar tanlangan vaqt oralig‘ida yaratiladi"
 
-#: src/Gtk/ScheduleBox.vala:306
+#: src/Gtk/ScheduleBox.vala:277
 msgid ""
 "Snapshots will be created at selected intervals if snapshot disk has enough "
 "space (> 1 GB)"
 msgstr ""
 "Snapshot diskida yetarli joy boʻlsa (> 1 GB) snapshotlar tanlangan vaqt "
 "oraligʻida yaratiladi."
+
+#: src/Gtk/SnapshotListBox.vala:291
+msgid "Snapshots with comments are not auto-deleted"
+msgstr ""
 
 #: src/AppConsole.vala:389
 msgid "Specify backup device (default: config)"
@@ -2287,13 +2276,13 @@ msgstr "Tiklash uchun snapshot belgilash"
 msgid "Specify target device"
 msgstr "Maqsadli qurilmani belgilash"
 
-#: src/Core/SnapshotRepo.vala:456 src/Core/SnapshotRepo.vala:610
-#: src/Gtk/RsyncLogBox.vala:471
+#: src/Gtk/RsyncLogBox.vala:471 src/Core/SnapshotRepo.vala:452
+#: src/Core/SnapshotRepo.vala:606
 #, c-format
 msgid "Status"
 msgstr "Xolat"
 
-#: src/Gtk/ScheduleBox.vala:154
+#: src/Gtk/ScheduleBox.vala:114
 msgid "Stop cron emails for scheduled tasks"
 msgstr ""
 "Rejalashtirilgan vazifalar uchun cron elektron pochta xabarlarini to‘xtatish"
@@ -2312,7 +2301,7 @@ msgstr "Belgilangan joyda kichik bo‘lim mavjud"
 msgid "Subvolumes"
 msgstr "Kichik bo‘limlar"
 
-#: src/Gtk/ExcludeBox.vala:267 src/Gtk/RestoreWindow.vala:120
+#: src/Gtk/RestoreWindow.vala:120 src/Gtk/ExcludeBox.vala:267
 #: src/Gtk/ExcludeAppsBox.vala:134
 msgid "Summary"
 msgstr "Hisobot"
@@ -2325,15 +2314,15 @@ msgstr "BTRFS rejimiga o‘tish (standart: config)"
 msgid "Switch to RSYNC mode (default: config)"
 msgstr "RSYNC rejimiga o‘tish (standart: config)"
 
-#: src/Core/SnapshotRepo.vala:928
+#: src/Core/SnapshotRepo.vala:921
 msgid "Symlinks updated"
 msgstr "Ramziy havolalar yangilandi"
 
-#: src/Core/Main.vala:2689
+#: src/Core/Main.vala:2651
 msgid "Syncing file systems..."
 msgstr "Fayl tizimlari sinxronlanmoqda..."
 
-#: src/Core/Main.vala:1642 src/Core/Main.vala:2859 src/Core/Main.vala:3108
+#: src/Core/Main.vala:1649 src/Core/Main.vala:2821 src/Core/Main.vala:3070
 msgid "Syncing files with rsync..."
 msgstr "Fayllar rsync orqali sinxronlanmoqda..."
 
@@ -2341,12 +2330,12 @@ msgstr "Fayllar rsync orqali sinxronlanmoqda..."
 msgid "Syntax"
 msgstr "Sintaksis"
 
-#: src/Utility/Device.vala:1981 src/Gtk/SnapshotListBox.vala:126
+#: src/Gtk/SnapshotListBox.vala:126 src/Utility/Device.vala:1995
 #, c-format
 msgid "System"
 msgstr "Tizim"
 
-#: src/Gtk/MainWindow.vala:904
+#: src/Gtk/MainWindow.vala:906
 msgid "System Restore Utility"
 msgstr "Tizimni tiklash yordam dasturi"
 
@@ -2354,15 +2343,15 @@ msgstr "Tizimni tiklash yordam dasturi"
 msgid "System can be rolled-back to a previous date by restoring a snapshot."
 msgstr "Snapshotni tiklash orqali tizim oldingi sanaga qaytarilishi mumkin."
 
-#: src/Core/Main.vala:2552
+#: src/Core/Main.vala:2514
 msgid "System will reboot after files are restored"
 msgstr "Fayllar tiklanganidan keyin tizim qayta yuklanadi"
 
-#: src/Core/Main.vala:2502
+#: src/Core/Main.vala:2464
 msgid "System will reboot after files are restored."
 msgstr "Fayllar tiklanganidan keyin tizim qayta yuklanadi."
 
-#: src/Core/Main.vala:1377 src/Core/Main.vala:1451
+#: src/Core/Main.vala:1384 src/Core/Main.vala:1458
 msgid "Tagged snapshot"
 msgstr "Belgilangan snapshot"
 
@@ -2370,7 +2359,7 @@ msgstr "Belgilangan snapshot"
 msgid "Tags"
 msgstr "Teglar"
 
-#: src/Core/Main.vala:2364
+#: src/Core/Main.vala:2326
 msgid "Target device is not mounted"
 msgstr "Maqsadli qurilma ulanmagan"
 
@@ -2378,11 +2367,11 @@ msgstr "Maqsadli qurilma ulanmagan"
 msgid "Target device is same as system device"
 msgstr "Maqsadli qurilma tizim qurilmasi bilan bir xil"
 
-#: src/Core/Main.vala:2358
+#: src/AppConsole.vala:892 src/Core/Main.vala:2320 src/Core/Main.vala:3770
 msgid "Target device not specified!"
 msgstr "Maqsadli qurilma ko‘rsatilmagan!"
 
-#: src/Gtk/ScheduleBox.vala:156
+#: src/Gtk/ScheduleBox.vala:116
 msgid ""
 "The cron service sends the output of scheduled tasks as an email to the "
 "current user. Select this option to suppress the emails for cron tasks "
@@ -2393,26 +2382,26 @@ msgstr ""
 "vazifalari uchun elektron pochta xabarlarini bostirish uchun ushbu "
 "parametrni tanlang."
 
-#: src/Core/Main.vala:497
+#: src/Core/Main.vala:500
 msgid "The system partition has an unsupported subvolume layout."
 msgstr ""
 "Tizim bo‘limida qo‘llab-quvvatlanmaydigan kichik bo‘lim tartibi mavjud."
 
-#: src/Core/Main.vala:3783
+#: src/Core/Main.vala:3804
 msgid "The target partition has an unsupported subvolume layout."
 msgstr ""
 "Maqsadli bo‘lim qo‘llab-quvvatlanmaydigan kichik bo‘lim tartibiga ega."
 
-#: src/Gtk/BackupDeviceBox.vala:512
+#: src/Gtk/BackupDeviceBox.vala:516
 #, c-format
 msgid "There are no snapshots on this device"
 msgstr "Bu qurilmada snapshotlar mavjud emas"
 
-#: src/Utility/Device.vala:1402
+#: src/Utility/Device.vala:1416
 msgid "This device is not encrypted"
 msgstr "Bu qurilma shifrlanmagan"
 
-#: src/Core/Main.vala:2518
+#: src/Core/Main.vala:2480
 msgid ""
 "This software comes without absolutely NO warranty and the author takes no "
 "responsibility for any damage arising from the use of this program."
@@ -2421,11 +2410,11 @@ msgstr ""
 "dasturdan foydalanish natijasida kelib chiqadigan har qanday zarar uchun "
 "javobgarlikni o‘z zimmasiga olmaydi."
 
-#: src/Gtk/MainWindow.vala:995 src/Gtk/MainWindow.vala:1006
+#: src/Gtk/MainWindow.vala:997 src/Gtk/MainWindow.vala:1008
 msgid "Timeshift is active"
 msgstr "Timeshift faol"
 
-#: src/Gtk/BackupBox.vala:97 src/Gtk/RestoreBox.vala:132
+#: src/Gtk/RestoreBox.vala:132 src/Gtk/BackupBox.vala:97
 #: src/Gtk/RsyncLogBox.vala:394
 #, c-format
 msgid "Timestamp"
@@ -2437,14 +2426,13 @@ msgid "To restore with default options, press the ENTER key for all prompts!"
 msgstr ""
 "Standart variantlar bilan tiklash uchun barcha takliflar uchun ENTER bosing!"
 
-#: src/Utility/Device.vala:1971 src/Gtk/BackupDeviceBox.vala:190
-#: src/Gtk/SettingsWindow.vala:87 src/AppConsole.vala:473
-#: src/AppConsole.vala:512
+#: src/Gtk/BackupDeviceBox.vala:191 src/Gtk/SettingsWindow.vala:87
+#: src/AppConsole.vala:473 src/AppConsole.vala:512 src/Utility/Device.vala:1985
 #, c-format
 msgid "Type"
 msgstr "Turi"
 
-#: src/Utility/Device.vala:1970
+#: src/Utility/Device.vala:1984
 #, c-format
 msgid "UUID"
 msgstr "UUID"
@@ -2453,24 +2441,20 @@ msgstr "UUID"
 msgid "Unknown option"
 msgstr "Noma'lum parametr"
 
-#: src/Core/Main.vala:1359
-msgid "Unknown snapshot type"
-msgstr "Noma'lum snapshot turi"
-
-#: src/Core/Main.vala:1873
+#: src/Core/Main.vala:1828
 msgid "Unknown value specified for option --tags"
 msgstr "--tags parametri uchun noma'lum qiymat ko‘rsatilgan"
 
-#: src/Utility/Device.vala:1413 src/Utility/Device.vala:1529
+#: src/Utility/Device.vala:1427 src/Utility/Device.vala:1543
 #, c-format
 msgid "Unlocked device is mapped to '%s'"
 msgstr "Qulfdan chiqarilgan qurilma “%s” bilan taqqoslandi"
 
-#: src/Utility/Device.vala:1528
+#: src/Utility/Device.vala:1542
 msgid "Unlocked successfully"
 msgstr "Muvaffaqiyatli qulfdan chiqarildi"
 
-#: src/Utility/Device.vala:1744
+#: src/Utility/Device.vala:1758
 msgid "Unmounting from"
 msgstr "Uzilmoqda"
 
@@ -2478,7 +2462,7 @@ msgstr "Uzilmoqda"
 msgid "Unshared"
 msgstr "Ulashmagan"
 
-#: src/Core/Main.vala:3787 src/Gtk/RestoreDeviceBox.vala:508
+#: src/Gtk/RestoreDeviceBox.vala:508 src/Core/Main.vala:3808
 msgid "Unsupported Subvolume Layout"
 msgstr "Qo‘llab-quvvatlanmaydigan kichik bo‘lim tartibi"
 
@@ -2490,11 +2474,11 @@ msgstr "GRUB menyusini yangilash"
 msgid "Update initramfs"
 msgstr "initramfs yangilash"
 
-#: src/Core/Main.vala:3047
+#: src/Core/Main.vala:3009
 msgid "Updated /etc/crypttab on target device"
 msgstr "Maqsadli qurilmada yangilangan /etc/crypttab"
 
-#: src/Core/Main.vala:2959
+#: src/Core/Main.vala:2921
 msgid "Updated /etc/fstab on target device"
 msgstr "Maqsadli qurilmada yangilangan /etc/fstab"
 
@@ -2506,20 +2490,20 @@ msgstr ""
 "GRUB menyu yozuvlarini yangilaydi (tavsiya etiladi). Buni ishlatish xavfsiz "
 "va tanlangan holda qoldirilishi kerak."
 
-#: src/Core/Main.vala:2672
+#: src/Core/Main.vala:2634
 msgid "Updating GRUB menu..."
 msgstr "GRUB menyusi yangilanmoqda..."
 
-#: src/Core/Main.vala:2883
+#: src/Core/Main.vala:2845
 msgid "Updating bootloader configuration..."
 msgstr "Yuklovchi konfiguratsiyasi yangilanmoqda..."
 
-#: src/Utility/Device.vala:1978
+#: src/Utility/Device.vala:1992
 #, c-format
 msgid "Used"
 msgstr "Ishlatilgan"
 
-#: src/Gtk/SetupWizardWindow.vala:114 src/Gtk/UsersBox.vala:101
+#: src/Gtk/UsersBox.vala:101 src/Gtk/SetupWizardWindow.vala:110
 msgid "User"
 msgstr "Foydalanuvchi"
 
@@ -2527,7 +2511,7 @@ msgstr "Foydalanuvchi"
 msgid "User Home Directories"
 msgstr "Foydalanuvchi uy kataloglari"
 
-#: src/Utility/Device.vala:1483
+#: src/Utility/Device.vala:1497
 msgid "User cancelled the password prompt"
 msgstr "Foydalanuvchi parol so‘rovini bekor qildi"
 
@@ -2546,7 +2530,7 @@ msgstr "Foydalanuvchilar"
 msgid "Users Home"
 msgstr "Foydalanuvchilar uyi"
 
-#: src/Utility/Device.vala:1955
+#: src/Utility/Device.vala:1969
 #, c-format
 msgid "Vendor"
 msgstr "Ishlab chiqaruvchi"
@@ -2559,11 +2543,11 @@ msgstr "Yaratish uchun Rsync jurnalini koʻrish"
 msgid "View Rsync Log for Restore"
 msgstr "Tiklash uchun Rsync jurnalini koʻrish"
 
-#: src/Gtk/MainWindow.vala:369
+#: src/Gtk/MainWindow.vala:356
 msgid "View TimeShift Logs"
 msgstr "TimeShift jurnallarini ko‘rish"
 
-#: src/Core/Main.vala:2413 src/Gtk/RestoreSummaryBox.vala:53
+#: src/Gtk/RestoreSummaryBox.vala:53 src/Core/Main.vala:2375
 msgid "Warning"
 msgstr "Ogohlantirish"
 
@@ -2571,15 +2555,15 @@ msgstr "Ogohlantirish"
 msgid "Web Browsers"
 msgstr "Veb-brauzerlar"
 
-#: src/Gtk/SnapshotListBox.vala:302 src/Gtk/ScheduleBox.vala:82
+#: src/Gtk/SnapshotListBox.vala:302 src/Core/Tags.vala:41
 msgid "Weekly"
 msgstr "Har hafta"
 
-#: src/Core/Main.vala:1262
+#: src/Core/Main.vala:1270
 msgid "Weekly snapshot failed!"
 msgstr "Haftalik snapshot amalga oshmadi!"
 
-#: src/Core/Main.vala:1243
+#: src/Core/Main.vala:1251
 msgid "Weekly snapshots are enabled"
 msgstr "Haftalik snapshotlar yoqilgan"
 
@@ -2587,11 +2571,7 @@ msgstr "Haftalik snapshotlar yoqilgan"
 msgid "With Errors"
 msgstr "Xatolar bilan"
 
-#: src/Gtk/MainWindow.vala:190
-msgid "Wizard"
-msgstr "Usta"
-
-#: src/Utility/Device.vala:1456 src/Utility/Device.vala:1502
+#: src/Utility/Device.vala:1470 src/Utility/Device.vala:1516
 msgid "Wrong password"
 msgstr "Notoʼg‘ri parol"
 
@@ -2610,12 +2590,12 @@ msgstr ""
 "kerak bo‘lsa, qayta tiklashni \"ortga qaytish\" uchun bu snapshotni keyinroq "
 "tiklash mumkin."
 
-#: src/AppConsole.vala:1060
+#: src/AppConsole.vala:1063
 #, c-format
 msgid "[ENTER = Default (%s), a = Abort]"
 msgstr "[ENTER = Standart (%s), a = To‘xtatish]"
 
-#: src/AppConsole.vala:913
+#: src/AppConsole.vala:916
 #, c-format
 msgid "[ENTER = Default (%s), r = Root device, a = Abort]"
 msgstr "[ENTER = Standart (%s), r = Ildiz qurilmasi, a = To‘xtatish]"
@@ -2632,16 +2612,16 @@ msgstr ""
 msgid "[Warning] Deleted invalid lock"
 msgstr "[Ogohlantirish] Yaroqsiz qulf o‘chirildi"
 
-#: src/Core/SnapshotRepo.vala:818
+#: src/Core/SnapshotRepo.vala:815
 msgid "all"
 msgstr "hammasi"
 
-#: src/Core/Main.vala:1778 src/Core/Main.vala:4133 src/Core/Main.vala:4218
-#: src/Core/Subvolume.vala:266
+#: src/Core/Subvolume.vala:266 src/Core/Main.vala:1777 src/Core/Main.vala:4151
+#: src/Core/Main.vala:4236
 msgid "btrfs returned an error"
 msgstr "btrfs xatolikni qaytardi"
 
-#: src/Core/Snapshot.vala:502 src/Core/Main.vala:1674
+#: src/Core/Snapshot.vala:486 src/Core/Main.vala:1677
 msgid "complete"
 msgstr "tugallangan"
 
@@ -2653,30 +2633,30 @@ msgstr "crontab fayli eksport qilindi"
 msgid "crontab file installed"
 msgstr "crontab fayli o‘rnatilgan"
 
-#: src/Core/SnapshotRepo.vala:804
+#: src/Core/SnapshotRepo.vala:801
 msgid "incomplete"
 msgstr "tugallanmagan"
 
-#: src/Core/SnapshotRepo.vala:786
+#: src/Core/SnapshotRepo.vala:783
 msgid "marked for deletion"
 msgstr "oʻchirish uchun belgilangan"
 
-#: src/Core/Main.vala:1568 src/Core/Main.vala:1723 src/Core/Main.vala:1725
+#: src/Core/Main.vala:1575 src/Core/Main.vala:1722 src/Core/Main.vala:1724
 msgid "mounted at path"
 msgstr "yo‘lda ulangan"
 
-#: src/Core/Snapshot.vala:503 src/Core/Main.vala:1674
-#: src/Gtk/BackupBox.vala:265 src/Gtk/RestoreBox.vala:237
-#: src/Gtk/DeleteBox.vala:149
+#: src/Gtk/RestoreBox.vala:237 src/Gtk/BackupBox.vala:265
+#: src/Gtk/DeleteBox.vala:149 src/Core/Snapshot.vala:487
+#: src/Core/Main.vala:1677
 msgid "remaining"
 msgstr "qolgan"
 
-#: src/Core/Main.vala:1685
+#: src/Core/Main.vala:1688
 msgid "rsync returned an error"
 msgstr "rsync xatolikni qaytardi"
 
-#: src/Core/SnapshotRepo.vala:635 src/Core/SnapshotRepo.vala:688
-#: src/Core/SnapshotRepo.vala:767
+#: src/Core/SnapshotRepo.vala:630 src/Core/SnapshotRepo.vala:684
+#: src/Core/SnapshotRepo.vala:764
 msgid "un-tagged"
 msgstr "belgilanmagan"
 
