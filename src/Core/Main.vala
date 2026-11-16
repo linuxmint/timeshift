@@ -1593,7 +1593,10 @@ public class Main : GLib.Object{
 
 		Snapshot snapshot_to_link = null;
 
-		this.run_pre_backup_hooks(snapshot_path);
+		if(!this.run_pre_backup_hooks(snapshot_path)) {
+			log_error("snapshot canceled, because prehooks failed");
+			return null;
+		}
 
 		// check if a snapshot was restored recently and use it for linking ---------
 
@@ -1747,12 +1750,15 @@ public class Main : GLib.Object{
 			subvol_names = new string[] { "@","@home" };
 		}
 
-		this.run_pre_backup_hooks(snapshot_base_path);
+		if(!this.run_pre_backup_hooks(snapshot_base_path)) {
+			log_error("snapshot canceled, because prehooks failed");
+			return null;
+		}
 		
 		foreach(var subvol_name in subvol_names){
 
 			string snapshot_path = path_combine(repo.mount_paths[subvol_name], "timeshift-btrfs/snapshots/%s".printf(snapshot_name));
-			
+
 			dir_create(snapshot_path, true);
 			
 			string src_path = path_combine(repo.mount_paths[subvol_name], subvol_name);
@@ -1787,15 +1793,12 @@ public class Main : GLib.Object{
 			}
 		}
 
-		//log_msg(_("Writing control file..."));
-
-		string control_path = snapshot_base_path + snapshot_name;
-
-		string initial_tags = (tag == "ondemand") ? "" : tag;
+		// remove OnDemand from tags
+		Tags initial_tags = tags & ~Tags.OnDemand;
 
 		// write control file
 		var snapshot = Snapshot.write_control_file(
-			control_path, dt_created, sys_uuid, current_distro.full_name(),
+			snapshot_base_path, dt_created, sys_uuid, current_distro.full_name(),
 			initial_tags, cmd_comments, 0, true, false, repo);
 
 		// write subvolume info
@@ -1810,28 +1813,31 @@ public class Main : GLib.Object{
 		return snapshot;
 	}
 
-	private void run_pre_backup_hooks(string snapshot_path) {
-		this.run_hooks("/etc/timeshift/pre-backup-hooks.d", snapshot_path);
+	// returns true on success
+	private bool run_pre_backup_hooks(string snapshot_path) {
+		return (0 == this.run_hooks("/etc/timeshift/pre-backup-hooks.d", snapshot_path));
 	}
 
 	private void run_post_backup_hooks(string snapshot_path) {
 		this.run_hooks("/etc/timeshift/backup-hooks.d", snapshot_path);
 	}
 
-	private void run_hooks(string path, string snapshot_path) {
+	private int run_hooks(string path, string snapshot_path) {
 		FileType fileType = File.new_for_path(path).query_file_type(FileQueryInfoFlags.NONE);
+		int exitCode = -1;
 		if(fileType == FileType.DIRECTORY) {
 			log_debug("Running tasks...");
 
 			string mode_text = (this.btrfs_mode ? "BTRFS" : "RSYNC");
 
 			string sh = "export TS_SNAPSHOT_PATH=\"%s\" TS_MODE=\"%s\" && run-parts --verbose \"%s\"".printf(snapshot_path, mode_text, path);
-			exec_script_sync(sh, null, null, false, false, false, true);
+			exitCode = exec_script_sync(sh, null, null, false, false, false, true);
 
-			log_debug("Finished running tasks...");
+			log_debug("Finished running tasks... exitcode: %d".printf(exitCode));
 		} else {
 			log_debug("Hooks skipped, because %s does not exist".printf(path));
 		}
+		return exitCode;
 	}
 
 	public void parse_cmd_tags(string input_tags){
