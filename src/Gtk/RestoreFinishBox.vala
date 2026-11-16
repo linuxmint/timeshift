@@ -65,17 +65,10 @@ class RestoreFinishBox : Gtk.Box{
 		}
 		else{
 			if (App.mirror_system){
-				txt = _("Cloning");
+				txt = success ? _("Cloning Completed") : _("Cloning Completed With Errors");
 			}
 			else{
-				txt = _("Restore");
-			}
-			
-			if (success){
-				txt += " " + _("Completed");
-			}
-			else{
-				txt += " " + _("Completed With Errors");
+				txt = success ? _("Restore Completed") : _("Restore Completed With Errors");
 			}
 		}
 

@@ -3202,7 +3202,7 @@ public class Main : GLib.Object{
 				}
 
 				//update description for pre-restore backup
-				snap_prev.description = "Before restoring '%s'".printf(snapshot_to_restore.date_formatted);
+				snap_prev.description = _("Before restoring '%s'").printf(snapshot_to_restore.date_formatted);
 				snap_prev.update_control_file();
 			}
 			else{
@@ -3277,7 +3277,7 @@ public class Main : GLib.Object{
 					LinuxDistro.get_dist_info(path_combine(snapshot_path,"@")).full_name(),
 					Tags.OnDemand, "", 0, true, false, repo);
 
-				snap.description = "Before restoring '%s'".printf(snapshot_to_restore.date_formatted);
+				snap.description = _("Before restoring '%s'").printf(snapshot_to_restore.date_formatted);
 				snap.live = true;
 				
 				// write subvolume info
