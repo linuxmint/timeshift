@@ -57,11 +57,7 @@ class BackupFinishBox : Gtk.Box{
 
 		var txt = "";
 		 
-		txt = _("Snapshot Created");
-
-		if (!success){
-			txt += " " + _("With Errors");
-		}
+		txt = success ? _("Snapshot Created") : _("Snapshot Created With Errors");
 
 		lbl_header.label = format_text(txt, true, false, true);
 		

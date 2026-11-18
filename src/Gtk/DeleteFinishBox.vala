@@ -57,11 +57,7 @@ class DeleteFinishBox : Gtk.Box{
 
 		var txt = "";
 		 
-		txt = _("Snapshot(s) Deleted");
-
-		if (!success){
-			txt += " " + _("With Errors");
-		}
+		txt = success ? _("Snapshot(s) Deleted") : _("Snapshot(s) Deleted With Errors");
 
 		lbl_header.label = format_text(txt, true, false, true);
 		
