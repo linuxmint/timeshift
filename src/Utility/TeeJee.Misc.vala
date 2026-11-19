@@ -26,7 +26,6 @@ namespace TeeJee.Misc {
 
 	/* Various utility functions */
 
-	using Gtk;
 	using TeeJee.Logging;
 	using TeeJee.FileSystem;
 	using TeeJee.ProcessHelper;
