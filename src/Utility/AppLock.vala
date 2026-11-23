@@ -72,6 +72,29 @@ public class AppLock : GLib.Object {
 		}
 	}
 
+	// Tells whether a live Timeshift process holds the lock, and in which mode
+	// ("backup" for the scheduled check, "" for a window).
+	public static bool read_holder(string app_name, out long pid, out string mode){
+		pid = 0;
+		mode = "";
+
+		string path = "/var/run/lock/%s/lock".printf(app_name);
+		if (!file_exists(path)){
+			return false;
+		}
+
+		string txt = file_read(path);
+		if (txt == null){
+			return false;
+		}
+
+		var parts = txt.split(";");
+		pid = long.parse(parts[0].strip());
+		mode = (parts.length > 1) ? parts[1].strip() : "";
+
+		return (pid > 0) && get_process_exe_name(pid).contains("timeshift");
+	}
+
 	private void write_lock_file(string message){
 		string current_pid = ((long) Posix.getpid()).to_string();
 		file_write(lock_file, "%s;%s".printf(current_pid, message));

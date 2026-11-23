@@ -79,6 +79,7 @@ sources_gtk = files([
   'Gtk/RestoreWindow.vala',
   'Gtk/RsyncLogBox.vala',
   'Gtk/RsyncLogWindow.vala',
+  'Gtk/RunningTaskWindow.vala',
   'Gtk/ScheduleBox.vala',
   'Gtk/SettingsWindow.vala',
   'Gtk/SetupWizardWindow.vala',
