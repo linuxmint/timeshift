@@ -237,6 +237,9 @@ class SnapshotListBox : Gtk.Box{
 			var model = (Gtk.ListStore) treeview.model;
 			model.get_iter_from_string (out iter, path);
 			model.get (iter, 0, out bak, -1);
+			if (!bak.valid){
+				return; // an incomplete snapshot has no control file to write to
+			}
 			if (bak.description != new_text) {
 				bak.description = new_text;
 				bak.update_control_file();
@@ -617,6 +620,12 @@ class SnapshotListBox : Gtk.Box{
 
 		TreeIter iter;
 		foreach(Snapshot bak in list) {
+			model.append(out iter);
+			model.set (iter, 0, bak);
+		}
+
+		// incomplete snapshots (cancelled or failed) can be browsed and deleted, not restored
+		foreach(Snapshot bak in App.repo.invalid_snapshots) {
 			model.append(out iter);
 			model.set (iter, 0, bak);
 		}

@@ -268,10 +268,32 @@ public class Snapshot : GLib.Object{
 			}
 		}
 		else{
+			// a cancelled or failed snapshot has no control file,
+			// but its folder name still tells when it was started
 			valid = false;
+			var started = date_from_name(name);
+			if (started != null){
+				date = started;
+			}
+			description = _("Incomplete, cannot be restored");
 		}
 		
 		//log_debug("read_control_file(): exit");
+	}
+
+	// parses a folder name like 2026-10-12_01-02-08
+	private static DateTime? date_from_name(string name){
+		var parts = name.split("_");
+		if (parts.length != 2){
+			return null;
+		}
+		var d = parts[0].split("-");
+		var t = parts[1].split("-");
+		if ((d.length != 3) || (t.length != 3)){
+			return null;
+		}
+		return new DateTime.local(int.parse(d[0]), int.parse(d[1]), int.parse(d[2]),
+			int.parse(t[0]), int.parse(t[1]), double.parse(t[2]));
 	}
 
 	public void read_exclude_list(){
