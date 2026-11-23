@@ -1364,7 +1364,9 @@ public class Main : GLib.Object{
 				dt_filter = dt_sys_boot;
 			}
 			else if(tags.contains_any(Tags.Timed)) {
-				dt_filter = now.add_hours(-1).add_seconds(59);
+				// relative to the start of this run, so that a snapshot created earlier in the same run
+				// is retagged even if creating it took longer than an hour
+				dt_filter = dt_created.add_hours(-1).add_seconds(59);
 			}
 
 			// find a recent backup that can be used
