@@ -68,6 +68,27 @@ public class AppLock : GLib.Object {
 		}
 	}
 
+	// The hourly check gives up while a window holds the lock. It leaves this mark so that the
+	// window can run the check when it closes, instead of the snapshot waiting another hour.
+	private string skipped_check_file{
+		owned get{
+			return path_combine(Path.get_dirname(lock_file), "check-skipped");
+		}
+	}
+
+	public void mark_check_skipped(){
+		file_write(skipped_check_file, ((long) Posix.getpid()).to_string());
+	}
+
+	// Returns true (once) if a check was turned away since the mark was last taken.
+	public bool take_check_skipped(){
+		if (!file_exists(skipped_check_file)){
+			return false;
+		}
+		FileUtils.unlink(skipped_check_file);
+		return true;
+	}
+
 	private void write_lock_file(string message){
 		string current_pid = ((long) Posix.getpid()).to_string();
 		file_write(lock_file, "%s;%s".printf(current_pid, message));
