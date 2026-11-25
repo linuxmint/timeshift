@@ -472,7 +472,7 @@ public class Snapshot : GLib.Object{
 		
 		delete_file_task.dest_path = "%s/".printf(path);
 		delete_file_task.status_message = message;
-		delete_file_task.prg_count_total = Main.first_snapshot_count;
+		delete_file_task.prg_count_total = (file_count > 0) ? file_count : Main.first_snapshot_count;
 		delete_file_task.execute();
 
 		if (wait){
@@ -482,12 +482,16 @@ public class Snapshot : GLib.Object{
 				sleep(1000);
 				gtk_do_events ();
 
+				App.app_lock.write_status("deleting", name, delete_file_task);
+
 				stdout.printf("%6.2f%% %s (%s %s)\r".printf(
 					delete_file_task.progress * 100.0, _("complete"),
 					delete_file_task.stat_time_remaining, _("remaining")));
 				
 				stdout.flush();
 			}
+
+			App.app_lock.clear_status();
 
 			stdout.printf(string.nfill(80, ' ') + "\r");
 			stdout.flush();

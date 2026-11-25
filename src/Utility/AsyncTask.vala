@@ -408,18 +408,24 @@ public abstract class AsyncTask : GLib.Object{
 		}
 	}
 
+	// estimated seconds until the task is complete, -1 while unknown
+	public double seconds_remaining{
+		get{
+			if (this.progress > 0){
+				double remaining = ((this.elapsed / this.progress) * (1.0 - this.progress)) / 1000.0;
+				return (remaining < 0) ? 0 : remaining;
+			}
+			return -1;
+		}
+	}
+
 	public string stat_time_remaining{
 		owned get{
-			if (this.progress > 0){
-				double remaining = ((this.elapsed / this.progress) * (1.0 - this.progress));
-				if (remaining < 0){
-					remaining = 0;
-				}
-				return TeeJee.Misc.format_duration(remaining);
-			}
-			else{
+			double remaining = this.seconds_remaining;
+			if (remaining < 0){
 				return "???";
 			}
+			return TeeJee.Misc.format_duration(remaining * 1000.0);
 		}
 	}
 

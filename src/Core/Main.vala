@@ -1540,7 +1540,7 @@ public class Main : GLib.Object{
 		space_check_task.dest_path = snapshot_path + "/localhost/";
 		space_check_task.link_from_path = link_from_path;
 		space_check_task.exclude_from_file = exclude_from_file;
-		space_check_task.prg_count_total = Main.first_snapshot_count;
+		space_check_task.prg_count_total = expected_file_count(snapshot_to_link);
 
 		space_check_task.relative = true;
 		space_check_task.verbose = true;
@@ -1554,12 +1554,25 @@ public class Main : GLib.Object{
 			sleep(1000);
 			gtk_do_events();
 
+			app_lock.write_status("checking-space", snapshot_name, space_check_task);
+
 			stdout.flush();
 		}
+
+		app_lock.clear_status();
 
 		var total_size = space_check_task.total_size;
 		space_check_task = null;
 		return total_size;
+	}
+
+	// Total for the progress of copying or deleting a snapshot. The snapshot linked from lists about
+	// as many entries as the new one will; the count saved at setup can be far out of date.
+	private int64 expected_file_count(Snapshot? previous){
+		if ((previous != null) && (previous.file_count > 0)){
+			return previous.file_count;
+		}
+		return Main.first_snapshot_count;
 	}
 
 	private Snapshot? create_snapshot_with_rsync(Tags tags, DateTime dt_created){
@@ -1659,7 +1672,7 @@ public class Main : GLib.Object{
 		task.link_from_path = link_from_path;
 		task.exclude_from_file = exclude_from_file;
 		task.rsync_log_file = log_file;
-		task.prg_count_total = Main.first_snapshot_count;
+		task.prg_count_total = expected_file_count(snapshot_to_link);
 
 		task.relative = true;
 		task.verbose = true;
@@ -1674,9 +1687,13 @@ public class Main : GLib.Object{
 			sleep(1000);
 			gtk_do_events();
 
+			app_lock.write_status("creating", snapshot_name, task);
+
 			stdout.printf("%6.2f%% %s (%s %s)\r".printf(task.progress * 100.0, _("complete"), task.stat_time_remaining, _("remaining")));
 			stdout.flush();
 		}
+
+		app_lock.clear_status();
 
 		stdout.printf(string.nfill(80, ' '));
 		stdout.flush();
@@ -2822,8 +2839,13 @@ public class Main : GLib.Object{
 				}
 			}
 			
+			app_lock.write_status(dry_run ? "comparing" : "restoring",
+				(snapshot_to_restore != null) ? snapshot_to_restore.name : "", task);
+
 			gtk_do_events();
 		}
+
+		app_lock.clear_status();
 
 		if (dry_run){
 			return true; // no need to continue
