@@ -76,6 +76,11 @@ public class AppGtk : GLib.Object {
 
 		check_if_admin();
 
+		// a scheduled snapshot may be running: show its progress and open once it is done
+		if (!RunningTaskWindow.wait_for_running_instance()){
+			return 0;
+		}
+
 		App = new Main(args, true);
 		parse_arguments(args);
 		App.initialize();
