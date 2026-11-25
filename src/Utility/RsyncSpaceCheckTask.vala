@@ -44,7 +44,7 @@ public class RsyncSpaceCheckTask : AsyncTask{
 	public bool dry_run = false;
 
 	// regex
-    private Regex sent_bytes_regex;
+    private Regex transferred_size_regex;
 
 	// status
     public int64 status_line_count = 0;
@@ -55,12 +55,14 @@ public class RsyncSpaceCheckTask : AsyncTask{
 	}
 
 	private void init_regular_expressions(){
-		if (sent_bytes_regex != null){
+		if (transferred_size_regex != null){
 			return; // already initialized
 		}
 
 		try {
-			sent_bytes_regex = new Regex("""sent ([0-9,]+)[ \t]+bytes[ \t]+received""");
+			// a dry run sends no file data, so its "sent N bytes" only covers the file list;
+			// --stats reports the size of the files that a real run would copy
+			transferred_size_regex = new Regex("""Total transferred file size: ([0-9,]+) bytes""");
 		}
 		catch (Error e) {
 			log_error (e.message);
@@ -161,7 +163,7 @@ public class RsyncSpaceCheckTask : AsyncTask{
 
         MatchInfo match;
 
-        if (sent_bytes_regex.match(line, 0, out match)) {
+        if (transferred_size_regex.match(line, 0, out match)) {
 			total_size = int64.parse(match.fetch(1).replace(",",""));
 		}
 		else{
