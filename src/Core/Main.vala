@@ -278,8 +278,10 @@ public class Main : GLib.Object{
 				string title = _("Scheduled snapshot in progress...");
 				gtk_messagebox(title, msg, null, true);
 			}
-			else{
-				//already logged - do nothing
+			else if ((app_mode == "backup") && (app_lock.lock_message == "")){
+				// a window holds the lock; it runs the check when it is closed
+				app_lock.mark_check_skipped();
+				log_msg("Scheduled check skipped, it will run when the Timeshift window is closed");
 			}
 			exit(1);
 		}
@@ -4435,12 +4437,36 @@ public class Main : GLib.Object{
 		dir_delete(TEMP_DIR);
 		
 		cleanup_unmount_devices();
+
+		if (app_mode == ""){
+			run_skipped_check();
+		}
 		
 		exit(exit_code);
 
 		//Gtk.main_quit ();
 	}
 	
+	// Runs the scheduled check that was turned away while this window was open,
+	// now that the lock is released, so that a due snapshot is not put off by an hour.
+	private void run_skipped_check(){
+		if (!app_lock.take_check_skipped()){
+			return;
+		}
+
+		log_msg("Running the scheduled check that was skipped while the window was open");
+
+		try{
+			string[] argv = { "timeshift", "--check", "--scripted" };
+			Process.spawn_async(null, argv, null,
+				SpawnFlags.SEARCH_PATH | SpawnFlags.STDOUT_TO_DEV_NULL | SpawnFlags.STDERR_TO_DEV_NULL,
+				null, null);
+		}
+		catch (SpawnError e){
+			log_error(e.message);
+		}
+	}
+
 	private void cleanup_unmount_devices(){
 		
 		log_debug("cleanup_unmount_devices()");
