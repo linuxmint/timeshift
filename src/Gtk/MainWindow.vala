@@ -812,6 +812,15 @@ class MainWindow : Gtk.Window{
 				iterExists = store.iter_next (ref iter);
 			}
 
+			if ((snapshot_to_restore != null) && !snapshot_to_restore.valid){
+
+				gtk_messagebox(
+					_("Invalid snapshot"),
+					_("Selected snapshot is incomplete and cannot be restored"),
+					this, false);
+				return;
+			}
+
 			if ((snapshot_to_restore != null) && (snapshot_to_restore.marked_for_deletion)){
 				
 				gtk_messagebox(

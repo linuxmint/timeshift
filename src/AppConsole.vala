@@ -456,6 +456,15 @@ public class AppConsole : GLib.Object {
 		}
 
 		print_grid(grid, right_align);
+
+		// cancelled or failed snapshots are not offered for restore, but can be deleted by name
+		if (!paginate && (App.repo.invalid_snapshots.size > 0)){
+			log_msg("");
+			log_msg(_("Incomplete snapshots (can be deleted with --delete, not restored)") + ":");
+			foreach(var bak in App.repo.invalid_snapshots){
+				log_msg("  %s".printf(bak.name));
+			}
+		}
 	}
 
 	private void list_devices(Gee.ArrayList<Device> device_list){
@@ -799,6 +808,15 @@ public class AppConsole : GLib.Object {
 	}
 
 	private void select_snapshot_for_deletion(){
+		if (App.cmd_snapshot.length > 0){
+			foreach(var bak in App.repo.invalid_snapshots){
+				if (bak.name == App.cmd_snapshot){
+					App.snapshot_to_delete = bak;
+					return;
+				}
+			}
+		}
+
 		App.snapshot_to_delete = select_snapshot();
 		if (App.snapshot_to_delete == null){
 			log_error("Snapshot not selected");
