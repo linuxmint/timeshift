@@ -352,6 +352,26 @@ class BackupDeviceBox : Gtk.Box{
 		lbl_common = label;
 	}
 
+	private Device? find_valid_child_device(Device dev){
+
+		// depth-first search, e.g. disk > partition > LUKS > LVM > filesystem
+
+		foreach (var child in dev.children){
+
+			if ((App.btrfs_mode && (child.fstype == "btrfs")) || (!App.btrfs_mode && child.has_linux_filesystem())){
+				return child;
+			}
+
+			var nested = find_valid_child_device(child);
+
+			if (nested != null){
+				return nested;
+			}
+		}
+
+		return null;
+	}
+
 	private void try_change_device(Device dev){
 
 		log_debug("try_change_device: %s".printf(dev.device));
@@ -368,16 +388,15 @@ class BackupDeviceBox : Gtk.Box{
 
 			if (!found_child){
 
-				// find first valid partition
-				
-				foreach (var child in dev.children){
-					
-					if ((App.btrfs_mode && (child.fstype == "btrfs")) || (!App.btrfs_mode && child.has_linux_filesystem())){
-						
-						change_backup_device(child);
-						found_child = true;
-						break;
-					}
+				// find first valid partition, including devices nested
+				// inside LUKS containers and LVM volume groups
+
+				var child = find_valid_child_device(dev);
+
+				if (child != null){
+
+					change_backup_device(child);
+					found_child = true;
 				}
 			}
 			
