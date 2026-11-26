@@ -388,7 +388,7 @@ class ExcludeBox : Gtk.Box{
 
 		var resp = dialog.run();
 
-		if (resp != Gtk.ResponseType.CANCEL){
+		if (resp == Gtk.ResponseType.ACCEPT){
 			list = dialog.get_filenames();
 		}
 		
@@ -415,7 +415,7 @@ class ExcludeBox : Gtk.Box{
 
 		var resp = dialog.run();
 
-		if (resp != Gtk.ResponseType.CANCEL){
+		if (resp == Gtk.ResponseType.ACCEPT){
 			list = dialog.get_filenames();
 		}
 		
