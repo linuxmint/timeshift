@@ -1449,6 +1449,7 @@ public class Main : GLib.Object{
 		}
 		else{
 			message = _("Failed to create snapshot");
+			status = false;
 		}
 
 		log_msg(message);
