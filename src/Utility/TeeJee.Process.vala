@@ -168,7 +168,7 @@ namespace TeeJee.ProcessHelper{
 		}
 	}
 
-	public int exec_script_async (string script){
+	public int exec_script_async (string script, bool force_locale = true){
 
 		/* Executes commands synchronously.
 		 * Pipes and multiple commands are fully supported.
@@ -178,7 +178,7 @@ namespace TeeJee.ProcessHelper{
 
 		try {
 
-			string scriptfile = save_bash_script_temp (script);
+			string scriptfile = save_bash_script_temp (script, null, force_locale);
 
 			string[] argv = new string[1];
 			argv[0] = scriptfile;
@@ -214,12 +214,14 @@ namespace TeeJee.ProcessHelper{
 			// non root
 			string? user = TeeJee.System.get_username_from_uid(uid);
 			if(user != null) {
-				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS ".printf(user) + cmd;
+				cmd = "pkexec --user %s env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS LANG=$LANG LANGUAGE=$LANGUAGE LC_MESSAGES=$LC_MESSAGES ".printf(user) + cmd;
 			}
 		}
 
 		log_debug(cmd);
-		return TeeJee.ProcessHelper.exec_script_async(cmd);
+		// keep the session locale so that GUI applications (file manager,
+		// notifications) are localized; pkexec preserves LANG/LANGUAGE/LC_*
+		return TeeJee.ProcessHelper.exec_script_async(cmd, false);
 	}
 
 	public string? save_bash_script_temp (string commands, string? script_path = null,
