@@ -22,7 +22,9 @@
  */
 
 using GLib;
+#if !TS_NO_GTK
 using Gtk;
+#endif
 using Gee;
 using Json;
 
@@ -224,6 +226,7 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 
 	// icons ------------------------------------------------------
 
+	#if !TS_NO_GTK
 	public Gdk.Pixbuf? get_icon(int icon_size, bool add_transparency, bool add_emblems){
 
 		Gdk.Pixbuf? pixbuf = null;
@@ -243,4 +246,5 @@ public class FileItem : GLib.Object,Gee.Comparable<FileItem> {
 
 		return pixbuf;
 	}
+	#endif
 }

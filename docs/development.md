@@ -8,9 +8,13 @@ This documentation provides instructions for developing Timeshift.
 - help2man
 - gettext 
 - valac 
-- libvte-2.91-dev 
 - libgee-0.8-dev 
 - libjson-glib-dev 
+
+Optional (for GTK frontend):
+
+- libgtk-3-dev
+- libvte-2.91-dev
 - libxapp-dev
 
 If you are using a Debian-based distribution, you can install these
@@ -21,9 +25,12 @@ sudo apt install meson \
 help2man \
 gettext \
 valac \
-libvte-2.91-dev \
 libgee-0.8-dev \
-libjson-glib-dev \
+libjson-glib-dev
+
+# Optional GUI dependencies
+sudo apt install libgtk-3-dev \
+libvte-2.91-dev \
 libxapp-dev
 ``` 
 
@@ -47,6 +54,15 @@ cd timeshift
 meson setup build
 meson compile -C build 
 ``` 
+
+### Building command-line-only
+
+To build only the `timeshift` command-line tool (without GTK/VTE dependencies):
+
+```bash
+meson setup build-cli -Dgtk=false
+meson compile -C build-cli
+```
 
 ### Step 4. Install Timeshift
 
